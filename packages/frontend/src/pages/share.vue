@@ -1,30 +1,22 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+	<MkSpacer :content-max="800">
 		<MkPostForm
 			v-if="state === 'writing'"
 			fixed
 			:instant="true"
-			:initialText="initialText"
-			:initialVisibility="visibility"
-			:initialFiles="files"
-			:initialLocalOnly="localOnly"
+			:initial-text="initialText"
+			:initial-visibility="visibility"
+			:initial-files="files"
+			:initial-local-only="localOnly"
 			:reply="reply"
 			:renote="renote"
-			:initialVisibleUsers="visibleUsers"
+			:initial-visible-users="visibleUsers"
 			class="_panel"
 			@posted="state = 'posted'"
 		/>
-		<div v-else-if="state === 'posted'" class="_buttonsCenter">
-			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
-			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
-		</div>
+		<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -33,17 +25,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
 import { } from 'vue';
+import { noteVisibilities } from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const urlParams = new URLSearchParams(window.location.search);
 const localOnlyQuery = urlParams.get('localOnly');
-const visibilityQuery = urlParams.get('visibility') as typeof Misskey.noteVisibilities[number];
+const visibilityQuery = urlParams.get('visibility') as typeof noteVisibilities[number];
 
 let state = $ref('fetching' as 'fetching' | 'writing' | 'posted');
 let title = $ref(urlParams.get('title'));
@@ -52,7 +46,7 @@ const url = urlParams.get('url');
 let initialText = $ref<string | undefined>();
 let reply = $ref<Misskey.entities.Note | undefined>();
 let renote = $ref<Misskey.entities.Note | undefined>();
-let visibility = $ref(Misskey.noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
+let visibility = $ref(noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
 let localOnly = $ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
 let files = $ref([] as Misskey.entities.DriveFile[]);
 let visibleUsers = $ref([] as Misskey.entities.User[]);
@@ -72,7 +66,7 @@ async function init() {
 		await Promise.all(
 			[
 				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
-				...(visibleAccts ? visibleAccts.split(',').map(Misskey.acct.parse) : []),
+				...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : []),
 			]
 			// TypeScriptの指示通りに変換する
 				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
@@ -154,12 +148,8 @@ function close(): void {
 
 	// 閉じなければ100ms後タイムラインに
 	window.setTimeout(() => {
-		location.href = '/';
+		mainRouter.push('/');
 	}, 100);
-}
-
-function goToMisskey(): void {
-	location.href = '/';
 }
 
 const headerActions = $computed(() => []);
@@ -171,3 +161,9 @@ definePageMetadata({
 	icon: 'ti ti-share',
 });
 </script>
+
+<style lang="scss" scoped>
+.close {
+	margin: 16px auto;
+}
+</style>

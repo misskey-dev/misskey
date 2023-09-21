@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { existsSync, readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
@@ -101,7 +96,7 @@ declare global {
 	}
 }
 
-function toStories(component: string): Promise<string> {
+function toStories(component: string): string {
 	const msw = `${component.slice(0, -'.vue'.length)}.msw`;
 	const implStories = `${component.slice(0, -'.vue'.length)}.stories.impl`;
 	const metaStories = `${component.slice(0, -'.vue'.length)}.stories.meta`;
@@ -399,21 +394,14 @@ function toStories(component: string): Promise<string> {
 }
 
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
-(async () => {
-	const globs = await Promise.all([
-		glob('src/components/global/*.vue'),
-		glob('src/components/Mk{A,B}*.vue'),
-		glob('src/components/MkDigitalClock.vue'),
-		glob('src/components/MkGalleryPostPreview.vue'),
-		glob('src/components/MkSignupServerRules.vue'),
-		glob('src/components/MkUserSetupDialog.vue'),
-		glob('src/components/MkUserSetupDialog.*.vue'),
-		glob('src/components/MkInviteCode.vue'),
-		glob('src/pages/user/home.vue'),
-	]);
-	const components = globs.flat();
-	await Promise.all(components.map(async (component) => {
+Promise.all([
+	glob('src/components/global/*.vue'),
+	glob('src/components/Mk{A,B}*.vue'),
+	glob('src/components/MkGalleryPostPreview.vue'),
+	glob('src/pages/user/home.vue'),
+])
+	.then((globs) => globs.flat())
+	.then((components) => Promise.all(components.map((component) => {
 		const stories = component.replace(/\.vue$/, '.stories.ts');
-		await writeFile(stories, await toStories(component));
-	}))
-})();
+		return writeFile(stories, toStories(component));
+	})));

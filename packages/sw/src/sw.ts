@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { get } from 'idb-keyval';
-import * as Misskey from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
 import type { PushNotificationDataMap } from '@/types';
-import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
-import { swLang } from '@/scripts/lang.js';
-import * as swos from '@/scripts/operations.js';
+import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
+import { swLang } from '@/scripts/lang';
+import * as swos from '@/scripts/operations';
 
 globalThis.addEventListener('install', () => {
 	// ev.waitUntil(globalThis.skipWaiting());
@@ -26,10 +21,6 @@ globalThis.addEventListener('activate', ev => {
 	);
 });
 
-function offlineContentHTML(): string {
-	return `<!doctype html>Offline. Service Worker @${_VERSION_} <button onclick="location.reload()">reload</button>`;
-}
-
 globalThis.addEventListener('fetch', ev => {
 	let isHTMLRequest = false;
 	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
@@ -43,14 +34,7 @@ globalThis.addEventListener('fetch', ev => {
 	if (!isHTMLRequest) return;
 	ev.respondWith(
 		fetch(ev.request)
-			.catch(() => {
-				return new Response(offlineContentHTML(), {
-					status: 200,
-					headers: {
-						'content-type': 'text/html',
-					},
-				});
-			}),
+			.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 })),
 	);
 });
 
@@ -72,7 +56,7 @@ globalThis.addEventListener('push', ev => {
 				return createNotification(data);
 			case 'readAllNotifications':
 				await globalThis.registration.getNotifications()
-					.then(notifications => notifications.forEach(n => n.tag !== 'read_notification' && n.close()));
+					.then(notifications => notifications.forEach(n => n.close()));
 				break;
 		}
 
@@ -99,7 +83,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						if ('userId' in data.body) await swos.api('following/create', loginId, { userId: data.body.userId });
 						break;
 					case 'showUser':
-						if ('user' in data.body) client = await swos.openUser(Misskey.acct.toString(data.body.user), loginId);
+						if ('user' in data.body) client = await swos.openUser(Acct.toString(data.body.user), loginId);
 						break;
 					case 'reply':
 						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
@@ -136,7 +120,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 								if ('note' in data.body) {
 									client = await swos.openNote(data.body.note.id, loginId);
 								} else if ('user' in data.body) {
-									client = await swos.openUser(Misskey.acct.toString(data.body.user), loginId);
+									client = await swos.openUser(Acct.toString(data.body.user), loginId);
 								}
 								break;
 						}
@@ -149,7 +133,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 				switch (action) {
 					case 'markAllAsRead':
 						await globalThis.registration.getNotifications()
-							.then(notifications => notifications.forEach(n => n.tag !== 'read_notification' && n.close()));
+							.then(notifications => notifications.forEach(n => n.close()));
 						await get('accounts').then(accounts => {
 							return Promise.all(accounts.map(async account => {
 								await swos.sendMarkAllAsRead(account.id);

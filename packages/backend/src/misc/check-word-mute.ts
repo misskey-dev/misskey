@@ -1,24 +1,16 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { AhoCorasick } from 'slacc';
 import RE2 from 're2';
-import type { MiNote } from '@/models/Note.js';
-import type { MiUser } from '@/models/User.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { User } from '@/models/entities/User.js';
 
 type NoteLike = {
-	userId: MiNote['userId'];
-	text: MiNote['text'];
-	cw?: MiNote['cw'];
+	userId: Note['userId'];
+	text: Note['text'];
+	cw?: Note['cw'];
 };
 
 type UserLike = {
-	id: MiUser['id'];
+	id: User['id'];
 };
-
-const acCache = new Map<string, AhoCorasick>();
 
 export async function checkWordMute(note: NoteLike, me: UserLike | null | undefined, mutedWords: Array<string | string[]>): Promise<boolean> {
 	// 自分自身
@@ -29,22 +21,7 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 
 		if (text === '') return false;
 
-		const acable = mutedWords.filter(filter => Array.isArray(filter) && filter.length === 1).map(filter => filter[0]).sort();
-		const unacable = mutedWords.filter(filter => !Array.isArray(filter) || filter.length !== 1);
-		const acCacheKey = acable.join('\n');
-		const ac = acCache.get(acCacheKey) ?? AhoCorasick.withPatterns(acable);
-		acCache.delete(acCacheKey);
-		for (const obsoleteKeys of acCache.keys()) {
-			if (acCache.size > 1000) {
-				acCache.delete(obsoleteKeys);
-			}
-		}
-		acCache.set(acCacheKey, ac);
-		if (ac.isMatch(text)) {
-			return true;
-		}
-
-		const matched = unacable.some(filter => {
+		const matched = mutedWords.some(filter => {
 			if (Array.isArray(filter)) {
 				return filter.every(keyword => text.includes(keyword));
 			} else {

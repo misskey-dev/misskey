@@ -1,18 +1,14 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import type { MiUserPublickey } from '@/models/UserPublickey.js';
+import type { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { CacheService } from '@/core/CacheService.js';
-import type { MiNote } from '@/models/Note.js';
+import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
-import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import { RemoteUser, User } from '@/models/entities/User.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
@@ -34,9 +30,9 @@ export type UriParseResult = {
 };
 
 @Injectable()
-export class ApDbResolverService implements OnApplicationShutdown {
-	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
-	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey | null>;
+export class ApDbResolverService {
+	private publicKeyCache: MemoryKVCache<UserPublickey | null>;
+	private publicKeyByUserIdCache: MemoryKVCache<UserPublickey | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,31 +50,38 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyCache = new MemoryKVCache<UserPublickey | null>(Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<UserPublickey | null>(Infinity);
 	}
 
 	@bindThis
 	public parseUri(value: string | IObject): UriParseResult {
-		const separator = '/';
-
-		const uri = new URL(getApId(value));
-		if (uri.origin !== this.config.url) return { local: false, uri: uri.href };
-
-		const [, type, id, ...rest] = uri.pathname.split(separator);
-		return {
-			local: true,
-			type,
-			id,
-			rest: rest.length === 0 ? undefined : rest.join(separator),
-		};
+		const uri = getApId(value);
+	
+		// the host part of a URL is case insensitive, so use the 'i' flag.
+		const localRegex = new RegExp('^' + escapeRegexp(this.config.url) + '/(\\w+)/(\\w+)(?:\/(.+))?', 'i');
+		const matchLocal = uri.match(localRegex);
+	
+		if (matchLocal) {
+			return {
+				local: true,
+				type: matchLocal[1],
+				id: matchLocal[2],
+				rest: matchLocal[3],
+			};
+		} else {
+			return {
+				local: false,
+				uri,
+			};
+		}
 	}
 
 	/**
 	 * AP Note => Misskey Note in DB
 	 */
 	@bindThis
-	public async getNoteFromApId(value: string | IObject): Promise<MiNote | null> {
+	public async getNoteFromApId(value: string | IObject): Promise<Note | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
@@ -98,21 +101,19 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject): Promise<MiLocalUser | MiRemoteUser | null> {
+	public async getUserFromApId(value: string | IObject): Promise<User | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
 			if (parsed.type !== 'users') return null;
 
-			return await this.cacheService.userByIdCache.fetchMaybe(
-				parsed.id,
-				() => this.usersRepository.findOneBy({ id: parsed.id }).then(x => x ?? undefined),
-			) as MiLocalUser | undefined ?? null;
+			return await this.cacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
+				id: parsed.id,
+			}).then(x => x ?? undefined)) ?? null;
 		} else {
-			return await this.cacheService.uriPersonCache.fetch(
-				parsed.uri,
-				() => this.usersRepository.findOneBy({ uri: parsed.uri }),
-			) as MiRemoteUser | null;
+			return await this.cacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
+				uri: parsed.uri,
+			}));
 		}
 	}
 
@@ -121,14 +122,14 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async getAuthUserFromKeyId(keyId: string): Promise<{
-		user: MiRemoteUser;
-		key: MiUserPublickey;
+		user: RemoteUser;
+		key: UserPublickey;
 	} | null> {
 		const key = await this.publicKeyCache.fetch(keyId, async () => {
 			const key = await this.userPublickeysRepository.findOneBy({
 				keyId,
 			});
-
+	
 			if (key == null) return null;
 
 			return key;
@@ -137,7 +138,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		if (key == null) return null;
 
 		return {
-			user: await this.cacheService.findUserById(key.userId) as MiRemoteUser,
+			user: await this.cacheService.findUserById(key.userId) as RemoteUser,
 			key,
 		};
 	}
@@ -147,31 +148,18 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
-		user: MiRemoteUser;
-		key: MiUserPublickey | null;
+		user: RemoteUser;
+		key: UserPublickey | null;
 	} | null> {
-		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
+		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 
-		const key = await this.publicKeyByUserIdCache.fetch(
-			user.id,
-			() => this.userPublickeysRepository.findOneBy({ userId: user.id }),
-			v => v != null,
-		);
+		if (user == null) return null;
+
+		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null); 
 
 		return {
 			user,
 			key,
 		};
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.publicKeyCache.dispose();
-		this.publicKeyByUserIdCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

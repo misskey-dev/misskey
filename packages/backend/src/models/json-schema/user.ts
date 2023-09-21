@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 export const packedUserLiteSchema = {
 	type: 'object',
 	properties: {
@@ -85,14 +80,9 @@ export const packedUserDetailedNotMeOnlySchema = {
 		},
 		alsoKnownAs: {
 			type: 'array',
+			format: 'uri',
 			nullable: true,
 			optional: false,
-			items: {
-				type: 'string',
-				format: 'id',
-				nullable: false,
-				optional: false,
-			},
 		},
 		createdAt: {
 			type: 'string',
@@ -153,7 +143,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 		fields: {
 			type: 'array',
 			nullable: false, optional: false,
-			maxItems: 16,
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
@@ -167,15 +156,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 						nullable: false, optional: false,
 					},
 				},
-			},
-		},
-		verifiedLinks: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-				format: 'url',
+				maxLength: 4,
 			},
 		},
 		followersCount: {
@@ -316,11 +297,7 @@ export const packedMeDetailedOnlySchema = {
 		},
 		noCrawle: {
 			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		preventAiLearning: {
-			type: 'boolean',
-			nullable: false, optional: false,
+			nullable: true, optional: false,
 		},
 		isExplorable: {
 			type: 'boolean',
@@ -328,11 +305,6 @@ export const packedMeDetailedOnlySchema = {
 		},
 		isDeleted: {
 			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		twoFactorBackupCodesStock: {
-			type: 'string',
-			enum: ['full', 'partial', 'none'],
 			nullable: false, optional: false,
 		},
 		hideOnlineStatus: {

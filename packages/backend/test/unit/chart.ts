@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -18,7 +13,7 @@ import { entity as TestGroupedChartEntity } from '@/core/chart/charts/entities/t
 import { entity as TestUniqueChartEntity } from '@/core/chart/charts/entities/test-unique.js';
 import { entity as TestIntersectionChartEntity } from '@/core/chart/charts/entities/test-intersection.js';
 import { loadConfig } from '@/config.js';
-import type { AppLockService } from '@/core/AppLockService.js';
+import type { AppLockService } from '@/core/AppLockService';
 import Logger from '@/logger.js';
 
 describe('Chart', () => {
@@ -480,16 +475,16 @@ describe('Chart', () => {
 				await testIntersectionChart.addA('bob');
 				await testIntersectionChart.addB('carol');
 				await testIntersectionChart.save();
-
+	
 				const chartHours = await testIntersectionChart.getChart('hour', 3, null);
 				const chartDays = await testIntersectionChart.getChart('day', 3, null);
-
+	
 				assert.deepStrictEqual(chartHours, {
 					a: [2, 0, 0],
 					b: [1, 0, 0],
 					aAndB: [0, 0, 0],
 				});
-
+	
 				assert.deepStrictEqual(chartDays, {
 					a: [2, 0, 0],
 					b: [1, 0, 0],
@@ -503,16 +498,16 @@ describe('Chart', () => {
 				await testIntersectionChart.addB('carol');
 				await testIntersectionChart.addB('alice');
 				await testIntersectionChart.save();
-
+	
 				const chartHours = await testIntersectionChart.getChart('hour', 3, null);
 				const chartDays = await testIntersectionChart.getChart('day', 3, null);
-
+	
 				assert.deepStrictEqual(chartHours, {
 					a: [2, 0, 0],
 					b: [2, 0, 0],
 					aAndB: [1, 0, 0],
 				});
-
+	
 				assert.deepStrictEqual(chartDays, {
 					a: [2, 0, 0],
 					b: [2, 0, 0],

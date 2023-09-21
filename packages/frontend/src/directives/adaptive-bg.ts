@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Directive } from 'vue';
 
 export default {
@@ -15,7 +10,7 @@ export default {
 				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
 			}
 		};
-
+	
 		const parentBg = getBgColor(src.parentElement);
 
 		const myBg = window.getComputedStyle(src).backgroundColor;

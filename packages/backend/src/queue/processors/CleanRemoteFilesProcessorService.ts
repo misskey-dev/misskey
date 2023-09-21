@@ -1,23 +1,22 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiDriveFile, DriveFilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
-import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CleanRemoteFilesProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
@@ -28,11 +27,11 @@ export class CleanRemoteFilesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<Record<string, unknown>>): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Deleting cached remote files...');
 
 		let deletedCount = 0;
-		let cursor: MiDriveFile['id'] | null = null;
+		let cursor: any = null;
 
 		while (true) {
 			const files = await this.driveFilesRepository.find({
@@ -48,11 +47,11 @@ export class CleanRemoteFilesProcessorService {
 			});
 
 			if (files.length === 0) {
-				job.updateProgress(100);
+				job.progress(100);
 				break;
 			}
 
-			cursor = files.at(-1)?.id ?? null;
+			cursor = files[files.length - 1].id;
 
 			await Promise.all(files.map(file => this.driveService.deleteFileSync(file, true)));
 
@@ -63,9 +62,10 @@ export class CleanRemoteFilesProcessorService {
 				isLink: false,
 			});
 
-			job.updateProgress(deletedCount / total);
+			job.progress(deletedCount / total);
 		}
 
 		this.logger.succ('All cached remote files has been deleted.');
+		done();
 	}
 }

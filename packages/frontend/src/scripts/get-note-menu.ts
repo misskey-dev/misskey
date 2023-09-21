@@ -1,28 +1,22 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { defineAsyncComponent, Ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { claimAchievement } from './achievements.js';
-import { getEmbedCode } from './get-embed-code.js';
-import { $i } from '@/account.js';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
-import { defaultStore, noteActions } from '@/store.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { getUserMenu } from '@/scripts/get-user-menu.js';
-import { clipsCache } from '@/cache.js';
-import { MenuItem } from '@/types/menu.js';
+import * as misskey from 'misskey-js';
+import { claimAchievement } from './achievements';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
+import * as os from '@/os';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { url } from '@/config';
+import { noteActions } from '@/store';
+import { miLocalStorage } from '@/local-storage';
+import { getUserMenu } from '@/scripts/get-user-menu';
+import { clipsCache } from '@/cache';
+import { getEmbedCode } from './get-embed-code';
 
 export async function getNoteClipMenu(props: {
-	note: Misskey.entities.Note;
+	note: misskey.entities.Note;
 	isDeleted: Ref<boolean>;
-	currentClip?: Misskey.entities.Clip;
+	currentClip?: misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -31,9 +25,9 @@ export async function getNoteClipMenu(props: {
 		props.note.poll == null
 	);
 
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
 
-	const clips = await clipsCache.fetch();
+	const clips = await clipsCache.fetch(() => os.api('clips/list'));
 	return [...clips.map(clip => ({
 		text: clip.name,
 		action: () => {
@@ -93,39 +87,13 @@ export async function getNoteClipMenu(props: {
 	}];
 }
 
-export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): MenuItem {
-	return {
-		icon: 'ti ti-exclamation-circle',
-		text,
-		action: (): void => {
-			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
-			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
-				user: note.user,
-				initialComment: `Note: ${u}\n-----\n`,
-			}, {}, 'closed');
-		},
-	};
-}
-
-export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): MenuItem {
-	return {
-		icon: 'ti ti-link',
-		text,
-		action: (): void => {
-			copyToClipboard(`${url}/notes/${note.id}`);
-			os.success();
-		},
-	};
-}
-
 export function getNoteMenu(props: {
-	note: Misskey.entities.Note;
+	note: misskey.entities.Note;
 	menuButton: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
-	currentClip?: Misskey.entities.Clip;
-	embed?: boolean;
+	currentClip?: misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -134,9 +102,7 @@ export function getNoteMenu(props: {
 		props.note.poll == null
 	);
 
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
-
-	const cleanups = [] as (() => void)[];
+	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
 
 	function del(): void {
 		os.confirm({
@@ -238,7 +204,7 @@ export function getNoteMenu(props: {
 
 	function openDetail(): void {
 		if (props.embed) {
-			window.open(`/notes/${appearNote.id}`, '_blank');
+			window.open(`/notes/${appearNote.id}`, "_blank");
 		} else {
 			os.pageWindow(`/notes/${appearNote.id}`);
 		}
@@ -248,6 +214,12 @@ export function getNoteMenu(props: {
 		console.log(getEmbedCode({ entityType: 'notes', id: appearNote.id }));
 		copyToClipboard(getEmbedCode({ entityType: 'notes', id: appearNote.id }));
 		os.success();
+	}
+
+	function showReactions(): void {
+		os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+			noteId: appearNote.id,
+		}, {}, 'closed');
 	}
 
 	async function translate(): Promise<void> {
@@ -261,7 +233,7 @@ export function getNoteMenu(props: {
 		props.translation.value = res;
 	}
 
-	let menu: MenuItem[];
+	let menu;
 	if ($i) {
 		const statePromise = os.api('notes/state', {
 			noteId: appearNote.id,
@@ -280,11 +252,18 @@ export function getNoteMenu(props: {
 				text: i18n.ts.details,
 				action: openDetail,
 			}, {
+				icon: 'ti ti-users',
+				text: i18n.ts.reactions,
+				action: showReactions,
+			}, {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
-			}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-			, (appearNote.url || appearNote.uri) ? {
+			}, {
+				icon: 'ti ti-link',
+				text: i18n.ts.copyLink,
+				action: copyLink,
+			}, (appearNote.url || appearNote.uri) ? {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
@@ -315,7 +294,7 @@ export function getNoteMenu(props: {
 				action: () => toggleFavorite(true),
 			}),
 			{
-				type: 'parent' as const,
+				type: 'parent',
 				icon: 'ti ti-paperclip',
 				text: i18n.ts.clip,
 				children: () => getNoteClipMenu(props),
@@ -338,17 +317,15 @@ export function getNoteMenu(props: {
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
 			} : undefined,
-			{
-				type: 'parent' as const,
+			appearNote.userId !== $i.id ? {
+				type: 'parent',
 				icon: 'ti ti-user',
 				text: i18n.ts.user,
 				children: async () => {
-					const user = appearNote.userId === $i?.id ? $i : await os.api('users/show', { userId: appearNote.userId });
-					const { menu, cleanup } = getUserMenu(user);
-					cleanups.push(cleanup);
-					return menu;
+					const user = await os.api('users/show', { userId: appearNote.userId });
+					return getUserMenu(user);
 				},
-			},
+			} : undefined,
 			/*
 		...($i.isModerator || $i.isAdmin ? [
 			null,
@@ -361,8 +338,17 @@ export function getNoteMenu(props: {
 		),*/
 			...(appearNote.userId !== $i.id ? [
 				null,
-				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
-			]
+				{
+					icon: 'ti ti-exclamation-circle',
+					text: i18n.ts.reportAbuse,
+					action: () => {
+						const u = appearNote.url ?? appearNote.uri ?? `${url}/notes/${appearNote.id}`;
+						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+							user: appearNote.user,
+							initialComment: `Note: ${u}\n-----\n`,
+						}, {}, 'closed');
+					},
+				}]
 			: []
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
@@ -390,8 +376,11 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-		, (appearNote.url || appearNote.uri) ? {
+		}, {
+			icon: 'ti ti-link',
+			text: i18n.ts.copyLink,
+			action: copyLink,
+		}, (appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
@@ -415,25 +404,5 @@ export function getNoteMenu(props: {
 		}))]);
 	}
 
-	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
-			icon: 'ti ti-id',
-			text: i18n.ts.copyNoteId,
-			action: () => {
-				copyToClipboard(appearNote.id);
-			},
-		}]);
-	}
-
-	const cleanup = () => {
-		if (_DEV_) console.log('note menu cleanup', cleanups);
-		for (const cl of cleanups) {
-			cl();
-		}
-	};
-
-	return {
-		menu,
-		cleanup,
-	};
+	return menu;
 }

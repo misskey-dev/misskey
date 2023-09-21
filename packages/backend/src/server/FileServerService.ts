@@ -1,17 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import rename from 'rename';
-import sharp from 'sharp';
-import { sharpBmp } from 'sharp-read-bmp';
 import type { Config } from '@/config.js';
-import type { MiDriveFile, DriveFilesRepository } from '@/models/_.js';
+import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -25,9 +18,11 @@ import { contentDisposition } from '@/misc/content-disposition.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
-import { correctFilename } from '@/misc/correct-filename.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
+import { correctFilename } from '@/misc/correct-filename.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -185,8 +180,8 @@ export class FileServerService {
 				reply.header('Content-Disposition',
 					contentDisposition(
 						'inline',
-						correctFilename(file.filename, image.ext),
-					),
+						correctFilename(file.filename, image.ext)
+					)
 				);
 				return image.data;
 			}
@@ -283,11 +278,11 @@ export class FileServerService {
 					};
 				} else {
 					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
-						.resize({
-							height: 'emoji' in request.query ? 128 : 320,
-							withoutEnlargement: true,
-						})
-						.webp(webpDefault);
+							.resize({
+								height: 'emoji' in request.query ? 128 : 320,
+								withoutEnlargement: true,
+							})
+							.webp(webpDefault);
 
 					image = {
 						data,
@@ -302,8 +297,7 @@ export class FileServerService {
 			} else if ('badge' in request.query) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
-						fit: 'contain',
-						position: 'centre',
+						fit: 'inside',
 						withoutEnlargement: false,
 					})
 					.greyscale()
@@ -360,8 +354,8 @@ export class FileServerService {
 			reply.header('Content-Disposition',
 				contentDisposition(
 					'inline',
-					correctFilename(file.filename, image.ext),
-				),
+					correctFilename(file.filename, image.ext)
+				)
 			);
 			return image.data;
 		} catch (e) {
@@ -372,8 +366,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getStreamAndTypeFromUrl(url: string): Promise<
-		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: MiDriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; filename: string; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -411,8 +405,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getFileFromKey(key: string): Promise<
-		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; url: string; mime: string; ext: string | null; path: string; cleanup: () => void; }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; filename: string; url: string; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; filename: string; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -459,8 +453,7 @@ export class FileServerService {
 			fileRole: 'original',
 			file,
 			filename: file.name,
-			// 古いファイルは修正前のmimeを持っているのでできるだけ修正してあげる
-			mime: this.fileInfoService.fixMime(file.type),
+			mime: file.type,
 			ext: null,
 			path,
 		};

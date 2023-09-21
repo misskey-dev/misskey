@@ -116,15 +116,15 @@ redis:
 #  #prefix: example-prefix
 #  #db: 1
 
-#   ┌───────────────────────────┐
-#───┘ MeiliSearch configuration └─────────────────────────────
+#   ┌─────────────────────────────┐
+#───┘ Elasticsearch configuration └─────────────────────────────
 
-#meilisearch:
+#elasticsearch:
 #  host: localhost
-#  port: 7700
-#  apiKey: ''
-#  ssl: true
-#  index: ''
+#  port: 9200
+#  ssl: false
+#  user:
+#  pass:
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -135,7 +135,6 @@ redis:
 
 # Available methods:
 # aid ... Short, Millisecond accuracy
-# aidx ... Millisecond accuracy
 # meid ... Similar to ObjectID, Millisecond accuracy
 # ulid ... Millisecond accuracy
 # objectid ... This is left for backward compatibility
@@ -143,7 +142,7 @@ redis:
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # ID SETTINGS AFTER THAT!
 
-id: "aidx"
+id: "aid"
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 

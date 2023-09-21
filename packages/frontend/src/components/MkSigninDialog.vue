@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkModalWindow
 	ref="dialog"
@@ -13,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.login }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
-		<MkSignin :autoSet="autoSet" :message="message" @login="onLogin"/>
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<MkSignin :auto-set="autoSet" :message="message" @login="onLogin"/>
 	</MkSpacer>
 </MkModalWindow>
 </template>
@@ -23,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
+import { i18n } from '@/i18n';
 
 withDefaults(defineProps<{
 	autoSet?: boolean;

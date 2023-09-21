@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="igpposuu _monospace">
 	<div v-if="value === null" class="null">null</div>
@@ -33,38 +28,54 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { reactive } from 'vue';
-import number from '@/filters/number.js';
-import XValue from '@/components/MkObjectView.value.vue';
+<script lang="ts">
+import { defineComponent, reactive } from 'vue';
+import number from '@/filters/number';
 
-const props = defineProps<{
-	value: any;
-}>();
+export default defineComponent({
+	name: 'XValue',
 
-const collapsed = reactive({});
+	props: {
+		value: {
+			required: true,
+		},
+	},
 
-if (isObject(props.value)) {
-	for (const key in props.value) {
-		collapsed[key] = collapsable(props.value[key]);
-	}
-}
+	setup(props) {
+		const collapsed = reactive({});
 
-function isObject(v): boolean {
-	return typeof v === 'object' && !Array.isArray(v) && v !== null;
-}
+		if (isObject(props.value)) {
+			for (const key in props.value) {
+				collapsed[key] = collapsable(props.value[key]);
+			}
+		}
 
-function isArray(v): boolean {
-	return Array.isArray(v);
-}
+		function isObject(v): boolean {
+			return typeof v === 'object' && !Array.isArray(v) && v !== null;
+		}
 
-function isEmpty(v): boolean {
-	return (isArray(v) && v.length === 0) || (isObject(v) && Object.keys(v).length === 0);
-}
+		function isArray(v): boolean {
+			return Array.isArray(v);
+		}
 
-function collapsable(v): boolean {
-	return (isObject(v) || isArray(v)) && !isEmpty(v);
-}
+		function isEmpty(v): boolean {
+			return (isArray(v) && v.length === 0) || (isObject(v) && Object.keys(v).length === 0);
+		}
+
+		function collapsable(v): boolean {
+			return (isObject(v) || isArray(v)) && !isEmpty(v);
+		}
+
+		return {
+			number,
+			collapsed,
+			isObject,
+			isArray,
+			isEmpty,
+			collapsable,
+		};
+	},
+});
 </script>
 
 <style lang="scss" scoped>

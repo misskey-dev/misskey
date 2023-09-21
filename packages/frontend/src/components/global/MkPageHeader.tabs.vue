@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div ref="el" :class="$style.tabs" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
@@ -20,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ t.title }}
 				</div>
 				<Transition
-					v-else mode="in-out" @enter="enter" @afterEnter="afterEnter" @leave="leave"
-					@afterLeave="afterLeave"
+					v-else mode="in-out" @enter="enter" @after-enter="afterEnter" @leave="leave"
+					@after-leave="afterLeave"
 				>
 					<div v-show="t.key === tab" :class="[$style.tabTitle, $style.animate]">{{ t.title }}</div>
 				</Transition>
@@ -54,7 +49,7 @@ export type Tab = {
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
-import { defaultStore } from '@/store.js';
+import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];

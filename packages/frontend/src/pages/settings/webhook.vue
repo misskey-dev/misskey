@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<FormLink :to="`/settings/webhook/new`">
@@ -37,8 +32,8 @@ import { } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const pagination = {
 	endpoint: 'i/webhooks/list' as const,

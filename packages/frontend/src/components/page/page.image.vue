@@ -1,28 +1,27 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div>
-	<MediaImage
-		v-if="image"
-		:image="image"
-		:disableImageLink="true"
-	/>
+<div class="lzyxtsnt">
+	<ImgWithBlurhash v-if="image" :hash="image.blurhash" :src="image.url" :alt="image.comment" :title="image.comment" :cover="false"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { ImageBlock } from './block.type';
-import MediaImage from '@/components/MkMediaImage.vue';
+import { PropType } from 'vue';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import { ImageBlock } from '@/scripts/hpml/block';
+import { Hpml } from '@/scripts/hpml/evaluator';
 
 const props = defineProps<{
-	block: ImageBlock,
-	page: Misskey.entities.Page,
+	block: PropType<ImageBlock>,
+	hpml: PropType<Hpml>,
 }>();
 
-const image = ref<Misskey.entities.DriveFile>(props.page.attachedFiles.find(x => x.id === props.block.fileId));
+const image = props.hpml.page.attachedFiles.find(x => x.id === props.block.fileId);
 </script>
+
+<style lang="scss" scoped>
+.lzyxtsnt {
+	> img {
+		max-width: 100%;
+	}
+}
+</style>

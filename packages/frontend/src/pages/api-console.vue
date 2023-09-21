@@ -1,15 +1,10 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+	<MkSpacer :content-max="700">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
-				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
+				<MkInput v-model="endpoint" :datalist="endpoints" @update:model-value="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" code>
@@ -41,8 +36,8 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const body = ref('{}');
 const endpoint = ref('');

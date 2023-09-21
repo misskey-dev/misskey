@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="rrevdjwu" :class="{ grid }">
 	<div v-for="group in def" class="group">
@@ -28,13 +23,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-defineProps<{
-	def: any[];
-	grid?: boolean;
-}>();
+export default defineComponent({
+	props: {
+		def: {
+			type: Array,
+			required: true,
+		},
+		grid: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+	},
+});
 </script>
 
 <style lang="scss" scoped>
@@ -51,7 +55,7 @@ defineProps<{
 			margin: 0 0 8px 0;
 			font-size: 0.9em;
 		}
-
+	
 		> .items {
 			> .item {
 				display: flex;

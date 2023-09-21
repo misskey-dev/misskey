@@ -1,24 +1,19 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
+import rndstr from 'rndstr';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
-import type { MiRole, RolesRepository, RoleAssignmentsRepository, UsersRepository, MiUser } from '@/models/_.js';
+import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository, User } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
-import { genAidx } from '@/misc/id/aidx.js';
+import { genAid } from '@/misc/id/aid.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { sleep } from '../utils.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
@@ -34,10 +29,10 @@ describe('RoleService', () => {
 	let metaService: jest.Mocked<MetaService>;
 	let clock: lolex.InstalledClock;
 
-	function createUser(data: Partial<MiUser> = {}) {
-		const un = secureRndstr(16);
+	function createUser(data: Partial<User> = {}) {
+		const un = rndstr('a-z0-9', 16);
 		return usersRepository.insert({
-			id: genAidx(new Date()),
+			id: genAid(new Date()),
 			createdAt: new Date(),
 			username: un,
 			usernameLower: un,
@@ -46,9 +41,9 @@ describe('RoleService', () => {
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	function createRole(data: Partial<MiRole> = {}) {
+	function createRole(data: Partial<Role> = {}) {
 		return rolesRepository.insert({
-			id: genAidx(new Date()),
+			id: genAid(new Date()),
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			lastUsedAt: new Date(),
@@ -111,19 +106,19 @@ describe('RoleService', () => {
 	});
 
 	describe('getUserPolicies', () => {
-		test('instance default policies', async () => {
+		test('instance default policies', async () => {	
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
 				},
 			} as any);
-
+	
 			const result = await roleService.getUserPolicies(user.id);
-
+	
 			expect(result.canManageCustomEmojis).toBe(false);
 		});
-
+	
 		test('instance default policies 2', async () => {
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
@@ -131,12 +126,12 @@ describe('RoleService', () => {
 					canManageCustomEmojis: true,
 				},
 			} as any);
-
+	
 			const result = await roleService.getUserPolicies(user.id);
-
+	
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
-
+	
 		test('with role', async () => {
 			const user = await createUser();
 			const role = await createRole({
@@ -155,9 +150,9 @@ describe('RoleService', () => {
 					canManageCustomEmojis: false,
 				},
 			} as any);
-
+	
 			const result = await roleService.getUserPolicies(user.id);
-
+	
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 
@@ -190,9 +185,9 @@ describe('RoleService', () => {
 					driveCapacityMb: 50,
 				},
 			} as any);
-
+	
 			const result = await roleService.getUserPolicies(user.id);
-
+	
 			expect(result.driveCapacityMb).toBe(100);
 		});
 
@@ -204,7 +199,7 @@ describe('RoleService', () => {
 				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 				followersCount: 10,
 			});
-			await createRole({
+			const role = await createRole({
 				name: 'a',
 				policies: {
 					canManageCustomEmojis: {
@@ -231,7 +226,7 @@ describe('RoleService', () => {
 					canManageCustomEmojis: false,
 				},
 			} as any);
-
+	
 			const user1Policies = await roleService.getUserPolicies(user1.id);
 			const user2Policies = await roleService.getUserPolicies(user2.id);
 			expect(user1Policies.canManageCustomEmojis).toBe(false);
@@ -256,7 +251,7 @@ describe('RoleService', () => {
 					canManageCustomEmojis: false,
 				},
 			} as any);
-
+	
 			const result = await roleService.getUserPolicies(user.id);
 			expect(result.canManageCustomEmojis).toBe(true);
 

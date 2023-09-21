@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="false" class="mkw-instance-cloud">
+<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-instance-cloud">
 	<div class="">
 		<MkTagCloud v-if="activeInstances">
 			<li v-for="instance in activeInstances" :key="instance.id">
@@ -19,13 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
-import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
 
 const name = 'instanceCloud';
 
@@ -38,8 +33,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -77,3 +75,7 @@ defineExpose<WidgetComponentExpose>({
 	id: props.widget ? props.widget.id : null,
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

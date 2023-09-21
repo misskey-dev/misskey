@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.5.1]
+        node-version: [18.x]
 
     services:
       postgres:
@@ -29,16 +29,16 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v4.0.0
+    - uses: actions/checkout@v3.3.0
       with:
         submodules: true
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 8
+        version: 7
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.8.1
+      uses: actions/setup-node@v3.6.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

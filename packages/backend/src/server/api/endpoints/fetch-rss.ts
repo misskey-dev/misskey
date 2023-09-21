@@ -1,11 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import Parser from 'rss-parser';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 const rssParser = new Parser();
@@ -26,9 +23,13 @@ export const paramDef = {
 	required: ['url'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

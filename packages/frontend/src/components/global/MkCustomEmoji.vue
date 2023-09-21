@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <span v-if="errored">:{{ customEmojiName }}:</span>
 <img v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
@@ -10,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy';
+import { defaultStore } from '@/store';
+import { customEmojis } from '@/custom-emojis';
 
 const props = defineProps<{
 	name: string;
@@ -23,7 +18,7 @@ const props = defineProps<{
 	useOriginalSize?: boolean;
 }>();
 
-const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
+const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substr(1, props.name.length - 2) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
 
 const rawUrl = computed(() => {
@@ -31,7 +26,7 @@ const rawUrl = computed(() => {
 		return props.url;
 	}
 	if (isLocal.value) {
-		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
+		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url ?? null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });

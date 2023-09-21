@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div>
 	<MkLoading v-if="fetching"/>
@@ -48,11 +43,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XPie from './overview.pie.vue';
-import * as os from '@/os.js';
-import number from '@/filters/number.js';
+import * as os from '@/os';
+import number from '@/filters/number';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
-import { i18n } from '@/i18n.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { i18n } from '@/i18n';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 
 let topSubInstancesForPie: any = $ref(null);
 let topPubInstancesForPie: any = $ref(null);
@@ -63,7 +58,7 @@ let federationSubActiveDiff = $ref<number | null>(null);
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
-
+	
 onMounted(async () => {
 	const chart = await os.apiGet('charts/federation', { limit: 2, span: 'day' });
 	federationPubActive = chart.pubActive[0];

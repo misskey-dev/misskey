@@ -1,13 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { toArray } from '@/misc/prelude/array.js';
 import { isHashtag } from '../type.js';
 import type { IObject, IApHashtag } from '../type.js';
 
-export function extractApHashtags(tags: IObject | IObject[] | null | undefined): string[] {
+export function extractApHashtags(tags: IObject | IObject[] | null | undefined) {
 	if (tags == null) return [];
 
 	const hashtags = extractApHashtagObjects(tags);

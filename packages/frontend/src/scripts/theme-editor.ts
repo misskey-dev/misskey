@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { v4 as uuid } from 'uuid';
 
-import { themeProps, Theme } from './theme.js';
+import { themeProps, Theme } from './theme';
 
 export type Default = null;
 export type Color = string;
@@ -40,7 +35,7 @@ export const fromThemeString = (str?: string) : ThemeValue => {
 	} else if (str.startsWith('"')) {
 		return {
 			type: 'css',
-			value: str.substring(1).trim(),
+			value: str.substr(1).trim(),
 		};
 	} else {
 		return str;
@@ -81,6 +76,6 @@ export const convertToViewModel = (theme: Theme): ThemeViewModel => {
 		.filter(k => k.startsWith('$'))
 		.map(k => [k, fromThemeString(theme.props[k])] as [ string, ThemeValue ]);
 
-	vm.push(...consts);
+		vm.push(...consts);
 	return vm;
 };

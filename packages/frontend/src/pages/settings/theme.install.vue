@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<MkTextarea v-model="installThemeCode">
@@ -21,11 +16,11 @@ import { } from 'vue';
 import JSON5 from 'json5';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import { applyTheme, validateTheme } from '@/scripts/theme.js';
-import * as os from '@/os.js';
+import { applyTheme, validateTheme } from '@/scripts/theme';
+import * as os from '@/os';
 import { addTheme, getThemes } from '@/theme-store';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let installThemeCode = $ref(null);
 

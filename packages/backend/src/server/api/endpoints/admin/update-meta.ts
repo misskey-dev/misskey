@@ -1,12 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { Injectable } from '@nestjs/common';
-import type { MiMeta } from '@/models/Meta.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
@@ -35,12 +32,8 @@ export const paramDef = {
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
-		serverErrorImageUrl: { type: 'string', nullable: true },
-		infoImageUrl: { type: 'string', nullable: true },
-		notFoundImageUrl: { type: 'string', nullable: true },
+		errorImageUrl: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
-		app192IconUrl: { type: 'string', nullable: true },
-		app512IconUrl: { type: 'string', nullable: true },
 		backgroundImageUrl: { type: 'string', nullable: true },
 		logoImageUrl: { type: 'string', nullable: true },
 		name: { type: 'string', nullable: true },
@@ -48,7 +41,6 @@ export const paramDef = {
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
 		cacheRemoteFiles: { type: 'boolean' },
-		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
@@ -102,23 +94,22 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
-		enableServerMachineStats: { type: 'boolean' },
-		enableIdenticonGeneration: { type: 'boolean' },
-		serverRules: { type: 'array', items: { type: 'string' } },
-		preservedUsernames: { type: 'array', items: { type: 'string' } },
-		manifestJsonOverride: { type: 'string' },
 	},
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const set = {} as Partial<MiMeta>;
+			const set = {} as Partial<Meta>;
 
 			if (typeof ps.disableRegistration === 'boolean') {
 				set.disableRegistration = ps.disableRegistration;
@@ -139,7 +130,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
-
+		
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
@@ -154,26 +145,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.iconUrl !== undefined) {
 				set.iconUrl = ps.iconUrl;
-			}
-
-			if (ps.app192IconUrl !== undefined) {
-				set.app192IconUrl = ps.app192IconUrl;
-			}
-
-			if (ps.app512IconUrl !== undefined) {
-				set.app512IconUrl = ps.app512IconUrl;
-			}
-
-			if (ps.serverErrorImageUrl !== undefined) {
-				set.serverErrorImageUrl = ps.serverErrorImageUrl;
-			}
-
-			if (ps.infoImageUrl !== undefined) {
-				set.infoImageUrl = ps.infoImageUrl;
-			}
-
-			if (ps.notFoundImageUrl !== undefined) {
-				set.notFoundImageUrl = ps.notFoundImageUrl;
 			}
 
 			if (ps.backgroundImageUrl !== undefined) {
@@ -202,10 +173,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.cacheRemoteFiles !== undefined) {
 				set.cacheRemoteFiles = ps.cacheRemoteFiles;
-			}
-
-			if (ps.cacheRemoteSensitiveFiles !== undefined) {
-				set.cacheRemoteSensitiveFiles = ps.cacheRemoteSensitiveFiles;
 			}
 
 			if (ps.emailRequiredForSignup !== undefined) {
@@ -312,6 +279,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.smtpPass = ps.smtpPass;
 			}
 
+			if (ps.errorImageUrl !== undefined) {
+				set.errorImageUrl = ps.errorImageUrl;
+			}
+
 			if (ps.enableServiceWorker !== undefined) {
 				set.enableServiceWorker = ps.enableServiceWorker;
 			}
@@ -414,26 +385,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableChartsForFederatedInstances !== undefined) {
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
-			}
-
-			if (ps.enableServerMachineStats !== undefined) {
-				set.enableServerMachineStats = ps.enableServerMachineStats;
-			}
-
-			if (ps.enableIdenticonGeneration !== undefined) {
-				set.enableIdenticonGeneration = ps.enableIdenticonGeneration;
-			}
-
-			if (ps.serverRules !== undefined) {
-				set.serverRules = ps.serverRules;
-			}
-
-			if (ps.preservedUsernames !== undefined) {
-				set.preservedUsernames = ps.preservedUsernames;
-			}
-
-			if (ps.manifestJsonOverride !== undefined) {
-				set.manifestJsonOverride = ps.manifestJsonOverride;
 			}
 
 			await this.metaService.update(set);

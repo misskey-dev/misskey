@@ -1,12 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as fs from 'node:fs';
-import * as stream from 'node:stream/promises';
+import * as stream from 'node:stream';
+import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
-import ipaddr from 'ipaddr.js';
+import IPCIDR from 'ip-cidr';
+import PrivateIp from 'private-ip';
 import chalk from 'chalk';
 import got, * as Got from 'got';
 import { parse } from 'content-disposition';
@@ -18,6 +15,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 
+const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -105,7 +103,7 @@ export class DownloadService {
 		});
 
 		try {
-			await stream.pipeline(req, fs.createWriteStream(path));
+			await pipeline(req, fs.createWriteStream(path));
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
 				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
@@ -125,15 +123,15 @@ export class DownloadService {
 	public async downloadTextFile(url: string): Promise<string> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-
+	
 		this.logger.info(`text file: Temp file is ${path}`);
-
+	
 		try {
 			// write content at URL to temp file
 			await this.downloadUrl(url, path);
-
-			const text = await fs.promises.readFile(path, 'utf8');
-
+	
+			const text = await util.promisify(fs.readFile)(path, 'utf8');
+	
 			return text;
 		} finally {
 			cleanup();
@@ -142,14 +140,13 @@ export class DownloadService {
 
 	@bindThis
 	private isPrivateIp(ip: string): boolean {
-		const parsedIp = ipaddr.parse(ip);
-
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
-			if (parsedIp.match(ipaddr.parseCIDR(net))) {
+			const cidr = new IPCIDR(net);
+			if (cidr.contains(ip)) {
 				return false;
 			}
 		}
 
-		return parsedIp.range() !== 'unicast';
+		return PrivateIp(ip) ?? false;
 	}
 }

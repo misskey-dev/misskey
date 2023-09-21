@@ -1,16 +1,11 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@afterLeave="$emit('closed')"
+	@after-leave="$emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
@@ -34,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
-			<div :class="$style.content">
+			<div v-container :class="$style.content">
 				<slot></slot>
 			</div>
 		</div>
@@ -54,11 +49,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide } from 'vue';
-import contains from '@/scripts/contains.js';
-import * as os from '@/os.js';
+import contains from '@/scripts/contains';
+import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
-import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const minHeight = 50;
 const minWidth = 250;
@@ -546,7 +541,7 @@ defineExpose({
 	flex: 1;
 	overflow: auto;
 	background: var(--panel);
-	container-type: size;
+	container-type: inline-size;
 }
 
 $handleSize: 8px;

@@ -1,10 +1,5 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { FlashsRepository, FlashLikesRepository } from '@/models/_.js';
+import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -14,8 +9,6 @@ export const meta = {
 	tags: ['flash'],
 
 	requireCredential: true,
-
-	prohibitMoved: true,
 
 	kind: 'write:flash-likes',
 
@@ -48,8 +41,9 @@ export const paramDef = {
 	required: ['flashId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
@@ -70,14 +64,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// if already liked
-			const exist = await this.flashLikesRepository.exist({
-				where: {
-					flashId: flash.id,
-					userId: me.id,
-				},
+			const exist = await this.flashLikesRepository.findOneBy({
+				flashId: flash.id,
+				userId: me.id,
 			});
 
-			if (exist) {
+			if (exist != null) {
 				throw new ApiError(meta.errors.alreadyLiked);
 			}
 

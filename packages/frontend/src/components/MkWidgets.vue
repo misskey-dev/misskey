@@ -1,43 +1,37 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div :class="$style.root">
 	<template v-if="edit">
-		<header :class="$style.editHeader">
-			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" data-cy-widget-select>
+		<header :class="$style['edit-header']">
+			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" class="mk-widget-select">
 				<template #label>{{ i18n.ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
-			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<Sortable
-			:modelValue="props.widgets"
-			itemKey="id"
+			:model-value="props.widgets"
+			item-key="id"
 			handle=".handle"
 			:animation="150"
 			:group="{ name: 'SortableMkWidgets' }"
-			:class="$style.editEditing"
-			@update:modelValue="v => emit('updateWidgets', v)"
+			:class="$style['edit-editing']"
+			@update:model-value="v => emit('updateWidgets', v)"
 		>
 			<template #item="{element}">
-				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
-					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
+				<div :class="[$style.widget, $style['customize-container']]" data-cy-customize-container>
+					<button :class="$style['customize-container-config']" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
+					<button :class="$style['customize-container-remove']" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
-						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style['customize-container-handle-widget']" :widget="element" @update-props="updateWidget(element.id, $event)"/>
 					</div>
 				</div>
 			</template>
 		</Sortable>
 	</template>
-	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
-
 <script lang="ts">
 export type Widget = {
 	name: string;
@@ -48,15 +42,14 @@ export type DefaultStoredWidget = {
 	place: string | null;
 } & Widget;
 </script>
-
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs } from '@/widgets';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -135,7 +128,7 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 }
 
 .edit {
-	&Header {
+	&-header {
 		margin: 16px 0;
 
 		> * {
@@ -144,17 +137,17 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		}
 	}
 
-	&Editing {
+	&-editing {
 		min-height: 100px;
 	}
 }
 
-.customizeContainer {
+.customize-container {
 	position: relative;
 	cursor: move;
 
-	&Config,
-	&Remove {
+	&-config,
+	&-remove {
 		position: absolute;
 		z-index: 10000;
 		top: 8px;
@@ -165,17 +158,17 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		border-radius: 4px;
 	}
 
-	&Config {
+	&-config {
 		right: 8px + 8px + 32px;
 	}
 
-	&Remove {
+	&-remove {
 		right: 8px;
 	}
 
-	&Handle {
+	&-handle {
 
-		&Widget {
+		&-widget {
 			pointer-events: none;
 		}
 	}

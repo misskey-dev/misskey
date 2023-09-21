@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ModerationLogsRepository } from '@/models/_.js';
+import type { ModerationLogsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
@@ -66,8 +61,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.moderationLogsRepository)
 		private moderationLogsRepository: ModerationLogsRepository,
@@ -78,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.moderationLogsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-			const reports = await query.limit(ps.limit).getMany();
+			const reports = await query.take(ps.limit).getMany();
 
 			return await this.moderationLogEntityService.packMany(reports);
 		});

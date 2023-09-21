@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 /**
  * BOOT LOADER
  * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
@@ -121,9 +116,9 @@
 			}
 		}
 	}
-	const colorScheme = localStorage.getItem('colorScheme');
-	if (colorScheme) {
-		document.documentElement.style.setProperty('color-scheme', colorScheme);
+	const colorSchema = localStorage.getItem('colorSchema');
+	if (colorSchema) {
+		document.documentElement.style.setProperty('color-schema', colorSchema);
 	}
 	//#endregion
 
@@ -165,41 +160,37 @@
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
-			<h1>Failed to load<br>読み込みに失敗しました</h1>
-			<button class="button-big" onclick="location.reload(true);">
-				<span class="button-label-big">Reload / リロード</span>
+			<h1>An error has occurred!</h1>
+			<button class="button-big" onclick="location.reload();">
+				<span class="button-label-big">Refresh</span>
 			</button>
-			<p><b>The following actions may solve the problem. / 以下を行うと解決する可能性があります。</b></p>
-			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
-			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
-			<p>Disable an adblocker / アドブロッカーを無効にする</p>
-			<details style="color: #86b300;">
-				<summary>Other options / その他のオプション</summary>
-				<a href="/flush">
-					<button class="button-small">
-						<span class="button-label-small">Clear preferences and cache</span>
-					</button>
-				</a>
-				<br>
-				<a href="/cli">
-					<button class="button-small">
-						<span class="button-label-small">Start the simple client</span>
-					</button>
-				</a>
-				<br>
-				<a href="/bios">
-					<button class="button-small">
-						<span class="button-label-small">Start the repair tool</span>
-					</button>
-				</a>
-			</details>
+			<p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
+			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
+			<p>Update your os and browser.</p>
+			<p>Disable an adblocker.</p>
+			<a href="/flush">
+				<button class="button-small">
+					<span class="button-label-small">Clear preferences and cache</span>
+				</button>
+			</a>
+			<br>
+			<a href="/cli">
+				<button class="button-small">
+					<span class="button-label-small">Start the simple client</span>
+				</button>
+			</a>
+			<br>
+			<a href="/bios">
+				<button class="button-small">
+					<span class="button-label-small">Start the repair tool</span>
+				</button>
+			</a>
 			<br>
 			<div id="errors"></div>
 			`;
 			errorsElement = document.getElementById('errors');
 		}
 		const detailsElement = document.createElement('details');
-		detailsElement.id = 'errorInfo';
 		detailsElement.innerHTML = `
 		<br>
 		<summary>
@@ -256,7 +247,7 @@
 		.button-label-big {
 			color: #222;
 			font-weight: bold;
-			font-size: 1.2em;
+			font-size: 20px;
 			padding: 12px;
 		}
 
@@ -276,6 +267,11 @@
 			font-size: 16px;
 		}
 
+		.dont-worry,
+		#msg {
+			font-size: 18px;
+		}
+
 		.icon-warning {
 			color: #dec340;
 			height: 4rem;
@@ -283,15 +279,14 @@
 		}
 
 		h1 {
-			font-size: 1.5em;
-			margin: 1em;
+			font-size: 32px;
 		}
 
 		code {
 			font-family: Fira, FiraCode, monospace;
 		}
 
-		#errorInfo {
+		details {
 			background: #333;
 			margin-bottom: 2rem;
 			padding: 0.5rem 1rem;
@@ -301,16 +296,16 @@
 			margin: auto;
 		}
 
-		#errorInfo summary {
+		summary {
 			cursor: pointer;
 		}
 
-		#errorInfo summary > * {
+		summary > * {
 			display: inline;
 		}
 
 		@media screen and (max-width: 500px) {
-			#errorInfo {
+			details {
 				width: 50%;
 			}
 		`)

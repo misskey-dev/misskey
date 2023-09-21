@@ -1,15 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { MiFollowing } from '@/models/Following.js';
+import { Following } from '@/models/entities/Following.js';
 import { connectStream, signup, api, post, startServer, initTestDb, waitFire } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
-import type * as misskey from 'misskey-js';
 
 describe('Streaming', () => {
 	let app: INestApplicationContext;
@@ -32,13 +26,13 @@ describe('Streaming', () => {
 
 	describe('Streaming', () => {
 		// Local users
-		let ayano: misskey.entities.MeSignup;
-		let kyoko: misskey.entities.MeSignup;
-		let chitose: misskey.entities.MeSignup;
+		let ayano: any;
+		let kyoko: any;
+		let chitose: any;
 
 		// Remote users
-		let akari: misskey.entities.MeSignup;
-		let chinatsu: misskey.entities.MeSignup;
+		let akari: any;
+		let chinatsu: any;
 
 		let kyokoNote: any;
 		let list: any;
@@ -46,7 +40,7 @@ describe('Streaming', () => {
 		beforeAll(async () => {
 			app = await startServer();
 			const connection = await initTestDb(true);
-			Followings = connection.getRepository(MiFollowing);
+			Followings = connection.getRepository(Following);
 
 			ayano = await signup({ username: 'ayano' });
 			kyoko = await signup({ username: 'kyoko' });

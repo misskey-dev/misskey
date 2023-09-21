@@ -1,10 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { readFile, writeFile } from 'node:fs/promises';
-import JSON5 from 'json5';
+import { resolve } from 'node:path';
+import * as JSON5 from 'json5';
 
 const keys = [
 	'_dark',
@@ -30,9 +26,9 @@ const keys = [
 	'd-u0',
 ]
 
-await Promise.all(keys.map((key) => readFile(new URL(`../src/themes/${key}.json5`, import.meta.url), 'utf8'))).then((sources) => {
+Promise.all(keys.map((key) => readFile(resolve(__dirname, `../src/themes/${key}.json5`), 'utf8'))).then((sources) => {
 	writeFile(
-		new URL('./themes.ts', import.meta.url),
+		resolve(__dirname, './themes.ts'),
 		`export default ${JSON.stringify(
 			Object.fromEntries(sources.map((source, i) => [keys[i], JSON5.parse(source)])),
 			undefined,

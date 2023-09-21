@@ -1,33 +1,28 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <button
-	class="_button"
-	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing, [$style.full]: full }]"
+	class="hdcaacmi _button"
+	:class="{ wait, active: isFollowing, full }"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
+		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
 	</template>
 </button>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	channel: Record<string, any>;
@@ -62,8 +57,8 @@ async function onClick() {
 }
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.hdcaacmi {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
@@ -108,7 +103,7 @@ async function onClick() {
 	}
 
 	&.active {
-		color: var(--fgOnAccent);
+		color: #fff;
 		background: var(--accent);
 
 		&:hover {
@@ -126,9 +121,9 @@ async function onClick() {
 		cursor: wait !important;
 		opacity: 0.7;
 	}
-}
 
-.text {
-	margin-right: 6px;
+	> span {
+		margin-right: 6px;
+	}
 }
 </style>

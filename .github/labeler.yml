@@ -1,21 +1,12 @@
-'packages/backend':
+'⚙️Server':
 - packages/backend/**/*
 
-'packages/backend:test':
-- packages/backend/test/**/*
-
-'packages/frontend':
+'🖥️Client':
 - packages/frontend/**/*
 
-'packages/frontend:test':
+'🧪Test':
 - cypress/**/*
+- packages/backend/test/**/*
 
-'packages/sw':
-- packages/sw/**/*
-
-'packages/misskey-js':
-- packages/misskey-js/**/*
-
-'packages/misskey-js:test':
-- packages/misskey-js/test/**/*
-- packages/misskey-js/test-d/**/*
+'‼️ wrong locales':
+- any: ['locales/*.yml', '!locales/ja-JP.yml']

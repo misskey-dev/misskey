@@ -1,24 +1,18 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
+import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { MiPoll } from '@/models/Poll.js';
-import type { MiNote } from '@/models/Note.js';
+import type { Poll } from '@/models/entities/Poll.js';
+import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
@@ -26,6 +20,9 @@ export class ExportNotesProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -37,18 +34,17 @@ export class ExportNotesProcessorService {
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
-
-		private driveFileEntityService: DriveFileEntityService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-notes');
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
+			done();
 			return;
 		}
 
@@ -76,7 +72,7 @@ export class ExportNotesProcessorService {
 			await write('[');
 
 			let exportedNotesCount = 0;
-			let cursor: MiNote['id'] | null = null;
+			let cursor: Note['id'] | null = null;
 
 			while (true) {
 				const notes = await this.notesRepository.find({
@@ -88,22 +84,21 @@ export class ExportNotesProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as MiNote[];
+				}) as Note[];
 
 				if (notes.length === 0) {
-					job.updateProgress(100);
+					job.progress(100);
 					break;
 				}
 
-				cursor = notes.at(-1)?.id ?? null;
+				cursor = notes[notes.length - 1].id;
 
 				for (const note of notes) {
-					let poll: MiPoll | undefined;
+					let poll: Poll | undefined;
 					if (note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 					}
-					const files = await this.driveFileEntityService.packManyByIds(note.fileIds);
-					const content = JSON.stringify(serialize(note, poll, files));
+					const content = JSON.stringify(serialize(note, poll));
 					const isFirst = exportedNotesCount === 0;
 					await write(isFirst ? content : ',\n' + content);
 					exportedNotesCount++;
@@ -113,7 +108,7 @@ export class ExportNotesProcessorService {
 					userId: user.id,
 				});
 
-				job.updateProgress(exportedNotesCount / total);
+				job.progress(exportedNotesCount / total);
 			}
 
 			await write(']');
@@ -128,16 +123,17 @@ export class ExportNotesProcessorService {
 		} finally {
 			cleanup();
 		}
+
+		done();
 	}
 }
 
-function serialize(note: MiNote, poll: MiPoll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
+function serialize(note: Note, poll: Poll | null = null): Record<string, unknown> {
 	return {
 		id: note.id,
 		text: note.text,
 		createdAt: note.createdAt,
 		fileIds: note.fileIds,
-		files: files,
 		replyId: note.replyId,
 		renoteId: note.renoteId,
 		poll: poll,

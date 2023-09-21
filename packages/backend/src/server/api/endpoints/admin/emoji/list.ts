@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/_.js';
-import type { MiEmoji } from '@/models/Emoji.js';
+import type { EmojisRepository } from '@/models/index.js';
+import type { Emoji } from '@/models/entities/Emoji.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
@@ -71,8 +66,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -84,18 +80,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
 				.andWhere('emoji.host IS NULL');
 
-			let emojis: MiEmoji[];
+			let emojis: Emoji[];
 
 			if (ps.query) {
 				//q.andWhere('emoji.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
-				//const emojis = await q.limit(ps.limit).getMany();
+				//const emojis = await q.take(ps.limit).getMany();
 
 				emojis = await q.getMany();
 				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
 
 				if (queryarry) {
-					emojis = emojis.filter(emoji =>
-						queryarry.includes(`:${emoji.name}:`),
+					emojis = emojis.filter(emoji => 
+						queryarry.includes(`:${emoji.name}:`)
 					);
 				} else {
 					emojis = emojis.filter(emoji =>
@@ -105,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 				emojis.splice(ps.limit + 1);
 			} else {
-				emojis = await q.limit(ps.limit).getMany();
+				emojis = await q.take(ps.limit).getMany();
 			}
 
 			return this.emojiEntityService.packDetailedMany(emojis);

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div>
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
@@ -62,12 +57,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as os from '@/os.js';
+import * as os from '@/os';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
-import { i18n } from '@/i18n.js';
-import { customEmojis } from '@/custom-emojis.js';
-import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n';
+import { customEmojis } from '@/custom-emojis';
+import { defaultStore } from '@/store';
 
 let stats: any = $ref(null);
 let usersComparedToThePrevDay = $ref<number>();
@@ -78,7 +73,7 @@ let fetching = $ref(true);
 onMounted(async () => {
 	const [_stats, _onlineUsersCount] = await Promise.all([
 		os.api('stats', {}),
-		os.apiGet('get-online-users-count').then(res => res.count),
+		os.api('get-online-users-count').then(res => res.count),
 	]);
 	stats = _stats;
 	onlineUsersCount = _onlineUsersCount;

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="$i" link preview/>
@@ -11,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkUserName :user="$i" :nowrap="true"/>
 		</div>
 		<div>
-			<div>
+			<div :class="$style.content">
 				<Mfm :text="text.trim()" :author="$i" :i="$i"/>
 			</div>
 		</div>
@@ -21,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { $i } from '@/account.js';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	text: string;

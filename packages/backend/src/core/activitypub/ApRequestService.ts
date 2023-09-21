@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { MiUser } from '@/models/User.js';
+import type { User } from '@/models/entities/User.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -145,7 +140,7 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown): Promise<void> {
+	public async signedPost(user: { id: User['id'] }, url: string, object: any) {
 		const body = JSON.stringify(object);
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
@@ -174,7 +169,7 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }): Promise<unknown> {
+	public async signedGet(url: string, user: { id: User['id'] }) {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedGet({

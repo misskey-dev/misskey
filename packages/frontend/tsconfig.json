@@ -5,13 +5,13 @@
 		"noImplicitAny": false,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
-		"noUnusedLocals": false,
+		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": false,
-		"target": "ES2022",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"target": "es2021",
+		"module": "esnext",
+		"moduleResolution": "node",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -23,17 +23,14 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
 		},
 		"typeRoots": [
-			"./@types",
-			"./node_modules/@types",
-			"./node_modules/@vue-macros",
-			"./node_modules"
+			"node_modules/@types",
+			"@types",
 		],
 		"types": [
 			"vite/client",
-			"reactivity-transform/macros-global"
 		],
 		"lib": [
 			"esnext",
@@ -48,6 +45,6 @@
 		"./**/*.vue",
 	],
 	"exclude": [
-		".storybook/**/*"
+		".storybook/**/*",
 	]
 }

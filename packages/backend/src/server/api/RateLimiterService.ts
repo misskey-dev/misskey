@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import Limiter from 'ratelimiter';
 import * as Redis from 'ioredis';
@@ -43,14 +38,14 @@ export class RateLimiterService {
 					max: 1,
 					db: this.redisClient,
 				});
-
+		
 				minIntervalLimiter.get((err, info) => {
 					if (err) {
 						return reject('ERR');
 					}
-
+		
 					this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
-
+		
 					if (info.remaining === 0) {
 						reject('BRIEF_REQUEST_INTERVAL');
 					} else {
@@ -62,7 +57,7 @@ export class RateLimiterService {
 					}
 				});
 			};
-
+		
 			// Long term limit
 			const max = (): void => {
 				const limiter = new Limiter({
@@ -71,14 +66,14 @@ export class RateLimiterService {
 					max: limitation.max! / factor,
 					db: this.redisClient,
 				});
-
+		
 				limiter.get((err, info) => {
 					if (err) {
 						return reject('ERR');
 					}
-
+		
 					this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
-
+		
 					if (info.remaining === 0) {
 						reject('RATE_LIMIT_EXCEEDED');
 					} else {
@@ -86,13 +81,13 @@ export class RateLimiterService {
 					}
 				});
 			};
-
+		
 			const hasShortTermLimit = typeof limitation.minInterval === 'number';
-
+		
 			const hasLongTermLimit =
 				typeof limitation.duration === 'number' &&
 				typeof limitation.max === 'number';
-
+		
 			if (hasShortTermLimit) {
 				min();
 			} else if (hasLongTermLimit) {

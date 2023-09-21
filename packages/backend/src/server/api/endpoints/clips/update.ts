@@ -1,20 +1,14 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ClipsRepository } from '@/models/index.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
-import { ClipService } from '@/core/ClipService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['clips'],
 
 	requireCredential: true,
-
-	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -44,24 +38,33 @@ export const paramDef = {
 	required: ['clipId', 'name'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		private clipService: ClipService,
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
 
 		private clipEntityService: ClipEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			try {
-				await this.clipService.update(me, ps.clipId, ps.name, ps.isPublic, ps.description);
-			} catch (e) {
-				if (e instanceof ClipService.NoSuchClipError) {
-					throw new ApiError(meta.errors.noSuchClip);
-				}
-				throw e;
+			// Fetch the clip
+			const clip = await this.clipsRepository.findOneBy({
+				id: ps.clipId,
+				userId: me.id,
+			});
+
+			if (clip == null) {
+				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			return await this.clipEntityService.pack(ps.clipId, me);
+			await this.clipsRepository.update(clip.id, {
+				name: ps.name,
+				description: ps.description,
+				isPublic: ps.isPublic,
+			});
+
+			return await this.clipEntityService.pack(clip.id, me);
 		});
 	}
 }

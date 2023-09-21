@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="zlxnikvl">
 	<XPie class="pie" :value="usage"/>
@@ -18,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
 import XPie from './pie.vue';
-import bytes from '@/filters/bytes.js';
+import bytes from '@/filters/bytes';
 
 const props = defineProps<{
 	connection: any,

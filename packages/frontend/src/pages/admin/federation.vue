@@ -1,15 +1,10 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions"/></template>
-		<MkSpacer :contentMax="900">
-			<div class="_gaps">
-				<div>
+		<MkSpacer :content-max="900">
+			<div class="taeiyrib">
+				<div class="query">
 					<MkInput v-model="host" :debounce="true" class="">
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.host }}</template>
@@ -44,8 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
-					<div :class="$style.instances">
-						<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.instance" :to="`/instance-info/${instance.host}`">
+					<div class="dqokceoj">
+						<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
 							<MkInstanceCardMini :instance="instance"/>
 						</MkA>
 					</div>
@@ -64,8 +59,8 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let host = $ref('');
 let state = $ref('federating');
@@ -105,14 +100,21 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss" module>
-.instances {
+<style lang="scss" scoped>
+.taeiyrib {
+	> .query {
+		background: var(--bg);
+		margin-bottom: 16px;
+	}
+}
+
+.dqokceoj {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
 	grid-gap: 12px;
-}
 
-.instance:hover {
-	text-decoration: none;
+	> .instance:hover {
+		text-decoration: none;
+	}
 }
 </style>

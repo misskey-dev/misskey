@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { PageLikesRepository } from '@/models/_.js';
-import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiPageLike } from '@/models/PageLike.js';
-import { bindThis } from '@/decorators.js';
+import type { PageLikesRepository } from '@/models/index.js';
+import type { } from '@/models/entities/Blocking.js';
+import type { User } from '@/models/entities/User.js';
+import type { PageLike } from '@/models/entities/PageLike.js';
 import { PageEntityService } from './PageEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class PageLikeEntityService {
@@ -24,8 +19,8 @@ export class PageLikeEntityService {
 
 	@bindThis
 	public async pack(
-		src: MiPageLike['id'] | MiPageLike,
-		me?: { id: MiUser['id'] } | null | undefined,
+		src: PageLike['id'] | PageLike,
+		me?: { id: User['id'] } | null | undefined,
 	) {
 		const like = typeof src === 'object' ? src : await this.pageLikesRepository.findOneByOrFail({ id: src });
 
@@ -38,7 +33,7 @@ export class PageLikeEntityService {
 	@bindThis
 	public packMany(
 		likes: any[],
-		me: { id: MiUser['id'] },
+		me: { id: User['id'] },
 	) {
 		return Promise.all(likes.map(x => this.pack(x, me)));
 	}

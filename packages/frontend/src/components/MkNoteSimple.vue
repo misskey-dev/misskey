@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
@@ -10,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
 			<p v-if="note.cw != null" :class="$style.cw">
-				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i" :emojiUrls="note.emojis"/>
+				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i" :emoji-urls="note.emojis"/>
 				<MkCwButton v-model="showContent" :note="note"/>
 			</p>
 			<div v-show="note.cw == null || showContent">
@@ -23,14 +18,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Misskey from 'misskey-js';
+import * as misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/account';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: misskey.entities.Note;
+	pinned?: boolean;
 }>();
 
 const showContent = $ref(false);
@@ -41,6 +37,7 @@ const showContent = $ref(false);
 	display: flex;
 	margin: 0;
 	padding: 0;
+	overflow: clip;
 	font-size: 0.95em;
 }
 

@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkSpacer :contentMax="narrow ? 800 : 1100">
+<MkSpacer :content-max="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main _gaps">
 			<!-- TODO -->
@@ -12,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
 			<div class="profile _gaps">
-				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
+				<MkAccountMoved v-if="user.movedToUri" :host="user.movedToUri.host" :username="user.movedToUri.username"/>
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
@@ -47,22 +42,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
-					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
-								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-								{{ role.name }}
-							</MkA>
-						</span>
-					</div>
-					<div v-if="iAmModerator" class="moderationNote">
-						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>{{ i18n.ts.moderationNote }}</template>
-						</MkTextarea>
-						<div v-else>
-							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
-						</div>
-					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
 						<div class="heading" v-text="i18n.ts.memo"/>
 						<textarea
@@ -74,9 +53,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							@input="adjustMemoTextarea"
 						/>
 					</div>
+					<div v-if="user.roles.length > 0" class="roles">
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+							<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+							{{ role.name }}
+						</span>
+					</div>
 					<div class="description">
 						<MkOmit>
-							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user" :i="$i"/>
+							<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
 							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 						</MkOmit>
 					</div>
@@ -101,20 +86,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dt>
 							<dd class="value">
 								<Mfm :text="field.value" :author="user" :i="$i" :colored="false"/>
-								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
 							</dd>
 						</dl>
 					</div>
 					<div class="status">
-						<MkA :to="userPage(user)">
+						<MkA v-click-anime :to="userPage(user)">
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'following')">
+						<MkA v-click-anime :to="userPage(user, 'following')">
 							<b>{{ number(user.followingCount) }}</b>
 							<span>{{ i18n.ts.following }}</span>
 						</MkA>
-						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'followers')">
+						<MkA v-click-anime :to="userPage(user, 'followers')">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
 						</MkA>
@@ -131,7 +115,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination"/>
+				<MkNotes v-if="!disableNotes" :class="$style.tl" :no-gap="true" :pagination="pagination"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -144,49 +128,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import calcAge from 's-age';
+import * as misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkButton from '@/components/MkButton.vue';
-import { getScrollPosition } from '@/scripts/scroll.js';
-import { getUserMenu } from '@/scripts/get-user-menu.js';
-import number from '@/filters/number.js';
-import { userPage } from '@/filters/user.js';
-import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
-import { i18n } from '@/i18n.js';
-import { $i, iAmModerator } from '@/account.js';
-import { dateString } from '@/filters/date.js';
-import { confetti } from '@/scripts/confetti.js';
+import { getScrollPosition } from '@/scripts/scroll';
+import { getUserMenu } from '@/scripts/get-user-menu';
+import number from '@/filters/number';
+import { userPage } from '@/filters/user';
+import * as os from '@/os';
+import { useRouter } from '@/router';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
+import { dateString } from '@/filters/date';
+import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
-import { api } from '@/os.js';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
-
-function calcAge(birthdate: string): number {
-	const date = new Date(birthdate);
-	const now = new Date();
-
-	let yearDiff = now.getFullYear() - date.getFullYear();
-	const monthDiff = now.getMonth() - date.getMonth();
-	const pastDate = now.getDate() < date.getDate();
-
-	if (monthDiff < 0 || (monthDiff === 0 && pastDate)) {
-		yearDiff--;
-	}
-
-	return yearDiff;
-}
+import { api } from '@/os';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.UserDetailed;
+	user: misskey.entities.UserDetailed;
 	/** Test only; MkNotes currently causes problems in vitest */
 	disableNotes: boolean;
 }>(), {
@@ -201,13 +168,8 @@ let rootEl = $ref<null | HTMLElement>(null);
 let bannerEl = $ref<null | HTMLElement>(null);
 let memoTextareaEl = $ref<null | HTMLElement>(null);
 let memoDraft = $ref(props.user.memo);
-let isEditingMemo = $ref(false);
-let moderationNote = $ref(props.user.moderationNote);
-let editModerationNote = $ref(false);
 
-watch($$(moderationNote), async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
-});
+let isEditingMemo = $ref(false);
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -229,8 +191,7 @@ const age = $computed(() => {
 });
 
 function menu(ev) {
-	const { menu, cleanup } = getUserMenu(props.user, router);
-	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
+	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);
 }
 
 function parallaxLoop() {
@@ -465,10 +426,6 @@ onUnmounted(() => {
 					}
 				}
 
-				> .moderationNote {
-					margin: 12px 24px 0 154px;
-				}
-
 				> .memo {
 					margin: 12px 24px 0 154px;
 					background: transparent;
@@ -482,7 +439,6 @@ onUnmounted(() => {
 						text-align: left;
 						color: var(--fgTransparent);
 						line-height: 1.5;
-						font-size: 85%;
 					}
 
 					textarea {
@@ -637,10 +593,6 @@ onUnmounted(() => {
 					justify-content: center;
 				}
 
-				> .moderationNote {
-					margin: 16px 16px 0 16px;
-				}
-
 				> .memo {
 					margin: 16px 16px 0 16px;
 				}
@@ -672,12 +624,7 @@ onUnmounted(() => {
 <style lang="scss" module>
 .tl {
 	background: var(--bg);
-	border-radius: var(--radius);
-	overflow: clip;
-}
-
-.verifiedLink {
-	margin-left: 4px;
-	color: var(--success);
+    border-radius: var(--radius);
+    overflow: clip;
 }
 </style>

@@ -1,18 +1,13 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/User.js';
+import type { User } from '@/models/entities/User.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiNote } from '@/models/Note.js';
+import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/_.js';
+import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -35,7 +30,7 @@ export class NoteReadService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async insertNoteUnread(userId: MiUser['id'], note: MiNote, params: {
+	public async insertNoteUnread(userId: User['id'], note: Note, params: {
 		// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
 		isSpecified: boolean;
 		isMentioned: boolean;
@@ -48,13 +43,11 @@ export class NoteReadService implements OnApplicationShutdown {
 		//#endregion
 
 		// スレッドミュート
-		const isThreadMuted = await this.noteThreadMutingsRepository.exist({
-			where: {
-				userId: userId,
-				threadId: note.threadId ?? note.id,
-			},
+		const threadMute = await this.noteThreadMutingsRepository.findOneBy({
+			userId: userId,
+			threadId: note.threadId ?? note.id,
 		});
-		if (isThreadMuted) return;
+		if (threadMute) return;
 
 		const unread = {
 			id: this.idService.genId(),
@@ -69,9 +62,9 @@ export class NoteReadService implements OnApplicationShutdown {
 
 		// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 		setTimeout(2000, 'unread note', { signal: this.#shutdownController.signal }).then(async () => {
-			const exist = await this.noteUnreadsRepository.exist({ where: { id: unread.id } });
+			const exist = await this.noteUnreadsRepository.findOneBy({ id: unread.id });
 
-			if (!exist) return;
+			if (exist == null) return;
 
 			if (params.isMentioned) {
 				this.globalEventService.publishMainStream(userId, 'unreadMention', note.id);
@@ -84,11 +77,11 @@ export class NoteReadService implements OnApplicationShutdown {
 
 	@bindThis
 	public async read(
-		userId: MiUser['id'],
-		notes: (MiNote | Packed<'Note'>)[],
+		userId: User['id'],
+		notes: (Note | Packed<'Note'>)[],
 	): Promise<void> {
-		const readMentions: (MiNote | Packed<'Note'>)[] = [];
-		const readSpecifiedNotes: (MiNote | Packed<'Note'>)[] = [];
+		const readMentions: (Note | Packed<'Note'>)[] = [];
+		const readSpecifiedNotes: (Note | Packed<'Note'>)[] = [];
 
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {
@@ -106,7 +99,7 @@ export class NoteReadService implements OnApplicationShutdown {
 			});
 
 			// TODO: ↓まとめてクエリしたい
-
+	
 			this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isMentioned: true,
@@ -116,7 +109,7 @@ export class NoteReadService implements OnApplicationShutdown {
 					this.globalEventService.publishMainStream(userId, 'readAllUnreadMentions');
 				}
 			});
-
+	
 			this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isSpecified: true,
@@ -129,13 +122,7 @@ export class NoteReadService implements OnApplicationShutdown {
 		}
 	}
 
-	@bindThis
-	public dispose(): void {
+	onApplicationShutdown(signal?: string | undefined): void {
 		this.#shutdownController.abort();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

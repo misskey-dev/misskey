@@ -1,71 +1,102 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div v-if="pending">
-	<MkLoading/>
-</div>
-<div v-else-if="resolved">
-	<slot :result="result"></slot>
-</div>
-<div v-else>
-	<div :class="$style.error">
-		<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
-		<MkButton inline style="margin-top: 16px;" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
+	<div v-if="pending">
+		<MkLoading/>
 	</div>
-</div>
+	<div v-else-if="resolved">
+		<slot :result="result"></slot>
+	</div>
+	<div v-else>
+		<div class="wszdbhzo">
+			<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
+			<MkButton inline class="retry" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+		</div>
+	</div>
+</Transition>
 </template>
 
-<script lang="ts" setup>
-import { ref, watch } from 'vue';
+<script lang="ts">
+import { defineComponent, PropType, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
-const props = defineProps<{
-	p: () => Promise<any>;
-}>();
+export default defineComponent({
+	components: {
+		MkButton,
+	},
 
-const pending = ref(true);
-const resolved = ref(false);
-const rejected = ref(false);
-const result = ref(null);
+	props: {
+		p: {
+			type: Function as PropType<() => Promise<any>>,
+			required: true,
+		},
+	},
 
-const process = () => {
-	if (props.p == null) {
-		return;
-	}
-	const promise = props.p();
-	pending.value = true;
-	resolved.value = false;
-	rejected.value = false;
-	promise.then((_result) => {
-		pending.value = false;
-		resolved.value = true;
-		result.value = _result;
-	});
-	promise.catch(() => {
-		pending.value = false;
-		rejected.value = true;
-	});
-};
+	setup(props, context) {
+		const pending = ref(true);
+		const resolved = ref(false);
+		const rejected = ref(false);
+		const result = ref(null);
 
-watch(() => props.p, () => {
-	process();
-}, {
-	immediate: true,
+		const process = () => {
+			if (props.p == null) {
+				return;
+			}
+			const promise = props.p();
+			pending.value = true;
+			resolved.value = false;
+			rejected.value = false;
+			promise.then((_result) => {
+				pending.value = false;
+				resolved.value = true;
+				result.value = _result;
+			});
+			promise.catch(() => {
+				pending.value = false;
+				rejected.value = true;
+			});
+		};
+
+		watch(() => props.p, () => {
+			process();
+		}, {
+			immediate: true,
+		});
+
+		const retry = () => {
+			process();
+		};
+
+		return {
+			pending,
+			resolved,
+			rejected,
+			result,
+			retry,
+			defaultStore,
+			i18n,
+		};
+	},
 });
-
-const retry = () => {
-	process();
-};
 </script>
 
-<style lang="scss" module>
-.error {
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.wszdbhzo {
 	padding: 16px;
 	text-align: center;
+
+	> .retry {
+		margin-top: 16px;
+	}
 }
 </style>

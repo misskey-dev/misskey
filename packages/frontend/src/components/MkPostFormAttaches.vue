@@ -1,30 +1,24 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
+<div v-show="props.modelValue.length != 0" class="skeikyzd">
+	<Sortable :model-value="props.modelValue" class="files" item-key="id" :animation="150" :delay="100" :delay-on-touch-only="true" @update:model-value="v => emit('update:modelValue', v)">
 		<template #item="{element}">
-			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
-				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
-				<div v-if="element.isSensitive" :class="$style.sensitive">
-					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
+			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
+				<div v-if="element.isSensitive" class="sensitive">
+					<i class="ti ti-alert-triangle icon"></i>
 				</div>
 			</div>
 		</template>
 	</Sortable>
-	<p :class="$style.remain">{{ 16 - props.modelValue.length }}/16</p>
+	<p class="remain">{{ 16 - props.modelValue.length }}/16</p>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -36,9 +30,8 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;
 	(ev: 'detach', id: string): void;
-	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
-	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
-	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
+	(ev: 'changeSensitive'): void;
+	(ev: 'changeName'): void;
 }>();
 
 let menuShowing = false;
@@ -92,32 +85,21 @@ async function describe(file) {
 	}, 'closed');
 }
 
-async function crop(file: Misskey.entities.DriveFile): Promise<void> {
-	const newFile = await os.cropImage(file, { aspectRatio: NaN });
-	emit('replaceFile', file, newFile);
-}
-
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
+function showFileMenu(file, ev: MouseEvent) {
 	if (menuShowing) return;
-
-	const isImage = file.type.startsWith('image/');
 	os.popupMenu([{
 		text: i18n.ts.renameFile,
 		icon: 'ti ti-forms',
 		action: () => { rename(file); },
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
+		icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
 		action: () => { toggleSensitive(file); },
 	}, {
 		text: i18n.ts.describeFile,
 		icon: 'ti ti-text-caption',
 		action: () => { describe(file); },
-	}, ...isImage ? [{
-		text: i18n.ts.cropImage,
-		icon: 'ti ti-crop',
-		action: () : void => { crop(file); },
-	}] : [], {
+	}, {
 		text: i18n.ts.attachCancel,
 		icon: 'ti ti-circle-x',
 		action: () => { detachMedia(file.id); },
@@ -126,53 +108,60 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 }
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.skeikyzd {
 	padding: 8px 16px;
 	position: relative;
-}
 
-.files {
-	display: flex;
-	flex-wrap: wrap;
-}
+	> .files {
+		display: flex;
+		flex-wrap: wrap;
 
-.file {
-	position: relative;
-	width: 64px;
-	height: 64px;
-	margin-right: 4px;
-	border-radius: 4px;
-	overflow: hidden;
-	cursor: move;
-}
+		> .file {
+			position: relative;
+			width: 64px;
+			height: 64px;
+			margin-right: 4px;
+			border-radius: 4px;
+			overflow: hidden;
+			cursor: move;
 
-.thumbnail {
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-	color: var(--fg);
-}
+			&:hover > .remove {
+				display: block;
+			}
 
-.sensitive {
-	display: flex;
-	position: absolute;
-	width: 64px;
-	height: 64px;
-	top: 0;
-	left: 0;
-	z-index: 2;
-	background: rgba(17, 17, 17, .7);
-	color: #fff;
-}
+			> .thumbnail {
+				width: 100%;
+				height: 100%;
+				z-index: 1;
+				color: var(--fg);
+			}
 
-.remain {
-	display: block;
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	margin: 0;
-	padding: 0;
-	font-size: 90%;
+			> .sensitive {
+				display: flex;
+				position: absolute;
+				width: 64px;
+				height: 64px;
+				top: 0;
+				left: 0;
+				z-index: 2;
+				background: rgba(17, 17, 17, .7);
+				color: #fff;
+
+				> .icon {
+					margin: auto;
+				}
+			}
+		}
+	}
+
+	> .remain {
+		display: block;
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		margin: 0;
+		padding: 0;
+	}
 }
 </style>

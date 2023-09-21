@@ -1,16 +1,11 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkSpacer :contentMax="700">
+<MkSpacer :content-max="700">
 	<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
-		<div v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="_panel _margin">
-			<div :class="$style.header">
-				<MkAvatar :class="$style.avatar" :user="user"/>
-				<MkReactionIcon :class="$style.reaction" :reaction="item.type" :noStyle="true"/>
-				<MkTime :time="item.createdAt" :class="$style.createdAt"/>
+		<div v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _margin afdcfbfb">
+			<div class="header">
+				<MkAvatar class="avatar" :user="user"/>
+				<MkReactionIcon class="reaction" :reaction="item.type" :no-style="true"/>
+				<MkTime :time="item.createdAt" class="createdAt"/>
 			</div>
 			<MkNote :key="item.id" :note="item.note"/>
 		</div>
@@ -20,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as Misskey from 'misskey-js';
+import * as misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
+	user: misskey.entities.User;
 }>();
 
 const pagination = {
@@ -38,27 +33,29 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" module>
-.header {
-	display: flex;
-	align-items: center;
-	padding: 8px 16px;
-	margin-bottom: 8px;
-	border-bottom: solid 2px var(--divider);
-}
+<style lang="scss" scoped>
+.afdcfbfb {
+	> .header {
+		display: flex;
+		align-items: center;
+		padding: 8px 16px;
+		margin-bottom: 8px;
+		border-bottom: solid 2px var(--divider);
 
-.avatar {
-	width: 24px;
-	height: 24px;
-	margin-right: 8px;
-}
+		> .avatar {
+			width: 24px;
+			height: 24px;
+			margin-right: 8px;
+		}
 
-.reaction {
-	width: 32px;
-	height: 32px;
-}
+		> .reaction {
+			width: 32px;
+			height: 32px;
+		}
 
-.createdAt {
-	margin-left: auto;
+		> .createdAt {
+			margin-left: auto;
+		}
+	}
 }
 </style>

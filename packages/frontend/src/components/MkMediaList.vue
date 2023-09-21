@@ -1,21 +1,13 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div ref="root">
+<div>
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
 			ref="gallery"
 			:class="[
 				$style.medias,
-				count === 1 ? [$style.n1, {
-					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
-					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
-					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
-				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
+				count <= 4 ? $style['n' + count] : $style.nMany,
+				$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
@@ -27,80 +19,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts">
-/**
- * アスペクト比算出のためにHTMLElement.clientWidthを使うが、
- * 大変重たいのでコンテナ要素とメディアリスト幅のペアをキャッシュする
- * （タイムラインごとにスクロールコンテナが存在する前提だが……）
- */
-const widthCache = new Map<Element, number>();
-
-/**
- * コンテナ要素がリサイズされたらキャッシュを削除する
- */
-const ro = new ResizeObserver(entries => {
-	for (const entry of entries) {
-		widthCache.delete(entry.target);
-	}
-});
-
-async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
-	if (_DEV_) console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
-	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
-
-	const width = targetEl.clientWidth;
-
-	if (count <= 10 && width < 64) {
-		// widthが64未満はおかしいのでリトライする
-		await new Promise(resolve => setTimeout(resolve, 50));
-		return getClientWidthWithCache(targetEl, containerEl, count + 1);
-	}
-
-	widthCache.set(containerEl, width);
-	ro.observe(containerEl);
-	return width;
-}
-</script>
-
 <script lang="ts" setup>
-import { onMounted, onUnmounted, shallowRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import { onMounted, ref, useCssModule, watch } from 'vue';
+import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
-import * as os from '@/os.js';
+import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { defaultStore } from '@/store.js';
-import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll.js';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
-	mediaList: Misskey.entities.DriveFile[];
+	mediaList: misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
 
-const root = shallowRef<HTMLDivElement>();
-const container = shallowRef<HTMLElement | null | undefined>(undefined);
-const gallery = shallowRef<HTMLDivElement>();
+const $style = useCssModule();
+
+const gallery = ref<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
-let lightbox: PhotoSwipeLightbox | null;
 
-const popstateHandler = (): void => {
-	if (lightbox.pswp && lightbox.pswp.isOpen === true) {
-		lightbox.pswp.close();
-	}
-};
-
-/**
- * アスペクト比をmediaListWithOneImageAppearanceに基づいていい感じに調整する
- * aspect-ratioではなくheightを使う
- */
-async function calcAspectRatio() {
-	if (!gallery.value || !root.value) return;
+function calcAspectRatio() {
+	if (!gallery.value) return;
 
 	let img = props.mediaList[0];
 
@@ -109,47 +54,29 @@ async function calcAspectRatio() {
 		return;
 	}
 
-	if (!container.value) container.value = getScrollContainer(root.value);
-	const width = container.value ? await getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
-
-	const heightMin = (ratio: number) => {
-		const imgResizeRatio = width / img.properties.width;
-		const imgDrawHeight = img.properties.height * imgResizeRatio;
-		const maxHeight = width * ratio;
-		const height = Math.min(imgDrawHeight, maxHeight);
-		if (_DEV_) console.log('Image height calculated:', { width, properties: img.properties, imgResizeRatio, imgDrawHeight, maxHeight, height });
-		return `${height}px`;
-	};
+	// アスペクト比上限設定では、横長の場合は高さを縮小させる
+	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
 
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
 		case '16_9':
-			gallery.value.style.height = heightMin(9 / 16);
+			gallery.value.style.aspectRatio = ratioMax(16 / 9);
 			break;
 		case '1_1':
-			gallery.value.style.height = heightMin(1);
+			gallery.value.style.aspectRatio = ratioMax(1);
 			break;
 		case '2_3':
-			gallery.value.style.height = heightMin(3 / 2);
+			gallery.value.style.aspectRatio = ratioMax(2 / 3);
 			break;
-		default: {
-			const maxHeight = Math.max(64, (container.value ? container.value.clientHeight : getBodyScrollHeight()) * 0.5 || 360);
-			if (width === 0 || !maxHeight) return;
-			const imgResizeRatio = width / img.properties.width;
-			const imgDrawHeight = img.properties.height * imgResizeRatio;
-			gallery.value.style.height = `${Math.max(64, Math.min(imgDrawHeight, maxHeight))}px`;
-			gallery.value.style.minHeight = 'initial';
-			gallery.value.style.maxHeight = 'initial';
+		default:
+			gallery.value.style.aspectRatio = '';
 			break;
-		}
 	}
-
-	gallery.value.style.aspectRatio = 'initial';
 }
 
-onMounted(() => {
-	calcAspectRatio();
+watch([defaultStore.reactiveState.mediaListWithOneImageAppearance, gallery], () => calcAspectRatio());
 
-	lightbox = new PhotoSwipeLightbox({
+onMounted(() => {
+	const lightbox = new PhotoSwipeLightbox({
 		dataSource: props.mediaList
 			.filter(media => {
 				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
@@ -169,7 +96,7 @@ onMounted(() => {
 				return item;
 			}),
 		gallery: gallery.value,
-		mainClass: 'pswp',
+		mainClass: $style.pswp,
 		children: '.image',
 		thumbSelector: '.image',
 		loop: false,
@@ -185,10 +112,8 @@ onMounted(() => {
 			right: 0,
 		},
 		imageClickAction: 'close',
-		tapAction: 'close',
+		tapAction: 'toggle-controls',
 		bgOpacity: 1,
-		showAnimationDuration: 100,
-		hideAnimationDuration: 100,
 		pswpModule: PhotoSwipe,
 	});
 
@@ -233,7 +158,12 @@ onMounted(() => {
 
 	lightbox.init();
 
-	window.addEventListener('popstate', popstateHandler);
+	window.addEventListener('popstate', () => {
+		if (lightbox.pswp && lightbox.pswp.isOpen === true) {
+			lightbox.pswp.close();
+			return;
+		}
+	});
 
 	lightbox.on('beforeOpen', () => {
 		history.pushState(null, '', '#pswp');
@@ -246,13 +176,7 @@ onMounted(() => {
 	});
 });
 
-onUnmounted(() => {
-	window.removeEventListener('popstate', popstateHandler);
-	lightbox?.destroy();
-	lightbox = null;
-});
-
-const previewable = (file: Misskey.entities.DriveFile): boolean => {
+const previewable = (file: misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
@@ -271,34 +195,33 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	grid-gap: 8px;
 
 	height: 100%;
-	width: 100%;
 
 	&.n1 {
 		grid-template-rows: 1fr;
 
-		// default but fallback (expand)
+		// default (expand)
 		min-height: 64px;
 		max-height: clamp(
 			64px,
-			50cqh,
-			min(360px, 50vh)
+			calc(var(--containerHeight, 100svh) * 0.5), // but --containerHeight can broken (too big)
+			min(334px, 50vh)
 		);
 
 		&.n116_9 {
-			min-height: initial;
-			max-height: initial;
+			min-height: none;
+			max-height: none;
 			aspect-ratio: 16 / 9; // fallback
 		}
 
 		&.n11_1{
-			min-height: initial;
-			max-height: initial;
+			min-height: none;
+			max-height: none;
 			aspect-ratio: 1 / 1; // fallback
 		}
 
 		&.n12_3 {
-			min-height: initial;
-			max-height: initial;
+			min-height: none;
+			max-height: none;
 			aspect-ratio: 2 / 3; // fallback
 		}
 	}
@@ -344,7 +267,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	border-radius: 8px;
 }
 
-:global(.pswp) {
+.pswp {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
 	--pswp-bg: var(--modalBg) !important;
 }

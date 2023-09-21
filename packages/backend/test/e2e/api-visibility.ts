@@ -1,14 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { signup, api, post, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
-import type * as misskey from 'misskey-js';
 
 describe('API visibility', () => {
 	let app: INestApplicationContext;
@@ -24,15 +18,15 @@ describe('API visibility', () => {
 	describe('Note visibility', () => {
 		//#region vars
 		/** ヒロイン */
-		let alice: misskey.entities.MeSignup;
+		let alice: any;
 		/** フォロワー */
-		let follower: misskey.entities.MeSignup;
+		let follower: any;
 		/** 非フォロワー */
-		let other: misskey.entities.MeSignup;
+		let other: any;
 		/** 非フォロワーでもリプライやメンションをされた人 */
-		let target: misskey.entities.MeSignup;
+		let target: any;
 		/** specified mentionでmentionを飛ばされる人 */
-		let target2: misskey.entities.MeSignup;
+		let target2: any;
 
 		/** public-post */
 		let pub: any;

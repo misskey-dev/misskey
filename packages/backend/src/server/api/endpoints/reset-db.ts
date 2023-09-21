@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
@@ -28,8 +23,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -38,7 +34,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private redisClient: Redis.Redis,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
+			if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
 			await redisClient.flushdb();
 			await resetDb(this.db);

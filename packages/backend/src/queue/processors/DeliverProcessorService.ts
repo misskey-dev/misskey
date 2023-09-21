@@ -1,19 +1,14 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
-import type { InstancesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, InstancesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
 import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { MemorySingleCache } from '@/misc/cache.js';
-import type { MiInstance } from '@/models/Instance.js';
+import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
@@ -21,17 +16,24 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
+import type Bull from 'bull';
 import type { DeliverJobData } from '../types.js';
 
 @Injectable()
 export class DeliverProcessorService {
 	private logger: Logger;
-	private suspendedHostsCache: MemorySingleCache<MiInstance[]>;
+	private suspendedHostsCache: MemorySingleCache<Instance[]>;
 	private latest: string | null;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private metaService: MetaService,
 		private utilityService: UtilityService,
@@ -44,7 +46,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(1000 * 60 * 60);
+		this.suspendedHostsCache = new MemorySingleCache<Instance[]>(1000 * 60 * 60);
 	}
 
 	@bindThis
@@ -77,7 +79,10 @@ export class DeliverProcessorService {
 			// Update stats
 			this.federatedInstanceService.fetch(host).then(i => {
 				if (i.isNotResponding) {
-					this.federatedInstanceService.update(i.id, {
+					this.instancesRepository.update(i.id, {
+						isNotResponding: false,
+					});
+					this.federatedInstanceService.updateCachePartial(host, {
 						isNotResponding: false,
 					});
 				}
@@ -96,7 +101,10 @@ export class DeliverProcessorService {
 			// Update stats
 			this.federatedInstanceService.fetch(host).then(i => {
 				if (!i.isNotResponding) {
-					this.federatedInstanceService.update(i.id, {
+					this.instancesRepository.update(i.id, {
+						isNotResponding: true,
+					});
+					this.federatedInstanceService.updateCachePartial(host, {
 						isNotResponding: true,
 					});
 				}
@@ -115,17 +123,22 @@ export class DeliverProcessorService {
 					// 相手が閉鎖していることを明示しているため、配送停止する
 					if (job.data.isSharedInbox && res.statusCode === 410) {
 						this.federatedInstanceService.fetch(host).then(i => {
-							this.federatedInstanceService.update(i.id, {
+							this.instancesRepository.update(i.id, {
+								isSuspended: true,
+							});
+							this.federatedInstanceService.updateCachePartial(host, {
 								isSuspended: true,
 							});
 						});
-						throw new Bull.UnrecoverableError(`${host} is gone`);
+						return `${host} is gone`;
 					}
-					throw new Bull.UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
+					// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
+					// 何回再送しても成功することはないということなのでエラーにはしないでおく
+					return `${res.statusCode} ${res.statusMessage}`;
 				}
 
 				// 5xx etc.
-				throw new Error(`${res.statusCode} ${res.statusMessage}`);
+				throw `${res.statusCode} ${res.statusMessage}`;
 			} else {
 				// DNS error, socket error, timeout ...
 				throw res;

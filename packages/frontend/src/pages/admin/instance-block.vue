@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
+	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<MkTextarea v-model="blockedHosts">
 				<span>{{ i18n.ts.blockedInstances }}</span>
@@ -25,10 +20,10 @@ import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import * as os from '@/os.js';
-import { fetchInstance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os';
+import { fetchInstance } from '@/instance';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let blockedHosts: string = $ref('');
 

@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUser } from '@/models/User.js';
-import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
-import type { MiChannel } from '@/models/Channel.js';
+import type { User } from '@/models/entities/User.js';
+import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { Channel } from '@/models/entities/Channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -22,8 +17,6 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
-
-	prohibitMoved: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -104,7 +97,7 @@ export const paramDef = {
 		} },
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
-		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
+		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote'], default: null },
 		noExtractMentions: { type: 'boolean', default: false },
 		noExtractHashtags: { type: 'boolean', default: false },
 		noExtractEmojis: { type: 'boolean', default: false },
@@ -162,8 +155,9 @@ export const paramDef = {
 	],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -184,15 +178,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteCreateService: NoteCreateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let visibleUsers: MiUser[] = [];
+			let visibleUsers: User[] = [];
 			if (ps.visibleUserIds) {
 				visibleUsers = await this.usersRepository.findBy({
 					id: In(ps.visibleUserIds),
 				});
 			}
 
-			let files: MiDriveFile[] = [];
-			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
+			let files: DriveFile[] = [];
+			const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 			if (fileIds != null) {
 				files = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
@@ -208,7 +202,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			let renote: MiNote | null = null;
+			let renote: Note | null = null;
 			if (ps.renoteId != null) {
 				// Fetch renote to note
 				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
@@ -221,19 +215,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				// Check blocking
 				if (renote.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exist({
-						where: {
-							blockerId: renote.userId,
-							blockeeId: me.id,
-						},
+					const block = await this.blockingsRepository.findOneBy({
+						blockerId: renote.userId,
+						blockeeId: me.id,
 					});
-					if (blockExist) {
+					if (block) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
 			}
 
-			let reply: MiNote | null = null;
+			let reply: Note | null = null;
 			if (ps.replyId != null) {
 				// Fetch reply
 				reply = await this.notesRepository.findOneBy({ id: ps.replyId });
@@ -246,13 +238,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				// Check blocking
 				if (reply.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exist({
-						where: {
-							blockerId: reply.userId,
-							blockeeId: me.id,
-						},
+					const block = await this.blockingsRepository.findOneBy({
+						blockerId: reply.userId,
+						blockeeId: me.id,
 					});
-					if (blockExist) {
+					if (block) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
@@ -268,9 +258,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			let channel: MiChannel | null = null;
+			let channel: Channel | null = null;
 			if (ps.channelId != null) {
-				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
+				channel = await this.channelsRepository.findOneBy({ id: ps.channelId });
 
 				if (channel == null) {
 					throw new ApiError(meta.errors.noSuchChannel);

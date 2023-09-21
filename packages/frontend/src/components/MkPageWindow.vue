@@ -1,48 +1,41 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkWindow
 	ref="windowEl"
-	:initialWidth="500"
-	:initialHeight="500"
-	:canResize="true"
-	:closeButton="true"
-	:buttonsLeft="buttonsLeft"
-	:buttonsRight="buttonsRight"
+	:initial-width="500"
+	:initial-height="500"
+	:can-resize="true"
+	:close-button="true"
+	:buttons-left="buttonsLeft"
+	:buttons-right="buttonsRight"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >
 	<template #header>
 		<template v-if="pageMetadata?.value">
-			<i v-if="pageMetadata.value.icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
+			<i v-if="pageMetadata.value.icon" class="icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
 			<span>{{ pageMetadata.value.title }}</span>
 		</template>
 	</template>
 
-	<div ref="contents" :class="$style.root" style="container-type: inline-size;">
+	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
 		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </MkWindow>
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, onUnmounted, provide, shallowRef } from 'vue';
+import { ComputedRef, onMounted, onUnmounted, provide } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { popout as _popout } from '@/scripts/popout.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
-import { mainRouter, routes, page } from '@/router.js';
-import { $i } from '@/account.js';
-import { Router, useScrollPositionManager } from '@/nirax';
-import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import { openingWindowsCount } from '@/os.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { getScrollContainer } from '@/scripts/scroll.js';
+import { popout as _popout } from '@/scripts/popout';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { url } from '@/config';
+import { mainRouter, routes } from '@/router';
+import { Router } from '@/nirax';
+import { i18n } from '@/i18n';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { openingWindowsCount } from '@/os';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = defineProps<{
 	initialPath: string;
@@ -52,9 +45,8 @@ defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
+const router = new Router(routes, props.initialPath);
 
-const contents = shallowRef<HTMLElement>();
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let windowEl = $shallowRef<InstanceType<typeof MkWindow>>();
 const history = $ref<{ path: string; key: any; }[]>([{
@@ -125,7 +117,7 @@ const contextmenu = $computed(() => ([{
 
 function back() {
 	history.pop();
-	router.replace(history.at(-1)!.path, history.at(-1)!.key);
+	router.replace(history[history.length - 1].path, history[history.length - 1].key);
 }
 
 function reload() {
@@ -145,8 +137,6 @@ function popout() {
 	_popout(router.getCurrentPath(), windowEl.$el);
 	windowEl.close();
 }
-
-useScrollPositionManager(() => getScrollContainer(contents.value), router);
 
 onMounted(() => {
 	openingWindowsCount.value++;

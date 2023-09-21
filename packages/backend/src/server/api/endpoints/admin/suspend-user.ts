@@ -1,13 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { IsNull, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, FollowingsRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { User } from '@/models/entities/User.js';
 import type { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
@@ -31,8 +26,9 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -72,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	@bindThis
-	private async unFollowAll(follower: MiUser) {
+	private async unFollowAll(follower: User) {
 		const followings = await this.followingsRepository.find({
 			where: {
 				followerId: follower.id,

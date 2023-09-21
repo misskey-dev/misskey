@@ -1,35 +1,30 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <button
-	class="_button"
-	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
+	class="kpoogebi _button"
+	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
+			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->
-			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+			<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
+			<span v-if="full">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 	</template>
 </button>
 </template>
@@ -37,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { $i } from '@/account.js';
+import * as os from '@/os';
+import { stream } from '@/stream';
+import { i18n } from '@/i18n';
+import { claimAchievement } from '@/scripts/achievements';
+import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -55,7 +50,7 @@ const props = withDefaults(defineProps<{
 let isFollowing = $ref(props.user.isFollowing);
 let hasPendingFollowRequestFromYou = $ref(props.user.hasPendingFollowRequestFromYou);
 let wait = $ref(false);
-const connection = useStream().useChannel('main');
+const connection = stream.useChannel('main');
 
 if (props.user.isFollowing == null) {
 	os.api('users/show', {
@@ -131,12 +126,13 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.kpoogebi {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: var(--fgOnWhite);
+	color: var(--accent);
+	background: transparent;
 	border: solid 1px var(--accent);
 	padding: 0;
 	height: 31px;
@@ -182,7 +178,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.active {
-		color: var(--fgOnAccent);
+		color: #fff;
 		background: var(--accent);
 
 		&:hover {
@@ -200,9 +196,9 @@ onBeforeUnmount(() => {
 		cursor: wait !important;
 		opacity: 0.7;
 	}
-}
 
-.text {
-	margin-right: 6px;
+	> span {
+		margin-right: 6px;
+	}
 }
 </style>

@@ -1,17 +1,12 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api.js';
+import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
 export { pendingApiRequestsCount, api, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
+import { i18n } from './i18n';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
@@ -21,9 +16,8 @@ import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
-import { MenuItem } from '@/types/menu.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import { MenuItem } from '@/types/menu';
+import copyToClipboard from './scripts/copy-to-clipboard';
 
 export const openingWindowsCount = ref(0);
 
@@ -61,12 +55,6 @@ export const apiWithDialog = ((
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
 			title = i18n.ts.cannotPerformTemporary;
 			text = i18n.ts.cannotPerformTemporaryDescription;
-		} else if (err.code === 'INVALID_PARAM') {
-			title = i18n.ts.invalidParamError;
-			text = i18n.ts.invalidParamErrorDescription;
-		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
-			title = i18n.ts.permissionDeniedError;
-			text = i18n.ts.permissionDeniedErrorDescription;
 		} else if (err.code.startsWith('TOO_MANY')) {
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
@@ -172,6 +160,12 @@ export async function popup(component: Component, props: Record<string, any>, ev
 
 export function pageWindow(path: string) {
 	popup(MkPageWindow, {
+		initialPath: path,
+	}, {}, 'closed');
+}
+
+export function modalPageWindow(path: string) {
+	popup(defineAsyncComponent(() => import('@/components/MkModalPageWindow.vue')), {
 		initialPath: path,
 	}, {}, 'closed');
 }
@@ -419,7 +413,7 @@ export async function selectUser(opts: { includeSelf?: boolean } = {}) {
 	});
 }
 
-export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',
@@ -427,7 +421,7 @@ export async function selectDriveFile(multiple: boolean): Promise<Misskey.entiti
 		}, {
 			done: files => {
 				if (files) {
-					resolve(files);
+					resolve(multiple ? files : files[0]);
 				}
 			},
 		}, 'closed');
@@ -464,13 +458,11 @@ export async function pickEmoji(src: HTMLElement | null, opts) {
 
 export async function cropImage(image: Misskey.entities.DriveFile, options: {
 	aspectRatio: number;
-	uploadFolder?: string | null;
 }): Promise<Misskey.entities.DriveFile> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
 			file: image,
 			aspectRatio: options.aspectRatio,
-			uploadFolder: options.uploadFolder,
 		}, {
 			ok: x => {
 				resolve(x);
@@ -580,8 +572,6 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 }
 
 export function post(props: Record<string, any> = {}): Promise<void> {
-	showMovedDialog();
-
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、

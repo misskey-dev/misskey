@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/_.js';
+import type { UsersRepository } from '@/models/index.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { localUsernameSchema, passwordSchema } from '@/models/User.js';
+import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -37,8 +32,9 @@ export const paramDef = {
 	required: ['username', 'password'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -56,7 +52,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,
 				password: ps.password,
-				ignorePreservedUsernames: true,
 			});
 
 			const res = await this.userEntityService.pack(account, account, {

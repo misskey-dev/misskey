@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <svg :class="$style.root" viewBox="0 0 10 10" preserveAspectRatio="none">
 	<template v-if="props.graduations === 'dots'">
@@ -44,7 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	-->
 
 	<line
-		ref="sLine"
 		:class="[$style.s, { [$style.animate]: !disableSAnimate && sAnimation !== 'none', [$style.elastic]: sAnimation === 'elastic', [$style.easeOut]: sAnimation === 'easeOut' }]"
 		:x1="5 - (0 * (sHandLengthRatio * handsTailLength))"
 		:y1="5 + (1 * (sHandLengthRatio * handsTailLength))"
@@ -79,10 +73,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
+import { computed, onMounted, onBeforeUnmount } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
-import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
 const angleDiff = (a: number, b: number) => {
@@ -152,7 +145,6 @@ let mAngle = $ref<number>(0);
 let sAngle = $ref<number>(0);
 let disableSAnimate = $ref(false);
 let sOneRound = false;
-const sLine = ref<SVGPathElement>();
 
 function tick() {
 	const now = props.now();
@@ -168,21 +160,17 @@ function tick() {
 	}
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
 	mAngle = Math.PI * (m + s / 60) / 30;
-	if (sOneRound && sLine.value) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
+	if (sOneRound) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
 		sAngle = Math.PI * 60 / 30;
-		defaultIdlingRenderScheduler.delete(tick);
-		sLine.value.addEventListener('transitionend', () => {
+		window.setTimeout(() => {
 			disableSAnimate = true;
-			requestAnimationFrame(() => {
+			window.setTimeout(() => {
 				sAngle = 0;
-				requestAnimationFrame(() => {
+				window.setTimeout(() => {
 					disableSAnimate = false;
-					if (enabled) {
-						defaultIdlingRenderScheduler.add(tick);
-					}
-				});
-			});
-		}, { once: true });
+				}, 100);
+			}, 100);
+		}, 700);
 	} else {
 		sAngle = Math.PI * s / 30;
 	}
@@ -206,13 +194,20 @@ function calcColors() {
 calcColors();
 
 onMounted(() => {
-	defaultIdlingRenderScheduler.add(tick);
+	const update = () => {
+		if (enabled) {
+			tick();
+			window.setTimeout(update, 1000);
+		}
+	};
+	update();
+
 	globalEvents.on('themeChanged', calcColors);
 });
 
 onBeforeUnmount(() => {
 	enabled = false;
-	defaultIdlingRenderScheduler.delete(tick);
+
 	globalEvents.off('themeChanged', calcColors);
 });
 </script>

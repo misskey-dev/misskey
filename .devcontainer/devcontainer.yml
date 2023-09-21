@@ -95,15 +95,15 @@ redis:
 #  #prefix: example-prefix
 #  #db: 1
 
-#   ┌───────────────────────────┐
-#───┘ MeiliSearch configuration └─────────────────────────────
+#   ┌─────────────────────────────┐
+#───┘ Elasticsearch configuration └─────────────────────────────
 
-#meilisearch:
-#  host: meilisearch
-#  port: 7700
-#  apiKey: ''
-#  ssl: true
-#  index: ''
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  ssl: false
+#  user:
+#  pass:
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -114,7 +114,6 @@ redis:
 
 # Available methods:
 # aid ... Short, Millisecond accuracy
-# aidx ... Millisecond accuracy
 # meid ... Similar to ObjectID, Millisecond accuracy
 # ulid ... Millisecond accuracy
 # objectid ... This is left for backward compatibility
@@ -122,7 +121,7 @@ redis:
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # ID SETTINGS AFTER THAT!
 
-id: 'aidx'
+id: 'aid'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
@@ -166,8 +165,8 @@ proxyBypassHosts:
 # Media Proxy
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: true)
-proxyRemoteFiles: true
+# Proxy remote files (default: false)
+#proxyRemoteFiles: true
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true

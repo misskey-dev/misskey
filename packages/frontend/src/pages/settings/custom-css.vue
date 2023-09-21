@@ -1,13 +1,8 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
-	<MkTextarea v-model="localCustomCss" manualSave tall class="_monospace" style="tab-size: 2;">
+	<MkTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
 		<template #label>CSS</template>
 	</MkTextarea>
 </div>
@@ -17,11 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os';
+import { unisonReload } from '@/scripts/unison-reload';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 const localCustomCss = ref(miLocalStorage.getItem('customCss') ?? '');
 

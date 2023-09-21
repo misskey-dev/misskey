@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
-	<MkSpacer :contentMax="800">
+	<MkSpacer :content-max="800">
 		<MkClickerGame/>
 	</MkSpacer>
 </MkStickyContainer>
@@ -14,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkClickerGame from '@/components/MkClickerGame.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 definePageMetadata({
 	title: '🍪👈',
