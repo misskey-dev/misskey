@@ -59,7 +59,8 @@ async function buildBackendStyle() {
     './packages/backend/src/server/web/style.css',
     './packages/backend/src/server/web/bios.css',
     './packages/backend/src/server/web/cli.css',
-    './packages/backend/src/server/web/error.css'
+    './packages/backend/src/server/web/error.css',
+    './packages/backend/src/server/web/embed.css'
   ]) {
     const source = await fs.readFile(file, { encoding: 'utf-8' });
     const { css } = await postcss([cssnano({ zindex: false })]).process(source, { from: undefined });
