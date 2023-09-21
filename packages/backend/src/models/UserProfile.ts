@@ -49,6 +49,12 @@ export class MiUserProfile {
 	}[];
 
 	@Column('varchar', {
+		array: true,
+		default: '{}',
+	})
+	public verifiedLinks: string[];
+
+	@Column('varchar', {
 		length: 32, nullable: true,
 	})
 	public lang: string | null;

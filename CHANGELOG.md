@@ -26,6 +26,7 @@
 - Feat: 二要素認証のバックアップコードが生成されるようになりました
 	- ref. https://github.com/MisskeyIO/misskey/pull/121
 - Feat: 二要素認証でパスキーをサポートするようになりました
+- Feat: プロフィールでのリンク検証
 - Feat: 通知をテストできるようになりました
 - Feat: PWAのアイコンが設定できるようになりました
 - Enhance: manifest.jsonをオーバーライド可能に
@@ -62,6 +63,7 @@
 - Enhance: ScratchpadでAsync:系関数やボタンのコールバックなどのエラーにもダイアログを出すように（試験的なためPlayなどには未実装）
 - Enhance: タイムラインでリスト/アンテナ選択時のパフォーマンスを改善
 - Enhance: 「Moderation note」、「Add moderation note」をローカライズできるように
+- Enhance: 細かなデザインの調整
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
 - Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
 - Fix: iOSで画面を回転させるとテキストサイズが変わる問題を修正

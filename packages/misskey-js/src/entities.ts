@@ -38,6 +38,7 @@ export type UserDetailed = UserLite & {
 	description: string | null;
 	ffVisibility: 'public' | 'followers' | 'private';
 	fields: {name: string; value: string}[];
+	verifiedLinks: string[];
 	followersCount: number;
 	followingCount: number;
 	hasPendingFollowRequestFromYou: boolean;
