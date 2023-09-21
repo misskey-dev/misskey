@@ -11,6 +11,7 @@ import { packedNoteSchema } from '@/models/json-schema/note.js';
 import { packedUserListSchema } from '@/models/json-schema/user-list.js';
 import { packedAppSchema } from '@/models/json-schema/app.js';
 import { packedNotificationSchema } from '@/models/json-schema/notification.js';
+import { packedNoteNotificationSchema } from '@/models/json-schema/note-notification.js';
 import { packedDriveFileSchema } from '@/models/json-schema/drive-file.js';
 import { packedDriveFolderSchema } from '@/models/json-schema/drive-folder.js';
 import { packedFollowingSchema } from '@/models/json-schema/following.js';
@@ -45,6 +46,7 @@ export const refs = {
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
 	NoteFavorite: packedNoteFavoriteSchema,
+	NoteNotification: packedNoteNotificationSchema,
 	Notification: packedNotificationSchema,
 	DriveFile: packedDriveFileSchema,
 	DriveFolder: packedDriveFolderSchema,
