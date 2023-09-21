@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiDriveFile } from './DriveFile.js';
+import { User } from './User.js';
+import { DriveFile } from './DriveFile.js';
 
-@Entity('channel')
-export class MiChannel {
+@Entity()
+export class Channel {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -31,13 +26,13 @@ export class MiChannel {
 		nullable: true,
 		comment: 'The owner ID.',
 	})
-	public userId: MiUser['id'] | null;
+	public userId: User['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 128,
@@ -56,30 +51,18 @@ export class MiChannel {
 		nullable: true,
 		comment: 'The ID of banner Channel.',
 	})
-	public bannerId: MiDriveFile['id'] | null;
+	public bannerId: DriveFile['id'] | null;
 
-	@ManyToOne(type => MiDriveFile, {
+	@ManyToOne(type => DriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public banner: MiDriveFile | null;
+	public banner: DriveFile | null;
 
 	@Column('varchar', {
 		array: true, length: 128, default: '{}',
 	})
 	public pinnedNoteIds: string[];
-
-	@Column('varchar', {
-		length: 16,
-		default: '#86b300',
-	})
-	public color: string;
-
-	@Index()
-	@Column('boolean', {
-		default: false,
-	})
-	public isArchived: boolean;
 
 	@Index()
 	@Column('integer', {
@@ -94,9 +77,4 @@ export class MiChannel {
 		comment: 'The count of users.',
 	})
 	public usersCount: number;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public isSensitive: boolean;
 }

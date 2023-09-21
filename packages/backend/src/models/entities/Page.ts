@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiDriveFile } from './DriveFile.js';
+import { User } from './User.js';
+import { DriveFile } from './DriveFile.js';
 
-@Entity('page')
+@Entity()
 @Index(['userId', 'name'], { unique: true })
-export class MiPage {
+export class Page {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -60,25 +55,25 @@ export class MiPage {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public eyeCatchingImageId: MiDriveFile['id'] | null;
+	public eyeCatchingImageId: DriveFile['id'] | null;
 
-	@ManyToOne(type => MiDriveFile, {
+	@ManyToOne(type => DriveFile, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public eyeCatchingImage: MiDriveFile | null;
+	public eyeCatchingImage: DriveFile | null;
 
 	@Column('jsonb', {
 		default: [],
@@ -109,14 +104,14 @@ export class MiPage {
 		...id(),
 		array: true, default: '{}',
 	})
-	public visibleUserIds: MiUser['id'][];
+	public visibleUserIds: User['id'][];
 
 	@Column('integer', {
 		default: 0,
 	})
 	public likedCount: number;
 
-	constructor(data: Partial<MiPage>) {
+	constructor(data: Partial<Page>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

@@ -1,19 +1,6 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div v-if="chosen && !shouldHide" :class="$style.root">
-	<div
-		v-if="!showMenu"
-		:class="[$style.main, {
-			[$style.form_square]: chosen.place === 'square',
-			[$style.form_horizontal]: chosen.place === 'horizontal',
-			[$style.form_horizontalBig]: chosen.place === 'horizontal-big',
-			[$style.form_vertical]: chosen.place === 'vertical',
-		}]"
-	>
+	<div v-if="!showMenu" :class="[$style.main, $style['form_' + chosen.place]]">
 		<a :href="chosen.url" target="_blank" :class="$style.link">
 			<img :src="chosen.imageUrl" :class="$style.img">
 			<button class="_button" :class="$style.i" @click.prevent.stop="toggleMenu"><i :class="$style.iIcon" class="ti ti-info-circle"></i></button>
@@ -33,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { host } from '@/config.js';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
+import { host } from '@/config';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store.js';
-import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { defaultStore } from '@/store';
+import * as os from '@/os';
+import { $i } from '@/account';
 
 type Ad = (typeof instance)['ads'][number];
 
@@ -135,7 +122,7 @@ function reduceFrequency(): void {
 		}
 	}
 
-	&.form_horizontalBig {
+	&.form_horizontal-big {
 		padding: 8px;
 
 		> .link,

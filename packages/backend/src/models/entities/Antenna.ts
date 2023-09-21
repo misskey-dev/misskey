@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiUserList } from './UserList.js';
+import { User } from './User.js';
+import { UserList } from './UserList.js';
 
-@Entity('antenna')
-export class MiAntenna {
+@Entity()
+export class Antenna {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -27,13 +22,13 @@ export class MiAntenna {
 		...id(),
 		comment: 'The owner ID.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 128,
@@ -48,13 +43,13 @@ export class MiAntenna {
 		...id(),
 		nullable: true,
 	})
-	public userListId: MiUserList['id'] | null;
+	public userListId: UserList['id'] | null;
 
-	@ManyToOne(type => MiUserList, {
+	@ManyToOne(type => UserList, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public userList: MiUserList | null;
+	public userList: UserList | null;
 
 	@Column('varchar', {
 		length: 1024, array: true,

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div :class="$style.root">
 	<input v-model="query" :class="$style.input" type="search" :placeholder="q">
@@ -12,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@/i18n.js';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	q: string;

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div ref="el" class="fdidabkc" :style="{ background: bg }" @click="onClick">
 	<template v-if="metadata">
@@ -35,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, shallowRef, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
-import { popupMenu } from '@/os.js';
-import { scrollToTop } from '@/scripts/scroll.js';
+import { popupMenu } from '@/os';
+import { scrollToTop } from '@/scripts/scroll';
 import MkButton from '@/components/MkButton.vue';
 import { globalEvents } from '@/events';
-import { injectPageMetadata } from '@/scripts/page-metadata.js';
+import { injectPageMetadata } from '@/scripts/page-metadata';
 
 type Tab = {
 	key?: string | null;

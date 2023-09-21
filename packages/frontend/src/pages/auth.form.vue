@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <section>
 	<div v-if="app.permission.length > 0">
@@ -21,13 +16,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Misskey from 'misskey-js';
+import { AuthSession } from 'misskey-js/built/entities';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	session: Misskey.entities.AuthSession;
+	session: AuthSession;
 }>();
 
 const emit = defineEmits<{
@@ -58,6 +53,7 @@ function accept() {
 		emit('accepted');
 	});
 }
+
 </script>
 
 <style lang="scss" module>

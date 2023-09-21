@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
+import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -40,8 +35,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -63,8 +59,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.where(`'{"${me.id}"}' <@ note.mentions`)
 					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
 				}))
-				// Avoid scanning primary key index
-				.orderBy('CONCAT(note.id)', 'DESC')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
@@ -85,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				query.setParameters(followingQuery.getParameters());
 			}
 
-			const mentions = await query.limit(ps.limit).getMany();
+			const mentions = await query.take(ps.limit).getMany();
 
 			this.noteReadService.read(me.id, mentions);
 

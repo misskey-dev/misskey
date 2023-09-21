@@ -1,17 +1,12 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
+	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
 		<div class="_gaps_m">
-			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
-				<div style="overflow: clip;">
-					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
-					<div :class="$style.bannerName">
+			<div class="fwhjspax" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
+				<div class="content">
+					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
+					<div class="name">
 						<b>{{ instance.name ?? host }}</b>
 					</div>
 				</div>
@@ -46,14 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #value>{{ instance.maintainerEmail }}</template>
 						</MkKeyValue>
 					</FormSplit>
-					<MkFolder v-if="instance.serverRules.length > 0">
-						<template #label>{{ i18n.ts.serverRules }}</template>
-
-						<ol class="_gaps_s" :class="$style.rules">
-							<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
-						</ol>
-					</MkFolder>
-					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.tos }}</FormLink>
 				</div>
 			</FormSection>
 
@@ -85,13 +73,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
+	<MkSpacer v-else-if="tab === 'emojis'" :content-max="1000" :margin-min="20">
 		<XEmojis/>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'federation'" :contentMax="1000" :marginMin="20">
+	<MkSpacer v-else-if="tab === 'federation'" :content-max="1000" :margin-min="20">
 		<XFederation/>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
+	<MkSpacer v-else-if="tab === 'charts'" :content-max="1000" :margin-min="20">
 		<MkInstanceStats/>
 	</MkSpacer>
 </MkStickyContainer>
@@ -101,20 +89,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, host } from '@/config.js';
+import { version, host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
-import * as os from '@/os.js';
-import number from '@/filters/number.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { instance } from '@/instance.js';
+import * as os from '@/os';
+import number from '@/filters/number';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { claimAchievement } from '@/scripts/achievements';
+import { instance } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -161,63 +148,31 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss" module>
-.banner {
+<style lang="scss" scoped>
+.fwhjspax {
 	text-align: center;
 	border-radius: 10px;
 	overflow: clip;
 	background-size: cover;
 	background-position: center center;
-}
 
-.bannerIcon {
-	display: block;
-	margin: 16px auto 0 auto;
-	height: 64px;
-	border-radius: 8px;
-}
+	> .content {
+		overflow: hidden;
 
-.bannerName {
-	display: block;
-	padding: 16px;
-	color: #fff;
-	text-shadow: 0 0 8px #000;
-	background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-}
+		> .icon {
+			display: block;
+			margin: 16px auto 0 auto;
+			height: 64px;
+			border-radius: 8px;
+		}
 
-.rules {
-	counter-reset: item;
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-
-.rule {
-	display: flex;
-	gap: 8px;
-	word-break: break-word;
-
-	&::before {
-		flex-shrink: 0;
-		display: flex;
-		position: sticky;
-		top: calc(var(--stickyTop, 0px) + 8px);
-		counter-increment: item;
-		content: counter(item);
-		width: 32px;
-		height: 32px;
-		line-height: 32px;
-		background-color: var(--accentedBg);
-		color: var(--accent);
-		font-size: 13px;
-		font-weight: bold;
-		align-items: center;
-		justify-content: center;
-		border-radius: 999px;
+		> .name {
+			display: block;
+			padding: 16px;
+			color: #fff;
+			text-shadow: 0 0 8px #000;
+			background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+		}
 	}
-}
-
-.ruleText {
-	padding-top: 6px;
 }
 </style>

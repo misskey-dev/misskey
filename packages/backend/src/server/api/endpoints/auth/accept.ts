@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/_.js';
+import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
@@ -36,8 +31,9 @@ export const paramDef = {
 	required: ['token'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
@@ -59,17 +55,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchSession);
 			}
 
-			const accessToken = secureRndstr(32);
+			// Generate access token
+			const accessToken = secureRndstr(32, true);
 
 			// Fetch exist access token
-			const exist = await this.accessTokensRepository.exist({
-				where: {
-					appId: session.appId,
-					userId: me.id,
-				},
+			const exist = await this.accessTokensRepository.findOneBy({
+				appId: session.appId,
+				userId: me.id,
 			});
 
-			if (!exist) {
+			if (exist == null) {
+				// Lookup app
 				const app = await this.appsRepository.findOneByOrFail({ id: session.appId });
 
 				// Generate Hash
@@ -79,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				const now = new Date();
 
+				// Insert access token doc
 				await this.accessTokensRepository.insert({
 					id: this.idService.genId(),
 					createdAt: now,

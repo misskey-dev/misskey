@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="widgetProps.showHeader" class="mkw-rss-ticker">
+<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-ticker">
 	<template #icon><i class="ti ti-rss"></i></template>
 	<template #header>RSS</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure"><i class="ti ti-settings"></i></button></template>
@@ -17,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Transition :name="$style.change" mode="default" appear>
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
 					<span v-for="item in items" :key="item.link" :class="$style.item">
-						<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
+						<a :class="$style.link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
 				</MarqueeText>
 			</Transition>
@@ -28,13 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import MarqueeText from '@/components/MkMarquee.vue';
-import { GetFormResultType } from '@/scripts/form.js';
+import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
-import { shuffle } from '@/scripts/shuffle.js';
-import { url as base } from '@/config.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { shuffle } from '@/scripts/shuffle';
+import { url as base } from '@/config';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'rssTicker';
 
@@ -78,8 +73,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

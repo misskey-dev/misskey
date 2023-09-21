@@ -1,13 +1,8 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }">
 	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span>
-		<span>@{{ username }}</span>
+		<span :class="$style.username">@{{ username }}</span>
 		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
@@ -17,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { toUnicode } from 'punycode';
 import { } from 'vue';
 import tinycolor from 'tinycolor2';
-import { host as localHost } from '@/config.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { host as localHost } from '@/config';
+import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	username: string;

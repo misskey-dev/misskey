@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -28,8 +23,9 @@ export const paramDef = {
 	required: ['span'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private federationChart: FederationChart,
 	) {

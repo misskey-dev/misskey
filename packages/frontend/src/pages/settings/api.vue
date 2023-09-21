@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
@@ -15,9 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const isDesktop = ref(window.innerWidth >= 1100);
 

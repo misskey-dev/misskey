@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
-import { MiNote } from './Note.js';
-import { MiClip } from './Clip.js';
+import { Note } from './Note.js';
+import { Clip } from './Clip.js';
 
-@Entity('clip_note')
+@Entity()
 @Index(['noteId', 'clipId'], { unique: true })
-export class MiClipNote {
+export class ClipNote {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,24 +14,24 @@ export class MiClipNote {
 		...id(),
 		comment: 'The note ID.',
 	})
-	public noteId: MiNote['id'];
+	public noteId: Note['id'];
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: MiNote | null;
+	public note: Note | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The clip ID.',
 	})
-	public clipId: MiClip['id'];
+	public clipId: Clip['id'];
 
-	@ManyToOne(type => MiClip, {
+	@ManyToOne(type => Clip, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public clip: MiClip | null;
+	public clip: Clip | null;
 }

@@ -1,39 +1,38 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { setTimeout } from 'node:timers/promises';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNotification } from '@/models/entities/Notification.js';
+import type { MutingsRepository, UserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { User } from '@/models/entities/User.js';
+import type { Notification } from '@/models/entities/Notification.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import type { Config } from '@/config.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
+
 		private notificationEntityService: NotificationEntityService,
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
@@ -43,11 +42,11 @@ export class NotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	public async readAllNotification(
-		userId: MiUser['id'],
+		userId: User['id'],
 		force = false,
 	) {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
-
+		
 		const latestNotificationIdsRes = await this.redisClient.xrevrange(
 			`notificationTimeline:${userId}`,
 			'+',
@@ -65,17 +64,17 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private postReadAllNotifications(userId: MiUser['id']) {
+	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
 		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
 	@bindThis
 	public async createNotification(
-		notifieeId: MiUser['id'],
-		type: MiNotification['type'],
-		data: Partial<MiNotification>,
-	): Promise<MiNotification | null> {
+		notifieeId: User['id'],
+		type: Notification['type'],
+		data: Partial<Notification>,
+	): Promise<Notification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 		const isMuted = profile.mutingNotificationTypes.includes(type);
 		if (isMuted) return null;
@@ -96,11 +95,11 @@ export class NotificationService implements OnApplicationShutdown {
 			createdAt: new Date(),
 			type: type,
 			...data,
-		} as MiNotification;
+		} as Notification;
 
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
+			'MAXLEN', '~', '300',
 			'*',
 			'data', JSON.stringify(notification));
 
@@ -130,7 +129,7 @@ export class NotificationService implements OnApplicationShutdown {
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
 	@bindThis
-	private async emailNotificationFollow(userId: MiUser['id'], follower: MiUser) {
+	private async emailNotificationFollow(userId: User['id'], follower: User) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('follow')) return;
@@ -142,7 +141,7 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async emailNotificationReceiveFollowRequest(userId: MiUser['id'], follower: MiUser) {
+	private async emailNotificationReceiveFollowRequest(userId: User['id'], follower: User) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('receiveFollowRequest')) return;
@@ -153,13 +152,7 @@ export class NotificationService implements OnApplicationShutdown {
 		*/
 	}
 
-	@bindThis
-	public dispose(): void {
+	onApplicationShutdown(signal?: string | undefined): void {
 		this.#shutdownController.abort();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Endpoints } from 'misskey-js/built/api.types';
 import { ref } from 'vue';
-import { apiUrl } from '@/config.js';
-import { $i } from '@/account.js';
+import { apiUrl } from '@/config';
+import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request

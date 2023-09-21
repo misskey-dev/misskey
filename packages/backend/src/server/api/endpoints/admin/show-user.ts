@@ -1,10 +1,5 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/_.js';
+import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -30,8 +25,9 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -65,7 +61,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
-			const roleAssigns = await this.roleService.getUserAssigns(user.id);
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
@@ -73,7 +68,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailVerified: profile.emailVerified,
 				autoAcceptFollowed: profile.autoAcceptFollowed,
 				noCrawle: profile.noCrawle,
-				preventAiLearning: profile.preventAiLearning,
 				alwaysMarkNsfw: profile.alwaysMarkNsfw,
 				autoSensitive: profile.autoSensitive,
 				carefulBot: profile.carefulBot,
@@ -86,15 +80,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
-				moderationNote: profile.moderationNote ?? '',
+				moderationNote: profile.moderationNote,
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
-				roleAssigns: roleAssigns.map(a => ({
-					createdAt: a.createdAt.toISOString(),
-					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
-					roleId: a.roleId,
-				})),
 			};
 		});
 	}

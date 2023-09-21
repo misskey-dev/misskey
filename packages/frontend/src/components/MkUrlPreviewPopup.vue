@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div :class="$style.root" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
-	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" @afterLeave="emit('closed')">
-		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url" :showActions="false"/>
+<div class="fgmtyycl" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
+	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" @after-leave="emit('closed')">
+		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url"/>
 	</Transition>
 </div>
 </template>
@@ -14,8 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	showing: boolean;
@@ -41,8 +36,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.fgmtyycl {
 	position: absolute;
 	width: 500px;
 	max-width: calc(90vw - 12px);

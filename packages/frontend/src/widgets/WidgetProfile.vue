@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_panel">
 	<div :class="$style.container" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
@@ -22,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
-import { $i } from '@/account.js';
-import { userPage } from '@/filters/user.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import { $i } from '@/account';
+import { userPage } from '@/filters/user';
 
 const name = 'profile';
 
@@ -34,8 +29,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

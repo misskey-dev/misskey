@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div>
+<div class="zhyxdalp">
 	<XValue :value="value" :collapsed="false"/>
 </div>
 </template>
@@ -17,3 +12,9 @@ const props = defineProps<{
 	value: Record<string, unknown>;
 }>();
 </script>
+
+<style lang="scss" scoped>
+.zhyxdalp {
+
+}
+</style>

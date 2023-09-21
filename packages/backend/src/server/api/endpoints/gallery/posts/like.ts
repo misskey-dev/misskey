@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';
+import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -14,8 +9,6 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: true,
-
-	prohibitMoved: true,
 
 	kind: 'write:gallery-likes',
 
@@ -48,8 +41,9 @@ export const paramDef = {
 	required: ['postId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: GalleryPostsRepository,
@@ -70,14 +64,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// if already liked
-			const exist = await this.galleryLikesRepository.exist({
-				where: {
-					postId: post.id,
-					userId: me.id,
-				},
+			const exist = await this.galleryLikesRepository.findOneBy({
+				postId: post.id,
+				userId: me.id,
 			});
 
-			if (exist) {
+			if (exist != null) {
 				throw new ApiError(meta.errors.alreadyLiked);
 			}
 

@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiFlash } from './Flash.js';
+import { User } from './User.js';
+import { Flash } from './Flash.js';
 
-@Entity('flash_like')
+@Entity()
 @Index(['userId', 'flashId'], { unique: true })
-export class MiFlashLike {
+export class FlashLike {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,20 +14,20 @@ export class MiFlashLike {
 
 	@Index()
 	@Column(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column(id())
-	public flashId: MiFlash['id'];
+	public flashId: Flash['id'];
 
-	@ManyToOne(type => MiFlash, {
+	@ManyToOne(type => Flash, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public flash: MiFlash | null;
+	public flash: Flash | null;
 }

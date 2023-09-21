@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <component
 	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
@@ -11,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="!self">
 		<span :class="$style.schema">{{ schema }}//</span>
 		<span :class="$style.hostname">{{ hostname }}</span>
-		<span v-if="port != ''">:{{ port }}</span>
+		<span v-if="port != ''" :class="$style.port">:{{ port }}</span>
 	</template>
 	<template v-if="pathname === '/' && self">
 		<span :class="$style.self">{{ hostname }}</span>
@@ -26,10 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
-import { url as local } from '@/config.js';
-import * as os from '@/os.js';
-import { useTooltip } from '@/scripts/use-tooltip.js';
-import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
+import { url as local } from '@/config';
+import * as os from '@/os';
+import { useTooltip } from '@/scripts/use-tooltip';
+import { safeURIDecode } from '@/scripts/safe-uri-decode';
 
 const props = defineProps<{
 	url: string;

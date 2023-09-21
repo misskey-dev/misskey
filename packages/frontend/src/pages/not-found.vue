@@ -1,30 +1,15 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div>
+<div class="ipledcug">
 	<div class="_fullinfo">
-		<img :src="notFoundImageUrl" class="_ghost"/>
+		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import { notFoundImageUrl } from '@/instance.js';
-
-const props = defineProps<{
-	showLoginPopup?: boolean;
-}>();
-
-if (props.showLoginPopup) {
-	pleaseLogin('/');
-}
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const headerActions = $computed(() => []);
 

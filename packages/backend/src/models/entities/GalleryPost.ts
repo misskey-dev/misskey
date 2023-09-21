@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import type { MiDriveFile } from './DriveFile.js';
+import { User } from './User.js';
+import type { DriveFile } from './DriveFile.js';
 
-@Entity('gallery_post')
-export class MiGalleryPost {
+@Entity()
+export class GalleryPost {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -40,20 +35,20 @@ export class MiGalleryPost {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}',
 	})
-	public fileIds: MiDriveFile['id'][];
+	public fileIds: DriveFile['id'][];
 
 	@Index()
 	@Column('boolean', {
@@ -74,7 +69,7 @@ export class MiGalleryPost {
 	})
 	public tags: string[];
 
-	constructor(data: Partial<MiGalleryPost>) {
+	constructor(data: Partial<GalleryPost>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

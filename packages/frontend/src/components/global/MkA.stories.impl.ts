@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import MkA from './MkA.vue';
-import { tick } from '@/scripts/test-utils.js';
+import { tick } from '@/scripts/test-utils';
 export const Default = {
 	render(args) {
 		return {
@@ -34,11 +29,11 @@ export const Default = {
 		const canvas = within(canvasElement);
 		const a = canvas.getByRole<HTMLAnchorElement>('link');
 		await expect(a.href).toMatch(/^https?:\/\/.*#test$/);
-		await userEvent.pointer({ keys: '[MouseRight]', target: a });
+		await userEvent.click(a, { button: 2 });
 		await tick();
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
-		await userEvent.click(a);
+		await userEvent.click(a, { button: 0 });
 		a.blur();
 		await tick();
 		await expect(menu).not.toBeInTheDocument();

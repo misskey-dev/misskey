@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-trends class="mkw-trends">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-trends class="mkw-trends">
 	<template #icon><i class="ti ti-hash"></i></template>
 	<template #header>{{ i18n.ts._widgets.trends }}</template>
 
@@ -25,14 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const name = 'hashtags';
 
@@ -45,8 +40,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -58,7 +56,7 @@ const stats = ref([]);
 const fetching = ref(true);
 
 const fetch = () => {
-	os.apiGet('hashtags/trend').then(res => {
+	os.api('hashtags/trend').then(res => {
 		stats.value = res;
 		fetching.value = false;
 	});

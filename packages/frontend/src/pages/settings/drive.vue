@@ -1,16 +1,11 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<FormSection v-if="!fetching" first>
 		<template #label>{{ i18n.ts.usageAmount }}</template>
 
 		<div class="_gaps_m">
-			<div>
-				<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
+			<div class="uawsfosz">
+				<div class="meter"><div :style="meterStyle"></div></div>
 			</div>
 			<FormSplit>
 				<MkKeyValue>
@@ -27,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<FormSection>
 		<template #label>{{ i18n.ts.statistics }}</template>
-		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
+		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspect-ratio="6"/>
 	</FormSection>
 
 	<FormSection>
@@ -44,10 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
+			<MkSwitch v-model="alwaysMarkNsfw" @update:model-value="saveProfile()">
 				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
+			<MkSwitch v-model="autoSensitive" @update:model-value="saveProfile()">
 				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
 			</MkSwitch>
@@ -64,13 +59,13 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSplit from '@/components/form/split.vue';
-import * as os from '@/os.js';
-import bytes from '@/filters/bytes.js';
-import { defaultStore } from '@/store.js';
+import * as os from '@/os';
+import bytes from '@/filters/bytes';
+import { defaultStore } from '@/store';
 import MkChart from '@/components/MkChart.vue';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i } from '@/account.js';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
 const fetching = ref(true);
 const usage = ref<any>(null);
@@ -124,13 +119,6 @@ function saveProfile() {
 	os.api('i/update', {
 		alwaysMarkNsfw: !!alwaysMarkNsfw,
 		autoSensitive: !!autoSensitive,
-	}).catch(err => {
-		os.alert({
-			type: 'error',
-			title: i18n.ts.error,
-			text: err.message,
-		});
-		alwaysMarkNsfw = true;
 	});
 }
 
@@ -144,16 +132,22 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" module>
-.meter {
-	height: 10px;
-	background: rgba(0, 0, 0, 0.1);
-	border-radius: 999px;
-	overflow: clip;
-}
+<style lang="scss" scoped>
 
-.meterValue {
-	height: 100%;
-	border-radius: 999px;
+@use "sass:math";
+
+.uawsfosz {
+
+	> .meter {
+		$size: 12px;
+		background: rgba(0, 0, 0, 0.1);
+		border-radius: math.div($size, 2);
+		overflow: hidden;
+
+		> div {
+			height: $size;
+			border-radius: math.div($size, 2);
+		}
+	}
 }
 </style>

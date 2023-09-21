@@ -1,13 +1,8 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.reaction">
-			<MkReactionIcon :reaction="reaction" :class="$style.reactionIcon" :noStyle="true"/>
+			<MkReactionIcon :reaction="reaction" :class="$style.reactionIcon" :no-style="true"/>
 			<div :class="$style.reactionName">{{ getReactionName(reaction) }}</div>
 		</div>
 		<div :class="$style.users">
@@ -25,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist.js';
+import { getEmojiName } from '@/scripts/emojilist';
 
 defineProps<{
 	showing: boolean;

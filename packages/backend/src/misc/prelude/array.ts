@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { EndoRelation, Predicate } from './relation.js';
 
 /**
@@ -72,9 +67,8 @@ export function maximum(xs: number[]): number {
 export function groupBy<T>(f: EndoRelation<T>, xs: T[]): T[][] {
 	const groups = [] as T[][];
 	for (const x of xs) {
-		const lastGroup = groups.at(-1);
-		if (lastGroup !== undefined && f(lastGroup[0], x)) {
-			lastGroup.push(x);
+		if (groups.length !== 0 && f(groups[groups.length - 1][0], x)) {
+			groups[groups.length - 1].push(x);
 		} else {
 			groups.push([x]);
 		}

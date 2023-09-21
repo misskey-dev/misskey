@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div data-cy-mkw-slideshow class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
@@ -18,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { i18n } from '@/i18n.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const name = 'slideshow';
 
@@ -40,8 +35,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,

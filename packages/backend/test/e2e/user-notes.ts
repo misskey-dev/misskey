@@ -1,19 +1,13 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { signup, api, post, uploadUrl, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
-import type * as misskey from 'misskey-js';
 
 describe('users/notes', () => {
 	let app: INestApplicationContext;
 
-	let alice: misskey.entities.MeSignup;
+	let alice: any;
 	let jpgNote: any;
 	let pngNote: any;
 	let jpgPngNote: any;

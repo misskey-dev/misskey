@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div data-cy-mkw-button class="mkw-button">
 	<MkButton :primary="widgetProps.colored" full @click="run">
@@ -13,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { Interpreter, Parser } from '@syuilo/aiscript';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { $i } from '@/account.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
+import { createAiScriptEnv } from '@/scripts/aiscript/api';
+import { $i } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 
 const name = 'button';
@@ -40,8 +35,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -103,3 +101,8 @@ defineExpose<WidgetComponentExpose>({
 	id: props.widget ? props.widget.id : null,
 });
 </script>
+
+<style lang="scss" scoped>
+.mkw-button {
+}
+</style>

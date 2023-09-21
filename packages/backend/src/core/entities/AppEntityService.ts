@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, AppsRepository } from '@/models/_.js';
+import type { AccessTokensRepository, AppsRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiApp } from '@/models/entities/App.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { App } from '@/models/entities/App.js';
+import type { User } from '@/models/entities/User.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -24,8 +19,8 @@ export class AppEntityService {
 
 	@bindThis
 	public async pack(
-		src: MiApp['id'] | MiApp,
-		me?: { id: MiUser['id'] } | null | undefined,
+		src: App['id'] | App,
+		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecret?: boolean,

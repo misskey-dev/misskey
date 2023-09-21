@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/_.js';
+import type { UsersRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -37,8 +32,9 @@ export const paramDef = {
 	required: ['host'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -51,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('user.host = :host', { host: ps.host });
 
 			const users = await query
-				.limit(ps.limit)
+				.take(ps.limit)
 				.getMany();
 
 			return await this.userEntityService.packMany(users, me, { detail: true });

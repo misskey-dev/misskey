@@ -1,11 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div
-	:class="[$style.root, { [$style.draghover]: draghover }]"
+	class="rghtznwe"
+	:class="{ draghover }"
 	draggable="true"
 	:title="title"
 	@click="onClick"
@@ -19,26 +15,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@dragstart="onDragstart"
 	@dragend="onDragend"
 >
-	<p :class="$style.name">
-		<template v-if="hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
-		<template v-if="!hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
+	<p class="name">
+		<template v-if="hover"><i class="ti ti-folder ti-fw"></i></template>
+		<template v-if="!hover"><i class="ti ti-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p v-if="defaultStore.state.uploadFolder == folder.id" :class="$style.upload">
+	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
 		{{ i18n.ts.uploadFolder }}
 	</p>
-	<button v-if="selectMode" class="_button" :class="[$style.checkbox, { [$style.checked]: isSelected }]" @click.prevent.stop="checkboxClicked"></button>
+	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -99,9 +94,9 @@ function onDragover(ev: DragEvent) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy':
-			case 'copyLink':
-			case 'copyMove':
+			case 'copy': 
+			case 'copyLink': 
+			case 'copyMove': 
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -250,8 +245,7 @@ function setAsUploadFolder() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	let menu;
-	menu = [{
+	os.contextMenu([{
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',
 		action: () => {
@@ -269,28 +263,39 @@ function onContextmenu(ev: MouseEvent) {
 		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
-	}];
-	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
-			icon: 'ti ti-id',
-			text: i18n.ts.copyFolderId,
-			action: () => {
-				copyToClipboard(props.folder.id);
-			},
-		}]);
-	}
-	os.contextMenu(menu, ev);
+	}], ev);
 }
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.rghtznwe {
 	position: relative;
 	padding: 8px;
 	height: 64px;
 	background: var(--driveFolderBg);
 	border-radius: 4px;
-	cursor: pointer;
+
+	&, * {
+		cursor: pointer;
+	}
+
+	*:not(.checkbox) {
+		pointer-events: none;
+	}
+
+	> .checkbox {
+		position: absolute;
+		bottom: 8px;
+		right: 8px;
+		width: 16px;
+		height: 16px;
+		background: #fff;
+		border: solid 1px #000;
+
+		&.checked {
+			background: var(--accent);
+		}
+	}
 
 	&.draghover {
 		&:after {
@@ -305,38 +310,24 @@ function onContextmenu(ev: MouseEvent) {
 			border-radius: 4px;
 		}
 	}
-}
 
-.checkbox {
-	position: absolute;
-	bottom: 8px;
-	right: 8px;
-	width: 16px;
-	height: 16px;
-	background: #fff;
-	border: solid 1px #000;
+	> .name {
+		margin: 0;
+		font-size: 0.9em;
+		color: var(--desktopDriveFolderFg);
 
-	&.checked {
-		background: var(--accent);
+		> i {
+			margin-right: 4px;
+			margin-left: 2px;
+			text-align: left;
+		}
 	}
-}
 
-.name {
-	margin: 0;
-	font-size: 0.9em;
-	color: var(--desktopDriveFolderFg);
-}
-
-.icon {
-	margin-right: 4px;
-	margin-left: 2px;
-	text-align: left;
-}
-
-.upload {
-	margin: 4px 4px;
-	font-size: 0.8em;
-	text-align: right;
-	color: var(--desktopDriveFolderFg);
+	> .upload {
+		margin: 4px 4px;
+		font-size: 0.8em;
+		text-align: right;
+		color: var(--desktopDriveFolderFg);
+	}
 }
 </style>

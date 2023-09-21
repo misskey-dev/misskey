@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="bcekxzvu _margin _panel">
 	<div class="target">
-		<MkA v-user-preview="report.targetUserId" class="info" :to="`/admin/user/${report.targetUserId}`">
+		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
 			<MkAvatar class="avatar" :user="report.targetUser" indicator/>
 			<div class="names">
 				<MkUserName class="name" :user="report.targetUser"/>
@@ -44,9 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { dateString } from '@/filters/date.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { dateString } from '@/filters/date';
 
 const props = defineProps<{
 	report: any;

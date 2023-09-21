@@ -1,24 +1,19 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div :class="{ [$style.done]: closed || isVoted }">
-	<ul :class="$style.choices">
-		<li v-for="(choice, i) in note.poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
-			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
-			<span :class="$style.fg">
-				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
+<div class="tivcixzd" :class="{ done: closed || isVoted }">
+	<ul>
+		<li v-for="(choice, i) in note.poll.choices" :key="i" :class="{ voted: choice.voted }" @click="vote(i)">
+			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
+			<span>
+				<template v-if="choice.isVoted"><i class="ti ti-check"></i></template>
 				<Mfm :text="choice.text" :plain="true"/>
-				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.t('_poll.votesCount', { n: choice.votes }) }})</span>
+				<span v-if="showResult" class="votes">({{ i18n.t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
-	<p v-if="!readOnly" :class="$style.info">
+	<p v-if="!readOnly">
 		<span>{{ i18n.t('_poll.totalVotes', { n: total }) }}</span>
 		<span> · </span>
-		<a v-if="!closed && !isVoted" style="color: inherit;" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
+		<a v-if="!closed && !isVoted" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
 		<span v-if="isVoted">{{ i18n.ts._poll.voted }}</span>
 		<span v-else-if="closed">{{ i18n.ts._poll.closed }}</span>
 		<span v-if="remaining > 0"> · {{ timer }}</span>
@@ -28,15 +23,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { sum } from '@/scripts/array.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import * as misskey from 'misskey-js';
+import { sum } from '@/scripts/array';
+import { pleaseLogin } from '@/scripts/please-login';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { useInterval } from '@/scripts/use-interval';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: misskey.entities.Note;
 	readOnly?: boolean;
 }>();
 
@@ -91,51 +86,67 @@ const vote = async (id) => {
 };
 </script>
 
-<style lang="scss" module>
-.choices {
-	display: block;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
+<style lang="scss" scoped>
+.tivcixzd {
+	> ul {
+		display: block;
+		margin: 0;
+		padding: 0;
+		list-style: none;
 
-.choice {
-	display: block;
-	position: relative;
-	margin: 4px 0;
-	padding: 4px;
-	//border: solid 0.5px var(--divider);
-	background: var(--accentedBg);
-	border-radius: 4px;
-	overflow: clip;
-	cursor: pointer;
-}
+		> li {
+			display: block;
+			position: relative;
+			margin: 4px 0;
+			padding: 4px;
+			//border: solid 0.5px var(--divider);
+			background: var(--accentedBg);
+			border-radius: 4px;
+			overflow: clip;
+			cursor: pointer;
 
-.bg {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	background: var(--accent);
-	background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
-	transition: width 1s ease;
-}
+			> .backdrop {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				background: var(--accent);
+				background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
+				transition: width 1s ease;
+			}
 
-.fg {
-	position: relative;
-	display: inline-block;
-	padding: 3px 5px;
-	background: var(--panel);
-	border-radius: 3px;
-}
+			> span {
+				position: relative;
+				display: inline-block;
+				padding: 3px 5px;
+				background: var(--panel);
+				border-radius: 3px;
 
-.info {
-	color: var(--fg);
-}
+				> i {
+					margin-right: 4px;
+					color: var(--accent);
+				}
 
-.done {
-	.choice {
-		cursor: default;
+				> .votes {
+					margin-left: 4px;
+					opacity: 0.7;
+				}
+			}
+		}
+	}
+
+	> p {
+		color: var(--fg);
+
+		a {
+			color: inherit;
+		}
+	}
+
+	&.done {
+		> ul > li {
+			cursor: default;
+		}
 	}
 }
 </style>

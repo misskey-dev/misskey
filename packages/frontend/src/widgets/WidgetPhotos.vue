@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
+<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
 	<template #icon><i class="ti ti-camera"></i></template>
 	<template #header>{{ i18n.ts._widgets.photos }}</template>
 
@@ -23,14 +18,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
-import { useStream } from '@/stream.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import * as os from '@/os.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import { stream } from '@/stream';
+import { getStaticImageUrl } from '@/scripts/media-proxy';
+import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const name = 'photos';
 
@@ -47,8 +42,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -56,7 +54,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const connection = useStream().useChannel('main');
+const connection = stream.useChannel('main');
 const images = ref([]);
 const fetching = ref(true);
 

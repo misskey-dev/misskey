@@ -1,28 +1,19 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
+import { randomBytes } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type {
-	SigninsRepository,
-	UserProfilesRepository,
-	UsersRepository,
-} from '@/models/_.js';
+import type { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallengesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { MiLocalUser } from '@/models/entities/User.js';
+import type { LocalUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
+import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import { bindThis } from '@/decorators.js';
-import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/typescript-types';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class SigninApiService {
@@ -33,8 +24,14 @@ export class SigninApiService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
+
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.attestationChallengesRepository)
+		private attestationChallengesRepository: AttestationChallengesRepository,
 
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
@@ -42,7 +39,7 @@ export class SigninApiService {
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
-		private webAuthnService: WebAuthnService,
+		private twoFactorAuthenticationService: TwoFactorAuthenticationService,
 	) {
 	}
 
@@ -53,7 +50,11 @@ export class SigninApiService {
 				username: string;
 				password: string;
 				token?: string;
-				credential?: AuthenticationResponseJSON;
+				signature?: string;
+				authenticatorData?: string;
+				clientDataJSON?: string;
+				credentialId?: string;
+				challengeId?: string;
 			};
 		}>,
 		reply: FastifyReply,
@@ -104,7 +105,7 @@ export class SigninApiService {
 		const user = await this.usersRepository.findOneBy({
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),
-		}) as MiLocalUser;
+		}) as LocalUser;
 
 		if (user == null) {
 			return error(404, {
@@ -154,13 +155,6 @@ export class SigninApiService {
 				});
 			}
 
-			if (profile.twoFactorBackupSecret?.includes(token)) {
-				await this.userProfilesRepository.update({ userId: profile.userId }, {
-					twoFactorBackupSecret: profile.twoFactorBackupSecret.filter((secret) => secret !== token),
-				});
-				return this.signinService.signin(request, reply, user);
-			}
-
 			const delta = OTPAuth.TOTP.validate({
 				secret: OTPAuth.Secret.fromBase32(profile.twoFactorSecret!),
 				digits: 6,
@@ -175,16 +169,64 @@ export class SigninApiService {
 			} else {
 				return this.signinService.signin(request, reply, user);
 			}
-		} else if (body.credential) {
+		} else if (body.credentialId && body.clientDataJSON && body.authenticatorData && body.signature) {
 			if (!same && !profile.usePasswordLessLogin) {
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
 			}
 
-			const authorized = await this.webAuthnService.verifyAuthentication(user.id, body.credential);
+			const clientDataJSON = Buffer.from(body.clientDataJSON, 'hex');
+			const clientData = JSON.parse(clientDataJSON.toString('utf-8'));
+			const challenge = await this.attestationChallengesRepository.findOneBy({
+				userId: user.id,
+				id: body.challengeId,
+				registrationChallenge: false,
+				challenge: this.twoFactorAuthenticationService.hash(clientData.challenge).toString('hex'),
+			});
 
-			if (authorized) {
+			if (!challenge) {
+				return await fail(403, {
+					id: '2715a88a-2125-4013-932f-aa6fe72792da',
+				});
+			}
+
+			await this.attestationChallengesRepository.delete({
+				userId: user.id,
+				id: body.challengeId,
+			});
+
+			if (new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
+				return await fail(403, {
+					id: '2715a88a-2125-4013-932f-aa6fe72792da',
+				});
+			}
+
+			const securityKey = await this.userSecurityKeysRepository.findOneBy({
+				id: Buffer.from(
+					body.credentialId
+						.replace(/-/g, '+')
+						.replace(/_/g, '/'),
+					'base64',
+				).toString('hex'),
+			});
+
+			if (!securityKey) {
+				return await fail(403, {
+					id: '66269679-aeaf-4474-862b-eb761197e046',
+				});
+			}
+
+			const isValid = this.twoFactorAuthenticationService.verifySignin({
+				publicKey: Buffer.from(securityKey.publicKey, 'hex'),
+				authenticatorData: Buffer.from(body.authenticatorData, 'hex'),
+				clientDataJSON,
+				clientData,
+				signature: Buffer.from(body.signature, 'hex'),
+				challenge: challenge.challenge,
+			});
+
+			if (isValid) {
 				return this.signinService.signin(request, reply, user);
 			} else {
 				return await fail(403, {
@@ -198,11 +240,42 @@ export class SigninApiService {
 				});
 			}
 
-			const authRequest = await this.webAuthnService.initiateAuthentication(user.id);
+			const keys = await this.userSecurityKeysRepository.findBy({
+				userId: user.id,
+			});
+
+			if (keys.length === 0) {
+				return await fail(403, {
+					id: 'f27fd449-9af4-4841-9249-1f989b9fa4a4',
+				});
+			}
+
+			// 32 byte challenge
+			const challenge = randomBytes(32).toString('base64')
+				.replace(/=/g, '')
+				.replace(/\+/g, '-')
+				.replace(/\//g, '_');
+
+			const challengeId = this.idService.genId();
+
+			await this.attestationChallengesRepository.insert({
+				userId: user.id,
+				id: challengeId,
+				challenge: this.twoFactorAuthenticationService.hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
+				createdAt: new Date(),
+				registrationChallenge: false,
+			});
 
 			reply.code(200);
-			return authRequest;
+			return {
+				challenge,
+				challengeId,
+				securityKeys: keys.map(key => ({
+					id: key.id,
+				})),
+			};
 		}
 	// never get here
 	}
 }
+

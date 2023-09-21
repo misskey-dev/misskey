@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
-	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-		<MkSpacer :contentMax="700" :marginMin="16">
+	<div v-if="!narrow || currentPage?.route.name == null" class="nav">	
+		<MkSpacer :content-max="700" :margin-min="16">
 			<div class="lxpfedzu">
 				<div class="banner">
 					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
@@ -29,14 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
-import { i18n } from '@/i18n.js';
+import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { instance } from '@/instance.js';
-import * as os from '@/os.js';
-import { lookupUser } from '@/scripts/lookup-user.js';
-import { useRouter } from '@/router.js';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { instance } from '@/instance';
+import * as os from '@/os';
+import { lookupUser } from '@/scripts/lookup-user';
+import { useRouter } from '@/router';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -85,7 +80,7 @@ const menuDef = $computed(() => [{
 	}, ...(instance.disableRegistration ? [{
 		type: 'button',
 		icon: 'ti ti-user-plus',
-		text: i18n.ts.createInviteCode,
+		text: i18n.ts.invite,
 		action: invite,
 	}] : [])],
 }, {
@@ -100,11 +95,6 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.users,
 		to: '/admin/users',
 		active: currentPage?.route.name === 'users',
-	}, {
-		icon: 'ti ti-user-plus',
-		text: i18n.ts.invite,
-		to: '/admin/invites',
-		active: currentPage?.route.name === 'invites',
 	}, {
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,
@@ -153,11 +143,6 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.general,
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
-	}, {
-		icon: 'ti ti-paint',
-		text: i18n.ts.branding,
-		to: '/admin/branding',
-		active: currentPage?.route.name === 'branding',
 	}, {
 		icon: 'ti ti-shield',
 		text: i18n.ts.moderation,
@@ -250,10 +235,10 @@ provideMetadataReceiver((info) => {
 });
 
 const invite = () => {
-	os.api('admin/invite/create').then(x => {
+	os.api('invite').then(x => {
 		os.alert({
 			type: 'info',
-			text: x?.[0].code,
+			text: x.code,
 		});
 	}).catch(err => {
 		os.alert({

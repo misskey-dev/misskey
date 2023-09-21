@@ -1,24 +1,19 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
 import { noteVisibilities } from '../../types.js';
-import { MiNote } from './Note.js';
-import type { MiUser } from './User.js';
+import { Note } from './Note.js';
+import type { User } from './User.js';
 
-@Entity('poll')
-export class MiPoll {
+@Entity()
+export class Poll {
 	@PrimaryColumn(id())
-	public noteId: MiNote['id'];
+	public noteId: Note['id'];
 
-	@OneToOne(type => MiNote, {
+	@OneToOne(type => Note, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: MiNote | null;
+	public note: Note | null;
 
 	@Column('timestamp with time zone', {
 		nullable: true,
@@ -50,7 +45,7 @@ export class MiPoll {
 		...id(),
 		comment: '[Denormalized]',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
 	@Index()
 	@Column('varchar', {
@@ -60,7 +55,7 @@ export class MiPoll {
 	public userHost: string | null;
 	//#endregion
 
-	constructor(data: Partial<MiPoll>) {
+	constructor(data: Partial<Poll>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

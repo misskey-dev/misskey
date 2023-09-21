@@ -1,23 +1,18 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
-	:withOkButton="true"
-	:okButtonDisabled="false"
-	:canClose="false"
+	:with-ok-button="true"
+	:ok-button-disabled="false"
+	:can-close="false"
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="_gaps_m">
 			<div v-if="information">
 				<MkInfo warn>{{ information }}</MkInfo>
@@ -40,13 +35,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Misskey from 'misskey-js';
+import { permissions as kinds } from 'misskey-js';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;
@@ -74,7 +69,7 @@ if (props.initialPermissions) {
 		permissions[kind] = true;
 	}
 } else {
-	for (const kind of Misskey.permissions) {
+	for (const kind of kinds) {
 		permissions[kind] = false;
 	}
 }

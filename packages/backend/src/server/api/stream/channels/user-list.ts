@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
+import type { User } from '@/models/entities/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -18,14 +13,14 @@ class UserListChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private listId: string;
-	public listUsers: MiUser['id'][] = [];
-	private listUsersClock: NodeJS.Timeout;
+	public listUsers: User['id'][] = [];
+	private listUsersClock: NodeJS.Timer;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
 		private userListJoiningsRepository: UserListJoiningsRepository,
 		private noteEntityService: NoteEntityService,
-
+		
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -39,13 +34,11 @@ class UserListChannel extends Channel {
 		this.listId = params.listId as string;
 
 		// Check existence and owner
-		const listExist = await this.userListsRepository.exist({
-			where: {
-				id: this.listId,
-				userId: this.user!.id,
-			},
+		const list = await this.userListsRepository.findOneBy({
+			id: this.listId,
+			userId: this.user!.id,
 		});
-		if (!listExist) return;
+		if (!list) return;
 
 		// Subscribe stream
 		this.subscriber.on(`userListStream:${this.listId}`, this.send);

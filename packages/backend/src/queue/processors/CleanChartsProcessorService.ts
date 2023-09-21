@@ -1,9 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import NotesChart from '@/core/chart/charts/notes.js';
@@ -19,13 +16,16 @@ import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 
 @Injectable()
 export class CleanChartsProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		private federationChart: FederationChart,
 		private notesChart: NotesChart,
 		private usersChart: UsersChart,
@@ -45,7 +45,7 @@ export class CleanChartsProcessorService {
 	}
 
 	@bindThis
-	public async process(): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Clean charts...');
 
 		await Promise.all([
@@ -64,5 +64,6 @@ export class CleanChartsProcessorService {
 		]);
 
 		this.logger.succ('All charts successfully cleaned.');
+		done();
 	}
 }

@@ -1,27 +1,26 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<XColumn :column="column" :isStacked="isStacked" :menu="menu">
+<XColumn :column="column" :is-stacked="isStacked" :menu="menu" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header><i class="ti ti-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
-	<XNotifications :includeTypes="column.includingTypes"/>
+	<XNotifications :include-types="column.includingTypes"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store.js';
+import { updateColumn, Column } from './deck-store';
 import XNotifications from '@/components/MkNotifications.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 function func() {

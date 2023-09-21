@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import ms from 'ms';
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { PagesRepository, DriveFilesRepository } from '@/models/_.js';
+import type { PagesRepository, DriveFilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -15,8 +10,6 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
-
-	prohibitMoved: true,
 
 	kind: 'write:pages',
 
@@ -73,8 +66,9 @@ export const paramDef = {
 	required: ['pageId', 'title', 'name', 'content', 'variables', 'script'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
@@ -116,17 +110,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				name: ps.name === undefined ? page.name : ps.name,
 				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,
 				script: ps.script,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				font: ps.font === undefined ? page.font : ps.font,
 				eyeCatchingImageId: ps.eyeCatchingImageId === null
 					? null

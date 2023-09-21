@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
 
-@Entity('webhook')
-export class MiWebhook {
+@Entity()
+export class Webhook {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,13 +19,13 @@ export class MiWebhook {
 		...id(),
 		comment: 'The owner ID.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 128,

@@ -1,13 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
-import { Form, GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
-import { deepClone } from '@/scripts/clone.js';
+import { Form, GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
+import { deepClone } from '@/scripts/clone';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;

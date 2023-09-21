@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { DriveFilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -54,8 +49,9 @@ export const paramDef = {
 	],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -64,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let file: MiDriveFile | null = null;
+			let file: DriveFile | null = null;
 
 			if (ps.fileId) {
 				file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });

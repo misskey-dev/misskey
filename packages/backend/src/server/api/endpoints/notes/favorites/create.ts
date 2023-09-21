@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { NoteFavoritesRepository } from '@/models/_.js';
+import type { NoteFavoritesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -17,7 +12,6 @@ export const meta = {
 	tags: ['notes', 'favorites'],
 
 	requireCredential: true,
-	prohibitMoved: true,
 
 	kind: 'write:favorites',
 
@@ -49,8 +43,9 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
@@ -67,14 +62,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// if already favorited
-			const exist = await this.noteFavoritesRepository.exist({
-				where: {
-					noteId: note.id,
-					userId: me.id,
-				},
+			const exist = await this.noteFavoritesRepository.findOneBy({
+				noteId: note.id,
+				userId: me.id,
 			});
 
-			if (exist) {
+			if (exist != null) {
 				throw new ApiError(meta.errors.alreadyFavorited);
 			}
 

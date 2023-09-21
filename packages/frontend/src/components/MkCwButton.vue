@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <button class="_button" :class="$style.root" @mousedown="toggle">
 	<b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b>
@@ -12,13 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as Misskey from 'misskey-js';
-import { concat } from '@/scripts/array.js';
-import { i18n } from '@/i18n.js';
+import * as misskey from 'misskey-js';
+import { concat } from '@/scripts/array';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: boolean;
-	note: Misskey.entities.Note;
+	note: misskey.entities.Note;
 }>();
 
 const emit = defineEmits<{

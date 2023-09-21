@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('moderation_log')
-export class MiModerationLog {
+@Entity()
+export class ModerationLog {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,13 +14,13 @@ export class MiModerationLog {
 
 	@Index()
 	@Column(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 128,

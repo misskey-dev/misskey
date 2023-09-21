@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="gbhvwtnk" :class="{ wallpaper }" :style="`--globalHeaderHeight:${globalHeaderHeight}px`">
 	<XHeaderMenu v-if="showMenuOnTop" v-get-size="(w, h) => globalHeaderHeight = h"/>
@@ -12,17 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" :marginTop="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" :margin-top="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
-		<main class="main" @contextmenu.stop="onContextmenu">
+		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 			<div class="content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" :margin-top="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
@@ -49,14 +44,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ComputedRef, onMounted, provide } from 'vue';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
-import { instanceName } from '@/config.js';
-import { StickySidebar } from '@/scripts/sticky-sidebar.js';
-import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
-import { miLocalStorage } from '@/local-storage.js';
+import { instanceName } from '@/config';
+import { StickySidebar } from '@/scripts/sticky-sidebar';
+import * as os from '@/os';
+import { mainRouter } from '@/router';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
+import { miLocalStorage } from '@/local-storage';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
@@ -224,7 +219,7 @@ onMounted(() => {
 
 		&.fullView {
 			margin: 0;
-
+		
 			> .sidebar {
 				display: none;
 			}

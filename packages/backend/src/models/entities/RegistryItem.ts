@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
 // TODO: 同じdomain、同じscope、同じkeyのレコードは二つ以上存在しないように制約付けたい
-@Entity('registry_item')
-export class MiRegistryItem {
+@Entity()
+export class RegistryItem {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -28,13 +23,13 @@ export class MiRegistryItem {
 		...id(),
 		comment: 'The owner ID.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 1024,

@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-aiscript class="mkw-aiscript">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-aiscript class="mkw-aiscript">
 	<template #icon><i class="ti ti-terminal-2"></i></template>
 	<template #header>{{ i18n.ts._widgets.aiscript }}</template>
 
@@ -21,13 +16,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { $i } from '@/account.js';
-import { i18n } from '@/i18n.js';
+import { createAiScriptEnv } from '@/scripts/aiscript/api';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
 const name = 'aiscript';
 
@@ -46,8 +41,11 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

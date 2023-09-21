@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
@@ -13,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
 				<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-				<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
+				<MkSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.author }}</template>
@@ -45,11 +40,11 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os.js';
-import { ColdDeviceStorage } from '@/store.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
+import { unisonReload } from '@/scripts/unison-reload';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
@@ -99,3 +94,7 @@ definePageMetadata({
 	icon: 'ti ti-plug',
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

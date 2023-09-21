@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :preferType="preferedModalType" :anchor="anchor" :transparentBg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :prefer-type="preferedModalType" :anchor="anchor" :transparent-bg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
@@ -28,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar';
-import { defaultStore } from '@/store.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { defaultStore } from '@/store';
+import { deviceKind } from '@/scripts/device-kind';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;

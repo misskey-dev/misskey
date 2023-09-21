@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { BlockingsRepository } from '@/models/_.js';
+import type { BlockingsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { BlockingEntityService } from '@/core/entities/BlockingEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -38,8 +33,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
@@ -52,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('blocking.blockerId = :meId', { meId: me.id });
 
 			const blockings = await query
-				.limit(ps.limit)
+				.take(ps.limit)
 				.getMany();
 
 			return await this.blockingEntityService.packMany(blockings, me);

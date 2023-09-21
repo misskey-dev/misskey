@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+	<MkSpacer :content-max="700">
 		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" class="xcukqgmh">
 				<div class="main">
@@ -16,21 +11,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				-->
 					<div class="banner">
-						<MkMediaImage
-							v-if="page.eyeCatchingImageId"
-							:image="page.eyeCatchingImage"
-							:cover="true"
-							:disableImageLink="true"
-							class="thumbnail"
-						/>
+						<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
 					</div>
 					<div class="content">
 						<XPage :page="page"/>
 					</div>
 					<div class="actions">
 						<div class="like">
-							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" as-like primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" as-like @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div class="other">
 							<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
@@ -62,8 +51,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
+					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
 					</MkPagination>
 				</MkContainer>
 			</div>
@@ -78,18 +67,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { url } from '@/config.js';
-import MkMediaImage from '@/components/MkMediaImage.vue';
+import * as os from '@/os';
+import { url } from '@/config';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pageViewInterruptors, defaultStore } from '@/store.js';
-import { deepClone } from '@/scripts/clone.js';
-import { $i } from '@/account.js';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { pageViewInterruptors, defaultStore } from '@/store';
+import { deepClone } from '@/scripts/clone';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	pageName: string;
@@ -178,7 +166,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => page ? {
-	title: page.title || page.name,
+	title: computed(() => page.title || page.name),
 	avatar: page.user,
 	path: `/@${page.user.username}/pages/${page.name}`,
 	share: {
@@ -211,14 +199,11 @@ definePageMetadata(computed(() => page ? {
 		}
 
 		> .banner {
-			> .thumbnail {
+			> img {
 				// TODO: 良い感じのアスペクト比で表示
 				display: block;
 				width: 100%;
-				height: auto;
-				aspect-ratio: 3/1;
-				border-radius: var(--radius);
-				overflow: hidden;
+				height: 150px;
 				object-fit: cover;
 			}
 		}
@@ -287,15 +272,5 @@ definePageMetadata(computed(() => page ? {
 		font-size: 85%;
 		opacity: 0.75;
 	}
-}
-</style>
-
-<style module>
-.relatedPagesRoot {
-	padding: var(--margin);
-}
-
-.relatedPagesItem > article {
-	background-color: var(--panelHighlight) !important;
 }
 </style>

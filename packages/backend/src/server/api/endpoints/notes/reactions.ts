@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { NoteReactionsRepository } from '@/models/_.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
+import type { NoteReactionsRepository } from '@/models/index.js';
+import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -51,8 +46,9 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
@@ -62,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = {
 				noteId: ps.noteId,
-			} as FindOptionsWhere<MiNoteReaction>;
+			} as FindOptionsWhere<NoteReaction>;
 
 			if (ps.type) {
 				// ローカルリアクションはホスト名が . とされているが

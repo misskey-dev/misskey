@@ -1,14 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as OTPAuth from 'otpauth';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UserProfilesRepository } from '@/models/_.js';
+import type { UserProfilesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -25,9 +21,13 @@ export const paramDef = {
 	required: ['token'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
@@ -54,11 +54,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('not verified');
 			}
 
-			const backupCodes = Array.from({ length: 5 }, () => new OTPAuth.Secret().base32);
-
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: profile.twoFactorTempSecret,
-				twoFactorBackupSecret: backupCodes,
 				twoFactorEnabled: true,
 			});
 
@@ -67,10 +64,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				detail: true,
 				includeSecrets: true,
 			}));
-
-			return {
-				backupCodes: backupCodes,
-			};
 		});
 	}
 }

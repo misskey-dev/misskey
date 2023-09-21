@@ -1,13 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NotesRepository } from '@/models/_.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { NotesRepository } from '@/models/index.js';
+import type { Note } from '@/models/entities/Note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -31,8 +26,6 @@ export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false,
-	allowGet: true,
-	cacheSec: 60 * 1,
 
 	res: {
 		type: 'array',
@@ -68,8 +61,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -100,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const tags: {
 		name: string;
-		users: MiNote['userId'][];
+		users: Note['userId'][];
 	}[] = [];
 
 			for (const note of tagNotes) {

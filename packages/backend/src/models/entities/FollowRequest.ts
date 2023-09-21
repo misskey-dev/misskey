@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('follow_request')
+@Entity()
 @Index(['followerId', 'followeeId'], { unique: true })
-export class MiFollowRequest {
+export class FollowRequest {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -23,26 +18,26 @@ export class MiFollowRequest {
 		...id(),
 		comment: 'The followee user ID.',
 	})
-	public followeeId: MiUser['id'];
+	public followeeId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public followee: MiUser | null;
+	public followee: User | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The follower user ID.',
 	})
-	public followerId: MiUser['id'];
+	public followerId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public follower: MiUser | null;
+	public follower: User | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,

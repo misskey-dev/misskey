@@ -1,22 +1,17 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
-	:withOkButton="true"
-	:okButtonDisabled="false"
+	:with-ok-button="true"
+	:ok-button-disabled="false"
 	@ok="ok()"
 	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="_gaps_m">
 			<template v-if="showGlobalToggle">
 				<MkSwitch v-model="useGlobalSetting">
@@ -44,7 +39,7 @@ import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { notificationTypes } from '@/const';
-import { i18n } from '@/i18n.js';
+import { i18n } from '@/i18n';
 
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>
 

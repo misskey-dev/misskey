@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import type { MiUser } from '@/models/entities/User.js';
+import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { FollowingsRepository } from '@/models/_.js';
+import type { FollowingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
@@ -19,8 +14,9 @@ import type { KVs } from '../core.js';
 /**
  * ユーザーごとのフォローに関するチャート
  */
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class PerUserFollowingChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
+export default class PerUserFollowingChart extends Chart<typeof schema> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -61,7 +57,7 @@ export default class PerUserFollowingChart extends Chart<typeof schema> { // esl
 	}
 
 	@bindThis
-	public async update(follower: { id: MiUser['id']; host: MiUser['host']; }, followee: { id: MiUser['id']; host: MiUser['host']; }, isFollow: boolean): Promise<void> {
+	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean): Promise<void> {
 		const prefixFollower = this.userEntityService.isLocalUser(follower) ? 'local' : 'remote';
 		const prefixFollowee = this.userEntityService.isLocalUser(followee) ? 'local' : 'remote';
 

@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('abuse_user_report')
-export class MiAbuseUserReport {
+@Entity()
+export class AbuseUserReport {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -20,35 +15,35 @@ export class MiAbuseUserReport {
 
 	@Index()
 	@Column(id())
-	public targetUserId: MiUser['id'];
+	public targetUserId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public targetUser: MiUser | null;
+	public targetUser: User | null;
 
 	@Index()
 	@Column(id())
-	public reporterId: MiUser['id'];
+	public reporterId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public reporter: MiUser | null;
+	public reporter: User | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public assigneeId: MiUser['id'] | null;
+	public assigneeId: User['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public assignee: MiUser | null;
+	public assignee: User | null;
 
 	@Index()
 	@Column('boolean', {

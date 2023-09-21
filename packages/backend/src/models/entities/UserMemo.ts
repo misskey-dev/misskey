@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('user_memo')
+@Entity()
 @Index(['userId', 'targetUserId'], { unique: true })
-export class MiUserMemo {
+export class UserMemo {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -18,26 +13,26 @@ export class MiUserMemo {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The ID of target user.',
 	})
-	public targetUserId: MiUser['id'];
+	public targetUserId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public targetUser: MiUser | null;
+	public targetUser: User | null;
 
 	@Column('varchar', {
 		length: 2048,

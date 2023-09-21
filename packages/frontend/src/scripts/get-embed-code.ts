@@ -1,5 +1,5 @@
+import { url } from '@/config';
 import { v4 as uuid } from 'uuid';
-import { url } from '@/config.js';
 
 /**
  * 埋め込みコードを出力します。

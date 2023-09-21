@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
+	<MkSpacer :content-max="1000" :margin-min="16" :margin-max="32">
 		<div class="_root">
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
@@ -63,17 +58,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { url } from '@/config.js';
-import { useRouter } from '@/router.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { defaultStore } from '@/store.js';
-import { $i } from '@/account.js';
+import { url } from '@/config';
+import { useRouter } from '@/router';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const router = useRouter();
 
@@ -241,7 +236,6 @@ definePageMetadata(computed(() => post ? {
 			border-top: solid 0.5px var(--divider);
 			display: flex;
 			align-items: center;
-			flex-wrap: wrap;
 
 			> .avatar {
 				width: 52px;

@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import {
 	Chart,
 	ArcElement,
@@ -24,7 +19,7 @@ import {
 import gradient from 'chartjs-plugin-gradient';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
-import { defaultStore } from '@/store.js';
+import { defaultStore } from '@/store';
 import 'chartjs-adapter-date-fns';
 
 export function initChart() {

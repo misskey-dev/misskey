@@ -1,10 +1,5 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as mfm from 'mfm-js';
-import { unique } from '@/scripts/array.js';
+import { unique } from '@/scripts/array';
 
 // unique without hash
 // [ http://a/#1, http://a/#2, http://b/#3 ] => [ http://a/#1, http://b/#3 ]

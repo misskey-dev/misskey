@@ -1,11 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
+import type { AnnouncementsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -55,35 +52,30 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 1 },
-		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'], default: 'info' },
-		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
-		forExistingUsers: { type: 'boolean', default: false },
-		needConfirmationToRead: { type: 'boolean', default: false },
-		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		private announcementService: AnnouncementService,
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const { raw, packed } = await this.announcementService.create({
+			const announcement = await this.announcementsRepository.insert({
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				updatedAt: null,
 				title: ps.title,
 				text: ps.text,
 				imageUrl: ps.imageUrl,
-				icon: ps.icon,
-				display: ps.display,
-				forExistingUsers: ps.forExistingUsers,
-				needConfirmationToRead: ps.needConfirmationToRead,
-				userId: ps.userId,
-			});
+			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return packed;
+			return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
 		});
 	}
 }

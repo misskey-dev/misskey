@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { substring } from 'stringz';
 
 export function truncate(input: string, size: number): string;

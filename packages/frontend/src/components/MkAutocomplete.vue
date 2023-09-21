@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div ref="rootEl" :class="$style.root" class="_popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
 	<ol v-if="type === 'user'" ref="suggests" :class="$style.list">
@@ -15,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</li>
 		<li tabindex="-1" :class="$style.item" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
 	</ol>
-	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="$style.list">
+	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="[$style.list, $style.hashtags]">
 		<li v-for="hashtag in hashtags" tabindex="-1" :class="$style.item" @click="complete(type, hashtag)" @keydown="onKeydown">
 			<span class="name">{{ hashtag }}</span>
 		</li>
@@ -41,16 +36,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
-import contains from '@/scripts/contains.js';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
-import { acct } from '@/filters/user.js';
-import * as os from '@/os.js';
-import { MFM_TAGS } from '@/scripts/mfm-tags.js';
-import { defaultStore } from '@/store.js';
-import { emojilist, getEmojiName } from '@/scripts/emojilist.js';
-import { i18n } from '@/i18n.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { customEmojis } from '@/custom-emojis.js';
+import contains from '@/scripts/contains';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
+import { acct } from '@/filters/user';
+import * as os from '@/os';
+import { MFM_TAGS } from '@/scripts/mfm-tags';
+import { defaultStore } from '@/store';
+import { emojilist } from '@/scripts/emojilist';
+import { i18n } from '@/i18n';
+import { miLocalStorage } from '@/local-storage';
+import { customEmojis } from '@/custom-emojis';
 
 type EmojiDef = {
 	emoji: string;
@@ -76,14 +71,14 @@ const emojiDb = computed(() => {
 		url: char2path(x.char),
 	}));
 
-	for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
-		for (const [emoji, keywords] of Object.entries(index)) {
-			for (const k of keywords) {
+	for (const x of lib) {
+		if (x.keywords) {
+			for (const k of x.keywords) {
 				unicodeEmojiDB.push({
-					emoji: emoji,
+					emoji: x.char,
 					name: k,
-					aliasOf: getEmojiName(emoji)!,
-					url: char2path(emoji),
+					aliasOf: x.name,
+					url: char2path(x.char),
 				});
 			}
 		}
@@ -361,7 +356,9 @@ onMounted(() => {
 
 	props.textarea.addEventListener('keydown', onKeydown);
 
-	document.body.addEventListener('mousedown', onMousedown);
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.addEventListener('mousedown', onMousedown);
+	}
 
 	nextTick(() => {
 		exec();
@@ -377,7 +374,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	props.textarea.removeEventListener('keydown', onKeydown);
 
-	document.body.removeEventListener('mousedown', onMousedown);
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.removeEventListener('mousedown', onMousedown);
+	}
 });
 </script>
 

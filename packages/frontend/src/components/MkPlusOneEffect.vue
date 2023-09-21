@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
 	<span class="text" :class="{ up }">+1</span>
@@ -11,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as os from '@/os.js';
+import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
 	x: number;

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
 	<MkTab v-model="tab">
@@ -15,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="renoteMutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -24,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedRenoteMuteItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
-							<MkA :class="$style.userItemMainBody" :to="userPage(item.mutee)">
+							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.mutee.id}`">
 								<MkUserCardMini :user="item.mutee"/>
 							</MkA>
 							<button class="_button" :class="$style.userToggle" @click="toggleRenoteMuteItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -43,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -52,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedMuteItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
-							<MkA :class="$style.userItemMainBody" :to="userPage(item.mutee)">
+							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.mutee.id}`">
 								<MkUserCardMini :user="item.mutee"/>
 							</MkA>
 							<button class="_button" :class="$style.userToggle" @click="toggleMuteItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -60,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div v-if="expandedMuteItems.includes(item.id)" :class="$style.userItemSub">
 							<div>Muted at: <MkTime :time="item.createdAt" mode="detail"/></div>
-							<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
+							<div v-if="item.expiresAt">Period: {{ item.expiresAt.toLocaleString() }}</div>
 							<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 						</div>
 					</div>
@@ -73,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -82,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<div v-for="item in items" :key="item.blockee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedBlockItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
-							<MkA :class="$style.userItemMainBody" :to="userPage(item.blockee)">
+							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.blockee.id}`">
 								<MkUserCardMini :user="item.blockee"/>
 							</MkA>
 							<button class="_button" :class="$style.userToggle" @click="toggleBlockItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -90,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div v-if="expandedBlockItems.includes(item.id)" :class="$style.userItemSub">
 							<div>Blocked at: <MkTime :time="item.createdAt" mode="detail"/></div>
-							<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
+							<div v-if="item.expiresAt">Period: {{ item.expiresAt.toLocaleString() }}</div>
 							<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 						</div>
 					</div>
@@ -107,12 +102,11 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkTab from '@/components/MkTab.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormLink from '@/components/form/link.vue';
-import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { userPage } from '@/filters/user';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import * as os from '@/os.js';
-import { infoImageUrl } from '@/instance.js';
+import * as os from '@/os';
 
 let tab = $ref('renoteMute');
 

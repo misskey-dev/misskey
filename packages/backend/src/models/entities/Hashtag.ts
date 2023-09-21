@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id.js';
-import type { MiUser } from './User.js';
+import type { User } from './User.js';
 
-@Entity('hashtag')
-export class MiHashtag {
+@Entity()
+export class Hashtag {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -22,7 +17,7 @@ export class MiHashtag {
 		...id(),
 		array: true,
 	})
-	public mentionedUserIds: MiUser['id'][];
+	public mentionedUserIds: User['id'][];
 
 	@Index()
 	@Column('integer', {
@@ -34,7 +29,7 @@ export class MiHashtag {
 		...id(),
 		array: true,
 	})
-	public mentionedLocalUserIds: MiUser['id'][];
+	public mentionedLocalUserIds: User['id'][];
 
 	@Index()
 	@Column('integer', {
@@ -46,7 +41,7 @@ export class MiHashtag {
 		...id(),
 		array: true,
 	})
-	public mentionedRemoteUserIds: MiUser['id'][];
+	public mentionedRemoteUserIds: User['id'][];
 
 	@Index()
 	@Column('integer', {
@@ -58,7 +53,7 @@ export class MiHashtag {
 		...id(),
 		array: true,
 	})
-	public attachedUserIds: MiUser['id'][];
+	public attachedUserIds: User['id'][];
 
 	@Index()
 	@Column('integer', {
@@ -70,7 +65,7 @@ export class MiHashtag {
 		...id(),
 		array: true,
 	})
-	public attachedLocalUserIds: MiUser['id'][];
+	public attachedLocalUserIds: User['id'][];
 
 	@Index()
 	@Column('integer', {
@@ -82,7 +77,7 @@ export class MiHashtag {
 		...id(),
 		array: true,
 	})
-	public attachedRemoteUserIds: MiUser['id'][];
+	public attachedRemoteUserIds: User['id'][];
 
 	@Index()
 	@Column('integer', {

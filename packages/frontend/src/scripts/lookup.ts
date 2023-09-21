@@ -1,29 +1,23 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
-import { Router } from '@/nirax.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
 
-	const { canceled, result: temp } = await os.inputText({
+	const { canceled, result: query } = await os.inputText({
 		title: i18n.ts.lookup,
 	});
-	const query = temp ? temp.trim() : '';
 	if (canceled) return;
-
+	
 	if (query.startsWith('@') && !query.includes(' ')) {
 		_router.push(`/${query}`);
 		return;
 	}
 
 	if (query.startsWith('#')) {
-		_router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
+		_router.push(`/tags/${encodeURIComponent(query.substr(1))}`);
 		return;
 	}
 
