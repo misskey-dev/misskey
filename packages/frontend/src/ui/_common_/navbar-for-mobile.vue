@@ -12,30 +12,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</div>
 	<div :class="$style.middle">
-		<MkA :class="$style.item" :activeClass="$style.active" to="/" exact>
+		<MkA :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :activeClass="$style.active" to="/" exact>
 			<i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.timeline }}</span>
 		</MkA>
 		<template v-for="item in menu">
 			<div v-if="item === '-'" :class="$style.divider"></div>
-			<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button" :class="[$style.item, { [$style.active]: navbarItemDef[item].active }]" :activeClass="$style.active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
+			<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button"
+                 :class="[$style.item, { [$style.active]: gaming === '' && navbarItemDef[item].active, [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+                 :activeClass="$style.active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 				<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
 				<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
 			</component>
 		</template>
 		<div :class="$style.divider"></div>
-		<MkA v-if="$i.isAdmin || $i.isModerator" :class="$style.item" :activeClass="$style.active" to="/admin">
+		<MkA v-if="$i.isAdmin || $i.isModerator" :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :activeClass="$style.active" to="/admin">
 			<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 		</MkA>
-		<button :class="$style.item" class="_button" @click="more">
+		<button :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" class="_button" @click="more">
 			<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.more }}</span>
 			<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
 		</button>
-		<MkA :class="$style.item" :activeClass="$style.active" to="/settings">
+		<MkA :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :activeClass="$style.active" to="/settings">
 			<i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.settings }}</span>
 		</MkA>
 	</div>
 	<div :class="$style.bottom">
-		<button class="_button" :class="$style.post" data-cy-open-post-form @click="os.post">
+		<button class="_button" :class="[$style.post ,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}]" data-cy-open-post-form @click="os.post">
 			<i :class="$style.postIcon" class="ti ti-pencil ti-fw"></i><span style="position: relative;">{{ i18n.ts.note }}</span>
 		</button>
 		<button class="_button" :class="$style.account" @click="openAccountMenu">
@@ -56,7 +58,11 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
+
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+
+let gaming = ref()
 if (darkMode.value){
   bannerUrl.value = bannerDark;
   iconUrl.value = iconDark;
@@ -71,6 +77,35 @@ watch(darkMode, () => {
   }else{
     bannerUrl.value = bannerLight;
     iconUrl.value = iconLight;
+  }
+})
+// gaming.valueに新しい値を代入する
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  console.log(gaming)
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
   }
 })
 const menu = toRef(defaultStore.state, 'menu');
@@ -173,6 +208,66 @@ function more() {
 			background: var(--accentLighten);
 		}
 	}
+
+  &.gamingLight:before {
+    content: "";
+    display: block;
+    width: calc(100% - 38px);
+    height: 100%;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 999px;
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
+
+  &.gamingLight:hover, &.gamingLight.active {
+    &.gamingLight:before {
+      background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+  }
+
+  &.gamingDark:before {
+    content: "";
+    display: block;
+    width: calc(100% - 38px);
+    height: 100%;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 999px;
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+    background-size: 1800% 1800%;
+    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+  }
+
+  &.gamingDark:hover, &.gamingDark.active {
+    &.gamingDark:before {
+      background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+  }
+
+
 }
 
 .postIcon {
@@ -255,6 +350,52 @@ function more() {
 			background: var(--accentedBg);
 		}
 	}
+  &.gamingDark:hover, &.gamingDark.active {
+    text-decoration: none;
+    color: white;
+
+    &.gamingDark:before {
+      content: "";
+      display: block;
+      height: 100%;
+      aspect-ratio: 1;
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+  }
+  &.gamingLight:hover, &.gamingLight.active {
+    text-decoration: none;
+    color: black;
+
+    &.gamingLight:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      width: 52px;
+      aspect-ratio: 1/1;
+      border-radius: 100%;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+  }
 }
 
 .itemIcon {
@@ -275,5 +416,71 @@ function more() {
 .itemText {
 	position: relative;
 	font-size: 0.9em;
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

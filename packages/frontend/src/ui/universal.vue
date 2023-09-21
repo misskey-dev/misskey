@@ -41,8 +41,10 @@ SPDX-License-Identifier: AGPL-3.0-only
       <button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon"
                                                                                           class="ti ti-apps"></i>
       </button>
-      <button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon"
-                                                                               class="ti ti-pencil"></i></button>
+      <button
+          :class="[{[$style.postButton_gamingDark]: gaming === 'dark',[$style.postButton_gamingLight]: gaming === 'light',[$style.postButton]: gaming === ''}]"
+          class="_button" @click="os.post()"><i :class="$style.navButtonIcon"
+                                                class="ti ti-pencil"></i></button>
     </div>
 
     <Transition
@@ -121,6 +123,39 @@ import {miLocalStorage} from '@/local-storage';
 import {CURRENT_STICKY_BOTTOM} from '@/const';
 import {useScrollPositionManager} from '@/nirax';
 
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+
+let gaming = ref()
+// gaming.valueに新しい値を代入する
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  console.log(gaming)
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -463,6 +498,57 @@ $widgets-hide-threshold: 1090px;
   }
 }
 
+.postButton_gamingDark {
+  composes: navButton;
+  color: var(--fgOnAccent);
+  background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+  background-size: 1800% 1800%;
+  -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+  -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+  animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+
+  &.gamingDark:hover {
+    background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
+
+  &.gamingDark:active {
+    background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
+}
+
+.postButton_gamingLight {
+  composes: navButton;
+  color: var(--fgOnAccent);
+  background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+  background-size: 1800% 1800% !important;
+  -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+
+  &.gamingLight:hover {
+    background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
+  &.gamingLight:active {
+    background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
+}
+
 .postButton {
   composes: navButton;
   background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
@@ -475,6 +561,8 @@ $widgets-hide-threshold: 1090px;
   &:active {
     background: linear-gradient(90deg, var(--X8), var(--X8));
   }
+
+
 }
 
 .navButtonIcon {
@@ -517,5 +605,71 @@ $widgets-hide-threshold: 1090px;
 
 .spacer {
   height: calc(var(--minBottomSpacing));
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

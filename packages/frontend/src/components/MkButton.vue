@@ -172,7 +172,7 @@ function onMousedown(evt: MouseEvent): void {
     ripple.style.transform = 'scale(' + (scale / 2) + ')';
   }, 1);
   window.setTimeout(() => {
-    ripple.style.transition = 'all 1s cubic-bezier(0, 0.44, 0.39, 1.1)';
+    ripple.style.transition = 'all 1s cubic-bezier(0, 0.45, 0.30, 1)';
     ripple.style.opacity = '0';
   }, 1000);
   window.setTimeout(() => {
@@ -198,7 +198,7 @@ function onMousedown(evt: MouseEvent): void {
   border-radius: 5px;
   overflow: clip;
   box-sizing: border-box;
-  transition: background 0.1s cubic-bezier(0, 0.44, 0.39, 1.1);
+  transition: background 0.1s cubic-bezier(0, 0.45, 0.30, 1);
 
   &:not(:disabled):hover {
     background: var(--buttonHoverBg);
@@ -293,26 +293,26 @@ function onMousedown(evt: MouseEvent): void {
     background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
     background-size: 1800% 1800%;
 
-    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-    animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+    animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
 
     &:not(:disabled):hover {
 			background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
 			background-size: 1800% 1800%;
 
-			-webkit-animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-			-moz-animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-			animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
+			-webkit-animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+			-moz-animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+			animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
     }
 
     &:not(:disabled):active {
 			background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
 			background-size: 1800% 1800% !important;
 
-			-webkit-animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-			-moz-animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite ;
-			animation: AnimationLight 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite ;
+			-webkit-animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+			-moz-animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+			animation: AnimationLight 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
     }
   }
 
@@ -320,26 +320,26 @@ function onMousedown(evt: MouseEvent): void {
     background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800%;
 
-    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-    animation: AnimationDark 44s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
+    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+    animation: AnimationDark 44s cubic-bezier(0, 0.45, 0.30, 1) infinite;
 
     &:not(:disabled):hover {
 			background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
 			background-size: 1800% 1800% ;
 
-			-webkit-animation: AnimationDark 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite ;
-			-moz-animation: AnimationDark 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-			animation: AnimationDark 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite ;
+			-webkit-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+			-moz-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+			animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
     }
 
     &:not(:disabled):active {
 			background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
 			background-size: 1800% 1800% !important;
 
-			-webkit-animation: AnimationDark 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite ;
-			-moz-animation: AnimationDark 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
-			animation: AnimationDark 45s cubic-bezier(0, 0.44, 0.39, 1.1) infinite;
+			-webkit-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+			-moz-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
+			animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
     }
   }
 
