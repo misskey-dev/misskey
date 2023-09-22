@@ -1716,7 +1716,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "此裝置已被註冊過了"
   registerTOTP: "開始設定驗證應用程式"
-  passwordToTOTP: "請輸入密碼"
   step1: "首先，在您的裝置上安裝驗證程式，例如 {a} 或 {b}。"
   step2: "然後，掃描螢幕上的 QR 碼。"
   step2Click: "您可以點擊 QR 碼，以使用裝置上的驗證應用程式或金鑰環註冊。"
