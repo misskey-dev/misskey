@@ -155,6 +155,10 @@ onMounted(() => {
 		}
 	});
 });
+
+defineExpose({
+	focus,
+});
 </script>
 
 <style lang="scss" module>
