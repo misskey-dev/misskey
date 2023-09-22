@@ -17,6 +17,7 @@ import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
 import MkDialog from '@/components/MkDialog.vue';
+import MkPasswordDialog from '@/components/MkPasswordDialog.vue';
 import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
@@ -328,6 +329,18 @@ export function inputDate(props: {
 		}, {
 			done: result => {
 				resolve(result ? { result: new Date(result.result), canceled: false } : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
+export function authenticateDialog(): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: { password: string; token: string | null; };
+}> {
+	return new Promise((resolve, reject) => {
+		popup(MkPasswordDialog, {}, {
+			done: result => {
+				resolve(result ? { canceled: false, result } : { canceled: true, result: undefined });
 			},
 		}, 'closed');
 	});

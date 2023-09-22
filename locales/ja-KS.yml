@@ -1697,7 +1697,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "もう設定終わっとるわ。"
   registerTOTP: "認証アプリの設定はじめる"
-  passwordToTOTP: "パスワードを入れてーや"
   step1: "ほんなら、{a}や{b}とかの認証アプリを使っとるデバイスにインストールしてな。"
   step2: "次に、ここにあるQRコードをアプリでスキャンしてな～。"
   step2Click: "QRコードをクリックすると、今使とる端末に入っとる認証アプリとかキーリングに登録できるで。"

@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.9.0-beta.10",
+	"version": "2023.9.0-beta.11",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -56,7 +56,7 @@
 		"cross-env": "7.0.3",
 		"cypress": "13.2.0",
 		"eslint": "8.49.0",
-		"start-server-and-test": "2.0.0"
+		"start-server-and-test": "2.0.1"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"

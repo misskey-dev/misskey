@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				secret: OTPAuth.Secret.fromBase32(profile.twoFactorTempSecret),
 				digits: 6,
 				token,
-				window: 1,
+				window: 5,
 			});
 
 			if (delta === null) {
