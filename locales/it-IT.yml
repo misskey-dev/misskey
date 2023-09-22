@@ -1716,7 +1716,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "La configurazione è stata già completata."
   registerTOTP: "Registra un'app di autenticazione"
-  passwordToTOTP: "Inserire la password"
   step1: "Innanzitutto, installare sul dispositivo un'applicazione di autenticazione come {a} o {b}."
   step2: "Quindi, scansionare il codice QR visualizzato con l'app."
   step2Click: "Cliccando sul codice QR, puoi registrarlo con l'app di autenticazione o il portachiavi installato sul tuo dispositivo."
