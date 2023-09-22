@@ -6,7 +6,7 @@
 import { Brackets, In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/_.js';
 import { obsoleteNotificationTypes, notificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
@@ -14,7 +14,7 @@ import { NotificationEntityService } from '@/core/entities/NotificationEntitySer
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
-import { Notification } from '@/models/entities/Notification.js';
+import { MiNotification } from '@/models/Notification.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],
@@ -57,9 +57,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -96,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return [];
 			}
 
-			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])).filter(x => x.id !== ps.untilId && x !== ps.sinceId) as Notification[];
+			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])).filter(x => x.id !== ps.untilId && x !== ps.sinceId) as MiNotification[];
 
 			if (includeTypes && includeTypes.length > 0) {
 				notifications = notifications.filter(notification => includeTypes.includes(notification.type));

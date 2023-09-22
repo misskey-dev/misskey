@@ -26,16 +26,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import { version } from '@/config';
-import * as os from '@/os';
-import { unisonReload } from '@/scripts/unison-reload';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
-import { defaultStore } from '@/store';
-import { serverErrorImageUrl } from '@/instance';
+import { version } from '@/config.js';
+import * as os from '@/os.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { defaultStore } from '@/store.js';
+import { serverErrorImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	error?: Error;
@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<{
 
 let loaded = $ref(false);
 let serverIsDead = $ref(false);
-let meta = $ref<misskey.entities.LiteInstanceMetadata | null>(null);
+let meta = $ref<Misskey.entities.LiteInstanceMetadata | null>(null);
 
 os.api('meta', {
 	detail: false,

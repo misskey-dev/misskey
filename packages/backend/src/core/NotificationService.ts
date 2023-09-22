@@ -8,21 +8,25 @@ import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
-import type { Notification } from '@/models/entities/Notification.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNotification } from '@/models/Notification.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
@@ -39,7 +43,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	public async readAllNotification(
-		userId: User['id'],
+		userId: MiUser['id'],
 		force = false,
 	) {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
@@ -61,17 +65,17 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private postReadAllNotifications(userId: User['id']) {
+	private postReadAllNotifications(userId: MiUser['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
 		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
 	@bindThis
 	public async createNotification(
-		notifieeId: User['id'],
-		type: Notification['type'],
-		data: Partial<Notification>,
-	): Promise<Notification | null> {
+		notifieeId: MiUser['id'],
+		type: MiNotification['type'],
+		data: Partial<MiNotification>,
+	): Promise<MiNotification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 		const isMuted = profile.mutingNotificationTypes.includes(type);
 		if (isMuted) return null;
@@ -92,11 +96,11 @@ export class NotificationService implements OnApplicationShutdown {
 			createdAt: new Date(),
 			type: type,
 			...data,
-		} as Notification;
+		} as MiNotification;
 
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', '300',
+			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
 			'*',
 			'data', JSON.stringify(notification));
 
@@ -126,7 +130,7 @@ export class NotificationService implements OnApplicationShutdown {
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
 	@bindThis
-	private async emailNotificationFollow(userId: User['id'], follower: User) {
+	private async emailNotificationFollow(userId: MiUser['id'], follower: MiUser) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('follow')) return;
@@ -138,7 +142,7 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async emailNotificationReceiveFollowRequest(userId: User['id'], follower: User) {
+	private async emailNotificationReceiveFollowRequest(userId: MiUser['id'], follower: MiUser) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('receiveFollowRequest')) return;

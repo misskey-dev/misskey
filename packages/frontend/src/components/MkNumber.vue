@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { reactive, watch } from 'vue';
 import gsap from 'gsap';
-import number from '@/filters/number';
+import number from '@/filters/number.js';
 
 const props = defineProps<{
 	value: number;

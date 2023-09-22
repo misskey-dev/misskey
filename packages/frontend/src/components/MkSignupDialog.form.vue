@@ -77,17 +77,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import getPasswordStrength from 'syuilo-password-strength';
 import { toUnicode } from 'punycode/';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
-import * as config from '@/config';
-import * as os from '@/os';
-import { login } from '@/account';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import * as config from '@/config.js';
+import * as os from '@/os.js';
+import { login } from '@/account.js';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
@@ -131,6 +130,30 @@ const shouldDisableSubmitting = $computed((): boolean => {
 		usernameState !== 'ok' ||
 		passwordRetypeState !== 'match';
 });
+
+function getPasswordStrength(source: string): number {
+	let strength = 0;
+	let power = 0.018;
+
+	// 英数字
+	if (/[a-zA-Z]/.test(source) && /[0-9]/.test(source)) {
+		power += 0.020;
+	}
+
+	// 大文字と小文字が混ざってたら
+	if (/[a-z]/.test(source) && /[A-Z]/.test(source)) {
+		power += 0.015;
+	}
+
+	// 記号が混ざってたら
+	if (/[!\x22\#$%&@'()*+,-./_]/.test(source)) {
+		power += 0.02;
+	}
+
+	strength = power * source.length;
+
+	return Math.max(0, Math.min(1, strength));
+}
 
 function onChangeUsername(): void {
 	if (username === '') {

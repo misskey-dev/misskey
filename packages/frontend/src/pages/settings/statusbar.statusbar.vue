@@ -93,9 +93,9 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const props = defineProps<{
 	_id: string;

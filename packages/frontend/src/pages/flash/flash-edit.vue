@@ -23,6 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
+			<MkSelect v-model="visibility">
+				<template #label>{{ i18n.ts.visibility }}</template>
+				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
+				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
+			</MkSelect>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -31,14 +36,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
-import { useRouter } from '@/router';
+import MkSelect from '@/components/MkSelect.vue';
+import { useRouter } from '@/router.js';
 
-const PRESET_DEFAULT = `/// @ 0.15.0
+const PRESET_DEFAULT = `/// @ 0.16.0
 
 var name = ""
 
@@ -56,7 +62,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.15.0
+const PRESET_OMIKUJI = `/// @ 0.16.0
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -99,7 +105,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.15.0
+const PRESET_SHUFFLE = `/// @ 0.16.0
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -178,7 +184,7 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.15.0
+const PRESET_QUIZ = `/// @ 0.16.0
 let title = '地理クイズ'
 
 let qas = [{
@@ -291,7 +297,7 @@ qaEls.push(Ui:C:container({
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.15.0
+const PRESET_TIMELINE = `/// @ 0.16.0
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {
@@ -358,6 +364,7 @@ const props = defineProps<{
 }>();
 
 let flash = $ref(null);
+let visibility = $ref('public');
 
 if (props.id) {
 	flash = await os.api('flash/show', {
@@ -402,6 +409,7 @@ async function save() {
 			summary,
 			permissions,
 			script,
+			visibility,
 		});
 	} else {
 		const created = await os.apiWithDialog('flash/create', {

@@ -18,13 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { watch } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	maxNumber?: number;
 }>(), {
 	maxNumber: Infinity,

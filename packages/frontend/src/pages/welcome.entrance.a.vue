@@ -34,20 +34,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { Instance } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { instanceName } from '@/config';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import number from '@/filters/number';
+import { instanceName } from '@/config.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 
-let meta = $ref<Instance>();
+let meta = $ref<Misskey.entities.Instance>();
 let instances = $ref<any[]>();
 
 os.api('meta', { detail: true }).then(_meta => {

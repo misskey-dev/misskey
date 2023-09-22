@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { SigninsRepository } from '@/models/index.js';
+import type { SigninsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -26,9 +26,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,

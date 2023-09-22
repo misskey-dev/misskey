@@ -6,13 +6,13 @@
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { directives } from '@/directives';
 import { components } from '@/components/index';
 import XHome from '@/pages/user/home.vue';
 
 describe('XHome', () => {
-	const renderHome = (user: Partial<misskey.entities.UserDetailed>): RenderResult => {
+	const renderHome = (user: Partial<Misskey.entities.UserDetailed>): RenderResult => {
 		return render(XHome, {
 			props: { user, disableNotes: true },
 			global: { directives, components },

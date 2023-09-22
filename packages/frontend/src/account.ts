@@ -4,19 +4,19 @@
  */
 
 import { defineAsyncComponent, reactive, ref } from 'vue';
-import * as misskey from 'misskey-js';
-import { showSuspendedDialog } from './scripts/show-suspended-dialog';
-import { i18n } from './i18n';
-import { miLocalStorage } from './local-storage';
-import { MenuButton } from './types/menu';
-import { del, get, set } from '@/scripts/idb-proxy';
-import { apiUrl } from '@/config';
-import { waiting, api, popup, popupMenu, success, alert } from '@/os';
-import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
+import * as Misskey from 'misskey-js';
+import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
+import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { MenuButton } from '@/types/menu.js';
+import { del, get, set } from '@/scripts/idb-proxy.js';
+import { apiUrl } from '@/config.js';
+import { waiting, api, popup, popupMenu, success, alert } from '@/os.js';
+import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-type Account = misskey.entities.MeDetailed;
+type Account = Misskey.entities.MeDetailed;
 
 const accountData = miLocalStorage.getItem('account');
 
@@ -211,8 +211,8 @@ export async function login(token: Account['token'], redirect?: string) {
 export async function openAccountMenu(opts: {
 	includeCurrentAccount?: boolean;
 	withExtraOperation: boolean;
-	active?: misskey.entities.UserDetailed['id'];
-	onChoose?: (account: misskey.entities.UserDetailed) => void;
+	active?: Misskey.entities.UserDetailed['id'];
+	onChoose?: (account: Misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
 	if (!$i) return;
 
@@ -234,7 +234,7 @@ export async function openAccountMenu(opts: {
 		}, 'closed');
 	}
 
-	async function switchAccount(account: misskey.entities.UserDetailed) {
+	async function switchAccount(account: Misskey.entities.UserDetailed) {
 		const storedAccounts = await getAccounts();
 		const found = storedAccounts.find(x => x.id === account.id);
 		if (found == null) return;
@@ -248,7 +248,7 @@ export async function openAccountMenu(opts: {
 	const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id));
 	const accountsPromise = api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
-	function createItem(account: misskey.entities.UserDetailed) {
+	function createItem(account: Misskey.entities.UserDetailed) {
 		return {
 			type: 'user' as const,
 			user: account,

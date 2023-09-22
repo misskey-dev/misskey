@@ -18,10 +18,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const instances = ref([]);
 const fetching = ref(true);

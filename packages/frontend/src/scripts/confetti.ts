@@ -4,7 +4,7 @@
  */
 
 import _confetti from 'canvas-confetti';
-import * as os from '@/os';
+import * as os from '@/os.js';
 
 export function confetti(options: { duration?: number; } = {}) {
 	const duration = options.duration ?? 1000 * 4;

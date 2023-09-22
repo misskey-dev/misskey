@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<MkTextarea v-model="moderationNote" manualSave>
-					<template #label>Moderation note</template>
+					<template #label>{{ i18n.ts.moderationNote }}</template>
 				</MkTextarea>
 
 				<!--
@@ -200,7 +200,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -214,12 +214,12 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { url } from '@/config';
-import { userPage, acct } from '@/filters/user';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { iAmAdmin, $i } from '@/account';
+import * as os from '@/os.js';
+import { url } from '@/config.js';
+import { userPage, acct } from '@/filters/user.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { iAmAdmin, $i } from '@/account.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
@@ -232,7 +232,7 @@ const props = withDefaults(defineProps<{
 
 let tab = $ref(props.initialTab);
 let chartSrc = $ref('per-user-notes');
-let user = $ref<null | misskey.entities.UserDetailed>();
+let user = $ref<null | Misskey.entities.UserDetailed>();
 let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
 let ips = $ref(null);

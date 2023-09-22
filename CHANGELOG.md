@@ -12,31 +12,85 @@
 
 -->
 
-## 2023.8.0 (unreleased)
+## 2023.9.0 (unreleased)
 
 ### General
-- OAuth 2.0のサポート
-- お知らせ機能の強化
+- Feat: OAuth 2.0のサポート
+- Feat: お知らせ機能の強化
 	- ユーザー個別のお知らせを作成可能に
 	- お知らせのバナー表示やダイアログ表示が可能に
 	- お知らせのアイコンを設定可能に
-- チャンネルをセンシティブ指定できるようになりました
+- Feat: チャンネルをセンシティブ指定できるようになりました
+	- センシティブチャンネルのNoteのReNoteはデフォルトでHome TLに流れるようになりました
+	- センシティブチャンネルのノートはユーザープロフィールに表示されません
+- Feat: 二要素認証のバックアップコードが生成されるようになりました
+	- ref. https://github.com/MisskeyIO/misskey/pull/121
+- Feat: 二要素認証でパスキーをサポートするようになりました
+- Feat: 指定したユーザーが投稿したときに通知できるようになりました
+- Feat: プロフィールでのリンク検証
+- Feat: 通知をテストできるようになりました
+- Feat: PWAのアイコンが設定できるようになりました
+- Enhance: 二要素認証設定時のセキュリティを強化
+	- パスワード入力が必要な操作を行う際、二要素認証が有効であれば確認コードの入力も必要になりました
+- Enhance: manifest.jsonをオーバーライド可能に
+- Enhance: 依存関係の更新
+- Enhance: ローカリゼーションの更新
 
 ### Client
-- メニューのスイッチの動作を改善
-- 絵文字ピッカーの検索の表示件数を100件に増加
+- Feat: 任意のユーザーリストをタイムラインページにピン留めできるように
+	- 設定->クライアント設定->全般 から設定可能です
+- Feat: Playで直接投稿フォームを埋め込めるように(`Ui:C:postForm`)
+- Feat: クライアントを起動している間、デバイスの画面が自動でオフになるのを防ぐオプションを追加
+- Feat: 新しい実績を追加
+- Enhance: ノート詳細ページでリノート一覧、リアクション一覧タブを追加
+	- ノートのメニューからは当該項目は消えました
+- Enhance: センシティブなメディアを目立たせる設定を追加
+- Enhance: プロフィールにその人が作ったPlayの一覧出せるように
+- Enhance: メニューのスイッチの動作を改善
+- Enhance: 絵文字ピッカーの検索の表示件数を100件に増加
+- Enhance: 投稿フォームのプレビューの表示状態を記憶するように
 - Enhance: ユーザーメニューでスイッチでユーザーリストに追加・削除できるように
 - Enhance: 自分が押したリアクションのデザインを改善
+- Enhance: ノート検索にローカルのみ検索可能なオプションの追加
+- Enhance: Renote自体を通報できるように
+- Enhance: データセーバーモードの強化
+- Enhance: Renoteを管理者権限で削除可能に
+- Enhance: `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
+- Enhance: Playの操作を行うAPI TokenをAPIコンソールから発行できるように
+- Enhance: リアクションの表示サイズをより大きくできるように
+- Enhance: AiScriptを0.16.0に更新
+- Enhance: AiScriptからMisskeyサーバーAPIを呼び出す際の制限を撤廃
+- Enhance: AiScriptで`LOCALE`として現在の設定言語を取得できるように
+- Enhance: Mk:apiが失敗した時にエラー型の値（AiScript 0.16.0で追加）を返すように
+- Enhance: ScratchpadでAsync:系関数やボタンのコールバックなどのエラーにもダイアログを出すように（試験的なためPlayなどには未実装）
+- Enhance: ノート詳細ページ読み込み時のパフォーマンスが向上しました
+- Enhance: タイムラインでリスト/アンテナ選択時のパフォーマンスを改善
+- Enhance: 「Moderation note」、「Add moderation note」をローカライズできるように
+- Enhance: 細かなデザインの調整
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
 - Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
 - Fix: iOSで画面を回転させるとテキストサイズが変わる問題を修正
+- Fix: word mute for sub note is not applied
 - Fix: タイムラインを下にスクロールしてノート画面に移動して再び戻ったら以前のスクロール位置を失う問題を修正
+- Fix: Misskeyプラグインをインストールする際のAiScriptバージョンのチェックが0.14.0以降に対応していない問題を修正
+- Fix: 他のサーバーのユーザーへ「メッセージを送信」した時の初期テキストのメンションが間違っている問題を修正
+- Fix: 環境によってはMisskey Webが開けない問題を修正
 
 ### Server
-- cacheRemoteFilesの初期値はfalseになりました
-- ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
+- Change: cacheRemoteFilesの初期値はfalseになりました
+- Enhance: ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
+- Enhance: Webhookのペイロードにサーバーのurlが含まれるようになりました
+- Enhance: Webhook設定でsecretを空に出来るように
+- Enhance: 使われていないアンテナの自動停止を設定可能に
+- Enhance: nodeinfo 2.1対応
+- Enhance: 自分へのメンション一覧を取得する際のパフォーマンスを向上
+- Enhance: Docker環境でjemallocを使用することでメモリ使用量を削減
+- Fix: MK_ONLY_SERVERオプションを指定した際にクラッシュする問題を修正
+- Fix: ノート検索 `notes/search` にてhostを指定した際に検索結果に反映されるように
 - Fix: 一部のfeatured noteを照会できない問題を修正
 - Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
+- Fix: ジョブキュー管理画面の認証を回避できる問題を修正
+- Fix: 一部のサーバー内部エラーがスタックトレースを返さないように修正
 
 ## 13.14.2
 
@@ -51,6 +105,7 @@
 ### Server
 - Fix: APIのオフセットが壊れていたせいで「もっと見る」でもっと見れない問題を修正
 - Fix: 外部サーバーの投稿がタイムラインに表示されないことがある問題を修正
+- Enhance: Add address bind config option (outgoingAddress)
 
 ## 13.14.1
 
