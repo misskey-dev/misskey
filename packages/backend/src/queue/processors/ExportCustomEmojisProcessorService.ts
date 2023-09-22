@@ -10,7 +10,7 @@ import { format as dateFormat } from 'date-fns';
 import mime from 'mime-types';
 import archiver from 'archiver';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, UsersRepository } from '@/models/index.js';
+import type { EmojisRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';

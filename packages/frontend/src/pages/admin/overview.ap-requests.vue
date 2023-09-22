@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import * as os from '@/os';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { chartVLine } from '@/scripts/chart-vline';
-import { defaultStore } from '@/store';
-import { alpha } from '@/scripts/color';
-import { initChart } from '@/scripts/init-chart';
+import * as os from '@/os.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { chartVLine } from '@/scripts/chart-vline.js';
+import { defaultStore } from '@/store.js';
+import { alpha } from '@/scripts/color.js';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 

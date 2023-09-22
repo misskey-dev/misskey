@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import keyCode from './keycode';
+import keyCode from './keycode.js';
 
 type Callback = (ev: KeyboardEvent) => void;
 

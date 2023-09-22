@@ -169,6 +169,15 @@ export const packedUserDetailedNotMeOnlySchema = {
 				},
 			},
 		},
+		verifiedLinks: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'string',
+				nullable: false, optional: false,
+				format: 'url',
+			},
+		},
 		followersCount: {
 			type: 'number',
 			nullable: false, optional: false,
@@ -264,6 +273,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'string',
 			nullable: false, optional: true,
 		},
+		notify: {
+			type: 'string',
+			nullable: false, optional: true,
+		},
 		//#endregion
 	},
 } as const;
@@ -319,6 +332,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		isDeleted: {
 			type: 'boolean',
+			nullable: false, optional: false,
+		},
+		twoFactorBackupCodesStock: {
+			type: 'string',
+			enum: ['full', 'partial', 'none'],
 			nullable: false, optional: false,
 		},
 		hideOnlineStatus: {

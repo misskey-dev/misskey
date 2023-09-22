@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
-import type { UserList } from '@/models/entities/UserList.js';
-import type { UserListJoining } from '@/models/entities/UserListJoining.js';
+import type { UserListJoiningsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiUserList } from '@/models/UserList.js';
+import type { MiUserListJoining } from '@/models/UserListJoining.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -35,7 +35,7 @@ export class UserListService {
 	}
 
 	@bindThis
-	public async push(target: User, list: UserList, me: User) {
+	public async push(target: MiUser, list: MiUserList, me: MiUser) {
 		const currentCount = await this.userListJoiningsRepository.countBy({
 			userListId: list.id,
 		});
@@ -48,7 +48,7 @@ export class UserListService {
 			createdAt: new Date(),
 			userId: target.id,
 			userListId: list.id,
-		} as UserListJoining);
+		} as MiUserListJoining);
 
 		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
 

@@ -534,6 +534,7 @@ export type Endpoints = {
 
 	// notifications
 	'notifications/create': { req: { body: string; header?: string | null; icon?: string | null; }; res: null; };
+	'notifications/test-notification': { req: NoParams; res: null; };
 	'notifications/mark-all-as-read': { req: NoParams; res: null; };
 
 	// page-push
@@ -621,6 +622,7 @@ export type Endpoints = {
 	'users/lists/update': { req: { listId: UserList['id']; name: string; }; res: UserList; };
 	'users/notes': { req: { userId: User['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'users/pages': { req: TODO; res: TODO; };
+	'users/flashs': { req: TODO; res: TODO; };
 	'users/recommendation': { req: TODO; res: TODO; };
 	'users/relation': { req: TODO; res: TODO; };
 	'users/report-abuse': { req: TODO; res: TODO; };

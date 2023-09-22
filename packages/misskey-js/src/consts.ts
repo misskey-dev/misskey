@@ -1,4 +1,4 @@
-export const notificationTypes = ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app'] as const;
+export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
@@ -39,4 +39,8 @@ export const permissions = [
 	'write:gallery',
 	'read:gallery-likes',
 	'write:gallery-likes',
+	'read:flash',
+	'write:flash',
+	'read:flash-likes',
+	'write:flash-likes',
 ];

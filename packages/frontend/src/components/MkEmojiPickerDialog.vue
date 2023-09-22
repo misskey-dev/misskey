@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 withDefaults(defineProps<{
 	manualShowing?: boolean | null;

@@ -15,18 +15,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, nextTick, watch } from 'vue';
 import { Chart } from 'chart.js';
-import * as misskey from 'misskey-js';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { alpha } from '@/scripts/color';
-import { initChart } from '@/scripts/init-chart';
+import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { alpha } from '@/scripts/color.js';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
 const props = defineProps<{
 	src: string;
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>();
 
 const rootEl = $shallowRef<HTMLDivElement>(null);

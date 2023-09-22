@@ -6,7 +6,6 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { Redis } from 'ioredis';
 import { GlobalModule } from '@/GlobalModule.js';
@@ -18,7 +17,6 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
 
 function mockRedis() {
 	const hash = {};
@@ -35,9 +33,9 @@ describe('FetchInstanceMetadataService', () => {
 	let fetchInstanceMetadataService: jest.Mocked<FetchInstanceMetadataService>;
 	let federatedInstanceService: jest.Mocked<FederatedInstanceService>;
 	let httpRequestService: jest.Mocked<HttpRequestService>;
-	let redisClient: jest.Mocked<Redis.Redis>;
+	let redisClient: jest.Mocked<Redis>;
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		app = await Test
 			.createTestingModule({
 				imports: [
@@ -64,11 +62,11 @@ describe('FetchInstanceMetadataService', () => {
 
 		fetchInstanceMetadataService = app.get<FetchInstanceMetadataService>(FetchInstanceMetadataService);
 		federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService) as jest.Mocked<FederatedInstanceService>;
-		redisClient = app.get<Redis.Redis>(DI.redis) as jest.Mocked<Redis.Redis>;
+		redisClient = app.get<Redis>(DI.redis) as jest.Mocked<Redis>;
 		httpRequestService = app.get<HttpRequestService>(HttpRequestService) as jest.Mocked<HttpRequestService>;
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await app.close();
 	});
 
@@ -85,6 +83,7 @@ describe('FetchInstanceMetadataService', () => {
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(1);
 		expect(httpRequestService.getJson).toHaveBeenCalled();
 	});
+
 	test('Lock and don\'t update', async () => {
 		redisClient.set = mockRedis();
 		const now = Date.now();
@@ -98,6 +97,7 @@ describe('FetchInstanceMetadataService', () => {
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(1);
 		expect(httpRequestService.getJson).toHaveBeenCalledTimes(0);
 	});
+
 	test('Do nothing when lock not acquired', async () => {
 		redisClient.set = mockRedis();
 		federatedInstanceService.fetch.mockReturnValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } });
