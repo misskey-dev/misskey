@@ -158,11 +158,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span style="margin-left: 4px;">{{ appearNote.reactions[reaction] }}</span>
 				</button>
 			</div>
-			<MkPagination :pagination="reactionsPagination">
+			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination">
 				<template #default="{ items }">
-					<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
-						<MkUserCardMini :user="item.user" :withChart="false"/>
-					</MkA>
+					<div class="_gaps_s">
+						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
+							<MkUserCardMini :user="item.user" :withChart="false"/>
+						</MkA>
+					</div>
 				</template>
 			</MkPagination>
 		</div>
