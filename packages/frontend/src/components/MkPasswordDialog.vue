@@ -14,18 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.authentication }}</template>
 
 	<MkSpacer :marginMin="20" :marginMax="28">
-		<div>{{ i18n.ts.authenticationRequiredToContinue }}</div>
+		<div style="padding: 0 0 16px 0; text-align: center;">
+			<i class="ti ti-lock" style="font-size: 32px; color: var(--accent);"></i>
+			<div style="margin-top: 10px;">{{ i18n.ts.authenticationRequiredToContinue }}</div>
+		</div>
 
-		<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true">
-			<template #prefix><i class="ti ti-lock"></i></template>
-		</MkInput>
+		<div class="_gaps">
+			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true">
+				<template #prefix><i class="ti ti-lock"></i></template>
+			</MkInput>
 
-		<MkInput v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
-			<template #label>{{ i18n.ts.token }}</template>
-			<template #prefix><i class="ti ti-123"></i></template>
-		</MkInput>
+			<MkInput v-if="$i.twoFactorEnabled" v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
+				<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
+				<template #prefix><i class="ti ti-123"></i></template>
+			</MkInput>
 
-		<MkButton primary rounded @click="done">{{ i18n.ts.continue }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="done">{{ i18n.ts.continue }}</MkButton>
+		</div>
 	</MkSpacer>
 </MkModalWindow>
 </template>
@@ -33,11 +38,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import MkInput from '@/components/MkInput.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 const emit = defineEmits<{
-	(ev: 'done', v: any): void;
+	(ev: 'done', v: { password: string; token: string | null; }): void;
 	(ev: 'closed'): void;
 	(ev: 'cancelled'): void;
 }>();

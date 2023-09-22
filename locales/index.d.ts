@@ -1119,6 +1119,8 @@ export interface Locale {
     "verifiedLink": string;
     "notifyNotes": string;
     "unnotifyNotes": string;
+    "authentication": string;
+    "authenticationRequiredToContinue": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1833,7 +1835,6 @@ export interface Locale {
     "_2fa": {
         "alreadyRegistered": string;
         "registerTOTP": string;
-        "passwordToTOTP": string;
         "step1": string;
         "step2": string;
         "step2Click": string;

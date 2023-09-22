@@ -340,7 +340,7 @@ export function authenticateDialog(): Promise<{ canceled: true; result: undefine
 	return new Promise((resolve, reject) => {
 		popup(MkPasswordDialog, {}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result ? { canceled: false, result } : { canceled: true, result: undefined });
 			},
 		}, 'closed');
 	});
