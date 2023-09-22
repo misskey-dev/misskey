@@ -4,7 +4,7 @@
  */
 
 import { ref, computed } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 
 type SaveData = {
 	gameVersion: number;

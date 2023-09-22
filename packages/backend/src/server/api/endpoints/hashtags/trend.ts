@@ -6,8 +6,8 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NotesRepository } from '@/models/index.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { NotesRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MetaService } from '@/core/MetaService.js';

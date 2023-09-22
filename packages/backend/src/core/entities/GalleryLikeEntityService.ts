@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository } from '@/models/index.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { MiGalleryLike } from '@/models/entities/GalleryLike.js';
+import type { GalleryLikesRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiGalleryLike } from '@/models/GalleryLike.js';
 import { bindThis } from '@/decorators.js';
 import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 

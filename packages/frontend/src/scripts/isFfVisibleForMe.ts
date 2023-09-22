@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { $i } from '@/account';
+import { $i } from '@/account.js';
 
 export function isFfVisibleForMe(user: Misskey.entities.UserDetailed): boolean {
 	if ($i && $i.id === user.id) return true;

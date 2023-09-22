@@ -29,6 +29,9 @@ type Ad = TODO_2;
 // @public (undocumented)
 type AdminInstanceMetadata = DetailedInstanceMetadata & {
     blockedHosts: string[];
+    app192IconUrl: string | null;
+    app512IconUrl: string | null;
+    manifestJsonOverride: string;
 };
 
 // @public (undocumented)
@@ -1915,6 +1918,10 @@ export type Endpoints = {
         };
         res: null;
     };
+    'notifications/test-notification': {
+        req: NoParams;
+        res: null;
+    };
     'notifications/mark-all-as-read': {
         req: NoParams;
         res: null;
@@ -2532,6 +2539,7 @@ type Note = {
     reactions: Record<string, number>;
     renoteCount: number;
     repliesCount: number;
+    clippedCount?: number;
     poll?: {
         expiresAt: DateString | null;
         multiple: boolean;
@@ -2601,7 +2609,12 @@ type Notification_2 = {
     userId: User['id'];
     note: Note;
 } | {
-    type: 'pollVote';
+    type: 'note';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'pollEnded';
     user: User;
     userId: User['id'];
     note: Note;
@@ -2627,10 +2640,12 @@ type Notification_2 = {
     header?: string | null;
     body: string;
     icon?: string | null;
+} | {
+    type: 'test';
 });
 
 // @public (undocumented)
-export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
 
 // @public (undocumented)
 type OriginType = 'combined' | 'local' | 'remote';
@@ -2768,6 +2783,7 @@ type UserDetailed = UserLite & {
         name: string;
         value: string;
     }[];
+    verifiedLinks: string[];
     followersCount: number;
     followingCount: number;
     hasPendingFollowRequestFromYou: boolean;
@@ -2799,6 +2815,7 @@ type UserDetailed = UserLite & {
     updatedAt: DateString | null;
     uri: string | null;
     url: string | null;
+    notify: 'normal' | 'none';
 };
 
 // @public (undocumented)
@@ -2842,7 +2859,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:630:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:631:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

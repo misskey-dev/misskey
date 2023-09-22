@@ -11,9 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { mainRouter } from '@/router.js';
+import { i18n } from '@/i18n.js';
 
 async function follow(user): Promise<void> {
 	const { canceled } = await os.confirm({

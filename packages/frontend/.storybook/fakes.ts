@@ -89,6 +89,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 				value: 'https://misskey-hub.net',
 			},
 		],
+		verifiedLinks: [],
 		followersCount: 1024,
 		followingCount: 16,
 		hasPendingFollowRequestFromYou: false,
@@ -119,6 +120,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		updatedAt: null,
 		uri: null,
 		url: null,
+		notify: 'none',
 	};
 }
 

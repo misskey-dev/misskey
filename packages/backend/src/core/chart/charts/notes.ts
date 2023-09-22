@@ -5,8 +5,8 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import type { NotesRepository } from '@/models/index.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { NotesRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';

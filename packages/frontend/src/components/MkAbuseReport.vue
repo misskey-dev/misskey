@@ -44,9 +44,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { dateString } from '@/filters/date';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { dateString } from '@/filters/date.js';
 
 const props = defineProps<{
 	report: any;

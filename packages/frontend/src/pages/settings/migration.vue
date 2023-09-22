@@ -65,11 +65,11 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
-import { unisonReload } from '@/scripts/unison-reload';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 
 const moveToAccount = ref('');
 const movedTo = ref<Misskey.entities.UserDetailed>();

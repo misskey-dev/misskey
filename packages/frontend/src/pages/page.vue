@@ -62,8 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
+					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
 			</div>
@@ -78,18 +78,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { url } from '@/config';
+import * as os from '@/os.js';
+import { url } from '@/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { pageViewInterruptors, defaultStore } from '@/store';
-import { deepClone } from '@/scripts/clone';
-import { $i } from '@/account';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { pageViewInterruptors, defaultStore } from '@/store.js';
+import { deepClone } from '@/scripts/clone.js';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
 	pageName: string;
@@ -287,5 +287,15 @@ definePageMetadata(computed(() => page ? {
 		font-size: 85%;
 		opacity: 0.75;
 	}
+}
+</style>
+
+<style module>
+.relatedPagesRoot {
+	padding: var(--margin);
+}
+
+.relatedPagesItem > article {
+	background-color: var(--panelHighlight) !important;
 }
 </style>

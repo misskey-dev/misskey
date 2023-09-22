@@ -10,7 +10,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
-import type { MiAnnouncement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, MiUser } from '@/models/index.js';
+import type { MiAnnouncement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, MiUser } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { genAidx } from '@/misc/id/aidx.js';
 import { CacheService } from '@/core/CacheService.js';

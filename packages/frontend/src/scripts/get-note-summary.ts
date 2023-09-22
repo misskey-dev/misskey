@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 /**
  * 投稿を表す文字列を取得します。

@@ -25,8 +25,8 @@ import { } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { i18n } from '@/i18n';
-import { playFile, soundsTypes } from '@/scripts/sound';
+import { i18n } from '@/i18n.js';
+import { playFile, soundsTypes } from '@/scripts/sound.js';
 
 const props = defineProps<{
 	type: string;

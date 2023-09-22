@@ -21,11 +21,11 @@ import { } from 'vue';
 import JSON5 from 'json5';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import { applyTheme, validateTheme } from '@/scripts/theme';
-import * as os from '@/os';
+import { applyTheme, validateTheme } from '@/scripts/theme.js';
+import * as os from '@/os.js';
 import { addTheme, getThemes } from '@/theme-store';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let installThemeCode = $ref(null);
 

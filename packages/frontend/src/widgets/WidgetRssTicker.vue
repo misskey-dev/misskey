@@ -30,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch, computed } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import MarqueeText from '@/components/MkMarquee.vue';
-import { GetFormResultType } from '@/scripts/form';
+import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { shuffle } from '@/scripts/shuffle';
-import { url as base } from '@/config';
-import { useInterval } from '@/scripts/use-interval';
+import { shuffle } from '@/scripts/shuffle.js';
+import { url as base } from '@/config.js';
+import { useInterval } from '@/scripts/use-interval.js';
 
 const name = 'rssTicker';
 

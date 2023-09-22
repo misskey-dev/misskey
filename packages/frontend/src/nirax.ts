@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { Component, onMounted, shallowRef, ShallowRef } from 'vue';
-import { safeURIDecode } from '@/scripts/safe-uri-decode';
+import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 
 type RouteDef = {
 	path: string;
