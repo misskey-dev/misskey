@@ -1917,6 +1917,7 @@ export interface Locale {
         "homeTimeline": string;
         "users": string;
         "userList": string;
+        "userBlacklist": string;
     };
     "_weekday": {
         "sunday": string;
