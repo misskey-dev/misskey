@@ -1517,7 +1517,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "Bạn đã đăng ký thiết bị xác minh 2 bước."
   registerTOTP: "Đăng ký ứng dụng xác thực"
-  passwordToTOTP: "Nhắn mật mã"
   step1: "Trước tiên, hãy cài đặt một ứng dụng xác minh (chẳng hạn như {a} hoặc {b}) trên thiết bị của bạn."
   step2: "Sau đó, quét mã QR hiển thị trên màn hình này."
   step2Click: "Quét mã QR trên ứng dụng xác thực (Authy, Google authenticator, v.v.)"
