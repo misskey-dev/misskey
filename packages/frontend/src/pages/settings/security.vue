@@ -55,13 +55,6 @@ const pagination = {
 };
 
 async function change() {
-	const { canceled: canceled1, result: currentPassword } = await os.inputText({
-		title: i18n.ts.currentPassword,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (canceled1) return;
-
 	const { canceled: canceled2, result: newPassword } = await os.inputText({
 		title: i18n.ts.newPassword,
 		type: 'password',
@@ -84,21 +77,23 @@ async function change() {
 		return;
 	}
 
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
 	os.apiWithDialog('i/change-password', {
-		currentPassword,
+		currentPassword: auth.result.password,
+		token: auth.result.token,
 		newPassword,
 	});
 }
 
-function regenerateToken() {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.api('i/regenerate-token', {
-			password: password,
-		});
+async function regenerateToken() {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	os.api('i/regenerate-token', {
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 }
 

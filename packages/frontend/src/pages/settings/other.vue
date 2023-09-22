@@ -113,14 +113,12 @@ async function deleteAccount() {
 		if (canceled) return;
 	}
 
-	const { canceled, result: password } = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	});
-	if (canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	await os.apiWithDialog('i/delete-account', {
-		password: password,
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
 	await os.alert({

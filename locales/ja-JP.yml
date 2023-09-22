@@ -1117,6 +1117,8 @@ keepScreenOn: "デバイスの画面を常にオンにする"
 verifiedLink: "このリンク先の所有者であることが確認されました"
 notifyNotes: "投稿を通知"
 unnotifyNotes: "投稿の通知を解除"
+authentication: "認証"
+authenticationRequiredToContinue: "続けるには認証を行ってください"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1751,7 +1753,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
   registerTOTP: "認証アプリの設定を開始"
-  passwordToTOTP: "パスワードを入力してください"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
   step2: "次に、表示されているQRコードをアプリでスキャンします。"
   step2Click: "QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。"

@@ -19,6 +19,7 @@ import type { MiLocalUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/typescript-types';
@@ -42,6 +43,7 @@ export class SigninApiService {
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
+		private userAuthService: UserAuthService,
 		private webAuthnService: WebAuthnService,
 	) {
 	}
@@ -124,7 +126,7 @@ export class SigninApiService {
 		const same = await bcrypt.compare(password, profile.password!);
 
 		const fail = async (status?: number, failure?: { id: string }) => {
-		// Append signin history
+			// Append signin history
 			await this.signinsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
@@ -154,27 +156,15 @@ export class SigninApiService {
 				});
 			}
 
-			if (profile.twoFactorBackupSecret?.includes(token)) {
-				await this.userProfilesRepository.update({ userId: profile.userId }, {
-					twoFactorBackupSecret: profile.twoFactorBackupSecret.filter((secret) => secret !== token),
-				});
-				return this.signinService.signin(request, reply, user);
-			}
-
-			const delta = OTPAuth.TOTP.validate({
-				secret: OTPAuth.Secret.fromBase32(profile.twoFactorSecret!),
-				digits: 6,
-				token,
-				window: 1,
-			});
-
-			if (delta === null) {
+			try {
+				await this.userAuthService.twoFactorAuthenticate(profile, token);
+			} catch (e) {
 				return await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
 				});
-			} else {
-				return this.signinService.signin(request, reply, user);
 			}
+
+			return this.signinService.signin(request, reply, user);
 		} else if (body.credential) {
 			if (!same && !profile.usePasswordLessLogin) {
 				return await fail(403, {
@@ -203,6 +193,6 @@ export class SigninApiService {
 			reply.code(200);
 			return authRequest;
 		}
-	// never get here
+		// never get here
 	}
 }
