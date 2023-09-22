@@ -1116,6 +1116,8 @@ keepScreenOn: "保持设备屏幕开启"
 verifiedLink: "已验证的链接"
 notifyNotes: "打开发帖通知"
 unnotifyNotes: "关闭发帖通知"
+authentication: "验证"
+authenticationRequiredToContinue: "要继续，请先进行验证"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
