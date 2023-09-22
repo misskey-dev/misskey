@@ -510,7 +510,6 @@ _sfx:
   chat: "Chatt"
   antenna: "Antenner"
 _2fa:
-  passwordToTOTP: "Skriv in ditt lösenord"
   renewTOTPCancel: "Nej tack"
 _antennaSources:
   all: "Alla noter"
