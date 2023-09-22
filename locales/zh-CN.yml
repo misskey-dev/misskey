@@ -710,6 +710,7 @@ lockedAccountInfo: "即使启用该功能，只要您不将帖子可见范围设
 alwaysMarkSensitive: "默认将媒体文件标记为敏感内容"
 loadRawImages: "添加附件图像的缩略图时使用原始图像质量"
 disableShowingAnimatedImages: "不播放动画"
+highlightSensitiveMedia: "高亮显示敏感媒体"
 verificationEmailSent: "已发送确认电子邮件。请访问电子邮件中的链接以完成设置。"
 notSet: "未设置"
 emailVerified: "电子邮件地址已验证"
@@ -1796,6 +1797,7 @@ _antennaSources:
   homeTimeline: "已关注用户的帖子"
   users: "来自指定用户的帖子"
   userList: "来自指定列表中的帖子"
+  userBlacklist: "除掉已选择用户后所有的帖子"
 _weekday:
   sunday: "星期日"
   monday: "星期一"
