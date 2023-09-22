@@ -185,6 +185,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'respect' as 'respect' | 'force' | 'ignore',
 	},
+	highlightSensitiveMedia: {
+		where: 'device',
+		default: false,
+	},
 	animation: {
 		where: 'device',
 		default: !window.matchMedia('(prefers-reduced-motion)').matches,
