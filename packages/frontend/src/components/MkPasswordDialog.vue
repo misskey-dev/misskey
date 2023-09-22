@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-123"></i></template>
 			</MkInput>
 
-			<MkButton :disabled="(password ?? '') == '' || ($i.twoFactorEnabled && (token ?? '') == '')" primary rounded style="margin: 0 auto;" @click="done">{{ i18n.ts.continue }}</MkButton>
+			<MkButton :disabled="(password ?? '') == '' || ($i.twoFactorEnabled && (token ?? '') == '')" primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-lock-open"></i> {{ i18n.ts.continue }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkModalWindow>

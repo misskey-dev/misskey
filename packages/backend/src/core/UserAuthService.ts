@@ -34,7 +34,7 @@ export class UserAuthService {
 				secret: OTPAuth.Secret.fromBase32(profile.twoFactorSecret!),
 				digits: 6,
 				token,
-				window: 1,
+				window: 5,
 			});
 
 			if (delta === null) {
