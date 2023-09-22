@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div class="_gaps">
-			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true">
-				<template #prefix><i class="ti ti-lock"></i></template>
+			<MkInput ref="passwordInput" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true">
+				<template #prefix><i class="ti ti-password"></i></template>
 			</MkInput>
 
 			<MkInput v-if="$i.twoFactorEnabled" v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-123"></i></template>
 			</MkInput>
 
-			<MkButton primary rounded style="margin: 0 auto;" @click="done">{{ i18n.ts.continue }}</MkButton>
+			<MkButton :disabled="(password ?? '') == '' || ($i.twoFactorEnabled && (token ?? '') == '')" primary rounded style="margin: 0 auto;" @click="done">{{ i18n.ts.continue }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { onMounted } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -50,6 +50,7 @@ const emit = defineEmits<{
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
+const passwordInput = $shallowRef<InstanceType<typeof MkInput>>();
 const password = $ref('');
 const token = $ref(null);
 
@@ -62,4 +63,8 @@ function done(res) {
 	emit('done', { password, token });
 	if (dialog) dialog.close();
 }
+
+onMounted(() => {
+	if (passwordInput) passwordInput.focus();
+});
 </script>
