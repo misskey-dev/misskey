@@ -1705,7 +1705,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "Ya has completado la configuración."
   registerTOTP: "Registrar aplicación autenticadora"
-  passwordToTOTP: "Ingresa tu contraseña"
   step1: "Primero, instale en su dispositivo la aplicación de autenticación {a} o {b} u otra."
   step2: "Luego, escanee con la aplicación el código QR mostrado en pantalla."
   step2Click: "Clicking on this QR code will allow you to register 2FA to your security key or phone authenticator app.\nTocar este código QR te permitirá registrar la autenticación 2FA a tu llave de seguridad o aplicación autenticadora."
