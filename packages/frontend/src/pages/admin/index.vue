@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16">
 			<div class="lxpfedzu">
 				<div class="banner">
-					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+					<img :src="iconUrl" alt="" class="icon"/>
 				</div>
 
 				<MkInfo v-if="thereIsUnresolvedAbuseReport" warn class="info">{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
+import {computed, onActivated, onMounted, onUnmounted, provide, ref, watch} from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -37,6 +37,7 @@ import * as os from '@/os.js';
 import { lookupUser } from '@/scripts/lookup-user.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store.js";
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -61,7 +62,20 @@ let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha 
 let noEmailServer = !instance.enableEmail;
 let thereIsUnresolvedAbuseReport = $ref(false);
 let currentPage = $computed(() => router.currentRef.value.child);
-
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+let iconUrl = ref();
+if (darkMode.value) {
+  iconUrl.value = iconDark;
+} else {
+  iconUrl.value = iconLight;
+}
+watch(darkMode, () => {
+  if (darkMode.value) {
+    iconUrl.value = iconDark;
+  } else {
+    iconUrl.value = iconLight;
+  }
+})
 os.api('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,

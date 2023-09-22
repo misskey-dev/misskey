@@ -283,6 +283,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:before {
+			color: white;
       content: "";
       display: block;
       width: calc(100% - 38px);
@@ -302,6 +303,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:hover, &.gamingLight.active {
+			color: white;
       &.gamingLight:before {
         background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
         background-size: 1800% 1800% !important;
@@ -312,6 +314,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:before {
+			color: white;
       content: "";
       display: block;
       width: calc(100% - 38px);
@@ -331,6 +334,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:hover, &.gamingDark.active {
+			color: white;
       &.gamingDark:before {
         background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
         background-size: 1800% 1800% !important;
@@ -470,7 +474,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:hover {
-      color: black;
+      color: white;
       background-size: 1800% 1800% !important;
       text-decoration: none;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
@@ -479,7 +483,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:active {
-      color: black;
+      color: white;
       background-size: 1800% 1800% !important;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
       -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
@@ -487,7 +491,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:hover, &.gamingLight.active {
-      color: black;
+      color: white;
       &.gamingLight:before {
         content: "";
         display: block;
@@ -618,6 +622,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:hover, &.gamingLight.active {
+
       &.gamingLight:before {
         background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
         background-size: 1800% 1800% !important;
@@ -628,6 +633,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:before {
+      color: white;
       content: "";
       display: block;
       position: absolute;
@@ -647,6 +653,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:hover, &.gamingDark.active {
+      color: white;
       &.gamingDark:before {
         background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
         background-size: 1800% 1800% !important;
@@ -793,71 +800,71 @@ function more(ev: MouseEvent) {
     animation: blink 1s infinite;
   }
 
-  @-webkit-keyframes AnimationLight {
-    0% {
-      background-position: 0% 50%
-    }
-    50% {
-      background-position: 100% 50%
-    }
-    100% {
-      background-position: 0% 50%
-    }
+
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
   }
-  @-moz-keyframes AnimationLight {
-    0% {
-      background-position: 0% 50%
-    }
-    50% {
-      background-position: 100% 50%
-    }
-    100% {
-      background-position: 0% 50%
-    }
+  50% {
+    background-position: 100% 50%
   }
-  @keyframes AnimationLight {
-    0% {
-      background-position: 0% 50%
-    }
-    50% {
-      background-position: 100% 50%
-    }
-    100% {
-      background-position: 0% 50%
-    }
+  100% {
+    background-position: 0% 50%
   }
-  @-webkit-keyframes AnimationDark {
-    0% {
-      background-position: 0% 50%
-    }
-    50% {
-      background-position: 100% 50%
-    }
-    100% {
-      background-position: 0% 50%
-    }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
   }
-  @-moz-keyframes AnimationDark {
-    0% {
-      background-position: 0% 50%
-    }
-    50% {
-      background-position: 100% 50%
-    }
-    100% {
-      background-position: 0% 50%
-    }
+  50% {
+    background-position: 100% 50%
   }
-  @keyframes AnimationDark {
-    0% {
-      background-position: 0% 50%
-    }
-    50% {
-      background-position: 100% 50%
-    }
-    100% {
-      background-position: 0% 50%
-    }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
   }
 }
 </style>

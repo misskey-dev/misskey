@@ -375,20 +375,20 @@ function more() {
   }
   &.gamingLight:hover, &.gamingLight.active {
     text-decoration: none;
-    color: black;
+    color: white;
 
     &.gamingLight:before {
-      content: "";
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
-      width: 52px;
-      aspect-ratio: 1/1;
-      border-radius: 100%;
+			content: "";
+			display: block;
+			height: 100%;
+			aspect-ratio: 1;
+			margin: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			border-radius: 999px;
       background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
       background-size: 1800% 1800% !important;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;

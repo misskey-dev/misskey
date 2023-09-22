@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		ref="tabHighlightEl"
-		:class="[$style.tabHighlight, { [$style.animate]: defaultStore.reactiveState.animation.value }]"
+		:class="[$style.tabHighlight, { [$style.animate]: defaultStore.reactiveState.animation.value , [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
 	></div>
 </div>
 </template>
@@ -53,9 +53,40 @@ export type Tab = {
 </script>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
+import {onMounted, onUnmounted, watch, nextTick, shallowRef, ref, computed} from 'vue';
 import { defaultStore } from '@/store.js';
+let gaming = ref('');
 
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  console.log(gaming)
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
@@ -245,9 +276,88 @@ onUnmounted(() => {
 	border-radius: 999px;
 	transition: none;
 	pointer-events: none;
-
+  &.gamingLight{
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+  }
+  &.gamingDark{
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+    background-size: 1800% 1800%;
+    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+  }
 	&.animate {
 		transition: width 0.15s ease, left 0.15s ease;
 	}
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>
