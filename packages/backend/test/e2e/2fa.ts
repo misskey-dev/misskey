@@ -221,6 +221,12 @@ describe('2要素認証', () => {
 		});
 		assert.strictEqual(signinResponse.status, 200);
 		assert.notEqual(signinResponse.body.i, undefined);
+
+		// 後片付け
+		await api('/i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
 	});
 
 	test('が設定でき、セキュリティキーでログインできる。', async () => {
@@ -276,6 +282,12 @@ describe('2要素認証', () => {
 		}));
 		assert.strictEqual(signinResponse2.status, 200);
 		assert.notEqual(signinResponse2.body.i, undefined);
+
+		// 後片付け
+		await api('/i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
 	});
 
 	test('が設定でき、セキュリティキーでパスワードレスログインできる。', async () => {
@@ -333,6 +345,12 @@ describe('2要素認証', () => {
 		});
 		assert.strictEqual(signinResponse2.status, 200);
 		assert.notEqual(signinResponse2.body.i, undefined);
+
+		// 後片付け
+		await api('/i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
 	});
 
 	test('が設定でき、設定したセキュリティキーの名前を変更できる。', async () => {
@@ -376,6 +394,12 @@ describe('2要素認証', () => {
 		assert.strictEqual(securityKeys.length, 1);
 		assert.strictEqual(securityKeys[0].name, renamedKey);
 		assert.notEqual(securityKeys[0].lastUsed, undefined);
+
+		// 後片付け
+		await api('/i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
 	});
 
 	test('が設定でき、設定したセキュリティキーを削除できる。', async () => {
@@ -430,6 +454,12 @@ describe('2要素認証', () => {
 		});
 		assert.strictEqual(signinResponse.status, 200);
 		assert.notEqual(signinResponse.body.i, undefined);
+
+		// 後片付け
+		await api('/i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
 	});
 
 	test('が設定でき、設定解除できる。（パスワードのみでログインできる。）', async () => {
@@ -460,5 +490,11 @@ describe('2要素認証', () => {
 		});
 		assert.strictEqual(signinResponse.status, 200);
 		assert.notEqual(signinResponse.body.i, undefined);
+
+		// 後片付け
+		await api('/i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
 	});
 });
