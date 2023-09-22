@@ -110,7 +110,7 @@
 		"@types/ws": "8.5.5",
 		"@typescript-eslint/eslint-plugin": "6.7.2",
 		"@typescript-eslint/parser": "6.7.2",
-		"@vitest/coverage-v8": "0.34.4",
+		"@vitest/coverage-v8": "0.34.5",
 		"@vue/runtime-core": "3.3.4",
 		"acorn": "8.10.0",
 		"cross-env": "7.0.3",
@@ -127,14 +127,14 @@
 		"prettier": "3.0.3",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"start-server-and-test": "2.0.0",
-		"storybook": "7.4.2",
+		"start-server-and-test": "2.0.1",
+		"storybook": "7.4.3",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"summaly": "github:misskey-dev/summaly",
 		"vite-plugin-turbosnap": "1.0.3",
-		"vitest": "0.34.4",
+		"vitest": "0.34.5",
 		"vitest-fetch-mock": "0.2.2",
 		"vue-eslint-parser": "9.3.1",
-		"vue-tsc": "1.8.11"
+		"vue-tsc": "1.8.13"
 	}
 }

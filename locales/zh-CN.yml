@@ -1113,6 +1113,9 @@ loadReplies: "查看回复"
 loadConversation: "查看对话"
 pinnedList: "已置顶的列表"
 keepScreenOn: "保持设备屏幕开启"
+verifiedLink: "已验证的链接"
+notifyNotes: "打开发帖通知"
+unnotifyNotes: "关闭发帖通知"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
@@ -1713,7 +1716,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "此设备已被注册"
   registerTOTP: "开始设置认证应用"
-  passwordToTOTP: "请输入您的密码"
   step1: "首先，在您的设备上安装验证应用，例如 {a} 或 {b}。"
   step2: "然后，扫描屏幕上显示的二维码。"
   step2Click: "通过点击二维码，您可以使用设备上安装的身份验证器应用程序或密钥环进行注册"
@@ -1891,6 +1893,7 @@ _profile:
   metadataContent: "内容"
   changeAvatar: "修改头像"
   changeBanner: "修改横幅"
+  verifiedLinkDescription: "如果将内容设置为 URL，当链接所指向的网页内包含自己的个人资料链接时，可以显示一个已验证图标。"
 _exportOrImport:
   allNotes: "所有帖子"
   favoritedNotes: "收藏的帖子"
@@ -2009,6 +2012,7 @@ _notification:
   youReceivedFollowRequest: "您有新的关注请求"
   yourFollowRequestAccepted: "您的关注请求已通过"
   pollEnded: "问卷调查结果已生成。"
+  newNote: "新的帖子"
   unreadAntennaNote: "天线 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
   achievementEarned: "获得成就"
