@@ -1716,7 +1716,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "此设备已被注册"
   registerTOTP: "开始设置认证应用"
-  passwordToTOTP: "请输入您的密码"
   step1: "首先，在您的设备上安装验证应用，例如 {a} 或 {b}。"
   step2: "然后，扫描屏幕上显示的二维码。"
   step2Click: "通过点击二维码，您可以使用设备上安装的身份验证器应用程序或密钥环进行注册"
