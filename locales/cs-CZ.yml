@@ -1679,7 +1679,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "Již jste zaregistrovali dvoufaktorové ověřovací zařízení."
   registerTOTP: "Registrovat aplikaci autentizátoru"
-  passwordToTOTP: "Zadejte své heslo"
   step1: "Nejprve si do zařízení nainstalujte aplikaci pro ověřování (například {a} nebo {b})."
   step2: "Poté naskenujte QR kód zobrazený na této obrazovce."
   step2Click: "Kliknutím na tento QR kód můžete zaregistrovat 2FA do bezpečnostního klíče nebo aplikace autentizace telefonu."

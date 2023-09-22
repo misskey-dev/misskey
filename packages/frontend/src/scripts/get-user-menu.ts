@@ -80,7 +80,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
-	async function toggleNoteSubscribe() {
+	async function toggleNotify() {
 		os.apiWithDialog(user.isNoteSubscribing ? 'note-notification/delete' : 'note-notification/create', {
 			userId: user.id,
 		}).then(() => {
@@ -277,6 +277,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				},
 			}]);
 		}
+
+		// フォローしたとしても user.isFollowing はリアルタイム更新されないので不便なため
+		//if (user.isFollowing) {
+		menu = menu.concat([{
+			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
+			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
+			action: toggleNotify,
+		}]);
+		//}
 
 		menu = menu.concat([null, {
 			icon: user.isNoteSubscribing ? 'ti ti-bell-off' : 'ti ti-bell',

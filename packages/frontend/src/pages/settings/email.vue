@@ -67,18 +67,16 @@ const onChangeReceiveAnnouncementEmail = (v) => {
 	});
 };
 
-const saveEmailAddress = () => {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.apiWithDialog('i/update-email', {
-			password: password,
-			email: emailAddress.value,
-		});
+async function saveEmailAddress() {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	os.apiWithDialog('i/update-email', {
+		password: auth.result.password,
+		token: auth.result.token,
+		email: emailAddress.value,
 	});
-};
+}
 
 const emailNotification_mention = ref($i!.emailNotificationTypes.includes('mention'));
 const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply'));

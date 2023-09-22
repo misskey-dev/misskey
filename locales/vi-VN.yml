@@ -1006,9 +1006,9 @@ enableChartsForRemoteUser: "Tạo biểu đồ người dùng từ xa"
 video: "Video"
 videos: "Các video"
 dataSaver: "Tiết kiệm dung lượng"
-accountMigration: "Gộp chung tài khoản"
+accountMigration: "Chuyển tài khoản"
 accountMoved: "Người dùng này đã chuyển sang một tài khoản mới:"
-accountMovedShort: "Tài khoản này đã được gộp"
+accountMovedShort: "Tài khoản này đã được chuyển"
 operationForbidden: "Thao tác này không thể thực hiện"
 forceShowAds: "Luôn hiện quảng cáo"
 notificationDisplay: "Thông báo"
@@ -1046,9 +1046,12 @@ renotes: "Đăng lại"
 loadReplies: "Hiển thị các trả lời"
 pinnedList: "Các mục đã được ghim"
 keepScreenOn: "Giữ màn hình luôn bật"
+verifiedLink: "Chúng tôi đã xác nhận bạn là chủ sở hữu của đường dẫn này"
 _announcement:
   forExistingUsers: "Chỉ những người dùng đã tồn tại"
+  forExistingUsersDescription: "Nếu được bật, thông báo này sẽ chỉ hiển thị với những người dùng đã tồn tại vào lúc thông báo được tạo. Nếu tắt đi, những tài khoản mới đăng ký sau khi thông báo được đăng lên cũng sẽ thấy nó."
   end: "Lưu trữ thông báo"
+  tooManyActiveAnnouncementDescription: "Có quá nhiều thông báo sẽ làm trải nghiệm của người dùng tệ đi. Vui lòng lưu trữ những thông báo đã hết hiệu lực."
   readConfirmTitle: "Đánh dấu là đã đọc?"
   readConfirmText: "Điều này sẽ đánh dấu nội dung của \"{title}\" là đã đọc."
 _initialAccountSetting:
@@ -1056,7 +1059,28 @@ _initialAccountSetting:
   letsStartAccountSetup: "Để bắt đầu, hãy cùng thiết lập tài khoản nhé."
   letsFillYourProfile: "Đầu tiên, hãy thiết lập hồ sơ của bạn."
   profileSetting: "Thiết lập hồ sơ"
+  privacySetting: "Cài đặt quyền riêng tư"
+  theseSettingsCanEditLater: "Bạn vẫn có thể thay đổi những cài đặt này."
+  youCanEditMoreSettingsInSettingsPageLater: "Còn rất nhiều những cài đặt khác bạn có thể thay đổi ở trang \"Cài đặt\". Hãy nhớ ghé thăm trong lần sau nhé."
+  followUsers: "Thử theo dõi một vài người mà bạn có thể thích để xây dựng dòng thời gian của mình."
+  pushNotificationDescription: "Bật thông báo đẩy sẽ cho phép bạn nhận thông báo từ {name} trực tiếp từ thiết bị của bạn."
+  initialAccountSettingCompleted: "Thiết lập tài khoản thành công!"
+  haveFun: "Hãy tận hưởng {name} nhé!"
+  ifYouNeedLearnMore: "Nếu bạn muốn tìm hiểu thêm về cách sử dụng {name} (Misskey), hãy vào {link}."
+  skipAreYouSure: "Bạn thực sự muốn bỏ qua mục thiết lập tài khoản?"
+  laterAreYouSure: "Bạn thực sự muốn thiết lập tài khoản vào lúc khác?"
+_serverSettings:
+  iconUrl: "Biểu tượng URL"
+  appIconResolutionMustBe: "Độ phân giải tối thiểu là {resolution}."
+  manifestJsonOverride: "Ghi đè manifest.json"
 _accountMigration:
+  moveFrom: "Chuyển một tài khoản khác vào tài khoản này"
+  moveFromLabel: "Tài khoản gốc #{n}"
+  moveTo: "Chuyển tài khoản này vào một tài khoản khác"
+  moveCannotBeUndone: "Việc chuyển tài khoản không thể huỷ."
+  moveAccountDescription: "Điều này sẽ chuyển tài khoản này sang một tài khoản khác.\n　・Những người theo dõi sẽ tự động được chuyển sang tài khoản mới\n　・Tài khoản này sẽ tự bỏ theo dõi những người mà bạn đã theo dõi trước đây\n　・Bạn sẽ không thể đăng tút mới, v.v trên tài khoản này\n\nDù việc chuyển người theo dõi được diễn ra tự động, bạn vẫn phải tự chuẩn bị một vài bước để chuyển danh sách những người dùng bạn đang theo dõi. Để làm vậy, vui lòng thực hiện việc xuất dữ liệu những người dùng đã theo dõi mà sau này bạn sẽ dùng để nhập vào tài khoản mới ở menu Cài đặt. Hành động tương tự áp dụng với danh sách những người dùng bị chặn hoặc tắt tiếng.\n\n(Điều này áp dụng cho phiên bản Misskey v13.12.0 và sau này. Các phần mềm ActivityPub khác , ví dụ như Mastodon, sẽ có thể hoạt động khác đi.)"
+  startMigration: "Chuyển"
+  movedAndCannotBeUndone: "\nTài khoản này đã được chuyển đi.\nViệc di chuyển tài khoản không thể bị huỷ bỏ."
   movedTo: "Tài khoản mới:"
 _achievements:
   earnedAt: "Ngày thu nhận"
@@ -1096,6 +1120,8 @@ _achievements:
       title: "Hàng tinh đăng bài"
       description: "Đã đăng bài 50,000 lần rồi"
     _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "Đăng 100,000 tút"
       flavor: "Liệu viết bài gì tầm này vậy? "
     _login3:
       title: "Sơ cấp I"
@@ -1127,6 +1153,15 @@ _achievements:
     _login400:
       title: "Khách hàng thường xuyên cấp III"
       description: "Tổng số ngày đăng nhập đạt 400 ngày"
+    _login1000:
+      flavor: "Cảm ơn bạn đã sử dụng Misskey!"
+    _noteFavorited1:
+      title: "Nhà thiên văn học"
+    _myNoteFavorited1:
+      title: "Đi tìm những ngôi sao"
+    _profileFilled:
+      title: "Luôn sẵn sàng"
+      description: "Thiết lập tài khoản của bạn"
     _markedAsCat:
       title: "Tôi là một con mèo"
       description: "Bật chế độ mèo"
@@ -1152,8 +1187,18 @@ _achievements:
     _followers10:
       title: "FOLLOW ME!!"
       description: "Người theo dõi bạn vượt lên 10 người"
+    _followers50:
+      title: "Từng chút một"
+      description: "Đạt được 50 lượt theo dõi"
+    _followers100:
+      title: "Người nổi tiếng"
+      description: "Đạt được 100 lượt theo dõi"
+    _followers300:
+      title: "Vui lòng xếp thành hàng nào"
+      description: "Đạt được 300 lượt theo dõi"
     _followers500:
       title: "Trạm phát sóng"
+      description: "Đạt được 500 lượt theo dõi"
     _followers1000:
       title: "Người có tầm ảnh hưởng"
       description: "Người theo dõi bạn vượt lên 1000 người"
@@ -1172,11 +1217,15 @@ _achievements:
       description: "Tìm thấy được những kho báu cất giấu"
     _client30min:
       title: "Giải lao xỉu"
+      description: "Giữ Misskey mở trong ít nhất 30 phút"
+    _client60min:
+      description: "Giữ Misskey mở trong ít nhất 60 phút"
     _noteDeletedWithin1min:
       title: "Xem như không có gì đâu nha"
     _postedAtLateNight:
       title: "Loài ăn đêm"
       description: "Đăng bài trong đêm khuya "
+      flavor: "Đến giờ đi ngủ rồi."
     _postedAt0min0sec:
       title: "Tín hiệu báo giờ"
       description: "Đăng bài vào 0 phút 0 giây"
@@ -1207,6 +1256,8 @@ _achievements:
     _setNameToSyuilo:
       title: "Ngưỡng mộ với vị thần"
       description: "Đạt tên là syuilo"
+    _passedSinceAccountCreated1:
+      title: "Kỷ niệm một năm"
     _loggedInOnBirthday:
       title: "Sinh nhật vủi vẻ"
       description: "Đăng nhập vào ngày sinh"
@@ -1466,7 +1517,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "Bạn đã đăng ký thiết bị xác minh 2 bước."
   registerTOTP: "Đăng ký ứng dụng xác thực"
-  passwordToTOTP: "Nhắn mật mã"
   step1: "Trước tiên, hãy cài đặt một ứng dụng xác minh (chẳng hạn như {a} hoặc {b}) trên thiết bị của bạn."
   step2: "Sau đó, quét mã QR hiển thị trên màn hình này."
   step2Click: "Quét mã QR trên ứng dụng xác thực (Authy, Google authenticator, v.v.)"

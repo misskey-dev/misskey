@@ -715,6 +715,7 @@ export interface Locale {
     "alwaysMarkSensitive": string;
     "loadRawImages": string;
     "disableShowingAnimatedImages": string;
+    "highlightSensitiveMedia": string;
     "verificationEmailSent": string;
     "notSet": string;
     "emailVerified": string;
@@ -1125,6 +1126,10 @@ export interface Locale {
     "pinnedList": string;
     "keepScreenOn": string;
     "verifiedLink": string;
+    "notifyNotes": string;
+    "unnotifyNotes": string;
+    "authentication": string;
+    "authenticationRequiredToContinue": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1839,7 +1844,6 @@ export interface Locale {
     "_2fa": {
         "alreadyRegistered": string;
         "registerTOTP": string;
-        "passwordToTOTP": string;
         "step1": string;
         "step2": string;
         "step2Click": string;
@@ -1921,6 +1925,7 @@ export interface Locale {
         "homeTimeline": string;
         "users": string;
         "userList": string;
+        "userBlacklist": string;
     };
     "_weekday": {
         "sunday": string;
@@ -2158,6 +2163,7 @@ export interface Locale {
         "youReceivedFollowRequest": string;
         "yourFollowRequestAccepted": string;
         "pollEnded": string;
+        "newNote": string;
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;

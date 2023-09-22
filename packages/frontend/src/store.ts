@@ -126,7 +126,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: [
 			'notifications',
-			'favorites',
+			'clips',
 			'drive',
 			'followRequests',
 			'-',
@@ -192,6 +192,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	nsfw: {
 		where: 'device',
 		default: 'respect' as 'respect' | 'force' | 'ignore',
+	},
+	highlightSensitiveMedia: {
+		where: 'device',
+		default: false,
 	},
 	animation: {
 		where: 'device',

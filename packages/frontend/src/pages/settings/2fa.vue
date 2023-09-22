@@ -94,16 +94,12 @@ withDefaults(defineProps<{
 const usePasswordLessLogin = $computed(() => $i?.usePasswordLessLogin ?? false);
 
 async function registerTOTP(): Promise<void> {
-	const password = await os.inputText({
-		title: i18n.ts._2fa.registerTOTP,
-		text: i18n.ts._2fa.passwordToTOTP,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
 	os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
@@ -111,20 +107,17 @@ async function registerTOTP(): Promise<void> {
 	}, {}, 'closed');
 }
 
-function unregisterTOTP(): void {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.apiWithDialog('i/2fa/unregister', {
-			password: password,
-		}).catch(error => {
-			os.alert({
-				type: 'error',
-				text: error,
-			});
+async function unregisterTOTP(): Promise<void> {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	os.apiWithDialog('i/2fa/unregister', {
+		password: auth.result.password,
+		token: auth.result.token,
+	}).catch(error => {
+		os.alert({
+			type: 'error',
+			text: error,
 		});
 	});
 }
@@ -150,15 +143,12 @@ async function unregisterKey(key) {
 	});
 	if (confirm.canceled) return;
 
-	const password = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	await os.apiWithDialog('i/2fa/remove-key', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 		credentialId: key.id,
 	});
 	os.success();
@@ -181,16 +171,13 @@ async function renameKey(key) {
 }
 
 async function addSecurityKey() {
-	const password = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	const registrationOptions = parseCreationOptionsFromJSON({
 		publicKey: await os.apiWithDialog('i/2fa/register-key', {
-			password: password.result,
+			password: auth.result.password,
+			token: auth.result.token,
 		}),
 	});
 
@@ -211,8 +198,12 @@ async function addSecurityKey() {
 	);
 	if (!credential) return;
 
+	const auth2 = await os.authenticateDialog();
+	if (auth2.canceled) return;
+
 	await os.apiWithDialog('i/2fa/key-done', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 		name: name.result,
 		credential: credential.toJSON(),
 	});

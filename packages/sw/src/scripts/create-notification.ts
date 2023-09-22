@@ -135,7 +135,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					}];
 
 				case 'note':
-					return [t('_notification.newNote', { name: getUserName(data.body.user) }), {
+					return [t('_notification.newNote') + ': ' + getUserName(data.body.user), {
 						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('bell'),

@@ -45,6 +45,13 @@ export class MiFollowing {
 	@JoinColumn()
 	public follower: MiUser | null;
 
+	@Index()
+	@Column('varchar', {
+		length: 32,
+		nullable: true,
+	})
+	public notify: 'normal' | null;
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {
