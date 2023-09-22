@@ -35,11 +35,13 @@ export function createAiScriptEnv(opts) {
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			if (token) {
-				utils.assertString(token);
-				// バグがあればundefinedもあり得るため念のため
-				if (typeof token.value !== 'string') throw new Error('invalid token');
+				if (token.type !== 'null') {
+					utils.assertString(token);
+					// バグがあればundefinedもあり得るため念のため
+					if (typeof token.value !== 'string') throw new Error('invalid token');
+				}
 			}
-			return os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token ?? null)).then(res => {
+			return os.api(ep.value, utils.valToJs(param), (token ? token.value : opts.token) ?? null).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
