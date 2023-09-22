@@ -119,6 +119,12 @@ export class AntennaService implements OnApplicationShutdown {
 				return this.utilityService.getFullApAccount(username, host).toLowerCase();
 			});
 			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+		} else if (antenna.src === 'users_blacklist') {
+			const accts = antenna.users.map(x => {
+				const { username, host } = Acct.parse(x);
+				return this.utilityService.getFullApAccount(username, host).toLowerCase();
+			});
+			if (accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 		}
 
 		const keywords = antenna.keywords

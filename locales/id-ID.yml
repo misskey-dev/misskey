@@ -1683,7 +1683,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "Kamu telah mendaftarkan perangkat otentikasi dua faktor."
   registerTOTP: "Daftarkan aplikasi autentikator"
-  passwordToTOTP: "Masukkan kata sandimu"
   step1: "Pertama, pasang aplikasi otentikasi (seperti {a} atau {b}) di perangkat kamu."
   step2: "Lalu, pindai kode QR yang ada di layar."
   step2Click: "Mengeklik kode QR ini akan membolehkanmu untuk mendaftarkan 2FA ke security-key atau aplikasi autentikator ponsel."
