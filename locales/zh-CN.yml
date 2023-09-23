@@ -1532,6 +1532,7 @@ _plugin:
   install: "安装插件"
   installWarn: "请不要安装不可信的插件。"
   manage: "管理插件..."
+  viewSource: "查看源代码"
 _preferencesBackups:
   list: "已创建的备份"
   saveNew: "另存为"
