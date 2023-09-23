@@ -1404,3 +1404,4 @@ _webhookSettings:
     mention: "Po zostaniu wspomnianym"
 _moderationLogTypes:
   suspend: "Zawieś"
+  resetPassword: "Zresetuj hasło"
