@@ -2075,3 +2075,4 @@ _webhookSettings:
     mention: "누군가 나를 멘션했을 때"
 _moderationLogTypes:
   suspend: "정지"
+  resetPassword: "비밀번호 재설정"
