@@ -174,15 +174,16 @@ async function updateAgreeNote(v: boolean) {
     -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    color: var(--navFg);
   }
 
   &.gamingLight {
     background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800%;
-
     -webkit-animation: AnimationLight cubic-bezier(0, 0.2, 0.90, 1) infinite;
     -moz-animation: AnimationLight cubic-bezier(0, 0.2, 0.90, 1) infinite;
     animation: AnimationLight cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    color: var(--navFg);
   }
 
 }
