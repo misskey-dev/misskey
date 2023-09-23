@@ -397,3 +397,5 @@ _deck:
     mentions: "Επισημάνσεις"
 _webhookSettings:
   name: "Όνομα"
+_moderationLogTypes:
+  suspend: "Αποβολή"
