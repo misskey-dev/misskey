@@ -1453,3 +1453,4 @@ _webhookSettings:
   active: "Zapnuté"
 _moderationLogTypes:
   suspend: "Zmraziť"
+  resetPassword: "Resetovať heslo"
