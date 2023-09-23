@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import type { RemoteUser, User } from '@/models/entities/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { concat, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
 import { getApIds } from './type.js';
@@ -12,9 +17,11 @@ type Visibility = 'public' | 'home' | 'followers' | 'specified';
 
 type AudienceInfo = {
 	visibility: Visibility,
-	mentionedUsers: User[],
-	visibleUsers: User[],
+	mentionedUsers: MiUser[],
+	visibleUsers: MiUser[],
 };
+
+type GroupedAudience = Record<'public' | 'followers' | 'other', string[]>;
 
 @Injectable()
 export class ApAudienceService {
@@ -24,17 +31,17 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	public async parseAudience(actor: RemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
+	public async parseAudience(actor: MiRemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
 		const toGroups = this.groupingAudience(getApIds(to), actor);
 		const ccGroups = this.groupingAudience(getApIds(cc), actor);
-	
+
 		const others = unique(concat([toGroups.other, ccGroups.other]));
-	
-		const limit = promiseLimit<User | null>(2);
+
+		const limit = promiseLimit<MiUser | null>(2);
 		const mentionedUsers = (await Promise.all(
 			others.map(id => limit(() => this.apPersonService.resolvePerson(id, resolver).catch(() => null))),
-		)).filter((x): x is User => x != null);
-	
+		)).filter((x): x is MiUser => x != null);
+
 		if (toGroups.public.length > 0) {
 			return {
 				visibility: 'public',
@@ -42,7 +49,7 @@ export class ApAudienceService {
 				visibleUsers: [],
 			};
 		}
-	
+
 		if (ccGroups.public.length > 0) {
 			return {
 				visibility: 'home',
@@ -50,7 +57,7 @@ export class ApAudienceService {
 				visibleUsers: [],
 			};
 		}
-	
+
 		if (toGroups.followers.length > 0) {
 			return {
 				visibility: 'followers',
@@ -58,22 +65,22 @@ export class ApAudienceService {
 				visibleUsers: [],
 			};
 		}
-	
+
 		return {
 			visibility: 'specified',
 			mentionedUsers,
 			visibleUsers: mentionedUsers,
 		};
 	}
-	
+
 	@bindThis
-	private groupingAudience(ids: string[], actor: RemoteUser) {
-		const groups = {
-			public: [] as string[],
-			followers: [] as string[],
-			other: [] as string[],
+	private groupingAudience(ids: string[], actor: MiRemoteUser): GroupedAudience {
+		const groups: GroupedAudience = {
+			public: [],
+			followers: [],
+			other: [],
 		};
-	
+
 		for (const id of ids) {
 			if (this.isPublic(id)) {
 				groups.public.push(id);
@@ -83,25 +90,23 @@ export class ApAudienceService {
 				groups.other.push(id);
 			}
 		}
-	
+
 		groups.other = unique(groups.other);
-	
+
 		return groups;
 	}
-	
+
 	@bindThis
-	private isPublic(id: string) {
+	private isPublic(id: string): boolean {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
-			'as#Public',
+			'as:Public',
 			'Public',
 		].includes(id);
 	}
-	
+
 	@bindThis
-	private isFollowers(id: string, actor: RemoteUser) {
-		return (
-			id === (actor.followersUri ?? `${actor.uri}/followers`)
-		);
+	private isFollowers(id: string, actor: MiRemoteUser): boolean {
+		return id === (actor.followersUri ?? `${actor.uri}/followers`);
 	}
 }

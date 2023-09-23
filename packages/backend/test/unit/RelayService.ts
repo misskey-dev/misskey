@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
@@ -10,7 +15,7 @@ import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
-import type { RelaysRepository } from '@/models/index.js';
+import type { RelaysRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
@@ -61,7 +66,7 @@ describe('RelayService', () => {
 		await app.close();
 	});
 
-	test('addRelay', async () => {	
+	test('addRelay', async () => {
 		const result = await relayService.addRelay('https://example.com');
 
 		expect(result.inbox).toBe('https://example.com');
@@ -72,7 +77,7 @@ describe('RelayService', () => {
 		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
 	});
 
-	test('listRelay', async () => {	
+	test('listRelay', async () => {
 		const result = await relayService.listRelay();
 
 		expect(result.length).toBe(1);
@@ -80,7 +85,7 @@ describe('RelayService', () => {
 		expect(result[0].status).toBe('requesting');
 	});
 
-	test('removeRelay: succ', async () => {	
+	test('removeRelay: succ', async () => {
 		await relayService.removeRelay('https://example.com');
 
 		expect(queueService.deliver).toHaveBeenCalled();
@@ -93,7 +98,7 @@ describe('RelayService', () => {
 		expect(list.length).toBe(0);
 	});
 
-	test('removeRelay: fail', async () => {	
+	test('removeRelay: fail', async () => {
 		await expect(relayService.removeRelay('https://x.example.com'))
 			.rejects.toThrow('relay not found');
 	});

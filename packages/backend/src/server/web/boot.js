@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * BOOT LOADER
  * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
@@ -116,9 +121,9 @@
 			}
 		}
 	}
-	const colorSchema = localStorage.getItem('colorSchema');
-	if (colorSchema) {
-		document.documentElement.style.setProperty('color-schema', colorSchema);
+	const colorScheme = localStorage.getItem('colorScheme');
+	if (colorScheme) {
+		document.documentElement.style.setProperty('color-scheme', colorScheme);
 	}
 	//#endregion
 

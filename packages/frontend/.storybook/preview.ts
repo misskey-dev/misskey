@@ -1,12 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { addons } from '@storybook/addons';
 import { FORCE_REMOUNT } from '@storybook/core-events';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswDecorator } from 'msw-storybook-addon';
-import { userDetailed } from './fakes';
-import locale from './locale';
-import { commonHandlers, onUnhandledRequest } from './mocks';
-import themes from './themes';
+import { userDetailed } from './fakes.js';
+import locale from './locale.js';
+import { commonHandlers, onUnhandledRequest } from './mocks.js';
+import themes from './themes.js';
 import '../src/style.scss';
 
 const appInitialized = Symbol();

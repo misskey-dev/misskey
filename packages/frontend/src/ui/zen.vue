@@ -1,6 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div :class="showBottom ? $style.rootWithBottom : $style.root" style="container-type: inline-size;">
-	<RouterView/>
+<div :class="showBottom ? $style.rootWithBottom : $style.root">
+	<div style="container-type: inline-size;">
+		<RouterView/>
+	</div>
 
 	<XCommon/>
 </div>
@@ -17,10 +24,10 @@
 <script lang="ts" setup>
 import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
-import { mainRouter } from '@/router';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { instanceName, ui } from '@/config';
-import { i18n } from '@/i18n';
+import { mainRouter } from '@/router.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { instanceName, ui } from '@/config.js';
+import { i18n } from '@/i18n.js';
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 

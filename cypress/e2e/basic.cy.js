@@ -54,9 +54,10 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
 		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
-	
+
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
 		cy.get('[data-cy-signup-username] input').type('alice');
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
@@ -78,6 +79,7 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
 		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
 
@@ -169,25 +171,20 @@ describe('After user signed in', () => {
 		cy.get('[data-cy-user-setup-user-description] textarea').type('ほげ');
 		// TODO: アイコン設定テスト
 
-		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		// プライバシー設定
 
-		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		// フォローはスキップ
 
-		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		// プッシュ通知設定はスキップ
 
-		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
-		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
   });
 });

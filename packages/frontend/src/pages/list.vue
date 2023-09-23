@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MKSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ i18n.ts.nothing }}
@@ -30,12 +35,13 @@
 
 <script lang="ts" setup>
 import { watch, computed } from 'vue';
-import * as os from '@/os';
-import { userPage } from '@/filters/user';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { userPage } from '@/filters/user.js';
+import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { serverErrorImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	listId: string;
@@ -111,7 +117,7 @@ definePageMetadata(computed(() => list ? {
 	flex: 1;
 	min-width: 0;
 	margin-right: 8px;
-	
+
 	&:hover {
 		text-decoration: none;
 	}

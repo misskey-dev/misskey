@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps">
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
@@ -20,7 +25,7 @@
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji"/>
 		</div>
 	</MkFoldableSection>
-	
+
 	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
 		<template #header>{{ category || i18n.ts.other }}</template>
 		<div :class="$style.emojis">
@@ -37,9 +42,9 @@ import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');
@@ -56,7 +61,7 @@ function search() {
 		const queryarry = q.match(/\:([a-z0-9_]*)\:/g);
 
 		if (queryarry) {
-			searchEmojis = customEmojis.value.filter(emoji => 
+			searchEmojis = customEmojis.value.filter(emoji =>
 				queryarry.includes(`:${emoji.name}:`),
 			);
 		} else {

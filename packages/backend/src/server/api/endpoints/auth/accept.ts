@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
+import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
@@ -31,9 +36,8 @@ export const paramDef = {
 	required: ['token'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
@@ -55,15 +59,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchSession);
 			}
 
-			const accessToken = secureRndstr(32, true);
+			const accessToken = secureRndstr(32);
 
 			// Fetch exist access token
-			const exist = await this.accessTokensRepository.findOneBy({
-				appId: session.appId,
-				userId: me.id,
+			const exist = await this.accessTokensRepository.exist({
+				where: {
+					appId: session.appId,
+					userId: me.id,
+				},
 			});
 
-			if (exist == null) {
+			if (!exist) {
 				const app = await this.appsRepository.findOneByOrFail({ id: session.appId });
 
 				// Generate Hash

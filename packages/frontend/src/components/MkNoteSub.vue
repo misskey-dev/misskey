@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div :class="[$style.root, { [$style.children]: depth > 1 }]">
+<div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
@@ -23,21 +28,33 @@
 		<MkA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
 	</div>
 </div>
+<div v-else :class="$style.muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
+				<MkUserName :user="note.user"/>
+			</MkA>
+		</template>
+	</I18n>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import * as misskey from 'misskey-js';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { notePage } from '@/filters/note';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+import { notePage } from '@/filters/note.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { userPage } from "@/filters/user";
+import { checkWordMute } from "@/scripts/check-word-mute";
+import { defaultStore } from "@/store";
 
 const props = withDefaults(defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	detail?: boolean;
 
 	// how many notes are in between this one and the note being viewed in detail
@@ -46,8 +63,10 @@ const props = withDefaults(defineProps<{
 	depth: 1,
 });
 
+const muted = ref(checkWordMute(props.note, $i, defaultStore.state.mutedWords));
+
 let showContent = $ref(false);
-let replies: misskey.entities.Note[] = $ref([]);
+let replies: Misskey.entities.Note[] = $ref([]);
 
 if (props.detail) {
 	os.api('notes/children', {
@@ -133,5 +152,13 @@ if (props.detail) {
 			padding: 10px 0 0 8px;
 		}
 	}
+}
+
+.muted {
+	text-align: center;
+	padding: 8px !important;
+	border: 1px solid var(--divider);
+	margin: 8px 8px 0 8px;
+	border-radius: 8px;
 }
 </style>

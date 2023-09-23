@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<TransitionGroup
@@ -19,13 +24,16 @@
 import { $ref } from 'vue/macros';
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
-import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
+import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch.js';
+import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash.js';
 
-const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
+const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	// テスト環境で Web Worker インスタンスは作成できない
 	if (import.meta.env.MODE === 'test') {
-		resolve(null);
+		const canvas = document.createElement('canvas');
+		canvas.width = 64;
+		canvas.height = 64;
+		resolve(canvas);
 		return;
 	}
 	const testWorker = new TestWebGL2();
@@ -38,7 +46,10 @@ const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
 			resolve(workers);
 			if (_DEV_) console.log('WebGL2 in worker is supported!');
 		} else {
-			resolve(null);
+			const canvas = document.createElement('canvas');
+			canvas.width = 64;
+			canvas.height = 64;
+			resolve(canvas);
 			if (_DEV_) console.log('WebGL2 in worker is not supported...');
 		}
 		testWorker.terminate();
@@ -50,7 +61,7 @@ const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	transition?: {
@@ -70,6 +81,7 @@ const props = withDefaults(defineProps<{
 	width?: number;
 	cover?: boolean;
 	forceBlurhash?: boolean;
+	onlyAvgColor?: boolean; // 軽量化のためにBlurhashを使わずに平均色だけを描画
 }>(), {
 	transition: null,
 	src: null,
@@ -79,6 +91,7 @@ const props = withDefaults(defineProps<{
 	width: 64,
 	cover: true,
 	forceBlurhash: false,
+	onlyAvgColor: false,
 });
 
 const viewId = uuid();
@@ -100,8 +113,7 @@ function waitForDecode() {
 			.then(() => {
 				loaded = true;
 			}, error => {
-				console.error('Error occured during decoding image', img.value, error);
-				throw Error(error);
+				console.log('Error occurred during decoding image', img.value, error);
 			});
 	} else {
 		loaded = false;
@@ -139,8 +151,8 @@ function drawImage(bitmap: CanvasImageSource) {
 	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
 }
 
-async function draw() {
-	if (!canvas.value || props.hash == null) return;
+function drawAvg() {
+	if (!canvas.value || !props.hash) return;
 
 	const ctx = canvas.value.getContext('2d');
 	if (!ctx) return;
@@ -149,27 +161,30 @@ async function draw() {
 	ctx.beginPath();
 	ctx.fillStyle = extractAvgColorFromBlurhash(props.hash) ?? '#888';
 	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+}
 
-	const workers = await workerPromise;
-	if (workers) {
-		workers.postMessage(
+async function draw() {
+	if (props.hash == null) return;
+
+	drawAvg();
+
+	if (props.onlyAvgColor) return;
+
+	const work = await canvasPromise;
+	if (work instanceof WorkerMultiDispatch) {
+		work.postMessage(
 			{
 				id: viewId,
 				hash: props.hash,
-				width: canvasWidth,
-				height: canvasHeight,
 			},
 			undefined,
 		);
 	} else {
 		try {
-			const work = document.createElement('canvas');
-			work.width = canvasWidth;
-			work.height = canvasHeight;
 			render(props.hash, work);
-			ctx.drawImage(work, 0, 0, canvasWidth, canvasHeight);
+			drawImage(work);
 		} catch (error) {
-			console.error('Error occured during drawing blurhash', error);
+			console.error('Error occurred during drawing blurhash', error);
 		}
 	}
 }
@@ -179,9 +194,9 @@ function workerOnMessage(event: MessageEvent) {
 	drawImage(event.data.bitmap as ImageBitmap);
 }
 
-workerPromise.then(worker => {
-	if (worker) {
-		worker.addListener(workerOnMessage);
+canvasPromise.then(work => {
+	if (work instanceof WorkerMultiDispatch) {
+		work.addListener(workerOnMessage);
 	}
 
 	draw();
@@ -204,8 +219,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	workerPromise.then(worker => {
-		worker?.removeListener(workerOnMessage);
+	canvasPromise.then(work => {
+		if (work instanceof WorkerMultiDispatch) {
+			work.removeListener(workerOnMessage);
+		}
 	});
 });
 </script>

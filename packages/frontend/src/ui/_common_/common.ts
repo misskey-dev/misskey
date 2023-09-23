@@ -1,8 +1,13 @@
-import * as os from '@/os';
-import { instance } from '@/instance';
-import { host } from '@/config';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import * as os from '@/os.js';
+import { instance } from '@/instance.js';
+import { host } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 export function openInstanceMenu(ev: MouseEvent) {
 	os.popupMenu([{
@@ -33,7 +38,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.ads,
 		icon: 'ti ti-ad',
 		to: '/ads',
-	}, {
+	}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
+		type: 'link',
+		to: '/invite',
+		text: i18n.ts.invite,
+		icon: 'ti ti-user-plus',
+	} : undefined, {
 		type: 'parent',
 		text: i18n.ts.tools,
 		icon: 'ti ti-tool',
@@ -52,23 +62,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 			to: '/clicker',
 			text: '🍪👈',
 			icon: 'ti ti-cookie',
-		}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
-			text: i18n.ts.invite,
-			icon: 'ti ti-user-plus',
-			action: () => {
-				os.api('invite').then(x => {
-					os.alert({
-						type: 'info',
-						text: x.code,
-					});
-				}).catch(err => {
-					os.alert({
-						type: 'error',
-						text: err,
-					});
-				});
-			},
-		} : undefined, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
+		}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 			type: 'link',
 			to: '/custom-emojis-manager',
 			text: i18n.ts.manageCustomEmojis,

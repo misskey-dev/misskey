@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="800">
 	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
@@ -12,7 +17,7 @@
 <script lang="ts" setup>
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const paginationForNotes = {
 	endpoint: 'notes/featured' as const,

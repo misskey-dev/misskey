@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div data-cy-mkw-button class="mkw-button">
 	<MkButton :primary="widgetProps.colored" full @click="run">
@@ -9,10 +14,10 @@
 <script lang="ts" setup>
 import { Interpreter, Parser } from '@syuilo/aiscript';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import { $i } from '@/account';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
+import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 
 const name = 'button';

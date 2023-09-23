@@ -12,10 +12,27 @@ export type Acct = {
     host: string | null;
 };
 
+declare namespace acct {
+    export {
+        parse,
+        toString_2 as toString,
+        Acct
+    }
+}
+export { acct }
+
 // Warning: (ae-forgotten-export) The symbol "TODO_2" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
 type Ad = TODO_2;
+
+// @public (undocumented)
+type AdminInstanceMetadata = DetailedInstanceMetadata & {
+    blockedHosts: string[];
+    app192IconUrl: string | null;
+    app512IconUrl: string | null;
+    manifestJsonOverride: string;
+};
 
 // @public (undocumented)
 type Announcement = {
@@ -25,6 +42,10 @@ type Announcement = {
     text: string;
     title: string;
     imageUrl: string | null;
+    display: 'normal' | 'banner' | 'dialog';
+    icon: 'info' | 'warning' | 'error' | 'success';
+    needConfirmationToRead: boolean;
+    forYou: boolean;
     isRead?: boolean;
 };
 
@@ -271,6 +292,7 @@ type DetailedInstanceMetadata = LiteInstanceMetadata & {
     pinnedPages: string[];
     pinnedClipId: string | null;
     cacheRemoteFiles: boolean;
+    cacheRemoteSensitiveFiles: boolean;
     requireSetup: boolean;
     proxyAccountName: string | null;
     features: Record<string, any>;
@@ -326,6 +348,10 @@ export type Endpoints = {
     'admin/logs': {
         req: TODO;
         res: TODO;
+    };
+    'admin/meta': {
+        req: NoParams;
+        res: AdminInstanceMetadata;
     };
     'admin/reset-password': {
         req: TODO;
@@ -478,6 +504,14 @@ export type Endpoints = {
         res: TODO;
     };
     'admin/federation/update-instance': {
+        req: TODO;
+        res: TODO;
+    };
+    'admin/invite/create': {
+        req: TODO;
+        res: TODO;
+    };
+    'admin/invite/list': {
         req: TODO;
         res: TODO;
     };
@@ -960,8 +994,14 @@ export type Endpoints = {
         res: TODO;
     };
     'drive/files/create': {
-        req: TODO;
-        res: TODO;
+        req: {
+            folderId?: string;
+            name?: string;
+            comment?: string;
+            isSentisive?: boolean;
+            force?: boolean;
+        };
+        res: DriveFile;
     };
     'drive/files/delete': {
         req: {
@@ -1543,6 +1583,28 @@ export type Endpoints = {
         req: TODO;
         res: TODO;
     };
+    'invite/create': {
+        req: NoParams;
+        res: Invite;
+    };
+    'invite/delete': {
+        req: {
+            inviteId: Invite['id'];
+        };
+        res: null;
+    };
+    'invite/list': {
+        req: {
+            limit?: number;
+            sinceId?: Invite['id'];
+            untilId?: Invite['id'];
+        };
+        res: Invite[];
+    };
+    'invite/limit': {
+        req: NoParams;
+        res: InviteLimit;
+    };
     'messaging/history': {
         req: {
             limit?: number;
@@ -1856,6 +1918,10 @@ export type Endpoints = {
         };
         res: null;
     };
+    'notifications/test-notification': {
+        req: NoParams;
+        res: null;
+    };
     'notifications/mark-all-as-read': {
         req: NoParams;
         res: null;
@@ -1941,6 +2007,19 @@ export type Endpoints = {
     'room/update': {
         req: TODO;
         res: TODO;
+    };
+    'signup': {
+        req: {
+            username: string;
+            password: string;
+            host?: string;
+            invitationCode?: string;
+            emailAddress?: string;
+            'hcaptcha-response'?: string;
+            'g-recaptcha-response'?: string;
+            'turnstile-response'?: string;
+        };
+        res: MeSignup | null;
     };
     'stats': {
         req: NoParams;
@@ -2109,6 +2188,10 @@ export type Endpoints = {
         req: TODO;
         res: TODO;
     };
+    'users/flashs': {
+        req: TODO;
+        res: TODO;
+    };
     'users/recommendation': {
         req: TODO;
         res: TODO;
@@ -2147,10 +2230,6 @@ export type Endpoints = {
             };
         };
     };
-    'users/stats': {
-        req: TODO;
-        res: TODO;
-    };
 };
 
 declare namespace entities {
@@ -2163,6 +2242,8 @@ declare namespace entities {
         UserGroup,
         UserList,
         MeDetailed,
+        MeDetailedWithSecret,
+        MeSignup,
         DriveFile,
         DriveFolder,
         GalleryPost,
@@ -2174,6 +2255,7 @@ declare namespace entities {
         LiteInstanceMetadata,
         DetailedInstanceMetadata,
         InstanceMetadata,
+        AdminInstanceMetadata,
         ServerInfo,
         Stats,
         Page,
@@ -2193,6 +2275,8 @@ declare namespace entities {
         Blocking,
         Instance,
         Signin,
+        Invite,
+        InviteLimit,
         UserSorting,
         OriginType
     }
@@ -2263,7 +2347,7 @@ type ID = string;
 // @public (undocumented)
 type Instance = {
     id: ID;
-    caughtAt: DateString;
+    firstRetrievedAt: DateString;
     host: string;
     usersCount: number;
     notesCount: number;
@@ -2277,6 +2361,7 @@ type Instance = {
     lastCommunicatedAt: DateString;
     isNotResponding: boolean;
     isSuspended: boolean;
+    isBlocked: boolean;
     softwareName: string | null;
     softwareVersion: string | null;
     openRegistrations: boolean | null;
@@ -2294,6 +2379,23 @@ type Instance = {
 type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 
 // @public (undocumented)
+type Invite = {
+    id: ID;
+    code: string;
+    expiresAt: DateString | null;
+    createdAt: DateString;
+    createdBy: UserLite | null;
+    usedBy: UserLite | null;
+    usedAt: DateString | null;
+    used: boolean;
+};
+
+// @public (undocumented)
+type InviteLimit = {
+    remaining: number;
+};
+
+// @public (undocumented)
 function isAPIError(reason: any): reason is APIError;
 
 // @public (undocumented)
@@ -2302,6 +2404,7 @@ type LiteInstanceMetadata = {
     maintainerEmail: string | null;
     version: string;
     name: string | null;
+    shortName: string | null;
     uri: string;
     description: string | null;
     langs: string[];
@@ -2324,7 +2427,9 @@ type LiteInstanceMetadata = {
     themeColor: string | null;
     mascotImageUrl: string | null;
     bannerUrl: string | null;
-    errorImageUrl: string | null;
+    serverErrorImageUrl: string | null;
+    infoImageUrl: string | null;
+    notFoundImageUrl: string | null;
     iconUrl: string | null;
     backgroundImageUrl: string | null;
     logoImageUrl: string | null;
@@ -2373,7 +2478,25 @@ type MeDetailed = UserDetailed & {
     noCrawle: boolean;
     receiveAnnouncementEmail: boolean;
     usePasswordLessLogin: boolean;
+    unreadAnnouncements: Announcement[];
+    twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
     [other: string]: any;
+};
+
+// @public (undocumented)
+type MeDetailedWithSecret = MeDetailed & {
+    email: string;
+    emailVerified: boolean;
+    securityKeysList: {
+        id: string;
+        name: string;
+        lastUsed: string;
+    }[];
+};
+
+// @public (undocumented)
+type MeSignup = MeDetailedWithSecret & {
+    token: string;
 };
 
 // @public (undocumented)
@@ -2417,6 +2540,7 @@ type Note = {
     reactions: Record<string, number>;
     renoteCount: number;
     repliesCount: number;
+    clippedCount?: number;
     poll?: {
         expiresAt: DateString | null;
         multiple: boolean;
@@ -2486,7 +2610,12 @@ type Notification_2 = {
     userId: User['id'];
     note: Note;
 } | {
-    type: 'pollVote';
+    type: 'note';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'pollEnded';
     user: User;
     userId: User['id'];
     note: Note;
@@ -2512,10 +2641,12 @@ type Notification_2 = {
     header?: string | null;
     body: string;
     icon?: string | null;
+} | {
+    type: 'test';
 });
 
 // @public (undocumented)
-export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
 
 // @public (undocumented)
 type OriginType = 'combined' | 'local' | 'remote';
@@ -2551,6 +2682,9 @@ type PageEvent = {
     userId: User['id'];
     user: User;
 };
+
+// @public (undocumented)
+function parse(acct: string): Acct;
 
 // @public (undocumented)
 export const permissions: string[];
@@ -2606,6 +2740,10 @@ export class Stream extends EventEmitter<StreamEvents> {
     //
     // (undocumented)
     disconnectToChannel(connection: NonSharedConnection): void;
+    // (undocumented)
+    heartbeat(): void;
+    // (undocumented)
+    ping(): void;
     // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -2627,6 +2765,9 @@ export class Stream extends EventEmitter<StreamEvents> {
 }
 
 // @public (undocumented)
+function toString_2(acct: Acct): string;
+
+// @public (undocumented)
 type User = UserLite | UserDetailed;
 
 // @public (undocumented)
@@ -2643,6 +2784,7 @@ type UserDetailed = UserLite & {
         name: string;
         value: string;
     }[];
+    verifiedLinks: string[];
     followersCount: number;
     followingCount: number;
     hasPendingFollowRequestFromYou: boolean;
@@ -2674,6 +2816,7 @@ type UserDetailed = UserLite & {
     updatedAt: DateString | null;
     uri: string | null;
     url: string | null;
+    notify: 'normal' | 'none';
 };
 
 // @public (undocumented)
@@ -2717,7 +2860,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:596:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:631:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

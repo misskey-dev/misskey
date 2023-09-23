@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/index.js';
+import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -25,9 +30,8 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -61,6 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
+			const roleAssigns = await this.roleService.getUserAssigns(user.id);
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
@@ -85,6 +90,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
+				roleAssigns: roleAssigns.map(a => ({
+					createdAt: a.createdAt.toISOString(),
+					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
+					roleId: a.roleId,
+				})),
 			};
 		});
 	}

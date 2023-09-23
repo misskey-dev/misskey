@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Note } from '@/models/entities/Note.js';
-import { User } from '@/models/index.js';
-import type { NotesRepository } from '@/models/index.js';
+import { MiNote } from '@/models/Note.js';
+import { MiUser } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
@@ -20,6 +25,8 @@ type Q =
 	{ op: '<', k: K, v: number } |
 	{ op: '>=', k: K, v: number } |
 	{ op: '<=', k: K, v: number } |
+	{ op: 'is null', k: K} |
+	{ op: 'is not null', k: K} |
 	{ op: 'and', qs: Q[] } |
 	{ op: 'or', qs: Q[] } |
 	{ op: 'not', q: Q };
@@ -45,6 +52,8 @@ function compileQuery(q: Q): string {
 		case '<=': return `(${q.k} <= ${compileValue(q.v)})`;
 		case 'and': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
 		case 'or': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
+		case 'is null': return `(${q.k} IS NULL)`;
+		case 'is not null': return `(${q.k} IS NOT NULL)`;
 		case 'not': return `(NOT ${compileQuery(q.q)})`;
 		default: throw new Error('unrecognized query operator');
 	}
@@ -52,6 +61,7 @@ function compileQuery(q: Q): string {
 
 @Injectable()
 export class SearchService {
+	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
 
 	constructor(
@@ -92,15 +102,34 @@ export class SearchService {
 				},
 			});
 		}
+
+		if (config.meilisearch?.scope) {
+			this.meilisearchIndexScope = config.meilisearch.scope;
+		}
 	}
 
 	@bindThis
-	public async indexNote(note: Note): Promise<void> {
+	public async indexNote(note: MiNote): Promise<void> {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
-			this.meilisearchNoteIndex!.addDocuments([{
+			switch (this.meilisearchIndexScope) {
+				case 'global':
+					break;
+
+				case 'local':
+					if (note.userHost == null) break;
+					return;
+
+				default: {
+					if (note.userHost == null) break;
+					if (this.meilisearchIndexScope.includes(note.userHost)) break;
+					return;
+				}
+			}
+
+			await this.meilisearchNoteIndex?.addDocuments([{
 				id: note.id,
 				createdAt: note.createdAt.getTime(),
 				userId: note.userId,
@@ -116,15 +145,24 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: User | null, opts: {
-		userId?: Note['userId'] | null;
-		channelId?: Note['channelId'] | null;
+	public async unindexNote(note: MiNote): Promise<void> {
+		if (!['home', 'public'].includes(note.visibility)) return;
+
+		if (this.meilisearch) {
+			this.meilisearchNoteIndex!.deleteDocument(note.id);
+		}
+	}
+
+	@bindThis
+	public async searchNote(q: string, me: MiUser | null, opts: {
+		userId?: MiNote['userId'] | null;
+		channelId?: MiNote['channelId'] | null;
 		host?: string | null;
 	}, pagination: {
-		untilId?: Note['id'];
-		sinceId?: Note['id'];
+		untilId?: MiNote['id'];
+		sinceId?: MiNote['id'];
 		limit?: number;
-	}): Promise<Note[]> {
+	}): Promise<MiNote[]> {
 		if (this.meilisearch) {
 			const filter: Q = {
 				op: 'and',
@@ -136,7 +174,7 @@ export class SearchService {
 			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
 			if (opts.host) {
 				if (opts.host === '.') {
-					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
+					filter.qs.push({ op: 'is null', k: 'userHost' });
 				} else {
 					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
 				}
@@ -170,11 +208,19 @@ export class SearchService {
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
+			if (opts.host) {
+				if (opts.host === '.') {
+					query.andWhere('user.host IS NULL');
+				} else {
+					query.andWhere('user.host = :host', { host: opts.host });
+				}
+			}
+
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
-			return await query.take(pagination.limit).getMany();
+			return await query.limit(pagination.limit).getMany();
 		}
 	}
 }

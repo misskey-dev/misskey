@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository, UserListFavoritesRepository } from '@/models/index.js';
+import type { UserListsRepository, UserListFavoritesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -69,10 +74,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					userListId: ps.listId,
 				});
 				if (me !== null) {
-					additionalProperties.isLiked = (await this.userListFavoritesRepository.findOneBy({
-						userId: me.id,
-						userListId: ps.listId,
-					}) !== null);
+					additionalProperties.isLiked = await this.userListFavoritesRepository.exist({
+						where: {
+							userId: me.id,
+							userListId: ps.listId,
+						},
+					});
 				} else {
 					additionalProperties.isLiked = false;
 				}

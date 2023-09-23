@@ -106,7 +106,7 @@ If your language is not listed in Crowdin, please open an issue.
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Development
-During development, it is useful to use the 
+During development, it is useful to use the
 
 ```
 pnpm dev
@@ -150,7 +150,7 @@ Prepare DB/Redis for testing.
 ```
 docker compose -f packages/backend/test/docker-compose.yml up
 ```
-Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
+Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`.
 
 Run all test.
 ```
@@ -214,30 +214,13 @@ Misskey uses [Storybook](https://storybook.js.org/) for UI development.
 
 ### Setup & Run
 
-#### Universal
-
-##### Setup
-
-```bash
-pnpm --filter misskey-js build
-pnpm --filter frontend tsc -p .storybook && (node packages/frontend/.storybook/preload-locale.js & node packages/frontend/.storybook/preload-theme.js)
-```
-
-##### Run
-
-```bash
-node packages/frontend/.storybook/generate.js && pnpm --filter frontend storybook dev
-```
-
-#### macOS & Linux
-
-##### Setup
+#### Setup
 
 ```bash
 pnpm --filter misskey-js build
 ```
 
-##### Run
+#### Run
 
 ```bash
 pnpm --filter frontend storybook-dev
@@ -318,6 +301,12 @@ export const handlers = [
 Don't forget to re-run the `.storybook/generate.js` script after adding, editing, or removing the above files.
 
 ## Notes
+
+### Misskeyのドメイン固有の概念は`Mi`をprefixする
+例えばGoogleが自社サービスをMap、Earth、DriveではなくGoogle Map、Google Earth、Google Driveのように命名するのと同じ
+コード上でMisskeyのドメイン固有の概念には`Mi`をprefixすることで、他のドメインの同様の概念と区別できるほか、名前の衝突を防ぐ。
+ただし、文脈上Misskeyのものを指すことが明らかであり、名前の衝突の恐れがない場合は、一時的なローカル変数に限って`Mi`を省略してもよい。
+
 ### How to resolve conflictions occurred at pnpm-lock.yaml?
 
 Just execute `pnpm` to fix it.
@@ -447,3 +436,6 @@ marginはそのコンポーネントを使う側が設定する
 ## その他
 ### HTMLのクラス名で follow という単語は使わない
 広告ブロッカーで誤ってブロックされる
+
+### indexというファイル名を使うな
+ESMではディレクトリインポートは廃止されているのと、ディレクトリインポートせずともファイル名が index だと何故か一部のライブラリ？でディレクトリインポートだと見做されてエラーになる

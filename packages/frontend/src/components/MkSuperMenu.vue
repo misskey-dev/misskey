@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="rrevdjwu" :class="{ grid }">
 	<div v-for="group in def" class="group">
@@ -46,7 +51,7 @@ defineProps<{
 			margin: 0 0 8px 0;
 			font-size: 0.9em;
 		}
-	
+
 		> .items {
 			> .item {
 				display: flex;

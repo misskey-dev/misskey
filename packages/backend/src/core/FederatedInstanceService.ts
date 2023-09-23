@@ -1,7 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { InstancesRepository } from '@/models/index.js';
-import type { Instance } from '@/models/entities/Instance.js';
+import type { InstancesRepository } from '@/models/_.js';
+import type { MiInstance } from '@/models/Instance.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
@@ -9,8 +14,8 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class FederatedInstanceService {
-	public federatedInstanceCache: RedisKVCache<Instance | null>;
+export class FederatedInstanceService implements OnApplicationShutdown {
+	public federatedInstanceCache: RedisKVCache<MiInstance | null>;
 
 	constructor(
 		@Inject(DI.redis)
@@ -22,7 +27,7 @@ export class FederatedInstanceService {
 		private utilityService: UtilityService,
 		private idService: IdService,
 	) {
-		this.federatedInstanceCache = new RedisKVCache<Instance | null>(this.redisClient, 'federatedInstance', {
+		this.federatedInstanceCache = new RedisKVCache<MiInstance | null>(this.redisClient, 'federatedInstance', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60 * 3, // 3m
 			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
@@ -41,21 +46,21 @@ export class FederatedInstanceService {
 	}
 
 	@bindThis
-	public async fetch(host: string): Promise<Instance> {
+	public async fetch(host: string): Promise<MiInstance> {
 		host = this.utilityService.toPuny(host);
-	
+
 		const cached = await this.federatedInstanceCache.get(host);
 		if (cached) return cached;
-	
+
 		const index = await this.instancesRepository.findOneBy({ host });
-	
+
 		if (index == null) {
 			const i = await this.instancesRepository.insert({
 				id: this.idService.genId(),
 				host,
 				firstRetrievedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
-	
+
 			this.federatedInstanceCache.set(host, i);
 			return i;
 		} else {
@@ -65,7 +70,7 @@ export class FederatedInstanceService {
 	}
 
 	@bindThis
-	public async update(id: Instance['id'], data: Partial<Instance>): Promise<void> {
+	public async update(id: MiInstance['id'], data: Partial<MiInstance>): Promise<void> {
 		const result = await this.instancesRepository.createQueryBuilder().update()
 			.set(data)
 			.where('id = :id', { id })
@@ -74,7 +79,17 @@ export class FederatedInstanceService {
 			.then((response) => {
 				return response.raw[0];
 			});
-	
+
 		this.federatedInstanceCache.set(result.host, result);
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.federatedInstanceCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

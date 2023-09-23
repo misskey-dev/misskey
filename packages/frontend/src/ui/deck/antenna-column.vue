@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked">
 	<template #header>
@@ -11,10 +16,10 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store';
+import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	column: Column;
@@ -44,11 +49,22 @@ async function setAntenna() {
 	});
 }
 
-const menu = [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.selectAntenna,
-	action: setAntenna,
-}];
+function editAntenna() {
+	os.pageWindow('my/antennas/' + props.column.antennaId);
+}
+
+const menu = [
+	{
+		icon: 'ti ti-pencil',
+		text: i18n.ts.selectAntenna,
+		action: setAntenna,
+	},
+	{
+		icon: 'ti ti-settings',
+		text: i18n.ts.editAntenna,
+		action: editAntenna,
+	},
+];
 
 /*
 function focus() {

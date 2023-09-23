@@ -38,6 +38,7 @@ export type UserDetailed = UserLite & {
 	description: string | null;
 	ffVisibility: 'public' | 'followers' | 'private';
 	fields: {name: string; value: string}[];
+	verifiedLinks: string[];
 	followersCount: number;
 	followingCount: number;
 	hasPendingFollowRequestFromYou: boolean;
@@ -69,6 +70,7 @@ export type UserDetailed = UserLite & {
 	updatedAt: DateString | null;
 	uri: string | null;
 	url: string | null;
+	notify: 'normal' | 'none';
 };
 
 export type UserGroup = TODO;
@@ -104,7 +106,23 @@ export type MeDetailed = UserDetailed & {
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
+	unreadAnnouncements: Announcement[];
+	twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
 	[other: string]: any;
+};
+
+export type MeDetailedWithSecret = MeDetailed & {
+	email: string;
+	emailVerified: boolean;
+	securityKeysList: {
+		id: string;
+		name: string;
+		lastUsed: string;
+	}[];
+};
+
+export type MeSignup = MeDetailedWithSecret & {
+	token: string;
 };
 
 export type DriveFile = {
@@ -159,6 +177,7 @@ export type Note = {
 	reactions: Record<string, number>;
 	renoteCount: number;
 	repliesCount: number;
+	clippedCount?: number;
 	poll?: {
 		expiresAt: DateString | null;
 		multiple: boolean;
@@ -215,7 +234,12 @@ export type Notification = {
 	userId: User['id'];
 	note: Note;
 } | {
-	type: 'pollVote';
+	type: 'note';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'pollEnded';
 	user: User;
 	userId: User['id'];
 	note: Note;
@@ -241,6 +265,8 @@ export type Notification = {
 	header?: string | null;
 	body: string;
 	icon?: string | null;
+} | {
+	type: 'test';
 });
 
 export type MessagingMessage = {
@@ -272,6 +298,7 @@ export type LiteInstanceMetadata = {
 	maintainerEmail: string | null;
 	version: string;
 	name: string | null;
+	shortName: string | null;
 	uri: string;
 	description: string | null;
 	langs: string[];
@@ -294,7 +321,9 @@ export type LiteInstanceMetadata = {
 	themeColor: string | null;
 	mascotImageUrl: string | null;
 	bannerUrl: string | null;
-	errorImageUrl: string | null;
+	serverErrorImageUrl: string | null;
+	infoImageUrl: string | null;
+	notFoundImageUrl: string | null;
 	iconUrl: string | null;
 	backgroundImageUrl: string | null;
 	logoImageUrl: string | null;
@@ -322,12 +351,21 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 	pinnedPages: string[];
 	pinnedClipId: string | null;
 	cacheRemoteFiles: boolean;
+	cacheRemoteSensitiveFiles: boolean;
 	requireSetup: boolean;
 	proxyAccountName: string | null;
 	features: Record<string, any>;
 };
 
 export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
+
+export type AdminInstanceMetadata = DetailedInstanceMetadata & {
+	// TODO: There are more fields.
+	blockedHosts: string[];
+	app192IconUrl: string | null;
+	app512IconUrl: string | null;
+	manifestJsonOverride: string;
+};
 
 export type ServerInfo = {
 	machine: string;
@@ -391,6 +429,10 @@ export type Announcement = {
 	text: string;
 	title: string;
 	imageUrl: string | null;
+	display: 'normal' | 'banner' | 'dialog';
+	icon: 'info' | 'warning' | 'error' | 'success';
+	needConfirmationToRead: boolean;
+	forYou: boolean;
 	isRead?: boolean;
 };
 
@@ -465,7 +507,7 @@ export type Blocking = {
 
 export type Instance = {
 	id: ID;
-	caughtAt: DateString;
+	firstRetrievedAt: DateString;
 	host: string;
 	usersCount: number;
 	notesCount: number;
@@ -479,6 +521,7 @@ export type Instance = {
 	lastCommunicatedAt: DateString;
 	isNotResponding: boolean;
 	isSuspended: boolean;
+	isBlocked: boolean;
 	softwareName: string | null;
 	softwareVersion: string | null;
 	openRegistrations: boolean | null;
@@ -499,6 +542,21 @@ export type Signin = {
 	headers: Record<string, any>;
 	success: boolean;
 };
+
+export type Invite = {
+	id: ID;
+	code: string;
+	expiresAt: DateString | null;
+	createdAt: DateString;
+	createdBy: UserLite | null;
+	usedBy: UserLite | null;
+	usedAt: DateString | null;
+	used: boolean;
+}
+
+export type InviteLimit = {
+	remaining: number;
+}
 
 export type UserSorting =
 	| '+follower'

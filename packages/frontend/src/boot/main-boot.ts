@@ -1,22 +1,28 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import { common } from './common';
-import { version, ui, lang, updateLocale } from '@/config';
-import { i18n, updateI18n } from '@/i18n';
-import { confirm, alert, post, popup, toast } from '@/os';
-import { useStream } from '@/stream';
-import * as sound from '@/scripts/sound';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { makeHotkey } from '@/scripts/hotkey';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { miLocalStorage } from '@/local-storage';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
-import { mainRouter } from '@/router';
-import { initializeSw } from '@/scripts/initialize-sw';
+import { common } from './common.js';
+import { version, ui, lang, updateLocale } from '@/config.js';
+import { i18n, updateI18n } from '@/i18n.js';
+import { confirm, alert, post, popup, toast } from '@/os.js';
+import { useStream } from '@/stream.js';
+import * as sound from '@/scripts/sound.js';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { mainRouter } from '@/router.js';
+import { initializeSw } from '@/scripts/initialize-sw.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
-		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
@@ -77,6 +83,21 @@ export async function mainBoot() {
 			}
 		});
 
+		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
+			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				announcement,
+			}, {}, 'closed');
+		}
+
+		stream.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
+			}
+		});
+
 		if ($i.isDeleted) {
 			alert({
 				type: 'warning',
@@ -87,7 +108,7 @@ export async function mainBoot() {
 		const now = new Date();
 		const m = now.getMonth() + 1;
 		const d = now.getDate();
-		
+
 		if ($i.birthday) {
 			const bm = parseInt($i.birthday.split('-')[1]);
 			const bd = parseInt($i.birthday.split('-')[2]);

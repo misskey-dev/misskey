@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	:class="[$style.root, { [$style.draghover]: draghover }]"
@@ -29,10 +34,11 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { claimAchievement } from '@/scripts/achievements';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -93,9 +99,9 @@ function onDragover(ev: DragEvent) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -244,7 +250,8 @@ function setAsUploadFolder() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu([{
+	let menu;
+	menu = [{
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',
 		action: () => {
@@ -262,7 +269,17 @@ function onContextmenu(ev: MouseEvent) {
 		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
-	}], ev);
+	}];
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFolderId,
+			action: () => {
+				copyToClipboard(props.folder.id);
+			},
+		}]);
+	}
+	os.contextMenu(menu, ev);
 }
 </script>
 

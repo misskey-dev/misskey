@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="azykntjl">
 	<div class="body">
@@ -44,13 +49,13 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted } from 'vue';
 import { openInstanceMenu } from './_common_/common';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu as openAccountMenu_, $i } from '@/account';
+import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const WINDOW_THRESHOLD = 1400;
 
@@ -82,7 +87,7 @@ function openAccountMenu(ev: MouseEvent) {
 onMounted(() => {
 	window.addEventListener('resize', () => {
 		settingsWindowed = (window.innerWidth >= WINDOW_THRESHOLD);
-	}, { passive: true });	
+	}, { passive: true });
 });
 
 </script>
@@ -177,7 +182,7 @@ onMounted(() => {
 
 			> .post {
 				display: inline-block;
-			
+
 				> .button {
 					width: 40px;
 					height: 40px;

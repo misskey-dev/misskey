@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { User } from '@/models/entities/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/index.js';
+import type { MiUser } from '@/models/User.js';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
@@ -60,11 +65,11 @@ export class QueryService {
 			q.orderBy(`${q.alias}.id`, 'DESC');
 		}
 		return q;
-	}	
-	
+	}
+
 	// ここでいうBlockedは被Blockedの意
 	@bindThis
-	public generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+	public generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')
 			.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id });
@@ -87,7 +92,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+	public generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockeeId')
 			.where('blocking.blockerId = :blockerId', { blockerId: me.id });
@@ -104,67 +109,67 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateChannelQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null): void {
+	public generateChannelQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
 		if (me == null) {
 			q.andWhere('note.channelId IS NULL');
 		} else {
 			q.leftJoinAndSelect('note.channel', 'channel');
-	
+
 			const channelFollowingQuery = this.channelFollowingsRepository.createQueryBuilder('channelFollowing')
 				.select('channelFollowing.followeeId')
 				.where('channelFollowing.followerId = :followerId', { followerId: me.id });
-	
+
 			q.andWhere(new Brackets(qb => { qb
 				// チャンネルのノートではない
 				.where('note.channelId IS NULL')
 				// または自分がフォローしているチャンネルのノート
 				.orWhere(`note.channelId IN (${ channelFollowingQuery.getQuery() })`);
 			}));
-	
+
 			q.setParameters(channelFollowingQuery.getParameters());
 		}
 	}
 
 	@bindThis
-	public generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+	public generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const mutedQuery = this.mutedNotesRepository.createQueryBuilder('muted')
 			.select('muted.noteId')
 			.where('muted.userId = :userId', { userId: me.id });
-	
+
 		q.andWhere(`note.id NOT IN (${ mutedQuery.getQuery() })`);
-	
+
 		q.setParameters(mutedQuery.getParameters());
 	}
 
 	@bindThis
-	public generateMutedNoteThreadQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+	public generateMutedNoteThreadQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const mutedQuery = this.noteThreadMutingsRepository.createQueryBuilder('threadMuted')
 			.select('threadMuted.threadId')
 			.where('threadMuted.userId = :userId', { userId: me.id });
-	
+
 		q.andWhere(`note.id NOT IN (${ mutedQuery.getQuery() })`);
 		q.andWhere(new Brackets(qb => { qb
 			.where('note.threadId IS NULL')
 			.orWhere(`note.threadId NOT IN (${ mutedQuery.getQuery() })`);
 		}));
-	
+
 		q.setParameters(mutedQuery.getParameters());
 	}
 
 	@bindThis
-	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }, exclude?: User): void {
+	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: MiUser): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
-	
+
 		if (exclude) {
 			mutingQuery.andWhere('muting.muteeId != :excludeId', { excludeId: exclude.id });
 		}
-	
+
 		const mutingInstanceQuery = this.userProfilesRepository.createQueryBuilder('user_profile')
 			.select('user_profile.mutedInstances')
 			.where('user_profile.userId = :muterId', { muterId: me.id });
-	
+
 		// 投稿の作者をミュートしていない かつ
 		// 投稿の返信先の作者をミュートしていない かつ
 		// 投稿の引用元の作者をミュートしていない
@@ -191,24 +196,24 @@ export class QueryService {
 				.where('note.renoteUserHost IS NULL')
 				.orWhere(`NOT ((${ mutingInstanceQuery.getQuery() })::jsonb ? note.renoteUserHost)`);
 			}));
-	
+
 		q.setParameters(mutingQuery.getParameters());
 		q.setParameters(mutingInstanceQuery.getParameters());
 	}
 
 	@bindThis
-	public generateMutedUserQueryForUsers(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+	public generateMutedUserQueryForUsers(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
-	
+
 		q.andWhere(`user.id NOT IN (${ mutingQuery.getQuery() })`);
-	
+
 		q.setParameters(mutingQuery.getParameters());
 	}
 
 	@bindThis
-	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me?: Pick<User, 'id'> | null): void {
+	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me?: Pick<MiUser, 'id'> | null): void {
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
 				.where('note.replyId IS NULL') // 返信ではない
@@ -234,7 +239,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null): void {
+	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
 		// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
@@ -245,7 +250,7 @@ export class QueryService {
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :meId');
-	
+
 			q.andWhere(new Brackets(qb => { qb
 				// 公開投稿である
 				.where(new Brackets(qb => { qb
@@ -268,20 +273,20 @@ export class QueryService {
 					}));
 				}));
 			}));
-	
+
 			q.setParameters({ meId: me.id });
 		}
 	}
 
 	@bindThis
-	public generateMutedUserRenotesQueryForNotes(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+	public generateMutedUserRenotesQueryForNotes(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const mutingQuery = this.renoteMutingsRepository.createQueryBuilder('renote_muting')
 			.select('renote_muting.muteeId')
 			.where('renote_muting.muterId = :muterId', { muterId: me.id });
-	
+
 		q.andWhere(new Brackets(qb => {
 			qb
-				.where(new Brackets(qb => { 
+				.where(new Brackets(qb => {
 					qb.where('note.renoteId IS NOT NULL');
 					qb.andWhere('note.text IS NULL');
 					qb.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
@@ -289,7 +294,7 @@ export class QueryService {
 				.orWhere('note.renoteId IS NULL')
 				.orWhere('note.text IS NOT NULL');
 		}));
-		
+
 		q.setParameters(mutingQuery.getParameters());
 	}
 }

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<nav :class="$style.nav">
@@ -56,7 +61,7 @@
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-if="moreFolders" ref="moreFolders" @click="fetchMoreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" :class="$style.files">
 				<XFile
@@ -65,6 +70,7 @@
 					v-anim="i"
 					:class="$style.file"
 					:file="file"
+					:folder="folder"
 					:selectMode="select === 'file'"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
 					@chosen="chooseFile"
@@ -95,12 +101,12 @@ import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
-import * as os from '@/os';
-import { useStream } from '@/stream';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { uploadFile, uploads } from '@/scripts/upload';
-import { claimAchievement } from '@/scripts/achievements';
+import * as os from '@/os.js';
+import { useStream } from '@/stream.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { uploadFile, uploads } from '@/scripts/upload.js';
+import { claimAchievement } from '@/scripts/achievements.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -201,9 +207,9 @@ function onDragover(ev: DragEvent): any {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -559,6 +565,28 @@ async function fetch() {
 	fetching.value = false;
 }
 
+function fetchMoreFolders() {
+	fetching.value = true;
+
+	const max = 30;
+
+	os.api('drive/folders', {
+		folderId: folder.value ? folder.value.id : null,
+		type: props.type,
+		untilId: folders.value.at(-1)?.id,
+		limit: max + 1,
+	}).then(folders => {
+		if (folders.length === max + 1) {
+			moreFolders.value = true;
+			folders.pop();
+		} else {
+			moreFolders.value = false;
+		}
+		for (const x of folders) appendFolder(x);
+		fetching.value = false;
+	});
+}
+
 function fetchMoreFiles() {
 	fetching.value = true;
 
@@ -568,7 +596,7 @@ function fetchMoreFiles() {
 	os.api('drive/files', {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		untilId: files.value[files.value.length - 1].id,
+		untilId: files.value.at(-1)?.id,
 		limit: max + 1,
 	}).then(files => {
 		if (files.length === max + 1) {

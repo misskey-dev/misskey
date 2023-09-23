@@ -1,25 +1,32 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable, Inject } from '@nestjs/common';
-import Ajv from 'ajv';
+import _Ajv from 'ajv';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import Logger from '@/logger.js';
-import type { AntennasRepository } from '@/models/index.js';
+import type { AntennasRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import { DBAntennaImportJobData } from '../types.js';
 import type * as Bull from 'bullmq';
 
+const Ajv = _Ajv.default;
+
 const validate = new Ajv().compile({
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
-		userListAccts: { 
-			type: 'array', 
+		userListAccts: {
+			type: 'array',
 			items: {
 				type: 'string',
-			}, 
+			},
 			nullable: true,
 		},
 		keywords: { type: 'array', items: {

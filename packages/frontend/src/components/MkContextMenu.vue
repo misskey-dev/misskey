@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	appear
@@ -16,9 +21,9 @@
 import { onMounted, onBeforeUnmount } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from './types/menu.vue';
-import contains from '@/scripts/contains';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
+import contains from '@/scripts/contains.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -61,15 +66,11 @@ onMounted(() => {
 	rootEl.style.top = `${top}px`;
 	rootEl.style.left = `${left}px`;
 
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
-	}
+	document.body.addEventListener('mousedown', onMousedown);
 });
 
 onBeforeUnmount(() => {
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
+	document.body.removeEventListener('mousedown', onMousedown);
 });
 
 function onMousedown(evt: Event) {

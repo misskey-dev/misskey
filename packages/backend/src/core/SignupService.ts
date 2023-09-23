@@ -1,15 +1,19 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
-import { User } from '@/models/entities/User.js';
-import { UserProfile } from '@/models/entities/UserProfile.js';
+import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
+import { MiUser } from '@/models/User.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
-import { UserKeypair } from '@/models/entities/UserKeypair.js';
-import { UsedUsername } from '@/models/entities/UsedUsername.js';
+import { MiUserKeypair } from '@/models/UserKeypair.js';
+import { MiUsedUsername } from '@/models/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -22,9 +26,6 @@ export class SignupService {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
-
-		@Inject(DI.config)
-		private config: Config,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -42,41 +43,41 @@ export class SignupService {
 
 	@bindThis
 	public async signup(opts: {
-		username: User['username'];
+		username: MiUser['username'];
 		password?: string | null;
-		passwordHash?: UserProfile['password'] | null;
+		passwordHash?: MiUserProfile['password'] | null;
 		host?: string | null;
 		ignorePreservedUsernames?: boolean;
 	}) {
 		const { username, password, passwordHash, host } = opts;
 		let hash = passwordHash;
-	
+
 		// Validate username
 		if (!this.userEntityService.validateLocalUsername(username)) {
 			throw new Error('INVALID_USERNAME');
 		}
-	
+
 		if (password != null && passwordHash == null) {
 			// Validate password
 			if (!this.userEntityService.validatePassword(password)) {
 				throw new Error('INVALID_PASSWORD');
 			}
-	
+
 			// Generate hash of password
 			const salt = await bcrypt.genSalt(8);
 			hash = await bcrypt.hash(password, salt);
 		}
-	
+
 		// Generate secret
 		const secret = generateUserToken();
-	
+
 		// Check username duplication
-		if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+		if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 			throw new Error('DUPLICATED_USERNAME');
 		}
-	
+
 		// Check deleted username duplication
-		if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
+		if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
 			throw new Error('USED_USERNAME');
 		}
 
@@ -92,7 +93,7 @@ export class SignupService {
 
 		const keyPair = await new Promise<string[]>((res, rej) =>
 			generateKeyPair('rsa', {
-				modulusLength: 4096,
+				modulusLength: 2048,
 				publicKeyEncoding: {
 					type: 'spki',
 					format: 'pem',
@@ -106,19 +107,19 @@ export class SignupService {
 			}, (err, publicKey, privateKey) =>
 				err ? rej(err) : res([publicKey, privateKey]),
 			));
-	
-		let account!: User;
-	
+
+		let account!: MiUser;
+
 		// Start transaction
 		await this.db.transaction(async transactionalEntityManager => {
-			const exist = await transactionalEntityManager.findOneBy(User, {
+			const exist = await transactionalEntityManager.findOneBy(MiUser, {
 				usernameLower: username.toLowerCase(),
 				host: IsNull(),
 			});
-	
+
 			if (exist) throw new Error(' the username is already used');
-	
-			account = await transactionalEntityManager.save(new User({
+
+			account = await transactionalEntityManager.save(new MiUser({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				username: username,
@@ -127,27 +128,27 @@ export class SignupService {
 				token: secret,
 				isRoot: isTheFirstUser,
 			}));
-	
-			await transactionalEntityManager.save(new UserKeypair({
+
+			await transactionalEntityManager.save(new MiUserKeypair({
 				publicKey: keyPair[0],
 				privateKey: keyPair[1],
 				userId: account.id,
 			}));
-	
-			await transactionalEntityManager.save(new UserProfile({
+
+			await transactionalEntityManager.save(new MiUserProfile({
 				userId: account.id,
 				autoAcceptFollowed: true,
 				password: hash,
 			}));
-	
-			await transactionalEntityManager.save(new UsedUsername({
+
+			await transactionalEntityManager.save(new MiUsedUsername({
 				createdAt: new Date(),
 				username: username.toLowerCase(),
 			}));
 		});
-	
+
 		this.usersChart.update(account, true);
-	
+
 		return { account, secret };
 	}
 }

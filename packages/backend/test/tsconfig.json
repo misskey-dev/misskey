@@ -9,9 +9,9 @@
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": true,
-		"target": "es2021",
-		"module": "es2020",
-		"moduleResolution": "node",
+		"target": "ES2022",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"allowSyntheticDefaultImports": true,
 		"removeComments": false,
 		"noLib": false,
@@ -39,6 +39,6 @@
 	"include": [
 		"./**/*.ts",
 		"../src/**/*.test.ts",
-		"../src/@types/**/*.ts",
+		"../src/@types/**/*.ts"
 	]
 }

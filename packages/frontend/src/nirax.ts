@@ -1,9 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // NIRAX --- A lightweight router
 
 import { EventEmitter } from 'eventemitter3';
-import { Component, shallowRef, ShallowRef } from 'vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { safeURIDecode } from '@/scripts/safe-uri-decode';
+import { Component, onMounted, shallowRef, ShallowRef } from 'vue';
+import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 
 type RouteDef = {
 	path: string;
@@ -23,7 +27,7 @@ type ParsedPath = (string | {
 	optional?: boolean;
 })[];
 
-export type Resolved = { route: RouteDef; props: Map<string, string>; child?: Resolved; };
+export type Resolved = { route: RouteDef; props: Map<string, string | boolean>; child?: Resolved; };
 
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
@@ -75,15 +79,19 @@ export class Router extends EventEmitter<{
 	public currentRef: ShallowRef<Resolved> = shallowRef();
 	public currentRoute: ShallowRef<RouteDef> = shallowRef();
 	private currentPath: string;
+	private isLoggedIn: boolean;
+	private notFoundPageComponent: Component;
 	private currentKey = Date.now().toString();
 
 	public navHook: ((path: string, flag?: any) => boolean) | null = null;
 
-	constructor(routes: Router['routes'], currentPath: Router['currentPath']) {
+	constructor(routes: Router['routes'], currentPath: Router['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
 
 		this.routes = routes;
 		this.currentPath = currentPath;
+		this.isLoggedIn = isLoggedIn;
+		this.notFoundPageComponent = notFoundPageComponent;
 		this.navigate(currentPath, null, false);
 	}
 
@@ -159,11 +167,11 @@ export class Router extends EventEmitter<{
 					if (route.hash != null && hash != null) {
 						props.set(route.hash, safeURIDecode(hash));
 					}
-	
+
 					if (route.query != null && queryString != null) {
 						const queryObject = [...new URLSearchParams(queryString).entries()]
 							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
-	
+
 						for (const q in route.query) {
 							const as = route.query[q];
 							if (queryObject[q]) {
@@ -171,7 +179,7 @@ export class Router extends EventEmitter<{
 							}
 						}
 					}
-	
+
 					return {
 						route,
 						props,
@@ -212,8 +220,9 @@ export class Router extends EventEmitter<{
 			throw new Error('no route found for: ' + path);
 		}
 
-		if (res.route.loginRequired) {
-			pleaseLogin('/');
+		if (res.route.loginRequired && !this.isLoggedIn) {
+			res.route.component = this.notFoundPageComponent;
+			res.props.set('showLoginPopup', true);
 		}
 
 		const isSamePath = beforePath === path;
@@ -263,13 +272,33 @@ export class Router extends EventEmitter<{
 		});
 	}
 
-	public replace(path: string, key?: string | null, emitEvent = true) {
+	public replace(path: string, key?: string | null) {
 		this.navigate(path, key);
-		if (emitEvent) {
-			this.emit('replace', {
-				path,
-				key: this.currentKey,
-			});
-		}
 	}
+}
+
+export function useScrollPositionManager(getScrollContainer: () => HTMLElement, router: Router) {
+	const scrollPosStore = new Map<string, number>();
+
+	onMounted(() => {
+		const scrollContainer = getScrollContainer();
+
+		scrollContainer.addEventListener('scroll', () => {
+			scrollPosStore.set(router.getCurrentKey(), scrollContainer.scrollTop);
+		}, { passive: true });
+
+		router.addListener('change', ctx => {
+			const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
+			scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
+			if (scrollPos !== 0) {
+				window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+					scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
+				}, 100);
+			}
+		});
+
+		router.addListener('same', () => {
+			scrollContainer.scroll({ top: 0, behavior: 'smooth' });
+		});
+	});
 }
