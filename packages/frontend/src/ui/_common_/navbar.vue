@@ -292,7 +292,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight {
-      color: white;
+      color: var(--fg);
     }
 
     &.gamingDark {
@@ -759,7 +759,7 @@ function more(ev: MouseEvent) {
     text-align: center;
 
     &.gamingLight {
-      color: white;
+			color: var(--fg);
     }
 
     &:hover, &.active {
@@ -771,7 +771,7 @@ function more(ev: MouseEvent) {
       }
 
       &.gamingLight {
-        color: white;
+        color: var(--fg);
       }
 
       &:before {
