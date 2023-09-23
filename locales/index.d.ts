@@ -2258,6 +2258,10 @@ export interface Locale {
         "addCustomEmoji": string;
         "updateServerSettings": string;
         "updateUserNote": string;
+        "deleteDriveFile": string;
+        "deleteNote": string;
+        "createGlobalAnnouncement": string;
+        "createUserAnnouncement": string;
     };
 }
 declare const locales: {
