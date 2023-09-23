@@ -30,7 +30,7 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
-# You can also use UNIX domain socket. 
+# You can also use UNIX domain socket.
 # socket: /path/to/misskey.sock
 # chmodSocket: '777'
 
@@ -60,17 +60,17 @@ dbReplications: false
 # You can configure any number of replicas here
 #dbSlaves:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -182,6 +182,7 @@ proxyBypassHosts:
 # * Deliver a common cache between instances
 # * Perform image compression (on a different server resource than the main process)
 #mediaProxy: https://example.com/proxy
+#mediaProxyKey: misskey
 
 # Proxy remote files (default: false)
 # Proxy remote files by this instance or mediaProxy to prevent remote files from running in remote domains.

@@ -1,6 +1,11 @@
+import { md5 } from '@/scripts/hash';
 import { query } from '@/scripts/url';
 import { url } from '@/config';
 import { instance } from '@/instance';
+
+const getProxySign = (targetUrl: string, signKey: string): string => {
+	return md5(`${targetUrl}_${signKey}_${location.origin}`);
+};
 
 export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', mustOrigin: boolean = false, noFallback: boolean = false): string {
 	const localProxy = `${url}/proxy`;
@@ -15,6 +20,7 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' 
 		: 'image.webp'
 	}?${query({
 		url: imageUrl,
+		sign: getProxySign(imageUrl, instance.mediaProxyKey),
 		...(!noFallback ? { 'fallback': '1' } : {}),
 		...(type ? { [type]: '1' } : {}),
 		...(mustOrigin ? { origin: '1' } : {}),
@@ -44,5 +50,6 @@ export function getStaticImageUrl(baseUrl: string): string {
 	return `${instance.mediaProxy}/static.webp?${query({
 		url: u.href,
 		static: '1',
+		sign: getProxySign(u.href, instance.mediaProxyKey),
 	})}`;
 }

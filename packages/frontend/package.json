@@ -59,6 +59,7 @@
 		"s-age": "1.1.2",
 		"sanitize-html": "2.11.0",
 		"sass": "1.63.6",
+		"spark-md5": "^3.0.2",
 		"strict-event-emitter-types": "2.0.0",
 		"syuilo-password-strength": "0.0.1",
 		"textarea-caret": "3.1.0",
