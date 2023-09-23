@@ -2080,6 +2080,7 @@ _notification:
 
   _types:
     all: "すべて"
+    note: "ユーザーの新規投稿"
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"
