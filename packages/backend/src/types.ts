@@ -40,6 +40,7 @@ export const moderationLogTypes = [
 	'clearQueue',
 	'promoteQueue',
 	'deleteDriveFile',
+	'deleteNote',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -87,4 +88,9 @@ export type ModerationLogPayloads = {
 		fileId: string;
 		fileUserId: string | null;
 	};
+	deleteNote: {
+		noteId: string;
+		noteUserId: string;
+		note: any;
+	}
 };
