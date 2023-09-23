@@ -1499,3 +1499,4 @@ _webhookSettings:
     renote: "Quando repostado"
 _moderationLogTypes:
   suspend: "Suspender"
+  resetPassword: "Redefinir senha"
