@@ -244,10 +244,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				}
-				// ノートがリプライでパブリック投稿の場合はホームにする
-				if (ps.visibility != 'home' && ps.visibility!== 'followers' && ps.visibility!=='specified' ){
-					visibility = 'home';
-				}
+
 				// Check blocking
 				if (reply.userId !== me.id) {
 					const blockExist = await this.blockingsRepository.exist({

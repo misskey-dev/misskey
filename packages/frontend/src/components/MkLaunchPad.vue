@@ -8,12 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action" v-click-anime class="_button item" :class="{gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
+				<MkA v-else v-click-anime :to="item.to" class="item" :class="{gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
@@ -25,12 +25,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref , computed , watch} from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
 	anchor?: { x: string; y: string; };
@@ -98,7 +129,20 @@ function close() {
 			vertical-align: bottom;
 			height: 100px;
 			border-radius: 10px;
-
+      &.gamingDark:hover{
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);        background-size: 1800% 1800%;
+        -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+        -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+        animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+        color: black;
+      }
+      &.gamingLight:hover{
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        color: white;
+      }
 			&:hover {
 				color: var(--accent);
 				background: var(--accentedBg);
@@ -131,5 +175,70 @@ function close() {
 			}
 		}
 	}
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

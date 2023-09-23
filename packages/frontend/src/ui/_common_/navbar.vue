@@ -35,23 +35,31 @@ SPDX-License-Identifier: AGPL-3.0-only
           >
             <i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
               :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
-            <span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator"><i
+            <span v-if="navbarItemDef[item].indicated"
+                  :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
                 class="_indicatorCircle"></i></span>
           </component>
         </template>
         <div :class="$style.divider"></div>
-        <MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+        <MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel"
+             :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
              :activeClass="$style.active" to="/admin">
           <i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
             :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
         </MkA>
-        <button class="_button" :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" @click="more">
+        <button class="_button"
+                :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+                @click="more">
           <i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
             i18n.ts.more
           }}</span>
-          <span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
+          <span v-if="otherMenuItemIndicated"
+                :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
+              class="_indicatorCircle"></i></span>
         </button>
-        <MkA v-tooltip.noDelay.right="i18n.ts.settings" :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :activeClass="$style.active"
+        <MkA v-tooltip.noDelay.right="i18n.ts.settings"
+             :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+             :activeClass="$style.active"
              to="/settings">
           <i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span
             :class="$style.itemText">{{ i18n.ts.settings }}</span>
@@ -62,7 +70,8 @@ SPDX-License-Identifier: AGPL-3.0-only
                 :class="[$style.post ,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}]"
                 data-cy-open-post-form
                 @click="os.post">
-          <i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{
+          <i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span
+            :class="$style.postText,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}">{{
             i18n.ts.note
           }}</span>
         </button>
@@ -122,7 +131,7 @@ if (darkMode.value && gamingMode.value == true) {
 }
 
 watch(darkMode, () => {
-  console.log(gaming)
+
   if (darkMode.value && gamingMode.value == true) {
     gaming.value = 'dark';
   } else if (!darkMode.value && gamingMode.value == true) {
@@ -282,39 +291,16 @@ function more(ev: MouseEvent) {
       }
     }
 
+    &.gamingLight {
+      color: white !important;
+    }
+
+    &.gamingDark {
+      color: black !important;
+    }
+
     &.gamingLight:before {
-			color: white;
-      content: "";
-      display: block;
-      width: calc(100% - 38px);
-      height: 100%;
-      margin: auto;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 999px;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
-      background-size: 1800% 1800% !important;
-      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    }
-
-    &.gamingLight:hover, &.gamingLight.active {
-			color: white;
-      &.gamingLight:before {
-        background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
-        background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      }
-    }
-
-    &.gamingDark:before {
-			color: white;
+      color: white !important;
       content: "";
       display: block;
       width: calc(100% - 38px);
@@ -327,20 +313,53 @@ function more(ev: MouseEvent) {
       bottom: 0;
       border-radius: 999px;
       background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+    }
+
+    &.gamingLight:hover, &.gamingLight.active {
+      color: white !important;
+
+      &.gamingLight:before {
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      }
+    }
+
+    &.gamingDark:before {
+      color: black !important;
+      content: "";
+      display: block;
+      width: calc(100% - 38px);
+      height: 100%;
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
       background-size: 1800% 1800%;
-      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     }
 
     &.gamingDark:hover, &.gamingDark.active {
-			color: white;
+      color: black !important;
+
       &.gamingDark:before {
-        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       }
     }
 
@@ -405,6 +424,14 @@ function more(ev: MouseEvent) {
     box-sizing: border-box;
     color: var(--navFg);
 
+    &.gamingDark {
+      color: white;
+    }
+
+    &.gamingLight {
+      color: black;
+    }
+
     &:hover {
       text-decoration: none;
       color: var(--navHoverFg);
@@ -435,19 +462,21 @@ function more(ev: MouseEvent) {
 
     &.gamingDark:hover {
       color: white;
+
       background-size: 1800% 1800%;
       text-decoration: none;
-      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     }
 
     &.gamingDark.active {
       color: white;
+
       background-size: 1800% 1800%;
-      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     }
 
     &.gamingDark:hover, &.gamingDark.active {
@@ -464,35 +493,38 @@ function more(ev: MouseEvent) {
         left: 0;
         right: 0;
         bottom: 0;
-        border-radius: 999px;
-        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       }
     }
 
     &.gamingLight:hover {
-      color: white;
+      color: black;
       background-size: 1800% 1800% !important;
       text-decoration: none;
-      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     }
 
     &.gamingLight:active {
-      color: white;
+      color: black;
+
       background-size: 1800% 1800% !important;
-      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     }
 
     &.gamingLight:hover, &.gamingLight.active {
-      color: white;
+      color: black;
+
+
       &.gamingLight:before {
+        color: white !important;
         content: "";
         display: block;
         width: calc(100% - 34px);
@@ -504,11 +536,11 @@ function more(ev: MouseEvent) {
         right: 0;
         bottom: 0;
         border-radius: 999px;
-        background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       }
     }
   }
@@ -526,6 +558,14 @@ function more(ev: MouseEvent) {
     color: var(--navIndicator);
     font-size: 8px;
     animation: blink 1s infinite;
+
+    &.gamingDark {
+      color: white;
+    }
+
+    &.gamingLight {
+      color: black;
+    }
   }
 
   .itemText {
@@ -614,21 +654,23 @@ function more(ev: MouseEvent) {
       width: 52px;
       aspect-ratio: 1/1;
       border-radius: 100%;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
       background-size: 1800% 1800% !important;
-      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      color: black;
     }
 
     &.gamingLight:hover, &.gamingLight.active {
 
       &.gamingLight:before {
-        background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        color: black;
       }
     }
 
@@ -647,19 +689,20 @@ function more(ev: MouseEvent) {
       border-radius: 100%;
       background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
       background-size: 1800% 1800%;
-      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     }
 
     &.gamingDark:hover, &.gamingDark.active {
-      color: white;
+      color: black;
+
       &.gamingDark:before {
-        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       }
     }
 
@@ -712,6 +755,14 @@ function more(ev: MouseEvent) {
       text-decoration: none;
       color: var(--accent);
 
+      &.gamingDark {
+        color: white;
+      }
+
+      &.gamingLight {
+        color: #DEE7E4;
+      }
+
       &:before {
         content: "";
         display: block;
@@ -735,9 +786,10 @@ function more(ev: MouseEvent) {
 
     &.gamingDark:hover, &.gamingDark.active {
       text-decoration: none;
-      color: var(--accent);
+      color: black;
 
       &.gamingDark:before {
+        color: black;
         content: "";
         display: block;
         height: 100%;
@@ -749,16 +801,17 @@ function more(ev: MouseEvent) {
         right: 0;
         bottom: 0;
         border-radius: 999px;
-        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       }
     }
+
     &.gamingLight:hover, &.gamingLight.active {
       text-decoration: none;
-      color: var(--accent);
+      color: black;
 
       &.gamingLight:before {
         content: "";
@@ -772,11 +825,11 @@ function more(ev: MouseEvent) {
         width: 52px;
         aspect-ratio: 1/1;
         border-radius: 100%;
-        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
         background-size: 1800% 1800% !important;
-        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       }
     }
   }
@@ -798,10 +851,19 @@ function more(ev: MouseEvent) {
     color: var(--navIndicator);
     font-size: 8px;
     animation: blink 1s infinite;
+
+    &.gamingDark {
+      color: white;
+    }
+
+    &.gamingLight {
+      color: black;
+    }
   }
 
 
 }
+
 @-webkit-keyframes AnimationLight {
   0% {
     background-position: 0% 50%
@@ -813,6 +875,7 @@ function more(ev: MouseEvent) {
     background-position: 0% 50%
   }
 }
+
 @-moz-keyframes AnimationLight {
   0% {
     background-position: 0% 50%
@@ -823,17 +886,20 @@ function more(ev: MouseEvent) {
   100% {
     background-position: 0% 50%
   }
-}  @keyframes AnimationLight {
-     0% {
-       background-position: 0% 50%
-     }
-     50% {
-       background-position: 100% 50%
-     }
-     100% {
-       background-position: 0% 50%
-     }
-   }
+}
+
+@keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+
 @-webkit-keyframes AnimationDark {
   0% {
     background-position: 0% 50%
@@ -845,6 +911,7 @@ function more(ev: MouseEvent) {
     background-position: 0% 50%
   }
 }
+
 @-moz-keyframes AnimationDark {
   0% {
     background-position: 0% 50%
@@ -856,6 +923,7 @@ function more(ev: MouseEvent) {
     background-position: 0% 50%
   }
 }
+
 @keyframes AnimationDark {
   0% {
     background-position: 0% 50%

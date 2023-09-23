@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
-				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
+				<MkButton :class="[$style.mainAction , $style.gamingDark]" full rounded data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 			</div>
@@ -190,6 +190,14 @@ function exploreOtherServers() {
 	line-height: 28px;
 }
 
+.gamingDark{
+  background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+  background-size: 1800% 1800%;
+  -webkit-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  -moz-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+}
+
 .stats {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -224,5 +232,70 @@ function exploreOtherServers() {
 .tlBody {
 	height: 350px;
 	overflow: auto;
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

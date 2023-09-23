@@ -10,15 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="items">
 			<template v-for="(item, i) in group.items">
-				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
+				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active, gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</a>
-				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
+				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }" :disabled="item.active" @click="ev => item.action(ev)">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</button>
-				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
+				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
@@ -29,8 +29,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import {ref , computed , watch } from 'vue';
+import {defaultStore} from "@/store.js";
 
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 defineProps<{
 	def: any[];
 	grid?: boolean;
@@ -70,6 +102,21 @@ defineProps<{
 				&.active {
 					color: var(--accent);
 					background: var(--accentedBg);
+          &.gamingDark{
+            color: black !important;
+            background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);            background-size: 1800% 1800%;
+            -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+            -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+            animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+          }
+          &.gamingLight{
+            color: white;
+            background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+            background-size: 1800% 1800% !important;
+            -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+            -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+            animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+          }
 				}
 
 				&.danger {
@@ -154,4 +201,70 @@ defineProps<{
 		}
 	}
 }
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
 </style>
+

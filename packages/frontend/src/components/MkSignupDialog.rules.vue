@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<div :class="$style.banner">
+  <div :class="[$style.banner ,{[$style.gamingDark]: gaming==='dark' , [$style.gamingLight]: gaming==='light'}]">
 		<i class="ti ti-checklist"></i>
 	</div>
 	<MkSpacer :marginMin="20" :marginMax="28">
@@ -68,7 +68,39 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import {defaultStore} from "@/store.js";
 
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const availableServerRules = instance.serverRules.length > 0;
 const availableTos = instance.tosUrl != null;
 
@@ -130,11 +162,29 @@ async function updateAgreeNote(v: boolean) {
 
 <style lang="scss" module>
 .banner {
-	padding: 16px;
-	text-align: center;
-	font-size: 26px;
-	background-color: var(--accentedBg);
-	color: var(--accent);
+  padding: 16px;
+  text-align: center;
+  font-size: 26px;
+  background-color: var(--accentedBg);
+  color: var(--accent);
+
+  &.gamingDark {
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+    background-size: 1800% 1800%;
+    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  }
+
+  &.gamingLight {
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+    background-size: 1800% 1800%;
+
+    -webkit-animation: AnimationLight cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    -moz-animation: AnimationLight cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    animation: AnimationLight cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  }
+
 }
 
 .rules {
@@ -171,5 +221,71 @@ async function updateAgreeNote(v: boolean) {
 
 .ruleText {
 	padding-top: 6px;
+}
+
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

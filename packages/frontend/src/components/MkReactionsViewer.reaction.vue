@@ -8,16 +8,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' ,[$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 >
 	<MkReactionIcon :class="$style.icon" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
-	<span :class="$style.count">{{ count }}</span>
+	<span :class="[$style.count,{ [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, shallowRef, watch } from 'vue';
+import {computed, onMounted, ref, shallowRef, watch} from 'vue';
 import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -29,6 +29,37 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const props = defineProps<{
 	reaction: string;
 	count: number;
@@ -160,8 +191,29 @@ useTooltip(buttonEl, async (showing) => {
 		color: var(--accent);
 		box-shadow: 0 0 0px 1px var(--accent) inset;
 
+    &.gamingDark{
+      color:white;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      box-shadow: 0 0 0px 1px white inset;
+    }
+
+    &.gamingLight{
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);     background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      box-shadow: 0 0 0px 1px white inset;
+      color: white !important;
+    }
+
 		> .count {
 			color: var(--accent);
+      &.gamingLight{
+        color: white;
+      }
 		}
 
 		> .icon {
@@ -178,5 +230,70 @@ useTooltip(buttonEl, async (showing) => {
 	font-size: 0.7em;
 	line-height: 42px;
 	margin: 0 0 0 4px;
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

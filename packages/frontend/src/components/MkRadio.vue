@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-adaptive-border
-	:class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]"
+  :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked ,[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' } ]"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
 	@click="toggle"
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:disabled="disabled"
 		:class="$style.input"
 	>
-	<span :class="$style.button">
+	<span :class="[$style.button , {[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
 		<span></span>
 	</span>
 	<span :class="$style.label"><slot></slot></span>
@@ -24,8 +24,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref,computed,watch } from 'vue';
+import {defaultStore} from "@/store.js";
 
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const props = defineProps<{
 	modelValue: any;
 	value: any;
@@ -74,14 +106,48 @@ function toggle(): void {
 		border-color: var(--accentedBg) !important;
 		color: var(--accent);
 		cursor: default !important;
-
+    &.gamingDark{
+      color:black !important;
+      border-color: black !important;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800%;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    }
+    &.gamingLight{
+      color:white;
+      border-color: white !important;
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
 		> .button {
 			border-color: var(--accent);
-
+      &.gamingDark{
+        border-color:black;
+        color:black !important;
+      }
+      &.gamingLight{
+        border-color: white;
+        color:white;
+      }
+      &.gamingDark:after{
+        background-color: black;
+        transform: scale(1);
+        opacity: 1;
+      }
+      &.gamingLight:after{
+        background-color:white !important;
+        transform: scale(1);
+        opacity: 1;
+      }
 			&:after {
 				background-color: var(--accent);
 				transform: scale(1);
 				opacity: 1;
+
 			}
 		}
 	}
@@ -124,5 +190,70 @@ function toggle(): void {
 	display: block;
 	line-height: 20px;
 	cursor: pointer;
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

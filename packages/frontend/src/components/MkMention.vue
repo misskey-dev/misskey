@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe && gaming === '' , [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :to="url" :style="{ background: bgCss }">
 	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span>
 		<span>@{{ username }}</span>
@@ -15,12 +15,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
+import {computed, ref, watch} from 'vue';
 import { } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
+let gaming = ref('');
 
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 const props = defineProps<{
 	username: string;
 	host: string;
@@ -36,7 +67,8 @@ const isMe = $i && (
 
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 bg.setAlpha(0.1);
-const bgCss = bg.toRgbString();
+const bgCss = (gaming.value === '') ? bg.toRgbString() : "";
+//const bgCss = `background:${bg.toRgbString()}; ${result}` ;
 </script>
 
 <style lang="scss" module>
@@ -46,8 +78,26 @@ const bgCss = bg.toRgbString();
 	border-radius: 999px;
 	color: var(--mention);
 
+  &.gamingLight{
+    color: white;
+    opacity: 0.9;
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);    background-size: 1800% 1800% !important;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+    animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+  }
+  &.gamingDark{
+    opacity: 0.9;
+    color: white;
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
+    -webkit-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    -moz-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+    animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  }
+
 	&.isMe {
 		color: var(--mentionMe);
+
 	}
 }
 
@@ -62,5 +112,70 @@ const bgCss = bg.toRgbString();
 
 .host {
 	opacity: 0.5;
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

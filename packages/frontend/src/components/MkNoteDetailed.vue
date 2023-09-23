@@ -131,9 +131,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</footer>
 	</article>
 	<div :class="$style.tabs">
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' },{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'replies'}]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes'},{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'renotes'}]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions'},{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'reactions'}]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
@@ -180,7 +180,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef } from 'vue';
+import {computed, inject, onMounted, ref, shallowRef, watch} from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -223,6 +223,39 @@ const inChannel = inject('inChannel', null);
 
 let note = $ref(deepClone(props.note));
 
+
+let gaming = ref('');
+
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  console.log(gaming)
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
@@ -730,6 +763,9 @@ function loadConversation() {
 
 .tabActive {
 	border-bottom: solid 2px var(--accent);
+  &.gamingLight{
+    border-bottom: solid 2px black;
+  }
 }
 
 .tab_renotes {
@@ -755,6 +791,12 @@ function loadConversation() {
 
 .reactionTabActive {
 	border-color: var(--accent);
+  &.gamingLight{
+    border-bottom: solid 2px black;
+  }
+  &.gamingDark{
+    border-bottom: solid 2px black;
+  }
 }
 
 @container (max-width: 500px) {
@@ -807,5 +849,38 @@ function loadConversation() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>

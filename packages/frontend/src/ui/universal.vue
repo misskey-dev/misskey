@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
     <div v-if="isMobile" ref="navFooter" :class="$style.nav">
       <button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i
           :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated"
-                                                                       :class="$style.navButtonIndicator"><i
+                                                                       :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
           class="_indicatorCircle"></i></span></button>
       <button :class="$style.navButton" class="_button"
               @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i
           :class="$style.navButtonIcon" class="ti ti-home"></i></button>
       <button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i
           :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification"
-                                                                     :class="$style.navButtonIndicator"><i
+                                                                     :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
           class="_indicatorCircle"></i></span></button>
       <button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon"
                                                                                           class="ti ti-apps"></i>
@@ -137,7 +137,6 @@ if (darkMode.value && gamingMode.value == true) {
 }
 
 watch(darkMode, () => {
-  console.log(gaming)
   if (darkMode.value && gamingMode.value == true) {
     gaming.value = 'dark';
   } else if (!darkMode.value && gamingMode.value == true) {
@@ -501,14 +500,14 @@ $widgets-hide-threshold: 1090px;
 .postButton_gamingDark {
   composes: navButton;
   color: var(--fgOnAccent);
-  background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+  background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
   background-size: 1800% 1800%;
   -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
   -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
   animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
 
   &.gamingDark:hover {
-    background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
     background-size: 1800% 1800% !important;
     -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
     -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
@@ -516,7 +515,7 @@ $widgets-hide-threshold: 1090px;
   }
 
   &.gamingDark:active {
-    background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
     background-size: 1800% 1800% !important;
     -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
     -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
@@ -527,21 +526,21 @@ $widgets-hide-threshold: 1090px;
 .postButton_gamingLight {
   composes: navButton;
   color: var(--fgOnAccent);
-  background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+  background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
   background-size: 1800% 1800% !important;
   -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
   -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
   animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
 
   &.gamingLight:hover {
-    background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800% !important;
     -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
     -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
     animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
   }
   &.gamingLight:active {
-    background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800% !important;
     -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
     -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
@@ -577,6 +576,13 @@ $widgets-hide-threshold: 1090px;
   color: var(--indicator);
   font-size: 16px;
   animation: blink 1s infinite;
+  &.gamingDark {
+    color: white;
+  }
+
+  &.gamingLight {
+    color: black;
+  }
 }
 
 .menuDrawerBg {

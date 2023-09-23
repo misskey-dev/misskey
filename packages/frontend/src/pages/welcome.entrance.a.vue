@@ -96,7 +96,10 @@ os.apiGet('federation/instances', {
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		background: var(--accent);
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
+    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
 		clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
 	}
 	> .shape2 {
@@ -105,7 +108,10 @@ os.apiGet('federation/instances', {
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		background: var(--accent);
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
+    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
+    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
+    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.75, 1)  infinite;
 		clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
 		opacity: 0.5;
 	}
@@ -164,6 +170,71 @@ os.apiGet('federation/instances', {
 			display: none;
 		}
 	}
+}
+@-webkit-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationLight {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}  @keyframes AnimationLight {
+     0% {
+       background-position: 0% 50%
+     }
+     50% {
+       background-position: 100% 50%
+     }
+     100% {
+       background-position: 0% 50%
+     }
+   }
+@-webkit-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@-moz-keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
+}
+@keyframes AnimationDark {
+  0% {
+    background-position: 0% 50%
+  }
+  50% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 0% 50%
+  }
 }
 </style>
 

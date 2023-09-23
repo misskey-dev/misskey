@@ -45,7 +45,13 @@ html {
 	width: 28px;
 	height: 28px;
 	transform: translateY(70px);
-	color: var(--accent);
+	background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+	background-size: 1800% 1800%;
+	-webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+	-moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+	animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 #splashSpinner > .spinner {
 	position: absolute;
@@ -72,5 +78,70 @@ html {
 	}
 	100% {
 		transform: rotate(360deg);
+	}
+}
+@-webkit-keyframes AnimationLight {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+@-moz-keyframes AnimationLight {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}  @keyframes AnimationLight {
+	   0% {
+		   background-position: 0% 50%
+	   }
+	   50% {
+		   background-position: 100% 50%
+	   }
+	   100% {
+		   background-position: 0% 50%
+	   }
+   }
+@-webkit-keyframes AnimationDark {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+@-moz-keyframes AnimationDark {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+@keyframes AnimationDark {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
 	}
 }
