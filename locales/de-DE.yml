@@ -1532,6 +1532,7 @@ _plugin:
   install: "Plugins installieren"
   installWarn: "Installiere bitte nur vertrauenswürdige Plugins."
   manage: "Plugins verwalten"
+  viewSource: "Quelltext anzeigen"
 _preferencesBackups:
   list: "Erstellte Backups"
   saveNew: "Neu erstellen"
