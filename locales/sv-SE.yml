@@ -573,3 +573,5 @@ _deck:
 _webhookSettings:
   name: "Namn"
   active: "Aktiverad"
+_moderationLogTypes:
+  suspend: "Suspendera"
