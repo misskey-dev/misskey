@@ -447,7 +447,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const after = await this.metaService.fetch(true);
 
-			this.moderationLogService.log(me, 'updateMeta', {
+			this.moderationLogService.log(me, 'updateServerSettings', {
 				before,
 				after,
 			});

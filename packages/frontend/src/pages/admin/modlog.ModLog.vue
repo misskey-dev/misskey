@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkFolder>
-	<template #label>{{ log.type }}</template>
+	<template #label>{{ i18n.ts._moderationLogTypes[log.type] }}</template>
 	<template #icon>
 		<MkAvatar :user="log.user" :class="$style.avatar"/>
 	</template>
@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="log.type === 'unsuspend'">
 			<div>{{ i18n.ts.user }}: {{ log.info.targetId }}</div>
 		</template>
-		<template v-else-if="log.type === 'roleAssigned'">
+		<template v-else-if="log.type === 'assignRole'">
 			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
 			<div>{{ i18n.ts.role }}: {{ log.info.roleName }} [{{ log.info.roleId }}]</div>
 		</template>
-		<template v-else-if="log.type === 'roleUnassigned'">
+		<template v-else-if="log.type === 'unassignRole'">
 			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
 			<div>{{ i18n.ts.role }}: {{ log.info.roleName }} [{{ log.info.roleId }}]</div>
 		</template>

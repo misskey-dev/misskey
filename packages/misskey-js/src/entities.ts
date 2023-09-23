@@ -575,8 +575,8 @@ export type ModerationLog = {
 	userId: User['id'];
 	user: UserDetailed | null;
 } & ({
-	type: 'updateMeta';
-	info: ModerationLogPayloads['updateMeta'];
+	type: 'updateServerSettings';
+	info: ModerationLogPayloads['updateServerSettings'];
 } | {
 	type: 'suspend';
 	info: ModerationLogPayloads['suspend'];
@@ -584,23 +584,23 @@ export type ModerationLog = {
 	type: 'unsuspend';
 	info: ModerationLogPayloads['unsuspend'];
 } | {
-	type: 'userNoteUpdated';
-	info: ModerationLogPayloads['userNoteUpdated'];
+	type: 'updateUserNote';
+	info: ModerationLogPayloads['updateUserNote'];
 } | {
-	type: 'addEmoji';
-	info: ModerationLogPayloads['addEmoji'];
+	type: 'addCustomEmoji';
+	info: ModerationLogPayloads['addCustomEmoji'];
 } | {
-	type: 'roleAssigned';
-	info: ModerationLogPayloads['roleAssigned'];
+	type: 'assignRole';
+	info: ModerationLogPayloads['assignRole'];
 } | {
-	type: 'roleUnassigned';
-	info: ModerationLogPayloads['roleUnassigned'];
+	type: 'unassignRole';
+	info: ModerationLogPayloads['unassignRole'];
 } | {
-	type: 'roleUpdated';
-	info: ModerationLogPayloads['roleUpdated'];
+	type: 'updateRole';
+	info: ModerationLogPayloads['updateRole'];
 } | {
-	type: 'roleDeleted';
-	info: ModerationLogPayloads['roleDeleted'];
+	type: 'deleteRole';
+	info: ModerationLogPayloads['deleteRole'];
 } | {
 	type: 'clearQueue';
 	info: ModerationLogPayloads['clearQueue'];

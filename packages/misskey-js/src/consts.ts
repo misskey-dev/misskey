@@ -45,10 +45,10 @@ export const permissions = [
 	'write:flash-likes',
 ];
 
-export const moderationLogTypes = ['updateMeta', 'suspend', 'unsuspend', 'userNoteUpdated', 'addEmoji', 'roleAssigned', 'roleUnassigned', 'roleUpdated', 'roleDeleted', 'clearQueue', 'promoteQueue'] as const;
+export const moderationLogTypes = ['updateServerSettings', 'suspend', 'unsuspend', 'updateUserNote', 'addCustomEmoji', 'assignRole', 'unassignRole', 'updateRole', 'deleteRole', 'clearQueue', 'promoteQueue'] as const;
 
 export type ModerationLogPayloads = {
-	updateMeta: {
+	updateServerSettings: {
 		before: any | null;
 		after: any | null;
 	};
@@ -58,31 +58,31 @@ export type ModerationLogPayloads = {
 	unsuspend: {
 		targetId: string;
 	};
-	userNoteUpdated: {
+	updateUserNote: {
 		userId: string;
 		before: string | null;
 		after: string | null;
 	};
-	addEmoji: {
+	addCustomEmoji: {
 		emojiId: string;
 	};
-	roleAssigned: {
+	assignRole: {
 		userId: string;
 		roleId: string;
 		roleName: string;
 		expiresAt: string | null;
 	};
-	roleUnassigned: {
+	unassignRole: {
 		userId: string;
 		roleId: string;
 		roleName: string;
 	};
-	roleUpdated: {
+	updateRole: {
 		roleId: string;
 		before: any;
 		after: any;
 	};
-	roleDeleted: {
+	deleteRole: {
 		roleId: string;
 		roleName: string;
 	};

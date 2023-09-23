@@ -2161,3 +2161,13 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+
+_moderationLogTypes:
+  assignRole: "ロールへアサイン"
+  unassignRole: "ロールのアサイン解除"
+  updateRole: "ロール設定更新"
+  suspend: "凍結"
+  unsuspend: "凍結解除"
+  addCustomEmoji: "カスタム絵文字追加"
+  updateServerSettings: "サーバー設定更新"
+  updateUserNote: "モデレーションノート更新"

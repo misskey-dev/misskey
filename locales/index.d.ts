@@ -2249,6 +2249,14 @@ export interface Locale {
             "mention": string;
         };
     };
+    "_moderationLogTypes": {
+        "roleAssigned": string;
+        "roleUnassigned": string;
+        "roleUpdated": string;
+        "suspend": string;
+        "unsuspend": string;
+        "addEmoji": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

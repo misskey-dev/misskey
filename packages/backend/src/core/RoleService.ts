@@ -412,7 +412,7 @@ export class RoleService implements OnApplicationShutdown {
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
 
 		if (moderator) {
-			this.moderationLogService.log(moderator, 'roleAssigned', {
+			this.moderationLogService.log(moderator, 'assignRole', {
 				roleId: roleId,
 				roleName: role.name,
 				userId: userId,
@@ -446,7 +446,7 @@ export class RoleService implements OnApplicationShutdown {
 
 		if (moderator) {
 			const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
-			this.moderationLogService.log(moderator, 'roleUnassigned', {
+			this.moderationLogService.log(moderator, 'unassignRole', {
 				roleId: roleId,
 				roleName: role.name,
 				userId: userId,
@@ -485,7 +485,7 @@ export class RoleService implements OnApplicationShutdown {
 		this.globalEventService.publishInternalEvent('roleUpdated', updated);
 
 		if (moderator) {
-			this.moderationLogService.log(moderator, 'roleUpdated', {
+			this.moderationLogService.log(moderator, 'updateRole', {
 				roleId: role.id,
 				before: role,
 				after: updated,
