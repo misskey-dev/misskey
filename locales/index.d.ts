@@ -421,6 +421,7 @@ export interface Locale {
     "moderation": string;
     "moderationNote": string;
     "addModerationNote": string;
+    "moderationLogs": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;

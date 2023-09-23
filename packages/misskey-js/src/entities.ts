@@ -566,3 +566,12 @@ export type UserSorting =
 	| '+updatedAt'
 	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
+
+export type ModerationLog = {
+	id: ID;
+	createdAt: DateString;
+	type: string;
+	info: Record<string, any>;
+	userId: User['id'];
+	user: UserDetailed | null;
+};

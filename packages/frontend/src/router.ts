@@ -396,6 +396,10 @@ export const routes = [{
 		name: 'abuses',
 		component: page(() => import('./pages/admin/abuses.vue')),
 	}, {
+		path: '/modlog',
+		name: 'modlog',
+		component: page(() => import('./pages/admin/modlog.vue')),
+	}, {
 		path: '/settings',
 		name: 'settings',
 		component: page(() => import('./pages/admin/settings.vue')),
