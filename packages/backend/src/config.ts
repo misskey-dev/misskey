@@ -8,6 +8,8 @@ import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
 import type { RedisOptions } from 'ioredis';
 
+import { md5 } from './misc/hash.js';
+
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
 	port: number;
@@ -83,6 +85,7 @@ export type Source = {
 	inboxJobMaxAttempts?: number;
 
 	mediaProxy?: string;
+	mediaProxyKey?: string;
 	proxyRemoteFiles?: boolean;
 	videoThumbnailGenerator?: string;
 
@@ -106,6 +109,7 @@ export type Mixin = {
 	clientEntry: string;
 	clientManifestExists: boolean;
 	mediaProxy: string;
+	mediaProxyKey: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
 	redis: RedisOptions & RedisOptionsSource;
@@ -166,6 +170,7 @@ export function loadConfig() {
 		: null;
 	const internalMediaProxy = `${mixin.scheme}://${mixin.host}/proxy`;
 	mixin.mediaProxy = externalMediaProxy ?? internalMediaProxy;
+	mixin.mediaProxyKey = md5(config.mediaProxyKey ?? 'misskey');
 	mixin.externalMediaProxyEnabled = externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy;
 
 	mixin.videoThumbnailGenerator = config.videoThumbnailGenerator ?

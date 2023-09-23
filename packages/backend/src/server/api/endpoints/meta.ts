@@ -197,6 +197,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			mediaProxyKey: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 			features: {
 				type: 'object',
 				optional: true, nullable: false,
@@ -330,6 +334,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
 				mediaProxy: this.config.mediaProxy,
+				mediaProxyKey: this.config.mediaProxyKey,
 
 				...(ps.detail ? {
 					cacheRemoteFiles: instance.cacheRemoteFiles,

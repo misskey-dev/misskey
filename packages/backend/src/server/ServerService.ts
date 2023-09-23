@@ -25,6 +25,7 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+import { getProxySign } from '@/misc/media-proxy.js';
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -127,12 +128,16 @@ export class ServerService implements OnApplicationShutdown {
 			if ('badge' in request.query) {
 				url = new URL(`${this.config.mediaProxy}/emoji.png`);
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				const targetUrl = emoji.publicUrl || emoji.originalUrl;
+				url.searchParams.set('url', targetUrl);
+				url.searchParams.set('sign', getProxySign(targetUrl, this.config.mediaProxyKey, this.config.url));
 				url.searchParams.set('badge', '1');
 			} else {
 				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				const targetUrl = emoji.publicUrl || emoji.originalUrl;
+				url.searchParams.set('url', targetUrl);
+				url.searchParams.set('sign', getProxySign(targetUrl, this.config.mediaProxyKey, this.config.url));
 				url.searchParams.set('emoji', '1');
 				if ('static' in request.query) url.searchParams.set('static', '1');
 			}
