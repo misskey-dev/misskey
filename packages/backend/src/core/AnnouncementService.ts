@@ -12,6 +12,7 @@ import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
 export class AnnouncementService {
@@ -24,6 +25,7 @@ export class AnnouncementService {
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private moderationLogService: ModerationLogService,
 	) {
 	}
 
@@ -58,7 +60,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async create(values: Partial<MiAnnouncement>): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
+	public async create(values: Partial<MiAnnouncement>, moderator: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
@@ -79,9 +81,20 @@ export class AnnouncementService {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
 				announcement: packed,
 			});
+
+			this.moderationLogService.log(moderator, 'createUserAnnouncement', {
+				announcementId: announcement.id,
+				announcement: announcement,
+				userId: values.userId,
+			});
 		} else {
 			this.globalEventService.publishBroadcastStream('announcementCreated', {
 				announcement: packed,
+			});
+
+			this.moderationLogService.log(moderator, 'createGlobalAnnouncement', {
+				announcementId: announcement.id,
+				announcement: announcement,
 			});
 		}
 

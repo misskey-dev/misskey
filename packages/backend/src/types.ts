@@ -41,6 +41,8 @@ export const moderationLogTypes = [
 	'promoteQueue',
 	'deleteDriveFile',
 	'deleteNote',
+	'createGlobalAnnouncement',
+	'createUserAnnouncement',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -92,5 +94,14 @@ export type ModerationLogPayloads = {
 		noteId: string;
 		noteUserId: string;
 		note: any;
-	}
+	};
+	createGlobalAnnouncement: {
+		announcementId: string;
+		announcement: any;
+	};
+	createUserAnnouncement: {
+		announcementId: string;
+		announcement: any;
+		userId: string;
+	};
 };

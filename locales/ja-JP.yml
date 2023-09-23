@@ -2171,3 +2171,7 @@ _moderationLogTypes:
   addCustomEmoji: "カスタム絵文字追加"
   updateServerSettings: "サーバー設定更新"
   updateUserNote: "モデレーションノート更新"
+  deleteDriveFile: "ファイルを削除"
+  deleteNote: "ノートを削除"
+  createGlobalAnnouncement: "全体のお知らせを作成"
+  createUserAnnouncement: "ユーザーへお知らせを作成"
