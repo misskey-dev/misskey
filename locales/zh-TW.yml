@@ -2101,3 +2101,4 @@ _webhookSettings:
     mention: "當被提到時"
 _moderationLogTypes:
   suspend: "凍結"
+  resetPassword: "重設密碼"
