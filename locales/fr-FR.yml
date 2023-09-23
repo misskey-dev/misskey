@@ -1202,6 +1202,7 @@ _plugin:
   install: "Installation de plugin"
   installWarn: "N’installez que des extensions provenant de sources de confiance."
   manage: "Gestion des plugins"
+  viewSource: "Afficher la source"
 _preferencesBackups:
   list: "Sauvegardes créées"
   saveNew: "Nouvelle sauvegarde"
