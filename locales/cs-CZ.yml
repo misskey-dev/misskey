@@ -2038,3 +2038,4 @@ _webhookSettings:
     mention: "Při zmínce"
 _moderationLogTypes:
   suspend: "Zmrazit"
+  resetPassword: "Resetovat heslo"
