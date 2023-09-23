@@ -96,7 +96,7 @@ const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 let gaming = ref(''); // 0-off , 1-dark , 2-light
 
 // gaming.valueに新しい値を代入する
-if (darkMode.value && gamingMode.value && props.primary ||  props.gradate ) {
+if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
   gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value && props.primary||  props.gradate ) {
   gaming.value = 'light';
@@ -105,9 +105,9 @@ if (darkMode.value && gamingMode.value && props.primary ||  props.gradate ) {
 }
 
 watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary ||  props.gradate  || props.large || props.small || props.full ) {
+  if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
     gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value && props.primary ||  props.gradate || props.large || props.small || props.full ) {
+  } else if (!darkMode.value && gamingMode.value && props.primary|| darkMode.value && gamingMode.value && props.gradate) {
     gaming.value = 'light';
   }else{
     gaming.value = '';
@@ -115,9 +115,9 @@ watch(darkMode, () => {
 })
 
 watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary ||  props.gradate  || props.large || props.small || props.full ) {
+  if (darkMode.value && gamingMode.value && props.primary|| darkMode.value && gamingMode.value && props.gradate ) {
     gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value && props.primary ||  props.gradate  || props.large || props.small || props.full ) {
+  } else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
     gaming.value = 'light';
   }else{
     gaming.value = '';
