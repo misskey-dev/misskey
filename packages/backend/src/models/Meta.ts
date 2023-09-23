@@ -21,6 +21,11 @@ export class MiMeta {
 	public name: string | null;
 
 	@Column('varchar', {
+		length: 64, nullable: true,
+	})
+	public shortName: string | null;
+
+	@Column('varchar', {
 		length: 1024, nullable: true,
 	})
 	public description: string | null;

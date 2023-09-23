@@ -40,6 +40,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			shortName: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			uri: {
 				type: 'string',
 				optional: false, nullable: false,
@@ -288,6 +292,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				version: this.config.version,
 
 				name: instance.name,
+				shortName: instance.shortName,
 				uri: this.config.url,
 				description: instance.description,
 				langs: instance.langs,

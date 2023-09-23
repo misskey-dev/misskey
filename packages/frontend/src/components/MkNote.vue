@@ -938,9 +938,6 @@ function readPromo() {
 	height: 32px;
 	margin: 2px;
 	padding: 0 6px;
-	border: dashed 1px var(--divider);
-	border-radius: 4px;
-	background: transparent;
 	opacity: .8;
 }
 </style>
