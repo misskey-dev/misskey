@@ -2043,3 +2043,4 @@ _webhookSettings:
     mention: "Ketika sedang disebut"
 _moderationLogTypes:
   suspend: "Tangguhkan"
+  resetPassword: "Atur ulang kata sandi"
