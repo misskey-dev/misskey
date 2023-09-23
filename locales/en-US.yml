@@ -2101,3 +2101,4 @@ _webhookSettings:
     mention: "When being mentioned"
 _moderationLogTypes:
   suspend: "Suspend"
+  resetPassword: "Reset password"
