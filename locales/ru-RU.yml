@@ -1953,3 +1953,4 @@ _webhookSettings:
   active: "Вкл."
 _moderationLogTypes:
   suspend: "Заморозить"
+  resetPassword: "Сброс пароля:"
