@@ -978,6 +978,7 @@ _plugin:
   install: "Inštalova pluginy"
   installWarn: "Prosím neinštalujte nedôveryhodné pluginy."
   manage: "Spravovanie pluginov"
+  viewSource: "Ukázať zdroj"
 _preferencesBackups:
   list: "Vytvorené zálohy"
   saveNew: "Uložiť novú"
