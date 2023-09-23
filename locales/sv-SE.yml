@@ -575,3 +575,4 @@ _webhookSettings:
   active: "Aktiverad"
 _moderationLogTypes:
   suspend: "Suspendera"
+  resetPassword: "Återställ Lösenord"
