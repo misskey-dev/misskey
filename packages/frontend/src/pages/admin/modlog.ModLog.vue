@@ -22,6 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="log.type === 'unsuspend'">
 			<div>{{ i18n.ts.user }}: {{ log.info.targetId }}</div>
 		</template>
+		<template v-else-if="log.type === 'roleAssigned'">
+			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div>{{ i18n.ts.role }}: {{ log.info.roleName }} [{{ log.info.roleId }}]</div>
+		</template>
+		<template v-else-if="log.type === 'roleUnassigned'">
+			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div>{{ i18n.ts.role }}: {{ log.info.roleName }} [{{ log.info.roleId }}]</div>
+		</template>
 	</div>
 </MkFolder>
 </template>
