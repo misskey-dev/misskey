@@ -1,3 +1,5 @@
+import { ModerationLogPayloads, moderationLogTypes } from './consts.js';
+
 export type ID = string;
 export type DateString = string;
 
@@ -570,8 +572,39 @@ export type OriginType = 'combined' | 'local' | 'remote';
 export type ModerationLog = {
 	id: ID;
 	createdAt: DateString;
-	type: string;
-	info: Record<string, any>;
 	userId: User['id'];
 	user: UserDetailed | null;
-};
+} & ({
+	type: 'updateMeta';
+	info: ModerationLogPayloads['updateMeta'];
+} | {
+	type: 'suspend';
+	info: ModerationLogPayloads['suspend'];
+} | {
+	type: 'unsuspend';
+	info: ModerationLogPayloads['unsuspend'];
+} | {
+	type: 'userNoteUpdated';
+	info: ModerationLogPayloads['userNoteUpdated'];
+} | {
+	type: 'addEmoji';
+	info: ModerationLogPayloads['addEmoji'];
+} | {
+	type: 'roleAssigned';
+	info: ModerationLogPayloads['roleAssigned'];
+} | {
+	type: 'roleUnassigned';
+	info: ModerationLogPayloads['roleUnassigned'];
+} | {
+	type: 'roleUpdated';
+	info: ModerationLogPayloads['roleUpdated'];
+} | {
+	type: 'roleDeleted';
+	info: ModerationLogPayloads['roleDeleted'];
+} | {
+	type: 'clearQueue';
+	info: ModerationLogPayloads['clearQueue'];
+} | {
+	type: 'promoteQueue';
+	info: ModerationLogPayloads['promoteQueue'];
+});

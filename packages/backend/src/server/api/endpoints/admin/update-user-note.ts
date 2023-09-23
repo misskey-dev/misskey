@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('user not found');
 			}
 
-			const currentProfile = await this.userProfilesRepository.findOneBy({ userId: user.id });
+			const currentProfile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 			await this.userProfilesRepository.update({ userId: user.id }, {
 				moderationNote: ps.text,
@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.moderationLogService.log(me, 'userNoteUpdated', {
 				userId: user.id,
-				before: currentProfile?.moderationNote,
+				before: currentProfile.moderationNote,
 				after: ps.text,
 			});
 		});

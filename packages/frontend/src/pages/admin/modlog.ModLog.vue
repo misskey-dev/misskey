@@ -14,7 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div :class="$style.root">
-		<div>{{ i18n.ts.user }}: {{ log.userId }}</div>
+		<div>{{ i18n.ts.moderator }}: {{ log.userId }}</div>
+
+		<template v-if="log.type === 'suspend'">
+			<div>{{ i18n.ts.user }}: {{ log.info.targetId }}</div>
+		</template>
+		<template v-else-if="log.type === 'unsuspend'">
+			<div>{{ i18n.ts.user }}: {{ log.info.targetId }}</div>
+		</template>
 	</div>
 </MkFolder>
 </template>

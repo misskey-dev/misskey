@@ -2521,11 +2521,42 @@ type MessagingMessage = {
 type ModerationLog = {
     id: ID;
     createdAt: DateString;
-    type: string;
-    info: Record<string, any>;
     userId: User['id'];
     user: UserDetailed | null;
-};
+} & ({
+    type: 'updateMeta';
+    info: ModerationLogPayloads['updateMeta'];
+} | {
+    type: 'suspend';
+    info: ModerationLogPayloads['suspend'];
+} | {
+    type: 'unsuspend';
+    info: ModerationLogPayloads['unsuspend'];
+} | {
+    type: 'userNoteUpdated';
+    info: ModerationLogPayloads['userNoteUpdated'];
+} | {
+    type: 'addEmoji';
+    info: ModerationLogPayloads['addEmoji'];
+} | {
+    type: 'roleAssigned';
+    info: ModerationLogPayloads['roleAssigned'];
+} | {
+    type: 'roleUnassigned';
+    info: ModerationLogPayloads['roleUnassigned'];
+} | {
+    type: 'roleUpdated';
+    info: ModerationLogPayloads['roleUpdated'];
+} | {
+    type: 'roleDeleted';
+    info: ModerationLogPayloads['roleDeleted'];
+} | {
+    type: 'clearQueue';
+    info: ModerationLogPayloads['clearQueue'];
+} | {
+    type: 'promoteQueue';
+    info: ModerationLogPayloads['promoteQueue'];
+});
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
@@ -2872,6 +2903,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:631:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/entities.ts:579:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
