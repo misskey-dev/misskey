@@ -1512,6 +1512,7 @@ _plugin:
   install: "플러그인 설치"
   installWarn: "신뢰할 수 없는 플러그인은 설치하지 않는 것이 좋습니다."
   manage: "플러그인 관리"
+  viewSource: "소스 보기"
 _preferencesBackups:
   list: "생성한 백업"
   saveNew: "새 백업 만들기"

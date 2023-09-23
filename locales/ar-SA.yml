@@ -1140,6 +1140,7 @@ _plugin:
   install: "ثبّت إضافات"
   installWarn: "رجاءً لا تثبت إضافات غير موثوقة."
   manage: "إدارة الإضافات"
+  viewSource: "اظهر المصدر"
 _preferencesBackups:
   createdAt: "تم إنشاؤه: {date} {time}"
   updatedAt: "آخر تحديث: {date} {time}"

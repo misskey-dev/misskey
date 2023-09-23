@@ -925,6 +925,7 @@ _plugin:
   install: "Zainstaluj wtyczki"
   installWarn: "Nie instaluj niezaufanych wtyczek."
   manage: "Zarządzanie wtyczkami"
+  viewSource: "Zobacz źródło"
 _preferencesBackups:
   list: "Utworzone kopie zapasowe"
   saveNew: "Zapisz nową kopię zapasową"
