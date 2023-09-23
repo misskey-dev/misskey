@@ -1558,3 +1558,4 @@ _webhookSettings:
     reaction: "عند التفاعل"
 _moderationLogTypes:
   suspend: "علِق"
+  resetPassword: "أعد تعيين كلمتك السرية"
