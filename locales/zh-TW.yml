@@ -1529,6 +1529,7 @@ _plugin:
   install: "安裝外掛組件"
   installWarn: "請不要安裝來源不明的外掛。"
   manage: "管理外掛"
+  viewSource: "檢視原始碼"
 _preferencesBackups:
   list: "已備份的設定檔"
   saveNew: "另存新檔"
