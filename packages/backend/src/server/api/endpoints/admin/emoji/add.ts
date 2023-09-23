@@ -99,9 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
 			});
 
-
-
-			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
+			this.moderationLogService.log(me, 'addCustomEmoji', {
 				emojiId: emoji.id,
 			});
 

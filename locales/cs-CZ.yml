@@ -1492,6 +1492,7 @@ _plugin:
   install: "Instalovat plugin"
   installWarn: "Neinstalujte nedůvěryhodné pluginy."
   manage: "Správce pluginů"
+  viewSource: "Zobrazit zdroj"
 _preferencesBackups:
   list: "Vytvořit backup"
   saveNew: "Uložit novou zálohu"

@@ -44,3 +44,96 @@ export const permissions = [
 	'read:flash-likes',
 	'write:flash-likes',
 ];
+
+export const moderationLogTypes = [
+	'updateServerSettings',
+	'suspend',
+	'unsuspend',
+	'updateUserNote',
+	'addCustomEmoji',
+	'assignRole',
+	'unassignRole',
+	'updateRole',
+	'deleteRole',
+	'clearQueue',
+	'promoteQueue',
+	'deleteDriveFile',
+	'deleteNote',
+	'createGlobalAnnouncement',
+	'createUserAnnouncement',
+	'resetPassword',
+	'suspendRemoteInstance',
+	'unsuspendRemoteInstance',
+] as const;
+
+export type ModerationLogPayloads = {
+	updateServerSettings: {
+		before: any | null;
+		after: any | null;
+	};
+	suspend: {
+		targetId: string;
+	};
+	unsuspend: {
+		targetId: string;
+	};
+	updateUserNote: {
+		userId: string;
+		before: string | null;
+		after: string | null;
+	};
+	addCustomEmoji: {
+		emojiId: string;
+	};
+	assignRole: {
+		userId: string;
+		roleId: string;
+		roleName: string;
+		expiresAt: string | null;
+	};
+	unassignRole: {
+		userId: string;
+		roleId: string;
+		roleName: string;
+	};
+	updateRole: {
+		roleId: string;
+		before: any;
+		after: any;
+	};
+	deleteRole: {
+		roleId: string;
+		roleName: string;
+	};
+	clearQueue: Record<string, never>;
+	promoteQueue: Record<string, never>;
+	deleteDriveFile: {
+		fileId: string;
+		fileUserId: string | null;
+	};
+	deleteNote: {
+		noteId: string;
+		noteUserId: string;
+		note: any;
+	};
+	createGlobalAnnouncement: {
+		announcementId: string;
+		announcement: any;
+	};
+	createUserAnnouncement: {
+		announcementId: string;
+		announcement: any;
+		userId: string;
+	};
+	resetPassword: {
+		targetId: string;
+	};
+	suspendRemoteInstance: {
+		id: string;
+		host: string;
+	};
+	unsuspendRemoteInstance: {
+		id: string;
+		host: string;
+	};
+};

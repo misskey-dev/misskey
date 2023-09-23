@@ -710,6 +710,7 @@ lockedAccountInfo: "即使启用该功能，只要您不将帖子可见范围设
 alwaysMarkSensitive: "默认将媒体文件标记为敏感内容"
 loadRawImages: "添加附件图像的缩略图时使用原始图像质量"
 disableShowingAnimatedImages: "不播放动画"
+highlightSensitiveMedia: "高亮显示敏感媒体"
 verificationEmailSent: "已发送确认电子邮件。请访问电子邮件中的链接以完成设置。"
 notSet: "未设置"
 emailVerified: "电子邮件地址已验证"
@@ -1116,6 +1117,8 @@ keepScreenOn: "保持设备屏幕开启"
 verifiedLink: "已验证的链接"
 notifyNotes: "打开发帖通知"
 unnotifyNotes: "关闭发帖通知"
+authentication: "验证"
+authenticationRequiredToContinue: "要继续，请先进行验证"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
@@ -1529,6 +1532,7 @@ _plugin:
   install: "安装插件"
   installWarn: "请不要安装不可信的插件。"
   manage: "管理插件..."
+  viewSource: "查看源代码"
 _preferencesBackups:
   list: "已创建的备份"
   saveNew: "另存为"
@@ -1794,6 +1798,7 @@ _antennaSources:
   homeTimeline: "已关注用户的帖子"
   users: "来自指定用户的帖子"
   userList: "来自指定列表中的帖子"
+  userBlacklist: "除掉已选择用户后所有的帖子"
 _weekday:
   sunday: "星期日"
   monday: "星期一"

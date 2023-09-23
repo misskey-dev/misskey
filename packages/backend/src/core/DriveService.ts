@@ -42,6 +42,7 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -119,6 +120,7 @@ export class DriveService {
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
 		private roleService: RoleService,
+		private moderationLogService: ModerationLogService,
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
@@ -648,7 +650,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	public async deleteFile(file: MiDriveFile, isExpired = false) {
+	public async deleteFile(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
 
@@ -671,11 +673,11 @@ export class DriveService {
 			}
 		}
 
-		this.deletePostProcess(file, isExpired);
+		this.deletePostProcess(file, isExpired, deleter);
 	}
 
 	@bindThis
-	public async deleteFileSync(file: MiDriveFile, isExpired = false) {
+	public async deleteFileSync(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
 
@@ -702,11 +704,11 @@ export class DriveService {
 			await Promise.all(promises);
 		}
 
-		this.deletePostProcess(file, isExpired);
+		this.deletePostProcess(file, isExpired, deleter);
 	}
 
 	@bindThis
-	private async deletePostProcess(file: MiDriveFile, isExpired = false) {
+	private async deletePostProcess(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
 			this.driveFilesRepository.update(file.id, {
@@ -732,6 +734,17 @@ export class DriveService {
 			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
 				this.instanceChart.updateDrive(file, false);
 			}
+		}
+
+		if (file.userId) {
+			this.globalEventService.publishDriveStream(file.userId, 'fileDeleted', file.id);
+		}
+
+		if (deleter && await this.roleService.isModerator(deleter) && (file.userId !== deleter.id)) {
+			this.moderationLogService.log(deleter, 'deleteDriveFile', {
+				fileId: file.id,
+				fileUserId: file.userId,
+			});
 		}
 	}
 

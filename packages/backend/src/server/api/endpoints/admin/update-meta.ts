@@ -441,8 +441,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.manifestJsonOverride = ps.manifestJsonOverride;
 			}
 
+			const before = await this.metaService.fetch(true);
+
 			await this.metaService.update(set);
-			this.moderationLogService.insertModerationLog(me, 'updateMeta');
+
+			const after = await this.metaService.fetch(true);
+
+			this.moderationLogService.log(me, 'updateServerSettings', {
+				before,
+				after,
+			});
 		});
 	}
 }

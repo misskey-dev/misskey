@@ -425,6 +425,7 @@ export interface Locale {
     "moderation": string;
     "moderationNote": string;
     "addModerationNote": string;
+    "moderationLogs": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;
@@ -2257,6 +2258,20 @@ export interface Locale {
             "reaction": string;
             "mention": string;
         };
+    };
+    "_moderationLogTypes": {
+        "assignRole": string;
+        "unassignRole": string;
+        "updateRole": string;
+        "suspend": string;
+        "unsuspend": string;
+        "addCustomEmoji": string;
+        "updateServerSettings": string;
+        "updateUserNote": string;
+        "deleteDriveFile": string;
+        "deleteNote": string;
+        "createGlobalAnnouncement": string;
+        "createUserAnnouncement": string;
     };
 }
 declare const locales: {
