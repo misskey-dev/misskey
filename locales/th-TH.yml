@@ -2067,3 +2067,4 @@ _webhookSettings:
     mention: "เมื่อกำลังถูกกล่าวถึง"
 _moderationLogTypes:
   suspend: "ถูกระงับ"
+  resetPassword: "รีเซ็ตรหัสผ่าน"
