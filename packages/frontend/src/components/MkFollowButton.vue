@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
   <button
       class="_button"
-      :class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou,[$style.gamingDark]: gaming === 'dark' && isFollowing || gaming === 'dark' && hasPendingFollowRequestFromYou,[$style.gamingLight]: gaming === 'light' && isFollowing || gaming === 'light' && hasPendingFollowRequestFromYou
-, [$style.full]: full, [$style.large]: large }]"
+      :class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large },{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'
+,}]"
       :disabled="wait"
       @click="onClick"
   >
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     </template>
     <template v-else>
       <span v-if="full"
-            :class="$style.text,{[$style.gamingDark]: gaming === 'dark' ,[$style.gamingLight]: gaming === 'light'} ">{{
+            :class="[$style.text,{[$style.gamingDark]: gaming === 'dark' ,[$style.gamingLight]: gaming === 'light'} ]">{{
           i18n.ts.processing
         }}</span>
       <MkLoading :em="true" :colored="false"/>
@@ -190,37 +190,54 @@ onBeforeUnmount(() => {
   display: inline-block;
   font-weight: bold;
   color: var(--fgOnWhite);
-  border: solid 1px;
+  border: solid 1px var(--accent);
   padding: 0;
   height: 31px;
   font-size: 16px;
   border-radius: 32px;
   background: #fff;
 
+
   &.gamingDark {
-    color: black;
-    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);    background-size: 1800% 1800%;
+    color: black !important;
+    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+    background-size: 1800% 1800%;
     -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
   }
 
   &.gamingLight {
-    color: #dee7e4;
+    color: white !important;
     background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800% !important;
     -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
   }
+
   &.full {
     padding: 0 8px 0 12px;
     font-size: 14px;
+    &.gamingDark {
+      color: black;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800%;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+
+    }
+
+    &.gamingLight {
+      color: white;
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+    }
   }
 
   &.large {
@@ -270,48 +287,48 @@ onBeforeUnmount(() => {
     }
 
     &.gamingDark:hover {
-      -webkit-text-fill-color: unset;
-      color: white;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
+      color: black;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800%;
       -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
     }
 
     &.gamingDark:active {
-      -webkit-text-fill-color: unset !important;
-      color: white;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
+      color: black;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800%;
       -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
-      border-color: white;
+      border-color: black;
     }
 
     &.gamingLight:hover {
-      -webkit-text-fill-color: unset !important;
       background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
       background-size: 1800% 1800% !important;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      border-color: white;
+      border-color: black;
     }
 
     &.gamingLight:active {
-      -webkit-text-fill-color: unset !important;
       color: white;
-      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);      background-size: 1800% 1800% !important;
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+      background-size: 1800% 1800% !important;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      border-color: white;
+      border-color: black;
     }
 
     &.gamingDark {
       -webkit-text-fill-color: unset !important;
-      color: white;
-      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);      background-size: 1800% 1800%;
+      color: black;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800%;
       -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
@@ -320,7 +337,8 @@ onBeforeUnmount(() => {
     &.gamingLight {
       -webkit-text-fill-color: unset !important;
       color: white;
-      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);      background-size: 1800% 1800% !important;
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+      background-size: 1800% 1800% !important;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
@@ -339,13 +357,13 @@ onBeforeUnmount(() => {
   margin-right: 6px;
 
   &.gamingDark {
-    color: black;
-    -webkit-text-fill-color: unset !important;
+    color: white;
+
   }
 
   &.gamingLight {
     color: white;
-    -webkit-text-fill-color: unset !important;
+
   }
 
 }
