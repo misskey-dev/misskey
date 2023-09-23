@@ -1509,6 +1509,7 @@ _plugin:
   install: "ติดตั้งปลั๊กอิน"
   installWarn: "กรุณาอย่าติดตั้งปลั๊กอินที่ไม่น่าเชื่อถือนะคะ"
   manage: "จัดการปลั๊กอิน"
+  viewSource: "ดูต้นฉบับ"
 _preferencesBackups:
   list: "สร้างการสำรองข้อมูล"
   saveNew: "บันทึกใหม่"
