@@ -26,3 +26,46 @@ export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
 export const ffVisibility = ['public', 'followers', 'private'] as const;
+
+export const moderationLogTypes = ['updateMeta', 'suspend', 'unsuspend', 'userNoteUpdated', 'addEmoji', 'roleAssigned', 'roleUnassigned', 'roleUpdated', 'roleDeleted'] as const;
+
+export type ModerationLogPayloads = {
+	updateMeta: {
+		before: any | null;
+		after: any | null;
+	};
+	suspend: {
+		targetId: string;
+	};
+	unsuspend: {
+		targetId: string;
+	};
+	userNoteUpdated: {
+		userId: string;
+		before: string | null;
+		after: string | null;
+	};
+	addEmoji: {
+		emojiId: string;
+	};
+	roleAssigned: {
+		userId: string;
+		roleId: string;
+		roleName: string;
+		expiresAt: string | null;
+	};
+	roleUnassigned: {
+		userId: string;
+		roleId: string;
+		roleName: string;
+	};
+	roleUpdated: {
+		roleId: string;
+		before: any;
+		after: any;
+	};
+	roleDeleted: {
+		roleId: string;
+		roleName: string;
+	};
+};

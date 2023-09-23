@@ -416,7 +416,7 @@ export class RoleService implements OnApplicationShutdown {
 				roleId: roleId,
 				roleName: role.name,
 				userId: userId,
-				expiresAt: expiresAt,
+				expiresAt: expiresAt ? expiresAt.toISOString() : null,
 			});
 		}
 	}

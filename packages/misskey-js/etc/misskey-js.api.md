@@ -2278,7 +2278,8 @@ declare namespace entities {
         Invite,
         InviteLimit,
         UserSorting,
-        OriginType
+        OriginType,
+        ModerationLog
     }
 }
 export { entities }
@@ -2514,6 +2515,16 @@ type MessagingMessage = {
     recipientId: User['id'] | null;
     group?: UserGroup | null;
     groupId: UserGroup['id'] | null;
+};
+
+// @public (undocumented)
+type ModerationLog = {
+    id: ID;
+    createdAt: DateString;
+    type: string;
+    info: Record<string, any>;
+    userId: User['id'];
+    user: UserDetailed | null;
 };
 
 // @public (undocumented)
