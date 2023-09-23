@@ -68,6 +68,6 @@ export type ModerationLogPayloads = {
 		roleId: string;
 		roleName: string;
 	};
-	clearQueue: {};
-	promoteQueue: {};
+	clearQueue: Record<string, never>;
+	promoteQueue: Record<string, never>;
 };

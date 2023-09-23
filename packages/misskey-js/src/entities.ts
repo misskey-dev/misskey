@@ -1,4 +1,4 @@
-import { ModerationLogPayloads, moderationLogTypes } from './consts.js';
+import { ModerationLogPayloads } from './consts.js';
 
 export type ID = string;
 export type DateString = string;

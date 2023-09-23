@@ -2559,6 +2559,9 @@ type ModerationLog = {
 });
 
 // @public (undocumented)
+export const moderationLogTypes: readonly ["updateMeta", "suspend", "unsuspend", "userNoteUpdated", "addEmoji", "roleAssigned", "roleUnassigned", "roleUpdated", "roleDeleted", "clearQueue", "promoteQueue"];
+
+// @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
 
 // @public (undocumented)
