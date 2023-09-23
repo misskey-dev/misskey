@@ -22,6 +22,7 @@ type PackOptions = {
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { getProxySign } from '@/misc/media-proxy.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -79,6 +80,7 @@ export class DriveFileEntityService {
 			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
 			query({
 				url,
+				sign: getProxySign(url, this.config.mediaProxyKey, this.config.url),
 				...(mode ? { [mode]: '1' } : {}),
 			}),
 		);
