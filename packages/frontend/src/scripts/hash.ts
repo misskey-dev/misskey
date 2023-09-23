@@ -1,4 +1,4 @@
-import { SparkMD5 } from 'spark-md5';
+import SparkMD5 from 'spark-md5';
 
 export const md5 = (payload: string): string => {
 	const hash = new SparkMD5();
