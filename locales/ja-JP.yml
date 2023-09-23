@@ -1549,6 +1549,7 @@ _plugin:
   install: "プラグインのインストール"
   installWarn: "信頼できないプラグインはインストールしないでください。"
   manage: "プラグインの管理"
+  viewSource: "ソースを表示"
 
 _preferencesBackups:
   list: "作成したバックアップ"
@@ -2080,6 +2081,7 @@ _notification:
 
   _types:
     all: "すべて"
+    note: "ユーザーの新規投稿"
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"

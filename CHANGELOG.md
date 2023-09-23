@@ -67,6 +67,7 @@
 - Enhance: ノート詳細ページ読み込み時のパフォーマンスが向上しました
 - Enhance: タイムラインでリスト/アンテナ選択時のパフォーマンスを改善
 - Enhance: 「Moderation note」、「Add moderation note」をローカライズできるように
+- Enhance: プラグインのソースコードを確認・コピーできるように
 - Enhance: 細かなデザインの調整
 - Enhance: Mk:apiの第三引数に`null`を渡せるように
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
@@ -77,6 +78,7 @@
 - Fix: Misskeyプラグインをインストールする際のAiScriptバージョンのチェックが0.14.0以降に対応していない問題を修正
 - Fix: 他のサーバーのユーザーへ「メッセージを送信」した時の初期テキストのメンションが間違っている問題を修正
 - Fix: 環境によってはMisskey Webが開けない問題を修正
+- Fix: プラグインの権限リストが見れない問題を修正
 
 ### Server
 - Change: cacheRemoteFilesの初期値はfalseになりました
