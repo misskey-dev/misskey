@@ -607,4 +607,13 @@ export type ModerationLog = {
 } | {
 	type: 'promoteQueue';
 	info: ModerationLogPayloads['promoteQueue'];
+} | {
+	type: 'resetPassword';
+	info: ModerationLogPayloads['resetPassword'];
+} | {
+	type: 'suspendRemoteInstance';
+	info: ModerationLogPayloads['suspendRemoteInstance'];
+} | {
+	type: 'unsuspendRemoteInstance';
+	info: ModerationLogPayloads['unsuspendRemoteInstance'];
 });

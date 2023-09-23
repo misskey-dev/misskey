@@ -2556,10 +2556,19 @@ type ModerationLog = {
 } | {
     type: 'promoteQueue';
     info: ModerationLogPayloads['promoteQueue'];
+} | {
+    type: 'resetPassword';
+    info: ModerationLogPayloads['resetPassword'];
+} | {
+    type: 'suspendRemoteInstance';
+    info: ModerationLogPayloads['suspendRemoteInstance'];
+} | {
+    type: 'unsuspendRemoteInstance';
+    info: ModerationLogPayloads['unsuspendRemoteInstance'];
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance"];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];

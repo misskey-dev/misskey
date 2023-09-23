@@ -2175,3 +2175,6 @@ _moderationLogTypes:
   deleteNote: "ノートを削除"
   createGlobalAnnouncement: "全体のお知らせを作成"
   createUserAnnouncement: "ユーザーへお知らせを作成"
+  resetPassword: "パスワードをリセット"
+  suspendRemoteInstance: "リモートサーバーを停止"
+  unsuspendRemoteInstance: "リモートサーバーを再開"
