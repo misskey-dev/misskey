@@ -445,6 +445,7 @@ export class RoleService implements OnApplicationShutdown {
 		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
 
 		if (moderator) {
+			const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
 			this.moderationLogService.log(moderator, 'roleUnassigned', {
 				roleId: roleId,
 				roleName: role.name,
