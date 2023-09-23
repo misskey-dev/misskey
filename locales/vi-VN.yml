@@ -1343,6 +1343,7 @@ _plugin:
   install: "Cài đặt tiện ích"
   installWarn: "Vui lòng không cài đặt những tiện ích đáng ngờ."
   manage: "Quản lý plugin"
+  viewSource: "Xem mã nguồn"
 _preferencesBackups:
   list: "Tạo sao lưu"
   saveNew: "Lưu bản sao lưu"
