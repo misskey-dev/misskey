@@ -2183,7 +2183,6 @@ export interface Locale {
             "reply": string;
             "renote": string;
             "quote": string;
-            "note": string;
             "reaction": string;
             "pollEnded": string;
             "receiveFollowRequest": string;
@@ -2271,6 +2270,9 @@ export interface Locale {
         "deleteNote": string;
         "createGlobalAnnouncement": string;
         "createUserAnnouncement": string;
+        "resetPassword": string;
+        "suspendRemoteInstance": string;
+        "unsuspendRemoteInstance": string;
     };
 }
 declare const locales: {
