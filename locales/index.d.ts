@@ -2250,12 +2250,14 @@ export interface Locale {
         };
     };
     "_moderationLogTypes": {
-        "roleAssigned": string;
-        "roleUnassigned": string;
-        "roleUpdated": string;
+        "assignRole": string;
+        "unassignRole": string;
+        "updateRole": string;
         "suspend": string;
         "unsuspend": string;
-        "addEmoji": string;
+        "addCustomEmoji": string;
+        "updateServerSettings": string;
+        "updateUserNote": string;
     };
 }
 declare const locales: {

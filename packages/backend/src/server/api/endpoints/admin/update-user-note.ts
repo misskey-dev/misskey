@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				moderationNote: ps.text,
 			});
 
-			this.moderationLogService.log(me, 'updateServerSettings', {
+			this.moderationLogService.log(me, 'updateUserNote', {
 				userId: user.id,
 				before: currentProfile.moderationNote,
 				after: ps.text,
