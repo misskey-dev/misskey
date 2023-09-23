@@ -1862,3 +1862,4 @@ _webhookSettings:
     mention: "Khi có người nhắc tới bạn"
 _moderationLogTypes:
   suspend: "Vô hiệu hóa"
+  resetPassword: "Đặt lại mật khẩu"
