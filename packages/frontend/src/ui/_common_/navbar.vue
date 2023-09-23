@@ -292,7 +292,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight {
-      color: var(--fg);
+      color: white;
     }
 
     &.gamingDark {
