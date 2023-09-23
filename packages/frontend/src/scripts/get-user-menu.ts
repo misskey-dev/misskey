@@ -80,6 +80,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	async function toggleNotify() {
+		os.apiWithDialog('following/update', {
+			userId: user.id,
+			notify: user.notify === 'normal' ? 'none' : 'normal',
+		}).then(() => {
+			user.notify = user.notify === 'normal' ? 'none' : 'normal';
+		});
+	}
+
 	function reportAbuse() {
 		os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 			user: user,
@@ -269,6 +278,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				},
 			}]);
 		}
+
+		// フォローしたとしても user.isFollowing はリアルタイム更新されないので不便なため
+		//if (user.isFollowing) {
+		menu = menu.concat([{
+			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
+			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
+			action: toggleNotify,
+		}]);
+		//}
 
 		menu = menu.concat([null, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',

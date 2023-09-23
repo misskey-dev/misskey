@@ -713,6 +713,7 @@ export interface Locale {
     "alwaysMarkSensitive": string;
     "loadRawImages": string;
     "disableShowingAnimatedImages": string;
+    "highlightSensitiveMedia": string;
     "verificationEmailSent": string;
     "notSet": string;
     "emailVerified": string;
@@ -1117,6 +1118,10 @@ export interface Locale {
     "pinnedList": string;
     "keepScreenOn": string;
     "verifiedLink": string;
+    "notifyNotes": string;
+    "unnotifyNotes": string;
+    "authentication": string;
+    "authenticationRequiredToContinue": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1153,6 +1158,8 @@ export interface Locale {
         "appIconStyleRecommendation": string;
         "appIconResolutionMustBe": string;
         "manifestJsonOverride": string;
+        "shortName": string;
+        "shortNameDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
@@ -1627,6 +1634,7 @@ export interface Locale {
         "install": string;
         "installWarn": string;
         "manage": string;
+        "viewSource": string;
     };
     "_preferencesBackups": {
         "list": string;
@@ -1831,7 +1839,6 @@ export interface Locale {
     "_2fa": {
         "alreadyRegistered": string;
         "registerTOTP": string;
-        "passwordToTOTP": string;
         "step1": string;
         "step2": string;
         "step2Click": string;
@@ -1913,6 +1920,7 @@ export interface Locale {
         "homeTimeline": string;
         "users": string;
         "userList": string;
+        "userBlacklist": string;
     };
     "_weekday": {
         "sunday": string;
@@ -2150,6 +2158,7 @@ export interface Locale {
         "youReceivedFollowRequest": string;
         "yourFollowRequestAccepted": string;
         "pollEnded": string;
+        "newNote": string;
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
@@ -2159,6 +2168,7 @@ export interface Locale {
         "notificationWillBeDisplayedLikeThis": string;
         "_types": {
             "all": string;
+            "note": string;
             "follow": string;
             "mention": string;
             "reply": string;

@@ -120,6 +120,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		updatedAt: null,
 		uri: null,
 		url: null,
+		notify: 'none',
 	};
 }
 

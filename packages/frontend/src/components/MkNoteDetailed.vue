@@ -143,7 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
 		</div>
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
-			<MkPagination :pagination="renotesPagination">
+			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
 						<MkUserCardMini :user="item.user" :withChart="false"/>
@@ -158,11 +158,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span style="margin-left: 4px;">{{ appearNote.reactions[reaction] }}</span>
 				</button>
 			</div>
-			<MkPagination :pagination="reactionsPagination">
+			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
-					<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
-						<MkUserCardMini :user="item.user" :withChart="false"/>
-					</MkA>
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
+						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
+							<MkUserCardMini :user="item.user" :withChart="false"/>
+						</MkA>
+					</div>
 				</template>
 			</MkPagination>
 		</div>

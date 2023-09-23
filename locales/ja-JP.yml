@@ -710,6 +710,7 @@ lockedAccountInfo: "フォローを承認制にしても、ノートの公開範
 alwaysMarkSensitive: "デフォルトでメディアをセンシティブ設定にする"
 loadRawImages: "添付画像のサムネイルをオリジナル画質にする"
 disableShowingAnimatedImages: "アニメーション画像を再生しない"
+highlightSensitiveMedia: "メディアがセンシティブであることを分かりやすく表示"
 verificationEmailSent: "確認のメールを送信しました。メールに記載されたリンクにアクセスして、設定を完了してください。"
 notSet: "未設定"
 emailVerified: "メールアドレスが確認されました"
@@ -1114,6 +1115,10 @@ loadConversation: "会話を見る"
 pinnedList: "ピン留めされたリスト"
 keepScreenOn: "デバイスの画面を常にオンにする"
 verifiedLink: "このリンク先の所有者であることが確認されました"
+notifyNotes: "投稿を通知"
+unnotifyNotes: "投稿の通知を解除"
+authentication: "認証"
+authenticationRequiredToContinue: "続けるには認証を行ってください"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1151,6 +1156,8 @@ _serverSettings:
   appIconStyleRecommendation: "円形もしくは角丸にクロップされる場合があるため、塗り潰された余白のある背景を持つことが推奨されます。"
   appIconResolutionMustBe: "解像度は必ず{resolution}である必要があります。"
   manifestJsonOverride: "manifest.jsonのオーバーライド"
+  shortName: "略称"
+  shortNameDescription: "サーバーの正式名称が長い場合に、代わりに表示することのできる略称や通称。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
@@ -1544,6 +1551,7 @@ _plugin:
   install: "プラグインのインストール"
   installWarn: "信頼できないプラグインはインストールしないでください。"
   manage: "プラグインの管理"
+  viewSource: "ソースを表示"
 
 _preferencesBackups:
   list: "作成したバックアップ"
@@ -1748,7 +1756,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
   registerTOTP: "認証アプリの設定を開始"
-  passwordToTOTP: "パスワードを入力してください"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
   step2: "次に、表示されているQRコードをアプリでスキャンします。"
   step2Click: "QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。"
@@ -1830,6 +1837,7 @@ _antennaSources:
   homeTimeline: "フォローしているユーザーのノート"
   users: "指定した一人または複数のユーザーのノート"
   userList: "指定したリストのユーザーのノート"
+  userBlacklist: "指定した一人または複数のユーザーを除いた全てのノート"
 
 _weekday:
   sunday: "日曜日"
@@ -2064,6 +2072,7 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   pollEnded: "アンケートの結果が出ました"
+  newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
@@ -2074,6 +2083,7 @@ _notification:
 
   _types:
     all: "すべて"
+    note: "ユーザーの新規投稿"
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"
