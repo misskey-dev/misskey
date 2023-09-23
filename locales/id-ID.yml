@@ -2041,3 +2041,5 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+_moderationLogTypes:
+  suspend: "Tangguhkan"
