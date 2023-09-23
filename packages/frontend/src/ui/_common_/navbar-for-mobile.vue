@@ -377,7 +377,7 @@ function more() {
 
   &.gamingDark:hover, &.gamingDark.active {
     text-decoration: none;
-    color: white;
+    color: black;
 
     &.gamingDark:before {
       content: "";

@@ -41,8 +41,8 @@ export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
-export const bannerDark='https://files.prismisskey.space/misskey/ac141052-7a16-4608-bc08-263566326a6d.jpg'
-export const bannerLight ='https://files.prismisskey.space/misskey/e8d13afc-2348-4b13-a64a-f55a19e8d7aa.jpg'
+export const bannerDark='https://files.prismisskey.space/misskey/5182a391-5b9f-4ba9-90a5-a692aa59b938.png'
+export const bannerLight ='https://files.prismisskey.space/misskey/96e65f59-eab3-47d4-bb1e-d141100bd2fc.png'
 export const iconDark='https://files.prismisskey.space/misskey/f3b3c9f8-ff2a-474d-a858-64ffe9023e22.png'
 export const iconLight='https://files.prismisskey.space/misskey/c7e56b1d-4c4f-408f-bf73-3175f4eb26ca.png'
 

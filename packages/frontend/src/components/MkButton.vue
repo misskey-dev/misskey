@@ -319,7 +319,7 @@ function onMousedown(evt: MouseEvent): void {
   &.gamingDark {
     background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
     background-size: 1800% 1800%;
-    color: white !important;
+    color: black;
     -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.45, 0.30, 1) infinite;
     -moz-animation: AnimationDark 44s cubic-bezier(0, 0.45, 0.30, 1) infinite;
     animation: AnimationDark 44s cubic-bezier(0, 0.45, 0.30, 1) infinite;
@@ -327,7 +327,7 @@ function onMousedown(evt: MouseEvent): void {
     &:not(:disabled):hover {
       background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
       background-size: 1800% 1800% ;
-      color: white !important;
+      color: black;
       -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
       -moz-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
       animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
@@ -336,7 +336,7 @@ function onMousedown(evt: MouseEvent): void {
     &:not(:disabled):active {
       background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
       background-size: 1800% 1800% !important;
-      color: white !important;
+      color: black;
       -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite ;
       -moz-animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;
       animation: AnimationDark 45s cubic-bezier(0, 0.45, 0.30, 1) infinite;

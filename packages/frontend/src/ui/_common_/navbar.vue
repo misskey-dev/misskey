@@ -292,15 +292,15 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight {
-      color: black !important;
+      color: white;
     }
 
     &.gamingDark {
-      color: black !important;
+      color: black;
     }
 
     &.gamingLight:before {
-			color: black !important;
+      color: white;
       content: "";
       display: block;
       width: calc(100% - 38px);
@@ -321,7 +321,8 @@ function more(ev: MouseEvent) {
 
     &.gamingLight:hover, &.gamingLight.active {
 
-			color: black !important;
+      color: white;
+
       &.gamingLight:before {
         background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
         background-size: 1800% 1800% !important;
@@ -461,7 +462,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:hover {
-      color: white;
+      color: black;
 
       background-size: 1800% 1800%;
       text-decoration: none;
@@ -471,8 +472,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark.active {
-      color: white;
-
+      color: black;
       background-size: 1800% 1800%;
       -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
       -moz-animation: AnimationDark 44s cubic-bezier(0, 0.2, 0.90, 1) infinite;
@@ -480,7 +480,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:hover, &.gamingDark.active {
-      color: white;
+      color: black;
 
       &.gamingDark:before {
         content: "";
@@ -502,7 +502,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:hover {
-			color: white;
+      color: white;
       background-size: 1800% 1800% !important;
       text-decoration: none;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
@@ -512,7 +512,6 @@ function more(ev: MouseEvent) {
 
     &.gamingLight:active {
       color: white;
-
       background-size: 1800% 1800% !important;
       -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
@@ -520,7 +519,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight:hover, &.gamingLight.active {
-			color: white;
+      color: white;
 
 
       &.gamingLight:before {
@@ -562,8 +561,16 @@ function more(ev: MouseEvent) {
       color: white;
     }
 
+    &.gamingDark.active {
+      color: black;
+    }
+
     &.gamingLight {
       color: black;
+    }
+
+    &.gamingLight.active {
+      color: white;
     }
   }
 
@@ -616,6 +623,7 @@ function more(ev: MouseEvent) {
     display: block;
     position: relative;
     width: 100%;
+    color: black;
     height: 52px;
     margin-bottom: 16px;
     text-align: center;
@@ -669,12 +677,12 @@ function more(ev: MouseEvent) {
         -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
         -moz-animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
         animation: AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-				color: white;
+        color: white;
       }
     }
 
     &.gamingDark:before {
-      color: white;
+      color: black;
       content: "";
       display: block;
       position: absolute;
@@ -750,16 +758,20 @@ function more(ev: MouseEvent) {
     width: 100%;
     text-align: center;
 
+    &.gamingLight {
+      color: white;
+    }
+
     &:hover, &.active {
       text-decoration: none;
       color: var(--accent);
 
       &.gamingDark {
-        color: white;
+        color: black;
       }
 
       &.gamingLight {
-        color: #DEE7E4;
+        color: white;
       }
 
       &:before {
@@ -810,7 +822,8 @@ function more(ev: MouseEvent) {
 
     &.gamingLight:hover, &.gamingLight.active {
       text-decoration: none;
-			color: white;
+      color: white !important;
+
       &.gamingLight:before {
         content: "";
         display: block;
@@ -854,8 +867,16 @@ function more(ev: MouseEvent) {
       color: white;
     }
 
+    &.gamingDark.active {
+      color: black;
+    }
+
     &.gamingLight {
-			color: white;
+      color: black;
+    }
+
+    &.gamingLight.active {
+      color: white;
     }
   }
 

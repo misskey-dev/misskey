@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.disabled]: disabled && gaming === '', [$style.checked]: checked && gaming === '' , [$style.gamingdarkDisabled]: disabled && gaming === 'dark', [$style.gamingLightDisabled]: disabled && gaming === 'light'}]">
+<div :class="[$style.root, { [$style.disabled]: disabled && gaming === '', [$style.checked]: checked && gaming === '' }]">
 	<input
 		ref="input"
 		type="checkbox"
