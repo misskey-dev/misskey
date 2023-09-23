@@ -2036,3 +2036,5 @@ _webhookSettings:
     renote: "Při renotaci poznámky"
     reaction: "Při obdržení reakce"
     mention: "Při zmínce"
+_moderationLogTypes:
+  suspend: "Zmrazit"
