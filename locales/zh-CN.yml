@@ -2103,3 +2103,4 @@ _moderationLogTypes:
   suspend: "冻结"
   unsuspend: "解除冻结"
   addCustomEmoji: "添加自定义表情符号"
+  resetPassword: "重置密码"
