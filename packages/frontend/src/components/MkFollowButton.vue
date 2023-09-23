@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
   <button
       class="_button"
-      :class="[$style.root, ,{ [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou,[$style.gamingDark]: gaming === 'dark' || isFollowing || hasPendingFollowRequestFromYou,[$style.gamingLight]: gaming === 'light' || isFollowing || hasPendingFollowRequestFromYou
+      :class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou,[$style.gamingDark]: gaming === 'dark' && isFollowing || gaming === 'dark' && hasPendingFollowRequestFromYou,[$style.gamingLight]: gaming === 'light' && isFollowing || gaming === 'light' && hasPendingFollowRequestFromYou
 , [$style.full]: full, [$style.large]: large }]"
       :disabled="wait"
       @click="onClick"
@@ -13,33 +13,33 @@ SPDX-License-Identifier: AGPL-3.0-only
     <template v-if="!wait">
       <template v-if="hasPendingFollowRequestFromYou && user.isLocked">
         <span v-if="full"
-              :class="$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'} ">{{
+              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}]">{{
             i18n.ts.followRequestPending
           }}</span><i class="ti ti-hourglass-empty"></i>
       </template>
       <template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
         <!-- つまりリモートフォローの場合。 -->
         <span v-if="full"
-              :class="$style.text,{[$style.gamingDark]: gaming === 'dark' ,[$style.gamingLight]: gaming === 'light'} ">{{
+              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }] ">{{
             i18n.ts.processing
           }}</span>
         <MkLoading :em="true" :colored="false"/>
       </template>
       <template v-else-if="isFollowing">
         <span v-if="full"
-              :class="$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' } ">{{
+              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }] ">{{
             i18n.ts.unfollow
           }}</span><i class="ti ti-minus"></i>
       </template>
       <template v-else-if="!isFollowing && user.isLocked">
         <span v-if="full"
-              :class="$style.text,{[$style.gamingDark]: gaming === 'dark' ,[$style.gamingLight]: gaming === 'light'} ">{{
+              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]">{{
             i18n.ts.followRequest
           }}</span><i class="ti ti-plus"></i>
       </template>
       <template v-else-if="!isFollowing && !user.isLocked">
         <span v-if="full"
-              :class="$style.text,{[$style.gamingDark]: gaming === 'dark' ,[$style.gamingLight]: gaming === 'light'} ">{{
+              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]">{{
             i18n.ts.follow
           }}</span><i class="ti ti-plus"></i>
       </template>

@@ -297,6 +297,8 @@ watch([
 	reactionsDisplaySize,
 	highlightSensitiveMedia,
 	keepScreenOn,
+	showMediaTimeline,
+	enableGamingMode
 ], async () => {
 	await reloadAsk();
 });
