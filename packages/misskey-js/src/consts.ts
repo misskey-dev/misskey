@@ -45,7 +45,20 @@ export const permissions = [
 	'write:flash-likes',
 ];
 
-export const moderationLogTypes = ['updateServerSettings', 'suspend', 'unsuspend', 'updateUserNote', 'addCustomEmoji', 'assignRole', 'unassignRole', 'updateRole', 'deleteRole', 'clearQueue', 'promoteQueue'] as const;
+export const moderationLogTypes = [
+	'updateServerSettings',
+	'suspend',
+	'unsuspend',
+	'updateUserNote',
+	'addCustomEmoji',
+	'assignRole',
+	'unassignRole',
+	'updateRole',
+	'deleteRole',
+	'clearQueue',
+	'promoteQueue',
+	'deleteDriveFile',
+] as const;
 
 export type ModerationLogPayloads = {
 	updateServerSettings: {
@@ -88,4 +101,8 @@ export type ModerationLogPayloads = {
 	};
 	clearQueue: Record<string, never>;
 	promoteQueue: Record<string, never>;
+	deleteDriveFile: {
+		fileId: string;
+		fileUserId: string | null;
+	};
 };
