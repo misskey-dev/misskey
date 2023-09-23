@@ -1335,3 +1335,4 @@ _webhookSettings:
   active: "চালু"
 _moderationLogTypes:
   suspend: "স্থগিত করা"
+  resetPassword: "পাসওয়ার্ড রিসেট করুন"
