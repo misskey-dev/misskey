@@ -1333,3 +1333,5 @@ _deck:
 _webhookSettings:
   name: "নাম"
   active: "চালু"
+_moderationLogTypes:
+  suspend: "স্থগিত করা"
