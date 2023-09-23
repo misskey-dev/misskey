@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return;
 			}
 
-			await this.roleService.assign(user.id, role.id, ps.expiresAt ? new Date(ps.expiresAt) : null);
+			await this.roleService.assign(user.id, role.id, ps.expiresAt ? new Date(ps.expiresAt) : null, me);
 		});
 	}
 }

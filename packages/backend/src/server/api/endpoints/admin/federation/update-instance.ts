@@ -9,6 +9,7 @@ import type { InstancesRepository } from '@/models/_.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -34,6 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private utilityService: UtilityService,
 		private federatedInstanceService: FederatedInstanceService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.instancesRepository.findOneBy({ host: this.utilityService.toPuny(ps.host) });
@@ -42,9 +44,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('instance not found');
 			}
 
-			this.federatedInstanceService.update(instance.id, {
+			await this.federatedInstanceService.update(instance.id, {
 				isSuspended: ps.isSuspended,
 			});
+
+			if (instance.isSuspended !== ps.isSuspended) {
+				if (ps.isSuspended) {
+					this.moderationLogService.log(me, 'suspendRemoteInstance', {
+						id: instance.id,
+						host: instance.host,
+					});
+				} else {
+					this.moderationLogService.log(me, 'unsuspendRemoteInstance', {
+						id: instance.id,
+						host: instance.host,
+					});
+				}
+			}
 		});
 	}
 }

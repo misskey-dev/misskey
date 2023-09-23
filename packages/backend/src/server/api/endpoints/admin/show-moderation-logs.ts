@@ -62,6 +62,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		type: { type: 'string', nullable: true },
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
 } as const;
@@ -77,6 +79,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.moderationLogsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+
+			if (ps.type != null) {
+				query.andWhere('report.type = :type', { type: ps.type });
+			}
+
+			if (ps.userId != null) {
+				query.andWhere('report.userId = :userId', { userId: ps.userId });
+			}
 
 			const reports = await query.limit(ps.limit).getMany();
 

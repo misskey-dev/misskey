@@ -1,3 +1,5 @@
+import { ModerationLogPayloads } from './consts.js';
+
 export type ID = string;
 export type DateString = string;
 
@@ -298,6 +300,7 @@ export type LiteInstanceMetadata = {
 	maintainerEmail: string | null;
 	version: string;
 	name: string | null;
+	shortName: string | null;
 	uri: string;
 	description: string | null;
 	langs: string[];
@@ -565,3 +568,52 @@ export type UserSorting =
 	| '+updatedAt'
 	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
+
+export type ModerationLog = {
+	id: ID;
+	createdAt: DateString;
+	userId: User['id'];
+	user: UserDetailed | null;
+} & ({
+	type: 'updateServerSettings';
+	info: ModerationLogPayloads['updateServerSettings'];
+} | {
+	type: 'suspend';
+	info: ModerationLogPayloads['suspend'];
+} | {
+	type: 'unsuspend';
+	info: ModerationLogPayloads['unsuspend'];
+} | {
+	type: 'updateUserNote';
+	info: ModerationLogPayloads['updateUserNote'];
+} | {
+	type: 'addCustomEmoji';
+	info: ModerationLogPayloads['addCustomEmoji'];
+} | {
+	type: 'assignRole';
+	info: ModerationLogPayloads['assignRole'];
+} | {
+	type: 'unassignRole';
+	info: ModerationLogPayloads['unassignRole'];
+} | {
+	type: 'updateRole';
+	info: ModerationLogPayloads['updateRole'];
+} | {
+	type: 'deleteRole';
+	info: ModerationLogPayloads['deleteRole'];
+} | {
+	type: 'clearQueue';
+	info: ModerationLogPayloads['clearQueue'];
+} | {
+	type: 'promoteQueue';
+	info: ModerationLogPayloads['promoteQueue'];
+} | {
+	type: 'resetPassword';
+	info: ModerationLogPayloads['resetPassword'];
+} | {
+	type: 'suspendRemoteInstance';
+	info: ModerationLogPayloads['suspendRemoteInstance'];
+} | {
+	type: 'unsuspendRemoteInstance';
+	info: ModerationLogPayloads['unsuspendRemoteInstance'];
+});

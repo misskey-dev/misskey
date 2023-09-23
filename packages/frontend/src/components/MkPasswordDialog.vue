@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div style="padding: 0 0 16px 0; text-align: center;">
-			<i class="ti ti-lock" style="font-size: 32px; color: var(--accent);"></i>
-			<div style="margin-top: 10px;">{{ i18n.ts.authenticationRequiredToContinue }}</div>
+			<img src="/fluent-emoji/1f510.png" alt="🔐" style="display: block; margin: 0 auto; width: 48px;">
+			<div style="margin-top: 16px;">{{ i18n.ts.authenticationRequiredToContinue }}</div>
 		</div>
 
 		<div class="_gaps">

@@ -389,6 +389,9 @@ export type Plugin = {
 	src: string | null;
 	version: string;
 	ast: any[];
+	author?: string;
+	description?: string;
+	permissions?: string[];
 };
 
 interface Watcher {

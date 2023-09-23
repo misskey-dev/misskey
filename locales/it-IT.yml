@@ -1529,6 +1529,7 @@ _plugin:
   install: "Installa estensioni"
   installWarn: "Si prega di installare soltanto estensioni che provengono da fonti affidabili."
   manage: "Gestisci estensioni"
+  viewSource: "Visualizza sorgente"
 _preferencesBackups:
   list: "Elenco di impostazioni salvate in precedenza"
   saveNew: "Nuovo salvataggio"

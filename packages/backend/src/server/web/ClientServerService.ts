@@ -114,10 +114,10 @@ export class ClientServerService {
 		let manifest = {
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'short_name': instance.name || 'Misskey',
+			'short_name': instance.shortName || instance.name || this.config.host,
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'name': instance.name || 'Misskey',
+			'name': instance.name || this.config.host,
 			'start_url': '/',
 			'display': 'standalone',
 			'background_color': '#313a42',

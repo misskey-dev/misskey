@@ -81,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchUser);
 			}
 
-			await this.roleService.unassign(user.id, role.id);
+			await this.roleService.unassign(user.id, role.id, me);
 		});
 	}
 }
