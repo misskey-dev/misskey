@@ -2404,6 +2404,7 @@ type LiteInstanceMetadata = {
     maintainerEmail: string | null;
     version: string;
     name: string | null;
+    shortName: string | null;
     uri: string;
     description: string | null;
     langs: string[];

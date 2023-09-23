@@ -1156,6 +1156,8 @@ _serverSettings:
   appIconStyleRecommendation: "円形もしくは角丸にクロップされる場合があるため、塗り潰された余白のある背景を持つことが推奨されます。"
   appIconResolutionMustBe: "解像度は必ず{resolution}である必要があります。"
   manifestJsonOverride: "manifest.jsonのオーバーライド"
+  shortName: "略称"
+  shortNameDescription: "サーバーの正式名称が長い場合に、代わりに表示することのできる略称や通称。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"

@@ -321,6 +321,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				maintainerEmail: instance.maintainerEmail,
 				version: this.config.version,
 				name: instance.name,
+				shortName: instance.shortName,
 				uri: this.config.url,
 				description: instance.description,
 				langs: instance.langs,

@@ -1158,6 +1158,8 @@ export interface Locale {
         "appIconStyleRecommendation": string;
         "appIconResolutionMustBe": string;
         "manifestJsonOverride": string;
+        "shortName": string;
+        "shortNameDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
