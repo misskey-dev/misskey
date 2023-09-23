@@ -2107,7 +2107,7 @@ _moderationLogTypes:
   suspend: "Suspended"
   unsuspend: "Unsuspended"
   addCustomEmoji: "Custom emoji added"
-  updateServerSettings: "Server settings changed"
+  updateServerSettings: "Server settings updated"
   updateUserNote: "Moderation note updated"
   deleteDriveFile: "File deleted"
   deleteNote: "Note deleted"
