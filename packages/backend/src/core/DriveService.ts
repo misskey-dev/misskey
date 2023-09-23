@@ -650,7 +650,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	public async deleteFile(file: MiDriveFile, isExpired = false, deleter: MiUser) {
+	public async deleteFile(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
 
@@ -677,7 +677,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	public async deleteFileSync(file: MiDriveFile, isExpired = false, deleter: MiUser) {
+	public async deleteFileSync(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
 
@@ -708,7 +708,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	private async deletePostProcess(file: MiDriveFile, isExpired = false, deleter: MiUser) {
+	private async deletePostProcess(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
 			this.driveFilesRepository.update(file.id, {
@@ -740,7 +740,7 @@ export class DriveService {
 			this.globalEventService.publishDriveStream(file.userId, 'fileDeleted', file.id);
 		}
 
-		if (await this.roleService.isModerator(deleter) && (file.userId !== deleter.id)) {
+		if (deleter && await this.roleService.isModerator(deleter) && (file.userId !== deleter.id)) {
 			this.moderationLogService.log(deleter, 'deleteDriveFile', {
 				fileId: file.id,
 				fileUserId: file.userId,
