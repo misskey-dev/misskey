@@ -1510,6 +1510,7 @@ _plugin:
   install: "プラグインのインストール"
   installWarn: "信頼できへんプラグインはインストールせんとってな"
   manage: "プラグインの管理"
+  viewSource: "ソースを表示"
 _preferencesBackups:
   list: "作ったバックアップ"
   saveNew: "新しく保存"
