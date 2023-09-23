@@ -2099,3 +2099,5 @@ _webhookSettings:
     renote: "Wenn du ein Renote erhältst"
     reaction: "Wenn du eine Reaktion erhältst"
     mention: "Wenn du erwähnt wirst"
+_moderationLogTypes:
+  suspend: "Sperren"
