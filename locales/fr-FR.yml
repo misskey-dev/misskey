@@ -1693,3 +1693,4 @@ _webhookSettings:
   active: "Activé"
 _moderationLogTypes:
   suspend: "Suspendre"
+  resetPassword: "Réinitialiser le mot de passe"
