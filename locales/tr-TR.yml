@@ -448,3 +448,5 @@ _deck:
     tl: "Zaman çizelgesi"
     list: "Listeler"
     mentions: "Bahsetmeler"
+_moderationLogTypes:
+  suspend: "askıya al"
