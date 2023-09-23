@@ -1622,3 +1622,4 @@ _webhookSettings:
   active: "Увімкнено"
 _moderationLogTypes:
   suspend: "Призупинити"
+  resetPassword: "Скинути пароль"
