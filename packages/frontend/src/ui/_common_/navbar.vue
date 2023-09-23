@@ -426,11 +426,11 @@ function more(ev: MouseEvent) {
     color: var(--navFg);
 
     &.gamingDark {
-      color: white;
+			color: var(--navFg);
     }
 
     &.gamingLight {
-      color: black;
+			color: var(--navFg);
     }
 
     &:hover {
