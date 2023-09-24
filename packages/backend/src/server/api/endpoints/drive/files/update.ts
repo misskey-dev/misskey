@@ -89,14 +89,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			const fileObj = await this.driveService.update(file, {
-				folderId: ps.folderId,
-				name: ps.name,
-				isSensitive: ps.isSensitive,
-				comment: ps.comment,
-			}, me);
+			let packedFile;
 
-			return fileObj;
+			try {
+				packedFile = await this.driveService.updateFile(file, {
+					folderId: ps.folderId,
+					name: ps.name,
+					isSensitive: ps.isSensitive,
+					comment: ps.comment,
+				}, me);
+			} catch (e) {
+				if (e instanceof DriveService.InvalidFileNameError) {
+					throw new ApiError(meta.errors.invalidFileName);
+				} else if (e instanceof DriveService.NoSuchFolderError) {
+					throw new ApiError(meta.errors.noSuchFolder);
+				} else if (e instanceof DriveService.CannotUnmarkSensitiveError) {
+					throw new ApiError(meta.errors.restrictedByRole);
+				} else {
+					throw e;
+				}
+			}
+
+			return packedFile;
 		});
 	}
 }

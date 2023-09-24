@@ -87,6 +87,9 @@ type UploadFromUrlArgs = {
 
 @Injectable()
 export class DriveService {
+	public static NoSuchFolderError = class extends Error {};
+	public static InvalidFileNameError = class extends Error {};
+	public static CannotUnmarkSensitiveError = class extends Error {};
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
@@ -650,15 +653,15 @@ export class DriveService {
 	}
 
 	@bindThis
-	public async update(file: MiDriveFile, values: Partial<MiDriveFile>, updater: MiUser) {
+	public async updateFile(file: MiDriveFile, values: Partial<MiDriveFile>, updater: MiUser) {
 		const alwaysMarkNsfw = (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw;
 
 		if (values.name && !this.driveFileEntityService.validateFileName(file.name)) {
-			throw new Error('invalid filename');
+			throw new DriveService.InvalidFileNameError();
 		}
 
 		if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive && alwaysMarkNsfw && !values.isSensitive) {
-			throw new Error('cannot unmark nsfw');
+			throw new DriveService.CannotUnmarkSensitiveError();
 		}
 
 		if (values.folderId != null) {
@@ -668,13 +671,13 @@ export class DriveService {
 			});
 
 			if (folder == null) {
-				throw new Error('folder-not-found');
+				throw new DriveService.NoSuchFolderError();
 			}
 		}
 
 		await this.driveFilesRepository.update(file.id, values);
 
-		const fileObj = await this.driveFileEntityService.pack(file, { self: true });
+		const fileObj = await this.driveFileEntityService.pack(file.id, { self: true });
 
 		// Publish fileUpdated event
 		if (file.userId) {
