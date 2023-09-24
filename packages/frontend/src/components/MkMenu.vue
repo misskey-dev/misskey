@@ -87,8 +87,7 @@ if (darkMode.value && gamingMode.value == true) {
 watch(darkMode, () => {
   if (darkMode.value && gamingMode.value == true) {
     gaming.value = 'dark';
-    document.documentElement.style.setProperty('--accent', '#fff');
-    document.documentElement.style.setProperty('--accentLighten', '#fff');
+
   } else if (!darkMode.value && gamingMode.value == true) {
     gaming.value = 'light';
   } else {
@@ -99,8 +98,7 @@ watch(darkMode, () => {
 watch(gamingMode, () => {
   if (darkMode.value && gamingMode.value == true) {
     gaming.value = 'dark';
-    document.documentElement.style.setProperty('--accent', '#fff');
-    document.documentElement.style.setProperty('--accentLighten', '#fff');
+
   } else if (!darkMode.value && gamingMode.value == true) {
     gaming.value = 'light';
   } else {
