@@ -11,6 +11,7 @@ export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
 export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
+	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -51,6 +52,8 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 }
 
 export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
+	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
+	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -60,6 +63,7 @@ export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey
 	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
 		// Append a credential
 		(data as any).i = token;
+
 		const fullUrl = (hostUrl.slice(-1) === '/' ? hostUrl.slice(0, -1) : hostUrl)
 				+ '/' + (endpoint.slice(0, 1) === '/' ? endpoint.slice(1) : endpoint);
 		// Send request
