@@ -16,7 +16,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<div>{{ i18n.ts.moderator }}: {{ log.userId }}</div>
 
-		<template v-if="log.type === 'suspend'">
+		<template v-if="log.type === 'updateServerSettings'">
+			<div :class="$style.diff">
+				<CodeDiff :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateUserNote'">
+			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div :class="$style.diff">
+				<CodeDiff :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'suspend'">
 			<div>{{ i18n.ts.user }}: {{ log.info.targetId }}</div>
 		</template>
 		<template v-else-if="log.type === 'unsuspend'">
@@ -36,6 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
+import { CodeDiff } from 'v-code-diff';
+import JSON5 from 'json5';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
@@ -53,5 +66,12 @@ const props = defineProps<{
 .avatar {
 	width: 18px;
 	height: 18px;
+}
+
+.diff {
+	background: #fff;
+	color: #000;
+	border-radius: 6px;
+	overflow: clip;
 }
 </style>

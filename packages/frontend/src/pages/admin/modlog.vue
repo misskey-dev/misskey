@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
 					<option :value="null">{{ i18n.ts.all }}</option>
-					<option v-for="t in Misskey.moderationLogTypes" :key="t" :value="t">{{ t }}</option>
+					<option v-for="t in Misskey.moderationLogTypes" :key="t" :value="t">{{ i18n.ts._moderationLogTypes[t] ?? t }}</option>
 				</MkSelect>
 				<MkInput v-model="moderatorId" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.moderator }}(ID)</template>
