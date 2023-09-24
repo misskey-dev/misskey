@@ -12,6 +12,16 @@
 
 -->
 
+## (unreleased)
+### General
+-
+
+### Client
+-
+
+### Server
+- Fix: お知らせのページネーションが機能しない
+
 ## 2023.9.0 (unreleased)
 
 ### Note
