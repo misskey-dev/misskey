@@ -368,8 +368,8 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'ti ti-external-link',
-			text: i18n.ts.detailed,
+			icon: 'ti ti-info-circle',
+			text: i18n.ts.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',
