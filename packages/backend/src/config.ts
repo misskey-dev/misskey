@@ -7,9 +7,10 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
-import type { RedisOptions } from 'ioredis';
 
-import { md5 } from './misc/hash.js';
+import { md5 } from '@/misc/hash.js';
+
+import type { RedisOptions } from 'ioredis';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
@@ -206,10 +207,6 @@ export function loadConfig(): Config {
 		: null;
 	const internalMediaProxy = `${scheme}://${host}/proxy`;
 	const redis = convertRedisOptions(config.redis, host);
-	const internalMediaProxy = `${mixin.scheme}://${mixin.host}/proxy`;
-	mixin.mediaProxy = externalMediaProxy ?? internalMediaProxy;
-	mixin.mediaProxyKey = md5(config.mediaProxyKey ?? 'misskey');
-	mixin.externalMediaProxyEnabled = externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy;
 
 	return {
 		version,
@@ -253,6 +250,7 @@ export function loadConfig(): Config {
 		proxyRemoteFiles: config.proxyRemoteFiles,
 		signToActivityPubGet: config.signToActivityPubGet,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
+		mediaProxyKey: md5(config.mediaProxyKey ?? 'misskey'),
 		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
