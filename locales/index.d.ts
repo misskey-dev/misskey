@@ -2262,6 +2262,10 @@ export interface Locale {
         "deleteNote": string;
         "createGlobalAnnouncement": string;
         "createUserAnnouncement": string;
+        "updateGlobalAnnouncement": string;
+        "updateUserAnnouncement": string;
+        "deleteGlobalAnnouncement": string;
+        "deleteUserAnnouncement": string;
         "resetPassword": string;
         "suspendRemoteInstance": string;
         "unsuspendRemoteInstance": string;
