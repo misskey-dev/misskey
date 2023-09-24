@@ -828,6 +828,8 @@ export interface Locale {
     "high": string;
     "middle": string;
     "low": string;
+    "GamingSpeedChange": string;
+    "GamingSpeedChangeInfo": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
     "previewNoteText": string;
@@ -1946,6 +1948,7 @@ export interface Locale {
         "instanceInfo": string;
         "memo": string;
         "notifications": string;
+        "gamingMode": string;
         "timeline": string;
         "calendar": string;
         "trends": string;
