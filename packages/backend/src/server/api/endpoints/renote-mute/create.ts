@@ -1,10 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import type { RenoteMutingsRepository } from '@/models/index.js';
-import type { RenoteMuting } from '@/models/entities/RenoteMuting.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { RenoteMutingsRepository } from '@/models/_.js';
+import type { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -51,14 +55,12 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
-		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
 		private idService: IdService,
 	) {
@@ -92,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				createdAt: new Date(),
 				muterId: muter.id,
 				muteeId: mutee.id,
-			} as RenoteMuting);
+			} as MiRenoteMuting);
 		});
 	}
 }

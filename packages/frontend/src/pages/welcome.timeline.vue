@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<div ref="scrollEl" :class="[$style.scrollbox, { [$style.scroll]: isScrolling }]">
@@ -22,16 +27,16 @@
 </template>
 
 <script lang="ts" setup>
-import { Note } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import { onUpdated } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import * as os from '@/os';
-import { getScrollContainer } from '@/scripts/scroll';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { getScrollContainer } from '@/scripts/scroll.js';
+import { $i } from '@/account.js';
 
-let notes = $ref<Note[]>([]);
+let notes = $ref<Misskey.entities.Note[]>([]);
 let isScrolling = $ref(false);
 let scrollEl = $shallowRef<HTMLElement>();
 

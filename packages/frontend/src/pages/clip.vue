@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions"/></template>
@@ -22,13 +27,13 @@
 
 <script lang="ts" setup>
 import { computed, watch, provide } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { url } from '@/config';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache';
 
@@ -36,7 +41,7 @@ const props = defineProps<{
 	clipId: string,
 }>();
 
-let clip: misskey.entities.Clip = $ref<misskey.entities.Clip>();
+let clip: Misskey.entities.Clip = $ref<Misskey.entities.Clip>();
 let favorited = $ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,

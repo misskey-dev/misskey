@@ -1,18 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { Antenna } from '@/models/entities/Antenna.js';
-import type { Note } from '@/models/entities/Note.js';
-import type { User } from '@/models/entities/User.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
-import { IdService } from '@/core/IdService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
+import type { MiAntenna } from '@/models/Antenna.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, NotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { AntennasRepository, UserListJoiningsRepository } from '@/models/_.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -21,7 +21,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
 	private antennasFetched: boolean;
-	private antennas: Antenna[];
+	private antennas: MiAntenna[];
 
 	constructor(
 		@Inject(DI.redis)
@@ -30,12 +30,6 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -43,11 +37,7 @@ export class AntennaService implements OnApplicationShutdown {
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private utilityService: UtilityService,
-		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private pushNotificationService: PushNotificationService,
-		private noteEntityService: NoteEntityService,
-		private antennaEntityService: AntennaEntityService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -86,7 +76,7 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addNoteToAntennas(note: Note, noteUser: { id: User['id']; username: string; host: string | null; }): Promise<void> {
+	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<void> {
 		const antennas = await this.getAntennas();
 		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
 		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
@@ -109,7 +99,7 @@ export class AntennaService implements OnApplicationShutdown {
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
+	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
 
@@ -129,6 +119,12 @@ export class AntennaService implements OnApplicationShutdown {
 				return this.utilityService.getFullApAccount(username, host).toLowerCase();
 			});
 			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+		} else if (antenna.src === 'users_blacklist') {
+			const accts = antenna.users.map(x => {
+				const { username, host } = Acct.parse(x);
+				return this.utilityService.getFullApAccount(username, host).toLowerCase();
+			});
+			if (accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 		}
 
 		const keywords = antenna.keywords

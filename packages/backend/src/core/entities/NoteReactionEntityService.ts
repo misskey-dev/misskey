@@ -1,12 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteReactionsRepository } from '@/models/index.js';
+import type { NoteReactionsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { NoteReaction } from '@/models/entities/NoteReaction.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
@@ -38,8 +43,8 @@ export class NoteReactionEntityService implements OnModuleInit {
 
 	@bindThis
 	public async pack(
-		src: NoteReaction['id'] | NoteReaction,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiNoteReaction['id'] | MiNoteReaction,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			withNote: boolean;
 		},

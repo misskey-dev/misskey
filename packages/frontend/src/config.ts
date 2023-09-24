@@ -1,4 +1,9 @@
-import { miLocalStorage } from './local-storage';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { miLocalStorage } from '@/local-storage.js';
 
 const address = new URL(location.href);
 const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;

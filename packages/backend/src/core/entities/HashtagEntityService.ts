@@ -1,25 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { HashtagsRepository } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { Hashtag } from '@/models/entities/Hashtag.js';
+import type { } from '@/models/Blocking.js';
+import type { MiHashtag } from '@/models/Hashtag.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class HashtagEntityService {
 	constructor(
-		@Inject(DI.hashtagsRepository)
-		private hashtagsRepository: HashtagsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: Hashtag,
+		src: MiHashtag,
 	): Promise<Packed<'Hashtag'>> {
 		return {
 			tag: src.name,
@@ -34,7 +32,7 @@ export class HashtagEntityService {
 
 	@bindThis
 	public packMany(
-		hashtags: Hashtag[],
+		hashtags: MiHashtag[],
 	) {
 		return Promise.all(hashtags.map(x => this.pack(x)));
 	}

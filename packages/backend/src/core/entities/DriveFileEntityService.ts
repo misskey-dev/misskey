@@ -1,14 +1,22 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { User } from '@/models/entities/User.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -19,21 +27,12 @@ type PackOptions = {
 	self?: boolean,
 	withUser?: boolean,
 };
-import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 
 @Injectable()
 export class DriveFileEntityService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -60,7 +59,7 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
+	public getPublicProperties(file: MiDriveFile): MiDriveFile['properties'] {
 		if (file.properties.orientation != null) {
 			const properties = deepClone(file.properties);
 			if (file.properties.orientation >= 5) {
@@ -85,7 +84,7 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getThumbnailUrl(file: DriveFile): string | null {
+	public getThumbnailUrl(file: MiDriveFile): string | null {
 		if (file.type.startsWith('video')) {
 			if (file.thumbnailUrl) return file.thumbnailUrl;
 
@@ -108,7 +107,7 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getPublicUrl(file: DriveFile, mode?: 'avatar'): string { // static = thumbnail
+	public getPublicUrl(file: MiDriveFile, mode?: 'avatar'): string { // static = thumbnail
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			return this.getProxiedUrl(file.uri, mode);
@@ -134,7 +133,7 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
+	public async calcDriveUsageOf(user: MiUser['id'] | { id: MiUser['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this.driveFilesRepository
@@ -185,7 +184,7 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async pack(
-		src: DriveFile['id'] | DriveFile,
+		src: MiDriveFile['id'] | MiDriveFile,
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>> {
 		const opts = Object.assign({
@@ -219,7 +218,7 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async packNullable(
-		src: DriveFile['id'] | DriveFile,
+		src: MiDriveFile['id'] | MiDriveFile,
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({
@@ -254,7 +253,7 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async packMany(
-		files: DriveFile[],
+		files: MiDriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
 		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
@@ -263,7 +262,7 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async packManyByIdsMap(
-		fileIds: DriveFile['id'][],
+		fileIds: MiDriveFile['id'][],
 		options?: PackOptions,
 	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
 		if (fileIds.length === 0) return new Map();
@@ -278,7 +277,7 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async packManyByIds(
-		fileIds: DriveFile['id'][],
+		fileIds: MiDriveFile['id'][],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
 		if (fileIds.length === 0) return [];
