@@ -646,4 +646,10 @@ export type ModerationLog = {
 } | {
 	type: 'unsuspendRemoteInstance';
 	info: ModerationLogPayloads['unsuspendRemoteInstance'];
+} | {
+	type: 'markSensitiveDriveFile';
+	info: ModerationLogPayloads['markSensitiveDriveFile'];
+} | {
+	type: 'unmarkSensitiveDriveFile';
+	info: ModerationLogPayloads['unmarkSensitiveDriveFile'];
 });
