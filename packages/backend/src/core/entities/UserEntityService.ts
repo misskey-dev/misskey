@@ -322,8 +322,10 @@ export class UserEntityService implements OnModuleInit {
 			// append sign to existed data
 			if (!user.avatarUrl.includes('sign=')) {
 				const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
+				const avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+				user.avatarUrl = avatarUrl;
 				this.usersRepository.update(user.id, {
-					avatarUrl: this.driveFileEntityService.getPublicUrl(avatar, 'avatar'),
+					avatarUrl,
 				});
 			}
 		}
@@ -339,8 +341,10 @@ export class UserEntityService implements OnModuleInit {
 			// append sign to existed data
 			if (!user.bannerUrl.includes('sign=')) {
 				const banner = await this.driveFilesRepository.findOneByOrFail({ id: user.bannerId });
+				const bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+				user.bannerUrl = bannerUrl;
 				this.usersRepository.update(user.id, {
-					bannerUrl: this.driveFileEntityService.getPublicUrl(banner),
+					bannerUrl,
 				});
 			}
 		}

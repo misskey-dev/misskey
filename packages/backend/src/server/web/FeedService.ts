@@ -79,6 +79,7 @@ export class FeedService {
 				date: note.createdAt,
 				description: note.cw ?? undefined,
 				content: note.text ?? undefined,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				image: file ? this.driveFileEntityService.getPublicUrl(file) ?? undefined : undefined,
 			});
 		}
