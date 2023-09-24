@@ -2262,6 +2262,9 @@ export interface Locale {
         "deleteNote": string;
         "createGlobalAnnouncement": string;
         "createUserAnnouncement": string;
+        "resetPassword": string;
+        "suspendRemoteInstance": string;
+        "unsuspendRemoteInstance": string;
     };
 }
 declare const locales: {

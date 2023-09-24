@@ -103,7 +103,7 @@ export type ModerationLogPayloads = {
 	};
 	deleteRole: {
 		roleId: string;
-		roleName: string;
+		role: any;
 	};
 	clearQueue: Record<string, never>;
 	promoteQueue: Record<string, never>;
