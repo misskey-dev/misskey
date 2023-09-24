@@ -167,6 +167,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 			</MkRange>
 			<MkRange v-model="numberOfGamingSpeed" :min="1" :max="60" :step="1" easing>
+        <template #label>{{ i18n.ts.GamingSpeedChange }}</template>
+        <template #caption>{{ i18n.ts.GamingSpeedChangeInfo }}</template>
 			</MkRange>
 		</div>
 	</FormSection>
@@ -269,6 +271,7 @@ watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
 });
+document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
 watch(numberOfGamingSpeed, () =>{
   document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
 })
@@ -303,7 +306,6 @@ watch([
 	highlightSensitiveMedia,
 	keepScreenOn,
 	showMediaTimeline,
-	enableGamingMode
 ], async () => {
 	await reloadAsk();
 });
