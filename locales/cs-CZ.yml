@@ -1492,6 +1492,7 @@ _plugin:
   install: "Instalovat plugin"
   installWarn: "Neinstalujte nedůvěryhodné pluginy."
   manage: "Správce pluginů"
+  viewSource: "Zobrazit zdroj"
 _preferencesBackups:
   list: "Vytvořit backup"
   saveNew: "Uložit novou zálohu"
@@ -2035,3 +2036,6 @@ _webhookSettings:
     renote: "Při renotaci poznámky"
     reaction: "Při obdržení reakce"
     mention: "Při zmínce"
+_moderationLogTypes:
+  suspend: "Zmrazit"
+  resetPassword: "Resetovat heslo"

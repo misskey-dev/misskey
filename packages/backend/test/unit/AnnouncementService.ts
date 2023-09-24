@@ -16,6 +16,7 @@ import { genAidx } from '@/misc/id/aidx.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
@@ -29,6 +30,7 @@ describe('AnnouncementService', () => {
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
 	let globalEventService: jest.Mocked<GlobalEventService>;
+	let moderationLogService: jest.Mocked<ModerationLogService>;
 
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
@@ -71,8 +73,11 @@ describe('AnnouncementService', () => {
 						publishMainStream: jest.fn(),
 						publishBroadcastStream: jest.fn(),
 					};
-				}
-				if (typeof token === 'function') {
+				} else if (token === ModerationLogService) {
+					return {
+						log: jest.fn(),
+					};
+				} else if (typeof token === 'function') {
 					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
 					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
 					return new Mock();
@@ -87,6 +92,7 @@ describe('AnnouncementService', () => {
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
 		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
+		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
 	});
 
 	afterEach(async () => {
@@ -155,10 +161,11 @@ describe('AnnouncementService', () => {
 
 	describe('create', () => {
 		test('通常', async () => {
+			const me = await createUser();
 			const result = await announcementService.create({
 				title: 'Title',
 				text: 'Text',
-			});
+			}, me);
 
 			expect(result.raw.title).toBe('Title');
 			expect(result.packed.title).toBe('Title');
@@ -166,15 +173,17 @@ describe('AnnouncementService', () => {
 			expect(globalEventService.publishBroadcastStream).toHaveBeenCalled();
 			expect(globalEventService.publishBroadcastStream.mock.lastCall![0]).toBe('announcementCreated');
 			expect((globalEventService.publishBroadcastStream.mock.lastCall![1] as any).announcement).toBe(result.packed);
+			expect(moderationLogService.log).toHaveBeenCalled();
 		});
 
 		test('ユーザー指定', async () => {
+			const me = await createUser();
 			const user = await createUser();
 			const result = await announcementService.create({
 				title: 'Title',
 				text: 'Text',
 				userId: user.id,
-			});
+			}, me);
 
 			expect(result.raw.title).toBe('Title');
 			expect(result.packed.title).toBe('Title');
@@ -184,6 +193,7 @@ describe('AnnouncementService', () => {
 			expect(globalEventService.publishMainStream.mock.lastCall![0]).toBe(user.id);
 			expect(globalEventService.publishMainStream.mock.lastCall![1]).toBe('announcementCreated');
 			expect((globalEventService.publishMainStream.mock.lastCall![2] as any).announcement).toBe(result.packed);
+			expect(moderationLogService.log).toHaveBeenCalled();
 		});
 	});
 

@@ -2278,7 +2278,8 @@ declare namespace entities {
         Invite,
         InviteLimit,
         UserSorting,
-        OriginType
+        OriginType,
+        ModerationLog
     }
 }
 export { entities }
@@ -2515,6 +2516,95 @@ type MessagingMessage = {
     group?: UserGroup | null;
     groupId: UserGroup['id'] | null;
 };
+
+// @public (undocumented)
+type ModerationLog = {
+    id: ID;
+    createdAt: DateString;
+    userId: User['id'];
+    user: UserDetailed | null;
+} & ({
+    type: 'updateServerSettings';
+    info: ModerationLogPayloads['updateServerSettings'];
+} | {
+    type: 'suspend';
+    info: ModerationLogPayloads['suspend'];
+} | {
+    type: 'unsuspend';
+    info: ModerationLogPayloads['unsuspend'];
+} | {
+    type: 'updateUserNote';
+    info: ModerationLogPayloads['updateUserNote'];
+} | {
+    type: 'addCustomEmoji';
+    info: ModerationLogPayloads['addCustomEmoji'];
+} | {
+    type: 'updateCustomEmoji';
+    info: ModerationLogPayloads['updateCustomEmoji'];
+} | {
+    type: 'deleteCustomEmoji';
+    info: ModerationLogPayloads['deleteCustomEmoji'];
+} | {
+    type: 'assignRole';
+    info: ModerationLogPayloads['assignRole'];
+} | {
+    type: 'unassignRole';
+    info: ModerationLogPayloads['unassignRole'];
+} | {
+    type: 'updateRole';
+    info: ModerationLogPayloads['updateRole'];
+} | {
+    type: 'deleteRole';
+    info: ModerationLogPayloads['deleteRole'];
+} | {
+    type: 'clearQueue';
+    info: ModerationLogPayloads['clearQueue'];
+} | {
+    type: 'promoteQueue';
+    info: ModerationLogPayloads['promoteQueue'];
+} | {
+    type: 'deleteDriveFile';
+    info: ModerationLogPayloads['deleteDriveFile'];
+} | {
+    type: 'deleteNote';
+    info: ModerationLogPayloads['deleteNote'];
+} | {
+    type: 'createGlobalAnnouncement';
+    info: ModerationLogPayloads['createGlobalAnnouncement'];
+} | {
+    type: 'createUserAnnouncement';
+    info: ModerationLogPayloads['createUserAnnouncement'];
+} | {
+    type: 'updateGlobalAnnouncement';
+    info: ModerationLogPayloads['updateGlobalAnnouncement'];
+} | {
+    type: 'updateUserAnnouncement';
+    info: ModerationLogPayloads['updateUserAnnouncement'];
+} | {
+    type: 'deleteGlobalAnnouncement';
+    info: ModerationLogPayloads['deleteGlobalAnnouncement'];
+} | {
+    type: 'deleteUserAnnouncement';
+    info: ModerationLogPayloads['deleteUserAnnouncement'];
+} | {
+    type: 'resetPassword';
+    info: ModerationLogPayloads['resetPassword'];
+} | {
+    type: 'suspendRemoteInstance';
+    info: ModerationLogPayloads['suspendRemoteInstance'];
+} | {
+    type: 'unsuspendRemoteInstance';
+    info: ModerationLogPayloads['unsuspendRemoteInstance'];
+} | {
+    type: 'markSensitiveDriveFile';
+    info: ModerationLogPayloads['markSensitiveDriveFile'];
+} | {
+    type: 'unmarkSensitiveDriveFile';
+    info: ModerationLogPayloads['unmarkSensitiveDriveFile'];
+});
+
+// @public (undocumented)
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile"];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
@@ -2861,6 +2951,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:631:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/entities.ts:579:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

@@ -1509,6 +1509,7 @@ _plugin:
   install: "ติดตั้งปลั๊กอิน"
   installWarn: "กรุณาอย่าติดตั้งปลั๊กอินที่ไม่น่าเชื่อถือนะคะ"
   manage: "จัดการปลั๊กอิน"
+  viewSource: "ดูต้นฉบับ"
 _preferencesBackups:
   list: "สร้างการสำรองข้อมูล"
   saveNew: "บันทึกใหม่"
@@ -2064,3 +2065,6 @@ _webhookSettings:
     renote: "รีโน้ตแล้วเมื่อ"
     reaction: "เมื่อได้รับรีแอคชั่น"
     mention: "เมื่อกำลังถูกกล่าวถึง"
+_moderationLogTypes:
+  suspend: "ถูกระงับ"
+  resetPassword: "รีเซ็ตรหัสผ่าน"

@@ -1496,6 +1496,7 @@ _plugin:
   install: "Memasang plugin"
   installWarn: "Mohon jangan memasang plugin yang tidak dapat dipercayai."
   manage: "Manajemen plugin"
+  viewSource: "Lihat sumber"
 _preferencesBackups:
   list: "Cadangan yang dibuat"
   saveNew: "Simpan cadangan baru"
@@ -2040,3 +2041,6 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+_moderationLogTypes:
+  suspend: "Tangguhkan"
+  resetPassword: "Atur ulang kata sandi"

@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu';
+import { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	items: MenuItem[];

@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSuspended: true,
 			});
 
-			this.moderationLogService.insertModerationLog(me, 'suspend', {
+			this.moderationLogService.log(me, 'suspend', {
 				targetId: user.id,
 			});
 

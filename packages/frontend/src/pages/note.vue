@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note">
 					<div v-if="showNext" class="_margin">
-						<MkNotes class="" :pagination="nextPagination" :noGap="true"/>
+						<MkNotes class="" :pagination="nextPagination" :noGap="true" :disableAutoLoad="true"/>
 					</div>
 
 					<div class="_margin">

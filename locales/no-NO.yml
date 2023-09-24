@@ -725,3 +725,5 @@ _deck:
     direct: "Direkte"
 _webhookSettings:
   name: "Navn"
+_moderationLogTypes:
+  suspend: "Suspender"

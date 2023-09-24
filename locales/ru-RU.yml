@@ -1427,6 +1427,7 @@ _plugin:
   install: "Установка расширений"
   installWarn: "Пожалуйста, не устанавливайте расширения, которым не доверяете."
   manage: "Управление расширениями"
+  viewSource: "Просмотр исходника"
 _preferencesBackups:
   list: "Существующие резервные копии"
   saveNew: "Создать резервную копию"
@@ -1950,3 +1951,6 @@ _webhookSettings:
   createWebhook: "Создать вебхук"
   name: "Название"
   active: "Вкл."
+_moderationLogTypes:
+  suspend: "Заморозить"
+  resetPassword: "Сброс пароля:"
