@@ -118,6 +118,7 @@ pinned: "ピン留め"
 you: "あなた"
 clickToShow: "クリックして表示"
 sensitive: "センシティブ"
+sensitiveChannelAutoCW: "センシティブチャンネル自動CW"
 add: "追加"
 reaction: "リアクション"
 reactions: "リアクション"
@@ -771,6 +772,7 @@ emailNotification: "メール通知"
 publish: "公開"
 inChannelSearch: "チャンネル内検索"
 useReactionPickerForContextMenu: "右クリックでリアクションピッカーを開く"
+collapseSensitiveChannel: "ユーザページでセンシティブチャンネルの投稿を閉じる"
 typingUsers: "{users}が入力中"
 jumpToSpecifiedDate: "特定の日付にジャンプ"
 showingPastTimeline: "過去のタイムラインを表示しています"
@@ -1589,6 +1591,9 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
   patrons: "支援者"
+  forkContributors: "このサーバーで使用しているforkの主要な開発者"
+  allForkContributors: "このサーバーで使用しているforkの全てのコントリビューター"
+  forkSource: "このサーバーで使用しているforkのソースコード"
 
 _displayOfSensitiveMedia:
   respect: "センシティブ設定されたメディアを隠す"
@@ -2161,6 +2166,16 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+    usersLabel: "以下のユーザがnoteしたとき"
+    usersCaption: "このサーバーのユーザの@に挟まれた部分を改行で区切って指定します"
+
+_imageCompressionMode:
+  title: "画像の圧縮形式"
+  description: "オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。縮小する場合は2048x2048より小さくなるように縮小されます。非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。"
+  resizeCompress: "縮小して再圧縮する"
+  noResizeCompress: "縮小せず再圧縮する"
+  resizeCompressLossy: "縮小して非可逆圧縮する"
+  noResizeCompressLossy: "縮小せず非可逆圧縮する"
 
 _moderationLogTypes:
   assignRole: "ロールへアサイン"

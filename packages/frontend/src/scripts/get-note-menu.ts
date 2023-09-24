@@ -92,7 +92,7 @@ export async function getNoteClipMenu(props: {
 	}];
 }
 
-export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): MenuItem {
+export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): MenuItem {
 	return {
 		icon: 'ti ti-exclamation-circle',
 		text,
@@ -106,7 +106,7 @@ export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): Men
 	};
 }
 
-export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): MenuItem {
+export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): MenuItem {
 	return {
 		icon: 'ti ti-link',
 		text,
@@ -344,7 +344,7 @@ export function getNoteMenu(props: {
 			}]
 			: []
 		),*/
-			...(appearNote.userId !== $i.id ? [
+			...(appearNote.userId !== $i.id || (isRenote && props.note.userId !== $i.id) ? [
 				null,
 				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
 			]

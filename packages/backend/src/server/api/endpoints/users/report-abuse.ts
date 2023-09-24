@@ -14,6 +14,8 @@ import { EmailService } from '@/core/EmailService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { AbuseDiscordHookService } from '@/core/AbuseDiscordHookService.js';
+import type { Config } from '@/config.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -58,6 +60,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
+		@Inject(DI.config)
+		private config: Config,
 
 		private idService: IdService,
 		private metaService: MetaService,
@@ -65,6 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
+		private abuseDiscordHookService: AbuseDiscordHookService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
@@ -105,12 +110,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				const meta = await this.metaService.fetch();
-				if (meta.email) {
+				if (meta.email && !config.nirila?.disableAbuseRepository) {
 					this.emailService.sendEmail(meta.email, 'New abuse report',
 						sanitizeHtml(ps.comment),
 						sanitizeHtml(ps.comment));
 				}
 			});
+
+			this.abuseDiscordHookService.send(me, user, ps.comment);
 		});
 	}
 }

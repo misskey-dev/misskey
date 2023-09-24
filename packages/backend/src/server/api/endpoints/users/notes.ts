@@ -53,6 +53,7 @@ export const paramDef = {
 			type: 'string',
 		} },
 		excludeNsfw: { type: 'boolean', default: false },
+		includeSensitiveChannel: { type: 'boolean', default: false },
 	},
 	required: ['userId'],
 } as const;
@@ -84,10 +85,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			query.andWhere(new Brackets(qb => {
-				qb.orWhere('note.channelId IS NULL');
-				qb.orWhere('channel.isSensitive = false');
-			}));
+			if (!ps.includeSensitiveChannel) {
+				query.andWhere(new Brackets((qb) => {
+					qb.orWhere('note.channelId IS NULL');
+					qb.orWhere('channel.isSensitive = false');
+				}));
+			}
 
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) {

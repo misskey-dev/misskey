@@ -89,6 +89,12 @@ type Source = {
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
+
+	nirila?: {
+		abuseDiscordHook?: string;
+		disableAbuseRepository?: boolean;
+		notificationLimit?: number;
+	}
 };
 
 export type Config = {
@@ -163,6 +169,12 @@ export type Config = {
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
+
+	nirila: {
+		abuseDiscordHook?: string;
+		disableAbuseRepository?: boolean;
+		notificationLimit?: number;
+	}
 };
 
 const _filename = fileURLToPath(import.meta.url);
@@ -204,6 +216,8 @@ export function loadConfig(): Config {
 	const redis = convertRedisOptions(config.redis, host);
 
 	return {
+		// to avoid merge conflict in the future, this is at top
+		nirila: config.nirila ?? {},
 		version,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),

@@ -51,6 +51,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+        <MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
+        <MkSwitch v-model="collapseSensitiveChannel">{{ i18n.ts.collapseSensitiveChannel }}</MkSwitch>
 				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
 					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
@@ -245,6 +247,7 @@ const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCa
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
+const collapseSensitiveChannel = computed(defaultStore.makeGetterSetter('collapseSensitiveChannel'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));

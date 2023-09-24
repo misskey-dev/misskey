@@ -28,7 +28,7 @@ block og
 			// FIXME: add embed player for Twitter
 	if images.length
 		meta(property='twitter:card' content='summary_large_image')
-		each image in images	
+		each image in images
 			meta(property='og:image'     content= image.url)
 	else
 		meta(property='twitter:card' content='summary')
@@ -36,7 +36,8 @@ block og
 
 
 block meta
-	if user.host || isRenote || profile.noCrawle
+	// TODO: make user configurable if sensitive channel note should be indexed or not
+	if user.host || isRenote || profile.noCrawle || (note.channel && note.channel.isSensitive)
 		meta(name='robots' content='noindex')
 	if profile.preventAiLearning
 		meta(name='robots' content='noimageai')

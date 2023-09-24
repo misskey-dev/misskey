@@ -143,7 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, provide } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -166,6 +166,7 @@ import { confetti } from '@/scripts/confetti.js';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os.js';
 import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { defaultStore } from '@/store.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -204,6 +205,9 @@ let memoDraft = $ref(props.user.memo);
 let isEditingMemo = $ref(false);
 let moderationNote = $ref(props.user.moderationNote);
 let editModerationNote = $ref(false);
+let collapseSensitiveChannel = $ref(defaultStore.state.collapseSensitiveChannel);
+
+provide('collapseSensitiveChannel', collapseSensitiveChannel);
 
 watch($$(moderationNote), async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
@@ -214,6 +218,7 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
+		includeSensitiveChannel: $i != null,
 	})),
 };
 
