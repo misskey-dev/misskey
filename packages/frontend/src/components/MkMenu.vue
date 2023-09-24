@@ -76,8 +76,7 @@ const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 if (darkMode.value && gamingMode.value == true) {
   gaming.value = 'dark';
-  document.documentElement.style.setProperty('--accent', '#fff');
-  document.documentElement.style.setProperty('--accentLighten', '#fff');
+
 } else if (!darkMode.value && gamingMode.value == true) {
   gaming.value = 'light';
 } else {
