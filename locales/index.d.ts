@@ -2183,6 +2183,7 @@ export interface Locale {
             "reply": string;
             "renote": string;
             "quote": string;
+            "note": string;
             "reaction": string;
             "pollEnded": string;
             "receiveFollowRequest": string;

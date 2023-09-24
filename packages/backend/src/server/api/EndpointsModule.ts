@@ -605,6 +605,7 @@ const $renoteMute_list: Provider = { provide: 'ep:renote-mute/list', useClass: e
 const $noteNotification_list: Provider = { provide: 'ep:note-notification/list', useClass: ep___noteNotification_list.default };
 const $noteNotification_create: Provider = { provide: 'ep:note-notification/create', useClass: ep___noteNotification_create.default };
 const $noteNotification_delete: Provider = { provide: 'ep:note-notification/delete', useClass: ep___noteNotification_delete.default };
+const $noteNotification_list: Provider = { provide: 'ep:note-notification/list', useClass: ep___noteNotification_list.default };
 const $my_apps: Provider = { provide: 'ep:my/apps', useClass: ep___my_apps.default };
 const $notes: Provider = { provide: 'ep:notes', useClass: ep___notes.default };
 const $notes_children: Provider = { provide: 'ep:notes/children', useClass: ep___notes_children.default };
