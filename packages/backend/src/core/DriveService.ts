@@ -650,6 +650,57 @@ export class DriveService {
 	}
 
 	@bindThis
+	public async update(file: MiDriveFile, values: Partial<MiDriveFile>, updater: MiUser) {
+		const alwaysMarkNsfw = (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw;
+
+		if (values.name && !this.driveFileEntityService.validateFileName(file.name)) {
+			throw new Error('invalid filename');
+		}
+
+		if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive && alwaysMarkNsfw && !values.isSensitive) {
+			throw new Error('cannot unmark nsfw');
+		}
+
+		if (values.folderId != null) {
+			const folder = await this.driveFoldersRepository.findOneBy({
+				id: values.folderId,
+				userId: file.userId!,
+			});
+
+			if (folder == null) {
+				throw new Error('folder-not-found');
+			}
+		}
+
+		await this.driveFilesRepository.update(file.id, values);
+
+		const fileObj = await this.driveFileEntityService.pack(file, { self: true });
+
+		// Publish fileUpdated event
+		if (file.userId) {
+			this.globalEventService.publishDriveStream(file.userId, 'fileUpdated', fileObj);
+		}
+
+		if (await this.roleService.isModerator(updater) && (file.userId !== updater.id)) {
+			if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive) {
+				if (values.isSensitive) {
+					this.moderationLogService.log(updater, 'markSensitiveDriveFile', {
+						fileId: file.id,
+						fileUserId: file.userId,
+					});
+				} else {
+					this.moderationLogService.log(updater, 'unmarkSensitiveDriveFile', {
+						fileId: file.id,
+						fileUserId: file.userId,
+					});
+				}
+			}
+		}
+
+		return fileObj;
+	}
+
+	@bindThis
 	public async deleteFile(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);

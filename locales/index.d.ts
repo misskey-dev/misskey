@@ -2279,6 +2279,8 @@ export interface Locale {
         "resetPassword": string;
         "suspendRemoteInstance": string;
         "unsuspendRemoteInstance": string;
+        "markSensitiveDriveFile": string;
+        "unmarkSensitiveDriveFile": string;
     };
 }
 declare const locales: {
