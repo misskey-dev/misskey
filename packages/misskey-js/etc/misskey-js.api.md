@@ -2539,6 +2539,12 @@ type ModerationLog = {
     type: 'addCustomEmoji';
     info: ModerationLogPayloads['addCustomEmoji'];
 } | {
+    type: 'updateCustomEmoji';
+    info: ModerationLogPayloads['updateCustomEmoji'];
+} | {
+    type: 'deleteCustomEmoji';
+    info: ModerationLogPayloads['deleteCustomEmoji'];
+} | {
     type: 'assignRole';
     info: ModerationLogPayloads['assignRole'];
 } | {
@@ -2592,7 +2598,7 @@ type ModerationLog = {
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance"];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];

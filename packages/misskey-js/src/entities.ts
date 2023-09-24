@@ -590,6 +590,12 @@ export type ModerationLog = {
 	type: 'addCustomEmoji';
 	info: ModerationLogPayloads['addCustomEmoji'];
 } | {
+	type: 'updateCustomEmoji';
+	info: ModerationLogPayloads['updateCustomEmoji'];
+} | {
+	type: 'deleteCustomEmoji';
+	info: ModerationLogPayloads['deleteCustomEmoji'];
+} | {
 	type: 'assignRole';
 	info: ModerationLogPayloads['assignRole'];
 } | {

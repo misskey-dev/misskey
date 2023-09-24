@@ -2256,6 +2256,8 @@ export interface Locale {
         "suspend": string;
         "unsuspend": string;
         "addCustomEmoji": string;
+        "updateCustomEmoji": string;
+        "deleteCustomEmoji": string;
         "updateServerSettings": string;
         "updateUserNote": string;
         "deleteDriveFile": string;
