@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { utils, values, errors } from '@syuilo/aiscript';
+import { utils, values } from '@syuilo/aiscript';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
