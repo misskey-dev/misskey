@@ -8,6 +8,10 @@
 
 ### Server
 -->
+## nade 1.3.3 & nade 1.3.4
+### General
+- Misskey 2023.9.0対応のための軽微な修正
+
 ## nade 1.3.1 & nade 1.3.2
 ### General
 - 新着ノート通知機能
