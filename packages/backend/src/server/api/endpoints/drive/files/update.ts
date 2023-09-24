@@ -89,7 +89,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			const fileObj = await this.driveService.update(file, ps, me);
+			const fileObj = await this.driveService.update(file, {
+				folderId: ps.folderId,
+				name: ps.name,
+				isSensitive: ps.isSensitive,
+				comment: ps.comment,
+			}, me);
 
 			return fileObj;
 		});
