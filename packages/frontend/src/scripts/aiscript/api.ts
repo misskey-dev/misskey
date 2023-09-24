@@ -48,6 +48,20 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		'Mk:apiExternal': values.FN_NATIVE(async ([host, ep, param, token]) => {
+			utils.assertString(host);
+			if (!/^https?:\/\//.test(host.value)) throw new Error('invalid host name');
+			utils.assertString(ep);
+			if ((ep.value.includes('://')) throw new Error('invalid endpoint');
+			const fullUrl = (host.value.slice(-1) === '/' ? host.value.slice(0,-1) : host.value)
+				+ '/' + (ep.value.slice(0,1) === '/' ? ep.value.slice(1) : ep.value);
+			if (token) utils.assertString(token);
+			return os.api(fullUrl, utils.valToJs(param), token?.value).then(res => {
+				return utils.jsToVal(res);
+			}, err => {
+				return values.ERROR('request_failed', utils.jsToVal(err));
+			});
+		}),
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
 			utils.assertString(key);
 			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));
