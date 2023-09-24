@@ -60,9 +60,10 @@ export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey
 	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
 		// Append a credential
 		(data as any).i = token;
-
+		const fullUrl = (hostUrl.slice(-1) === '/' ? hostUrl.slice(0, -1) : hostUrl)
+				+ '/' + (endpoint.slice(0, 1) === '/' ? endpoint.slice(1) : endpoint);
 		// Send request
-		window.fetch(`${hostUrl}/${endpoint}`, {
+		window.fetch(fullUrl, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
