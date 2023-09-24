@@ -1620,3 +1620,6 @@ _deck:
 _webhookSettings:
   name: "Ім'я"
   active: "Увімкнено"
+_moderationLogTypes:
+  suspend: "Призупинити"
+  resetPassword: "Скинути пароль"

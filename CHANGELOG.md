@@ -14,6 +14,9 @@
 
 ## 2023.9.0 (unreleased)
 
+### Note
+- meilisearchを使用する場合、v1.2以上が必要です
+
 ### General
 - Feat: OAuth 2.0のサポート
 - Feat: お知らせ機能の強化

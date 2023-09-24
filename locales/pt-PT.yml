@@ -1497,3 +1497,6 @@ _webhookSettings:
     follow: "Quando seguindo um usuário"
     followed: "Quando sendo seguido"
     renote: "Quando repostado"
+_moderationLogTypes:
+  suspend: "Suspender"
+  resetPassword: "Redefinir senha"

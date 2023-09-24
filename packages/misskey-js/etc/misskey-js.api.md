@@ -2539,6 +2539,12 @@ type ModerationLog = {
     type: 'addCustomEmoji';
     info: ModerationLogPayloads['addCustomEmoji'];
 } | {
+    type: 'updateCustomEmoji';
+    info: ModerationLogPayloads['updateCustomEmoji'];
+} | {
+    type: 'deleteCustomEmoji';
+    info: ModerationLogPayloads['deleteCustomEmoji'];
+} | {
     type: 'assignRole';
     info: ModerationLogPayloads['assignRole'];
 } | {
@@ -2557,6 +2563,30 @@ type ModerationLog = {
     type: 'promoteQueue';
     info: ModerationLogPayloads['promoteQueue'];
 } | {
+    type: 'deleteDriveFile';
+    info: ModerationLogPayloads['deleteDriveFile'];
+} | {
+    type: 'deleteNote';
+    info: ModerationLogPayloads['deleteNote'];
+} | {
+    type: 'createGlobalAnnouncement';
+    info: ModerationLogPayloads['createGlobalAnnouncement'];
+} | {
+    type: 'createUserAnnouncement';
+    info: ModerationLogPayloads['createUserAnnouncement'];
+} | {
+    type: 'updateGlobalAnnouncement';
+    info: ModerationLogPayloads['updateGlobalAnnouncement'];
+} | {
+    type: 'updateUserAnnouncement';
+    info: ModerationLogPayloads['updateUserAnnouncement'];
+} | {
+    type: 'deleteGlobalAnnouncement';
+    info: ModerationLogPayloads['deleteGlobalAnnouncement'];
+} | {
+    type: 'deleteUserAnnouncement';
+    info: ModerationLogPayloads['deleteUserAnnouncement'];
+} | {
     type: 'resetPassword';
     info: ModerationLogPayloads['resetPassword'];
 } | {
@@ -2568,7 +2598,7 @@ type ModerationLog = {
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance"];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];

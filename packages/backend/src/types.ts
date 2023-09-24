@@ -33,6 +33,8 @@ export const moderationLogTypes = [
 	'unsuspend',
 	'updateUserNote',
 	'addCustomEmoji',
+	'updateCustomEmoji',
+	'deleteCustomEmoji',
 	'assignRole',
 	'unassignRole',
 	'updateRole',
@@ -43,6 +45,10 @@ export const moderationLogTypes = [
 	'deleteNote',
 	'createGlobalAnnouncement',
 	'createUserAnnouncement',
+	'updateGlobalAnnouncement',
+	'updateUserAnnouncement',
+	'deleteGlobalAnnouncement',
+	'deleteUserAnnouncement',
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
@@ -66,6 +72,16 @@ export type ModerationLogPayloads = {
 	};
 	addCustomEmoji: {
 		emojiId: string;
+		emoji: any;
+	};
+	updateCustomEmoji: {
+		emojiId: string;
+		before: any;
+		after: any;
+	};
+	deleteCustomEmoji: {
+		emojiId: string;
+		emoji: any;
 	};
 	assignRole: {
 		userId: string;
@@ -85,7 +101,7 @@ export type ModerationLogPayloads = {
 	};
 	deleteRole: {
 		roleId: string;
-		roleName: string;
+		role: any;
 	};
 	clearQueue: Record<string, never>;
 	promoteQueue: Record<string, never>;
@@ -106,6 +122,24 @@ export type ModerationLogPayloads = {
 		announcementId: string;
 		announcement: any;
 		userId: string;
+	};
+	updateGlobalAnnouncement: {
+		announcementId: string;
+		before: any;
+		after: any;
+	};
+	updateUserAnnouncement: {
+		announcementId: string;
+		before: any;
+		after: any;
+	};
+	deleteGlobalAnnouncement: {
+		announcementId: string;
+		announcement: any;
+	};
+	deleteUserAnnouncement: {
+		announcementId: string;
+		announcement: any;
 	};
 	resetPassword: {
 		targetId: string;

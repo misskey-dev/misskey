@@ -590,6 +590,12 @@ export type ModerationLog = {
 	type: 'addCustomEmoji';
 	info: ModerationLogPayloads['addCustomEmoji'];
 } | {
+	type: 'updateCustomEmoji';
+	info: ModerationLogPayloads['updateCustomEmoji'];
+} | {
+	type: 'deleteCustomEmoji';
+	info: ModerationLogPayloads['deleteCustomEmoji'];
+} | {
 	type: 'assignRole';
 	info: ModerationLogPayloads['assignRole'];
 } | {
@@ -607,6 +613,30 @@ export type ModerationLog = {
 } | {
 	type: 'promoteQueue';
 	info: ModerationLogPayloads['promoteQueue'];
+} | {
+	type: 'deleteDriveFile';
+	info: ModerationLogPayloads['deleteDriveFile'];
+} | {
+	type: 'deleteNote';
+	info: ModerationLogPayloads['deleteNote'];
+} | {
+	type: 'createGlobalAnnouncement';
+	info: ModerationLogPayloads['createGlobalAnnouncement'];
+} | {
+	type: 'createUserAnnouncement';
+	info: ModerationLogPayloads['createUserAnnouncement'];
+} | {
+	type: 'updateGlobalAnnouncement';
+	info: ModerationLogPayloads['updateGlobalAnnouncement'];
+} | {
+	type: 'updateUserAnnouncement';
+	info: ModerationLogPayloads['updateUserAnnouncement'];
+} | {
+	type: 'deleteGlobalAnnouncement';
+	info: ModerationLogPayloads['deleteGlobalAnnouncement'];
+} | {
+	type: 'deleteUserAnnouncement';
+	info: ModerationLogPayloads['deleteUserAnnouncement'];
 } | {
 	type: 'resetPassword';
 	info: ModerationLogPayloads['resetPassword'];

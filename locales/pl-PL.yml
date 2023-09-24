@@ -1402,3 +1402,6 @@ _webhookSettings:
     renote: "Po udostępnieniu wpisu"
     reaction: "Po otrzymaniu reakcji"
     mention: "Po zostaniu wspomnianym"
+_moderationLogTypes:
+  suspend: "Zawieś"
+  resetPassword: "Zresetuj hasło"

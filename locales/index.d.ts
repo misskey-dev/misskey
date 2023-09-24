@@ -2266,12 +2266,21 @@ export interface Locale {
         "suspend": string;
         "unsuspend": string;
         "addCustomEmoji": string;
+        "updateCustomEmoji": string;
+        "deleteCustomEmoji": string;
         "updateServerSettings": string;
         "updateUserNote": string;
         "deleteDriveFile": string;
         "deleteNote": string;
         "createGlobalAnnouncement": string;
         "createUserAnnouncement": string;
+        "updateGlobalAnnouncement": string;
+        "updateUserAnnouncement": string;
+        "deleteGlobalAnnouncement": string;
+        "deleteUserAnnouncement": string;
+        "resetPassword": string;
+        "suspendRemoteInstance": string;
+        "unsuspendRemoteInstance": string;
     };
 }
 declare const locales: {
