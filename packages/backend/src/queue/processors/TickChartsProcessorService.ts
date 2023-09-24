@@ -1,6 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import type Logger from '@/logger.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import NotesChart from '@/core/chart/charts/notes.js';
@@ -23,9 +26,6 @@ export class TickChartsProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private federationChart: FederationChart,
 		private notesChart: NotesChart,
 		private usersChart: UsersChart,

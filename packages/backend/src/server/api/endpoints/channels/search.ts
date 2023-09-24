@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
-import type { ChannelsRepository } from '@/models/index.js';
+import type { ChannelsRepository } from '@/models/_.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
@@ -35,9 +40,8 @@ export const paramDef = {
 	required: ['query'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,

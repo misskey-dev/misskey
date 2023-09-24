@@ -1,9 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { NestFactory } from '@nestjs/core';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 import { NestLogger } from '@/NestLogger.js';
 import { QueueProcessorModule } from '@/queue/QueueProcessorModule.js';
-import { JanitorService } from '@/daemons/JanitorService.js';
 import { QueueStatsService } from '@/daemons/QueueStatsService.js';
 import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import { ServerService } from '@/server/ServerService.js';
@@ -20,7 +24,6 @@ export async function server() {
 
 	if (process.env.NODE_ENV !== 'test') {
 		app.get(ChartManagementService).start();
-		app.get(JanitorService).start();
 		app.get(QueueStatsService).start();
 		app.get(ServerStatsService).start();
 	}

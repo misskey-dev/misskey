@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<MkTab v-model="tab">
@@ -19,7 +24,7 @@
 				<div class="_gaps_s">
 					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedRenoteMuteItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
-							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.mutee.id}`">
+							<MkA :class="$style.userItemMainBody" :to="userPage(item.mutee)">
 								<MkUserCardMini :user="item.mutee"/>
 							</MkA>
 							<button class="_button" :class="$style.userToggle" @click="toggleRenoteMuteItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -47,7 +52,7 @@
 				<div class="_gaps_s">
 					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedMuteItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
-							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.mutee.id}`">
+							<MkA :class="$style.userItemMainBody" :to="userPage(item.mutee)">
 								<MkUserCardMini :user="item.mutee"/>
 							</MkA>
 							<button class="_button" :class="$style.userToggle" @click="toggleMuteItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -77,7 +82,7 @@
 				<div class="_gaps_s">
 					<div v-for="item in items" :key="item.blockee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedBlockItems.includes(item.id) }]">
 						<div :class="$style.userItemMain">
-							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.blockee.id}`">
+							<MkA :class="$style.userItemMainBody" :to="userPage(item.blockee)">
 								<MkUserCardMini :user="item.blockee"/>
 							</MkA>
 							<button class="_button" :class="$style.userToggle" @click="toggleBlockItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -102,12 +107,12 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkTab from '@/components/MkTab.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormLink from '@/components/form/link.vue';
-import { userPage } from '@/filters/user';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { userPage } from '@/filters/user.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import * as os from '@/os';
-import { infoImageUrl } from '@/instance';
+import * as os from '@/os.js';
+import { infoImageUrl } from '@/instance.js';
 
 let tab = $ref('renoteMute');
 

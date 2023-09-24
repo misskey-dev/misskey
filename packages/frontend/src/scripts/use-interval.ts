@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { onMounted, onUnmounted } from 'vue';
 
 export function useInterval(fn: () => void, interval: number, options: {

@@ -1,6 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { url } from '@/config';
 import { md5 } from '@/scripts/hash';
 import { query } from '@/scripts/url';
-import { url } from '@/config';
 import { instance } from '@/instance';
 
 export const getProxySign = (targetUrl: string, signKey: string): string => {

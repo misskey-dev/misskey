@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events';
@@ -14,7 +19,7 @@ export type Theme = {
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 import { deepClone } from './clone';
-import { miLocalStorage } from '@/local-storage';
+import { miLocalStorage } from '@/local-storage.js';
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 

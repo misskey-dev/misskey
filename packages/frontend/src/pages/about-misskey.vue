@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -106,18 +111,18 @@
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount } from 'vue';
-import { version } from '@/config';
+import { version } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
-import { physics } from '@/scripts/physics';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
-import { $i } from '@/account';
+import { physics } from '@/scripts/physics.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { $i } from '@/account.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
@@ -280,6 +285,8 @@ const patrons = [
 	'越貝鯛丸',
 	'Nick / pprmint.',
 	'kino3277',
+	'美少女JKぐーちゃん',
+	'てば',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

@@ -1,13 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/index.js';
+import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -30,7 +35,7 @@ export class NoteReadService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async insertNoteUnread(userId: User['id'], note: Note, params: {
+	public async insertNoteUnread(userId: MiUser['id'], note: MiNote, params: {
 		// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
 		isSpecified: boolean;
 		isMentioned: boolean;
@@ -79,11 +84,11 @@ export class NoteReadService implements OnApplicationShutdown {
 
 	@bindThis
 	public async read(
-		userId: User['id'],
-		notes: (Note | Packed<'Note'>)[],
+		userId: MiUser['id'],
+		notes: (MiNote | Packed<'Note'>)[],
 	): Promise<void> {
-		const readMentions: (Note | Packed<'Note'>)[] = [];
-		const readSpecifiedNotes: (Note | Packed<'Note'>)[] = [];
+		const readMentions: (MiNote | Packed<'Note'>)[] = [];
+		const readSpecifiedNotes: (MiNote | Packed<'Note'>)[] = [];
 
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {

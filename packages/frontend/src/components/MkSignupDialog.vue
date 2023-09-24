@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModalWindow
 	ref="dialog"
@@ -33,8 +38,8 @@ import { $ref } from 'vue/macros';
 import XSignup from '@/components/MkSignupDialog.form.vue';
 import XServerRules from '@/components/MkSignupDialog.rules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;

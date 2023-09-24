@@ -2,8 +2,8 @@
 	"$schema": "http://json.schemastore.org/tsconfig",
 	"compilerOptions": {
 		"target": "ES2022",
-		"module": "ES2020",
-		"moduleResolution": "node16",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
@@ -16,7 +16,7 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"typeRoots": [
-			"node_modules/@types"
+			"./node_modules/@types"
 		],
 		"lib": [
 			"esnext",

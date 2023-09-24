@@ -6,6 +6,7 @@
 		"allowUnusedLabels": false,
 		"allowUnreachableCode": false,
 		"exactOptionalPropertyTypes": true,
+		"noEmitOnError": false,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="igpposuu _monospace">
 	<div v-if="value === null" class="null">null</div>
@@ -30,7 +35,7 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue';
-import number from '@/filters/number';
+import number from '@/filters/number.js';
 import XValue from '@/components/MkObjectView.value.vue';
 
 const props = defineProps<{

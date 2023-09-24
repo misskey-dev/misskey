@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -23,17 +28,17 @@
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import { signout, $i } from '@/account';
-import { unisonReload } from '@/scripts/unison-reload';
-import { instance } from '@/instance';
-import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import * as os from '@/os';
-import { miLocalStorage } from '@/local-storage';
-import { fetchCustomEmojis } from '@/custom-emojis';
+import { signout, $i } from '@/account.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { instance } from '@/instance.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import * as os from '@/os.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { fetchCustomEmojis } from '@/custom-emojis.js';
 
 const indexInfo = {
 	title: i18n.ts.settings,

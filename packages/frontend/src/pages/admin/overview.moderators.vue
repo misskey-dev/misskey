@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root" class="_panel">
-			<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/user-info/${user.id}`">
+			<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/admin/user/${user.id}`">
 				<MkAvatar :user="user" class="avatar" indicator/>
 			</MkA>
 		</div>
@@ -13,8 +18,8 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 let moderators: any = $ref(null);
 let fetching = $ref(true);
