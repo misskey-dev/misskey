@@ -2595,10 +2595,16 @@ type ModerationLog = {
 } | {
     type: 'unsuspendRemoteInstance';
     info: ModerationLogPayloads['unsuspendRemoteInstance'];
+} | {
+    type: 'markSensitiveDriveFile';
+    info: ModerationLogPayloads['markSensitiveDriveFile'];
+} | {
+    type: 'unmarkSensitiveDriveFile';
+    info: ModerationLogPayloads['unmarkSensitiveDriveFile'];
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile"];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];

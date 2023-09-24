@@ -2194,3 +2194,5 @@ _moderationLogTypes:
   resetPassword: "パスワードをリセット"
   suspendRemoteInstance: "リモートサーバーを停止"
   unsuspendRemoteInstance: "リモートサーバーを再開"
+  markSensitiveDriveFile: "ファイルをセンシティブ付与"
+  unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
