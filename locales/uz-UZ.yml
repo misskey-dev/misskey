@@ -1084,3 +1084,6 @@ _webhookSettings:
   _events:
     renote: "Qayta qayd qilinganda"
     mention: "Eslanganda"
+_moderationLogTypes:
+  suspend: "To'xtatish"
+  resetPassword: "Parolni tiklash"

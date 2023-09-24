@@ -463,3 +463,5 @@ _deck:
     mentions: "ກ່າວເຖິງ"
 _webhookSettings:
   name: "ຊື່"
+_moderationLogTypes:
+  suspend: "ລະງັບ"

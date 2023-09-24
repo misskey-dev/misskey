@@ -1951,3 +1951,6 @@ _webhookSettings:
   createWebhook: "Создать вебхук"
   name: "Название"
   active: "Вкл."
+_moderationLogTypes:
+  suspend: "Заморозить"
+  resetPassword: "Сброс пароля:"

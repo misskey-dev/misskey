@@ -2079,3 +2079,6 @@ _webhookSettings:
     renote: "Cuando reciba un \"re-note\""
     reaction: "Cuando se recibe una reacción"
     mention: "Cuando hay una mención"
+_moderationLogTypes:
+  suspend: "Suspender"
+  resetPassword: "Resetear contraseña"
