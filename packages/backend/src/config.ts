@@ -93,7 +93,6 @@ type Source = {
 	nirila?: {
 		abuseDiscordHook?: string;
 		disableAbuseRepository?: boolean;
-		notificationLimit?: number;
 	}
 };
 
@@ -173,7 +172,6 @@ export type Config = {
 	nirila: {
 		abuseDiscordHook?: string;
 		disableAbuseRepository?: boolean;
-		notificationLimit?: number;
 	}
 };
 
