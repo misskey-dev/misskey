@@ -35,7 +35,7 @@ export function createAiScriptEnv(opts) {
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			utils.assertString(ep);
-			if (ep.value.indexOf('://') > -1) throw new Error('invalid endpoint');
+			if (ep.value.includes('://')) throw new Error('invalid endpoint');
 			if (token) {
 				utils.assertString(token);
 				// バグがあればundefinedもあり得るため念のため
