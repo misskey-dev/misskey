@@ -194,17 +194,17 @@ function exploreOtherServers() {
 	color: black;
   background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
   background-size: 1800% 1800%;
-  -webkit-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
-  -moz-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
-  animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  -webkit-animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  -moz-animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
+  animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
 }
 .gamingDark:hover{
 	color: black;
 	background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd) !important;
 	background-size: 1800% 1800% !important;
-	-webkit-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-	-moz-animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-	animation:AnimationLight 45s cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+	-webkit-animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+	-moz-animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
+	animation:AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
 }
 .stats {
 	display: grid;

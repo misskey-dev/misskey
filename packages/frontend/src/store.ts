@@ -90,6 +90,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	},
+
 	keepOriginalUploading: {
 		where: 'account',
 		default: false,
@@ -345,6 +346,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	numberOfPageCache: {
 		where: 'device',
 		default: 3,
+	},
+	numberOfGamingSpeed: {
+		where: 'device',
+		default: 44,
 	},
 	showNoteActionsOnlyHover: {
 		where: 'device',

@@ -166,6 +166,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 			</MkRange>
+			<MkRange v-model="numberOfGamingSpeed" :min="1" :max="60" :step="1" easing>
+			</MkRange>
 		</div>
 	</FormSection>
 
@@ -250,6 +252,7 @@ const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
+const numberOfGamingSpeed = computed(defaultStore.makeGetterSetter('numberOfGamingSpeed'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
@@ -266,7 +269,9 @@ watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
 });
-
+watch(numberOfGamingSpeed, () =>{
+  document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
+})
 watch(fontSize, () => {
 	if (fontSize.value == null) {
 		miLocalStorage.removeItem('fontSize');

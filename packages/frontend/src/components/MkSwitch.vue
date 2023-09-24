@@ -104,9 +104,9 @@ const toggle = () => {
     cursor: not-allowed;
     background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
     background-size: 1800% 1800% !important;
-    -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
 
   }
   &.gamingLightDisabled{
@@ -114,9 +114,9 @@ const toggle = () => {
     cursor: not-allowed;
     background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800%;
-    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-    animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
 
   }
 	//&.checked {
@@ -139,17 +139,17 @@ const toggle = () => {
   &.gamingDark {
     background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
     background-size: 1800% 1800%;
-    -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-    -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
-    animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
 
   }
   &.gamingLight{
     background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
     background-size: 1800% 1800% !important;
-    -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
 
   }
 }

@@ -12,7 +12,7 @@
 	--marginHalf: 10px;
 
 	--margin: var(--marginFull);
-
+	--gamingspeed: 43s;
 	// switch dynamically
 	--minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
 	--minBottomSpacing: var(--minBottomSpacingMobile);
