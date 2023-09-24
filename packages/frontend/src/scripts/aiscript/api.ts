@@ -53,8 +53,8 @@ export function createAiScriptEnv(opts) {
 			if (!/^https?:\/\//.test(host.value)) throw new Error('invalid host name');
 			utils.assertString(ep);
 			if (ep.value.includes('://')) throw new Error('invalid endpoint');
-			const fullUrl = (host.value.slice(-1) === '/' ? host.value.slice(0,-1) : host.value)
-				+ '/' + (ep.value.slice(0,1) === '/' ? ep.value.slice(1) : ep.value);
+			const fullUrl = (host.value.slice(-1) === '/' ? host.value.slice(0, -1) : host.value)
+				+ '/' + (ep.value.slice(0, 1) === '/' ? ep.value.slice(1) : ep.value);
 			if (token) utils.assertString(token);
 			return os.api(fullUrl, utils.valToJs(param), token?.value).then(res => {
 				return utils.jsToVal(res);
