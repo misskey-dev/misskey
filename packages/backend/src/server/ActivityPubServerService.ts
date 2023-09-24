@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
@@ -6,16 +11,16 @@ import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/index.js';
+import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
-import type { Following } from '@/models/entities/Following.js';
+import type { MiFollowing } from '@/models/Following.js';
 import { countIf } from '@/misc/prelude/array.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/Note.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -82,7 +87,7 @@ export class ActivityPubServerService {
 	 * @param note Note
 	 */
 	@bindThis
-	private async packActivity(note: Note): Promise<any> {
+	private async packActivity(note: MiNote): Promise<any> {
 		if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
 			const renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
 			return this.apRendererService.renderAnnounce(renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`, note);
@@ -153,7 +158,7 @@ export class ActivityPubServerService {
 		if (page) {
 			const query = {
 				followeeId: user.id,
-			} as FindOptionsWhere<Following>;
+			} as FindOptionsWhere<MiFollowing>;
 
 			// カーソルが指定されている場合
 			if (cursor) {
@@ -245,7 +250,7 @@ export class ActivityPubServerService {
 		if (page) {
 			const query = {
 				followerId: user.id,
-			} as FindOptionsWhere<Following>;
+			} as FindOptionsWhere<MiFollowing>;
 
 			// カーソルが指定されている場合
 			if (cursor) {
@@ -419,7 +424,7 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private async userInfo(request: FastifyRequest, reply: FastifyReply, user: User | null) {
+	private async userInfo(request: FastifyRequest, reply: FastifyReply, user: MiUser | null) {
 		if (user == null) {
 			reply.code(404);
 			return;
@@ -427,7 +432,7 @@ export class ActivityPubServerService {
 
 		reply.header('Cache-Control', 'public, max-age=180');
 		this.setResponseType(request, reply);
-		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as LocalUser)));
+		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as MiLocalUser)));
 	}
 
 	@bindThis
@@ -643,7 +648,7 @@ export class ActivityPubServerService {
 					id: request.params.followee,
 					host: Not(IsNull()),
 				}),
-			]) as [LocalUser | RemoteUser | null, LocalUser | RemoteUser | null];
+			]) as [MiLocalUser | MiRemoteUser | null, MiLocalUser | MiRemoteUser | null];
 
 			if (follower == null || followee == null) {
 				reply.code(404);
@@ -678,7 +683,7 @@ export class ActivityPubServerService {
 					id: followRequest.followeeId,
 					host: Not(IsNull()),
 				}),
-			]) as [LocalUser | RemoteUser | null, LocalUser | RemoteUser | null];
+			]) as [MiLocalUser | MiRemoteUser | null, MiLocalUser | MiRemoteUser | null];
 
 			if (follower == null || followee == null) {
 				reply.code(404);

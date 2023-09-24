@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	:enterActiveClass="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
@@ -49,11 +54,11 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide } from 'vue';
-import contains from '@/scripts/contains';
-import * as os from '@/os';
+import contains from '@/scripts/contains.js';
+import * as os from '@/os.js';
 import { MenuItem } from '@/types/menu';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 
 const minHeight = 50;
 const minWidth = 250;

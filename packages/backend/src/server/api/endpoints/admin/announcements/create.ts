@@ -1,8 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
-import { IdService } from '@/core/IdService.js';
-import { DI } from '@/di-symbols.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -52,30 +55,35 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 1 },
+		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'], default: 'info' },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
+		forExistingUsers: { type: 'boolean', default: false },
+		needConfirmationToRead: { type: 'boolean', default: false },
+		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
-
-		private idService: IdService,
+		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const announcement = await this.announcementsRepository.insert({
-				id: this.idService.genId(),
+			const { raw, packed } = await this.announcementService.create({
 				createdAt: new Date(),
 				updatedAt: null,
 				title: ps.title,
 				text: ps.text,
 				imageUrl: ps.imageUrl,
-			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
+				icon: ps.icon,
+				display: ps.display,
+				forExistingUsers: ps.forExistingUsers,
+				needConfirmationToRead: ps.needConfirmationToRead,
+				userId: ps.userId,
+			}, me);
 
-			return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
+			return packed;
 		});
 	}
 }

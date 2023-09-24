@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -58,17 +63,17 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { url } from '@/config';
-import { useRouter } from '@/router';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { defaultStore } from '@/store';
-import { $i } from '@/account';
+import { url } from '@/config.js';
+import { useRouter } from '@/router.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
 
 const router = useRouter();
 

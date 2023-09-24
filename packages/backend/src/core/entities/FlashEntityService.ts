@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
+import type { FlashsRepository, FlashLikesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { Flash } from '@/models/entities/Flash.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiFlash } from '@/models/Flash.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -24,8 +29,8 @@ export class FlashEntityService {
 
 	@bindThis
 	public async pack(
-		src: Flash['id'] | Flash,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiFlash['id'] | MiFlash,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Flash'>> {
 		const meId = me ? me.id : null;
 		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
@@ -46,8 +51,8 @@ export class FlashEntityService {
 
 	@bindThis
 	public packMany(
-		flashs: Flash[],
-		me?: { id: User['id'] } | null | undefined,
+		flashs: MiFlash[],
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		return Promise.all(flashs.map(x => this.pack(x, me)));
 	}

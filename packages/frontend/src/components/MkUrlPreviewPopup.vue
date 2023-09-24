@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" @afterLeave="emit('closed')">
@@ -9,8 +14,8 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	showing: boolean;

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<XWidgets :edit="editMode" :widgets="widgets" @addWidget="addWidget" @removeWidget="removeWidget" @updateWidget="updateWidget" @updateWidgets="updateWidgets" @exit="editMode = false"/>
@@ -13,8 +18,8 @@ let editMode = $ref(false);
 <script lang="ts" setup>
 import { } from 'vue';
 import XWidgets from '@/components/MkWidgets.vue';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	// null = 全てのウィジェットを表示
