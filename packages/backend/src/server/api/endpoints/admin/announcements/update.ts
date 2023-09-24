@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AnnouncementsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -45,13 +46,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
+
+		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
 
-			await this.announcementsRepository.update(announcement.id, {
+			await this.announcementService.update(announcement, {
 				updatedAt: new Date(),
 				title: ps.title,
 				text: ps.text,
@@ -62,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				forExistingUsers: ps.forExistingUsers,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				isActive: ps.isActive,
-			});
+			}, me);
 		});
 	}
 }

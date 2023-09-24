@@ -14,6 +14,9 @@
 
 ## 2023.9.0 (unreleased)
 
+### Note
+- meilisearchを使用する場合、v1.2以上が必要です
+
 ### General
 - Feat: OAuth 2.0のサポート
 - Feat: お知らせ機能の強化
@@ -93,6 +96,7 @@
 - Enhance: nodeinfo 2.1対応
 - Enhance: 自分へのメンション一覧を取得する際のパフォーマンスを向上
 - Enhance: Docker環境でjemallocを使用することでメモリ使用量を削減
+- Enhance: ID生成方式としてaidxを追加、かつデフォルトに(既存のサーバーで変更することはできません)
 - Fix: MK_ONLY_SERVERオプションを指定した際にクラッシュする問題を修正
 - Fix: notes/reactionsのページネーションが機能しない問題を修正
 - Fix: ノート検索 `notes/search` にてhostを指定した際に検索結果に反映されるように

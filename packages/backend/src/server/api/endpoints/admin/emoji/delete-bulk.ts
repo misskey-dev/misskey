@@ -30,7 +30,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.customEmojiService.deleteBulk(ps.ids);
+			await this.customEmojiService.deleteBulk(ps.ids, me);
 		});
 	}
 }

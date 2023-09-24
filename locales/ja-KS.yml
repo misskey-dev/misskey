@@ -2061,3 +2061,6 @@ _webhookSettings:
     renote: "Renoteされるとき～！"
     reaction: "ツッコミがあるとき～！"
     mention: "メンションがあるとき～！"
+_moderationLogTypes:
+  suspend: "凍結"
+  resetPassword: "パスワードをリセット"

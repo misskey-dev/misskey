@@ -1691,3 +1691,6 @@ _deck:
 _webhookSettings:
   name: "Nom"
   active: "Activé"
+_moderationLogTypes:
+  suspend: "Suspendre"
+  resetPassword: "Réinitialiser le mot de passe"

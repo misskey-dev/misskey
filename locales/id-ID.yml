@@ -2041,3 +2041,6 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+_moderationLogTypes:
+  suspend: "Tangguhkan"
+  resetPassword: "Atur ulang kata sandi"

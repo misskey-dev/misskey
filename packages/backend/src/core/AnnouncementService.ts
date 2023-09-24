@@ -60,7 +60,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async create(values: Partial<MiAnnouncement>, moderator: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
+	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
@@ -82,26 +82,83 @@ export class AnnouncementService {
 				announcement: packed,
 			});
 
-			this.moderationLogService.log(moderator, 'createUserAnnouncement', {
-				announcementId: announcement.id,
-				announcement: announcement,
-				userId: values.userId,
-			});
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'createUserAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+					userId: values.userId,
+				});
+			}
 		} else {
 			this.globalEventService.publishBroadcastStream('announcementCreated', {
 				announcement: packed,
 			});
 
-			this.moderationLogService.log(moderator, 'createGlobalAnnouncement', {
-				announcementId: announcement.id,
-				announcement: announcement,
-			});
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'createGlobalAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			}
 		}
 
 		return {
 			raw: announcement,
 			packed: packed,
 		};
+	}
+
+	@bindThis
+	public async update(announcement: MiAnnouncement, values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<void> {
+		await this.announcementsRepository.update(announcement.id, {
+			updatedAt: new Date(),
+			title: values.title,
+			text: values.text,
+			/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+			imageUrl: values.imageUrl || null,
+			display: values.display,
+			icon: values.icon,
+			forExistingUsers: values.forExistingUsers,
+			needConfirmationToRead: values.needConfirmationToRead,
+			isActive: values.isActive,
+		});
+
+		const after = await this.announcementsRepository.findOneByOrFail({ id: announcement.id });
+
+		if (moderator) {
+			if (announcement.userId) {
+				this.moderationLogService.log(moderator, 'updateUserAnnouncement', {
+					announcementId: announcement.id,
+					before: announcement,
+					after: after,
+				});
+			} else {
+				this.moderationLogService.log(moderator, 'updateGlobalAnnouncement', {
+					announcementId: announcement.id,
+					before: announcement,
+					after: after,
+				});
+			}
+		}
+	}
+
+	@bindThis
+	public async delete(announcement: MiAnnouncement, moderator?: MiUser): Promise<void> {
+		await this.announcementsRepository.delete(announcement.id);
+
+		if (moderator) {
+			if (announcement.userId) {
+				this.moderationLogService.log(moderator, 'deleteUserAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			} else {
+				this.moderationLogService.log(moderator, 'deleteGlobalAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			}
+		}
 	}
 
 	@bindThis

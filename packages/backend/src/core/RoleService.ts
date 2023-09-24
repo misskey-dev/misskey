@@ -494,6 +494,19 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async delete(role: MiRole, moderator?: MiUser): Promise<void> {
+		await this.rolesRepository.delete({ id: role.id });
+		this.globalEventService.publishInternalEvent('roleDeleted', role);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'deleteRole', {
+				roleId: role.id,
+				role: role,
+			});
+		}
+	}
+
+	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
 		this.roleAssignmentByUserIdCache.dispose();

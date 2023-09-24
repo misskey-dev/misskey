@@ -8,7 +8,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
 
@@ -61,7 +60,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private customEmojiService: CustomEmojiService,
 
 		private emojiEntityService: EmojiEntityService,
-		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
@@ -77,11 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
-			});
-
-			this.moderationLogService.log(me, 'addCustomEmoji', {
-				emojiId: emoji.id,
-			});
+			}, me);
 
 			return this.emojiEntityService.packDetailed(emoji);
 		});
