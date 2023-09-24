@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { utils, values } from '@syuilo/aiscript';
+import { utils, values, errors } from '@syuilo/aiscript';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -35,14 +35,13 @@ export function createAiScriptEnv(opts) {
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			utils.assertString(ep);
+			if (ep.value.indexOf('://') > -1) throw new Error('invalid endpoint');
 			if (token) {
 				utils.assertString(token);
 				// バグがあればundefinedもあり得るため念のため
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
-			// 第1引数がURLであればトークンの自動付与は行わない
-			const isUrl: boolean = ep.value.indexOf('://') > -1;
-			const actualToken: string|null = token?.value ?? (isUrl ? null : (opts.token ?? null));
+			const actualToken: string|null = token?.value ?? opts.token ?? null;
 			return os.api(ep.value, utils.valToJs(param), actualToken).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
