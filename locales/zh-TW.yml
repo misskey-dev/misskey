@@ -2122,3 +2122,5 @@ _moderationLogTypes:
   resetPassword: "重設密碼"
   suspendRemoteInstance: "封鎖遠端伺服器"
   unsuspendRemoteInstance: "解除封鎖遠端伺服器"
+  markSensitiveDriveFile: "標記為敏感檔案"
+  unmarkSensitiveDriveFile: "撤銷標記為敏感檔案"
