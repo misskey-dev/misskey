@@ -23,7 +23,46 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 		if (token !== undefined) (data as any).i = token;
 
 		// Send request
-		window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
+		window.fetch(`${apiUrl}/${endpoint}`, {
+			method: 'POST',
+			body: JSON.stringify(data),
+			credentials: 'omit',
+			cache: 'no-cache',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			signal,
+		}).then(async (res) => {
+			const body = res.status === 204 ? null : await res.json();
+
+			if (res.status === 200) {
+				resolve(body);
+			} else if (res.status === 204) {
+				resolve();
+			} else {
+				reject(body.error);
+			}
+		}).catch(reject);
+	});
+
+	promise.then(onFinally, onFinally);
+
+	return promise;
+}
+
+export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
+	pendingApiRequestsCount.value++;
+
+	const onFinally = () => {
+		pendingApiRequestsCount.value--;
+	};
+
+	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
+		// Append a credential
+		(data as any).i = token;
+
+		// Send request
+		window.fetch(`${hostUrl}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
