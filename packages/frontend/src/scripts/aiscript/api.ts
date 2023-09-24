@@ -56,7 +56,7 @@ export function createAiScriptEnv(opts) {
 			const fullUrl = (host.value.slice(-1) === '/' ? host.value.slice(0, -1) : host.value)
 				+ '/' + (ep.value.slice(0, 1) === '/' ? ep.value.slice(1) : ep.value);
 			if (token) utils.assertString(token);
-			return os.api(fullUrl, utils.valToJs(param), token?.value).then(res => {
+			return os.api(fullUrl, utils.valToJs(param), token?.value ?? null).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
