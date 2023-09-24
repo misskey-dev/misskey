@@ -2114,3 +2114,5 @@ _moderationLogTypes:
   createGlobalAnnouncement: "Crea un annuncio globale"
   createUserAnnouncement: "Crea un annuncio ai profili iscritti"
   resetPassword: "Ripristina la password"
+  suspendRemoteInstance: "Sospendi istanza remota"
+  unsuspendRemoteInstance: "Riattiva istanza remota"
