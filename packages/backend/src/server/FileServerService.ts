@@ -212,10 +212,17 @@ export class FileServerService {
 	}
 
 	@bindThis
-	private async proxyHandler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
+	private async proxyHandler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; sign?: string }; }>, reply: FastifyReply) {
 		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
 
 		if (typeof url !== 'string') {
+			reply.code(400);
+			return;
+		}
+
+		// verify the referer
+		const { referer } = request.headers;
+		if (typeof referer !== 'string' || !referer.startsWith(this.config.url)) {
 			reply.code(400);
 			return;
 		}
@@ -240,6 +247,16 @@ export class FileServerService {
 				301,
 				url.toString(),
 			);
+		}
+
+		// verify the signature as what the external media proxy do when external media proxy is enabled.
+		if (this.config.externalMediaProxyEnabled) {
+			const toVerify = request.query.sign;
+			const sign = getProxySign(url, this.config.mediaProxyKey, url);
+			if (toVerify !== sign) {
+				reply.code(400);
+				return;
+			}
 		}
 
 		// Create temp file
