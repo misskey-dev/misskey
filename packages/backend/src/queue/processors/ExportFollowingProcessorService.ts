@@ -1,14 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan, Not } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, FollowingsRepository, MutingsRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { UsersRepository, FollowingsRepository, MutingsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { Following } from '@/models/entities/Following.js';
+import type { MiFollowing } from '@/models/Following.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
@@ -20,9 +24,6 @@ export class ExportFollowingProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -56,7 +57,7 @@ export class ExportFollowingProcessorService {
 		try {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
 
-			let cursor: Following['id'] | null = null;
+			let cursor: MiFollowing['id'] | null = null;
 
 			const mutings = job.data.excludeMuting ? await this.mutingsRepository.findBy({
 				muterId: user.id,
@@ -73,7 +74,7 @@ export class ExportFollowingProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as Following[];
+				}) as MiFollowing[];
 
 				if (followings.length === 0) {
 					break;

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { h } from 'vue';
 
 export default function(props: { src: string; tag?: string; textTag?: string; }, { slots }) {

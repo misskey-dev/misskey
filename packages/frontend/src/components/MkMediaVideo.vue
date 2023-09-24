@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div v-if="hide" :class="$style.hidden" @click="hide = false">
+<div v-if="hide" :class="[$style.hidden, (video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitiveContainer]" @click="hide = false">
 	<!-- 【注意】dataSaverMode が有効になっている際には、hide が false になるまでサムネイルや動画を読み込まないようにすること -->
 	<div :class="$style.sensitive">
 		<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
@@ -7,7 +12,7 @@
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
-<div v-else :class="$style.visible">
+<div v-else :class="[$style.visible, (video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitiveContainer]">
 	<video
 		:class="$style.video"
 		:poster="video.thumbnailUrl"
@@ -19,7 +24,6 @@
 	>
 		<source
 			:src="video.url"
-			:type="video.type"
 		>
 	</video>
 	<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
@@ -28,13 +32,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as misskey from 'misskey-js';
-import bytes from '@/filters/bytes';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import bytes from '@/filters/bytes.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	video: misskey.entities.DriveFile;
+	video: Misskey.entities.DriveFile;
 }>();
 
 const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.enableDataSaverMode) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
@@ -43,6 +47,22 @@ const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.enab
 <style lang="scss" module>
 .visible {
 	position: relative;
+}
+
+.sensitiveContainer {
+	position: relative;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--warn);
+	}
 }
 
 .hide {

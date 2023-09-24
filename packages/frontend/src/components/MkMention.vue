@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }">
 	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
@@ -12,9 +17,9 @@
 import { toUnicode } from 'punycode';
 import { } from 'vue';
 import tinycolor from 'tinycolor2';
-import { host as localHost } from '@/config';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
+import { host as localHost } from '@/config.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	username: string;

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
@@ -5,7 +10,6 @@ import * as os from 'node:os';
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
-import semver from 'semver';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
@@ -64,21 +68,34 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
-	if (envOption.onlyServer) {
-		await server();
-	} else if (envOption.onlyQueue) {
-		await jobQueue();
-	} else {
-		await server();
-	}
-
 	bootLogger.succ('Misskey initialized');
 
-	if (!envOption.disableClustering) {
+	if (envOption.disableClustering) {
+		if (envOption.onlyServer) {
+			await server();
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
+	} else {
+		if (envOption.onlyServer) {
+			// nop
+		} else if (envOption.onlyQueue) {
+			// nop
+		} else {
+			await server();
+		}
+
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	bootLogger.succ(config.socket ? `Now listening on socket ${config.socket} on ${config.url}` : `Now listening on port ${config.port} on ${config.url}`, null, true);
+	if (envOption.onlyQueue) {
+		bootLogger.succ('Queue started', null, true);
+	} else {
+		bootLogger.succ(config.socket ? `Now listening on socket ${config.socket} on ${config.url}` : `Now listening on port ${config.port} on ${config.url}`, null, true);
+	}
 }
 
 function showEnvironment(): void {

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import Xev from 'xev';
 import * as Bull from 'bullmq';
@@ -14,7 +19,7 @@ const interval = 10000;
 
 @Injectable()
 export class QueueStatsService implements OnApplicationShutdown {
-	private intervalId: NodeJS.Timer;
+	private intervalId: NodeJS.Timeout;
 
 	constructor(
 		@Inject(DI.config)

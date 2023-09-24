@@ -1,12 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { Page } from '@/models/entities/Page.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiPage } from '@/models/Page.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
@@ -30,13 +35,13 @@ export class PageEntityService {
 
 	@bindThis
 	public async pack(
-		src: Page['id'] | Page,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiPage['id'] | MiPage,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
 
-		const attachedFiles: Promise<DriveFile | null>[] = [];
+		const attachedFiles: Promise<MiDriveFile | null>[] = [];
 		const collectFile = (xs: any[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
@@ -95,7 +100,7 @@ export class PageEntityService {
 			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
 			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId) : null,
-			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
+			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter((x): x is MiDriveFile => x != null)),
 			likedCount: page.likedCount,
 			isLiked: meId ? await this.pageLikesRepository.exist({ where: { pageId: page.id, userId: meId } }) : undefined,
 		});
@@ -103,8 +108,8 @@ export class PageEntityService {
 
 	@bindThis
 	public packMany(
-		pages: Page[],
-		me?: { id: User['id'] } | null | undefined,
+		pages: MiPage[],
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		return Promise.all(pages.map(x => this.pack(x, me)));
 	}

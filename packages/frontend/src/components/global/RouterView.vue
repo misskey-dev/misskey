@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <KeepAlive :max="defaultStore.state.numberOfPageCache">
 	<Suspense :timeout="0">
@@ -13,7 +18,7 @@
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, provide } from 'vue';
 import { Resolved, Router } from '@/nirax';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	router?: Router;

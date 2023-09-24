@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import { inputText } from '@/os';
-import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store';
+import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { inputText } from '@/os.js';
+import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();

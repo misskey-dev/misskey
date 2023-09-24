@@ -22,7 +22,7 @@ This is the phase we are at now. We need to make a high-maintenance environment 
 Once Phase 1 is complete and an environment conducive to the development of a stable system is in place, the implementation of new functions can begin gradually.
 
 - Improve features for moderation
-- OAuth2 support https://github.com/misskey-dev/misskey/issues/8262
+- ~~OAuth2 support https://github.com/misskey-dev/misskey/issues/8262~~ → Done ✔️
 - GraphQL support?
 
 ## (3) Improve scalability

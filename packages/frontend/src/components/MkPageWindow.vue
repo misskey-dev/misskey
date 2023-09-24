@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkWindow
 	ref="windowEl"
@@ -27,17 +32,17 @@
 import { ComputedRef, onMounted, onUnmounted, provide, shallowRef } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { popout as _popout } from '@/scripts/popout';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { url } from '@/config';
-import { mainRouter, routes, page } from '@/router';
-import { $i } from '@/account';
+import { popout as _popout } from '@/scripts/popout.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { url } from '@/config.js';
+import { mainRouter, routes, page } from '@/router.js';
+import { $i } from '@/account.js';
 import { Router, useScrollPositionManager } from '@/nirax';
-import { i18n } from '@/i18n';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { openingWindowsCount } from '@/os';
-import { claimAchievement } from '@/scripts/achievements';
-import { getScrollContainer } from '@/scripts/scroll';
+import { i18n } from '@/i18n.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { openingWindowsCount } from '@/os.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { getScrollContainer } from '@/scripts/scroll.js';
 
 const props = defineProps<{
 	initialPath: string;
