@@ -34,12 +34,16 @@ export function createAiScriptEnv(opts) {
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
+			utils.assertString(ep);
 			if (token) {
 				utils.assertString(token);
 				// バグがあればundefinedもあり得るため念のため
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
-			return os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token ?? null)).then(res => {
+			// 第1引数がURLであればトークンの自動付与は行わない
+			const isUrl: boolean = ep.value.indexOf('://') > -1;
+			const actualToken: string|null = token?.value ?? (isUrl ? null : (opts.token ?? null));
+			return os.api(ep.value, utils.valToJs(param), actualToken).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
