@@ -1,18 +1,25 @@
-import { toUnicode } from 'punycode';
-import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
-import { i18n } from '@/i18n';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { host, url } from '@/config';
-import * as os from '@/os';
-import { defaultStore, userActions } from '@/store';
-import { $i, iAmModerator } from '@/account';
-import { mainRouter } from '@/router';
-import { Router } from '@/nirax';
-import { antennasCache, rolesCache, userListsCache } from '@/cache';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
+import { toUnicode } from 'punycode';
+import { defineAsyncComponent, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { host, url } from '@/config.js';
+import * as os from '@/os.js';
+import { defaultStore, userActions } from '@/store.js';
+import { $i, iAmModerator } from '@/account.js';
+import { mainRouter } from '@/router.js';
+import { Router } from '@/nirax.js';
+import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
+
+export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
+
+	const cleanups = [] as (() => void)[];
 
 	async function toggleMute() {
 		if (user.isMuted) {
@@ -73,11 +80,12 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
-	async function toggleNoteSubscribe() {
-		os.apiWithDialog(user.isNoteSubscribing ? 'note-notification/delete' : 'note-notification/create', {
+	async function toggleNotify() {
+		os.apiWithDialog('following/update', {
 			userId: user.id,
+			notify: user.notify === 'normal' ? 'none' : 'normal',
 		}).then(() => {
-			user.isNoteSubscribing = !user.isNoteSubscribing;
+			user.notify = user.notify === 'normal' ? 'none' : 'normal';
 		});
 	}
 
@@ -134,13 +142,13 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
-	}, {
-		icon: 'ti ti-info-circle',
-		text: i18n.ts.info,
+	}, ...(iAmModerator ? [{
+		icon: 'ti ti-user-exclamation',
+		text: i18n.ts.moderation,
 		action: () => {
-			router.push(`/user-info/${user.id}`);
+			router.push(`/admin/user/${user.id}`);
 		},
-	}, {
+	}] : []), {
 		icon: 'ti ti-rss',
 		text: i18n.ts.copyRSS,
 		action: () => {
@@ -157,7 +165,8 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
-			os.post({ specified: user, initialText: `@${user.username} ` });
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
+			os.post({ specified: user, initialText: `${canonical} ` });
 		},
 	}, null, {
 		icon: 'ti ti-pencil',
@@ -170,25 +179,40 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
 		children: async () => {
-			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
+			const lists = await userListsCache.fetch();
+			return lists.map(list => {
+				const isListed = ref(list.userIds.includes(user.id));
+				cleanups.push(watch(isListed, () => {
+					if (isListed.value) {
+						os.apiWithDialog('users/lists/push', {
+							listId: list.id,
+							userId: user.id,
+						}).then(() => {
+							list.userIds.push(user.id);
+						});
+					} else {
+						os.apiWithDialog('users/lists/pull', {
+							listId: list.id,
+							userId: user.id,
+						}).then(() => {
+							list.userIds.splice(list.userIds.indexOf(user.id), 1);
+						});
+					}
+				}));
 
-			return lists.map(list => ({
-				text: list.name,
-				action: async () => {
-					await os.apiWithDialog('users/lists/push', {
-						listId: list.id,
-						userId: user.id,
-					});
-					userListsCache.delete();
-				},
-			}));
+				return {
+					type: 'switch',
+					text: list.name,
+					ref: isListed,
+				};
+			});
 		},
 	}, {
 		type: 'parent',
 		icon: 'ti ti-antenna',
 		text: i18n.ts.addToAntenna,
 		children: async () => {
-			const antennas = await antennasCache.fetch(() => os.api('antennas/list'));
+			const antennas = await antennasCache.fetch();
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			return antennas.filter((a) => a.src === 'users').map(antenna => ({
 				text: antenna.name,
@@ -219,7 +243,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
 				children: async () => {
-					const roles = await rolesCache.fetch(() => os.api('admin/roles/list'));
+					const roles = await rolesCache.fetch();
 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,
@@ -255,11 +279,16 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			}]);
 		}
 
+		// フォローしたとしても user.isFollowing はリアルタイム更新されないので不便なため
+		//if (user.isFollowing) {
+		menu = menu.concat([{
+			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
+			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
+			action: toggleNotify,
+		}]);
+		//}
+
 		menu = menu.concat([null, {
-			icon: user.isNoteSubscribing ? 'ti ti-bell-off' : 'ti ti-bell',
-			text: user.isNoteSubscribing ? i18n.ts.noteUnsubscribe : i18n.ts.noteSubscribe,
-			action: toggleNoteSubscribe,
-		}, null, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
@@ -318,5 +347,15 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		}))]);
 	}
 
-	return menu;
+	const cleanup = () => {
+		if (_DEV_) console.log('user menu cleanup', cleanups);
+		for (const cl of cleanups) {
+			cl();
+		}
+	};
+
+	return {
+		menu,
+		cleanup,
+	};
 }

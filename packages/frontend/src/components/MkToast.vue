@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<Transition
@@ -18,8 +23,8 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 defineProps<{
 	message: string;

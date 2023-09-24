@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <span v-if="errored">:{{ customEmojiName }}:</span>
 <img v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
@@ -5,9 +10,9 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy';
-import { defaultStore } from '@/store';
-import { customEmojisMap } from '@/custom-emojis';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { defaultStore } from '@/store.js';
+import { customEmojisMap } from '@/custom-emojis.js';
 
 const props = defineProps<{
 	name: string;

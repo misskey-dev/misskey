@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps">
 	<MkInput v-if="readonly" :modelValue="role.id" :readonly="true">
@@ -503,10 +508,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 import { ROLE_POLICIES } from '@/const';
-import { instance } from '@/instance';
-import { deepClone } from '@/scripts/clone';
+import { instance } from '@/instance.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;

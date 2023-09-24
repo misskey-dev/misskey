@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import { Storage } from '../../pizzax';
-import { api } from '@/os';
-import { deepClone } from '@/scripts/clone';
+import { Storage } from '@/pizzax.js';
+import { api } from '@/os.js';
+import { deepClone } from '@/scripts/clone.js';
 
 type ColumnWidget = {
 	name: string;

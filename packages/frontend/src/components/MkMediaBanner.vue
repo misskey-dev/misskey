@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<div v-if="media.isSensitive && hide" :class="$style.sensitive" @click="hide = false">
@@ -29,12 +34,12 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
-import { soundConfigStore } from '@/scripts/sound';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import { soundConfigStore } from '@/scripts/sound.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	media: misskey.entities.DriveFile;
+	media: Misskey.entities.DriveFile;
 }>(), {
 });
 

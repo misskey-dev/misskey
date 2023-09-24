@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
@@ -12,6 +17,7 @@
 						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
 						<div><i class="ti ti-pencil ti-fw"></i><I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 					</div>
+					<div v-if="channel.isSensitive" :class="$style.sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
 					<div :class="$style.bannerFade"></div>
 				</div>
 				<div v-if="channel.description" :class="$style.description">
@@ -66,17 +72,17 @@ import { computed, watch } from 'vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { $i, iAmModerator } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { deviceKind } from '@/scripts/device-kind';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { $i, iAmModerator } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { url } from '@/config';
+import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -268,5 +274,18 @@ definePageMetadata(computed(() => channel ? {
 
 .description {
 	padding: 16px;
+}
+
+.sensitiveIndicator {
+	position: absolute;
+	z-index: 1;
+	bottom: 16px;
+	left: 16px;
+	background: rgba(0, 0, 0, 0.7);
+	color: var(--warn);
+	border-radius: 6px;
+	font-weight: bold;
+	font-size: 1em;
+	padding: 4px 7px;
 }
 </style>

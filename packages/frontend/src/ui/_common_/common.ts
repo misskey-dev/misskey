@@ -1,8 +1,13 @@
-import * as os from '@/os';
-import { instance } from '@/instance';
-import { host } from '@/config';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import * as os from '@/os.js';
+import { instance } from '@/instance.js';
+import { host } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 export function openInstanceMenu(ev: MouseEvent) {
 	os.popupMenu([{

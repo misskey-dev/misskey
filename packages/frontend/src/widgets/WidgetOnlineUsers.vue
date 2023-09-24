@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div data-cy-mkw-onlineUsers :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
 	<span :class="$style.text">
@@ -11,11 +16,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
-import number from '@/filters/number';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import { i18n } from '@/i18n.js';
+import number from '@/filters/number.js';
 
 const name = 'onlineUsers';
 

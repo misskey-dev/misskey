@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
@@ -52,10 +57,10 @@
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>Moderation note</template>
+							<template #label>{{ i18n.ts.moderationNote }}</template>
 						</MkTextarea>
 						<div v-else>
-							<MkButton small @click="editModerationNote = true">Add moderation note</MkButton>
+							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
 						</div>
 					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
@@ -96,6 +101,7 @@
 							</dt>
 							<dd class="value">
 								<Mfm :text="field.value" :author="user" :i="$i" :colored="false"/>
+								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
 							</dd>
 						</dl>
 					</div>
@@ -138,8 +144,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import calcAge from 's-age';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -148,25 +153,40 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollPosition } from '@/scripts/scroll';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import number from '@/filters/number';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { i18n } from '@/i18n';
-import { $i, iAmModerator } from '@/account';
-import { dateString } from '@/filters/date';
-import { confetti } from '@/scripts/confetti';
+import { getScrollPosition } from '@/scripts/scroll.js';
+import { getUserMenu } from '@/scripts/get-user-menu.js';
+import number from '@/filters/number.js';
+import { userPage } from '@/filters/user.js';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { i18n } from '@/i18n.js';
+import { $i, iAmModerator } from '@/account.js';
+import { dateString } from '@/filters/date.js';
+import { confetti } from '@/scripts/confetti.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { api } from '@/os';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
+import { api } from '@/os.js';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+
+function calcAge(birthdate: string): number {
+	const date = new Date(birthdate);
+	const now = new Date();
+
+	let yearDiff = now.getFullYear() - date.getFullYear();
+	const monthDiff = now.getMonth() - date.getMonth();
+	const pastDate = now.getDate() < date.getDate();
+
+	if (monthDiff < 0 || (monthDiff === 0 && pastDate)) {
+		yearDiff--;
+	}
+
+	return yearDiff;
+}
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 	/** Test only; MkNotes currently causes problems in vitest */
 	disableNotes: boolean;
 }>(), {
@@ -209,7 +229,8 @@ const age = $computed(() => {
 });
 
 function menu(ev) {
-	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);
+	const { menu, cleanup } = getUserMenu(props.user, router);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 function parallaxLoop() {
@@ -651,7 +672,12 @@ onUnmounted(() => {
 <style lang="scss" module>
 .tl {
 	background: var(--bg);
-    border-radius: var(--radius);
-    overflow: clip;
+	border-radius: var(--radius);
+	overflow: clip;
+}
+
+.verifiedLink {
+	margin-left: 4px;
+	color: var(--success);
 }
 </style>

@@ -1,9 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { bindThis } from '@/decorators.js';
-import type Connection from './index.js';
+import type Connection from './Connection.js';
 
 /**
  * Stream channel
  */
+// eslint-disable-next-line import/no-default-export
 export default abstract class Channel {
 	protected connection: Connection;
 	public id: string;

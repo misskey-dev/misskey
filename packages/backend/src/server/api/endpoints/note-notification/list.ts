@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NoteNotificationsRepository } from '@/models/index.js';
+
+import type { NoteNotificationsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteNotificationEntityService } from '@/core/entities/NoteNotificationEntityService.js';
 import { DI } from '@/di-symbols.js';

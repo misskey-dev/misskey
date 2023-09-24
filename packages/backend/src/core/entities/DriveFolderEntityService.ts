@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/index.js';
+import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { DriveFolder } from '@/models/entities/DriveFolder.js';
+import type { } from '@/models/Blocking.js';
+import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -20,7 +25,7 @@ export class DriveFolderEntityService {
 
 	@bindThis
 	public async pack(
-		src: DriveFolder['id'] | DriveFolder,
+		src: MiDriveFolder['id'] | MiDriveFolder,
 		options?: {
 			detail: boolean
 		},

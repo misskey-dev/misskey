@@ -1,13 +1,20 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import RE2 from 're2';
 import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
+import { JSDOM } from 'jsdom';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
-import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
-import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
-import type { UserProfile } from '@/models/entities/UserProfile.js';
+import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
+import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
+import type { MiUserProfile } from '@/models/UserProfile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
@@ -20,9 +27,11 @@ import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { CacheService } from '@/core/CacheService.js';
-import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import type { Config } from '@/config.js';
+import { safeForSql } from '@/misc/safe-for-sql.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
@@ -32,6 +41,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 10,
+	},
 
 	errors: {
 		noSuchAvatar: {
@@ -166,10 +180,12 @@ export const paramDef = {
 	},
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -187,19 +203,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
-		private accountMoveService: AccountMoveService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private hashtagService: HashtagService,
 		private roleService: RoleService,
 		private cacheService: CacheService,
+		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
-			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
+			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
 			const isSecure = token == null;
 
-			const updates = {} as Partial<User>;
-			const profileUpdates = {} as Partial<UserProfile>;
+			const updates = {} as Partial<MiUser>;
+			const profileUpdates = {} as Partial<MiUserProfile>;
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
@@ -294,9 +310,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.fields) {
 				profileUpdates.fields = ps.fields
-					.filter(x => typeof x.name === 'string' && x.name !== '' && typeof x.value === 'string' && x.value !== '')
+					.filter(x => typeof x.name === 'string' && x.name.trim() !== '' && typeof x.value === 'string' && x.value.trim() !== '')
 					.map(x => {
-						return { name: x.name, value: x.value };
+						return { name: x.name.trim(), value: x.value.trim() };
 					});
 			}
 
@@ -362,7 +378,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (Object.keys(updates).includes('alsoKnownAs')) {
 				this.cacheService.uriPersonCache.set(this.userEntityService.genLocalUserUri(user.id), { ...user, ...updates });
 			}
-			if (Object.keys(profileUpdates).length > 0) await this.userProfilesRepository.update(user.id, profileUpdates);
+
+			await this.userProfilesRepository.update(user.id, {
+				...profileUpdates,
+				verifiedLinks: [],
+			});
 
 			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
 				detail: true,
@@ -384,7 +404,34 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// フォロワーにUpdateを配信
 			this.accountUpdateService.publishToFollowers(user.id);
 
+			const urls = updatedProfile.fields.filter(x => x.value.startsWith('https://'));
+			for (const url of urls) {
+				this.verifyLink(url.value, user);
+			}
+
 			return iObj;
 		});
+	}
+
+	private async verifyLink(url: string, user: MiLocalUser) {
+		if (!safeForSql(url)) return;
+
+		const html = await this.httpRequestService.getHtml(url);
+
+		const { window } = new JSDOM(html);
+		const doc = window.document;
+
+		const myLink = `${this.config.url}/@${user.username}`;
+
+		const includesMyLink = Array.from(doc.getElementsByTagName('a')).some(a => a.href === myLink);
+
+		if (includesMyLink) {
+			await this.userProfilesRepository.createQueryBuilder('profile').update()
+				.where('userId = :userId', { userId: user.id })
+				.set({
+					verifiedLinks: () => `array_append("verifiedLinks", '${url}')`, // ここでSQLインジェクションされそうなのでとりあえず safeForSql で弾いている
+				})
+				.execute();
+		}
 	}
 }

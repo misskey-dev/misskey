@@ -1,6 +1,19 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
-	<div v-if="page.eyeCatchingImage" class="thumbnail" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
+	<div v-if="page.eyeCatchingImage" class="thumbnail">
+		<MediaImage
+			:image="page.eyeCatchingImage"
+			:disableImageLink="true"
+			:controls="false"
+			:cover="true"
+			:class="$style.eyeCatchingImageRoot"
+		/>
+	</div>
 	<article>
 		<header>
 			<h1 :title="page.title">{{ page.title }}</h1>
@@ -16,13 +29,23 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
-import { userName } from '@/filters/user';
+import * as Misskey from 'misskey-js';
+import { userName } from '@/filters/user.js';
+import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
-	page: misskey.entities.Page;
+	page: Misskey.entities.Page;
 }>();
 </script>
+
+<style module>
+.eyeCatchingImageRoot {
+	width: 100%;
+	height: 200px;
+	border-radius: var(--radius) var(--radius) 0 0;
+	overflow: hidden;
+}
+</style>
 
 <style lang="scss" scoped>
 .vhpxefrj {
@@ -34,32 +57,15 @@ const props = defineProps<{
 	}
 
 	> .thumbnail {
-		width: 100%;
-		height: 200px;
-		background-position: center;
-		background-size: cover;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		> button {
-			font-size: 3.5em;
-			opacity: 0.7;
-
-			&:hover {
-				font-size: 4em;
-				opacity: 0.9;
-			}
-		}
-
 		& + article {
-			left: 100px;
-			width: calc(100% - 100px);
+			border-radius: 0 0 var(--radius) var(--radius);
 		}
 	}
 
 	> article {
+		background-color: var(--panel);
 		padding: 16px;
+		border-radius: var(--radius);
 
 		> header {
 			margin-bottom: 8px;
