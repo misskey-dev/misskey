@@ -1451,3 +1451,6 @@ _deck:
 _webhookSettings:
   name: "Názov"
   active: "Zapnuté"
+_moderationLogTypes:
+  suspend: "Zmraziť"
+  resetPassword: "Resetovať heslo"
