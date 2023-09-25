@@ -9,7 +9,9 @@
 ### Server
 -->
 
-## nade 1.3.5
+## nade 1.3.5 && nade 1.3.6
+### NOTE
+nade 1.3.5 is not working
 ### General
 - Misskey 2023.9.1対応のための軽微な修正
 
