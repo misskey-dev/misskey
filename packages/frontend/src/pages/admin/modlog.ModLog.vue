@@ -75,6 +75,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
+
+		<details>
+			<summary>raw</summary>
+			<pre>{{ JSON5.stringify(log, null, '\t') }}</pre>
+		</details>
 	</div>
 </MkFolder>
 </template>
