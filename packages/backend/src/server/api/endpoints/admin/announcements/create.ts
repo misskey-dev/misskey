@@ -64,9 +64,8 @@ export const paramDef = {
 	required: ['title', 'text', 'imageUrl'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private announcementService: AnnouncementService,
 	) {
@@ -82,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				forExistingUsers: ps.forExistingUsers,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				userId: ps.userId,
-			});
+			}, me);
 
 			return packed;
 		});

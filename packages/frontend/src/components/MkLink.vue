@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import { url as local } from '@/config';
-import { useTooltip } from '@/scripts/use-tooltip';
-import * as os from '@/os';
+import { url as local } from '@/config.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	url: string;

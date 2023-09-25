@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -16,7 +16,7 @@ export class AbuseDiscordHookService {
 	}
 
 	@bindThis
-	public send(me: User, user: User, comment: string): void {
+	public send(me: MiUser, user: MiUser, comment: string): void {
 		const webhookUrl = this.config.nirila?.abuseDiscordHook;
 		if (webhookUrl) {
 			setImmediate(async () => {

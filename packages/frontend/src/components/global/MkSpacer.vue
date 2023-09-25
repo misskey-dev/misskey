@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject } from 'vue';
-import { deviceKind } from '@/scripts/device-kind';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	contentMax?: number | null;

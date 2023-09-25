@@ -83,17 +83,17 @@ import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
-import { $i } from '@/account';
-import { Theme, applyTheme } from '@/scripts/theme';
+import { $i } from '@/account.js';
+import { Theme, applyTheme } from '@/scripts/theme.js';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
-import { host } from '@/config';
-import * as os from '@/os';
-import { ColdDeviceStorage, defaultStore } from '@/store';
+import { host } from '@/config.js';
+import * as os from '@/os.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { addTheme } from '@/theme-store';
-import { i18n } from '@/i18n';
-import { useLeaveGuard } from '@/scripts/use-leave-guard';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import { useLeaveGuard } from '@/scripts/use-leave-guard.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const bgColors = [
 	{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },

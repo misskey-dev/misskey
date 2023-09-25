@@ -301,6 +301,12 @@ export const handlers = [
 Don't forget to re-run the `.storybook/generate.js` script after adding, editing, or removing the above files.
 
 ## Notes
+
+### Misskeyのドメイン固有の概念は`Mi`をprefixする
+例えばGoogleが自社サービスをMap、Earth、DriveではなくGoogle Map、Google Earth、Google Driveのように命名するのと同じ
+コード上でMisskeyのドメイン固有の概念には`Mi`をprefixすることで、他のドメインの同様の概念と区別できるほか、名前の衝突を防ぐ。
+ただし、文脈上Misskeyのものを指すことが明らかであり、名前の衝突の恐れがない場合は、一時的なローカル変数に限って`Mi`を省略してもよい。
+
 ### How to resolve conflictions occurred at pnpm-lock.yaml?
 
 Just execute `pnpm` to fix it.
@@ -430,3 +436,6 @@ marginはそのコンポーネントを使う側が設定する
 ## その他
 ### HTMLのクラス名で follow という単語は使わない
 広告ブロッカーで誤ってブロックされる
+
+### indexというファイル名を使うな
+ESMではディレクトリインポートは廃止されているのと、ディレクトリインポートせずともファイル名が index だと何故か一部のライブラリ？でディレクトリインポートだと見做されてエラーになる

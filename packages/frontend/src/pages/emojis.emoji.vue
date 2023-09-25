@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	emoji: {

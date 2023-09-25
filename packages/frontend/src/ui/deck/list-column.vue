@@ -18,8 +18,8 @@ import { } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
 import MkTimeline from '@/components/MkTimeline.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	column: Column;

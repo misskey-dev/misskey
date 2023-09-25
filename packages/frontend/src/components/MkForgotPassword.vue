@@ -44,9 +44,9 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'done'): void;

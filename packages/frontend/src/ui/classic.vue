@@ -49,14 +49,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ComputedRef, onMounted, provide } from 'vue';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
-import { instanceName } from '@/config';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
-import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { miLocalStorage } from '@/local-storage';
+import { instanceName } from '@/config.js';
+import { StickySidebar } from '@/scripts/sticky-sidebar.js';
+import * as os from '@/os.js';
+import { mainRouter } from '@/router.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 

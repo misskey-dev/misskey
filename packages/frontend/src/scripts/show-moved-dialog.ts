@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
 export function showMovedDialog() {
 	if (!$i) return;

@@ -5,7 +5,7 @@
 
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -44,9 +44,8 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,

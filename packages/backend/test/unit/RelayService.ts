@@ -15,7 +15,7 @@ import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
-import type { RelaysRepository } from '@/models/index.js';
+import type { RelaysRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';

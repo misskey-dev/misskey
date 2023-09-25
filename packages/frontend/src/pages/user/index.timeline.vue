@@ -13,26 +13,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="files">{{ i18n.ts.withFiles }}</option>
 			</MkTab>
 		</template>
-		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl" :collapseSensitiveChannel="collapseSensitiveChannel"/>
+		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl"/>
 	</MkStickyContainer>
 </MkSpacer>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import * as misskey from 'misskey-js';
+import { ref, computed, provide } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 }>();
 
 const include = ref<string | null>(null);
 let collapseSensitiveChannel = $ref(defaultStore.state.collapseSensitiveChannel);
+
+provide('collapseSensitiveChannel', collapseSensitiveChannel);
 
 const pagination = {
 	endpoint: 'users/notes' as const,

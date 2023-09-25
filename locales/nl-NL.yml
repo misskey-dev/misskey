@@ -338,7 +338,6 @@ invite: "Uitnodigen"
 driveCapacityPerLocalAccount: "Opslagruimte per lokale gebruiker"
 driveCapacityPerRemoteAccount: "Opslagruimte per externe gebruiker"
 inMb: "in megabytes"
-iconUrl: "Pictogram URL"
 bannerUrl: "Banner URL"
 backgroundImageUrl: "URL afbeelding"
 basicInfo: "Basisinformatie"
@@ -426,6 +425,9 @@ pushNotificationAlreadySubscribed: "Pushberichtrn al ingeschakeld"
 windowMaximize: "Maximaliseren"
 windowRestore: "Herstellen"
 loggedInAsBot: "Momenteel als bot ingelogd"
+icon: "Avatar"
+replies: "Antwoord"
+renotes: "Herdelen"
 _email:
   _follow:
     title: "volgde jou"
@@ -492,3 +494,6 @@ _deck:
     mentions: "Vermeldingen"
 _webhookSettings:
   name: "Naam"
+_moderationLogTypes:
+  suspend: "Opschorten"
+  resetPassword: "Wachtwoord terugzetten"
