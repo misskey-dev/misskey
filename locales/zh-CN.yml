@@ -2125,3 +2125,4 @@ _moderationLogTypes:
   resetPassword: "重置密码"
   markSensitiveDriveFile: "标记网盘文件为敏感媒体"
   unmarkSensitiveDriveFile: "取消标记网盘文件为敏感媒体"
+  resolveAbuseReport: "处理举报"
