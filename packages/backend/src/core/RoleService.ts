@@ -412,10 +412,13 @@ export class RoleService implements OnApplicationShutdown {
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
 
 		if (moderator) {
+			const user = await this.usersRepository.findOneByOrFail({ id: userId });
 			this.moderationLogService.log(moderator, 'assignRole', {
 				roleId: roleId,
 				roleName: role.name,
 				userId: userId,
+				userUsername: user.username,
+				userHost: user.host,
 				expiresAt: expiresAt ? expiresAt.toISOString() : null,
 			});
 		}
@@ -445,11 +448,16 @@ export class RoleService implements OnApplicationShutdown {
 		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
 
 		if (moderator) {
-			const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
+			const [user, role] = await Promise.all([
+				this.usersRepository.findOneByOrFail({ id: userId }),
+				this.rolesRepository.findOneByOrFail({ id: roleId }),
+			]);
 			this.moderationLogService.log(moderator, 'unassignRole', {
 				roleId: roleId,
 				roleName: role.name,
 				userId: userId,
+				userUsername: user.username,
+				userHost: user.host,
 			});
 		}
 	}
@@ -471,6 +479,42 @@ export class RoleService implements OnApplicationShutdown {
 		}
 
 		redisPipeline.exec();
+	}
+
+	@bindThis
+	public async create(values: Partial<MiRole>, moderator?: MiUser): Promise<MiRole> {
+		const date = new Date();
+		const created = await this.rolesRepository.insert({
+			id: this.idService.genId(),
+			createdAt: date,
+			updatedAt: date,
+			lastUsedAt: date,
+			name: values.name,
+			description: values.description,
+			color: values.color,
+			iconUrl: values.iconUrl,
+			target: values.target,
+			condFormula: values.condFormula,
+			isPublic: values.isPublic,
+			isAdministrator: values.isAdministrator,
+			isModerator: values.isModerator,
+			isExplorable: values.isExplorable,
+			asBadge: values.asBadge,
+			canEditMembersByModerator: values.canEditMembersByModerator,
+			displayOrder: values.displayOrder,
+			policies: values.policies,
+		}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
+
+		this.globalEventService.publishInternalEvent('roleCreated', created);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'createRole', {
+				roleId: created.id,
+				role: created,
+			});
+		}
+
+		return created;
 	}
 
 	@bindThis

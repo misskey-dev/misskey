@@ -1133,6 +1133,7 @@ export interface Locale {
     "unnotifyNotes": string;
     "authentication": string;
     "authenticationRequiredToContinue": string;
+    "dateAndTime": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2264,9 +2265,11 @@ export interface Locale {
         };
     };
     "_moderationLogTypes": {
+        "createRole": string;
+        "deleteRole": string;
+        "updateRole": string;
         "assignRole": string;
         "unassignRole": string;
-        "updateRole": string;
         "suspend": string;
         "unsuspend": string;
         "addCustomEmoji": string;
@@ -2287,6 +2290,7 @@ export interface Locale {
         "unsuspendRemoteInstance": string;
         "markSensitiveDriveFile": string;
         "unmarkSensitiveDriveFile": string;
+        "resolveAbuseReport": string;
     };
 }
 declare const locales: {
