@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IsNull } from 'typeorm';
-import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
@@ -14,7 +19,7 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
@@ -27,16 +32,16 @@ import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
 
-type Local = LocalUser | {
-	id: LocalUser['id'];
-	host: LocalUser['host'];
-	uri: LocalUser['uri']
+type Local = MiLocalUser | {
+	id: MiLocalUser['id'];
+	host: MiLocalUser['host'];
+	uri: MiLocalUser['uri']
 };
-type Remote = RemoteUser | {
-	id: RemoteUser['id'];
-	host: RemoteUser['host'];
-	uri: RemoteUser['uri'];
-	inbox: RemoteUser['inbox'];
+type Remote = MiRemoteUser | {
+	id: MiRemoteUser['id'];
+	host: MiRemoteUser['host'];
+	uri: MiRemoteUser['uri'];
+	inbox: MiRemoteUser['inbox'];
 };
 type Both = Local | Remote;
 
@@ -86,11 +91,11 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string, silent = false): Promise<void> {
+	public async follow(_follower: { id: MiUser['id'] }, _followee: { id: MiUser['id'] }, requestId?: string, silent = false): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
-		]) as [LocalUser | RemoteUser, LocalUser | RemoteUser];
+		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
 
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
@@ -175,10 +180,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async insertFollowingDoc(
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
 		silent = false,
 	): Promise<void> {
@@ -307,10 +312,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async unfollow(
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
 	): Promise<void> {
@@ -353,21 +358,21 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower as PartialLocalUser, followee as PartialRemoteUser), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower as MiPartialLocalUser, followee as MiPartialRemoteUser), follower));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
 			// local user has null host
-			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower as PartialRemoteUser, followee as PartialLocalUser), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower as MiPartialRemoteUser, followee as MiPartialLocalUser), followee));
 			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
 
 	@bindThis
 	private async decrementFollowing(
-		follower: User,
-		followee: User,
+		follower: MiUser,
+		followee: MiUser,
 	): Promise<void> {
 		this.globalEventService.publishInternalEvent('unfollow', { followerId: follower.id, followeeId: followee.id });
 
@@ -439,10 +444,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async createFollowRequest(
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		requestId?: string,
 	): Promise<void> {
@@ -489,7 +494,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower as PartialLocalUser, followee as PartialRemoteUser, requestId ?? `${this.config.url}/follows/${followRequest.id}`));
+			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower as MiPartialLocalUser, followee as MiPartialRemoteUser, requestId ?? `${this.config.url}/follows/${followRequest.id}`));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	}
@@ -497,14 +502,14 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async cancelFollowRequest(
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']
 		},
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']
 		},
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower as PartialLocalUser | PartialRemoteUser, followee as PartialRemoteUser), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower as MiPartialLocalUser | MiPartialRemoteUser, followee as MiPartialRemoteUser), follower));
 
 			if (this.userEntityService.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
 				this.queueService.deliver(follower, content, followee.inbox, false);
@@ -535,9 +540,9 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async acceptFollowRequest(
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
-		follower: User,
+		follower: MiUser,
 	): Promise<void> {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
@@ -551,7 +556,7 @@ export class UserFollowingService implements OnModuleInit {
 		await this.insertFollowingDoc(followee, follower);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee as PartialLocalUser, request.requestId!), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee as MiPartialLocalUser, request.requestId!), followee));
 			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 
@@ -563,7 +568,7 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async acceptAllFollowRequests(
 		user: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 	): Promise<void> {
 		const requests = await this.followRequestsRepository.findBy({

@@ -1,10 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { format as DateFormat } from 'date-fns';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, User } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, MiUser } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -19,9 +23,6 @@ export class ExportAntennasProcessorService {
 	private logger: Logger;
 
 	constructor (
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -62,7 +63,7 @@ export class ExportAntennasProcessorService {
 			const antennas = await this.antennsRepository.findBy({ userId: job.data.user.id });
 			write('[');
 			for (const [index, antenna] of antennas.entries()) {
-				let users: User[] | undefined;
+				let users: MiUser[] | undefined;
 				if (antenna.userListId !== null) {
 					const joinings = await this.userListJoiningsRepository.findBy({ userListId: antenna.userListId });
 					users = await this.usersRepository.findBy({

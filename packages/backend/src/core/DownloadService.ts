@@ -1,6 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
-import * as stream from 'node:stream';
-import * as util from 'node:util';
+import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import ipaddr from 'ipaddr.js';
 import chalk from 'chalk';
@@ -14,7 +18,6 @@ import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 
-const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -102,7 +105,7 @@ export class DownloadService {
 		});
 
 		try {
-			await pipeline(req, fs.createWriteStream(path));
+			await stream.pipeline(req, fs.createWriteStream(path));
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
 				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
@@ -129,7 +132,7 @@ export class DownloadService {
 			// write content at URL to temp file
 			await this.downloadUrl(url, path);
 
-			const text = await util.promisify(fs.readFile)(path, 'utf8');
+			const text = await fs.promises.readFile(path, 'utf8');
 
 			return text;
 		} finally {

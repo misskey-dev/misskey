@@ -1,11 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, In, MoreThan, Not } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -26,9 +30,6 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 @Injectable()
 export class AccountMoveService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -70,12 +71,12 @@ export class AccountMoveService {
 	 * After delivering Move activity, its local followers unfollow the old account and then follow the new one.
 	 */
 	@bindThis
-	public async moveFromLocal(src: LocalUser, dst: LocalUser | RemoteUser): Promise<unknown> {
+	public async moveFromLocal(src: MiLocalUser, dst: MiLocalUser | MiRemoteUser): Promise<unknown> {
 		const srcUri = this.userEntityService.getUserUri(src);
 		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
-		const update = {} as Partial<LocalUser>;
+		const update = {} as Partial<MiLocalUser>;
 		update.alsoKnownAs = src.alsoKnownAs?.includes(dstUri) ? src.alsoKnownAs : src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
 		update.movedToUri = dstUri;
 		update.movedAt = new Date();
@@ -113,7 +114,7 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	public async postMoveProcess(src: User, dst: User): Promise<void> {
+	public async postMoveProcess(src: MiUser, dst: MiUser): Promise<void> {
 		// Copy blockings and mutings, and update lists
 		try {
 			await Promise.all([
@@ -212,7 +213,7 @@ export class AccountMoveService {
 	 * @returns Promise<void>
 	 */
 	@bindThis
-	public async updateLists(src: ThinUser, dst: User): Promise<void> {
+	public async updateLists(src: ThinUser, dst: MiUser): Promise<void> {
 		// Return if there is no list to be updated.
 		const oldJoinings = await this.userListJoiningsRepository.find({
 			where: {
@@ -259,7 +260,7 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: User): Promise<void> {
+	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: MiUser): Promise<void> {
 		if (localFollowerIds.length === 0) return;
 
 		// Set the old account's following and followers counts to 0.
@@ -300,11 +301,11 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async validateAlsoKnownAs(
-		dst: LocalUser | RemoteUser,
-		check: (oldUser: LocalUser | RemoteUser | null, newUser: LocalUser | RemoteUser) => boolean | Promise<boolean> = () => true,
+		dst: MiLocalUser | MiRemoteUser,
+		check: (oldUser: MiLocalUser | MiRemoteUser | null, newUser: MiLocalUser | MiRemoteUser) => boolean | Promise<boolean> = () => true,
 		instant = false,
-	): Promise<LocalUser | RemoteUser | null> {
-		let resultUser: LocalUser | RemoteUser | null = null;
+	): Promise<MiLocalUser | MiRemoteUser | null> {
+		let resultUser: MiLocalUser | MiRemoteUser | null = null;
 
 		if (this.userEntityService.isRemoteUser(dst)) {
 			if ((new Date()).getTime() - (dst.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {

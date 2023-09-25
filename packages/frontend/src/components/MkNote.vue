@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	v-if="!muted"
@@ -24,7 +29,7 @@
 		</I18n>
 		<div :class="$style.renoteInfo">
 			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="ti ti-dots" :class="$style.renoteMenu"></i>
+				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
@@ -81,9 +86,7 @@
 			</div>
 			<MkReactionsViewer :note="appearNote" :maxNumber="16">
 				<template #more>
-					<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
-						{{ i18n.ts.more }}
-					</button>
+					<div :class="$style.reactionOmitted">{{ i18n.ts.more }}</div>
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
@@ -135,7 +138,7 @@
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -146,34 +149,34 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { focusPrev, focusNext } from '@/scripts/focus';
-import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { defaultStore, noteViewInterruptors } from '@/store';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
-import { useNoteCapture } from '@/scripts/use-note-capture';
-import { deepClone } from '@/scripts/clone';
-import { useTooltip } from '@/scripts/use-tooltip';
-import { claimAchievement } from '@/scripts/achievements';
-import { getNoteSummary } from '@/scripts/get-note-summary';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { focusPrev, focusNext } from '@/scripts/focus.js';
+import { checkWordMute } from '@/scripts/check-word-mute.js';
+import { userPage } from '@/filters/user.js';
+import * as os from '@/os.js';
+import { defaultStore, noteViewInterruptors } from '@/store.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu.js';
+import { useNoteCapture } from '@/scripts/use-note-capture.js';
+import { deepClone } from '@/scripts/clone.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { MenuItem } from '@/types/menu';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { showMovedDialog } from '@/scripts/show-moved-dialog';
-import { shouldCollapsed } from '@/scripts/collapsed';
+import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import { shouldCollapsed } from '@/scripts/collapsed.js';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
-const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
+const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 let note = $ref(deepClone(props.note));
 
@@ -201,7 +204,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
@@ -314,9 +317,15 @@ function renote(viaKeyboard = false) {
 			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
+			let visibility = appearNote.visibility;
+			visibility = smallerVisibility(visibility, configuredVisibility);
+			if (appearNote.channel?.isSensitive) {
+				visibility = smallerVisibility(visibility, 'home');
+			}
+
 			os.api('notes/create', {
 				localOnly,
-				visibility: smallerVisibility(appearNote.visibility, configuredVisibility),
+				visibility,
 				renoteId: appearNote.id,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
@@ -341,6 +350,7 @@ function reply(viaKeyboard = false): void {
 	pleaseLogin();
 	os.post({
 		reply: appearNote,
+		channel: appearNote.channel,
 		animation: !viaKeyboard,
 	}, () => {
 		focus();
@@ -402,14 +412,16 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), ev).then(focus);
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), menuButton.value, {
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
-	}).then(focus);
+	}).then(focus).finally(cleanup);
 }
 
 async function clip() {
@@ -417,21 +429,39 @@ async function clip() {
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
-	if (!isMyRenote) return;
-	pleaseLogin();
-	os.popupMenu([{
-		text: i18n.ts.unrenote,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => {
-			os.api('notes/delete', {
-				noteId: note.id,
-			});
-			isDeleted.value = true;
-		},
-	}], renoteTime.value, {
-		viaKeyboard: viaKeyboard,
-	});
+	function getUnrenote(): MenuItem {
+		return {
+			text: i18n.ts.unrenote,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => {
+				os.api('notes/delete', {
+					noteId: note.id,
+				});
+				isDeleted.value = true;
+			},
+		};
+	}
+
+	if (isMyRenote) {
+		pleaseLogin();
+		os.popupMenu([
+			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			null,
+			getUnrenote(),
+		], renoteTime.value, {
+			viaKeyboard: viaKeyboard,
+		});
+	} else {
+		os.popupMenu([
+			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			null,
+			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
+			$i.isModerator || $i.isAdmin ? getUnrenote() : undefined,
+		], renoteTime.value, {
+			viaKeyboard: viaKeyboard,
+		});
+	}
 }
 
 function focus() {
@@ -455,12 +485,6 @@ function readPromo() {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
-}
-
-function showReactions(): void {
-	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
-		noteId: appearNote.id,
-	}, {}, 'closed');
 }
 </script>
 
@@ -758,6 +782,7 @@ function showReactions(): void {
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;
+	overflow: clip;
 }
 
 .channel {
@@ -908,18 +933,11 @@ function showReactions(): void {
 	opacity: 0.7;
 }
 
-.reactionDetailsButton {
+.reactionOmitted {
 	display: inline-block;
 	height: 32px;
 	margin: 2px;
 	padding: 0 6px;
-	border: dashed 1px var(--divider);
-	border-radius: 4px;
-	background: transparent;
 	opacity: .8;
-
-	&:hover {
-		background: var(--X5);
-	}
 }
 </style>

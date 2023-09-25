@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	v-if="!muted"
@@ -6,7 +11,12 @@
 	v-hotkey="keymap"
 	:class="$style.root"
 >
-	<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
+	<div v-if="appearNote.reply && appearNote.reply.replyId">
+		<div v-if="!conversationLoaded" style="padding: 16px">
+			<MkButton style="margin: 0 auto;" primary rounded @click="loadConversation">{{ i18n.ts.loadConversation }}</MkButton>
+		</div>
+		<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
+	</div>
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="isRenote" :class="$style.renote">
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
@@ -120,7 +130,47 @@
 			</button>
 		</footer>
 	</article>
-	<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+	<div :class="$style.tabs">
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+	</div>
+	<div>
+		<div v-if="tab === 'replies'" :class="$style.tab_replies">
+			<div v-if="!repliesLoaded" style="padding: 16px">
+				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
+			</div>
+			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+		</div>
+		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
+			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
+				<template #default="{ items }">
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
+						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
+							<MkUserCardMini :user="item.user" :withChart="false"/>
+						</MkA>
+					</div>
+				</template>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'reactions'" :class="$style.tab_reactions">
+			<div :class="$style.reactionTabs">
+				<button v-for="reaction in Object.keys(appearNote.reactions)" :key="reaction" :class="[$style.reactionTab, { [$style.reactionTabActive]: reactionTabType === reaction }]" class="_button" @click="reactionTabType = reaction">
+					<MkReactionIcon :reaction="reaction"/>
+					<span style="margin-left: 4px;">{{ appearNote.reactions[reaction] }}</span>
+				</button>
+			</div>
+			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination" :disableAutoLoad="true">
+				<template #default="{ items }">
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
+						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
+							<MkUserCardMini :user="item.user" :withChart="false"/>
+						</MkA>
+					</div>
+				</template>
+			</MkPagination>
+		</div>
+	</div>
 </div>
 <div v-else class="_panel" :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
@@ -136,7 +186,7 @@
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -146,28 +196,31 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '@/filters/user';
-import { notePage } from '@/filters/note';
-import * as os from '@/os';
-import { defaultStore, noteViewInterruptors } from '@/store';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
-import { useNoteCapture } from '@/scripts/use-note-capture';
-import { deepClone } from '@/scripts/clone';
-import { useTooltip } from '@/scripts/use-tooltip';
-import { claimAchievement } from '@/scripts/achievements';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { checkWordMute } from '@/scripts/check-word-mute.js';
+import { userPage } from '@/filters/user.js';
+import { notePage } from '@/filters/note.js';
+import * as os from '@/os.js';
+import { defaultStore, noteViewInterruptors } from '@/store.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu.js';
+import { useNoteCapture } from '@/scripts/use-note-capture.js';
+import { deepClone } from '@/scripts/clone.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import { claimAchievement } from '@/scripts/achievements.js';
 import { MenuItem } from '@/types/menu';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { showMovedDialog } from '@/scripts/show-moved-dialog';
+import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
-	pinned?: boolean;
+	note: Misskey.entities.Note;
 }>();
 
 const inChannel = inject('inChannel', null);
@@ -198,7 +251,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const isDeleted = ref(false);
@@ -207,8 +260,8 @@ const translation = ref(null);
 const translating = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const conversation = ref<misskey.entities.Note[]>([]);
-const replies = ref<misskey.entities.Note[]>([]);
+const conversation = ref<Misskey.entities.Note[]>([]);
+const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
 
 const keymap = {
@@ -219,6 +272,26 @@ const keymap = {
 	'm|o': () => menu(true),
 	's': () => showContent.value !== showContent.value,
 };
+
+let tab = $ref('replies');
+let reactionTabType = $ref(null);
+
+const renotesPagination = $computed(() => ({
+	endpoint: 'notes/renotes',
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
+	},
+}));
+
+const reactionsPagination = $computed(() => ({
+	endpoint: 'notes/reactions',
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
+		type: reactionTabType,
+	},
+}));
 
 useNoteCapture({
 	rootEl: el,
@@ -320,6 +393,7 @@ function reply(viaKeyboard = false): void {
 	showMovedDialog();
 	os.post({
 		reply: appearNote,
+		channel: appearNote.channel,
 		animation: !viaKeyboard,
 	}, () => {
 		focus();
@@ -379,14 +453,16 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), ev).then(focus);
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted });
+		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), menuButton.value, {
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted });
+	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
-	}).then(focus);
+	}).then(focus).finally(cleanup);
 }
 
 async function clip() {
@@ -419,14 +495,20 @@ function blur() {
 	el.value.blur();
 }
 
-os.api('notes/children', {
-	noteId: appearNote.id,
-	limit: 30,
-}).then(res => {
-	replies.value = res;
-});
+const repliesLoaded = ref(false);
+function loadReplies() {
+	repliesLoaded.value = true;
+	os.api('notes/children', {
+		noteId: appearNote.id,
+		limit: 30,
+	}).then(res => {
+		replies.value = res;
+	});
+}
 
-if (appearNote.replyId) {
+const conversationLoaded = ref(false);
+function loadConversation() {
+	conversationLoaded.value = true;
 	os.api('notes/conversation', {
 		noteId: appearNote.replyId,
 	}).then(res => {
@@ -595,6 +677,7 @@ if (appearNote.replyId) {
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;
+	overflow: clip;
 }
 
 .channel {
@@ -632,8 +715,50 @@ if (appearNote.replyId) {
 	}
 }
 
-.reply {
+.reply:not(:first-child) {
 	border-top: solid 0.5px var(--divider);
+}
+
+.tabs {
+	border-top: solid 0.5px var(--divider);
+	border-bottom: solid 0.5px var(--divider);
+	display: flex;
+}
+
+.tab {
+	flex: 1;
+	padding: 12px 8px;
+	border-top: solid 2px transparent;
+	border-bottom: solid 2px transparent;
+}
+
+.tabActive {
+	border-bottom: solid 2px var(--accent);
+}
+
+.tab_renotes {
+	padding: 16px;
+}
+
+.tab_reactions {
+	padding: 16px;
+}
+
+.reactionTabs {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 8px;
+}
+
+.reactionTab {
+	padding: 4px 6px;
+	border: solid 1px var(--divider);
+	border-radius: 6px;
+}
+
+.reactionTabActive {
+	border-color: var(--accent);
 }
 
 @container (max-width: 500px) {

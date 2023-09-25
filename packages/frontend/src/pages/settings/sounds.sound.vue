@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<MkSelect v-model="type">
@@ -20,8 +25,8 @@ import { } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { i18n } from '@/i18n';
-import { playFile, soundsTypes } from '@/scripts/sound';
+import { i18n } from '@/i18n.js';
+import { playFile, soundsTypes } from '@/scripts/sound.js';
 
 const props = defineProps<{
 	type: string;

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="rootEl" :class="$style.root">
 	<canvas :id="idForCanvas" ref="canvasEl" style="display: block;" :width="width" height="300" @contextmenu.prevent="() => {}"></canvas>
@@ -16,8 +21,8 @@ import tinycolor from 'tinycolor2';
 const loaded = !!window.TagCanvas;
 const SAFE_FOR_HTML_ID = 'abcdefghijklmnopqrstuvwxyz';
 const computedStyle = getComputedStyle(document.documentElement);
-const idForCanvas = Array.from(Array(16)).map(() => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
-const idForTags = Array.from(Array(16)).map(() => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
+const idForCanvas = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
+const idForTags = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 let available = $ref(false);
 let rootEl = $shallowRef<HTMLElement | null>(null);
 let canvasEl = $shallowRef<HTMLCanvasElement | null>(null);

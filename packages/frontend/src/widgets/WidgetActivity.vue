@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" data-cy-mkw-activity class="mkw-activity">
 	<template #icon><i class="ti ti-chart-line"></i></template>
@@ -19,11 +24,11 @@ import { ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'activity';
 

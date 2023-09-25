@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div>
+<div ref="root">
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
@@ -22,31 +27,80 @@
 </div>
 </template>
 
+<script lang="ts">
+/**
+ * アスペクト比算出のためにHTMLElement.clientWidthを使うが、
+ * 大変重たいのでコンテナ要素とメディアリスト幅のペアをキャッシュする
+ * （タイムラインごとにスクロールコンテナが存在する前提だが……）
+ */
+const widthCache = new Map<Element, number>();
+
+/**
+ * コンテナ要素がリサイズされたらキャッシュを削除する
+ */
+const ro = new ResizeObserver(entries => {
+	for (const entry of entries) {
+		widthCache.delete(entry.target);
+	}
+});
+
+async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
+	if (_DEV_) console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
+	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
+
+	const width = targetEl.clientWidth;
+
+	if (count <= 10 && width < 64) {
+		// widthが64未満はおかしいのでリトライする
+		await new Promise(resolve => setTimeout(resolve, 50));
+		return getClientWidthWithCache(targetEl, containerEl, count + 1);
+	}
+
+	widthCache.set(containerEl, width);
+	ro.observe(containerEl);
+	return width;
+}
+</script>
+
 <script lang="ts" setup>
-import { onMounted, watch, shallowRef } from 'vue';
-import * as misskey from 'misskey-js';
+import { onMounted, onUnmounted, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
+import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll.js';
 
 const props = defineProps<{
-	mediaList: misskey.entities.DriveFile[];
+	mediaList: Misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
 
+const root = shallowRef<HTMLDivElement>();
+const container = shallowRef<HTMLElement | null | undefined>(undefined);
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
+let lightbox: PhotoSwipeLightbox | null;
 
-function calcAspectRatio() {
-	if (!gallery.value) return;
+const popstateHandler = (): void => {
+	if (lightbox.pswp && lightbox.pswp.isOpen === true) {
+		lightbox.pswp.close();
+	}
+};
+
+/**
+ * アスペクト比をmediaListWithOneImageAppearanceに基づいていい感じに調整する
+ * aspect-ratioではなくheightを使う
+ */
+async function calcAspectRatio() {
+	if (!gallery.value || !root.value) return;
 
 	let img = props.mediaList[0];
 
@@ -55,29 +109,47 @@ function calcAspectRatio() {
 		return;
 	}
 
-	// アスペクト比上限設定では、横長の場合は高さを縮小させる
-	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
+	if (!container.value) container.value = getScrollContainer(root.value);
+	const width = container.value ? await getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
+
+	const heightMin = (ratio: number) => {
+		const imgResizeRatio = width / img.properties.width;
+		const imgDrawHeight = img.properties.height * imgResizeRatio;
+		const maxHeight = width * ratio;
+		const height = Math.min(imgDrawHeight, maxHeight);
+		if (_DEV_) console.log('Image height calculated:', { width, properties: img.properties, imgResizeRatio, imgDrawHeight, maxHeight, height });
+		return `${height}px`;
+	};
 
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
 		case '16_9':
-			gallery.value.style.aspectRatio = ratioMax(16 / 9);
+			gallery.value.style.height = heightMin(9 / 16);
 			break;
 		case '1_1':
-			gallery.value.style.aspectRatio = ratioMax(1);
+			gallery.value.style.height = heightMin(1);
 			break;
 		case '2_3':
-			gallery.value.style.aspectRatio = ratioMax(2 / 3);
+			gallery.value.style.height = heightMin(3 / 2);
 			break;
-		default:
-			gallery.value.style.aspectRatio = '';
+		default: {
+			const maxHeight = Math.max(64, (container.value ? container.value.clientHeight : getBodyScrollHeight()) * 0.5 || 360);
+			if (width === 0 || !maxHeight) return;
+			const imgResizeRatio = width / img.properties.width;
+			const imgDrawHeight = img.properties.height * imgResizeRatio;
+			gallery.value.style.height = `${Math.max(64, Math.min(imgDrawHeight, maxHeight))}px`;
+			gallery.value.style.minHeight = 'initial';
+			gallery.value.style.maxHeight = 'initial';
 			break;
+		}
 	}
+
+	gallery.value.style.aspectRatio = 'initial';
 }
 
-watch([defaultStore.reactiveState.mediaListWithOneImageAppearance, gallery], () => calcAspectRatio());
-
 onMounted(() => {
-	const lightbox = new PhotoSwipeLightbox({
+	calcAspectRatio();
+
+	lightbox = new PhotoSwipeLightbox({
 		dataSource: props.mediaList
 			.filter(media => {
 				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
@@ -161,12 +233,7 @@ onMounted(() => {
 
 	lightbox.init();
 
-	window.addEventListener('popstate', () => {
-		if (lightbox.pswp && lightbox.pswp.isOpen === true) {
-			lightbox.pswp.close();
-			return;
-		}
-	});
+	window.addEventListener('popstate', popstateHandler);
 
 	lightbox.on('beforeOpen', () => {
 		history.pushState(null, '', '#pswp');
@@ -179,7 +246,13 @@ onMounted(() => {
 	});
 });
 
-const previewable = (file: misskey.entities.DriveFile): boolean => {
+onUnmounted(() => {
+	window.removeEventListener('popstate', popstateHandler);
+	lightbox?.destroy();
+	lightbox = null;
+});
+
+const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
@@ -203,7 +276,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	&.n1 {
 		grid-template-rows: 1fr;
 
-		// default (expand)
+		// default but fallback (expand)
 		min-height: 64px;
 		max-height: clamp(
 			64px,
@@ -212,20 +285,20 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 		);
 
 		&.n116_9 {
-			min-height: none;
-			max-height: none;
+			min-height: initial;
+			max-height: initial;
 			aspect-ratio: 16 / 9; // fallback
 		}
 
 		&.n11_1{
-			min-height: none;
-			max-height: none;
+			min-height: initial;
+			max-height: initial;
 			aspect-ratio: 1 / 1; // fallback
 		}
 
 		&.n12_3 {
-			min-height: none;
-			max-height: none;
+			min-height: initial;
+			max-height: initial;
 			aspect-ratio: 2 / 3; // fallback
 		}
 	}

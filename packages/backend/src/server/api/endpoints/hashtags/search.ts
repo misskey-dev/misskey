@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { HashtagsRepository } from '@/models/index.js';
+import type { HashtagsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
@@ -29,9 +34,8 @@ export const paramDef = {
 	required: ['query'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
@@ -42,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.orderBy('tag.count', 'DESC')
 				.groupBy('tag.id')
 				.limit(ps.limit)
-				.skip(ps.offset)
+				.offset(ps.offset)
 				.getMany();
 
 			return hashtags.map(tag => tag.name);

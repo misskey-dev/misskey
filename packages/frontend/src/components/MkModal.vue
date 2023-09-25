@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	:name="transitionName"
@@ -38,10 +43,10 @@
 
 <script lang="ts" setup>
 import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch } from 'vue';
-import * as os from '@/os';
-import { isTouchUsing } from '@/scripts/touch';
-import { defaultStore } from '@/store';
-import { deviceKind } from '@/scripts/device-kind';
+import * as os from '@/os.js';
+import { isTouchUsing } from '@/scripts/touch.js';
+import { defaultStore } from '@/store.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -431,6 +436,7 @@ defineExpose({
 			margin: auto;
 			padding: 32px;
 			display: flex;
+			overflow: auto;
 
 			@media (max-width: 500px) {
 				padding: 16px;

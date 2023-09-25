@@ -1,13 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
+import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { User } from '@/models/entities/User.js';
-import type { Role } from '@/models/entities/Role.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiRole } from '@/models/Role.js';
 import { bindThis } from '@/decorators.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class RoleEntityService {
@@ -17,15 +21,13 @@ export class RoleEntityService {
 
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: Role['id'] | Role,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiRole['id'] | MiRole,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
@@ -71,7 +73,7 @@ export class RoleEntityService {
 	@bindThis
 	public packMany(
 		roles: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(roles.map(x => this.pack(x, me)));
 	}

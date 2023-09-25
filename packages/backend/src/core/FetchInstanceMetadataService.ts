@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
 import * as Redis from 'ioredis';
-import type { Instance } from '@/models/entities/Instance.js';
+import type { MiInstance } from '@/models/Instance.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -57,7 +62,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
+	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
 		// Acquire mutex to ensure no parallel runs
 		if (!await this.tryLock(host)) return;
@@ -70,9 +75,9 @@ export class FetchInstanceMetadataService {
 					return;
 				}
 			}
-	
+
 			this.logger.info(`Fetching metadata of ${instance.host} ...`);
- 
+
 			const [info, dom, manifest] = await Promise.all([
 				this.fetchNodeinfo(instance).catch(() => null),
 				this.fetchDom(instance).catch(() => null),
@@ -103,7 +108,7 @@ export class FetchInstanceMetadataService {
 
 			if (name) updates.name = name;
 			if (description) updates.description = description;
-			if (icon || favicon) updates.iconUrl = (icon && !icon.includes('data:image/png;base64')) ? icon : favicon;
+			if (icon ?? favicon) updates.iconUrl = (icon && !icon.includes('data:image/png;base64')) ? icon : favicon;
 			if (favicon) updates.faviconUrl = favicon;
 			if (themeColor) updates.themeColor = themeColor;
 
@@ -118,7 +123,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchNodeinfo(instance: Instance): Promise<NodeInfo> {
+	private async fetchNodeinfo(instance: MiInstance): Promise<NodeInfo> {
 		this.logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 
 		try {
@@ -137,10 +142,10 @@ export class FetchInstanceMetadataService {
 
 			const links = wellknown.links as any[];
 
-			const lnik1_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/1.0');
-			const lnik2_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.0');
-			const lnik2_1 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.1');
-			const link = lnik2_1 ?? lnik2_0 ?? lnik1_0;
+			const link1_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/1.0');
+			const link2_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.0');
+			const link2_1 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.1');
+			const link = link2_1 ?? link2_0 ?? link1_0;
 
 			if (link == null) {
 				throw new Error('No nodeinfo link provided');
@@ -162,7 +167,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchDom(instance: Instance): Promise<DOMWindow['document']> {
+	private async fetchDom(instance: MiInstance): Promise<DOMWindow['document']> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 
 		const url = 'https://' + instance.host;
@@ -176,7 +181,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchManifest(instance: Instance): Promise<Record<string, unknown> | null> {
+	private async fetchManifest(instance: MiInstance): Promise<Record<string, unknown> | null> {
 		const url = 'https://' + instance.host;
 
 		const manifestUrl = url + '/manifest.json';
@@ -187,7 +192,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchFaviconUrl(instance: Instance, doc: DOMWindow['document'] | null): Promise<string | null> {
+	private async fetchFaviconUrl(instance: MiInstance, doc: DOMWindow['document'] | null): Promise<string | null> {
 		const url = 'https://' + instance.host;
 
 		if (doc) {
@@ -213,7 +218,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async fetchIconUrl(instance: MiInstance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
 			const url = 'https://' + instance.host;
 			return (new URL(manifest.icons[0].src, url)).href;

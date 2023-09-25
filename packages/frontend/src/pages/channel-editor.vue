@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -14,6 +19,10 @@
 			<MkColorInput v-model="color">
 				<template #label>{{ i18n.ts.color }}</template>
 			</MkColorInput>
+
+			<MkSwitch v-model="isSensitive">
+				<template #label>{{ i18n.ts.sensitive }}</template>
+			</MkSwitch>
 
 			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
@@ -61,12 +70,13 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import { selectFile } from '@/scripts/select-file.js';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from "@/components/MkSwitch.vue";
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -82,6 +92,7 @@ let description = $ref(null);
 let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
 let color = $ref('#000');
+let isSensitive = $ref(false);
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
@@ -105,6 +116,7 @@ async function fetchChannel() {
 	description = channel.description;
 	bannerId = channel.bannerId;
 	bannerUrl = channel.bannerUrl;
+	isSensitive = channel.isSensitive;
 	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
 		id,
 	}));
@@ -137,6 +149,7 @@ function save() {
 		bannerId: bannerId,
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 		color: color,
+		isSensitive: isSensitive,
 	};
 
 	if (props.channelId) {

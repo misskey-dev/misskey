@@ -6,7 +6,6 @@ import { type UserConfig, defineConfig } from 'vite';
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
 import locales from '../../locales';
-import generateDTS from '../../locales/generateDTS';
 import meta from '../../package.json';
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
 import pluginJson5 from './vite.json5';
@@ -67,10 +66,6 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
-			{
-				name: 'locale:generateDTS',
-				buildStart: generateDTS,
-			},
 		],
 
 		resolve: {
@@ -117,8 +112,8 @@ export function getConfig(): UserConfig {
 
 		build: {
 			target: [
-				'chrome108',
-				'firefox109',
+				'chrome116',
+				'firefox116',
 				'safari16',
 			],
 			manifest: 'manifest.json',

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="rootEl" :class="$style.root" role="group" :aria-expanded="opened">
 	<MkStickyContainer>
@@ -46,7 +51,7 @@
 
 <script lang="ts" setup>
 import { nextTick, onMounted } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
