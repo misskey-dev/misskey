@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
-import type { MiChannel } from '@/models/entities/Channel.js';
+import type { ChannelsRepository, DriveFilesRepository } from '@/models/_.js';
+import type { MiChannel } from '@/models/Channel.js';
 import { IdService } from '@/core/IdService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -50,13 +50,13 @@ export const paramDef = {
 		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		color: { type: 'string', minLength: 1, maxLength: 16 },
+		isSensitive: { type: 'boolean', nullable: true },
 	},
 	required: ['name'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -87,6 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				description: ps.description ?? null,
 				bannerId: banner ? banner.id : null,
+				isSensitive: ps.isSensitive ?? false,
 				...(ps.color !== undefined ? { color: ps.color } : {}),
 			} as MiChannel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
 

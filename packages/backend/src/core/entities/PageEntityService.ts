@@ -5,12 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, PageLikesRepository, PagesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiPage } from '@/models/entities/Page.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiPage } from '@/models/Page.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
@@ -35,7 +36,7 @@ export class PageEntityService {
 	@bindThis
 	public async pack(
 		src: MiPage['id'] | MiPage,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
@@ -108,7 +109,7 @@ export class PageEntityService {
 	@bindThis
 	public async packMany(
 		pages: (MiPage['id'] | MiPage)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Page'>[]> {
 		return (await Promise.allSettled(pages.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

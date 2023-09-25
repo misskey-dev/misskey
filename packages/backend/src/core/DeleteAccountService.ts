@@ -4,10 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
@@ -19,7 +18,6 @@ export class DeleteAccountService {
 
 		private userSuspendService: UserSuspendService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
 	) {
 	}
 

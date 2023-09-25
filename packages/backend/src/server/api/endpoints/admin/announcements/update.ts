@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '@/server/api/error.js';
+import type { AnnouncementsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -43,9 +43,8 @@ export const paramDef = {
 	required: ['id'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
@@ -57,7 +56,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
 
-			await this.announcementService.update(announcement.id, ps);
+			await this.announcementService.update(announcement, {
+				updatedAt: new Date(),
+				title: ps.title,
+				text: ps.text,
+				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+				imageUrl: ps.imageUrl || null,
+				display: ps.display,
+				icon: ps.icon,
+				forExistingUsers: ps.forExistingUsers,
+				needConfirmationToRead: ps.needConfirmationToRead,
+				isActive: ps.isActive,
+			}, me);
 		});
 	}
 }

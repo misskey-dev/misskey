@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiRegistrationTicket } from '@/models/entities/RegistrationTicket.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiRegistrationTicket } from '@/models/RegistrationTicket.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -26,7 +26,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public async pack(
 		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'InviteCode'>> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
 			where: {
@@ -50,7 +50,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public async packMany(
 		targets: (MiRegistrationTicket['id'] | MiRegistrationTicket)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] },
 	) : Promise<Packed<'InviteCode'>[]> {
 		return (await Promise.allSettled(targets.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

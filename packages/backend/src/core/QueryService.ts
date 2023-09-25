@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/index.js';
+import type { MiUser } from '@/models/User.js';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
@@ -109,7 +109,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateChannelQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] } | null): void {
+	public generateChannelQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
 		if (me == null) {
 			q.andWhere('note.channelId IS NULL');
 		} else {
@@ -213,7 +213,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me: Pick<MiUser, 'id'> | null): void {
+	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me?: Pick<MiUser, 'id'> | null): void {
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
 				.where('note.replyId IS NULL') // 返信ではない
@@ -239,7 +239,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] } | null): void {
+	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
 		// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb

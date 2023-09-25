@@ -11,7 +11,7 @@ fetchMocker.enableMocks();
 
 // Set i18n
 import locales from '../../../locales';
-import { updateI18n } from '@/i18n';
+import { updateI18n } from '@/i18n.js';
 updateI18n(locales['en-US']);
 
 // XXX: misskey-js panics if WebSocket is not defined

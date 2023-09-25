@@ -6,12 +6,12 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IdService } from '@/core/IdService.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiBlocking } from '@/models/entities/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';

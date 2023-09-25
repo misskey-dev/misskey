@@ -94,9 +94,8 @@ export const paramDef = {
 	required: ['title', 'text', 'imageUrl'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private announcementService: AnnouncementService,
 	) {
@@ -114,23 +113,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				closeDuration: ps.closeDuration,
 				displayOrder: ps.displayOrder,
 				userId: ps.userId,
-			});
+			}, me);
 
-			return {
-				id: packed.id,
-				createdAt: packed.createdAt,
-				updatedAt: packed.updatedAt,
-				title: packed.title,
-				text: packed.text,
-				imageUrl: packed.imageUrl,
-				icon: packed.icon,
-				display: packed.display,
-				forExistingUsers: raw.forExistingUsers,
-				needConfirmationToRead: packed.needConfirmationToRead,
-				closeDuration: packed.closeDuration,
-				displayOrder: packed.displayOrder,
-				userId: raw.userId,
-			};
+			return packed;
 		});
 	}
 }

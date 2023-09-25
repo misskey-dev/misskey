@@ -14,6 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.instanceName }}</template>
 					</MkInput>
 
+					<MkInput v-model="shortName">
+						<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
+						<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
+					</MkInput>
+
 					<MkTextarea v-model="description">
 						<template #label>{{ i18n.ts.instanceDescription }}</template>
 					</MkTextarea>
@@ -40,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<MkSwitch v-model="cacheRemoteFiles">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
-								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
+								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
 							</MkSwitch>
 
 							<template v-if="cacheRemoteFiles">
@@ -111,13 +116,14 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
 let name: string | null = $ref(null);
+let shortName: string | null = $ref(null);
 let description: string | null = $ref(null);
 let maintainerName: string | null = $ref(null);
 let maintainerEmail: string | null = $ref(null);
@@ -133,6 +139,7 @@ let deeplIsPro: boolean = $ref(false);
 async function init(): Promise<void> {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
+	shortName = meta.shortName;
 	description = meta.description;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
@@ -149,6 +156,7 @@ async function init(): Promise<void> {
 function save(): void {
 	os.apiWithDialog('admin/update-meta', {
 		name,
+		shortName: shortName === '' ? null : shortName,
 		description,
 		maintainerName,
 		maintainerEmail,

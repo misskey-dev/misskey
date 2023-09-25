@@ -13,35 +13,9 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import {
-	birthdaySchema,
-	descriptionSchema,
-	localUsernameSchema,
-	locationSchema,
-	nameSchema,
-	passwordSchema,
-} from '@/models/entities/User.js';
-import type {
-	AnnouncementReadsRepository,
-	AnnouncementsRepository,
-	BlockingsRepository,
-	ChannelFollowingsRepository,
-	DriveFilesRepository,
-	FollowingsRepository,
-	FollowRequestsRepository,
-	InstancesRepository,
-	MutingsRepository,
-	NoteUnreadsRepository,
-	PagesRepository,
-	RenoteMutingsRepository,
-	UserMemoRepository,
-	UserNotePiningsRepository,
-	MiUserProfile,
-	UserProfilesRepository,
-	UserSecurityKeysRepository,
-	UsersRepository,
-} from '@/models/index.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/User.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, MiUserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -124,26 +98,17 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: NoteUnreadsRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
 		@Inject(DI.userNotePiningsRepository)
 		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
-
 		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: AnnouncementReadsRepository,
 
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
-
-		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
 
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
@@ -182,15 +147,14 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public async getRelation(me: MiUser['id'], target: MiUser['id']) {
+		const following = await this.followingsRepository.findOneBy({
+			followerId: me,
+			followeeId: target,
+		});
 		return awaitAll({
 			id: target,
-			isFollowing: this.followingsRepository.count({
-				where: {
-					followerId: me,
-					followeeId: target,
-				},
-				take: 1,
-			}).then(n => n > 0),
+			following,
+			isFollowing: following != null,
 			isFollowed: this.followingsRepository.count({
 				where: {
 					followerId: target,
@@ -313,7 +277,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: MiUser['id'] | MiUser,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
@@ -423,6 +387,7 @@ export class UserEntityService implements OnModuleInit {
 				birthday: profile!.birthday,
 				lang: profile!.lang,
 				fields: profile!.fields,
+				verifiedLinks: profile!.verifiedLinks,
 				followersCount: followersCount ?? 0,
 				followingCount: followingCount ?? 0,
 				notesCount: user.notesCount,
@@ -473,7 +438,7 @@ export class UserEntityService implements OnModuleInit {
 				preventAiLearning: profile!.preventAiLearning,
 				isExplorable: user.isExplorable,
 				isDeleted: user.isDeleted,
-				twoFactorBackupCodes: profile?.twoFactorBackupSecret?.length === 20 ? 'full' : (profile?.twoFactorBackupSecret?.length ?? 0) > 0 ? 'partial' : 'none',
+				twoFactorBackupCodesStock: profile?.twoFactorBackupSecret?.length === 20 ? 'full' : (profile?.twoFactorBackupSecret?.length ?? 0) > 0 ? 'partial' : 'none',
 				hideOnlineStatus: user.hideOnlineStatus,
 				hasUnreadSpecifiedNotes: this.noteUnreadsRepository.count({
 					where: { userId: user.id, isSpecified: true },
@@ -524,6 +489,7 @@ export class UserEntityService implements OnModuleInit {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 				isRenoteMuted: relation.isRenoteMuted,
+				notify: relation.following?.notify ?? 'none',
 			} : {}),
 		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 
@@ -532,7 +498,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async packMany<D extends boolean = false>(
 		users: (MiUser['id'] | MiUser)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,

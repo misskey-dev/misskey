@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;

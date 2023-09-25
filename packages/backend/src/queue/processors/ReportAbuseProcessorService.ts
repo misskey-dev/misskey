@@ -11,7 +11,7 @@ import type Logger from '@/logger.js';
 import { RoleService } from '@/core/RoleService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { AbuseReportResolversRepository, AbuseUserReportsRepository, UsersRepository } from '@/models/index.js';
+import type { AbuseReportResolversRepository, AbuseUserReportsRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';

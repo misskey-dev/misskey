@@ -7,15 +7,15 @@ doctype html
 
 //
 	-
-	  _____ _         _           
-	 |     |_|___ ___| |_ ___ _ _ 
+	  _____ _         _
+	 |     |_|___ ___| |_ ___ _ _
 	 | | | | |_ -|_ -| '_| -_| | |
 	 |_|_|_|_|___|___|_,_|___|_  |
 	                         |___|
 	 Thank you for using Misskey!
 	 If you are reading this message... how about joining the development?
 	 https://github.com/misskey-dev/misskey
-	 
+
 
 html
 
@@ -28,14 +28,14 @@ html
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
 		link(rel='icon' href= icon || '/favicon.ico')
-		link(rel='apple-touch-icon' href= icon || '/apple-touch-icon.png')
+		link(rel='apple-touch-icon' href= appleTouchIcon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
 		link(rel='search' type='application/opensearchdescription+xml' title=(title || "Misskey") href=`${url}/opensearch.xml`)
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
 		//- https://github.com/misskey-dev/misskey/issues/9842
-		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.25.0')
+		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.35.0')
 		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
 
 		if !config.clientManifestExists

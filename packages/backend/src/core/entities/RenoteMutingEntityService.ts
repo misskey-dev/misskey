@@ -5,11 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { RenoteMutingsRepository } from '@/models/index.js';
+import type { RenoteMutingsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiRenoteMuting } from '@/models/entities/RenoteMuting.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -26,7 +27,7 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiRenoteMuting['id'] | MiRenoteMuting,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'RenoteMuting'>> {
 		const muting = typeof src === 'object' ? src : await this.renoteMutingsRepository.findOneByOrFail({ id: src });
 
@@ -43,7 +44,7 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public async packMany(
 		mutings: (MiRenoteMuting['id'] | MiRenoteMuting)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] },
 	) : Promise<Packed<'RenoteMuting'>[]> {
 		return (await Promise.allSettled(mutings.map(u => this.pack(u, me))))
 			.filter(result => result.status === 'fulfilled')

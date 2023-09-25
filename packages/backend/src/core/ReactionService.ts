@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
+import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';

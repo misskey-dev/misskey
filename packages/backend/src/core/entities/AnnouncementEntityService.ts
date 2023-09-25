@@ -8,10 +8,11 @@ import { DI } from '@/di-symbols.js';
 import type {
 	AnnouncementReadsRepository,
 	AnnouncementsRepository,
-} from '@/models/index.js';
+	MiAnnouncement,
+	MiUser,
+} from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
-import { MiAnnouncement, MiUser } from '@/models/index.js';
 
 @Injectable()
 export class AnnouncementEntityService {

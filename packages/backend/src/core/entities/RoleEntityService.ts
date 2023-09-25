@@ -6,14 +6,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
+import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiRole } from '@/models/entities/Role.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiRole } from '@/models/Role.js';
 import { bindThis } from '@/decorators.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { Packed } from '@/misc/json-schema.js';
-import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class RoleEntityService {
@@ -23,15 +22,13 @@ export class RoleEntityService {
 
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
 		src: MiRole['id'] | MiRole,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Role'>> {
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
@@ -77,7 +74,7 @@ export class RoleEntityService {
 	@bindThis
 	public async packMany(
 		roles: (MiRole['id'] | MiRole)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] },
 	) : Promise<Packed<'Role'>[]> {
 		return (await Promise.allSettled(roles.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

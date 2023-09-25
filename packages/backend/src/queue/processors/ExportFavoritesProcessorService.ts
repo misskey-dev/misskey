@@ -8,13 +8,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { MiNoteFavorite, NoteFavoritesRepository, NotesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { MiPoll } from '@/models/entities/Poll.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
@@ -25,17 +24,11 @@ export class ExportFavoritesProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
 
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,

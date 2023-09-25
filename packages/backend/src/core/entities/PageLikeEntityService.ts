@@ -5,9 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { PageLikesRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiPageLike } from '@/models/entities/PageLike.js';
+import type { PageLikesRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiPageLike } from '@/models/PageLike.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { PageEntityService } from './PageEntityService.js';
@@ -25,7 +26,7 @@ export class PageLikeEntityService {
 	@bindThis
 	public async pack(
 		src: MiPageLike['id'] | MiPageLike,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'PageLike'>> {
 		const like = typeof src === 'object' ? src : await this.pageLikesRepository.findOneByOrFail({ id: src });
 
@@ -38,7 +39,7 @@ export class PageLikeEntityService {
 	@bindThis
 	public async packMany(
 		likes: (MiPageLike['id'] | MiPageLike)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] },
 	) : Promise<Packed<'PageLike'>[]> {
 		return (await Promise.allSettled(likes.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

@@ -87,9 +87,9 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkAbuseReportResolver from '@/components/MkAbuseReportResolver.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let reports = $shallowRef<InstanceType<typeof MkPagination>>();
 let resolverPagingComponent = $ref<InstanceType<typeof MkPagination>>();

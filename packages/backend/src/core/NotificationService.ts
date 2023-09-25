@@ -8,36 +8,32 @@ import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNotification } from '@/models/entities/Notification.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNotification } from '@/models/Notification.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
 		private notificationEntityService: NotificationEntityService,
-		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
@@ -104,7 +100,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', '300',
+			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
 			'*',
 			'data', JSON.stringify(notification));
 

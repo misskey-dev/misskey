@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:height="600"
 	:withOkButton="false"
 	:okButtonDisabled="false"
-	@close="dialog?.close()"
+	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
@@ -62,22 +62,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { } from 'vue';
+import * as Misskey from 'misskey-js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const props = defineProps<{
-	user: misskey.entities.UserLite,
+	user: Misskey.entities.User,
 	announcement?: any,
 }>();
 
+let dialog = $ref(null);
 let title: string = $ref(props.announcement ? props.announcement.title : '');
 let text: string = $ref(props.announcement ? props.announcement.text : '');
 let icon: string = $ref(props.announcement ? props.announcement.icon : 'info');
@@ -92,7 +94,6 @@ const emit = defineEmits<{
 	(ev: 'closed'): void
 }>();
 
-const dialog = $shallowRef<typeof MkModalWindow | null>(null);
 const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
 
 function insertEmoji(ev: MouseEvent): void {
@@ -126,7 +127,7 @@ async function done(): Promise<void> {
 			},
 		});
 
-		dialog?.close();
+		dialog.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -134,7 +135,7 @@ async function done(): Promise<void> {
 			created: created,
 		});
 
-		dialog?.close();
+		dialog.close();
 	}
 }
 
@@ -151,7 +152,7 @@ async function del(): Promise<void> {
 		emit('done', {
 			deleted: true,
 		});
-		dialog?.close();
+		dialog.close();
 	});
 }
 </script>

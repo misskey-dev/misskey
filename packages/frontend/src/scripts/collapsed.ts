@@ -4,10 +4,10 @@
  */
 
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
-import { extractUrlFromMfm } from './extract-url-from-mfm';
+import * as Misskey from 'misskey-js';
+import { extractUrlFromMfm } from './extract-url-from-mfm.js';
 
-export function shouldCollapsed(note: misskey.entities.Note): boolean {
+export function shouldCollapsed(note: Misskey.entities.Note): boolean {
 	const urls = note.text ? extractUrlFromMfm(mfm.parse(note.text)) : null;
 	const collapsed = note.cw == null && note.text != null && (
 		(note.text.includes('$[x2')) ||

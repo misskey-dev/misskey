@@ -6,7 +6,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
@@ -21,9 +21,8 @@ const year = 1000 * 60 * 60 * 24 * 365;
 /**
  * アクティブユーザーに関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class ActiveUsersChart extends Chart<typeof schema> {
+export default class ActiveUsersChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

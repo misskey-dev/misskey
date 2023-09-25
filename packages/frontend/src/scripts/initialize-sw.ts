@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { lang } from '@/config';
+import { lang } from '@/config.js';
 
 export async function initializeSw() {
 	if (!('serviceWorker' in navigator)) return;

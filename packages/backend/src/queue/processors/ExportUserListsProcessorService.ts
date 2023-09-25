@@ -8,8 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { UserListJoiningsRepository, UserListsRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { UserListJoiningsRepository, UserListsRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
@@ -24,9 +23,6 @@ export class ExportUserListsProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 

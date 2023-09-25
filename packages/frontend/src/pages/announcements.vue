@@ -41,13 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i, updateAccount } from '@/account';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i, updateAccount } from '@/account.js';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
@@ -68,6 +68,7 @@ const paginationPast = {
 };
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
+
 const tab = ref('current');
 
 async function read(announcement): Promise<void> {

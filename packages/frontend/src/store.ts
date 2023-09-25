@@ -4,7 +4,9 @@
  */
 
 import { markRaw, ref } from 'vue';
-import { Storage } from './pizzax';
+import * as Misskey from 'misskey-js';
+import { miLocalStorage } from './local-storage';
+import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
 	title: string,
@@ -13,16 +15,16 @@ interface PostFormAction {
 
 interface UserAction {
 	title: string,
-	handler: (user: UserDetailed) => void;
+	handler: (user: Misskey.entities.UserDetailed) => void;
 }
 
 interface NoteAction {
 	title: string,
-	handler: (note: Note) => void;
+	handler: (note: Misskey.entities.Note) => void;
 }
 
 interface NoteViewInterruptor {
-	handler: (note: Note) => unknown;
+	handler: (note: Misskey.entities.Note) => unknown;
 }
 
 interface NotePostInterruptor {
@@ -30,7 +32,7 @@ interface NotePostInterruptor {
 }
 
 interface PageViewInterruptor {
-	handler: (page: Page) => unknown;
+	handler: (page: Misskey.entities.Page) => unknown;
 }
 
 export const postFormActions: PostFormAction[] = [];
@@ -116,7 +118,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: [
 			'notifications',
-			'favorites',
+			'clips',
 			'drive',
 			'followRequests',
 			'-',
@@ -136,7 +138,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: false,
 	},
 	showPreview: {
-		where: 'deviceAccount',
+		where: 'device',
 		default: false,
 	},
 	statusbars: {
@@ -162,9 +164,13 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global',
-			arg: null,
+			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
+			userList: null as Misskey.entities.UserList | null,
 		},
+	},
+	pinnedUserLists: {
+		where: 'deviceAccount',
+		default: [] as Misskey.entities.UserList[],
 	},
 
 	overridedDeviceKind: {
@@ -178,6 +184,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	nsfw: {
 		where: 'device',
 		default: 'respect' as 'respect' | 'force' | 'ignore',
+	},
+	highlightSensitiveMedia: {
+		where: 'device',
+		default: false,
 	},
 	animation: {
 		where: 'device',
@@ -315,9 +325,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	largeNoteReactions: {
+	reactionsDisplaySize: {
 		where: 'device',
-		default: false,
+		default: 'medium' as 'small' | 'medium' | 'large',
 	},
 	forceShowAds: {
 		where: 'device',
@@ -351,6 +361,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
 	},
+	keepScreenOn: {
+		where: 'device',
+		default: false,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
@@ -367,6 +381,9 @@ export type Plugin = {
 	src: string | null;
 	version: string;
 	ast: any[];
+	author?: string;
+	description?: string;
+	permissions?: string[];
 };
 
 interface Watcher {
@@ -377,10 +394,8 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
-import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
-import { Note, UserDetailed, Page } from 'misskey-js/built/entities';
 
 export class ColdDeviceStorage {
 	public static default = {

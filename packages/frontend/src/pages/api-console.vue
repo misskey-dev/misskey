@@ -41,8 +41,8 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const body = ref('{}');
 const endpoint = ref('');

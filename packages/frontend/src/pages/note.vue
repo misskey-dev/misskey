@@ -11,11 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note">
 					<div v-if="showNext" class="_margin">
-						<MkNotes class="" :pagination="nextPagination" :noGap="true"/>
+						<MkNotes class="" :pagination="nextPagination" :noGap="true" :disableAutoLoad="true"/>
 					</div>
 
 					<div class="_margin">
-						<MkButton v-if="!showNext && hasNext" :class="$style.loadNext" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
+						<MkButton v-if="!showNext" :class="$style.loadNext" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
 						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
 							<MkNoteDetailed :key="note.id" v-model:note="note" :class="$style.note"/>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkA>
 							</div>
 						</div>
-						<MkButton v-if="!showPrev && hasPrev" :class="$style.loadPrev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
+						<MkButton v-if="!showPrev" :class="$style.loadPrev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
 					</div>
 
 					<div v-if="showPrev" class="_margin">
@@ -45,26 +45,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { dateString } from '@/filters/date';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	noteId: string;
 }>();
 
-let note = $ref<null | misskey.entities.Note>();
+let note = $ref<null | Misskey.entities.Note>();
 let clips = $ref();
-let hasPrev = $ref(false);
-let hasNext = $ref(false);
 let showPrev = $ref(false);
 let showNext = $ref(false);
 let error = $ref();
@@ -89,8 +87,6 @@ const nextPagination = {
 };
 
 function fetchNote() {
-	hasPrev = false;
-	hasNext = false;
 	showPrev = false;
 	showNext = false;
 	note = null;
@@ -98,25 +94,14 @@ function fetchNote() {
 		noteId: props.noteId,
 	}).then(res => {
 		note = res;
-		Promise.all([
+		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
+		if (note.clippedCount > 0 || new Date(note.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			os.api('notes/clips', {
 				noteId: note.id,
-			}),
-			os.api('users/notes', {
-				userId: note.userId,
-				untilId: note.id,
-				limit: 1,
-			}),
-			os.api('users/notes', {
-				userId: note.userId,
-				sinceId: note.id,
-				limit: 1,
-			}),
-		]).then(([_clips, prev, next]) => {
-			clips = _clips;
-			hasPrev = prev.length !== 0;
-			hasNext = next.length !== 0;
-		});
+			}).then((_clips) => {
+				clips = _clips;
+			});
+		}
 	}).catch(err => {
 		error = err;
 	});

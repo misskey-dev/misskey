@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { $i } from '@/account';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
 	text: string;

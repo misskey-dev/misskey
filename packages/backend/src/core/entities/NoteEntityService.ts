@@ -4,26 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
-import type {
-	ChannelsRepository,
-	DriveFilesRepository,
-	FollowingsRepository,
-	NoteReactionsRepository,
-	NotesRepository,
-	PollsRepository,
-	PollVotesRepository,
-	UsersRepository,
-} from '@/models/index.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -41,9 +32,6 @@ export class NoteEntityService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-
-		@Inject(DI.db)
-		private db: DataSource,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -65,9 +53,6 @@ export class NoteEntityService implements OnModuleInit {
 
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
@@ -288,7 +273,7 @@ export class NoteEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNote['id'] | MiNote,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -352,12 +337,15 @@ export class NoteEntityService implements OnModuleInit {
 				id: channel.id,
 				name: channel.name,
 				color: channel.color,
+				isSensitive: channel.isSensitive,
 			} : undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
 
 			...(opts.detail ? {
+				clippedCount: note.clippedCount,
+
 				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					_hint_: options?._hint_,
@@ -405,7 +393,7 @@ export class NoteEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		notes: MiNote[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;

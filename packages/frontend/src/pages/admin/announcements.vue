@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.displayOrder" type="number">
 						<template #label>{{ i18n.ts.displayOrder }}</template>
 					</MkInput>
-					<p v-if="announcement.readCount">{{ i18n.t('nUsersRead', { n: announcement.readCount }) }}</p>
+					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<MkUserCardMini v-if="announcement.userId" :user="announcement.user" @click="editUser(announcement)"></MkUserCardMini>
 					<MkButton v-else class="button" inline primary @click="editUser(announcement)">{{ i18n.ts.specifyUser }}</MkButton>
 					<div class="buttons _buttons">
@@ -82,7 +82,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</MkFolder>
-			<MkButton v-if="hasMore" :class="$style.more" :disabled="!hasMore" primary rounded @click="fetch()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton v-if="hasMore" :class="$style.more" :disabled="!hasMore" primary rounded @click="fetch()">
+				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
+			</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -92,15 +94,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XHeader from './_header_.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkFolder from '@/components/MkFolder.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
@@ -127,7 +130,7 @@ function insertEmoji(ev: MouseEvent): void {
 	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl);
 }
 
-function add(): void {
+function add() {
 	announcements.unshift({
 		_id: Math.random().toString(36),
 		id: null,
@@ -143,7 +146,7 @@ function add(): void {
 	});
 }
 
-function del(announcement): void {
+function del(announcement) {
 	os.confirm({
 		type: 'warning',
 		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
@@ -154,7 +157,7 @@ function del(announcement): void {
 	});
 }
 
-async function archive(announcement): Promise<void> {
+async function archive(announcement) {
 	await os.apiWithDialog('admin/announcements/update', {
 		...announcement,
 		isActive: false,

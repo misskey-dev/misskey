@@ -6,11 +6,11 @@
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUser } from '@/models/entities/User.js';
-import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiChannel } from '@/models/entities/Channel.js';
+import type { MiUser } from '@/models/User.js';
+import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiChannel } from '@/models/Channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -163,9 +163,8 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -194,7 +193,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			let files: MiDriveFile[] = [];
-			const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
+			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
 			if (fileIds != null) {
 				files = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {

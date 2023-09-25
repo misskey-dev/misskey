@@ -4,7 +4,7 @@
  */
 
 import { markRaw } from 'vue';
-import { Storage } from '@/pizzax';
+import { Storage } from '@/pizzax.js';
 
 export const soundConfigStore = markRaw(new Storage('sound', {
 	mediaVolume: {

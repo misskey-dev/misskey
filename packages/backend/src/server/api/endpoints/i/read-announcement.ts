@@ -26,14 +26,13 @@ export const paramDef = {
 	required: ['announcementId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.announcementService.markAsRead(me, ps.announcementId);
+			await this.announcementService.read(me, ps.announcementId);
 		});
 	}
 }

@@ -6,12 +6,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { NoteReactionsRepository } from '@/models/index.js';
+import type { NoteReactionsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
 import type { OnModuleInit } from '@nestjs/common';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
@@ -43,7 +44,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNoteReaction['id'] | MiNoteReaction,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			withNote: boolean;
 		},

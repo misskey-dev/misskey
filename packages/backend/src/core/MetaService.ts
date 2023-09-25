@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import { MiMeta } from '@/models/entities/Meta.js';
+import { MiMeta } from '@/models/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -16,7 +16,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 @Injectable()
 export class MetaService implements OnApplicationShutdown {
 	private cache: MiMeta | undefined;
-	private intervalId: NodeJS.Timer;
+	private intervalId: NodeJS.Timeout;
 
 	constructor(
 		@Inject(DI.redisForSub)

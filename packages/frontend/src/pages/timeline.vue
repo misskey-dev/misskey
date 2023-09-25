@@ -16,7 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTimeline
 					ref="tlComponent"
 					:key="src"
-					:src="src"
+					:src="src.split(':')[0]"
+					:list="src.split(':')[1]"
 					:sound="true"
 					@queue="queueUpdated"
 				/>
@@ -31,13 +32,15 @@ import { defineAsyncComponent, computed, watch, provide } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import { scroll } from '@/scripts/scroll';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { $i } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { scroll } from '@/scripts/scroll.js';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { $i } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { antennasCache, userListsCache } from '@/cache';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -56,7 +59,7 @@ let queue = $ref(0);
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 
-watch ($$(src), () => queue = 0);
+watch($$(src), () => queue = 0);
 
 function queueUpdated(q: number): void {
 	queue = q;
@@ -67,7 +70,7 @@ function top(): void {
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await os.api('users/lists/list');
+	const lists = await userListsCache.fetch();
 	const items = lists.map(list => ({
 		type: 'link' as const,
 		text: list.name,
@@ -77,7 +80,7 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
-	const antennas = await os.api('antennas/list');
+	const antennas = await antennasCache.fetch();
 	const items = antennas.map(antenna => ({
 		type: 'link' as const,
 		text: antenna.name,
@@ -100,10 +103,15 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
+	let userList = null;
+	if (newSrc.startsWith('userList:')) {
+		const id = newSrc.substring('userList:'.length);
+		userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id);
+	}
 	defaultStore.set('tl', {
-		...defaultStore.state.tl,
 		src: newSrc,
+		userList,
 	});
 	srcWhenNotSignin = newSrc;
 }
@@ -123,7 +131,12 @@ function focus(): void {
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+	key: 'list:' + l.id,
+	title: l.name,
+	icon: 'ti ti-star',
+	iconOnly: true,
+}))), {
 	key: 'home',
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',

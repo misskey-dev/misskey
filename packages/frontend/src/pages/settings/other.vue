@@ -84,12 +84,12 @@ import MkFolder from '@/components/MkFolder.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { signout, $i } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { unisonReload } from '@/scripts/unison-reload';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { signout, $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 import FormSection from '@/components/form/section.vue';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
@@ -113,14 +113,12 @@ async function deleteAccount() {
 		if (canceled) return;
 	}
 
-	const { canceled, result: password } = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	});
-	if (canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	await os.apiWithDialog('i/delete-account', {
-		password: password,
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
 	await os.alert({

@@ -5,11 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
+import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiGalleryPost } from '@/models/entities/GalleryPost.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiGalleryPost } from '@/models/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
@@ -31,7 +32,7 @@ export class GalleryPostEntityService {
 	@bindThis
 	public async pack(
 		src: MiGalleryPost['id'] | MiGalleryPost,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
@@ -56,8 +57,8 @@ export class GalleryPostEntityService {
 
 	@bindThis
 	public async packMany(
-		posts: (MiGalleryPost['id'] | MiGalleryPost)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		posts: MiGalleryPost[],
+		me?: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'GalleryPost'>[]> {
 		return (await Promise.allSettled(posts.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

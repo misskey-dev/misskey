@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EndoRelation, Predicate } from './relation';
+type EndoRelation<T> = (a: T, b: T) => boolean;
+type Predicate<T> = (x: T) => boolean;
 
 /**
  * Count the number of elements that satisfy the predicate

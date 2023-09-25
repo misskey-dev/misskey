@@ -41,11 +41,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $i, getAccounts } from '@/account';
+import { $i, getAccounts } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
-import { instance } from '@/instance';
-import { api, apiWithDialog, promiseDialog } from '@/os';
-import { i18n } from '@/i18n';
+import { instance } from '@/instance.js';
+import { api, apiWithDialog, promiseDialog } from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 defineProps<{
 	primary?: boolean;

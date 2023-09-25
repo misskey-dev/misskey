@@ -125,6 +125,7 @@ redis:
 
 # Available methods:
 # aid ... Short, Millisecond accuracy
+# aidx ... Millisecond accuracy
 # meid ... Similar to ObjectID, Millisecond accuracy
 # ulid ... Millisecond accuracy
 # objectid ... This is left for backward compatibility
@@ -132,7 +133,7 @@ redis:
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # ID SETTINGS AFTER THAT!
 
-id: 'aid'
+id: 'aidx'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
@@ -159,6 +160,9 @@ id: 'aid'
 #deliverJobMaxAttempts: 12
 #inboxJobMaxAttempts: 8
 
+# Local address used for outgoing requests
+#outgoingAddress: 127.0.0.1
+
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
 
@@ -183,9 +187,9 @@ proxyBypassHosts:
 # * Perform image compression (on a different server resource than the main process)
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: false)
+# Proxy remote files (default: true)
 # Proxy remote files by this instance or mediaProxy to prevent remote files from running in remote domains.
-#proxyRemoteFiles: true
+proxyRemoteFiles: true
 
 # Movie Thumbnail Generation URL
 # There is no reference implementation.

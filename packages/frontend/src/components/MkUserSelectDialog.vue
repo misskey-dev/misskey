@@ -58,18 +58,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { hostname } from '@/config';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { hostname } from '@/config.js';
 
 const emit = defineEmits<{
-	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
+	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -80,9 +80,9 @@ const props = defineProps<{
 
 let username = $ref('');
 let host = $ref('');
-let users: misskey.entities.UserDetailed[] = $ref([]);
-let recentUsers: misskey.entities.UserDetailed[] = $ref([]);
-let selected: misskey.entities.UserDetailed | null = $ref(null);
+let users: Misskey.entities.UserDetailed[] = $ref([]);
+let recentUsers: Misskey.entities.UserDetailed[] = $ref([]);
+let selected: Misskey.entities.UserDetailed | null = $ref(null);
 let dialogEl = $ref();
 
 const search = () => {

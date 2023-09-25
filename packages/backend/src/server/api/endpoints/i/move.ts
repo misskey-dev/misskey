@@ -3,16 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
 
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
-import { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
+import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -80,13 +77,9 @@ export const paramDef = {
 	required: ['moveToAccount'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private accountMoveService: AccountMoveService,

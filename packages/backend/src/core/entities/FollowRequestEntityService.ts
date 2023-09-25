@@ -5,9 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiFollowRequest } from '@/models/entities/FollowRequest.js';
+import type { FollowRequestsRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiFollowRequest } from '@/models/FollowRequest.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -25,7 +26,7 @@ export class FollowRequestEntityService {
 	@bindThis
 	public async pack(
 		src: MiFollowRequest['id'] | MiFollowRequest,
-		me: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'FollowRequest'>> {
 		const request = typeof src === 'object' ? src : await this.followRequestsRepository.findOneByOrFail({ id: src });
 

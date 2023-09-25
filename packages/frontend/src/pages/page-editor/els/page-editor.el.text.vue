@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 /* eslint-disable vue/no-mutating-props */
 import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue: any

@@ -50,15 +50,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import { i18n } from '@/i18n';
-import bytes from '@/filters/bytes';
-import { dateString } from '@/filters/date';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import bytes from '@/filters/bytes.js';
+import { dateString } from '@/filters/date.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSelect from '@/components/MkSelect.vue';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
+import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
 
 let sortMode = ref('+size');
 const pagination = {

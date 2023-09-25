@@ -7,8 +7,8 @@
 // ただディレクティブ内でonUnmountedなどのcomposition api使えるのか不明
 
 import { defineAsyncComponent, Directive, ref } from 'vue';
-import { isTouchUsing } from '@/scripts/touch';
-import { popup, alert } from '@/os';
+import { isTouchUsing } from '@/scripts/touch.js';
+import { popup, alert } from '@/os.js';
 
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';

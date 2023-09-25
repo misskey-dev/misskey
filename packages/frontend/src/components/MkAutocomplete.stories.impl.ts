@@ -13,7 +13,7 @@ import { userDetailed } from '../../.storybook/fakes';
 import { commonHandlers } from '../../.storybook/mocks';
 import MkAutocomplete from './MkAutocomplete.vue';
 import MkInput from './MkInput.vue';
-import { tick } from '@/scripts/test-utils';
+import { tick } from '@/scripts/test-utils.js';
 const common = {
 	render(args) {
 		return {

@@ -5,9 +5,9 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import * as Acct from '@/misc/acct.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -35,9 +35,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,

@@ -20,25 +20,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XFollowList from './follow-list.vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	acct: string;
 }>(), {
 });
 
-let user = $ref<null | misskey.entities.UserDetailed>(null);
+let user = $ref<null | Misskey.entities.UserDetailed>(null);
 let error = $ref(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user = null;
-	os.api('users/show', Acct.parse(props.acct)).then(u => {
+	os.api('users/show', Misskey.acct.parse(props.acct)).then(u => {
 		user = u;
 	}).catch(err => {
 		error = err;
