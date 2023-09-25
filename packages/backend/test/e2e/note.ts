@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { Note } from '@/models/entities/Note.js';
+import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
@@ -22,7 +22,7 @@ describe('Note', () => {
 	beforeAll(async () => {
 		app = await startServer();
 		const connection = await initTestDb(true);
-		Notes = connection.getRepository(Note);
+		Notes = connection.getRepository(MiNote);
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);

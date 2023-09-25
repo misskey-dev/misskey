@@ -5,10 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/_.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -26,15 +27,15 @@ export const paramDef = {
 	required: ['host', 'isSuspended'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
 		private utilityService: UtilityService,
 		private federatedInstanceService: FederatedInstanceService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.instancesRepository.findOneBy({ host: this.utilityService.toPuny(ps.host) });
@@ -43,9 +44,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('instance not found');
 			}
 
-			this.federatedInstanceService.update(instance.id, {
+			await this.federatedInstanceService.update(instance.id, {
 				isSuspended: ps.isSuspended,
 			});
+
+			if (instance.isSuspended !== ps.isSuspended) {
+				if (ps.isSuspended) {
+					this.moderationLogService.log(me, 'suspendRemoteInstance', {
+						id: instance.id,
+						host: instance.host,
+					});
+				} else {
+					this.moderationLogService.log(me, 'unsuspendRemoteInstance', {
+						id: instance.id,
+						host: instance.host,
+					});
+				}
+			}
 		});
 	}
 }

@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch, shallowRef } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;

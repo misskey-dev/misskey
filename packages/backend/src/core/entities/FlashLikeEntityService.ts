@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FlashLikesRepository } from '@/models/index.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { FlashLike } from '@/models/entities/FlashLike.js';
+import type { FlashLikesRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiFlashLike } from '@/models/FlashLike.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from './FlashEntityService.js';
 
@@ -24,8 +24,8 @@ export class FlashLikeEntityService {
 
 	@bindThis
 	public async pack(
-		src: FlashLike['id'] | FlashLike,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiFlashLike['id'] | MiFlashLike,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		const like = typeof src === 'object' ? src : await this.flashLikesRepository.findOneByOrFail({ id: src });
 
@@ -38,7 +38,7 @@ export class FlashLikeEntityService {
 	@bindThis
 	public packMany(
 		likes: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(likes.map(x => this.pack(x, me)));
 	}

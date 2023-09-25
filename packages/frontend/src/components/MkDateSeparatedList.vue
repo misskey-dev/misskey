@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 import { MisskeyEntity } from '@/types/date-separated-list';
 
 export default defineComponent({
@@ -168,10 +168,10 @@ export default defineComponent({
 	> *:empty {
 		display: none;
 	}
-
-	> *:not(:last-child) {
-		margin-bottom: var(--margin);
 	}
+
+	&:not(.date-separated-list-nogap) > *:not(:last-child) {
+		margin-bottom: var(--margin);
 	}
 }
 

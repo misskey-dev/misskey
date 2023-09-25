@@ -21,13 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { AuthSession } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	session: AuthSession;
+	session: Misskey.entities.AuthSession;
 }>();
 
 const emit = defineEmits<{
@@ -58,7 +58,6 @@ function accept() {
 		emit('accepted');
 	});
 }
-
 </script>
 
 <style lang="scss" module>

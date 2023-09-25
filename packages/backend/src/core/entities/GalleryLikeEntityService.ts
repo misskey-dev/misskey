@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository } from '@/models/index.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { GalleryLike } from '@/models/entities/GalleryLike.js';
+import type { GalleryLikesRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiGalleryLike } from '@/models/GalleryLike.js';
 import { bindThis } from '@/decorators.js';
 import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 
@@ -23,7 +23,7 @@ export class GalleryLikeEntityService {
 
 	@bindThis
 	public async pack(
-		src: GalleryLike['id'] | GalleryLike,
+		src: MiGalleryLike['id'] | MiGalleryLike,
 		me?: any,
 	) {
 		const like = typeof src === 'object' ? src : await this.galleryLikesRepository.findOneByOrFail({ id: src });

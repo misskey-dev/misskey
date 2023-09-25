@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import tinycolor from 'tinycolor2';
-import { miLocalStorage } from '@/local-storage';
-import { defaultStore } from '@/store';
+import { miLocalStorage } from '@/local-storage.js';
+import { defaultStore } from '@/store.js';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
 

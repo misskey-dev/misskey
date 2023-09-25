@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { $ref } from 'vue/macros';
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
-import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
+import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch.js';
+import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash.js';
 
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	// テスト環境で Web Worker インスタンスは作成できない
@@ -61,7 +61,7 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	transition?: {

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
-			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/user-info/${user.id}`" class="user">
+			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
 				<MkUserCardMini :user="user"/>
 			</MkA>
 		</div>
@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 let newUsers = $ref(null);
 let fetching = $ref(true);

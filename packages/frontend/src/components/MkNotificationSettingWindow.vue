@@ -44,7 +44,7 @@ import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { notificationTypes } from '@/const';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>
 

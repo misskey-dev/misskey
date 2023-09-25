@@ -30,14 +30,13 @@ export const paramDef = {
 	required: ['id'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.customEmojiService.delete(ps.id);
+			await this.customEmojiService.delete(ps.id, me);
 		});
 	}
 }

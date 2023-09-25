@@ -28,15 +28,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import * as misskey from 'misskey-js';
-import { sum } from '@/scripts/array';
-import { pleaseLogin } from '@/scripts/please-login';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { useInterval } from '@/scripts/use-interval';
+import * as Misskey from 'misskey-js';
+import { sum } from '@/scripts/array.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { useInterval } from '@/scripts/use-interval.js';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	readOnly?: boolean;
 }>();
 

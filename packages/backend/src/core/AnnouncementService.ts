@@ -6,12 +6,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { User } from '@/models/entities/User.js';
-import type { AnnouncementReadsRepository, AnnouncementsRepository, Announcement, AnnouncementRead } from '@/models/index.js';
+import type { MiUser } from '@/models/User.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
 export class AnnouncementService {
@@ -22,20 +23,24 @@ export class AnnouncementService {
 		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: AnnouncementReadsRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private moderationLogService: ModerationLogService,
 	) {
 	}
 
 	@bindThis
-	public async getReads(userId: User['id']): Promise<AnnouncementRead[]> {
+	public async getReads(userId: MiUser['id']): Promise<MiAnnouncementRead[]> {
 		return this.announcementReadsRepository.findBy({
 			userId: userId,
 		});
 	}
 
 	@bindThis
-	public async getUnreadAnnouncements(user: User): Promise<Announcement[]> {
+	public async getUnreadAnnouncements(user: MiUser): Promise<MiAnnouncement[]> {
 		const readsQuery = this.announcementReadsRepository.createQueryBuilder('read')
 			.select('read.announcementId')
 			.where('read.userId = :userId', { userId: user.id });
@@ -58,7 +63,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async create(values: Partial<Announcement>): Promise<{ raw: Announcement; packed: Packed<'Announcement'> }> {
+	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
@@ -79,10 +84,28 @@ export class AnnouncementService {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
 				announcement: packed,
 			});
+
+			if (moderator) {
+				const user = await this.usersRepository.findOneByOrFail({ id: values.userId });
+				this.moderationLogService.log(moderator, 'createUserAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+					userId: values.userId,
+					userUsername: user.username,
+					userHost: user.host,
+				});
+			}
 		} else {
 			this.globalEventService.publishBroadcastStream('announcementCreated', {
 				announcement: packed,
 			});
+
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'createGlobalAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			}
 		}
 
 		return {
@@ -92,7 +115,64 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async read(user: User, announcementId: Announcement['id']): Promise<void> {
+	public async update(announcement: MiAnnouncement, values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<void> {
+		await this.announcementsRepository.update(announcement.id, {
+			updatedAt: new Date(),
+			title: values.title,
+			text: values.text,
+			/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+			imageUrl: values.imageUrl || null,
+			display: values.display,
+			icon: values.icon,
+			forExistingUsers: values.forExistingUsers,
+			needConfirmationToRead: values.needConfirmationToRead,
+			isActive: values.isActive,
+		});
+
+		const after = await this.announcementsRepository.findOneByOrFail({ id: announcement.id });
+
+		if (moderator) {
+			if (announcement.userId) {
+				const user = await this.usersRepository.findOneByOrFail({ id: announcement.userId });
+				this.moderationLogService.log(moderator, 'updateUserAnnouncement', {
+					announcementId: announcement.id,
+					before: announcement,
+					after: after,
+					userId: announcement.userId,
+					userUsername: user.username,
+					userHost: user.host,
+				});
+			} else {
+				this.moderationLogService.log(moderator, 'updateGlobalAnnouncement', {
+					announcementId: announcement.id,
+					before: announcement,
+					after: after,
+				});
+			}
+		}
+	}
+
+	@bindThis
+	public async delete(announcement: MiAnnouncement, moderator?: MiUser): Promise<void> {
+		await this.announcementsRepository.delete(announcement.id);
+
+		if (moderator) {
+			if (announcement.userId) {
+				this.moderationLogService.log(moderator, 'deleteUserAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			} else {
+				this.moderationLogService.log(moderator, 'deleteGlobalAnnouncement', {
+					announcementId: announcement.id,
+					announcement: announcement,
+				});
+			}
+		}
+	}
+
+	@bindThis
+	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
 				id: this.idService.genId(),
@@ -111,10 +191,10 @@ export class AnnouncementService {
 
 	@bindThis
 	public async packMany(
-		announcements: Announcement[],
-		me?: { id: User['id'] } | null | undefined,
+		announcements: MiAnnouncement[],
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
-			reads?: AnnouncementRead[];
+			reads?: MiAnnouncementRead[];
 		},
 	): Promise<Packed<'Announcement'>[]> {
 		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
