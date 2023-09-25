@@ -2254,8 +2254,7 @@ export interface Locale {
             "mention": string;
         };
     };
-
-		"_moderationLogTypes": {
+    "_moderationLogTypes": {
         "assignRole": string;
         "unassignRole": string;
         "updateRole": string;
@@ -2280,8 +2279,7 @@ export interface Locale {
         "markSensitiveDriveFile": string;
         "unmarkSensitiveDriveFile": string;
     };
-
-		"_koteitag": {
+    "_koteitag": {
         "clearTags": string;
         "air": string;
         "livecure": string;
