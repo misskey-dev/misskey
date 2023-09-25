@@ -686,15 +686,20 @@ export class DriveService {
 
 		if (await this.roleService.isModerator(updater) && (file.userId !== updater.id)) {
 			if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive) {
+				const user = file.userId ? await this.usersRepository.findOneByOrFail({ id: file.userId }) : null;
 				if (values.isSensitive) {
 					this.moderationLogService.log(updater, 'markSensitiveDriveFile', {
 						fileId: file.id,
 						fileUserId: file.userId,
+						fileUserUsername: user?.username ?? null,
+						fileUserHost: user?.host ?? null,
 					});
 				} else {
 					this.moderationLogService.log(updater, 'unmarkSensitiveDriveFile', {
 						fileId: file.id,
 						fileUserId: file.userId,
+						fileUserUsername: user?.username ?? null,
+						fileUserHost: user?.host ?? null,
 					});
 				}
 			}
@@ -795,9 +800,12 @@ export class DriveService {
 		}
 
 		if (deleter && await this.roleService.isModerator(deleter) && (file.userId !== deleter.id)) {
+			const user = file.userId ? await this.usersRepository.findOneByOrFail({ id: file.userId }) : null;
 			this.moderationLogService.log(deleter, 'deleteDriveFile', {
 				fileId: file.id,
 				fileUserId: file.userId,
+				fileUserUsername: user?.username ?? null,
+				fileUserHost: user?.host ?? null,
 			});
 		}
 	}

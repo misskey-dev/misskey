@@ -10,6 +10,7 @@ import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -41,6 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queueService: QueueService,
 		private instanceActorService: InstanceActorService,
 		private apRendererService: ApRendererService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const report = await this.abuseUserReportsRepository.findOneBy({ id: ps.reportId });
@@ -59,6 +61,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.abuseUserReportsRepository.update(report.id, {
 				resolved: true,
 				assigneeId: me.id,
+				forwarded: ps.forward && report.targetUserHost != null,
+			});
+
+			this.moderationLogService.log(me, 'resolveAbuseReport', {
+				reportId: report.id,
+				report: report,
 				forwarded: ps.forward && report.targetUserHost != null,
 			});
 		});

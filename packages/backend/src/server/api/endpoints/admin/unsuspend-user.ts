@@ -46,7 +46,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			this.moderationLogService.log(me, 'unsuspend', {
-				targetId: user.id,
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
 			});
 
 			this.userSuspendService.doPostUnsuspend(user);
