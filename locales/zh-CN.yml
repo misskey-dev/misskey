@@ -2101,9 +2101,9 @@ _webhookSettings:
     reaction: "被回应时"
     mention: "被提及时"
 _moderationLogTypes:
+  updateRole: "更新角色"
   assignRole: "分配角色"
   unassignRole: "取消分配角色"
-  updateRole: "更新角色"
   suspend: "冻结"
   unsuspend: "解除冻结"
   addCustomEmoji: "添加自定义表情符号"
