@@ -326,6 +326,8 @@ export class AnnouncementService {
 			icon: announcement.icon,
 			display: announcement.display,
 			needConfirmationToRead: announcement.needConfirmationToRead,
+			closeDuration: announcement.closeDuration,
+			displayOrder: announcement.displayOrder,
 			forYou: announcement.userId === me?.id,
 			isRead: reads.some(read => read.announcementId === announcement.id),
 		}));

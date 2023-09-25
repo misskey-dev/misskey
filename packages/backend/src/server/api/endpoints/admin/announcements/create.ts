@@ -53,7 +53,7 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
-			forExistingUsers: {
+			forYou: {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
@@ -69,9 +69,9 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
-			userId: {
-				type: 'string',
-				optional: false, nullable: true,
+			isRead: {
+				type: 'boolean',
+				optional: true, nullable: false,
 			},
 		},
 	},

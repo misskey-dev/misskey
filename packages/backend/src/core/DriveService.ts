@@ -677,7 +677,7 @@ export class DriveService {
 
 		await this.driveFilesRepository.update(file.id, values);
 
-		const fileObj = await this.driveFileEntityService.pack(file.id, { self: true });
+		const fileObj = await this.driveFileEntityService.pack(file.id, updater, { self: true });
 
 		// Publish fileUpdated event
 		if (file.userId) {
