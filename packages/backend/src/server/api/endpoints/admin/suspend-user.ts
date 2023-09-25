@@ -61,7 +61,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			this.moderationLogService.log(me, 'suspend', {
-				targetId: user.id,
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
 			});
 
 			(async () => {

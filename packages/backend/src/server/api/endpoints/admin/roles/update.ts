@@ -79,9 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
-			const date = new Date();
 			await this.roleService.update(role, {
-				updatedAt: date,
 				name: ps.name,
 				description: ps.description,
 				color: ps.color,
