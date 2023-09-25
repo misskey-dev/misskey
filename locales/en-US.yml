@@ -2107,9 +2107,9 @@ _webhookSettings:
     mention: "When being mentioned"
 
 _moderationLogTypes:
+  updateRole: "Role updated"
   assignRole: "Assigned to role"
   unassignRole: "Removed from role"
-  updateRole: "Role updated"
   suspend: "Suspended"
   unsuspend: "Unsuspended"
   addCustomEmoji: "Custom emoji added"
