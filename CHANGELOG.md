@@ -14,7 +14,7 @@
 
 ## (unreleased)
 ### General
--
+- Enhance: モデレーションログ機能の強化
 
 ### Client
 -
@@ -22,7 +22,7 @@
 ### Server
 - Fix: お知らせのページネーションが機能しない
 
-## 2023.9.0 (unreleased)
+## 2023.9.0
 
 ### Note
 - meilisearchを使用する場合、v1.2以上が必要です

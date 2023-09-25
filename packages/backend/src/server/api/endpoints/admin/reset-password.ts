@@ -73,7 +73,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			this.moderationLogService.log(me, 'resetPassword', {
-				targetId: user.id,
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
 			});
 
 			return {

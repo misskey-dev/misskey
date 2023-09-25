@@ -135,9 +135,12 @@ export class NoteDeleteService {
 		});
 
 		if (deleter && (note.userId !== deleter.id)) {
+			const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
 			this.moderationLogService.log(deleter, 'deleteNote', {
 				noteId: note.id,
 				noteUserId: note.userId,
+				noteUserUsername: user.username,
+				noteUserHost: user.host,
 				note: note,
 			});
 		}
