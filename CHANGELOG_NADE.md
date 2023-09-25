@@ -8,6 +8,11 @@
 
 ### Server
 -->
+
+## nade 1.3.5
+### General
+- Misskey 2023.9.1対応のための軽微な修正
+
 ## nade 1.3.3 & nade 1.3.4
 ### General
 - Misskey 2023.9.0対応のための軽微な修正
