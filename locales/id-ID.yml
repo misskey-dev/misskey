@@ -354,7 +354,6 @@ invite: "Undang"
 driveCapacityPerLocalAccount: "Kapasitas drive per pengguna lokal"
 driveCapacityPerRemoteAccount: "Kapasitas drive per pengguna remote"
 inMb: "dalam Megabytes"
-iconUrl: "URL Gambar ikon"
 bannerUrl: "URL Banner"
 backgroundImageUrl: "URL Gambar latar"
 basicInfo: "Informasi Umum"
@@ -1019,7 +1018,6 @@ retryAllQueuesConfirmText: "Hal ini akan meningkatkan beban sementara ke peladen
 enableChartsForRemoteUser: "Buat bagan data pengguna instansi luar"
 enableChartsForFederatedInstances: "Buat bagan data peladen instansi luar"
 showClipButtonInNoteFooter: "Tambahkan \"Klip\" ke menu aksi catatan"
-largeNoteReactions: "Besarkan reaksi yang ditampilkan"
 noteIdOrUrl: "ID catatan atau URL"
 video: "Video"
 videos: "Video"
@@ -1100,6 +1098,8 @@ icon: "Avatar"
 forYou: "Untuk Anda"
 currentAnnouncements: "Pengumuman Saat Ini"
 pastAnnouncements: "Pengumuman Terdahulu"
+replies: "Balas"
+renotes: "Renote"
 _initialAccountSetting:
   accountCreated: "Akun kamu telah sukses dibuat!"
   letsStartAccountSetup: "Untuk pemula, ayo atur profilmu dulu."
@@ -1117,6 +1117,8 @@ _initialAccountSetting:
   laterAreYouSure: "Yakin banget untuk atur profil nanti?"
 _serverRules:
   description: "Daftar peraturan akan ditampilkan sebelum pendaftaran. Mengatur ringkasan dari Syarat dan Ketentuan sangat direkomendasikan."
+_serverSettings:
+  iconUrl: "URL ikon"
 _accountMigration:
   moveFrom: "Pindahkan akun lain ke akun ini"
   moveFromSub: "Buat alias ke akun lain"
@@ -1494,6 +1496,7 @@ _plugin:
   install: "Memasang plugin"
   installWarn: "Mohon jangan memasang plugin yang tidak dapat dipercayai."
   manage: "Manajemen plugin"
+  viewSource: "Lihat sumber"
 _preferencesBackups:
   list: "Cadangan yang dibuat"
   saveNew: "Simpan cadangan baru"
@@ -1681,7 +1684,6 @@ _timelineTutorial:
 _2fa:
   alreadyRegistered: "Kamu telah mendaftarkan perangkat otentikasi dua faktor."
   registerTOTP: "Daftarkan aplikasi autentikator"
-  passwordToTOTP: "Masukkan kata sandimu"
   step1: "Pertama, pasang aplikasi otentikasi (seperti {a} atau {b}) di perangkat kamu."
   step2: "Lalu, pindai kode QR yang ada di layar."
   step2Click: "Mengeklik kode QR ini akan membolehkanmu untuk mendaftarkan 2FA ke security-key atau aplikasi autentikator ponsel."
@@ -1691,7 +1693,6 @@ _2fa:
   securityKeyNotSupported: "Peramban kamu tidak mendukung security key."
   registerTOTPBeforeKey: "Mohon atur aplikasi autentikator untuk mendaftarkan security key atau passkey."
   securityKeyInfo: "Kamu dapat memasang otentikasi WebAuthN untuk mengamankan proses login lebih lanjut dengan tidak hanya perangkat keras kunci keamanan yang mendukung FIDO2, namun juga sidik jari atau otentikasi PIN pada perangkatmu."
-  chromePasskeyNotSupported: "Passkey Chrome saat ini tidak didukung."
   registerSecurityKey: "Daftarkan security key atau passkey."
   securityKeyName: "Masukkan nama key."
   tapSecurityKey: "Mohon ikuti peramban kamu untuk mendaftarkan security key atau passkey"
@@ -2040,3 +2041,6 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+_moderationLogTypes:
+  suspend: "Tangguhkan"
+  resetPassword: "Atur ulang kata sandi"

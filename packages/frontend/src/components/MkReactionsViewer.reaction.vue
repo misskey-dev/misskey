@@ -21,13 +21,13 @@ import { computed, onMounted, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import * as os from '@/os';
-import { useTooltip } from '@/scripts/use-tooltip';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import { $i } from '@/account.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { claimAchievement } from '@/scripts/achievements';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -156,9 +156,9 @@ useTooltip(buttonEl, async (showing) => {
 	}
 
 	&.reacted, &.reacted:hover {
-    background: var(--accentedBg);
-    color: var(--accent);
-    border: 1px solid var(--accent);
+		background: var(--accentedBg);
+		color: var(--accent);
+		box-shadow: 0 0 0px 1px var(--accent) inset;
 
 		> .count {
 			color: var(--accent);
@@ -168,6 +168,10 @@ useTooltip(buttonEl, async (showing) => {
 			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 		}
 	}
+}
+
+.icon {
+	max-width: 150px;
 }
 
 .count {

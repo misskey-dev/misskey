@@ -38,10 +38,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { host, version } from '@/config';
-import * as os from '@/os';
-import { login } from '@/account';
-import { i18n } from '@/i18n';
+import { host, version } from '@/config.js';
+import * as os from '@/os.js';
+import { login } from '@/account.js';
+import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 
 let username = $ref('');

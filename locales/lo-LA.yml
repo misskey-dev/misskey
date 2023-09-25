@@ -391,6 +391,8 @@ administration: "ການຈັດການ"
 middle: "ປານກາງ"
 searchByGoogle: "ຄົ້ນຫາ"
 file: "ໄຟລ໌"
+replies: "ຕອບ​ໄປ​ທີ"
+renotes: "Renote"
 _role:
   _priority:
     middle: "ປານກາງ"
@@ -461,3 +463,5 @@ _deck:
     mentions: "ກ່າວເຖິງ"
 _webhookSettings:
   name: "ຊື່"
+_moderationLogTypes:
+  suspend: "ລະງັບ"

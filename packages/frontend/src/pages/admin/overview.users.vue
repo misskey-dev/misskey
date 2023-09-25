@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 let newUsers = $ref(null);
 let fetching = $ref(true);

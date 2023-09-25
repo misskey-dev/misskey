@@ -5,7 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import * as Misskey from 'misskey-js';
-import { url } from '@/config';
+import { url } from '@/config.js';
 
 export const acct = (user: misskey.Acct) => {
 	return Misskey.acct.toString(user);

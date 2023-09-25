@@ -42,9 +42,9 @@ import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');

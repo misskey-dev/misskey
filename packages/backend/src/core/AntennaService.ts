@@ -5,14 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiAntenna } from '@/models/entities/Antenna.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiAntenna } from '@/models/Antenna.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { AntennasRepository, UserListJoiningsRepository } from '@/models/_.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -119,6 +119,12 @@ export class AntennaService implements OnApplicationShutdown {
 				return this.utilityService.getFullApAccount(username, host).toLowerCase();
 			});
 			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+		} else if (antenna.src === 'users_blacklist') {
+			const accts = antenna.users.map(x => {
+				const { username, host } = Acct.parse(x);
+				return this.utilityService.getFullApAccount(username, host).toLowerCase();
+			});
+			if (accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 		}
 
 		const keywords = antenna.keywords

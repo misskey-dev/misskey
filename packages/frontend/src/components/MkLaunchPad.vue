@@ -28,8 +28,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar';
-import { defaultStore } from '@/store';
-import { deviceKind } from '@/scripts/device-kind';
+import { defaultStore } from '@/store.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;

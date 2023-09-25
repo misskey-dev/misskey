@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository } from '@/models/index.js';
-import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
+import type { FollowingsRepository } from '@/models/_.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';

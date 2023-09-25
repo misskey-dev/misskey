@@ -4,11 +4,11 @@
  */
 
 import { utils, values } from '@syuilo/aiscript';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { miLocalStorage } from '@/local-storage';
-import { customEmojis } from '@/custom-emojis';
-import { lang } from '@/config';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { customEmojis } from '@/custom-emojis.js';
+import { lang } from '@/config.js';
 
 export function createAiScriptEnv(opts) {
 	return {
@@ -34,13 +34,19 @@ export function createAiScriptEnv(opts) {
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
+			utils.assertString(ep);
+			if (ep.value.includes('://')) throw new Error('invalid endpoint');
 			if (token) {
 				utils.assertString(token);
 				// バグがあればundefinedもあり得るため念のため
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
-			const res = await os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token ?? null));
-			return utils.jsToVal(res);
+			const actualToken: string|null = token?.value ?? opts.token ?? null;
+			return os.api(ep.value, utils.valToJs(param), actualToken).then(res => {
+				return utils.jsToVal(res);
+			}, err => {
+				return values.ERROR('request_failed', utils.jsToVal(err));
+			});
 		}),
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
 			utils.assertString(key);

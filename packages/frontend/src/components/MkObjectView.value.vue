@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { reactive } from 'vue';
-import number from '@/filters/number';
+import number from '@/filters/number.js';
 import XValue from '@/components/MkObjectView.value.vue';
 
 const props = defineProps<{

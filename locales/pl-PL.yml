@@ -333,7 +333,6 @@ invite: "Zaproś"
 driveCapacityPerLocalAccount: "Powierzchnia dyskowa na lokalnego użytkownika"
 driveCapacityPerRemoteAccount: "Powierzchnia dyskowa na zdalnego użytkownika"
 inMb: "W megabajtach"
-iconUrl: "Adres URL ikony"
 bannerUrl: "Adres URL banera"
 backgroundImageUrl: "Adres URL tła"
 basicInfo: "Podstawowe informacje"
@@ -872,6 +871,8 @@ show: "Wyświetlanie"
 color: "Kolor"
 youFollowing: "Śledzeni"
 icon: "Awatar"
+replies: "Odpowiedz"
+renotes: "Udostępnij"
 _role:
   priority: "Priorytet"
   _priority:
@@ -924,6 +925,7 @@ _plugin:
   install: "Zainstaluj wtyczki"
   installWarn: "Nie instaluj niezaufanych wtyczek."
   manage: "Zarządzanie wtyczkami"
+  viewSource: "Zobacz źródło"
 _preferencesBackups:
   list: "Utworzone kopie zapasowe"
   saveNew: "Zapisz nową kopię zapasową"
@@ -1400,3 +1402,6 @@ _webhookSettings:
     renote: "Po udostępnieniu wpisu"
     reaction: "Po otrzymaniu reakcji"
     mention: "Po zostaniu wspomnianym"
+_moderationLogTypes:
+  suspend: "Zawieś"
+  resetPassword: "Zresetuj hasło"

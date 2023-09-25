@@ -18,8 +18,8 @@ let editMode = $ref(false);
 <script lang="ts" setup>
 import { } from 'vue';
 import XWidgets from '@/components/MkWidgets.vue';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	// null = 全てのウィジェットを表示

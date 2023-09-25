@@ -10,14 +10,15 @@ import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiEmoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, MiRole } from '@/models/index.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/server/api/stream/types.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
@@ -36,6 +37,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
+		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
 		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
@@ -66,7 +68,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		isSensitive: boolean;
 		localOnly: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
-	}): Promise<MiEmoji> {
+	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: this.idService.genId(),
 			updatedAt: new Date(),
@@ -89,6 +91,13 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
+
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'addCustomEmoji', {
+					emojiId: emoji.id,
+					emoji: emoji,
+				});
+			}
 		}
 
 		return emoji;
@@ -104,7 +113,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		isSensitive?: boolean;
 		localOnly?: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
-	}): Promise<void> {
+	}, moderator?: MiUser): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
 		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
@@ -125,11 +134,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		const updated = await this.emojiEntityService.packDetailed(emoji.id);
+		const packed = await this.emojiEntityService.packDetailed(emoji.id);
 
 		if (emoji.name === data.name) {
 			this.globalEventService.publishBroadcastStream('emojiUpdated', {
-				emojis: [updated],
+				emojis: [packed],
 			});
 		} else {
 			this.globalEventService.publishBroadcastStream('emojiDeleted', {
@@ -137,7 +146,16 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: updated,
+				emoji: packed,
+			});
+		}
+
+		if (moderator) {
+			const updated = await this.emojisRepository.findOneByOrFail({ id: id });
+			this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+				emojiId: emoji.id,
+				before: emoji,
+				after: updated,
 			});
 		}
 	}
@@ -231,7 +249,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async delete(id: MiEmoji['id']) {
+	public async delete(id: MiEmoji['id'], moderator?: MiUser) {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 
 		await this.emojisRepository.delete(emoji.id);
@@ -241,16 +259,30 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		this.globalEventService.publishBroadcastStream('emojiDeleted', {
 			emojis: [await this.emojiEntityService.packDetailed(emoji)],
 		});
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+				emojiId: emoji.id,
+				emoji: emoji,
+			});
+		}
 	}
 
 	@bindThis
-	public async deleteBulk(ids: MiEmoji['id'][]) {
+	public async deleteBulk(ids: MiEmoji['id'][], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
 
 		for (const emoji of emojis) {
 			await this.emojisRepository.delete(emoji.id);
+
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+					emojiId: emoji.id,
+					emoji: emoji,
+				});
+			}
 		}
 
 		this.localEmojisCache.refresh();

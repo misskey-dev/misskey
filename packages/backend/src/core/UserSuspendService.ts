@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
-import type { FollowingsRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { FollowingsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';

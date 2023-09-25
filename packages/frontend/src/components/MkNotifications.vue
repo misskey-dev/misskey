@@ -27,11 +27,11 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkNote from '@/components/MkNote.vue';
-import { useStream } from '@/stream';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import { useStream } from '@/stream.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@/const';
-import { infoImageUrl } from '@/instance';
+import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	includeTypes?: typeof notificationTypes[number][];

@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import type { MiUser } from '@/models/index.js';
+import type { MiUser } from '@/models/_.js';
 import { toArray, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
 import { isMention } from '../type.js';

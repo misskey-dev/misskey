@@ -71,10 +71,10 @@ import 'photoswipe/style.css';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { defaultStore } from '@/store';
-import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll';
+import { defaultStore } from '@/store.js';
+import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
