@@ -48,6 +48,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
+				<MkSwitch v-model="showVisibilityColor">{{ i18n.ts.showVisibilityColor}}</MkSwitch>
+        <MkColorInput v-if="showVisibilityColor" v-model="homeColor">
+          <template #label>{{ i18n.ts._visibility.home }}</template>
+        </MkColorInput>
+        <MkColorInput v-if="showVisibilityColor" v-model="followerColor">
+          <template #label>{{ i18n.ts._visibility.followers }}</template>
+        </MkColorInput>
+        <MkColorInput v-if="showVisibilityColor" v-model="specifiedColor">
+          <template #label>{{ i18n.ts._visibility.specified }}</template>
+        </MkColorInput>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
@@ -212,6 +222,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events';
 import { claimAchievement } from '@/scripts/achievements.js';
+import MkColorInput from "@/components/MkColorInput.vue";
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -255,6 +266,9 @@ const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostF
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const numberOfGamingSpeed = computed(defaultStore.makeGetterSetter('numberOfGamingSpeed'));
+const homeColor = computed(defaultStore.makeGetterSetter('homeColor'));
+const followerColor = computed(defaultStore.makeGetterSetter('followerColor'));
+const specifiedColor = computed(defaultStore.makeGetterSetter('specifiedColor'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
@@ -266,12 +280,32 @@ const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimeline
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
-
+const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
 });
+
 document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
+function hexToRgb(hex) {
+  // 16進数のカラーコードから "#" を除去
+  hex = hex.replace(/^#/, '');
+
+  // 16進数をRGBに変換
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  return `${r},${g},${b}`;
+}
+document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
+document.documentElement.style.setProperty("--followerColor",hexToRgb(followerColor.value));
+document.documentElement.style.setProperty("--specifiedColor",hexToRgb(specifiedColor.value))
+watch([homeColor,specifiedColor,followerColor], ()=>{
+  document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
+  document.documentElement.style.setProperty("--followerColor",hexToRgb(followerColor.value));
+  document.documentElement.style.setProperty("--specifiedColor",hexToRgb(specifiedColor.value))
+})
 watch(numberOfGamingSpeed, () =>{
   document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
 })
@@ -290,7 +324,6 @@ watch(useSystemFont, () => {
 		miLocalStorage.removeItem('useSystemFont');
 	}
 });
-
 watch([
 	lang,
 	fontSize,
@@ -306,6 +339,7 @@ watch([
 	highlightSensitiveMedia,
 	keepScreenOn,
 	showMediaTimeline,
+  showVisibilityColor,
 ], async () => {
 	await reloadAsk();
 });

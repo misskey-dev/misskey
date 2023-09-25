@@ -348,6 +348,18 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 3,
 	},
+	specifiedColor:{
+		where: 'device',
+		default: '#FFFF64',
+	},
+	followerColor:{
+		where: 'device',
+		default: '#FF00FF',
+	},
+	homeColor:{
+		where: 'device',
+		default: '#00FFFF',
+	},
 	numberOfGamingSpeed: {
 		where: 'device',
 		default: 44,
@@ -363,6 +375,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	showMediaTimeline:{
 		where: 'device',
 		default: true,
+	},
+	showVisibilityColor:{
+		where: 'device',
+		default: false,
 	},
 	reactionsDisplaySize: {
 		where: 'device',

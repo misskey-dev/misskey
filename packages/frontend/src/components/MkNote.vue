@@ -9,7 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
+	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover } ,{[$style.home] : defaultStore.state.showVisibilityColor && note.visibility === 'home',[$style.followers] : defaultStore.state.showVisibilityColor && note.visibility === 'followers',[$style.specified] : defaultStore.state.showVisibilityColor && note.visibility === 'specified'}]"
+
 	:tabindex="!isDeleted ? '-1' : undefined"
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
@@ -33,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
-				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+				<i v-if="note.visibility === 'home'" class="ti ti-home"  ></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
@@ -176,8 +177,7 @@ const props = defineProps<{
 }>();
 
 const inChannel = inject('inChannel', null);
-const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
-
+const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);;
 let note = $ref(deepClone(props.note));
 
 // plugin
@@ -480,6 +480,8 @@ function focusAfter() {
 	focusNext(el.value);
 }
 
+
+
 function readPromo() {
 	os.api('promo/read', {
 		noteId: appearNote.id,
@@ -489,13 +491,22 @@ function readPromo() {
 </script>
 
 <style lang="scss" module>
+
 .root {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
 	overflow: clip;
 	contain: content;
-
+&.home{
+  background-color: rgba( var(--homeColor) , 0.20) !important;
+}
+  &.followers{
+    background-color: rgba(var(--followerColor), 0.20) !important;
+  }
+  &.specified{
+    background-color: rgba(var(--specifiedColor), 0.20) !important;
+  }
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
 	// 下の方までスクロールすると上のノートの高さがここで決め打ちされたものに変化し、表示しているノートの位置が変わってしまう
 	// ノートがマウントされたときに自身の高さを取得し contain-intrinsic-size を設定しなおせばほぼ解決できそうだが、
@@ -939,5 +950,8 @@ function readPromo() {
 	margin: 2px;
 	padding: 0 6px;
 	opacity: .8;
+}
+.root:has(.ti-home){
+	background-color: rgba(255, 255, 100, 0.10) !important;
 }
 </style>

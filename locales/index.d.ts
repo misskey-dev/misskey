@@ -832,6 +832,7 @@ export interface Locale {
     "GamingSpeedChangeInfo": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
+    "showVisibilityColor": string;
     "previewNoteText": string;
     "customCss": string;
     "customCssWarn": string;

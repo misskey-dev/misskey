@@ -84,9 +84,23 @@ import {instance} from '@/instance';
 
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
+function hexToRgb(hex) {
+  // 16進数のカラーコードから "#" を除去
+  hex = hex.replace(/^#/, '');
 
+  // 16進数をRGBに変換
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  return `${r},${g},${b}`;
+}
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
+document.documentElement.style.setProperty("--followerColor",hexToRgb(defaultStore.state.followerColor));
+document.documentElement.style.setProperty("--specifiedColor",hexToRgb(defaultStore.state.specifiedColor))
+document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed+'s');
 
 let gaming = ref()
 if (darkMode.value) {

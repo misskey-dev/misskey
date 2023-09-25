@@ -94,6 +94,21 @@ import {$i, openAccountMenu as openAccountMenu_} from '@/account';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';
 import {instance} from '@/instance';
+function hexToRgb(hex) {
+  // 16進数のカラーコードから "#" を除去
+  hex = hex.replace(/^#/, '');
+
+  // 16進数をRGBに変換
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  return `${r},${g},${b}`;
+}
+document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
+document.documentElement.style.setProperty("--followerColor",hexToRgb(defaultStore.state.followerColor));
+document.documentElement.style.setProperty("--specifiedColor",hexToRgb(defaultStore.state.specifiedColor))
+document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed+'s');
 
 const iconOnly = ref(false);
 let bannerUrl = ref(defaultStore.state.bannerUrl);
