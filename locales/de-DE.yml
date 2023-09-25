@@ -1120,6 +1120,7 @@ notifyNotes: "Über neue Notizen benachrichtigen"
 unnotifyNotes: "Nicht über neue Notizen benachrichtigen"
 authentication: "Authentifikation"
 authenticationRequiredToContinue: "Bitte authentifiziere dich, um fortzufahren"
+dateAndTime: "Zeit"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
@@ -2101,6 +2102,8 @@ _webhookSettings:
     reaction: "Wenn du eine Reaktion erhältst"
     mention: "Wenn du erwähnt wirst"
 _moderationLogTypes:
+  createRole: "Rolle erstellt"
+  deleteRole: "Rolle gelöscht"
   updateRole: "Rolle aktualisiert"
   assignRole: "Zu Rolle zugewiesen"
   unassignRole: "Aus Rolle entfernt"
@@ -2124,3 +2127,4 @@ _moderationLogTypes:
   unsuspendRemoteInstance: "Fremde Instanz entsperrt"
   markSensitiveDriveFile: "Datei als sensitiv markiert"
   unmarkSensitiveDriveFile: "Datei als nicht sensitiv markiert"
+  resolveAbuseReport: "Meldung bearbeitet"
