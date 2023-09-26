@@ -36,15 +36,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { useRouter } from '@/router';
+import { useRouter } from '@/router.js';
 
-const PRESET_DEFAULT = `/// @ 0.15.0
+const PRESET_DEFAULT = `/// @ 0.16.0
 
 var name = ""
 
@@ -62,7 +62,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.15.0
+const PRESET_OMIKUJI = `/// @ 0.16.0
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -105,7 +105,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.15.0
+const PRESET_SHUFFLE = `/// @ 0.16.0
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -184,7 +184,7 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.15.0
+const PRESET_QUIZ = `/// @ 0.16.0
 let title = '地理クイズ'
 
 let qas = [{
@@ -297,7 +297,7 @@ qaEls.push(Ui:C:container({
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.15.0
+const PRESET_TIMELINE = `/// @ 0.16.0
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {

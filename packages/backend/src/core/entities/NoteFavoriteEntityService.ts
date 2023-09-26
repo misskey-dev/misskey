@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteFavoritesRepository } from '@/models/index.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNoteFavorite } from '@/models/entities/NoteFavorite.js';
+import type { NoteFavoritesRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { bindThis } from '@/decorators.js';
 import { NoteEntityService } from './NoteEntityService.js';
 

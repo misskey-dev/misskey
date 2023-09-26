@@ -381,6 +381,8 @@ user: "Usuaris"
 global: "Global"
 searchByGoogle: "Cercar"
 file: "Fitxers"
+replies: "Respondre"
+renotes: "Impulsa"
 _role:
   _options:
     antennaMax: "Nombre màxim d'antenes"
@@ -477,3 +479,6 @@ _deck:
     list: "Llistes"
     mentions: "Mencions"
     direct: "Publicacions directes"
+_moderationLogTypes:
+  suspend: "Suspèn"
+  resetPassword: "Restableix la contrasenya"

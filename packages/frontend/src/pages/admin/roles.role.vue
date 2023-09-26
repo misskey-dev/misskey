@@ -66,15 +66,15 @@ import { computed, reactive } from 'vue';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
-import { infoImageUrl } from '@/instance';
+import { infoImageUrl } from '@/instance.js';
 
 const router = useRouter();
 

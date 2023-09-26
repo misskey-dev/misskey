@@ -27,13 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
-import { notePage } from '@/filters/note';
-import * as os from '@/os';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { notePage } from '@/filters/note.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;

@@ -337,7 +337,6 @@ invite: "Pozvať"
 driveCapacityPerLocalAccount: "Kapacita disku pre používateľa"
 driveCapacityPerRemoteAccount: "Kapacita disku pre vzdialeného používateľa"
 inMb: "V megabajtoch"
-iconUrl: "Favicon URL"
 bannerUrl: "URL obrázku bannera"
 backgroundImageUrl: "URL obrázku pozadia"
 basicInfo: "Základné informácie"
@@ -920,6 +919,8 @@ color: "Farba"
 horizontal: "Strana"
 youFollowing: "Sledované"
 icon: "Avatar"
+replies: "Odpovedať"
+renotes: "Preposlať"
 _role:
   priority: "Priorita"
   _priority:
@@ -977,6 +978,7 @@ _plugin:
   install: "Inštalova pluginy"
   installWarn: "Prosím neinštalujte nedôveryhodné pluginy."
   manage: "Spravovanie pluginov"
+  viewSource: "Ukázať zdroj"
 _preferencesBackups:
   list: "Vytvorené zálohy"
   saveNew: "Uložiť novú"
@@ -1449,3 +1451,6 @@ _deck:
 _webhookSettings:
   name: "Názov"
   active: "Zapnuté"
+_moderationLogTypes:
+  suspend: "Zmraziť"
+  resetPassword: "Resetovať heslo"

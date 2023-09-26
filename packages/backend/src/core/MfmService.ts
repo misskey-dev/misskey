@@ -10,7 +10,7 @@ import { Window } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
-import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
+import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import * as TreeAdapter from '../../node_modules/parse5/dist/tree-adapters/default.js';
 import type * as mfm from 'mfm-js';

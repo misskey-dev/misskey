@@ -5,18 +5,18 @@
 
 import { defineAsyncComponent, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { claimAchievement } from './achievements';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { url } from '@/config';
-import { defaultStore, noteActions } from '@/store';
-import { miLocalStorage } from '@/local-storage';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import { clipsCache } from '@/cache';
-import { MenuItem } from '@/types/menu';
+import { claimAchievement } from './achievements.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { url } from '@/config.js';
+import { defaultStore, noteActions } from '@/store.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { getUserMenu } from '@/scripts/get-user-menu.js';
+import { clipsCache } from '@/cache.js';
+import { MenuItem } from '@/types/menu.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -238,18 +238,6 @@ export function getNoteMenu(props: {
 		os.pageWindow(`/notes/${appearNote.id}`);
 	}
 
-	function showReactions(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
-	}
-
-	function showRenotes(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkRenotedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
-	}
-
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -279,14 +267,6 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
 				action: openDetail,
-			}, {
-				icon: 'ti ti-repeat',
-				text: i18n.ts.renotesList,
-				action: showRenotes,
-			}, {
-				icon: 'ti ti-icons',
-				text: i18n.ts.reactionsList,
-				action: showReactions,
 			}, {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
@@ -388,8 +368,8 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'ti ti-external-link',
-			text: i18n.ts.detailed,
+			icon: 'ti ti-info-circle',
+			text: i18n.ts.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',

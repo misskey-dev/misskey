@@ -23,10 +23,10 @@ import { kinds } from '@/misc/api-permissions.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import type { MiLocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
@@ -125,7 +125,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		let name = id;
 		if (text) {
 			const microformats = mf2(text, { baseUrl: res.url });
-			const nameProperty = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url?.includes(id))?.properties.name[0];
+			const nameProperty = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id))?.properties.name[0];
 			if (typeof nameProperty === 'string') {
 				name = nameProperty;
 			}

@@ -5,9 +5,9 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
+import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { localUsernameSchema } from '@/models/entities/User.js';
+import { localUsernameSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 

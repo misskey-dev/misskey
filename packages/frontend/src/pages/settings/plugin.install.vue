@@ -25,11 +25,11 @@ import { v4 as uuid } from 'uuid';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
-import { unisonReload } from '@/scripts/unison-reload';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { ColdDeviceStorage } from '@/store.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const parser = new Parser();
 const code = ref(null);

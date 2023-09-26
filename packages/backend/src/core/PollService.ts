@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, MiUser } from '@/models/index.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, MiUser } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

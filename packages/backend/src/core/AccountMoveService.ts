@@ -8,8 +8,8 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';

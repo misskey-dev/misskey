@@ -81,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				forExistingUsers: ps.forExistingUsers,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				userId: ps.userId,
-			});
+			}, me);
 
 			return packed;
 		});

@@ -5,7 +5,7 @@
 
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { extractUrlFromMfm } from './extract-url-from-mfm';
+import { extractUrlFromMfm } from './extract-url-from-mfm.js';
 
 export function shouldCollapsed(note: Misskey.entities.Note): boolean {
 	const urls = note.text ? extractUrlFromMfm(mfm.parse(note.text)) : null;

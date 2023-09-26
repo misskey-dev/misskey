@@ -113,11 +113,11 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);

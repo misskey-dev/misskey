@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:title="image.comment || image.name"
 			:width="image.properties.width"
 			:height="image.properties.height"
-			:style="hide ? 'filter: brightness(0.5);' : null"
+			:style="hide ? 'filter: brightness(0.7);' : null"
 		/>
 	</component>
 	<template v-if="hide">
@@ -53,13 +53,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
-import bytes from '@/filters/bytes';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { iAmModerator } from '@/account';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { iAmModerator } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -122,6 +122,22 @@ function showMenu(ev: MouseEvent) {
 <style lang="scss" module>
 .hidden {
 	position: relative;
+}
+
+.sensitive {
+	position: relative;
+	
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--warn);
+	}
 }
 
 .hiddenText {

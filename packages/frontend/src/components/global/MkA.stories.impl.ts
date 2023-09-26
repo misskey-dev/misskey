@@ -8,7 +8,7 @@ import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import MkA from './MkA.vue';
-import { tick } from '@/scripts/test-utils';
+import { tick } from '@/scripts/test-utils.js';
 export const Default = {
 	render(args) {
 		return {

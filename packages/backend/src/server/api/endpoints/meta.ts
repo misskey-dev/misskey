@@ -6,7 +6,7 @@
 import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
-import type { AdsRepository, UsersRepository } from '@/models/index.js';
+import type { AdsRepository, UsersRepository } from '@/models/_.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -39,6 +39,10 @@ export const meta = {
 			name: {
 				type: 'string',
 				optional: false, nullable: false,
+			},
+			shortName: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			uri: {
 				type: 'string',
@@ -288,6 +292,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				version: this.config.version,
 
 				name: instance.name,
+				shortName: instance.shortName,
 				uri: this.config.url,
 				description: instance.description,
 				langs: instance.langs,

@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
-import type { MiUserListJoining } from '@/models/entities/UserListJoining.js';
+import type { UserListJoiningsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiUserList } from '@/models/UserList.js';
+import type { MiUserListJoining } from '@/models/UserListJoining.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';

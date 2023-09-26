@@ -44,15 +44,15 @@ import 'vue-prism-editor/dist/prismeditor.min.css';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui';
+import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
-import { miLocalStorage } from '@/local-storage';
-import { claimAchievement } from '@/scripts/achievements';
+import { miLocalStorage } from '@/local-storage.js';
+import { claimAchievement } from '@/scripts/achievements.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
@@ -109,6 +109,13 @@ async function run() {
 				print: true,
 			});
 		},
+		err: (err) => {
+			os.alert({
+				type: 'error',
+				title: 'AiScript Error',
+				text: err.toString(),
+			});
+		},
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
@@ -124,20 +131,23 @@ async function run() {
 	let ast;
 	try {
 		ast = parser.parse(code.value);
-	} catch (error) {
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :(',
+			title: 'Syntax Error',
+			text: err.toString(),
 		});
 		return;
 	}
 	try {
 		await aiscript.exec(ast);
 	} catch (err: any) {
+		// AiScript runtime errors should be processed by error callback function
+		// so errors caught here are AiScript's internal errors.
 		os.alert({
 			type: 'error',
-			title: 'AiScript Error',
-			text: err.message,
+			title: 'Internal Error',
+			text: err.toString(),
 		});
 	}
 }

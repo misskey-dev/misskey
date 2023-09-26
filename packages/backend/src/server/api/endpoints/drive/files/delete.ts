@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { DriveService } from '@/core/DriveService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -65,11 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			// Delete
-			await this.driveService.deleteFile(file);
-
-			// Publish fileDeleted event
-			this.globalEventService.publishDriveStream(me.id, 'fileDeleted', file.id);
+			await this.driveService.deleteFile(file, false, me);
 		});
 	}
 }

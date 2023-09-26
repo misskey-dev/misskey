@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { MiChannel } from '@/models/entities/Channel.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiUserProfile } from '@/models/entities/UserProfile.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiAntenna } from '@/models/entities/Antenna.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiDriveFolder } from '@/models/entities/DriveFolder.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
-import type { MiAbuseUserReport } from '@/models/entities/AbuseUserReport.js';
-import type { MiSignin } from '@/models/entities/Signin.js';
-import type { MiPage } from '@/models/entities/Page.js';
+import type { MiChannel } from '@/models/Channel.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiUserProfile } from '@/models/UserProfile.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiAntenna } from '@/models/Antenna.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiDriveFolder } from '@/models/DriveFolder.js';
+import type { MiUserList } from '@/models/UserList.js';
+import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import type { MiSignin } from '@/models/Signin.js';
+import type { MiPage } from '@/models/Page.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiWebhook } from '@/models/entities/Webhook.js';
-import type { MiMeta } from '@/models/entities/Meta.js';
-import { MiRole, MiRoleAssignment } from '@/models/index.js';
+import type { MiWebhook } from '@/models/Webhook.js';
+import type { MiMeta } from '@/models/Meta.js';
+import { MiRole, MiRoleAssignment } from '@/models/_.js';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 

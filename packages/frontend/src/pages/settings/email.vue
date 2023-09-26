@@ -53,11 +53,11 @@ import FormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { instance } from '@/instance';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { instance } from '@/instance.js';
 
 const emailAddress = ref($i!.email);
 
@@ -67,18 +67,16 @@ const onChangeReceiveAnnouncementEmail = (v) => {
 	});
 };
 
-const saveEmailAddress = () => {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.apiWithDialog('i/update-email', {
-			password: password,
-			email: emailAddress.value,
-		});
+async function saveEmailAddress() {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	os.apiWithDialog('i/update-email', {
+		password: auth.result.password,
+		token: auth.result.token,
+		email: emailAddress.value,
 	});
-};
+}
 
 const emailNotification_mention = ref($i!.emailNotificationTypes.includes('mention'));
 const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply'));

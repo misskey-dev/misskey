@@ -55,7 +55,7 @@ execa('pnpm', ['--filter', 'sw', 'watch'], {
 
 const start = async () => {
 	try {
-		const stat = fs.statSync(_dirname + '/../packages/backend/built/boot/index.js');
+		const stat = fs.statSync(_dirname + '/../packages/backend/built/boot/entry.js');
 		if (!stat) throw new Error('not exist yet');
 		if (stat.size === 0) throw new Error('not built yet');
 

@@ -11,10 +11,10 @@ import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/index.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -340,6 +340,8 @@ export class NoteEntityService implements OnModuleInit {
 			url: note.url ?? undefined,
 
 			...(opts.detail ? {
+				clippedCount: note.clippedCount,
+
 				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					_hint_: options?._hint_,

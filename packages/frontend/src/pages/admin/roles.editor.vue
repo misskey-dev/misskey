@@ -508,10 +508,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 import { ROLE_POLICIES } from '@/const';
-import { instance } from '@/instance';
-import { deepClone } from '@/scripts/clone';
+import { instance } from '@/instance.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;

@@ -64,6 +64,7 @@ module.exports = {
 		'object-curly-spacing': ['error', 'always'],
 		'space-infix-ops': ['error'],
 		'space-before-blocks': ['error', 'always'],
+		'@typescript-eslint/func-call-spacing': ['error', 'never'],
 		'@typescript-eslint/no-explicit-any': ['warn'],
 		'@typescript-eslint/no-unused-vars': ['warn'],
 		'@typescript-eslint/no-unnecessary-condition': ['warn'],
@@ -71,7 +72,7 @@ module.exports = {
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],
 		'@typescript-eslint/no-non-null-assertion': ['warn'],
-		'@typescript-eslint/explicit-function-return-type': ['warn'],
+		'@typescript-eslint/explicit-function-return-type': ['off'],
 		'@typescript-eslint/no-misused-promises': ['error', {
 			'checksVoidReturn': false,
 		}],

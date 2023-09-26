@@ -5,9 +5,9 @@
 
 import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
-import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
-import type { MiNote, IMentionedRemoteUsers } from '@/models/entities/Note.js';
-import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
+import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import type { MiNote, IMentionedRemoteUsers } from '@/models/Note.js';
+import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -23,6 +23,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -48,6 +49,7 @@ export class NoteDeleteService {
 		private apDeliverManagerService: ApDeliverManagerService,
 		private metaService: MetaService,
 		private searchService: SearchService,
+		private moderationLogService: ModerationLogService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
@@ -58,7 +60,7 @@ export class NoteDeleteService {
 	 * @param user 投稿者
 	 * @param note 投稿
 	 */
-	async delete(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, quiet = false) {
+	async delete(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, quiet = false, deleter?: MiUser) {
 		const deletedAt = new Date();
 		const cascadingNotes = await this.findCascadingNotes(note);
 
@@ -131,6 +133,17 @@ export class NoteDeleteService {
 			id: note.id,
 			userId: user.id,
 		});
+
+		if (deleter && (note.userId !== deleter.id)) {
+			const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
+			this.moderationLogService.log(deleter, 'deleteNote', {
+				noteId: note.id,
+				noteUserId: note.userId,
+				noteUserUsername: user.username,
+				noteUserHost: user.host,
+				note: note,
+			});
+		}
 	}
 
 	@bindThis

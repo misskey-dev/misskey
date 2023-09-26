@@ -23,11 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	tag: string;
