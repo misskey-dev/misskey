@@ -58,6 +58,9 @@ SPDX-License-Identifier: AGPL-3.0-only
         <MkColorInput v-if="showVisibilityColor" v-model="specifiedColor">
           <template #label>{{ i18n.ts._visibility.specified }}</template>
         </MkColorInput>
+        <MkColorInput v-if="showVisibilityColor" v-model="localOnlyColor">
+          <template #label>{{ i18n.ts.localOnly }}</template>
+        </MkColorInput>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
@@ -269,6 +272,7 @@ const numberOfGamingSpeed = computed(defaultStore.makeGetterSetter('numberOfGami
 const homeColor = computed(defaultStore.makeGetterSetter('homeColor'));
 const followerColor = computed(defaultStore.makeGetterSetter('followerColor'));
 const specifiedColor = computed(defaultStore.makeGetterSetter('specifiedColor'));
+const localOnlyColor = computed(defaultStore.makeGetterSetter('localOnlyColor'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
