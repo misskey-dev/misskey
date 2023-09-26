@@ -2101,9 +2101,9 @@ _webhookSettings:
     reaction: "Wenn du eine Reaktion erhältst"
     mention: "Wenn du erwähnt wirst"
 _moderationLogTypes:
+  updateRole: "Rolle aktualisiert"
   assignRole: "Zu Rolle zugewiesen"
   unassignRole: "Aus Rolle entfernt"
-  updateRole: "Rolle aktualisiert"
   suspend: "Gesperrt"
   unsuspend: "Entsperrt"
   addCustomEmoji: "Benutzerdefiniertes Emoji hinzugefügt"

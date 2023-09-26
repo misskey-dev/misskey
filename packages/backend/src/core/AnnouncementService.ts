@@ -162,10 +162,13 @@ export class AnnouncementService {
 			});
 
 			if (moderator) {
+				const user = await this.usersRepository.findOneByOrFail({ id: values.userId });
 				this.moderationLogService.log(moderator, 'createUserAnnouncement', {
 					announcementId: announcement.id,
 					announcement: announcement,
 					userId: values.userId,
+					userUsername: user.username,
+					userHost: user.host,
 				});
 			}
 		} else {
@@ -255,10 +258,14 @@ export class AnnouncementService {
 
 		if (moderator) {
 			if (announcement.userId) {
+				const user = await this.usersRepository.findOneByOrFail({ id: announcement.userId });
 				this.moderationLogService.log(moderator, 'updateUserAnnouncement', {
 					announcementId: announcement.id,
 					before: announcement,
 					after: after,
+					userId: announcement.userId,
+					userUsername: user.username,
+					userHost: user.host,
 				});
 			} else {
 				this.moderationLogService.log(moderator, 'updateGlobalAnnouncement', {
