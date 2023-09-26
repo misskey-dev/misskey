@@ -25,6 +25,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import MkSwitch from "@/components/MkSwitch.vue";
 
 export const openingWindowsCount = ref(0);
 
@@ -196,14 +197,31 @@ export function alert(props: {
 		}, 'closed');
 	});
 }
-
 export function confirm(props: {
-	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question'|'mksw';
 	title?: string | null;
 	text?: string | null;
 	okText?: string;
 	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
+	return new Promise((resolve, reject) => {
+		popup(MkDialog, {
+			...props,
+			showCancelButton: true,
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+export function switch1(props: {
+	type: 'mksw';
+	title?: string | null;
+	text?: string | null;
+	okText?: string;
+	cancelText?: string;
+}): Promise<{ canceled: boolean , result: boolean }> {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			...props,

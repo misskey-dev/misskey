@@ -5,7 +5,8 @@
 
 import type { Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
-
+import * as ep___admin_emoji_setlocalOnlyBulk from './endpoints/admin/emoji/set-localonly-bulk.js';
+import * as ep___admin_emoji_setisSensitiveBulk from './endpoints/admin/emoji/set-issensitive-bulk.js';
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
@@ -381,6 +382,8 @@ const eps = [
 	['admin/emoji/remove-aliases-bulk', ep___admin_emoji_removeAliasesBulk],
 	['admin/emoji/set-aliases-bulk', ep___admin_emoji_setAliasesBulk],
 	['admin/emoji/set-category-bulk', ep___admin_emoji_setCategoryBulk],
+	['admin/emoji/set-localonly-bulk', ep___admin_emoji_setlocalOnlyBulk],
+	['admin/emoji/set-issensitive-bulk', ep___admin_emoji_setisSensitiveBulk],
 	['admin/emoji/set-license-bulk', ep___admin_emoji_setLicenseBulk],
 	['admin/emoji/update', ep___admin_emoji_update],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],

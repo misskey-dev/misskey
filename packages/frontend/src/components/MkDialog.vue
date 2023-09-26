@@ -24,9 +24,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="type === 'info'" :class="$style.iconInner" class="ti ti-info-circle"></i>
 			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
+      <div v-if="type === 'mksw'" :class="$style.text"><MkSwitch :helpText="text" v-model="mkresult"/></div>
 		</div>
 		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
 		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
+
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
@@ -62,9 +64,10 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n.js';
+import MkSwitch from "@/components/MkSwitch.vue";
 
 type Input = {
-	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
+	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local' | 'mksw';
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string | number | null;
@@ -88,11 +91,12 @@ type Select = {
 };
 
 const props = withDefaults(defineProps<{
-	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
+	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting' | 'mksw';
 	title: string;
 	text?: string;
 	input?: Input;
 	select?: Select;
+  mksw?: boolean;
 	icon?: string;
 	actions?: {
 		text: string;
@@ -121,7 +125,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const inputValue = ref<string | number | null>(props.input?.default ?? null);
 const selectedValue = ref(props.select?.default ?? null);
-
+const mkresult= ref(false)
 let disabledReason = $ref<null | 'charactersExceeded' | 'charactersBelow'>(null);
 const okButtonDisabled = $computed<boolean>(() => {
 	if (props.input) {
@@ -153,6 +157,7 @@ async function ok() {
 	const result =
 		props.input ? inputValue.value :
 		props.select ? selectedValue.value :
+    mkresult ? mkresult.value :
 		true;
 	done(false, result);
 }

@@ -21,6 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
 						<MkButton inline @click="setTagBulk">Set tag</MkButton>
+            <MkButton inline @click="setisSensitiveBulk">Set isSensitive</MkButton>
+            <MkButton inline @click="setlocalOnlyBulk">Set localOnly</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
 						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
@@ -84,6 +86,7 @@ import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import {switch1, swtch} from "@/os.js";
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -273,7 +276,30 @@ const setTagBulk = async () => {
 	});
 	emojisPaginationComponent.value.reload();
 };
-
+const setisSensitiveBulk = async () => {
+  const { canceled, result } = await os.switch1({
+    title: 'isSensitive',
+    type: "mksw"
+  });
+  if (canceled) return;
+  await os.apiWithDialog('admin/emoji/set-issensitive-bulk', {
+    ids: selectedEmojis.value,
+    isSensitive: result
+  });
+  emojisPaginationComponent.value.reload();
+};
+const setlocalOnlyBulk = async () => {
+  const { canceled, result } = await os.switch1({
+    title: 'localOnly',
+    type: "mksw"
+  });
+  if (canceled) return;
+  await os.apiWithDialog('admin/emoji/set-localonly-bulk', {
+    ids: selectedEmojis.value,
+    localOnly: result
+  });
+  emojisPaginationComponent.value.reload();
+};
 const delBulk = async () => {
 	const { canceled } = await os.confirm({
 		type: 'warning',

@@ -24,6 +24,8 @@ import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
 import * as ep___admin_drive_showFile from './endpoints/admin/drive/show-file.js';
 import * as ep___admin_emoji_addAliasesBulk from './endpoints/admin/emoji/add-aliases-bulk.js';
+import * as ep___admin_emoji_setlocalOnlyBulk from './endpoints/admin/emoji/set-localonly-bulk.js';
+import * as ep___admin_emoji_setisSensitiveBulk from './endpoints/admin/emoji/set-issensitive-bulk.js';
 import * as ep___admin_emoji_add from './endpoints/admin/emoji/add.js';
 import * as ep___admin_emoji_copy from './endpoints/admin/emoji/copy.js';
 import * as ep___admin_emoji_deleteBulk from './endpoints/admin/emoji/delete-bulk.js';
@@ -373,6 +375,8 @@ const $admin_drive_cleanup: Provider = { provide: 'ep:admin/drive/cleanup', useC
 const $admin_drive_files: Provider = { provide: 'ep:admin/drive/files', useClass: ep___admin_drive_files.default };
 const $admin_drive_showFile: Provider = { provide: 'ep:admin/drive/show-file', useClass: ep___admin_drive_showFile.default };
 const $admin_emoji_addAliasesBulk: Provider = { provide: 'ep:admin/emoji/add-aliases-bulk', useClass: ep___admin_emoji_addAliasesBulk.default };
+const $admin_emoji_setlocalOnlyBulk: Provider = { provide: 'ep:admin/emoji/set-localonly-bulk', useClass: ep___admin_emoji_setlocalOnlyBulk.default };
+const $admin_emoji_setisSensitiveBulk: Provider = { provide: 'ep:admin/emoji/set-issensitive-bulk', useClass: ep___admin_emoji_setisSensitiveBulk.default };
 const $admin_emoji_add: Provider = { provide: 'ep:admin/emoji/add', useClass: ep___admin_emoji_add.default };
 const $admin_emoji_copy: Provider = { provide: 'ep:admin/emoji/copy', useClass: ep___admin_emoji_copy.default };
 const $admin_emoji_deleteBulk: Provider = { provide: 'ep:admin/emoji/delete-bulk', useClass: ep___admin_emoji_deleteBulk.default };
@@ -726,6 +730,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_drive_files,
 		$admin_drive_showFile,
 		$admin_emoji_addAliasesBulk,
+        $admin_emoji_setlocalOnlyBulk,
+        $admin_emoji_setisSensitiveBulk,
 		$admin_emoji_add,
 		$admin_emoji_copy,
 		$admin_emoji_deleteBulk,
@@ -1084,6 +1090,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
+        $admin_emoji_setlocalOnlyBulk,
+        $admin_emoji_setisSensitiveBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
