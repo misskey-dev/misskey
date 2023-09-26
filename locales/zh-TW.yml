@@ -1576,8 +1576,8 @@ _displayOfSensitiveMedia:
   force: "隱藏所有檔案"
 _instanceTicker:
   none: "隱藏"
-  remote: "向遠端使用者顯示"
-  always: "總是顯示"
+  remote: "只顯示遠端使用者"
+  always: "一律顯示"
 _serverDisconnectedBehavior:
   reload: "自動重載"
   dialog: "彈出式警告"
