@@ -15,16 +15,16 @@
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
-				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+				<button v-if="channel != null" class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
+					<span><i class="ti ti-device-tv"></i></span>
+					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+				</button>
+				<button ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
-				</button>
-				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
-					<span><i class="ti ti-device-tv"></i></span>
-					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+					<span v-if="channel == null" :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
 				</button>
 			</template>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
@@ -288,7 +288,7 @@ if (props.reply && props.reply.text != null) {
 }
 
 if (props.channel) {
-	visibility = 'public';
+	//visibility = 'public';
 	localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 }
 
@@ -422,9 +422,7 @@ function upload(file: File, name?: string): void {
 
 function setVisibility() {
 	if (props.channel) {
-		visibility = 'public';
 		localOnly = true; // TODO: チャンネルが連合するようになった折には消す
-		return;
 	}
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
