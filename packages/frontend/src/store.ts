@@ -360,6 +360,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: '#00FFFF',
 	},
+	localOnlyColor:{
+		where:'device',
+		default: '#2b2c41'
+	},
 	numberOfGamingSpeed: {
 		where: 'device',
 		default: 44,
