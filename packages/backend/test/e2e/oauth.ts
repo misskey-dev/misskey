@@ -160,7 +160,7 @@ describe('OAuth', () => {
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 
-		fastify = Fastify();
+		fastify = Fastify({ forceCloseConnections: true });
 		fastify.get('/', async (request, reply) => {
 			sender(reply);
 		});
