@@ -13,6 +13,8 @@
 	<MkButton inline @click="addTagBulk">Add tag</MkButton>
 	<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
 	<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
+	<MkButton inline @click="setisSensitiveBulk">Set isSensitive</MkButton>
+	<MkButton inline @click="setlocalOnlyBulk">Set localOnly</MkButton>
 	<MkButton inline danger @click="delBulk">Delete</MkButton>
 </div>
 <MkPagination ref="emojisPaginationComponent" :pagination="pagination" :displayLimit="100">
@@ -62,7 +64,30 @@ const pagination = {
 		query: (query.value && query.value !== '') ? query.value : null,
 	})),
 };
-
+const setisSensitiveBulk = async () => {
+	const { canceled, result } = await os.switch1({
+		title: 'isSensitive',
+		type: "mksw"
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-issensitive-bulk', {
+		ids: selectedEmojis.value,
+		isSensitive: result
+	});
+	emojisPaginationComponent.value.reload();
+};
+const setlocalOnlyBulk = async () => {
+	const { canceled, result } = await os.switch1({
+		title: 'localOnly',
+		type: "mksw"
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-localonly-bulk', {
+		ids: selectedEmojis.value,
+		localOnly: result
+	});
+	emojisPaginationComponent.value.reload();
+};
 const selectAll = () => {
     if (selectedEmojis.value.length > 0) {
         selectedEmojis.value = [];
@@ -117,6 +142,30 @@ const setLisenceBulk = async () => {
 	});
 	if (canceled) return;
 	await os.apiWithDialog('admin/emoji/set-license-bulk', {
+		ids: selectedEmojis.value,
+		license: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const isLocalBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'License',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-islocal-bulk', {
+		ids: selectedEmojis.value,
+		isLocal: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const isSensitiveBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'License',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-issensitive-bulk', {
 		ids: selectedEmojis.value,
 		license: result,
 	});

@@ -111,9 +111,9 @@ document.documentElement.style.setProperty("--localOnlyColor",hexToRgb(defaultSt
 document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed+'s');
 
 const iconOnly = ref(false);
-let bannerUrl = ref(defaultStore.state.bannerUrl);
+let bannerUrl = computed(defaultStore.makeGetterSetter('bannerUrl'));
 let iconUrl = ref();
-let gamingType = ref(defaultStore.state.gamingType);
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
