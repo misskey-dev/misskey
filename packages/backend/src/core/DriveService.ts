@@ -301,19 +301,26 @@ export class DriveService {
 		let img: sharp.Sharp | null = null;
 		let satisfyWebpublic: boolean;
 		let isAnimated: boolean;
+		let compressedWidth: number;
+		let compressedHeight: number;
 
 		try {
 			img = await sharpBmp(path, type);
 			const metadata = await img.metadata();
 			isAnimated = !!(metadata.pages && metadata.pages > 1);
 
+			const maxSize = this.config.nirila?.maxWebImageSize ?? 8192;
+			// nirila Extension: We want to keep original size as possible
+			// noinspection PointlessBooleanExpressionJS
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
 				type !== 'image/avif' && // not supported by Mastodon and MS Edge
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
-			metadata.width && metadata.width <= 2048 &&
-			metadata.height && metadata.height <= 2048
+			metadata.width && metadata.width <= maxSize &&
+			metadata.height && metadata.height <= maxSize
 			);
+			compressedWidth = metadata.width && metadata.width <= maxSize ? metadata.width : maxSize;
+			compressedHeight = metadata.height && metadata.height <= maxSize ? metadata.height : maxSize;
 		} catch (err) {
 			this.registerLogger.warn(`sharp failed: ${err}`);
 			return {
@@ -330,9 +337,9 @@ export class DriveService {
 
 			try {
 				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
+					webpublic = await this.imageProcessingService.convertSharpToWebp(img, compressedWidth, compressedHeight);
 				} else if (['image/png', 'image/bmp', 'image/svg+xml'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
+					webpublic = await this.imageProcessingService.convertSharpToPng(img, compressedWidth, compressedHeight);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
 				}
