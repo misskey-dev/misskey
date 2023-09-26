@@ -83,7 +83,7 @@ export default defineComponent({
 			background: var(--accentedBg);
 
       &.gamingDark{
-        color:white;
+				color: black !important;
         background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
         background-size: 1800% 1800%;
         -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
@@ -91,7 +91,8 @@ export default defineComponent({
         animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite;
       }
       &.gamingLight{
-        color: black;
+
+				color:white !important;
         background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
         background-size: 1800% 1800% !important;
         -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;

@@ -108,6 +108,7 @@ function hexToRgb(hex) {
 document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
 document.documentElement.style.setProperty("--followerColor",hexToRgb(defaultStore.state.followerColor));
 document.documentElement.style.setProperty("--specifiedColor",hexToRgb(defaultStore.state.specifiedColor))
+document.documentElement.style.setProperty("--localOnlyColor",hexToRgb(defaultStore.state.localOnlyColor))
 document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed+'s');
 
 const iconOnly = ref(false);
@@ -307,11 +308,11 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight {
-      color: white;
+			color: black;
     }
 
     &.gamingDark {
-      color: black;
+			color: white;
     }
 
     &.gamingLight:before {
@@ -681,7 +682,7 @@ function more(ev: MouseEvent) {
       -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
       animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-      color: white;
+      color: white !important;
     }
 
     &.gamingLight:hover, &.gamingLight.active {
@@ -692,12 +693,12 @@ function more(ev: MouseEvent) {
         -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
         -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
         animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
-        color: white;
+        color: white !important;
       }
     }
 
     &.gamingDark:before {
-      color: black;
+      color: black !important;
       content: "";
       display: block;
       position: absolute;
@@ -717,7 +718,7 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingDark:hover, &.gamingDark.active {
-      color: black;
+      color: black !important;
 
       &.gamingDark:before {
         background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
