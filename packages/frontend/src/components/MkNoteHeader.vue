@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <header :class="$style.root">
 	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
@@ -25,14 +30,13 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 
 defineProps<{
-	note: misskey.entities.Note;
-	pinned?: boolean;
+	note: Misskey.entities.Note;
 }>();
 </script>
 

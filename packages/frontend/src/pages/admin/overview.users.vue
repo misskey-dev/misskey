@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
-			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/user-info/${user.id}`" class="user">
+			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
 				<MkUserCardMini :user="user"/>
 			</MkA>
 		</div>

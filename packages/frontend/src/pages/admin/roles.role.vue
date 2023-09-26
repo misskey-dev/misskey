@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -32,7 +37,7 @@
 								<div class="_gaps_s">
 									<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
 										<div :class="$style.userItemMain">
-											<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.user.id}`">
+											<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
 												<MkUserCardMini :user="item.user"/>
 											</MkA>
 											<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
@@ -28,7 +33,7 @@
 					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
 				</MkKeyValue>
 			</div>
-			<MkA v-if="file.user" class="user" :to="`/user-info/${file.user.id}`">
+			<MkA v-if="file.user" class="user" :to="`/admin/user/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
 			<div>

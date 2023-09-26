@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -43,6 +48,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
@@ -54,7 +60,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache';
-import { UserList, UserLite } from 'misskey-js/built/entities';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
 const {
@@ -67,8 +72,8 @@ const props = defineProps<{
 
 const FETCH_USERS_LIMIT = 20;
 
-let list = $ref<UserList | null>(null);
-let users = $ref<UserLite[]>([]);
+let list = $ref<Misskey.entities.UserList | null>(null);
+let users = $ref<Misskey.entities.UserLite[]>([]);
 let queueUserIds = $ref<string[]>([]);
 let fetching = $ref(true);
 const isPublic = ref(false);

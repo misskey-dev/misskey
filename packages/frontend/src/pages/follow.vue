@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 </div>
@@ -5,7 +10,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
@@ -52,7 +57,7 @@ if (acct.startsWith('https://')) {
 		}
 	});
 } else {
-	promise = os.api('users/show', Acct.parse(acct));
+	promise = os.api('users/show', Misskey.acct.parse(acct));
 	promise.then(user => {
 		follow(user);
 	});

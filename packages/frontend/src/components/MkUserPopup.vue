@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
@@ -51,8 +56,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
@@ -76,12 +80,13 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let user = $ref<misskey.entities.UserDetailed | null>(null);
+let user = $ref<Misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);
 let left = $ref(0);
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu(getUserMenu(user), ev.currentTarget ?? ev.target);
+	const { menu, cleanup } = getUserMenu(user);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 onMounted(() => {
@@ -89,7 +94,7 @@ onMounted(() => {
 		user = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
-			Acct.parse(props.q.substring(1)) :
+			Misskey.acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
 		os.api('users/show', query).then(res => {

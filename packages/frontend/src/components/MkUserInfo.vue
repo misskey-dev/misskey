@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_panel" :class="$style.root">
 	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
@@ -29,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import number from '@/filters/number';
 import { userPage } from '@/filters/user';
@@ -38,7 +43,7 @@ import { $i } from '@/account';
 import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
 
 defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 }>();
 </script>
 

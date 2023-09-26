@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
@@ -111,11 +116,12 @@ function getMenu() {
 				width: {
 					type: 'number',
 					label: i18n.ts.width,
+					description: i18n.ts._deck.usedAsMinWidthWhenFlexible,
 					default: props.column.width,
 				},
 				flexible: {
 					type: 'boolean',
-					label: i18n.ts.flexible,
+					label: i18n.ts._deck.flexible,
 					default: props.column.flexible,
 				},
 			});

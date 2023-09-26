@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormLink @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
@@ -5,6 +10,11 @@
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
+		</div>
+	</FormSection>
+	<FormSection>
+		<div class="_gaps_m">
+			<FormLink @click="testNotification('server')">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -36,6 +46,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const';
+import { testNotification } from '@/scripts/test-notification';
 
 let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :max-height="300" :foldable="true">
 	<template #icon><i class="ti ti-photo"></i></template>
@@ -21,7 +26,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
@@ -31,16 +36,16 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 }>();
 
 let fetching = $ref(true);
 let images = $ref<{
-	note: misskey.entities.Note;
-	file: misskey.entities.DriveFile;
+	note: Misskey.entities.Note;
+	file: Misskey.entities.DriveFile;
 }[]>([]);
 
-function thumbnail(image: misskey.entities.DriveFile): string {
+function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl;

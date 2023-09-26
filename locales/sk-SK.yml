@@ -654,6 +654,7 @@ createNewClip: "Vytvoriť nový klip"
 unclip: "Odopnúť"
 confirmToUnclipAlreadyClippedNote: "Táto poznámka je už pripnutá ako \"{name}\". Naozaj ju chcete odopnúť?"
 public: "Verejné"
+private: "Súkromné"
 i18nInfo: "Misskey je prekladaný do rôznych jazykov dobrovoľníkmi. Pomôcť môžete na {link}."
 manageAccessTokens: "Spravovať prístupové tokeny"
 accountInfo: "Informácie o účte"
@@ -918,6 +919,7 @@ pleaseDonate: "Misskey je bezplatný softvér, ktorý používa {host}. Prosím,
 color: "Farba"
 horizontal: "Strana"
 youFollowing: "Sledované"
+icon: "Avatar"
 _role:
   priority: "Priorita"
   _priority:
@@ -1147,7 +1149,6 @@ _2fa:
   alreadyRegistered: "Už ste zaregistrovali 2-faktorové autentifikačné zariadenie."
   step1: "Najprv si nainštalujte autentifikačnú aplikáciu (napríklad {a} alebo {b}) na svoje zariadenie."
   step2: "Potom, naskenujte QR kód zobrazený na obrazovke."
-  step2Url: "Do aplikácie zadajte nasledujúcu URL adresu:"
   step3: "Nastavenie dokončíte zadaním tokenu z vašej aplikácie."
   step4: "Od teraz, všetky ďalšie prihlásenia budú vyžadovať prihlasovací token."
   securityKeyInfo: "Okrem odtlačku prsta alebo PIN autentifikácie si môžete nastaviť autentifikáciu cez hardvérový bezpečnostný kľúč podporujúci FIDO2 a tak ešte viac zabezpečiť svoj účet."

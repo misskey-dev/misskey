@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="700">
 	<div>
@@ -43,7 +48,7 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -122,7 +127,7 @@ async function deleteAntenna() {
 function addUser() {
 	os.selectUser().then(user => {
 		users = users.trim();
-		users += '\n@' + Acct.toString(user as any);
+		users += '\n@' + Misskey.acct.toString(user as any);
 		users = users.trim();
 	});
 }

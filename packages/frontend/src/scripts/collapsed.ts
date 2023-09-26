@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { extractUrlFromMfm } from './extract-url-from-mfm';
 
-export function shouldCollapsed(note: misskey.entities.Note): boolean {
+export function shouldCollapsed(note: Misskey.entities.Note): boolean {
 	const urls = note.text ? extractUrlFromMfm(mfm.parse(note.text)) : null;
 	const collapsed = note.cw == null && note.text != null && (
 		(note.text.includes('$[x2')) ||

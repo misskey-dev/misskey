@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
@@ -42,6 +47,7 @@ export class WebhookDeliverProcessorService {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					server: this.config.url,
 					hookId: job.data.webhookId,
 					userId: job.data.userId,
 					eventId: job.data.eventId,

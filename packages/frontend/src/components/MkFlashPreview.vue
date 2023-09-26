@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" tabindex="-1">
 	<article>
@@ -18,7 +23,7 @@ import { } from 'vue';
 import { userName } from '@/filters/user';
 
 const props = defineProps<{
-	//flash: misskey.entities.Flash;
+	//flash: Misskey.entities.Flash;
 	flash: any;
 }>();
 </script>

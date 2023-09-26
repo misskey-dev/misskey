@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { DriveFolder } from './DriveFolder.js';
+import { MiUser } from './User.js';
+import { MiDriveFolder } from './DriveFolder.js';
 
-@Entity()
+@Entity('drive_file')
 @Index(['userId', 'folderId', 'id'])
-export class DriveFile {
+export class MiDriveFile {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -21,13 +26,13 @@ export class DriveFile {
 		nullable: true,
 		comment: 'The owner ID.',
 	})
-	public userId: User['id'] | null;
+	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column('varchar', {
@@ -141,13 +146,13 @@ export class DriveFile {
 		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFile is located in root.',
 	})
-	public folderId: DriveFolder['id'] | null;
+	public folderId: MiDriveFolder['id'] | null;
 
-	@ManyToOne(type => DriveFolder, {
+	@ManyToOne(type => MiDriveFolder, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public folder: DriveFolder | null;
+	public folder: MiDriveFolder | null;
 
 	@Index()
 	@Column('boolean', {

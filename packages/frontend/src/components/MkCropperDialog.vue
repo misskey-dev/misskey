@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModalWindow
 	ref="dialogEl"
@@ -27,7 +32,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -39,13 +44,13 @@ import { i18n } from '@/i18n';
 import { getProxiedImageUrl } from '@/scripts/media-proxy';
 
 const emit = defineEmits<{
-	(ev: 'ok', cropped: misskey.entities.DriveFile): void;
+	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
 
 const props = defineProps<{
-	file: misskey.entities.DriveFile;
+	file: Misskey.entities.DriveFile;
 	aspectRatio: number;
 	uploadFolder?: string | null;
 }>();
@@ -57,7 +62,7 @@ let cropper: Cropper | null = null;
 let loading = $ref(true);
 
 const ok = async () => {
-	const promise = new Promise<misskey.entities.DriveFile>(async (res) => {
+	const promise = new Promise<Misskey.entities.DriveFile>(async (res) => {
 		const croppedCanvas = await cropper?.getCropperSelection()?.$toCanvas();
 		croppedCanvas?.toBlob(blob => {
 			if (!blob) return;

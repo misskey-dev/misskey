@@ -10,8 +10,8 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "esnext",
-		"moduleResolution": "node16",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -24,8 +24,8 @@
 			"@/*": ["./src/*"]
 		},
 		"typeRoots": [
-			"node_modules/@types",
-			"@types"
+			"./node_modules/@types",
+			"./src/@types"
 		],
 		"lib": [
 			"esnext",

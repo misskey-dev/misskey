@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const packedUserLiteSchema = {
 	type: 'object',
 	properties: {
@@ -314,6 +319,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		isDeleted: {
 			type: 'boolean',
+			nullable: false, optional: false,
+		},
+		twoFactorBackupCodesStock: {
+			type: 'string',
+			enum: ['full', 'partial', 'none'],
 			nullable: false, optional: false,
 		},
 		hideOnlineStatus: {

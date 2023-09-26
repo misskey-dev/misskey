@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id.js';
-import type { User } from './User.js';
+import type { MiUser } from './User.js';
 
-@Entity()
-export class RetentionAggregation {
+@Entity('retention_aggregation')
+export class MiRetentionAggregation {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -28,7 +33,7 @@ export class RetentionAggregation {
 		...id(),
 		array: true,
 	})
-	public userIds: User['id'][];
+	public userIds: MiUser['id'][];
 
 	@Column('integer', {
 	})

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	v-if="!muted"
@@ -136,7 +141,7 @@
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -166,8 +171,7 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
-	pinned?: boolean;
+	note: Misskey.entities.Note;
 }>();
 
 const inChannel = inject('inChannel', null);
@@ -198,7 +202,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const isDeleted = ref(false);
@@ -207,8 +211,8 @@ const translation = ref(null);
 const translating = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const conversation = ref<misskey.entities.Note[]>([]);
-const replies = ref<misskey.entities.Note[]>([]);
+const conversation = ref<Misskey.entities.Note[]>([]);
+const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
 
 const keymap = {
@@ -380,14 +384,16 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), ev).then(focus);
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted });
+		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), menuButton.value, {
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted });
+	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
-	}).then(focus);
+	}).then(focus).finally(cleanup);
 }
 
 async function clip() {

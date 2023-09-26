@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import fs from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +23,13 @@ await execa('pnpm', ['build-pre'], {
 	stderr: process.stderr,
 });
 
-execa('pnpm', ['exec', 'gulp', 'watch'], {
+await execa('pnpm', ['build-assets'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['build-assets', '--watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

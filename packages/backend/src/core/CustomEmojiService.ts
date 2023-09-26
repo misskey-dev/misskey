@@ -1,17 +1,21 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { DataSource, In, IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, Role } from '@/models/index.js';
+import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { MiEmoji } from '@/models/entities/Emoji.js';
+import type { EmojisRepository, MiRole } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import type { Config } from '@/config.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/server/api/stream/types.js';
 
@@ -19,18 +23,12 @@ const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
 @Injectable()
 export class CustomEmojiService implements OnApplicationShutdown {
-	private cache: MemoryKVCache<Emoji | null>;
-	public localEmojisCache: RedisSingleCache<Map<string, Emoji>>;
+	private cache: MemoryKVCache<MiEmoji | null>;
+	public localEmojisCache: RedisSingleCache<Map<string, MiEmoji>>;
 
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -40,16 +38,16 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private emojiEntityService: EmojiEntityService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemoryKVCache<Emoji | null>(1000 * 60 * 60 * 12);
+		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
 
-		this.localEmojisCache = new RedisSingleCache<Map<string, Emoji>>(this.redisClient, 'localEmojis', {
+		this.localEmojisCache = new RedisSingleCache<Map<string, MiEmoji>>(this.redisClient, 'localEmojis', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60 * 3, // 3m
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
 				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
-				return new Map(JSON.parse(value).map((x: Serialized<Emoji>) => [x.name, {
+				return new Map(JSON.parse(value).map((x: Serialized<MiEmoji>) => [x.name, {
 					...x,
 					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
 				}]));
@@ -59,7 +57,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async add(data: {
-		driveFile: DriveFile;
+		driveFile: MiDriveFile;
 		name: string;
 		category: string | null;
 		aliases: string[];
@@ -67,8 +65,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
-		roleIdsThatCanBeUsedThisEmojiAsReaction: Role['id'][];
-	}): Promise<Emoji> {
+		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
+	}): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: this.idService.genId(),
 			updatedAt: new Date(),
@@ -97,15 +95,15 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async update(id: Emoji['id'], data: {
-		driveFile?: DriveFile;
+	public async update(id: MiEmoji['id'], data: {
+		driveFile?: MiDriveFile;
 		name?: string;
 		category?: string | null;
 		aliases?: string[];
 		license?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
-		roleIdsThatCanBeUsedThisEmojiAsReaction?: Role['id'][];
+		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
@@ -145,7 +143,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addAliasesBulk(ids: Emoji['id'][], aliases: string[]) {
+	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
@@ -165,7 +163,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async setAliasesBulk(ids: Emoji['id'][], aliases: string[]) {
+	public async setAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
@@ -181,7 +179,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async removeAliasesBulk(ids: Emoji['id'][], aliases: string[]) {
+	public async removeAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
@@ -201,7 +199,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async setCategoryBulk(ids: Emoji['id'][], category: string | null) {
+	public async setCategoryBulk(ids: MiEmoji['id'][], category: string | null) {
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
@@ -217,7 +215,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async setLicenseBulk(ids: Emoji['id'][], license: string | null) {
+	public async setLicenseBulk(ids: MiEmoji['id'][], license: string | null) {
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
@@ -233,7 +231,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async delete(id: Emoji['id']) {
+	public async delete(id: MiEmoji['id']) {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 
 		await this.emojisRepository.delete(emoji.id);
@@ -246,7 +244,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async deleteBulk(ids: Emoji['id'][]) {
+	public async deleteBulk(ids: MiEmoji['id'][]) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<MkFolder :defaultOpen="true">
@@ -54,8 +59,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { toString } from 'misskey-js/built/acct';
-import { UserDetailed } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -68,7 +72,7 @@ import { $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
 
 const moveToAccount = ref('');
-const movedTo = ref<UserDetailed>();
+const movedTo = ref<Misskey.entities.UserDetailed>();
 const accountAliases = ref(['']);
 
 async function init() {
@@ -80,7 +84,7 @@ async function init() {
 
 	if ($i?.alsoKnownAs && $i.alsoKnownAs.length > 0) {
 		const alsoKnownAs = await os.api('users/show', { userIds: $i.alsoKnownAs });
-		accountAliases.value = (alsoKnownAs && alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${toString(user)}`) : [''];
+		accountAliases.value = (alsoKnownAs && alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${Misskey.acct.toString(user)}`) : [''];
 	} else {
 		accountAliases.value = [''];
 	}

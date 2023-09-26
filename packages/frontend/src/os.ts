@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
 import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
@@ -19,7 +24,6 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
 import copyToClipboard from './scripts/copy-to-clipboard';
 import { showMovedDialog } from './scripts/show-moved-dialog';
-import { DriveFile } from 'misskey-js/built/entities';
 
 export const openingWindowsCount = ref(0);
 
@@ -415,7 +419,7 @@ export async function selectUser(opts: { includeSelf?: boolean } = {}) {
 	});
 }
 
-export async function selectDriveFile(multiple: boolean): Promise<DriveFile[]> {
+export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',

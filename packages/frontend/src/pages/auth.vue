@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -38,7 +43,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { AuthSession } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
 import * as os from '@/os';
@@ -51,7 +56,7 @@ const props = defineProps<{
 }>();
 
 let state = $ref<'waiting' | 'accepted' | 'fetch-session-error' | 'denied' | null>(null);
-let session = $ref<AuthSession | null>(null);
+let session = $ref<Misskey.entities.AuthSession | null>(null);
 
 function accepted() {
 	state = 'accepted';
