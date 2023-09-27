@@ -14,7 +14,6 @@ import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
@@ -31,7 +30,6 @@ export class AnnouncementService {
 
 		private idService: IdService,
 		private userEntityService: UserEntityService,
-		private announcementEntityService: AnnouncementEntityService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -99,7 +97,7 @@ export class AnnouncementService {
 			'announcement."createdAt"': 'DESC',
 		});
 
-		return this.announcementEntityService.packMany(
+		return this.packMany(
 			await query
 				.limit(limit)
 				.offset(offset)
@@ -109,13 +107,22 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async getUnreadAnnouncements(user: MiUser): Promise<MiAnnouncement[]> {
-		const readsQuery = this.announcementReadsRepository.createQueryBuilder('read')
-			.select('read.announcementId')
-			.where('read.userId = :userId', { userId: user.id });
+	public async getUnreadAnnouncements(user: MiUser): Promise<Packed<'Announcement'>[]> {
+		const query = this.announcementsRepository.createQueryBuilder('announcement');
+		query.leftJoin(
+			MiAnnouncementRead,
+			'read',
+			'read."announcementId" = announcement.id AND read."userId" = :userId',
+			{ userId: user.id },
+		);
+		query.select([
+			'announcement.*',
+			'CASE WHEN read.id IS NULL THEN FALSE ELSE TRUE END as "isRead"',
+		]);
+		query.andWhere('read.id IS NULL');
+		query.andWhere('announcement."isActive" = true');
 
-		const q = this.announcementsRepository.createQueryBuilder('announcement')
-			.where('announcement.isActive = true')
+		query
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
 				qb.orWhere('announcement.userId IS NULL');
@@ -123,17 +130,18 @@ export class AnnouncementService {
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
 				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
-			}))
-			.andWhere(`announcement.id NOT IN (${ readsQuery.getQuery() })`);
+			}));
 
-		q.setParameters(readsQuery.getParameters());
-		q.orderBy({
+		query.orderBy({
 			'announcement."isActive"': 'DESC',
 			'announcement."displayOrder"': 'DESC',
 			'announcement."createdAt"': 'DESC',
 		});
 
-		return q.getMany();
+		return this.packMany(
+			await query.getMany(),
+			user,
+		);
 	}
 
 	@bindThis
@@ -239,6 +247,13 @@ export class AnnouncementService {
 
 	@bindThis
 	public async update(announcement: MiAnnouncement, values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<void> {
+		if (announcement.userId && announcement.userId !== values.userId) {
+			await this.announcementReadsRepository.delete({
+				announcementId: announcement.id,
+				userId: announcement.userId,
+			});
+		}
+
 		await this.announcementsRepository.update(announcement.id, {
 			updatedAt: new Date(),
 			title: values.title,
@@ -252,6 +267,7 @@ export class AnnouncementService {
 			closeDuration: values.closeDuration,
 			displayOrder: values.displayOrder,
 			isActive: values.isActive,
+			userId: values.userId,
 		});
 
 		const after = await this.announcementsRepository.findOneByOrFail({ id: announcement.id });
@@ -279,6 +295,9 @@ export class AnnouncementService {
 
 	@bindThis
 	public async delete(announcement: MiAnnouncement, moderator?: MiUser): Promise<void> {
+		await this.announcementReadsRepository.delete({
+			announcementId: announcement.id,
+		});
 		await this.announcementsRepository.delete(announcement.id);
 
 		if (moderator) {
@@ -297,6 +316,37 @@ export class AnnouncementService {
 	}
 
 	@bindThis
+	public async countUnreadAnnouncements(me: MiUser): Promise<number> {
+		const query = this.announcementsRepository.createQueryBuilder('announcement');
+		query.leftJoinAndSelect(
+			MiAnnouncementRead,
+			'read',
+			'read."announcementId" = announcement.id AND read."userId" = :userId',
+			{ userId: me.id },
+		);
+		query.andWhere('read.id IS NULL');
+		query.andWhere('announcement."isActive" = true');
+
+		query
+			.andWhere(
+				new Brackets((qb) => {
+					qb.orWhere('announcement."userId" = :userId', { userId: me.id });
+					qb.orWhere('announcement."userId" IS NULL');
+				}),
+			)
+			.andWhere(
+				new Brackets((qb) => {
+					qb.orWhere('announcement."forExistingUsers" = false');
+					qb.orWhere('announcement."createdAt" > :createdAt', {
+						createdAt: me.createdAt,
+					});
+				}),
+			);
+
+		return query.getCount();
+	}
+
+	@bindThis
 	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
@@ -309,20 +359,16 @@ export class AnnouncementService {
 			return;
 		}
 
-		if ((await this.getUnreadAnnouncements(user)).length === 0) {
+		if ((await this.countUnreadAnnouncements(user)) === 0) {
 			this.globalEventService.publishMainStream(user.id, 'readAllAnnouncements');
 		}
 	}
 
 	@bindThis
 	public async packMany(
-		announcements: MiAnnouncement[],
+		announcements: (MiAnnouncement & { isRead?: boolean | null })[],
 		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			reads?: MiAnnouncementRead[];
-		},
 	): Promise<Packed<'Announcement'>[]> {
-		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
 		return announcements.map(announcement => ({
 			id: announcement.id,
 			createdAt: announcement.createdAt.toISOString(),
@@ -336,7 +382,7 @@ export class AnnouncementService {
 			closeDuration: announcement.closeDuration,
 			displayOrder: announcement.displayOrder,
 			forYou: announcement.userId === me?.id,
-			isRead: reads.some(read => read.announcementId === announcement.id),
+			isRead: announcement.isRead ?? undefined,
 		}));
 	}
 }
