@@ -59,7 +59,7 @@ export class AnnouncementService {
 			);
 			query.select([
 				'announcement.*',
-				'CASE WHEN read.id IS NULL THEN FALSE ELSE TRUE END as "isRead"',
+				'read.id IS NOT NULL as "isRead"',
 			]);
 			query
 				.andWhere(
@@ -115,10 +115,6 @@ export class AnnouncementService {
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
 			{ userId: user.id },
 		);
-		query.select([
-			'announcement.*',
-			'CASE WHEN read.id IS NULL THEN FALSE ELSE TRUE END as "isRead"',
-		]);
 		query.andWhere('read.id IS NULL');
 		query.andWhere('announcement."isActive" = true');
 
