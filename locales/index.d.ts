@@ -648,6 +648,7 @@ export interface Locale {
     "metrics": string;
     "overview": string;
     "logs": string;
+    "mfm": string;
     "delayed": string;
     "database": string;
     "channel": string;
@@ -2267,9 +2268,9 @@ export interface Locale {
     "_moderationLogTypes": {
         "createRole": string;
         "deleteRole": string;
-        "updateRole": string;
         "assignRole": string;
         "unassignRole": string;
+        "updateRole": string;
         "suspend": string;
         "unsuspend": string;
         "addCustomEmoji": string;

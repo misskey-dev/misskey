@@ -645,6 +645,7 @@ copy: "コピー"
 metrics: "メトリクス"
 overview: "概要"
 logs: "ログ"
+mfm: 'mfm 装飾'
 delayed: "遅延"
 database: "データベース"
 channel: "チャンネル"
@@ -2180,9 +2181,9 @@ _webhookSettings:
 _moderationLogTypes:
   createRole: "ロールを作成"
   deleteRole: "ロールを削除"
-  updateRole: "ロールを更新"
   assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサイン解除"
+  updateRole: "ロール設定更新"
   suspend: "凍結"
   unsuspend: "凍結解除"
   addCustomEmoji: "カスタム絵文字追加"

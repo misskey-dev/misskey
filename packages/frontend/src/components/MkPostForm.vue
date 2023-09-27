@@ -116,10 +116,12 @@ SPDX-License-Identifier: AGPL-3.0-only
         <button v-tooltip="i18n.ts.hashtags" class="_button"
                 :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]"
                 @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-        <button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button"
+        <button v-if="postFormActions.length" v-tooltip="i18n.ts.plugin" class="_button"
                 :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
         <button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i
             class="ti ti-mood-happy"></i></button>
+				<button v-tooltip="i18n.ts.mfm" :class="['_button', $style.footerButton]" @click="insertMfm"><i
+					class="ti ti-wand"></i></button>
       </div>
       <div :class="$style.footerRight">
         <button v-tooltip="i18n.ts.previewNoteText" class="_button"
@@ -879,7 +881,9 @@ function insertMention() {
 async function insertEmoji(ev: MouseEvent) {
   os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
 }
-
+async function insertMfm(){
+  insertTextAtCursor(textareaEl, '$');
+}
 function showActions(ev) {
   os.popupMenu(postFormActions.map(action => ({
     text: action.title,
