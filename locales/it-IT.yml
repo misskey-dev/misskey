@@ -2128,3 +2128,4 @@ _moderationLogTypes:
   markSensitiveDriveFile: "File nel Drive segnato come esplicito"
   unmarkSensitiveDriveFile: "File nel Drive segnato come non esplicito"
   resolveAbuseReport: "Segnalazione risolta"
+  createInvitation: "Genera codice di invito"
