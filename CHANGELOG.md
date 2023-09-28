@@ -15,6 +15,7 @@
 ## next
 
 ### General
+- Enhance: ユーザーページのノート一覧でRenoteを除外できるように
 
 ### Client
 - Enhance: モデレーションログ機能の強化
