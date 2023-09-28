@@ -1810,8 +1810,6 @@ export interface Locale {
         "note": string;
         "noteMy": string;
         "notification": string;
-        "chat": string;
-        "chatBg": string;
         "antenna": string;
         "channel": string;
     };
