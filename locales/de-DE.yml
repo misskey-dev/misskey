@@ -2128,3 +2128,4 @@ _moderationLogTypes:
   markSensitiveDriveFile: "Datei als sensitiv markiert"
   unmarkSensitiveDriveFile: "Datei als nicht sensitiv markiert"
   resolveAbuseReport: "Meldung bearbeitet"
+  createInvitation: "Einladung erstellen"
