@@ -15,11 +15,14 @@
 ## next
 
 ### General
+- Feat: ノートの編集をできるように
+	- ロールで編集可否を設定可能
 - Enhance: タイムラインからRenoteを除外するオプションを追加
 - Enhance: ユーザーページのノート一覧でRenoteを除外できるように
 
 ### Client
 - Enhance: モデレーションログ機能の強化
+- Enhance: Plugin:register_post_form_actionを用いてCWを取得・変更できるように
 - Feat:admin/ad/listにて掲載中の広告が絞り込めるように
 
 ### Server

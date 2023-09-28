@@ -30,6 +30,8 @@ export type Column = {
 	roleId?: string;
 	includingTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
+	withRenotes?: boolean;
+	withReplies?: boolean;
 };
 
 export const deckStore = markRaw(new Storage('deck', {

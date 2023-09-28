@@ -71,6 +71,12 @@ export function useNoteCapture(props: {
 				break;
 			}
 
+			case 'updated': {
+				note.value.cw = body.cw;
+				note.value.text = body.text;
+				break;
+			}
+
 			case 'deleted': {
 				props.isDeletedRef.value = true;
 				break;
