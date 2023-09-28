@@ -15,6 +15,7 @@
 ## next
 
 ### General
+- Enhance: タイムラインからRenoteを除外するオプションを追加
 - Enhance: ユーザーページのノート一覧でRenoteを除外できるように
 
 ### Client

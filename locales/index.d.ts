@@ -1124,6 +1124,7 @@ export interface Locale {
     "authentication": string;
     "authenticationRequiredToContinue": string;
     "dateAndTime": string;
+    "showRenotes": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

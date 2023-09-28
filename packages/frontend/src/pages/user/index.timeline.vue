@@ -36,8 +36,8 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
-		includeRenotes: include.value === 'all',
-		includeReplies: include.value === 'all' || include.value === 'files',
+		withRenotes: include.value === 'all',
+		withReplies: include.value === 'all' || include.value === 'files',
 		withFiles: include.value === 'files',
 	})),
 };

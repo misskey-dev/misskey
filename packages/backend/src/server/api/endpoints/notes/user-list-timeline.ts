@@ -49,6 +49,8 @@ export const paramDef = {
 		includeMyRenotes: { type: 'boolean', default: true },
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
+		withReplies: { type: 'boolean', default: false },
+		withRenotes: { type: 'boolean', default: true },
 		withFiles: {
 			type: 'boolean',
 			default: false,
@@ -127,6 +129,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					qb.orWhere('note.text IS NOT NULL');
 					qb.orWhere('note.fileIds != \'{}\'');
 					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (!ps.withReplies) {
+				query.andWhere('note.replyId IS NULL');
+			}
+
+			if (ps.withRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere(new Brackets(qb => {
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+					}));
 				}));
 			}
 
