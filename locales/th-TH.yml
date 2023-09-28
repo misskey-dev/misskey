@@ -1108,7 +1108,7 @@ loadReplies: "แสดงการตอบกลับ"
 loadConversation: "แสดงบทสนทนา"
 pinnedList: "รายการที่ปักหมุดไว้แล้ว"
 notifyNotes: "แจ้งเตือนเกี่ยวกับโพสต์ใหม่"
-unnotifyNotes: "หยุดการแจ้งเตือนเกี่ยวกับโพสต์โน้ตใหม่"
+unnotifyNotes: "หยุดการแจ้งเตือนเกี่ยวกับโน้ตใหม่"
 authentication: "การตรวจสอบสิทธิ์"
 dateAndTime: "เวลาประทับ"
 _announcement:
