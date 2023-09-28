@@ -20,9 +20,11 @@
 
 ### Client
 - Enhance: モデレーションログ機能の強化
+- Feat:admin/ad/listにて掲載中の広告が絞り込めるように
 
 ### Server
 - Enhance: MasterプロセスのPIDを書き出せるように
+- Feat:admin/ad/createにてレスポンス200、設定した広告情報を返すように
 
 ## 2023.9.1
 
