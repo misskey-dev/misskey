@@ -2045,3 +2045,4 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Tangguhkan"
   resetPassword: "Atur ulang kata sandi"
+  createInvitation: "Buat kode undangan"
