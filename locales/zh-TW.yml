@@ -2128,3 +2128,4 @@ _moderationLogTypes:
   markSensitiveDriveFile: "標記為敏感檔案"
   unmarkSensitiveDriveFile: "撤銷標記為敏感檔案"
   resolveAbuseReport: "解決檢舉"
+  createInvitation: "建立邀請碼"
