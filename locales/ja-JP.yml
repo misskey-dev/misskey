@@ -2190,3 +2190,4 @@ _moderationLogTypes:
   markSensitiveDriveFile: "ファイルをセンシティブ付与"
   unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
   resolveAbuseReport: "通報を解決"
+  createInvitation: "招待コードを作成"
