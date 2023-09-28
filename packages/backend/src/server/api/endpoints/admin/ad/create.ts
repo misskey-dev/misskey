@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.adsRepository.insert({
+			const ad = await this.adsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				expiresAt: new Date(ps.expiresAt),
@@ -53,7 +53,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ratio: ps.ratio,
 				place: ps.place,
 				memo: ps.memo,
-			});
+			}).then(r => this.adsRepository.findOneByOrFail({ id: r.identifiers[0].id }));
+			return ad;
 		});
 	}
 }
