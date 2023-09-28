@@ -2128,3 +2128,4 @@ _moderationLogTypes:
   markSensitiveDriveFile: "File marked as sensitive"
   unmarkSensitiveDriveFile: "File unmarked as sensitive"
   resolveAbuseReport: "Report resolved"
+  createInvitation: "Generate invite"
