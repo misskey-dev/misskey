@@ -24,6 +24,11 @@ export class MiNote {
 	})
 	public createdAt: Date;
 
+	@Column('timestamp with time zone', {
+		default: null,
+	})
+	public updatedAt: Date | null;
+
 	@Index()
 	@Column({
 		...id(),
