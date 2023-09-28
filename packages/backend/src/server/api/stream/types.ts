@@ -130,6 +130,10 @@ export interface NoteStreamTypes {
 	deleted: {
 		deletedAt: Date;
 	};
+	updated: {
+		cw: string | null;
+		text: string;
+	};
 	reacted: {
 		reaction: string;
 		emoji?: {
