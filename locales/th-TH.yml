@@ -2068,3 +2068,4 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "ถูกระงับ"
   resetPassword: "รีเซ็ตรหัสผ่าน"
+  createInvitation: "สร้างคำเชิญ"
