@@ -92,11 +92,13 @@ if (props.src === 'antenna') {
 	endpoint = 'notes/hybrid-timeline';
 	query = {
 		withFiles: true,
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
 	};
 	connection = stream.useChannel('hybridTimeline', {
 		withFiles: true,
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'social') {
@@ -113,10 +115,12 @@ if (props.src === 'antenna') {
 } else if (props.src === 'all') {
     endpoint = 'notes/hybrid-all-timeline';
     query = {
-        withReplies: defaultStore.state.showTimelineReplies,
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
     };
     connection = stream.useChannel('hybridAllTimeline', {
-        withReplies: defaultStore.state.showTimelineReplies,
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
     });
     connection.on('note', prepend);
 } else if (props.src === 'global') {
