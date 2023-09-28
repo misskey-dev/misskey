@@ -819,8 +819,10 @@ function showActions(ev) {
 		action: () => {
 			action.handler({
 				text: text,
+				cw: cw,
 			}, (key, value) => {
 				if (key === 'text') { text = value; }
+				if (key === 'cw') { useCw = value !== null; cw = value; }
 			});
 		},
 	})), ev.currentTarget ?? ev.target);

@@ -20,6 +20,7 @@
 
 ### Client
 - Enhance: モデレーションログ機能の強化
+- Plugin:register_post_form_actionを用いてCWを取得・変更できるように
 
 ### Server
 - Enhance: MasterプロセスのPIDを書き出せるように
