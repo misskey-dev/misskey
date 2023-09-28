@@ -29,7 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 			<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
       <MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
@@ -134,11 +133,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableUltimateDataSaverMode">{{ i18n.ts.UltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableCellularWithUltimateDataSaver">{{ i18n.ts.cellularWithUltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
+
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -258,11 +259,11 @@ const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
-const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode')) ;
 const enableCellularWithDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithDataSaver'));
 const enableUltimateDataSaverMode = computed(defaultStore.makeGetterSetter('enableUltimateDataSaverMode'))
 const enableCellularWithUltimateDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithUltimateDataSaver'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
+const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -280,7 +281,6 @@ const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
-const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
@@ -328,6 +328,7 @@ watch(useSystemFont, () => {
 		miLocalStorage.removeItem('useSystemFont');
 	}
 });
+
 watch([
 	lang,
 	fontSize,

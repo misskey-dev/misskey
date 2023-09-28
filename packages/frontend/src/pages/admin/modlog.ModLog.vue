@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'createRole'">: {{ log.info.role.name }}</span>
 		<span v-else-if="log.type === 'updateRole'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'deleteRole'">: {{ log.info.role.name }}</span>
+		<span v-else-if="log.type === 'addCustomEmoji'">: {{ log.info.emoji.name }}</span>
 		<span v-else-if="log.type === 'updateCustomEmoji'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'markSensitiveDriveFile'">: @{{ log.info.fileUserUsername }}{{ log.info.fileUserHost ? '@' + log.info.fileUserHost : '' }}</span>
 		<span v-else-if="log.type === 'unmarkSensitiveDriveFile'">: @{{ log.info.fileUserUsername }}{{ log.info.fileUserHost ? '@' + log.info.fileUserHost : '' }}</span>

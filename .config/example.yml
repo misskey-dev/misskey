@@ -30,7 +30,7 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
-# You can also use UNIX domain socket. 
+# You can also use UNIX domain socket.
 # socket: /path/to/misskey.sock
 # chmodSocket: '777'
 
@@ -60,17 +60,17 @@ dbReplications: false
 # You can configure any number of replicas here
 #dbSlaves:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -206,3 +206,6 @@ signToActivityPubGet: true
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
+
+# PID File of master process
+#pidFile: /tmp/misskey.pid
