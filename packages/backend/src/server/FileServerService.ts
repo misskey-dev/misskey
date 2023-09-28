@@ -225,13 +225,6 @@ export class FileServerService {
 			return;
 		}
 
-		// verify the referer
-		const { referer } = request.headers;
-		if (typeof referer !== 'string' || !referer.startsWith(this.config.url)) {
-			reply.code(400);
-			return;
-		}
-
 		// アバタークロップなど、どうしてもオリジンである必要がある場合
 		const mustOrigin = 'origin' in request.query;
 
