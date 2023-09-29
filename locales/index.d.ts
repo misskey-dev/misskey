@@ -2283,6 +2283,9 @@ export interface Locale {
         "unmarkSensitiveDriveFile": string;
         "resolveAbuseReport": string;
         "createInvitation": string;
+        "createAd": string;
+        "deleteAd": string;
+        "updateAd": string;
     };
 }
 declare const locales: {

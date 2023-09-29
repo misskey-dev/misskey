@@ -2196,3 +2196,6 @@ _moderationLogTypes:
   unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
   resolveAbuseReport: "通報を解決"
   createInvitation: "招待コードを作成"
+  createAd: "広告を作成"
+  deleteAd: "広告を削除"
+  updateAd: "広告を更新"
