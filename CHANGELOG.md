@@ -24,11 +24,11 @@
 ### Client
 - Enhance: モデレーションログ機能の強化
 - Enhance: Plugin:register_post_form_actionを用いてCWを取得・変更できるように
-- Feat:admin/ad/listにて掲載中の広告が絞り込めるように
+- Enhance: admin/ad/listにて掲載中の広告が絞り込めるように
 
 ### Server
 - Enhance: MasterプロセスのPIDを書き出せるように
-- Feat:admin/ad/createにてレスポンス200、設定した広告情報を返すように
+- Enhance: admin/ad/createにてレスポンス200、設定した広告情報を返すように
 
 ## 2023.9.1
 
