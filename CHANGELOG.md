@@ -27,6 +27,7 @@
 ### Client
 - Enhance: Plugin:register_post_form_actionを用いてCWを取得・変更できるように
 - Enhance: admin/ad/listにて掲載中の広告が絞り込めるように
+- Enhance: AiScriptにリモートサーバーのAPIを叩く用の関数を追加（`Mk:apiExternal`）
 
 ### Server
 - Enhance: MasterプロセスのPIDを書き出せるように
@@ -80,7 +81,6 @@
 - Feat: Playで直接投稿フォームを埋め込めるように(`Ui:C:postForm`)
 - Feat: クライアントを起動している間、デバイスの画面が自動でオフになるのを防ぐオプションを追加
 - Feat: 新しい実績を追加
-- Feat: リモートサーバーのAPIを叩く用の関数を追加（`Mk:apiExternal`）
 - Enhance: ノート詳細ページでリノート一覧、リアクション一覧タブを追加
 	- ノートのメニューからは当該項目は消えました
 - Enhance: センシティブなメディアを目立たせる設定を追加
