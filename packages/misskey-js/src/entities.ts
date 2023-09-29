@@ -1,4 +1,4 @@
-import { ModerationLogPayloads } from './consts.js';
+import { ModerationLogPayloads, notificationTypes } from './consts.js';
 
 export type ID = string;
 export type DateString = string;
@@ -104,7 +104,22 @@ export type MeDetailed = UserDetailed & {
 	isDeleted: boolean;
 	isExplorable: boolean;
 	mutedWords: string[][];
-	mutingNotificationTypes: string[];
+	notificationRecieveConfig: {
+		[notificationType in typeof notificationTypes[number]]?: {
+			type: 'all';
+		} | {
+			type: 'never';
+		} | {
+			type: 'following';
+		} | {
+			type: 'follower';
+		} | {
+			type: 'mutualFollow';
+		} | {
+			type: 'list';
+			userListId: string;
+		};
+	};
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;

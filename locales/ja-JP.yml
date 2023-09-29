@@ -1123,6 +1123,8 @@ authenticationRequiredToContinue: "続けるには認証を行ってください
 dateAndTime: "日時"
 showRenotes: "リノートを表示"
 edited: "編集済み"
+notificationRecieveConfig: "通知の受信設定"
+mutualFollow: "相互フォロー"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

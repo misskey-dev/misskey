@@ -28,7 +28,7 @@ export type Column = {
 	listId?: string;
 	channelId?: string;
 	roleId?: string;
-	includingTypes?: typeof notificationTypes[number][];
+	excludeTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
 	withRenotes?: boolean;
 	withReplies?: boolean;
