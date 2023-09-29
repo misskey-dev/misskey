@@ -308,11 +308,11 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight {
-			color: black;
+			color: white !important;
     }
 
     &.gamingDark {
-			color: white;
+			color: black !important;
     }
 
     &.gamingLight:before {
