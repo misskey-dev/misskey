@@ -1105,6 +1105,10 @@ youHaveUnreadAnnouncements: "あんたまだこのお知らせ読んどらんや
 useSecurityKey: "ブラウザまたはデバイスの言う通りに、セキュリティキーまたはパスキーを使ってや。"
 replies: "返事"
 renotes: "Renote"
+loadReplies: "返信を見るで"
+loadConversation: "会話を見るで"
+verifiedLink: "このリンク先の所有者であることが確認されたで。"
+authenticationRequiredToContinue: "続けるには認証をやってや。"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
@@ -1133,6 +1137,11 @@ _serverRules:
   description: "新規登録前に見せる、サーバーの簡潔なルールを設定すんで。内容は使うための決め事の要約とすることを推奨するわ。"
 _serverSettings:
   iconUrl: "アイコン画像のURL"
+  appIconDescription: "{host}がアプリとして表示してるんやつをアイコンを指定すんで。"
+  appIconUsageExample: "PWAや、スマートフォンのホーム画面にブックマークとして追加された時など"
+  appIconStyleRecommendation: "円形もしくは角丸にクロップされる場合があるさかいに、塗り潰された余白のある背景があるものが推奨されるで。"
+  appIconResolutionMustBe: "解像度は必ず{resolution}である必要があるで。"
+  shortNameDescription: "サーバーの名前が長い時に、代わりに表示することのできるあだ名。"
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに引っ越す"
   moveFromSub: "別のアカウントへエイリアスを作る"
@@ -1703,6 +1712,7 @@ _2fa:
   step2Click: "QRコードをクリックすると、今使とる端末に入っとる認証アプリとかキーリングに登録できるで。"
   step3Title: "確認コードを入れてーや"
   step3: "アプリに表示されているトークンを入力して終わりや。"
+  setupCompleted: "設定が完了したで。"
   step4: "これからログインするときも、同じようにトークンを入力するんやで"
   securityKeyNotSupported: "今使とるブラウザはセキュリティキーに対応してへんのやってさ。"
   registerTOTPBeforeKey: "セキュリティキー・パスキーを登録するんやったら、まず認証アプリを設定してーな。"
@@ -1717,6 +1727,10 @@ _2fa:
   renewTOTPConfirm: "今までの認証アプリの確認コードは使えんくなるけどええか？"
   renewTOTPOk: "もっかい設定する"
   renewTOTPCancel: "やめとく"
+  checkBackupCodesBeforeCloseThisWizard: "このウィザードを閉じる前に、したのバックアップコードを確認しいや。"
+  backupCodesDescription: "認証アプリが使用できんなった場合、以下のバックアップコードを使ってアカウントにアクセスできるで。これらのコードは必ず安全な場所に置いときや。各コードは一回だけ使用できるで。"
+  backupCodeUsedWarning: "バックアップコードが使用されたで。認証アプリが使えなくなってるん場合、なるべく早く認証アプリを再設定しや。"
+  backupCodesExhaustedWarning: "バックアップコードが全て使用されたで。認証アプリを利用できん場合、これ以上アカウントにアクセスできなくなるで。認証アプリを再登録しや。"
 _permissions:
   "read:account": "アカウントの情報を見るで"
   "write:account": "アカウントの情報を変更するで"
@@ -1989,6 +2003,9 @@ _notification:
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしといたで"
   achievementEarned: "実績を獲得しとるで"
+  checkNotificationBehavior: "通知の表示を確かめるで"
+  sendTestNotification: "テスト通知を送信するで"
+  notificationWillBeDisplayedLikeThis: "通知はこのように表示されるで"
   _types:
     all: "すべて"
     follow: "フォロー"
@@ -2024,6 +2041,7 @@ _deck:
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できるで。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選んでウィジェットを追加してなー"
   useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
+  usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となるで"
   _columns:
     main: "メイン"
     widgets: "ウィジェット"
@@ -2061,3 +2079,4 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "凍結"
   resetPassword: "パスワードをリセット"
+  createInvitation: "招待コードを作成"

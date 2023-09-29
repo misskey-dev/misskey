@@ -1125,6 +1125,11 @@ unnotifyNotes: "投稿の通知を解除"
 authentication: "認証"
 authenticationRequiredToContinue: "続けるには認証を行ってください"
 dateAndTime: "日時"
+showRenotes: "リノートを表示"
+edited: "編集済み"
+notificationRecieveConfig: "通知の受信設定"
+mutualFollow: "相互フォロー"
+fileAttachedOnly: "ファイル付きのみ"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1462,6 +1467,7 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
+    canEditNote: "ノートの編集"
     canInvite: "サーバー招待コードの発行"
     inviteLimit: "招待コードの作成可能数"
     inviteLimitCycle: "招待コードの発行間隔"
@@ -2168,6 +2174,17 @@ _webhookSettings:
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
 
+_koteitag:
+  clearTags: "タグをクリア"
+  air: "エア番組"
+  livecure: "実況"
+  episodeBrowser: "エピソードブラウザ"
+  fetch: "番組表の取得"
+  episodePrefix: "第"
+  episodeSuffix: "話"
+  confirmMessage: "この番組でよろしいでしょうか？"
+  successMessage: "固定タグ用コマンドを送信しました。"
+
 _moderationLogTypes:
   createRole: "ロールを作成"
   deleteRole: "ロールを削除"
@@ -2195,14 +2212,7 @@ _moderationLogTypes:
   markSensitiveDriveFile: "ファイルをセンシティブ付与"
   unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
   resolveAbuseReport: "通報を解決"
-
-_koteitag:
-  clearTags: "タグをクリア"
-  air: "エア番組"
-  livecure: "実況"
-  episodeBrowser: "エピソードブラウザ"
-  fetch: "番組表の取得"
-  episodePrefix: "第"
-  episodeSuffix: "話"
-  confirmMessage: "この番組でよろしいでしょうか？"
-  successMessage: "固定タグ用コマンドを送信しました。"
+  createInvitation: "招待コードを作成"
+  createAd: "広告を作成"
+  deleteAd: "広告を削除"
+  updateAd: "広告を更新"

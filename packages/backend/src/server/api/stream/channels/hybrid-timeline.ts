@@ -21,6 +21,7 @@ class HybridTimelineChannel extends Channel {
 	public static requireCredential = true;
 	private q: string[][] = [['delmulin']];
 	private withReplies: boolean;
+	private withRenotes: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -39,7 +40,8 @@ class HybridTimelineChannel extends Channel {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.ltlAvailable) return;
 
-		this.withReplies = params.withReplies as boolean;
+		this.withReplies = params.withReplies ?? false;
+		this.withRenotes = params.withRenotes ?? true;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -86,6 +88,15 @@ class HybridTimelineChannel extends Channel {
 
 		// Ignore notes from instances the user has muted
 		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
+
+		// 関係ない返信は除外
+		if (note.reply && !this.withReplies) {
+			const reply = note.reply;
+			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
+		}
+
+		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
