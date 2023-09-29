@@ -243,4 +243,5 @@ definePageMetadata({
 	&:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
-}</style>
+}
+</style>
