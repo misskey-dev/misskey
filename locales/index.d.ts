@@ -1128,6 +1128,7 @@ export interface Locale {
     "edited": string;
     "notificationRecieveConfig": string;
     "mutualFollow": string;
+    "fileAttachedOnly": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

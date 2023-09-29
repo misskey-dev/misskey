@@ -24,9 +24,11 @@ const props = withDefaults(defineProps<{
 	sound?: boolean;
 	withRenotes?: boolean;
 	withReplies?: boolean;
+	onlyFiles?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
+	onlyFiles: false,
 });
 
 const emit = defineEmits<{
@@ -69,10 +71,12 @@ if (props.src === 'antenna') {
 	query = {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('homeTimeline', {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 
@@ -82,10 +86,12 @@ if (props.src === 'antenna') {
 	query = {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('localTimeline', {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'social') {
@@ -93,10 +99,12 @@ if (props.src === 'antenna') {
 	query = {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('hybridTimeline', {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'global') {
@@ -104,10 +112,12 @@ if (props.src === 'antenna') {
 	query = {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('globalTimeline', {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'mentions') {
@@ -131,11 +141,13 @@ if (props.src === 'antenna') {
 	query = {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 		listId: props.list,
 	};
 	connection = stream.useChannel('userList', {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 		listId: props.list,
 	});
 	connection.on('note', prepend);
