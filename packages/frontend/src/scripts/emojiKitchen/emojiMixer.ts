@@ -1,4 +1,4 @@
-import * as data from './emojiData';
+import * as data from './emojiData.js';
 
 const mixEmojiUrl = (r, c) => {
 	let padZeros = r < 20220500; // Revisions before 0522 had preceding zeros
@@ -57,11 +57,28 @@ const pairsMatchingMap = match => {
 	return mixEmojiUrl(d, [c1, c2]);
 };
 
+const fixedEncodeIndex = (emoji) => {
+	const e = hexEncodeEmoji(emoji);
+	let ei = data.points.indexOf(e);
+	if (ei === -1) {
+		ei = data.points.indexOf(e + "-fe0f");
+		if (ei === -1) throw new Error('no match emoji');
+	}
+
+	return ei;
+}
+
 export const mixEmoji = (emoji1, emoji2) => {
-	const encordedEmoji1 = convertBase(data.points.indexOf(hexEncodeEmoji(emoji1)), 10, 64);
-	const encordedEmoji2 = convertBase(data.points.indexOf(hexEncodeEmoji(emoji2)), 10, 64);
-	return [
-		...data.pairs.matchAll(new RegExp("^.*\\." + encordedEmoji1 + "\\." + encordedEmoji2 + "\\.$", "gm")),
-		...data.pairs.matchAll(new RegExp("^.*\\." + encordedEmoji2 + "\\." + encordedEmoji1 + "\\.$", "gm"))
-	].map(pairsMatchingMap).pop();
+	try {
+		const encordedEmoji1 = convertBase(fixedEncodeIndex(emoji1), 10, 64);
+		const encordedEmoji2 = convertBase(fixedEncodeIndex(emoji2), 10, 64);
+		return [
+			...data.pairs.matchAll(new RegExp("^.*\\." + encordedEmoji1 + "\\." + encordedEmoji2 + "\\.$", "gm")),
+			...data.pairs.matchAll(new RegExp("^.*\\." + encordedEmoji2 + "\\." + encordedEmoji1 + "\\.$", "gm"))
+		].map(pairsMatchingMap).pop();
+	}
+	catch {
+		console.error('convert failed.', hexEncodeEmoji(emoji1), hexEncodeEmoji(emoji2));
+		return;
+	}
 };
