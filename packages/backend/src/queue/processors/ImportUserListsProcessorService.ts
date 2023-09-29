@@ -101,7 +101,7 @@ export class ImportUserListsProcessorService {
 
 				if (await this.userListJoiningsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
-				this.userListService.push(target, list!, user);
+				this.userListService.addMember(target, list!, user);
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

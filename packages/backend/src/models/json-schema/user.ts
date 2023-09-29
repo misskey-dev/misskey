@@ -387,13 +387,9 @@ export const packedMeDetailedOnlySchema = {
 				nullable: false, optional: false,
 			},
 		},
-		mutingNotificationTypes: {
-			type: 'array',
-			nullable: true, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-			},
+		notificationRecieveConfig: {
+			type: 'object',
+			nullable: false, optional: false,
 		},
 		emailNotificationTypes: {
 			type: 'array',

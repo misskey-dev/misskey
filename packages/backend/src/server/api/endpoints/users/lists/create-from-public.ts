@@ -144,7 +144,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				try {
-					await this.userListService.push(currentUser, userList, me);
+					await this.userListService.addMember(currentUser, userList, me);
 				} catch (err) {
 					if (err instanceof UserListService.TooManyUsersError) {
 						throw new ApiError(meta.errors.tooManyUsers);
