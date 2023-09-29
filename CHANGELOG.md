@@ -11,6 +11,16 @@
 -
 
 -->
+## 2023.x.x (unreleased)
+
+### General
+-
+
+### Client
+- Feat: AiScriptでホストのアドレスを参照する定数`HOST_URL`を追加
+
+### Server
+-
 
 ## 2023.9.2
 
