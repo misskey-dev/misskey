@@ -2076,3 +2076,4 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "정지"
   resetPassword: "비밀번호 재설정"
+  createInvitation: "초대 코드 생성"

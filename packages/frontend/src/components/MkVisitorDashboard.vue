@@ -114,8 +114,7 @@ function showMenu(ev) {
 }
 
 function exploreOtherServers() {
-	// TODO: 言語をよしなに
-	window.open('https://join.misskey.page/ja-JP/instances', '_blank');
+	window.open('https://join.misskey.page/instances', '_blank');
 }
 </script>
 

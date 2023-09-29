@@ -1,17 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import type { MiNoteNotification } from '@/models/NoteNotification.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
-import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { DI } from '@/di-symbols.js';
 import type { NoteNotificationsRepository } from '@/models/_.js';
-import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import { StreamMessages } from '@/server/api/stream/types.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -44,7 +40,7 @@ export class NoteNotificationService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as StreamMessages['internal']['payload'];
+			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'noteNotificationCreated':
 					this.targetUsers.push({
@@ -70,9 +66,8 @@ export class NoteNotificationService implements OnApplicationShutdown {
 
 		matchedTargets.forEach(x => {
 			this.notificationService.createNotification(x.userId, 'note', {
-				notifierId: noteUser.id,
 				noteId: note.id,
-			});
+			}, noteUser.id);
 		});
 	}
 

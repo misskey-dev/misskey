@@ -8,6 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AdsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -39,9 +40,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private adsRepository: AdsRepository,
 
 		private idService: IdService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.adsRepository.insert({
+			const ad = await this.adsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				expiresAt: new Date(ps.expiresAt),
@@ -53,7 +55,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ratio: ps.ratio,
 				place: ps.place,
 				memo: ps.memo,
+			}).then(r => this.adsRepository.findOneByOrFail({ id: r.identifiers[0].id }));
+
+			this.moderationLogService.log(me, 'createAd', {
+				adId: ad.id,
+				ad: ad,
 			});
+
+			return ad;
 		});
 	}
 }

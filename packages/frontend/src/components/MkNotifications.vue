@@ -30,11 +30,11 @@ import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
-	includeTypes?: typeof notificationTypes[number][];
+	excludeTypes?: typeof notificationTypes[number][];
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
@@ -43,13 +43,12 @@ const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
 	limit: 10,
 	params: computed(() => ({
-		includeTypes: props.includeTypes ?? undefined,
-		excludeTypes: props.includeTypes ? undefined : $i.mutingNotificationTypes,
+		excludeTypes: props.excludeTypes ?? undefined,
 	})),
 };
 
 const onNotification = (notification) => {
-	const isMuted = props.includeTypes ? !props.includeTypes.includes(notification.type) : $i.mutingNotificationTypes.includes(notification.type);
+	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
 	if (isMuted || document.visibilityState === 'visible') {
 		useStream().send('readNotification');
 	}
