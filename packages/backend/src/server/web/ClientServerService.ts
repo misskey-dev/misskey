@@ -188,7 +188,7 @@ export class ClientServerService {
 		// Authenticate
 		fastify.addHook('onRequest', async (request, reply) => {
 			// %71ueueとかでリクエストされたら困るため
-			const url = decodeURI(request.url);
+			const url = decodeURI(request.routerPath);
 			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
 				const token = request.cookies.token;
 				if (token == null) {
