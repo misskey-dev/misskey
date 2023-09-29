@@ -1133,6 +1133,10 @@ authentication: "認証"
 authenticationRequiredToContinue: "続けるには認証を行ってください"
 dateAndTime: "日時"
 showRenotes: "リノートを表示"
+edited: "編集済み"
+notificationRecieveConfig: "通知の受信設定"
+mutualFollow: "相互フォロー"
+fileAttachedOnly: "ファイル付きのみ"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2183,6 +2187,7 @@ _webhookSettings:
 _moderationLogTypes:
   createRole: "ロールを作成"
   deleteRole: "ロールを削除"
+  updateRole: "ロールを更新"
   assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサイン解除"
   updateRole: "ロール設定更新"
@@ -2208,3 +2213,6 @@ _moderationLogTypes:
   unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
   resolveAbuseReport: "通報を解決"
   createInvitation: "招待コードを作成"
+  createAd: "広告を作成"
+  deleteAd: "広告を削除"
+  updateAd: "広告を更新"

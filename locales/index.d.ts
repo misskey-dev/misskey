@@ -1136,6 +1136,9 @@ export interface Locale {
     "authenticationRequiredToContinue": string;
     "dateAndTime": string;
     "showRenotes": string;
+    "edited": string;
+    "notificationRecieveConfig": string;
+    "mutualFollow": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2270,9 +2273,9 @@ export interface Locale {
     "_moderationLogTypes": {
         "createRole": string;
         "deleteRole": string;
+        "updateRole": string;
         "assignRole": string;
         "unassignRole": string;
-        "updateRole": string;
         "suspend": string;
         "unsuspend": string;
         "addCustomEmoji": string;
@@ -2295,6 +2298,9 @@ export interface Locale {
         "unmarkSensitiveDriveFile": string;
         "resolveAbuseReport": string;
         "createInvitation": string;
+        "createAd": string;
+        "deleteAd": string;
+        "updateAd": string;
     };
 }
 declare const locales: {

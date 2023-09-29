@@ -15,10 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlComponent"
-					:key="src + withRenotes + withReplies"
+					:key="src + withRenotes + withReplies + onlyFiles"
 					:src="src"
 					:withRenotes="withRenotes"
 					:withReplies="withReplies"
+					:onlyFiles="onlyFiles"
 					:sound="true"
 					@queue="queueUpdated"
 				/>
@@ -64,6 +65,7 @@ let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 const withRenotes = $ref(true);
 const withReplies = $ref(false);
+const onlyFiles = $ref(false);
 
 watch($$(src), () => queue = 0);
 
@@ -149,6 +151,11 @@ const headerActions = $computed(() => [{
 			text: i18n.ts.withReplies,
 			icon: 'ti ti-arrow-back-up',
 			ref: $$(withReplies),
+		}, {
+			type: 'switch',
+			text: i18n.ts.fileAttachedOnly,
+			icon: 'ti ti-photo',
+			ref: $$(onlyFiles),
 		}], ev.currentTarget ?? ev.target);
 	},
 }]);
@@ -176,7 +183,7 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 }] : []), {
 	key: 'social',
 	title: i18n.ts._timelines.social,
-	icon: 'ti ti-rocket',
+	icon: 'ti ti-universe',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
@@ -217,7 +224,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-rocket' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
+	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-universe' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
 })));
 </script>
 

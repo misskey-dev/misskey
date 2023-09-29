@@ -5,8 +5,8 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api.js';
-export { pendingApiRequestsCount, api, apiGet };
+import { pendingApiRequestsCount, api, apiExternal, apiGet } from '@/scripts/api.js';
+export { pendingApiRequestsCount, api, apiExternal, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';

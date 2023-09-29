@@ -32,6 +32,7 @@ export type Column = {
 	tl?: 'home' | 'local' |'media' | 'social' | 'global';
 	withRenotes?: boolean;
 	withReplies?: boolean;
+	onlyFiles?: boolean;
 };
 
 export const deckStore = markRaw(new Storage('deck', {
