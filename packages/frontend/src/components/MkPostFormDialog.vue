@@ -30,6 +30,7 @@ const props = defineProps<{
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
+	updateMode?: boolean;
 }>();
 
 const emit = defineEmits<{
