@@ -75,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.notesRepository.update({ id: note.id }, {
+				updatedAt: new Date(),
 				cw: ps.cw,
 				text: ps.text,
 			});

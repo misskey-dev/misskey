@@ -34,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 						<div v-if="$i" class="actions">
 							<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
+              <MkNotifyButton v-if="$i.id != user.id " :user="user"></MkNotifyButton>
 							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
@@ -166,6 +167,7 @@ import { confetti } from '@/scripts/confetti.js';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os.js';
 import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import MkNotifyButton from "@/components/MkNotifyButton.vue";
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

@@ -57,6 +57,9 @@ export const moderationLogTypes = [
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
 	'createInvitation',
+	'createAd',
+	'updateAd',
+	'deleteAd',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -202,4 +205,28 @@ export type ModerationLogPayloads = {
 	createInvitation: {
 		invitations: any[];
 	};
+	createAd: {
+		adId: string;
+		ad: any;
+	};
+	updateAd: {
+		adId: string;
+		before: any;
+		after: any;
+	};
+	deleteAd: {
+		adId: string;
+		ad: any;
+	};
+};
+
+export type Serialized<T> = {
+	[K in keyof T]:
+		T[K] extends Date
+			? string
+			: T[K] extends (Date | null)
+				? (string | null)
+				: T[K] extends Record<string, any>
+					? Serialized<T[K]>
+					: T[K];
 };

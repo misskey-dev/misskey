@@ -1133,10 +1133,6 @@ authentication: "認証"
 authenticationRequiredToContinue: "続けるには認証を行ってください"
 dateAndTime: "日時"
 showRenotes: "リノートを表示"
-edited: "編集済み"
-notificationRecieveConfig: "通知の受信設定"
-mutualFollow: "相互フォロー"
-fileAttachedOnly: "ファイル付きのみ"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2190,7 +2186,6 @@ _moderationLogTypes:
   updateRole: "ロールを更新"
   assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサイン解除"
-  updateRole: "ロール設定更新"
   suspend: "凍結"
   unsuspend: "凍結解除"
   addCustomEmoji: "カスタム絵文字追加"

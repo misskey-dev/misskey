@@ -183,7 +183,7 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 }] : []), {
 	key: 'social',
 	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
+	icon: 'ti ti-rocket',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',

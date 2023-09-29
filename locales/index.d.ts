@@ -1136,9 +1136,6 @@ export interface Locale {
     "authenticationRequiredToContinue": string;
     "dateAndTime": string;
     "showRenotes": string;
-    "edited": string;
-    "notificationRecieveConfig": string;
-    "mutualFollow": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

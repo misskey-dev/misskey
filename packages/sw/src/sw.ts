@@ -5,7 +5,7 @@
 
 import { get } from 'idb-keyval';
 import * as Misskey from 'misskey-js';
-import type { PushNotificationDataMap } from '@/types';
+import type { PushNotificationDataMap } from '@/types.js';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
 import { swLang } from '@/scripts/lang.js';
 import * as swos from '@/scripts/operations.js';
