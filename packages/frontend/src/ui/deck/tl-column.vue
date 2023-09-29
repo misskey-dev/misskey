@@ -67,6 +67,12 @@ watch($$(withReplies), v => {
 	});
 });
 
+watch($$(onlyFiles), v => {
+	updateColumn(props.column.id, {
+		onlyFiles: v,
+	});
+});
+
 onMounted(() => {
 	if (props.column.tl == null) {
 		setType();

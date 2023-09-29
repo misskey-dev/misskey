@@ -151,7 +151,7 @@ const headerActions = $computed(() => [{
 			ref: $$(withReplies),
 		}, {
 			type: 'switch',
-			text: i18n.ts.onlyFiles,
+			text: i18n.ts.fileAttachedOnly,
 			icon: 'ti ti-photo',
 			ref: $$(onlyFiles),
 		}], ev.currentTarget ?? ev.target);
