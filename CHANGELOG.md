@@ -20,9 +20,9 @@
 - Feat: 通知を種類ごとに 全員から受け取る/フォロー中のユーザーのみ受け取る/フォロワーのみ受け取る/相互のみ受け取る/指定したリストのメンバーのみ受け取る/受け取らない から選べるように
 - Enhance: タイムラインからRenoteを除外するオプションを追加
 - Enhance: ユーザーページのノート一覧でRenoteを除外できるように
+- Enhance: モデレーションログ機能の強化
 
 ### Client
-- Enhance: モデレーションログ機能の強化
 - Enhance: Plugin:register_post_form_actionを用いてCWを取得・変更できるように
 - Enhance: admin/ad/listにて掲載中の広告が絞り込めるように
 
