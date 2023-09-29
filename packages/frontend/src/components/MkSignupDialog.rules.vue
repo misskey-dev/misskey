@@ -39,6 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch :modelValue="agreeTos" style="margin-top: 16px;" @update:modelValue="updateAgreeTos">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
+			<MkFolder v-if="availablePrivacyPolicy" :defaultOpen="true">
+				<template #label>{{ i18n.ts.privacyPolicy }}</template>
+				<template #suffix><i v-if="agreePrivacyPolicy" class="ti ti-check" style="color: var(--success)"></i></template>
+
+				<a :href="instance.privacyPolicyUrl" class="_link" target="_blank">{{ i18n.ts.privacyPolicy }} <i class="ti ti-external-link"></i></a>
+
+				<MkSwitch :modelValue="agreePrivacyPolicy" style="margin-top: 16px;" @update:modelValue="updateAgreePrivacyPolicy">{{ i18n.ts.agree }}</MkSwitch>
+			</MkFolder>
+
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
 				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--success)"></i></template>
@@ -71,13 +80,15 @@ import * as os from '@/os.js';
 
 const availableServerRules = instance.serverRules.length > 0;
 const availableTos = instance.tosUrl != null;
+const availablePrivacyPolicy = instance.privacyPolicyUrl != null;
 
 const agreeServerRules = ref(false);
 const agreeTos = ref(false);
+const agreePrivacyPolicy = ref(false);
 const agreeNote = ref(false);
 
 const agreed = computed(() => {
-	return (!availableServerRules || agreeServerRules.value) && (!availableTos || agreeTos.value) && agreeNote.value;
+	return (!availableServerRules || agreeServerRules.value) && (!availableTos || agreeTos.value) && (!availablePrivacyPolicy || agreePrivacyPolicy.value) && agreeNote.value;
 });
 
 const emit = defineEmits<{
@@ -110,6 +121,20 @@ async function updateAgreeTos(v: boolean) {
 		agreeTos.value = true;
 	} else {
 		agreeTos.value = false;
+	}
+}
+
+async function updateAgreePrivacyPolicy(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.privacyPolicy }),
+		});
+		if (confirm.canceled) return;
+		agreePrivacyPolicy.value = true;
+	} else {
+		agreePrivacyPolicy.value = false;
 	}
 }
 

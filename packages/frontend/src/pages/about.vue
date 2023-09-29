@@ -53,7 +53,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
 						</ol>
 					</MkFolder>
+					<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>{{ i18n.ts.impressum }}</FormLink>
 					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+					<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>{{ i18n.ts.privacyPolicy }}</FormLink>
 				</div>
 			</FormSection>
 
