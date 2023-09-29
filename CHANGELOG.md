@@ -21,6 +21,8 @@
 - Enhance: タイムラインからRenoteを除外するオプションを追加
 - Enhance: ユーザーページのノート一覧でRenoteを除外できるように
 - Enhance: モデレーションログ機能の強化
+- Enhance: 依存関係の更新
+- Enhance: ローカリゼーションの更新
 
 ### Client
 - Enhance: Plugin:register_post_form_actionを用いてCWを取得・変更できるように
