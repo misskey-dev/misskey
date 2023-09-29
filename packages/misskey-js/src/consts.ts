@@ -74,6 +74,10 @@ export const moderationLogTypes = [
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
+	'createInvitation',
+	'createAd',
+	'updateAd',
+	'deleteAd',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -215,5 +219,21 @@ export type ModerationLogPayloads = {
 		reportId: string;
 		report: any;
 		forwarded: boolean;
+	};
+	createInvitation: {
+		invitations: any[];
+	};
+	createAd: {
+		adId: string;
+		ad: any;
+	};
+	updateAd: {
+		adId: string;
+		before: any;
+		after: any;
+	};
+	deleteAd: {
+		adId: string;
+		ad: any;
 	};
 };
