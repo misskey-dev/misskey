@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XColumn :column="column" :isStacked="isStacked" :menu="menu">
 	<template #header><i class="ti ti-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
-	<XNotifications :includeTypes="column.includingTypes"/>
+	<XNotifications :excludeTypes="props.column.excludeTypes"/>
 </XColumn>
 </template>
 
@@ -25,13 +25,13 @@ const props = defineProps<{
 }>();
 
 function func() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
-		includingTypes: props.column.includingTypes,
+	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSelectWindow.vue')), {
+		excludeTypes: props.column.excludeTypes,
 	}, {
 		done: async (res) => {
-			const { includingTypes } = res;
+			const { excludeTypes } = res;
 			updateColumn(props.column.id, {
-				includingTypes: includingTypes,
+				excludeTypes: excludeTypes,
 			});
 		},
 	}, 'closed');
