@@ -13,6 +13,7 @@ export interface Locale {
     "password": string;
     "forgotPassword": string;
     "fetchingAsApObject": string;
+		"fileAttachedOnly": string;
     "ok": string;
     "gotIt": string;
     "cancel": string;
