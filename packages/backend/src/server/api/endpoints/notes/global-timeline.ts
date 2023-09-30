@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -40,6 +41,7 @@ export const paramDef = {
 	properties: {
 		withFiles: { type: 'boolean', default: false },
 		withReplies: { type: 'boolean', default: false },
+		withRenotes: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
@@ -87,6 +89,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
+			}
+
+			if (ps.withRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere(new Brackets(qb => {
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+					}));
+				}));
 			}
 			//#endregion
 

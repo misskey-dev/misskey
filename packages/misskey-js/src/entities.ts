@@ -1,4 +1,4 @@
-import { ModerationLogPayloads } from './consts.js';
+import { ModerationLogPayloads, notificationTypes } from './consts.js';
 
 export type ID = string;
 export type DateString = string;
@@ -104,7 +104,22 @@ export type MeDetailed = UserDetailed & {
 	isDeleted: boolean;
 	isExplorable: boolean;
 	mutedWords: string[][];
-	mutingNotificationTypes: string[];
+	notificationRecieveConfig: {
+		[notificationType in typeof notificationTypes[number]]?: {
+			type: 'all';
+		} | {
+			type: 'never';
+		} | {
+			type: 'following';
+		} | {
+			type: 'follower';
+		} | {
+			type: 'mutualFollow';
+		} | {
+			type: 'list';
+			userListId: string;
+		};
+	};
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
@@ -162,6 +177,7 @@ export type GalleryPost = {
 export type Note = {
 	id: ID;
 	createdAt: DateString;
+	updatedAt?: DateString | null;
 	text: string | null;
 	cw: string | null;
 	user: User;
@@ -655,4 +671,16 @@ export type ModerationLog = {
 } | {
 	type: 'unmarkSensitiveDriveFile';
 	info: ModerationLogPayloads['unmarkSensitiveDriveFile'];
+} | {
+	type: 'createInvitation';
+	info: ModerationLogPayloads['createInvitation'];
+} | {
+	type: 'createAd';
+	info: ModerationLogPayloads['createAd'];
+} | {
+	type: 'updateAd';
+	info: ModerationLogPayloads['updateAd'];
+} | {
+	type: 'deleteAd';
+	info: ModerationLogPayloads['deleteAd'];
 });

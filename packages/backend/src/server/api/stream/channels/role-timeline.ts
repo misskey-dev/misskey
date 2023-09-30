@@ -9,8 +9,8 @@ import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import Channel from '../channel.js';
-import { StreamMessages } from '../types.js';
 
 class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
@@ -37,7 +37,7 @@ class RoleTimelineChannel extends Channel {
 	}
 
 	@bindThis
-	private async onEvent(data: StreamMessages['roleTimeline']['payload']) {
+	private async onEvent(data: GlobalEvents['roleTimeline']['payload']) {
 		if (data.type === 'note') {
 			const note = data.body;
 

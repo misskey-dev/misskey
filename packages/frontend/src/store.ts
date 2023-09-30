@@ -113,10 +113,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: [] as string[],
 	},
-	showTimelineReplies: {
-		where: 'account',
-		default: false,
-	},
 
 	menu: {
 		where: 'deviceAccount',
