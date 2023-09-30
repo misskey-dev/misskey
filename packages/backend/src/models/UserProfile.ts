@@ -8,6 +8,7 @@ import { obsoleteNotificationTypes, ffVisibility, notificationTypes } from '@/ty
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiPage } from './Page.js';
+import { MiUserList } from './UserList.js';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン
@@ -222,16 +223,25 @@ export class MiUserProfile {
 	})
 	public mutedInstances: string[];
 
-	@Column('enum', {
-		enum: [
-			...notificationTypes,
-			// マイグレーションで削除が困難なので古いenumは残しておく
-			...obsoleteNotificationTypes,
-		],
-		array: true,
-		default: [],
+	@Column('jsonb', {
+		default: {},
 	})
-	public mutingNotificationTypes: typeof notificationTypes[number][];
+	public notificationRecieveConfig: {
+		[notificationType in typeof notificationTypes[number]]?: {
+			type: 'all';
+		} | {
+			type: 'never';
+		} | {
+			type: 'following';
+		} | {
+			type: 'follower';
+		} | {
+			type: 'mutualFollow';
+		} | {
+			type: 'list';
+			userListId: MiUserList['id'];
+		};
+	};
 
 	@Column('varchar', {
 		length: 32, array: true, default: '{}',
