@@ -143,10 +143,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</footer>
 	</article>
 	<div :class="$style.tabs">
+
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' },{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'replies'}]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes'},{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'renotes'}]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions'},{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' && tab === 'reactions'}]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
-	</div>
+        <button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'history' },{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light']" @click="tab = 'history'"><i class="ti ti-pencil"></i> {{ i18n.ts.edited }}</button>
+    </div>
 	<div>
 		<div v-if="tab === 'replies'">
 			<div v-if="!repliesLoaded" style="padding: 16px">
@@ -182,8 +184,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
+		<div v-else-if="tab === 'history'" :class="$style.tab_history">
+			<div style="display: grid;">
+				<div v-for="text in appearNote.noteEditHistory.reverse()" :key="text">
+					<MkNotePreview :class="$style.historyNote" :text="text"/>
+				</div>
+			</div>
+		</div>
 	</div>
-</div><div v-else />
+</div>
+<div v-else class="_panel" :class="$style.muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+	</I18n>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -192,6 +210,7 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkNotePreview from '@/components/MkNotePreview.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -748,6 +767,9 @@ function loadConversation() {
 	padding: 16px;
 }
 
+.tab_history {
+	padding: 16px;
+}
 .reactionTabs {
 	display: flex;
 	gap: 8px;
@@ -815,6 +837,12 @@ function loadConversation() {
 			margin-right: 12px;
 		}
 	}
+}
+
+.historyNote {
+	padding-top: 10px;
+	min-height: 75px;
+	overflow: auto;
 }
 
 .muted {
