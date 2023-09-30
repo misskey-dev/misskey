@@ -13,7 +13,6 @@ export interface Locale {
     "password": string;
     "forgotPassword": string;
     "fetchingAsApObject": string;
-		"fileAttachedOnly": string;
     "ok": string;
     "gotIt": string;
     "cancel": string;
@@ -677,6 +676,7 @@ export interface Locale {
     "forwardReport": string;
     "forwardReportIsAnonymous": string;
     "send": string;
+    "fileAttachedOnly": string;
     "abuseMarkAsResolved": string;
     "openInNewTab": string;
     "openInSideView": string;
@@ -709,6 +709,8 @@ export interface Locale {
     "sentReactionsCount": string;
     "receivedReactionsCount": string;
     "pollVotesCount": string;
+    "onlyAndWithSave": string;
+    "onlyAndWithSaveInfo": string;
     "pollVotedCount": string;
     "yes": string;
     "no": string;

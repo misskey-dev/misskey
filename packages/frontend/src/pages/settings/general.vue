@@ -139,7 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableUltimateDataSaverMode">{{ i18n.ts.UltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableCellularWithUltimateDataSaver">{{ i18n.ts.cellularWithUltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
-
+        <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -283,6 +283,7 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
+const enableonlyAndWithSave = computed(defaultStore.makeGetterSetter('onlyAndWithSave'));
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
 watch(lang, () => {
@@ -345,6 +346,7 @@ watch([
 	keepScreenOn,
 	showMediaTimeline,
   showVisibilityColor,
+  enableonlyAndWithSave,
 ], async () => {
 	await reloadAsk();
 });

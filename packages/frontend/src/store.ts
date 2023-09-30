@@ -364,6 +364,22 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 44,
 	},
+	onlyAndWithSave:{
+		where: 'device',
+		default: true,
+	},
+	onlyFiles:{
+		where: 'device',
+		default: false,
+	},
+	withReplies:{
+		where: 'device',
+		default: false,
+	},
+	withRenotes:{
+		where: 'device',
+		default: true,
+	},
 	showNoteActionsOnlyHover: {
 		where: 'device',
 		default: false,
