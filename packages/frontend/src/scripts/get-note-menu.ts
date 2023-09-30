@@ -288,7 +288,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.share,
 				action: share,
 			},
-			instance.translatorAvailable ? {
+			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
