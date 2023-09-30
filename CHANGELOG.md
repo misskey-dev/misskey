@@ -21,6 +21,10 @@
 - Enhance: モデレーションログ機能の強化
 - Enhance: ローカリゼーションの更新
 
+---
+
+- Fix: "useReactionPickerForContextMenu: "右クリックでツッコミピッカーを開くようにする"が2つある
+
 ### Server
 - Fix: Redisに古いバージョンのキャッシュが残っている場合、キャッシュが消えるまでの間通知が届かなくなる問題を修正
 - Fix: 後方互換性の修正
