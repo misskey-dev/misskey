@@ -116,7 +116,6 @@ async function updateAgreeServerRules(v: boolean) {
 
 async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
 	if (v) {
-
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
