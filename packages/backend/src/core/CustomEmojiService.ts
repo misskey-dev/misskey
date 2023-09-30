@@ -388,6 +388,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async getEmojiById(id: string): Promise<MiEmoji | null> {
+		return this.emojisRepository.findOneBy({ id });
+	}
+
+	@bindThis
 	public dispose(): void {
 		this.cache.dispose();
 	}
