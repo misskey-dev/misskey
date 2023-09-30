@@ -309,6 +309,7 @@ export class NoteEntityService implements OnModuleInit {
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
 			updatedAt: note.updatedAt ? note.updatedAt.toISOString() : undefined,
+			noteEditHistory: note.noteEditHistory.length ? note.noteEditHistory : undefined,
 			userId: note.userId,
 			user: this.userEntityService.pack(note.user ?? note.userId, me, {
 				detail: false,

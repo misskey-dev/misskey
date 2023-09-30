@@ -29,6 +29,13 @@ export class MiNote {
 	})
 	public updatedAt: Date | null;
 
+	@Column('varchar', {
+		length: 3000,
+		array: true,
+		default: '{}',
+	})
+	public noteEditHistory: string[];
+
 	@Index()
 	@Column({
 		...id(),

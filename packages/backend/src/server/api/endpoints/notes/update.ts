@@ -73,11 +73,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (note.userId !== me.id) {
 				throw new ApiError(meta.errors.noSuchNote);
 			}
-
 			await this.notesRepository.update({ id: note.id }, {
 				updatedAt: new Date(),
 				cw: ps.cw,
 				text: ps.text,
+				noteEditHistory: [...note.noteEditHistory, note.text!],
 			});
 
 			this.globalEventService.publishNoteStream(note.id, 'updated', {
