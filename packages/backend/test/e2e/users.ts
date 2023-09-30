@@ -167,6 +167,7 @@ describe('ユーザー', () => {
 			unreadAnnouncements: user.unreadAnnouncements,
 			mutedWords: user.mutedWords,
 			mutedInstances: user.mutedInstances,
+			mutingNotificationTypes: user.mutingNotificationTypes,
 			notificationRecieveConfig: user.notificationRecieveConfig,
 			emailNotificationTypes: user.emailNotificationTypes,
 			achievements: user.achievements,
@@ -416,6 +417,7 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.unreadAnnouncements, []);
 		assert.deepStrictEqual(response.mutedWords, []);
 		assert.deepStrictEqual(response.mutedInstances, []);
+		assert.deepStrictEqual(response.mutingNotificationTypes, []);
 		assert.deepStrictEqual(response.notificationRecieveConfig, {});
 		assert.deepStrictEqual(response.emailNotificationTypes, ['follow', 'receiveFollowRequest']);
 		assert.deepStrictEqual(response.achievements, []);

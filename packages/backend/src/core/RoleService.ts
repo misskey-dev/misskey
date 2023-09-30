@@ -36,6 +36,7 @@ export type RolePolicies = {
 	inviteExpirationTime: number;
 	canManageCustomEmojis: boolean;
 	canSearchNotes: boolean;
+	canUseTranslator: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
 	alwaysMarkNsfw: boolean;
@@ -64,6 +65,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	inviteExpirationTime: 0,
 	canManageCustomEmojis: false,
 	canSearchNotes: false,
+	canUseTranslator: true,
 	canHideAds: false,
 	driveCapacityMb: 100,
 	alwaysMarkNsfw: false,
@@ -312,6 +314,7 @@ export class RoleService implements OnApplicationShutdown {
 			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
+			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
