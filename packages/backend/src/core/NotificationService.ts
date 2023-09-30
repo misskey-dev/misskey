@@ -80,7 +80,10 @@ export class NotificationService implements OnApplicationShutdown {
 		notifierId?: MiUser['id'] | null,
 	): Promise<MiNotification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
-		const recieveConfig = profile.notificationRecieveConfig[type];
+
+		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		const recieveConfig = (profile.notificationRecieveConfig ?? {})[type];
 		if (recieveConfig?.type === 'never') {
 			return null;
 		}
