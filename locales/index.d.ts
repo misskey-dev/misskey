@@ -1130,8 +1130,11 @@ export interface Locale {
     "mutualFollow": string;
     "fileAttachedOnly": string;
     "impressum": string;
+    "impressumUrl": string;
     "impressumDescription": string;
     "privacyPolicy": string;
+    "privacyPolicyUrl": string;
+    "tosAndPrivacyPolicy": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

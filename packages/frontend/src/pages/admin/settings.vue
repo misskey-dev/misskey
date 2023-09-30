@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</FormSplit>
 
 					<MkInput v-model="impressumUrl">
-						<template #label>{{ i18n.ts.impressum }}</template>
+						<template #label>{{ i18n.ts.impressumUrl }}</template>
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #caption>{{ i18n.ts.impressumDescription }}</template>
 					</MkInput>

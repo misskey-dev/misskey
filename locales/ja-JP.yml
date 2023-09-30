@@ -1127,8 +1127,11 @@ notificationRecieveConfig: "通知の受信設定"
 mutualFollow: "相互フォロー"
 fileAttachedOnly: "ファイル付きのみ"
 impressum: "運営者情報"
+impressumUrl: "運営者情報URL"
 impressumDescription: "ドイツなどの一部の国と地域では表示が義務付けられています(Impressum)。"
 privacyPolicy: "プライバシーポリシー"
+privacyPolicyUrl: "プライバシーポリシーURL"
+tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

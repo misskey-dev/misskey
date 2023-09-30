@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkInput v-model="privacyPolicyUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.privacyPolicy }}</template>
+						<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
 					</MkInput>
 
 					<MkTextarea v-model="preservedUsernames">
