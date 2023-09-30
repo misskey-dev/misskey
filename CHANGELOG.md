@@ -11,22 +11,13 @@
 -
 
 -->
-## 2023.x.x (unreleased)
-
-### General
--
-
-### Client
-- Feat: AiScriptでホストのアドレスを参照する定数`HOST_URL`を追加
-
-### Server
--
 
 ## 2023.9.3
 ### General
 - Enhance: ノートの翻訳機能の利用可否をロールで設定可能に
 
 ### Client
+- Enhance: AiScriptでホストのアドレスを参照する定数`SERVER_URL`を追加
 - Enhance: モデレーションログ機能の強化
 - Enhance: ローカリゼーションの更新
 
