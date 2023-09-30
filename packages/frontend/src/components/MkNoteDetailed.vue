@@ -176,8 +176,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="tab === 'history'" :class="$style.tab_history">
 			<div style="display: grid;">
-				<div v-for="text in appearNote.noteEditHistory.reverse()" :key="text">
-					<MkNotePreview :class="$style.historyNote" :text="text"/>
+				<div v-for="text in appearNote.noteEditHistory" :class="$style.historyRoot" :key="text">
+					<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
+					<div :class="$style.historyMain">
+						<div :class="$style.historyHeader">
+							<MkUserName :user="appearNote.user" :nowrap="true"/>
+						</div>
+						<div>
+							<div>
+								<Mfm :text="text.trim()" :author="appearNote.user" :i="$i"/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -822,10 +832,34 @@ function loadConversation() {
 	}
 }
 
-.historyNote {
-	padding-top: 10px;
-	min-height: 75px;
-	overflow: auto;
+.historyRoot {
+	display: flex;
+	margin: 0;
+	padding: 10px;
+	overflow: clip;
+	font-size: 0.95em;
+}
+
+.historyMain {
+	flex: 1;
+	min-width: 0;
+}
+
+.historyHeader {
+	margin-bottom: 2px;
+	font-weight: bold;
+	width: 100%;
+	overflow: clip;
+    text-overflow: ellipsis;
+}
+.avatar {
+	flex-shrink: 0 !important;
+	display: block !important;
+	margin: 0 10px 0 0 !important;
+	width: 40px !important;
+	height: 40px !important;
+	border-radius: 8px !important;
+	pointer-events: none !important;
 }
 
 .muted {
