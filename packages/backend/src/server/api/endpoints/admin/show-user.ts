@@ -81,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
-				mutingNotificationTypes: profile.mutingNotificationTypes,
+				notificationRecieveConfig: profile.notificationRecieveConfig,
 				isModerator: isModerator,
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
