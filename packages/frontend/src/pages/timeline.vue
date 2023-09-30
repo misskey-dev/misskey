@@ -4,29 +4,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
-	<MkSpacer :contentMax="800">
-		<div ref="rootEl" v-hotkey.global="keymap">
-			<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
-			<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+	<MkStickyContainer>
+		<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
+		<MkSpacer :contentMax="800">
+			<div ref="rootEl" v-hotkey.global="keymap">
+				<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
+				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-			<div :class="$style.tl">
-				<MkTimeline
-					ref="tlComponent"
-					:key="src + withRenotes + withReplies + onlyFiles"
-					:src="src"
-					:withRenotes="withRenotes"
-					:withReplies="withReplies"
-					:onlyFiles="onlyFiles"
-					:sound="true"
-					@queue="queueUpdated"
-				/>
+				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+				<div :class="$style.tl">
+					<MkTimeline
+						ref="tlComponent"
+						:key="src + withRenotes + withReplies + onlyFiles"
+						:src="src.split(':')[0]"
+						:list="src.split(':')[1]"
+						:withRenotes="withRenotes"
+						:withReplies="withReplies"
+						:onlyFiles="onlyFiles"
+						:sound="true"
+						@queue="queueUpdated"
+					/>
+				</div>
 			</div>
-		</div>
-	</MkSpacer>
-</MkStickyContainer>
+		</MkSpacer>
+	</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -50,9 +51,6 @@ const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
-const isShowMediaTimeline = defaultStore.state.showMediaTimeline;
-console.log(isShowMediaTimeline)
-
 const keymap = {
 	't': focus,
 };
@@ -63,10 +61,12 @@ const rootEl = $shallowRef<HTMLElement>();
 let queue = $ref(0);
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
-const withRenotes = $ref(defaultStore.state.onlyAndWithSave ? computed(defaultStore.makeGetterSetter('withRenotes')) : true);
-const withReplies = $ref(defaultStore.state.onlyAndWithSave ? computed(defaultStore.makeGetterSetter('withReplies')) : false);
-const onlyFiles = $ref(defaultStore.state.onlyAndWithSave ? computed(defaultStore.makeGetterSetter('onlyFiles')) : false);
-console.log(defaultStore.state.onlyAndWithSave)
+const withReplies_store =  computed(defaultStore.makeGetterSetter('withRenotes'))
+const withRenotes_store = computed(defaultStore.makeGetterSetter('withReplies'))
+const onlyFiles_store = computed(defaultStore.makeGetterSetter('onlyFiles'))
+const withRenotes = $ref(defaultStore.state.onlyAndWithSave ?  withRenotes_store : true);
+const withReplies = $ref(defaultStore.state.onlyAndWithSave ? withReplies_store : false);
+const onlyFiles = $ref(defaultStore.state.onlyAndWithSave ? onlyFiles_store : false);
 watch($$(src), () => queue = 0);
 
 function queueUpdated(q: number): void {
@@ -175,12 +175,7 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
 	iconOnly: true,
-}, ...(isShowMediaTimeline ? [{
-  key: 'media',
-  title: i18n.ts._timelines.media,
-  icon: 'ti ti-photo',
-  iconOnly: true,
-}] : []), {
+}, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-rocket',
