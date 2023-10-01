@@ -800,7 +800,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
 		const redisPipeline = this.redisClient.pipeline();
 
-		if (note.replyId) {
+		if (note.replyId && note.replyUserId !== note.userId) {
 			if (note.visibility === 'public' || note.visibility === 'home') {
 				redisPipeline.xadd(
 					`userTimelineWithReplies:${user.id}`,
