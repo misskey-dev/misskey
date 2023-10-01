@@ -481,7 +481,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.reply) {
 			// TODO
 		} else {
-			this.pushToTl(note, user);
+			if (data.visibility === 'public' || data.visibility === 'home') {
+				this.pushToTl(note, user);
+			} else if (data.visibility === 'followers') {
+				this.pushToTl(note, user);
+			} else if (data.visibility === 'specified') {
+				// TODO
+			}
 		}
 
 		this.antennaService.addNoteToAntennas(note, user);
@@ -807,7 +813,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			select: ['followerId'],
 		});
 
-		const userLists = await this.userListJoiningsRepository.find({
+		let userLists = await this.userListJoiningsRepository.find({
 			where: {
 				userId: user.id,
 			},
@@ -831,6 +837,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 					'*',
 					'note', note.id);
 			}
+		}
+
+		if (note.visibility === 'followers') {
+			// TODO: 重そうだから何とかしたい Set 使う？
+			userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListId));
 		}
 
 		for (const userList of userLists) {

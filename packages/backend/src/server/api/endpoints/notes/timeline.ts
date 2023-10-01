@@ -106,6 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// ミュート等考慮
 			timeline = timeline.filter(note => {
 				// TODO: インスタンスミュートの考慮
+				// TODO: ブロックの考慮
 
 				if (note.userId === me.id) {
 					return true;
