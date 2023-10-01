@@ -14,6 +14,7 @@ import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -90,7 +91,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			const mutings = await this.cacheService.userMutingsCache.fetch(me.id);
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoMeMutingRenotes,
+			] = await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.renoteMutingsCache.fetch(me.id),
+			]);
 
 			let timeline: MiNote[] = [];
 
@@ -125,22 +132,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// ミュート等考慮
 			timeline = timeline.filter(note => {
 				// TODO: インスタンスミュートの考慮
-				// TODO: リノートミュートの考慮
 
-				if (note.userId === me.id) {
-					return true;
-				}
-
-				if (note.renote) {
-					if (mutings.has(note.renote.userId)) return false;
-				}
-
-				if (note.reply) {
-					if (mutings.has(note.reply.userId)) return false;
-				}
-
-				if (ps.withRenotes === false) {
-					if (note.renoteId && note.text == null && note.fileIds.length === 0 && !note.hasPoll) return false;
+				if (isUserRelated(note, userIdsWhoMeMuting)) return false;
+				if (note.renoteId) {
+					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+						if (isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
+						if (ps.withRenotes === false) return false;
+					}
 				}
 
 				return true;
