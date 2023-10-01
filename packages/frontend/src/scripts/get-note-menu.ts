@@ -356,7 +356,8 @@ export function getNoteMenu(props: {
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				null,
-				appearNote.userId === $i.id && $i.policies.canEditNote ? {
+				//[TEMPORARY WORKAROUND] appearNote.localOnly is TEMPORARY WORKAROUND / BE SURE TO REMOVE IT WHEN #11944 IS SOLVED
+				(appearNote.userId === $i.id && $i.policies.canEditNote && appearNote.localOnly) ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.edit,
 					action: edit,

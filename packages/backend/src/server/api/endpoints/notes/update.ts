@@ -74,6 +74,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchNote);
 			}
 
+			//[TEMPORARY WORKAROUND] BELOW is TEMPORARY WORKAROUND / BE SURE TO REMOVE IT WHEN #11944 IS SOLVED
+			if (!note.localOnly) {
+				throw new ApiError({
+					message: 'Editing of notes that are not local only is temporarily unavailable. See #11944 for details.',
+					code: 'FEDARATED_NOTE_EDITING_TEMPORARILY_UNAVAILABLE',
+					id: 'a94142d4-3ead-4f65-a684-c1ba427c51b5',
+				});
+			}
+			//[TEMPORARY WORKAROUND] AVOVE is TEMPORARY WORKAROUND / BE SURE TO REMOVE IT WHEN #11944 IS SOLVED
+
 			await this.notesRepository.update({ id: note.id }, {
 				updatedAt: new Date(),
 				cw: ps.cw,
