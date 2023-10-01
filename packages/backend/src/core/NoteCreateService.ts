@@ -893,6 +893,22 @@ export class NoteCreateService implements OnApplicationShutdown {
 						'*',
 						'note', note.id);
 				}
+
+				if (note.userHost == null) {
+					redisPipeline.xadd(
+						'localTimeline',
+						'MAXLEN', '~', '1000',
+						'*',
+						'note', note.id);
+
+					if (note.fileIds.length > 0) {
+						redisPipeline.xadd(
+							'localTimelineWithFiles',
+							'MAXLEN', '~', '1000',
+							'*',
+							'note', note.id);
+					}
+				}
 			}
 		}
 
