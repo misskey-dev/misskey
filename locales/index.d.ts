@@ -1719,11 +1719,6 @@ export interface Locale {
         "muteWords": string;
         "muteWordsDescription": string;
         "muteWordsDescription2": string;
-        "softDescription": string;
-        "hardDescription": string;
-        "soft": string;
-        "hard": string;
-        "mutedNotes": string;
     };
     "_instanceMute": {
         "instanceMuteDescription": string;

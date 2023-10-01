@@ -18,6 +18,10 @@
 
 ### Changes
 - API: users/notes, notes/local-timeline で fileType 指定はできなくなりました
+- API: notes/global-timeline は現在常に `[]` を返します
+
+### General
+- ソフトワードミュートとハードワードミュートは統合されました
 
 ### Server
 - タイムライン取得時のパフォーマンスを改善
