@@ -183,6 +183,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserName :user="appearNote.user" :nowrap="true"/>
 						</div>
 						<div>
+							<div>
+								<Mfm :text="text.trim()" :author="appearNote.user" :i="$i"/>
+							</div>
 							<CodeDiff
 								:oldString="appearNote.noteEditHistory[index - 1] || ''"
 								:newString="text"
