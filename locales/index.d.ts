@@ -2261,6 +2261,17 @@ export interface Locale {
             "mention": string;
         };
     };
+    "_koteitag": {
+        "clearTags": string;
+        "air": string;
+        "livecure": string;
+        "episodeBrowser": string;
+        "fetch": string;
+        "episodePrefix": string;
+        "episodeSuffix": string;
+        "confirmMessage": string;
+        "successMessage": string;
+    };
     "_moderationLogTypes": {
         "createRole": string;
         "deleteRole": string;
@@ -2292,17 +2303,6 @@ export interface Locale {
         "createAd": string;
         "deleteAd": string;
         "updateAd": string;
-    };
-    "_koteitag": {
-        "clearTags": string;
-        "air": string;
-        "livecure": string;
-        "episodeBrowser": string;
-        "fetch": string;
-        "episodePrefix": string;
-        "episodeSuffix": string;
-        "confirmMessage": string;
-        "successMessage": string;
     };
 }
 declare const locales: {
