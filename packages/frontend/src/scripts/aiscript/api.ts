@@ -8,7 +8,7 @@ import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { lang } from '@/config.js';
+import { url, lang } from '@/config.js';
 
 export function createAiScriptEnv(opts) {
 	return {
@@ -17,6 +17,7 @@ export function createAiScriptEnv(opts) {
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
 		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		LOCALE: values.STR(lang),
+		SERVER_URL: values.STR(url),
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await os.alert({
 				type: type ? type.value : 'info',
