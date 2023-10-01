@@ -5,7 +5,7 @@
 
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
-import { In, DataSource } from 'typeorm';
+import { In, DataSource, IsNull } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import RE2 from 're2';
@@ -14,7 +14,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListJoiningsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -53,8 +53,6 @@ import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
-
-const mutedWordsCache = new MemorySingleCache<{ userId: MiUserProfile['userId']; mutedWords: MiUserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -175,8 +173,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MutedNotesRepository,
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
@@ -480,26 +478,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Increment notes count (user)
 		this.incNotesCountOfUser(user);
 
-		// Word mute
-		mutedWordsCache.fetch(() => this.userProfilesRepository.find({
-			where: {
-				enableWordMute: true,
-			},
-			select: ['userId', 'mutedWords'],
-		})).then(us => {
-			for (const u of us) {
-				checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
-					if (shouldMute) {
-						this.mutedNotesRepository.insert({
-							id: this.idService.genId(),
-							userId: u.userId,
-							noteId: note.id,
-							reason: 'word',
-						});
-					}
-				});
-			}
-		});
+		if (data.reply) {
+			// TODO
+		} else {
+			this.pushToTl(note, user);
+		}
 
 		this.antennaService.addNoteToAntennas(note, user);
 
@@ -809,6 +792,78 @@ export class NoteCreateService implements OnApplicationShutdown {
 		);
 
 		return mentionedUsers;
+	}
+
+	@bindThis
+	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
+		// TODO: 休眠ユーザーを弾く
+		// TODO: チャンネルフォロー
+		// TODO: キャッシュ？
+		const followings = await this.followingsRepository.find({
+			where: {
+				followeeId: user.id,
+				followerHost: IsNull(),
+			},
+			select: ['followerId'],
+		});
+
+		const userLists = await this.userListJoiningsRepository.find({
+			where: {
+				userId: user.id,
+			},
+			select: ['userListId'],
+		});
+
+		const redisPipeline = this.redisClient.pipeline();
+
+		// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
+		for (const following of followings) {
+			redisPipeline.xadd(
+				`homeTimeline:${following.followerId}`,
+				'MAXLEN', '~', '300',
+				'*',
+				'note', note.id);
+
+			if (note.fileIds.length > 0) {
+				redisPipeline.xadd(
+					`homeTimelineWithFiles:${following.followerId}`,
+					'MAXLEN', '~', '300',
+					'*',
+					'note', note.id);
+			}
+		}
+
+		for (const userList of userLists) {
+			redisPipeline.xadd(
+				`userListTimeline:${userList.userListId}`,
+				'MAXLEN', '~', '300',
+				'*',
+				'note', note.id);
+
+			if (note.fileIds.length > 0) {
+				redisPipeline.xadd(
+					`userListTimelineWithFiles:${userList.userListId}`,
+					'MAXLEN', '~', '300',
+					'*',
+					'note', note.id);
+			}
+		}
+
+		redisPipeline.xadd(
+			`homeTimeline:${user.id}`,
+			'MAXLEN', '~', '300',
+			'*',
+			'note', note.id);
+
+		if (note.fileIds.length > 0) {
+			redisPipeline.xadd(
+				`homeTimelineWithFiles:${user.id}`,
+				'MAXLEN', '~', '300',
+				'*',
+				'note', note.id);
+		}
+
+		redisPipeline.exec();
 	}
 
 	@bindThis

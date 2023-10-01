@@ -89,7 +89,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.queryService.generateRepliesQuery(query, ps.withReplies, me);
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
-			if (me) this.queryService.generateMutedNoteQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 			if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 

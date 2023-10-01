@@ -28,7 +28,6 @@ import { MiHashtag } from '@/models/Hashtag.js';
 import { MiInstance } from '@/models/Instance.js';
 import { MiMeta } from '@/models/Meta.js';
 import { MiModerationLog } from '@/models/ModerationLog.js';
-import { MiMutedNote } from '@/models/MutedNote.js';
 import { MiMuting } from '@/models/Muting.js';
 import { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { MiNote } from '@/models/Note.js';
@@ -96,7 +95,6 @@ export {
 	MiInstance,
 	MiMeta,
 	MiModerationLog,
-	MiMutedNote,
 	MiMuting,
 	MiRenoteMuting,
 	MiNote,
@@ -163,7 +161,6 @@ export type HashtagsRepository = Repository<MiHashtag>;
 export type InstancesRepository = Repository<MiInstance>;
 export type MetasRepository = Repository<MiMeta>;
 export type ModerationLogsRepository = Repository<MiModerationLog>;
-export type MutedNotesRepository = Repository<MiMutedNote>;
 export type MutingsRepository = Repository<MiMuting>;
 export type RenoteMutingsRepository = Repository<MiRenoteMuting>;
 export type NotesRepository = Repository<MiNote>;

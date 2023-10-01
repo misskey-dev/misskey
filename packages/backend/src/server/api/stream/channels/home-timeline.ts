@@ -88,13 +88,6 @@ class HomeTimelineChannel extends Channel {
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
-		// 流れてきたNoteがミュートすべきNoteだったら無視する
-		// TODO: 将来的には、単にMutedNoteテーブルにレコードがあるかどうかで判定したい(以下の理由により難しそうではある)
-		// 現状では、ワードミュートにおけるMutedNoteレコードの追加処理はストリーミングに流す処理と並列で行われるため、
-		// レコードが追加されるNoteでも追加されるより先にここのストリーミングの処理に到達することが起こる。
-		// そのためレコードが存在するかのチェックでは不十分なので、改めてcheckWordMuteを呼んでいる
-		if (await checkWordMute(note, this.user, this.userProfile!.mutedWords)) return;
-
 		this.connection.cacheNote(note);
 
 		this.send('note', note);

@@ -63,7 +63,6 @@ export const DI = {
 	promoNotesRepository: Symbol('promoNotesRepository'),
 	promoReadsRepository: Symbol('promoReadsRepository'),
 	relaysRepository: Symbol('relaysRepository'),
-	mutedNotesRepository: Symbol('mutedNotesRepository'),
 	channelsRepository: Symbol('channelsRepository'),
 	channelFollowingsRepository: Symbol('channelFollowingsRepository'),
 	channelFavoritesRepository: Symbol('channelFavoritesRepository'),
