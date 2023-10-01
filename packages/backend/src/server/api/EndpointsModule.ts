@@ -205,7 +205,6 @@ import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
-import * as ep___i_getWordMutedNotesCount from './endpoints/i/get-word-muted-notes-count.js';
 import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
@@ -554,7 +553,6 @@ const $i_exportAntennas: Provider = { provide: 'ep:i/export-antennas', useClass:
 const $i_favorites: Provider = { provide: 'ep:i/favorites', useClass: ep___i_favorites.default };
 const $i_gallery_likes: Provider = { provide: 'ep:i/gallery/likes', useClass: ep___i_gallery_likes.default };
 const $i_gallery_posts: Provider = { provide: 'ep:i/gallery/posts', useClass: ep___i_gallery_posts.default };
-const $i_getWordMutedNotesCount: Provider = { provide: 'ep:i/get-word-muted-notes-count', useClass: ep___i_getWordMutedNotesCount.default };
 const $i_importBlocking: Provider = { provide: 'ep:i/import-blocking', useClass: ep___i_importBlocking.default };
 const $i_importFollowing: Provider = { provide: 'ep:i/import-following', useClass: ep___i_importFollowing.default };
 const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep___i_importMuting.default };
@@ -907,7 +905,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_favorites,
 		$i_gallery_likes,
 		$i_gallery_posts,
-		$i_getWordMutedNotesCount,
 		$i_importBlocking,
 		$i_importFollowing,
 		$i_importMuting,
@@ -1254,7 +1251,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_favorites,
 		$i_gallery_likes,
 		$i_gallery_posts,
-		$i_getWordMutedNotesCount,
 		$i_importBlocking,
 		$i_importFollowing,
 		$i_importMuting,

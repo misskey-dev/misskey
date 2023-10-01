@@ -205,7 +205,6 @@ import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
-import * as ep___i_getWordMutedNotesCount from './endpoints/i/get-word-muted-notes-count.js';
 import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
@@ -552,7 +551,6 @@ const eps = [
 	['i/favorites', ep___i_favorites],
 	['i/gallery/likes', ep___i_gallery_likes],
 	['i/gallery/posts', ep___i_gallery_posts],
-	['i/get-word-muted-notes-count', ep___i_getWordMutedNotesCount],
 	['i/import-blocking', ep___i_importBlocking],
 	['i/import-following', ep___i_importFollowing],
 	['i/import-muting', ep___i_importMuting],

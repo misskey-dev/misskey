@@ -68,9 +68,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const [
 				userIdsWhoMeMuting,
 				userIdsWhoMeMutingRenotes,
+				userIdsWhoBlockingMe,
 			] = await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.renoteMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
 			let timeline: MiNote[] = [];
@@ -103,15 +105,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			timeline = await query.getMany();
 
-			// ミュート等考慮
 			timeline = timeline.filter(note => {
-				// TODO: インスタンスミュートの考慮
-				// TODO: ブロックの考慮
-
 				if (note.userId === me.id) {
 					return true;
 				}
-
+				if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
 				if (isUserRelated(note, userIdsWhoMeMuting)) return false;
 				if (note.renoteId) {
 					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {

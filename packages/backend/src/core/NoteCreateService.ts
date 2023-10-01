@@ -478,16 +478,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Increment notes count (user)
 		this.incNotesCountOfUser(user);
 
-		if (data.reply) {
+		if (data.visibility === 'public' || data.visibility === 'home') {
+			this.pushToTl(note, user);
+		} else if (data.visibility === 'followers') {
+			this.pushToTl(note, user);
+		} else if (data.visibility === 'specified') {
 			// TODO
-		} else {
-			if (data.visibility === 'public' || data.visibility === 'home') {
-				this.pushToTl(note, user);
-			} else if (data.visibility === 'followers') {
-				this.pushToTl(note, user);
-			} else if (data.visibility === 'specified') {
-				// TODO
-			}
 		}
 
 		this.antennaService.addNoteToAntennas(note, user);
@@ -802,76 +798,102 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
-		// TODO: 休眠ユーザーを弾く
-		// TODO: チャンネルフォロー
-		// TODO: キャッシュ？
-		const followings = await this.followingsRepository.find({
-			where: {
-				followeeId: user.id,
-				followerHost: IsNull(),
-			},
-			select: ['followerId'],
-		});
-
-		let userLists = await this.userListJoiningsRepository.find({
-			where: {
-				userId: user.id,
-			},
-			select: ['userListId'],
-		});
-
 		const redisPipeline = this.redisClient.pipeline();
 
-		// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
-		for (const following of followings) {
+		if (note.replyId) {
+			if (note.visibility === 'public' || note.visibility === 'home') {
+				redisPipeline.xadd(
+					`userTimelineWithReplies:${user.id}`,
+					'MAXLEN', '~', '300',
+					'*',
+					'note', note.id);
+			}
+		} else {
+			// TODO: 休眠ユーザーを弾く
+			// TODO: チャンネルフォロー
+			// TODO: キャッシュ？
+			const followings = await this.followingsRepository.find({
+				where: {
+					followeeId: user.id,
+					followerHost: IsNull(),
+				},
+				select: ['followerId'],
+			});
+
+			let userLists = await this.userListJoiningsRepository.find({
+				where: {
+					userId: user.id,
+				},
+				select: ['userListId'],
+			});
+
+			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
+			for (const following of followings) {
+				redisPipeline.xadd(
+					`homeTimeline:${following.followerId}`,
+					'MAXLEN', '~', '300',
+					'*',
+					'note', note.id);
+
+				if (note.fileIds.length > 0) {
+					redisPipeline.xadd(
+						`homeTimelineWithFiles:${following.followerId}`,
+						'MAXLEN', '~', '300',
+						'*',
+						'note', note.id);
+				}
+			}
+
+			if (note.visibility === 'followers') {
+				// TODO: 重そうだから何とかしたい Set 使う？
+				userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListId));
+			}
+
+			for (const userList of userLists) {
+				redisPipeline.xadd(
+					`userListTimeline:${userList.userListId}`,
+					'MAXLEN', '~', '300',
+					'*',
+					'note', note.id);
+
+				if (note.fileIds.length > 0) {
+					redisPipeline.xadd(
+						`userListTimelineWithFiles:${userList.userListId}`,
+						'MAXLEN', '~', '300',
+						'*',
+						'note', note.id);
+				}
+			}
+
 			redisPipeline.xadd(
-				`homeTimeline:${following.followerId}`,
+				`homeTimeline:${user.id}`,
 				'MAXLEN', '~', '300',
 				'*',
 				'note', note.id);
 
 			if (note.fileIds.length > 0) {
 				redisPipeline.xadd(
-					`homeTimelineWithFiles:${following.followerId}`,
+					`homeTimelineWithFiles:${user.id}`,
 					'MAXLEN', '~', '300',
 					'*',
 					'note', note.id);
 			}
-		}
 
-		if (note.visibility === 'followers') {
-			// TODO: 重そうだから何とかしたい Set 使う？
-			userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListId));
-		}
-
-		for (const userList of userLists) {
-			redisPipeline.xadd(
-				`userListTimeline:${userList.userListId}`,
-				'MAXLEN', '~', '300',
-				'*',
-				'note', note.id);
-
-			if (note.fileIds.length > 0) {
+			if (note.visibility === 'public' || note.visibility === 'home') {
 				redisPipeline.xadd(
-					`userListTimelineWithFiles:${userList.userListId}`,
+					`userTimeline:${user.id}`,
 					'MAXLEN', '~', '300',
 					'*',
 					'note', note.id);
+
+				if (note.fileIds.length > 0) {
+					redisPipeline.xadd(
+						`userTimelineWithFiles:${user.id}`,
+						'MAXLEN', '~', '300',
+						'*',
+						'note', note.id);
+				}
 			}
-		}
-
-		redisPipeline.xadd(
-			`homeTimeline:${user.id}`,
-			'MAXLEN', '~', '300',
-			'*',
-			'note', note.id);
-
-		if (note.fileIds.length > 0) {
-			redisPipeline.xadd(
-				`homeTimelineWithFiles:${user.id}`,
-				'MAXLEN', '~', '300',
-				'*',
-				'note', note.id);
 		}
 
 		redisPipeline.exec();
