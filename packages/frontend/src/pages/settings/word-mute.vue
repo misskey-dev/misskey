@@ -5,29 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkTab v-model="tab">
-		<option value="soft">{{ i18n.ts._wordMute.soft }}</option>
-		<option value="hard">{{ i18n.ts._wordMute.hard }}</option>
-	</MkTab>
 	<div>
-		<div v-show="tab === 'soft'" class="_gaps_m">
-			<MkInfo>{{ i18n.ts._wordMute.softDescription }}</MkInfo>
-			<MkTextarea v-model="softMutedWords">
-				<span>{{ i18n.ts._wordMute.muteWords }}</span>
-				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
-			</MkTextarea>
-		</div>
-		<div v-show="tab === 'hard'" class="_gaps_m">
-			<MkInfo>{{ i18n.ts._wordMute.hardDescription }} {{ i18n.ts.reflectMayTakeTime }}</MkInfo>
-			<MkTextarea v-model="hardMutedWords">
-				<span>{{ i18n.ts._wordMute.muteWords }}</span>
-				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
-			</MkTextarea>
-			<MkKeyValue v-if="hardWordMutedNotesCount != null">
-				<template #key>{{ i18n.ts._wordMute.mutedNotes }}</template>
-				<template #value>{{ number(hardWordMutedNotesCount) }}</template>
-			</MkKeyValue>
-		</div>
+		<MkTextarea v-model="mutedWords">
+			<span>{{ i18n.ts._wordMute.muteWords }}</span>
+			<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
+		</MkTextarea>
 	</div>
 	<MkButton primary inline :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
@@ -56,25 +38,15 @@ const render = (mutedWords) => mutedWords.map(x => {
 }).join('\n');
 
 const tab = ref('soft');
-const softMutedWords = ref(render(defaultStore.state.mutedWords));
-const hardMutedWords = ref(render($i!.mutedWords));
-const hardWordMutedNotesCount = ref(null);
+const mutedWords = ref(render($i!.mutedWords));
 const changed = ref(false);
 
-os.api('i/get-word-muted-notes-count', {}).then(response => {
-	hardWordMutedNotesCount.value = response?.count;
-});
-
-watch(softMutedWords, () => {
-	changed.value = true;
-});
-
-watch(hardMutedWords, () => {
+watch(mutedWords, () => {
 	changed.value = true;
 });
 
 async function save() {
-	const parseMutes = (mutes, tab) => {
+	const parseMutes = (mutes) => {
 		// split into lines, remove empty lines and unnecessary whitespace
 		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
 
@@ -92,7 +64,7 @@ async function save() {
 					os.alert({
 						type: 'error',
 						title: i18n.ts.regexpError,
-						text: i18n.t('regexpErrorDescription', { tab, line: i + 1 }) + '\n' + err.toString(),
+						text: i18n.t('regexpErrorDescription', { tab: 'word mute', line: i + 1 }) + '\n' + err.toString(),
 					});
 					// re-throw error so these invalid settings are not saved
 					throw err;
@@ -105,18 +77,16 @@ async function save() {
 		return lines;
 	};
 
-	let softMutes, hardMutes;
+	let parsed;
 	try {
-		softMutes = parseMutes(softMutedWords.value, i18n.ts._wordMute.soft);
-		hardMutes = parseMutes(hardMutedWords.value, i18n.ts._wordMute.hard);
+		parsed = parseMutes(mutedWords.value);
 	} catch (err) {
 		// already displayed error message in parseMutes
 		return;
 	}
 
-	defaultStore.set('mutedWords', softMutes);
 	await os.api('i/update', {
-		mutedWords: hardMutes,
+		mutedWords: parsed,
 	});
 
 	changed.value = false;
