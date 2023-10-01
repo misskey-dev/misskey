@@ -184,8 +184,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div>
 							<CodeDiff
-								:old-string="appearNote.noteEditHistory[index - 1] || appearNote.noteEditHistory[0]"
-								:new-string="text"
+								:oldString="appearNote.noteEditHistory[index - 1] || ''"
+								:newString="text"
 								:trim="true"
 								:hideHeader="true"
 								diffStyle="char"
