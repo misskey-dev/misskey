@@ -7,7 +7,8 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -58,11 +59,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private getterService: GetterService,
-		private globalEventService: GlobalEventService,
+		private noteEntityService: NoteEntityService,
+		private noteUpdateService: NoteUpdateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
@@ -74,16 +73,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchNote);
 			}
 
-			await this.notesRepository.update({ id: note.id }, {
-				updatedAt: new Date(),
+			const data = {
 				cw: ps.cw,
 				text: ps.text,
-			});
+			};
 
-			this.globalEventService.publishNoteStream(note.id, 'updated', {
-				cw: ps.cw,
-				text: ps.text,
-			});
+			const updatedNote = await this.noteUpdateService.update(await this.usersRepository.findOneByOrFail({ id: note.userId }), data, note, false);
+
+			return {
+				updatedNote: await this.noteEntityService.pack(updatedNote, me),
+			};
 		});
 	}
 }

@@ -110,7 +110,7 @@ export interface NoteEventTypes {
 	};
 	updated: {
 		cw: string | null;
-		text: string;
+		text: string | null;
 	};
 	reacted: {
 		reaction: string;

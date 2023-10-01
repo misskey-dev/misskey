@@ -14,6 +14,7 @@ import { NotePiningService } from '@/core/NotePiningService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
@@ -73,6 +74,7 @@ export class ApInboxService {
 		private notePiningService: NotePiningService,
 		private userBlockingService: UserBlockingService,
 		private noteCreateService: NoteCreateService,
+		private noteUpdateService: NoteUpdateService,
 		private noteDeleteService: NoteDeleteService,
 		private appLockService: AppLockService,
 		private apResolverService: ApResolverService,
