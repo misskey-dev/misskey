@@ -16,6 +16,9 @@
 ### NOTE
 - muted_noteテーブルは使われなくなったため手動で削除を行ってください。
 
+### Changes
+- API: users/notes で fileType 指定はできなくなりました
+
 ### Server
 - タイムライン取得時のパフォーマンスを改善
 
