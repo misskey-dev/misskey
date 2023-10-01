@@ -10,6 +10,7 @@ export const DI = {
 	redis: Symbol('redis'),
 	redisForPub: Symbol('redisForPub'),
 	redisForSub: Symbol('redisForSub'),
+	redisForTimelines: Symbol('redisForTimelines'),
 
 	//#region Repositories
 	usersRepository: Symbol('usersRepository'),
