@@ -1128,6 +1128,7 @@ export interface Locale {
     "edited": string;
     "notificationRecieveConfig": string;
     "mutualFollow": string;
+    "fileAttachedOnly": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1561,6 +1562,7 @@ export interface Locale {
             "descriptionOfRateLimitFactor": string;
             "canHideAds": string;
             "canSearchNotes": string;
+            "canUseTranslator": string;
         };
         "_condition": {
             "isLocal": string;
@@ -2283,6 +2285,9 @@ export interface Locale {
         "unmarkSensitiveDriveFile": string;
         "resolveAbuseReport": string;
         "createInvitation": string;
+        "createAd": string;
+        "deleteAd": string;
+        "updateAd": string;
     };
 }
 declare const locales: {

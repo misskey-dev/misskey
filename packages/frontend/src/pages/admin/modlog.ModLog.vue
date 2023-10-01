@@ -6,18 +6,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkFolder>
 	<template #label>
-		<b>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
+		<b
+			:class="{
+				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation'].includes(log.type),
+				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword'].includes(log.type),
+				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'deleteDriveFile', 'deleteAd'].includes(log.type)
+			}"
+		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
 		<span v-if="log.type === 'updateUserNote'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'suspend'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'unsuspend'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'resetPassword'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
-		<span v-else-if="log.type === 'assignRole'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
-		<span v-else-if="log.type === 'unassignRole'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'assignRole'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }} <i class="ti ti-arrow-right"></i> {{ log.info.roleName }}</span>
+		<span v-else-if="log.type === 'unassignRole'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }} <i class="ti ti-equal-not"></i> {{ log.info.roleName }}</span>
 		<span v-else-if="log.type === 'createRole'">: {{ log.info.role.name }}</span>
 		<span v-else-if="log.type === 'updateRole'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'deleteRole'">: {{ log.info.role.name }}</span>
 		<span v-else-if="log.type === 'addCustomEmoji'">: {{ log.info.emoji.name }}</span>
 		<span v-else-if="log.type === 'updateCustomEmoji'">: {{ log.info.before.name }}</span>
+		<span v-else-if="log.type === 'deleteCustomEmoji'">: {{ log.info.emoji.name }}</span>
 		<span v-else-if="log.type === 'markSensitiveDriveFile'">: @{{ log.info.fileUserUsername }}{{ log.info.fileUserHost ? '@' + log.info.fileUserHost : '' }}</span>
 		<span v-else-if="log.type === 'unmarkSensitiveDriveFile'">: @{{ log.info.fileUserUsername }}{{ log.info.fileUserHost ? '@' + log.info.fileUserHost : '' }}</span>
 		<span v-else-if="log.type === 'suspendRemoteInstance'">: {{ log.info.host }}</span>
@@ -76,6 +83,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
+		<template v-else-if="log.type === 'updateAd'">
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+			</div>
+		</template>
 
 		<details>
 			<summary>raw</summary>
@@ -113,5 +125,17 @@ const props = defineProps<{
 	color: #000;
 	border-radius: 6px;
 	overflow: clip;
+}
+
+.logYellow {
+	color: var(--warning);
+}
+
+.logRed {
+	color: var(--error);
+}
+
+.logGreen {
+	color: var(--success);
 }
 </style>

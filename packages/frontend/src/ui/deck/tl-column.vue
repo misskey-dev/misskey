@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
-		<i v-else-if="column.tl === 'social'" class="ti ti-rocket"></i>
+		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -23,10 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkTimeline
 		v-else-if="column.tl"
 		ref="timeline"
-		:key="column.tl + withRenotes + withReplies"
+		:key="column.tl + withRenotes + withReplies + onlyFiles"
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
+		:onlyFiles="onlyFiles"
 	/>
 </XColumn>
 </template>
@@ -52,6 +53,7 @@ const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable)
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
 const withRenotes = $ref(props.column.withRenotes ?? true);
 const withReplies = $ref(props.column.withReplies ?? false);
+const onlyFiles = $ref(props.column.onlyFiles ?? false);
 
 watch($$(withRenotes), v => {
 	updateColumn(props.column.id, {
@@ -62,6 +64,12 @@ watch($$(withRenotes), v => {
 watch($$(withReplies), v => {
 	updateColumn(props.column.id, {
 		withReplies: v,
+	});
+});
+
+watch($$(onlyFiles), v => {
+	updateColumn(props.column.id, {
+		onlyFiles: v,
 	});
 });
 
@@ -111,6 +119,10 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.withReplies,
 	ref: $$(withReplies),
+}, {
+	type: 'switch',
+	text: i18n.ts.fileAttachedOnly,
+	ref: $$(onlyFiles),
 }];
 </script>
 

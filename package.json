@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2023.9.1",
+	"version": "2023.9.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@8.7.6",
+	"packageManager": "pnpm@8.8.0",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -46,15 +46,15 @@
 		"execa": "8.0.1",
 		"cssnano": "6.0.1",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.30",
+		"postcss": "8.4.31",
 		"terser": "5.20.0",
 		"typescript": "5.2.2"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.7.2",
-		"@typescript-eslint/parser": "6.7.2",
+		"@typescript-eslint/eslint-plugin": "6.7.3",
+		"@typescript-eslint/parser": "6.7.3",
 		"cross-env": "7.0.3",
-		"cypress": "13.2.0",
+		"cypress": "13.3.0",
 		"eslint": "8.50.0",
 		"start-server-and-test": "2.0.1"
 	},
