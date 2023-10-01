@@ -67,6 +67,7 @@ const onlyFiles_store = computed(defaultStore.makeGetterSetter('onlyFiles'))
 const withRenotes = $ref(defaultStore.state.onlyAndWithSave ?  withRenotes_store : true);
 const withReplies = $ref(defaultStore.state.onlyAndWithSave ? withReplies_store : false);
 const onlyFiles = $ref(defaultStore.state.onlyAndWithSave ? onlyFiles_store : false);
+const isShowMediaTimeline = $ref(defaultStore.state.showMediaTimeline)
 watch($$(src), () => queue = 0);
 
 function queueUpdated(q: number): void {
@@ -175,7 +176,12 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
 	iconOnly: true,
-}, {
+}, ...(isShowMediaTimeline ? [{
+  key: 'media',
+  title: i18n.ts._timelines.media,
+  icon: 'ti ti-photo',
+  iconOnly: true,
+}] : []),{
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-rocket',
