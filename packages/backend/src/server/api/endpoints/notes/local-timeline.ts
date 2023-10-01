@@ -132,6 +132,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return true;
 			});
 
+			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
 			process.nextTick(() => {
 				if (me) {
 					this.activeUsersChart.read(me);
