@@ -17,10 +17,6 @@
 ### General
 - noteがデフォルトで編集できないようになりました。
 
-### Client
-
-### Server
-
 ## 2023.9.3-kinel.1
 ### General
 - Enhance: ノートの翻訳機能の利用可否をロールで設定可能に
