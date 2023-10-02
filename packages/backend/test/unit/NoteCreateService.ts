@@ -64,6 +64,7 @@ describe('NoteCreateService', () => {
 			],
 			providers: [
 				UtilityService,
+				ApPersonService,
 				MetaService,
 				CacheService,
 				IdService,
