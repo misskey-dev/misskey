@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
-		<i v-else-if="column.tl === 'social'" class="ti ti-rocket"></i>
+		<i v-else-if="column.tl === 'social'" class="ti ti-universe"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -20,12 +20,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</p>
 		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
-	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl"/>
+	<MkTimeline
+		v-else-if="column.tl"
+		ref="timeline"
+		:key="column.tl + withRenotes + withReplies + onlyFiles"
+		:src="column.tl"
+		:withRenotes="withRenotes"
+		:withReplies="withReplies"
+		:onlyFiles="onlyFiles"
+	/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -43,6 +51,27 @@ let disabled = $ref(false);
 
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
+const withRenotes = $ref(props.column.withRenotes ?? true);
+const withReplies = $ref(props.column.withReplies ?? false);
+const onlyFiles = $ref(props.column.onlyFiles ?? false);
+
+watch($$(withRenotes), v => {
+	updateColumn(props.column.id, {
+		withRenotes: v,
+	});
+});
+
+watch($$(withReplies), v => {
+	updateColumn(props.column.id, {
+		withReplies: v,
+	});
+});
+
+watch($$(onlyFiles), v => {
+	updateColumn(props.column.id, {
+		onlyFiles: v,
+	});
+});
 
 onMounted(() => {
 	if (props.column.tl == null) {
@@ -82,6 +111,18 @@ const menu = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.timeline,
 	action: setType,
+}, {
+	type: 'switch',
+	text: i18n.ts.showRenotes,
+	ref: $$(withRenotes),
+}, {
+	type: 'switch',
+	text: i18n.ts.withReplies,
+	ref: $$(withReplies),
+}, {
+	type: 'switch',
+	text: i18n.ts.fileAttachedOnly,
+	ref: $$(onlyFiles),
 }];
 </script>
 

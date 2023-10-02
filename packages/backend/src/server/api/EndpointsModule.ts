@@ -258,6 +258,7 @@ import * as ep___notes_clips from './endpoints/notes/clips.js';
 import * as ep___notes_conversation from './endpoints/notes/conversation.js';
 import * as ep___notes_create from './endpoints/notes/create.js';
 import * as ep___notes_delete from './endpoints/notes/delete.js';
+import * as ep___notes_update from './endpoints/notes/update.js';
 import * as ep___notes_favorites_create from './endpoints/notes/favorites/create.js';
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
 import * as ep___notes_featured from './endpoints/notes/featured.js';
@@ -606,6 +607,7 @@ const $notes_clips: Provider = { provide: 'ep:notes/clips', useClass: ep___notes
 const $notes_conversation: Provider = { provide: 'ep:notes/conversation', useClass: ep___notes_conversation.default };
 const $notes_create: Provider = { provide: 'ep:notes/create', useClass: ep___notes_create.default };
 const $notes_delete: Provider = { provide: 'ep:notes/delete', useClass: ep___notes_delete.default };
+const $notes_update: Provider = { provide: 'ep:notes/update', useClass: ep___notes_update.default };
 const $notes_favorites_create: Provider = { provide: 'ep:notes/favorites/create', useClass: ep___notes_favorites_create.default };
 const $notes_favorites_delete: Provider = { provide: 'ep:notes/favorites/delete', useClass: ep___notes_favorites_delete.default };
 const $notes_featured: Provider = { provide: 'ep:notes/featured', useClass: ep___notes_featured.default };
@@ -958,6 +960,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_conversation,
 		$notes_create,
 		$notes_delete,
+		$notes_update,
 		$notes_favorites_create,
 		$notes_favorites_delete,
 		$notes_featured,
@@ -1304,6 +1307,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_conversation,
 		$notes_create,
 		$notes_delete,
+		$notes_update,
 		$notes_favorites_create,
 		$notes_favorites_delete,
 		$notes_featured,

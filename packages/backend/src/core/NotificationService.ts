@@ -18,6 +18,7 @@ import { NotificationEntityService } from '@/core/entities/NotificationEntitySer
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
+import { UserListService } from '@/core/UserListService.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -38,6 +39,7 @@ export class NotificationService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
 		private cacheService: CacheService,
+		private userListService: UserListService,
 	) {
 	}
 
@@ -74,20 +76,51 @@ export class NotificationService implements OnApplicationShutdown {
 	public async createNotification(
 		notifieeId: MiUser['id'],
 		type: MiNotification['type'],
-		data: Partial<MiNotification>,
+		data: Omit<Partial<MiNotification>, 'notifierId'>,
+		notifierId?: MiUser['id'] | null,
 	): Promise<MiNotification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
-		const isMuted = profile.mutingNotificationTypes.includes(type);
-		if (isMuted) return null;
 
-		if (data.notifierId) {
-			if (notifieeId === data.notifierId) {
+		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		const recieveConfig = (profile.notificationRecieveConfig ?? {})[type];
+		if (recieveConfig?.type === 'never') {
+			return null;
+		}
+
+		if (notifierId) {
+			if (notifieeId === notifierId) {
 				return null;
 			}
 
 			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId);
-			if (mutings.has(data.notifierId)) {
+			if (mutings.has(notifierId)) {
 				return null;
+			}
+
+			if (recieveConfig?.type === 'following') {
+				const isFollowing = await this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => followings.has(notifierId));
+				if (!isFollowing) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'follower') {
+				const isFollower = await this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => followings.has(notifieeId));
+				if (!isFollower) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'mutualFollow') {
+				const [isFollowing, isFollower] = await Promise.all([
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => followings.has(notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => followings.has(notifieeId)),
+				]);
+				if (!isFollowing && !isFollower) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'list') {
+				const isMember = await this.userListService.membersCache.fetch(recieveConfig.userListId).then(members => members.has(notifierId));
+				if (!isMember) {
+					return null;
+				}
 			}
 		}
 
@@ -95,6 +128,7 @@ export class NotificationService implements OnApplicationShutdown {
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			type: type,
+			notifierId: notifierId,
 			...data,
 		} as MiNotification;
 
@@ -117,8 +151,8 @@ export class NotificationService implements OnApplicationShutdown {
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 
-			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
-			if (type === 'receiveFollowRequest') this.emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
+			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
+			if (type === 'receiveFollowRequest') this.emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
 		}, () => { /* aborted, ignore it */ });
 
 		return notification;

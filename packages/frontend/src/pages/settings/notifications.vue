@@ -5,7 +5,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormLink @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+	<FormSection first>
+		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
+		<div class="_gaps_s">
+			<MkFolder v-for="type in notificationTypes" :key="type">
+				<template #label>{{ i18n.t('_notification._types.' + type) }}</template>
+				<template #suffix>
+					{{
+						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
+						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
+						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
+						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+						i18n.ts.all
+					}}
+				</template>
+
+				<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
+			</MkFolder>
+		</div>
+	</FormSection>
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
@@ -37,19 +56,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
+import XNotificationConfig from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from '@/const.js';
 
 let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
 let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage || false);
+const userLists = await os.api('users/lists/list');
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');
@@ -59,21 +81,15 @@ async function readAllNotifications() {
 	await os.api('notifications/mark-all-as-read');
 }
 
-function configure() {
-	const includingTypes = notificationTypes.filter(x => !$i!.mutingNotificationTypes.includes(x));
-	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
-		includingTypes,
-		showGlobalToggle: false,
-	}, {
-		done: async (res) => {
-			const { includingTypes: value } = res;
-			await os.apiWithDialog('i/update', {
-				mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
-			}).then(i => {
-				$i!.mutingNotificationTypes = i.mutingNotificationTypes;
-			});
+async function updateReceiveConfig(type, value) {
+	await os.apiWithDialog('i/update', {
+		notificationRecieveConfig: {
+			...$i!.notificationRecieveConfig,
+			[type]: value,
 		},
-	}, 'closed');
+	}).then(i => {
+		$i!.notificationRecieveConfig = i.notificationRecieveConfig;
+	});
 }
 
 function onChangeSendReadMessage(v: boolean) {
