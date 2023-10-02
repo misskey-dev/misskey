@@ -41,7 +41,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
-		withReplies: { type: 'boolean', default: false },
+		withReplies: { type: 'boolean', default: true },
 		withRenotes: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
