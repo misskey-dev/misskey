@@ -805,15 +805,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
 		const redisPipeline = this.redisClient.pipeline();
 
-		if (note.replyId && note.replyUserId !== note.userId) {
-			if (note.visibility === 'public' || note.visibility === 'home') {
-				redisPipeline.xadd(
-					`userTimelineWithReplies:${user.id}`,
-					'MAXLEN', '~', '200',
-					'*',
-					'note', note.id);
-			}
-		} else if (note.channelId) {
+		if (note.channelId) {
 			const channelFollowings = await this.channelFollowingsRepository.find({
 				where: {
 					followeeId: note.channelId,
@@ -845,7 +837,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					followeeId: user.id,
 					followerHost: IsNull(),
 				},
-				select: ['followerId'],
+				select: ['followerId', 'withReplies'],
 			});
 
 			let userLists = await this.userListJoiningsRepository.find({
@@ -857,6 +849,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
 			for (const following of followings) {
+				// 自分自身以外への返信
+				if (note.replyId && note.replyUserId !== note.userId) {
+					if (!following.withReplies) continue;
+				}
+
 				redisPipeline.xadd(
 					`homeTimeline:${following.followerId}`,
 					'MAXLEN', '~', '200',
@@ -878,6 +875,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			for (const userList of userLists) {
+				// 自分自身以外への返信
+				if (note.replyId && note.replyUserId !== note.userId) {
+					if (!userList.withReplies) continue;
+				}
+
 				redisPipeline.xadd(
 					`userListTimeline:${userList.userListId}`,
 					'MAXLEN', '~', '200',
@@ -893,48 +895,59 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
-			redisPipeline.xadd(
-				`homeTimeline:${user.id}`,
-				'MAXLEN', '~', '200',
-				'*',
-				'note', note.id);
-
-			if (note.fileIds.length > 0) {
+			{ // 自分自身のHTL
 				redisPipeline.xadd(
-					`homeTimelineWithFiles:${user.id}`,
-					'MAXLEN', '~', '100',
-					'*',
-					'note', note.id);
-			}
-
-			if (note.visibility === 'public' || note.visibility === 'home') {
-				redisPipeline.xadd(
-					`userTimeline:${user.id}`,
+					`homeTimeline:${user.id}`,
 					'MAXLEN', '~', '200',
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
-						`userTimelineWithFiles:${user.id}`,
+						`homeTimelineWithFiles:${user.id}`,
 						'MAXLEN', '~', '100',
 						'*',
 						'note', note.id);
 				}
+			}
 
-				if (note.userHost == null) {
+			if (note.visibility === 'public' || note.visibility === 'home') {
+				// 自分自身以外への返信
+				if (note.replyId && note.replyUserId !== note.userId) {
 					redisPipeline.xadd(
-						'localTimeline',
-						'MAXLEN', '~', '1000',
+						`userTimelineWithReplies:${user.id}`,
+						'MAXLEN', '~', '200',
+						'*',
+						'note', note.id);
+				} else {
+					redisPipeline.xadd(
+						`userTimeline:${user.id}`,
+						'MAXLEN', '~', '200',
 						'*',
 						'note', note.id);
 
 					if (note.fileIds.length > 0) {
 						redisPipeline.xadd(
-							'localTimelineWithFiles',
-							'MAXLEN', '~', '500',
+							`userTimelineWithFiles:${user.id}`,
+							'MAXLEN', '~', '100',
 							'*',
 							'note', note.id);
+					}
+
+					if (note.userHost == null) {
+						redisPipeline.xadd(
+							'localTimeline',
+							'MAXLEN', '~', '1000',
+							'*',
+							'note', note.id);
+
+						if (note.fileIds.length > 0) {
+							redisPipeline.xadd(
+								'localTimelineWithFiles',
+								'MAXLEN', '~', '500',
+								'*',
+								'note', note.id);
+						}
 					}
 				}
 			}

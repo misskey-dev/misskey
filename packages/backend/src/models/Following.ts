@@ -9,6 +9,7 @@ import { MiUser } from './User.js';
 
 @Entity('following')
 @Index(['followerId', 'followeeId'], { unique: true })
+@Index(['followeeId', 'followerHost'])
 export class MiFollowing {
 	@PrimaryColumn(id())
 	public id: string;
@@ -44,6 +45,12 @@ export class MiFollowing {
 	})
 	@JoinColumn()
 	public follower: MiUser | null;
+
+	// タイムラインにその人のリプライまで含めるかどうか
+	@Column('boolean', {
+		default: false,
+	})
+	public withReplies: boolean;
 
 	@Index()
 	@Column('varchar', {

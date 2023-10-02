@@ -1129,6 +1129,8 @@ export interface Locale {
     "notificationRecieveConfig": string;
     "mutualFollow": string;
     "fileAttachedOnly": string;
+    "showRepliesToOthersInTimeline": string;
+    "hideRepliesToOthersInTimeline": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
