@@ -115,11 +115,11 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: $$(withRenotes),
-}, {
+}, /*{
 	type: 'switch',
 	text: i18n.ts.withReplies,
 	ref: $$(withReplies),
-}, {
+},*/ {
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
 	ref: $$(onlyFiles),

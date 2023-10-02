@@ -53,7 +53,6 @@ export const paramDef = {
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
-		withReplies: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 	},
 	required: [],
@@ -111,7 +110,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const htlNoteIds = htlNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
 			const ltlNoteIds = ltlNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
-			const noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
+			let noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
+			noteIds.sort((a, b) => a > b ? -1 : 1);
+			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
 				return [];

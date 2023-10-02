@@ -144,12 +144,12 @@ const headerActions = $computed(() => [{
 			text: i18n.ts.showRenotes,
 			icon: 'ti ti-repeat',
 			ref: $$(withRenotes),
-		}, {
+		}, /*{
 			type: 'switch',
 			text: i18n.ts.withReplies,
 			icon: 'ti ti-arrow-back-up',
 			ref: $$(withReplies),
-		}, {
+		},*/ {
 			type: 'switch',
 			text: i18n.ts.fileAttachedOnly,
 			icon: 'ti ti-photo',
