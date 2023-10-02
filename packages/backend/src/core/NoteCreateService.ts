@@ -496,11 +496,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.reply == null) {
+			// TODO: キャッシュ
 			this.followingsRepository.findBy({
 				followeeId: user.id,
 				notify: 'normal',
 			}).then(followings => {
 				for (const following of followings) {
+					// TODO: ワードミュート考慮
 					this.notificationService.createNotification(following.followerId, 'note', {
 						noteId: note.id,
 					}, user.id);
