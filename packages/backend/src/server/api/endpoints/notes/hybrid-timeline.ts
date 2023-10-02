@@ -61,8 +61,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -96,12 +96,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let ltlNoteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
-				htlNoteIdsRes = await this.redisClient.xrevrange(
+				htlNoteIdsRes = await this.redisForTimelines.xrevrange(
 					ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
 					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
 					'-',
 					'COUNT', limit);
-				ltlNoteIdsRes = await this.redisClient.xrevrange(
+				ltlNoteIdsRes = await this.redisForTimelines.xrevrange(
 					ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
 					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
 					'-',

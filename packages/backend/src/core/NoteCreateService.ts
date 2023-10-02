@@ -155,8 +155,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -335,7 +335,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		if (data.channel) {
-			this.redisClient.xadd(
+			this.redisForTimelines.xadd(
 				`channelTimeline:${data.channel.id}`,
 				'MAXLEN', '~', this.config.perChannelMaxNoteCacheCount.toString(),
 				'*',
@@ -803,7 +803,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
-		const redisPipeline = this.redisClient.pipeline();
+		const redisPipeline = this.redisForTimelines.pipeline();
 
 		if (note.channelId) {
 			const channelFollowings = await this.channelFollowingsRepository.find({
