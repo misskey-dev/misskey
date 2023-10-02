@@ -87,6 +87,7 @@ describe('RoleService', () => {
 			})
 			.compile();
 
+		await app.init();
 		app.enableShutdownHooks();
 
 		roleService = app.get<RoleService>(RoleService);

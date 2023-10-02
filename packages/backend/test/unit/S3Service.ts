@@ -24,6 +24,7 @@ describe('S3Service', () => {
 			imports: [GlobalModule, CoreModule],
 			providers: [S3Service],
 		}).compile();
+		await app.init();
 		app.enableShutdownHooks();
 		s3Service = app.get<S3Service>(S3Service);
 	});

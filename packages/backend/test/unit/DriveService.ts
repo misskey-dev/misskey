@@ -23,6 +23,7 @@ describe('DriveService', () => {
 			imports: [GlobalModule, CoreModule],
 			providers: [DriveService],
 		}).compile();
+		await app.init();
 		app.enableShutdownHooks();
 		driveService = app.get<DriveService>(DriveService);
 	});
