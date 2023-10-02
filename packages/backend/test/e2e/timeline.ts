@@ -190,4 +190,49 @@ describe('Renote Mute', () => {
 		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 	});
+
+	test('タイムラインにフォローしているユーザーの他人の投稿のリノートが含まれる', async () => {
+		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+		await api('/following/create', {
+			userId: bob.id,
+		}, alice);
+		const carolNote = await post(carol, { text: 'hi' });
+		const bobNote = await post(bob, { renoteId: carolNote.id });
+
+		// redisに追加されるのを待つ
+		await sleep(100);
+
+		const res = await api('/notes/timeline', {}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+	});
+
+	test('withRenotes: false なタイムラインにフォローしているユーザーの他人の投稿のリノートが含まれない', async () => {
+		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+		await api('/following/create', {
+			userId: bob.id,
+		}, alice);
+		const carolNote = await post(carol, { text: 'hi' });
+		const bobNote = await post(bob, { renoteId: carolNote.id });
+
+		// redisに追加されるのを待つ
+		await sleep(100);
+
+		const res = await api('/notes/timeline', {
+			withRenotes: false,
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+	});
+
+	// TODO: ミュート済みユーザーのテスト
+	// TODO: リノートミュート済みユーザーのテスト
 });
