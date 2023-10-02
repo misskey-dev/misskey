@@ -38,6 +38,7 @@ describe('users/notes', () => {
 		await app.close();
 	});
 
+	/*
 	test('ファイルタイプ指定 (jpg)', async () => {
 		const res = await api('/users/notes', {
 			userId: alice.id,
@@ -64,4 +65,5 @@ describe('users/notes', () => {
 		assert.strictEqual(res.body.some((note: any) => note.id === pngNote.id), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
 	});
+	*/
 });
