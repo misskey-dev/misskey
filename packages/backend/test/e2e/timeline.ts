@@ -21,6 +21,22 @@ describe('Renote Mute', () => {
 		await app.close();
 	});
 
+	test('タイムラインに自分の visibility: followers なノートが含まれる', async () => {
+		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+		const aliceNote = await post(alice, { text: 'hi', visibility: 'followers'  });
+
+		// redisに追加されるのを待つ
+		await sleep(100);
+
+		const res = await api('/notes/timeline', {}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
+		assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
+	});
+
 	test('タイムラインにフォローしているユーザーのノートが含まれる', async () => {
 		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
@@ -257,4 +273,5 @@ describe('Renote Mute', () => {
 
 	// TODO: ミュート済みユーザーのテスト
 	// TODO: リノートミュート済みユーザーのテスト
+	// TODO: withFilesのテスト
 });
