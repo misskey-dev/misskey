@@ -14,7 +14,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListJoiningsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListJoiningsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -184,6 +184,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
+
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -804,9 +807,32 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (note.visibility === 'public' || note.visibility === 'home') {
 				redisPipeline.xadd(
 					`userTimelineWithReplies:${user.id}`,
-					'MAXLEN', '~', '300',
+					'MAXLEN', '~', '200',
 					'*',
 					'note', note.id);
+			}
+		} else if (note.channelId) {
+			const channelFollowings = await this.channelFollowingsRepository.find({
+				where: {
+					followeeId: note.channelId,
+				},
+				select: ['followerId'],
+			});
+
+			for (const channelFollowing of channelFollowings) {
+				redisPipeline.xadd(
+					`homeTimeline:${channelFollowing.followerId}`,
+					'MAXLEN', '~', '200',
+					'*',
+					'note', note.id);
+
+				if (note.fileIds.length > 0) {
+					redisPipeline.xadd(
+						`homeTimelineWithFiles:${channelFollowing.followerId}`,
+						'MAXLEN', '~', '100',
+						'*',
+						'note', note.id);
+				}
 			}
 		} else {
 			// TODO: 休眠ユーザーを弾く
@@ -831,14 +857,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			for (const following of followings) {
 				redisPipeline.xadd(
 					`homeTimeline:${following.followerId}`,
-					'MAXLEN', '~', '300',
+					'MAXLEN', '~', '200',
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`homeTimelineWithFiles:${following.followerId}`,
-						'MAXLEN', '~', '300',
+						'MAXLEN', '~', '100',
 						'*',
 						'note', note.id);
 				}
@@ -852,14 +878,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			for (const userList of userLists) {
 				redisPipeline.xadd(
 					`userListTimeline:${userList.userListId}`,
-					'MAXLEN', '~', '300',
+					'MAXLEN', '~', '200',
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`userListTimelineWithFiles:${userList.userListId}`,
-						'MAXLEN', '~', '300',
+						'MAXLEN', '~', '100',
 						'*',
 						'note', note.id);
 				}
@@ -867,14 +893,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			redisPipeline.xadd(
 				`homeTimeline:${user.id}`,
-				'MAXLEN', '~', '300',
+				'MAXLEN', '~', '200',
 				'*',
 				'note', note.id);
 
 			if (note.fileIds.length > 0) {
 				redisPipeline.xadd(
 					`homeTimelineWithFiles:${user.id}`,
-					'MAXLEN', '~', '300',
+					'MAXLEN', '~', '100',
 					'*',
 					'note', note.id);
 			}
@@ -882,14 +908,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (note.visibility === 'public' || note.visibility === 'home') {
 				redisPipeline.xadd(
 					`userTimeline:${user.id}`,
-					'MAXLEN', '~', '300',
+					'MAXLEN', '~', '200',
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`userTimelineWithFiles:${user.id}`,
-						'MAXLEN', '~', '300',
+						'MAXLEN', '~', '100',
 						'*',
 						'note', note.id);
 				}
@@ -904,7 +930,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					if (note.fileIds.length > 0) {
 						redisPipeline.xadd(
 							'localTimelineWithFiles',
-							'MAXLEN', '~', '1000',
+							'MAXLEN', '~', '500',
 							'*',
 							'note', note.id);
 					}
