@@ -12,6 +12,15 @@
 
 -->
 
+## 2023.x.x (unreleased)
+
+### General
+
+### Client
+- Fix: deck uiでuser listを見たときにリプライが表示されない
+
+### Server
+
 ## 2023.9.3
 ### General
 - Enhance: ノートの翻訳機能の利用可否をロールで設定可能に
