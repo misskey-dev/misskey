@@ -194,6 +194,7 @@ export class CacheService implements OnApplicationShutdown {
 					if (follower) follower.followingCount++;
 					const followee = this.userByIdCache.get(body.followeeId);
 					if (followee) followee.followersCount++;
+					this.userFollowingsCache.delete(body.followerId);
 					break;
 				}
 				default:
