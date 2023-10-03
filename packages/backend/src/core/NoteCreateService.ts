@@ -5,7 +5,7 @@
 
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
-import { In, DataSource, IsNull } from 'typeorm';
+import { In, DataSource, IsNull, LessThan } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import RE2 from 're2';
@@ -14,7 +14,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -829,13 +829,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 		} else {
-			// TODO: 休眠ユーザーを弾く
-			// TODO: チャンネルフォロー
 			// TODO: キャッシュ？
 			const followings = await this.followingsRepository.find({
 				where: {
 					followeeId: user.id,
 					followerHost: IsNull(),
+					isFollowerHibernated: false,
 				},
 				select: ['followerId', 'withReplies'],
 			});
@@ -952,9 +951,53 @@ export class NoteCreateService implements OnApplicationShutdown {
 					}
 				}
 			}
+
+			if (Math.random() < 0.1) {
+				process.nextTick(() => {
+					this.checkHibernation(followings);
+				});
+			}
 		}
 
 		redisPipeline.exec();
+	}
+
+	@bindThis
+	public async checkHibernation(followings: MiFollowing[]) {
+		if (followings.length === 0) return;
+
+		const shuffle = (array: MiFollowing[]) => {
+			for (let i = array.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[array[i], array[j]] = [array[j], array[i]];
+			}
+			return array;
+		};
+
+		// ランダムに最大1000件サンプリング
+		const samples = shuffle(followings).slice(0, Math.min(followings.length, 1000));
+
+		const hibernatedUsers = await this.usersRepository.find({
+			where: {
+				id: In(samples.map(x => x.followerId)),
+				lastActiveDate: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 50))),
+			},
+			select: ['id'],
+		});
+
+		if (hibernatedUsers.length > 0) {
+			this.usersRepository.update({
+				id: In(hibernatedUsers.map(x => x.id)),
+			}, {
+				isHibernated: true,
+			});
+
+			this.followingsRepository.update({
+				followerId: In(hibernatedUsers.map(x => x.id)),
+			}, {
+				isFollowerHibernated: true,
+			});
+		}
 	}
 
 	@bindThis
