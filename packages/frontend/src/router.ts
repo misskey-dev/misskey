@@ -436,6 +436,10 @@ export const routes = [{
 		name: 'proxy-account',
 		component: page(() => import('./pages/admin/proxy-account.vue')),
 	}, {
+		path: '/external-services',
+		name: 'external-services',
+		component: page(() => import('./pages/admin/external-services.vue')),
+	}, {
 		path: '/other-settings',
 		name: 'other-settings',
 		component: page(() => import('./pages/admin/other-settings.vue')),
