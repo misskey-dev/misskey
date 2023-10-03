@@ -114,6 +114,7 @@ describe('ActivityPub', () => {
 				},
 			}).compile();
 
+		await app.init();
 		app.enableShutdownHooks();
 
 		noteService = app.get<ApNoteService>(ApNoteService);
