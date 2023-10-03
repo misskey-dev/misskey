@@ -438,6 +438,7 @@ export class ApRendererService {
 			_misskey_quote: quote,
 			quoteUrl: quote,
 			published: note.createdAt.toISOString(),
+			updated: note.updatedAt?.toISOString() ?? undefined,
 			to,
 			cc,
 			inReplyTo,

@@ -13,6 +13,7 @@ export interface IObject {
 	name?: string | null;
 	summary?: string;
 	published?: string;
+	updated?: string;
 	cc?: ApObject;
 	to?: ApObject;
 	attributedTo?: ApObject;
