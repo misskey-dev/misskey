@@ -54,7 +54,6 @@ describe('RelayService', () => {
 			})
 			.compile();
 
-		await app.init();
 		app.enableShutdownHooks();
 
 		relayService = app.get<RelayService>(RelayService);

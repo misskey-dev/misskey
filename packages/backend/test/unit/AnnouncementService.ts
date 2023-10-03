@@ -85,7 +85,6 @@ describe('AnnouncementService', () => {
 			})
 			.compile();
 
-		await app.init();
 		app.enableShutdownHooks();
 
 		announcementService = app.get<AnnouncementService>(AnnouncementService);

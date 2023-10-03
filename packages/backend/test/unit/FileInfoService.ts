@@ -50,7 +50,6 @@ describe('FileInfoService', () => {
 			})
 			.compile();
 
-		await app.init();
 		app.enableShutdownHooks();
 
 		fileInfoService = app.get<FileInfoService>(FileInfoService);

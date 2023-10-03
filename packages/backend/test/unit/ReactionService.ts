@@ -17,7 +17,6 @@ describe('ReactionService', () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 		}).compile();
-		await app.init();
 		reactionService = app.get<ReactionService>(ReactionService);
 	});
 

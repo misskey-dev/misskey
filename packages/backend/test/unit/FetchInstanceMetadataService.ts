@@ -58,7 +58,6 @@ describe('FetchInstanceMetadataService', () => {
 				}})
 			.compile();
 
-		await app.init();
 		app.enableShutdownHooks();
 
 		fetchInstanceMetadataService = app.get<FetchInstanceMetadataService>(FetchInstanceMetadataService);

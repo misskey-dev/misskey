@@ -18,7 +18,6 @@ describe('MfmService', () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 		}).compile();
-		await app.init();
 		mfmService = app.get<MfmService>(MfmService);
 	});
 
