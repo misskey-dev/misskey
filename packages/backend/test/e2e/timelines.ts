@@ -650,5 +650,5 @@ describe('Timelines', () => {
 	});
 
 	// TODO: リノートミュート済みユーザーのテスト
-	// TODO: withFilesのテスト
+	// TODO: ページネーションのテスト
 });
