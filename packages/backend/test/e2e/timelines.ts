@@ -130,6 +130,40 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
 
+		test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/create', { userId: carol.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		});
+
+		test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/create', { userId: carol.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		});
+
 		test('withReplies: false でフォローしているユーザーのそのユーザー自身への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -206,6 +240,19 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+		});
+
+		test('フォローしているユーザーの他人への visibility: specified なノートが含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
 
 		test('フォローしているユーザーが行ったミュートしているユーザーのリノートが含まれない', async () => {
