@@ -516,7 +516,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
 
-		/*
+		/* 未実装
 		test('リスインしているフォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
