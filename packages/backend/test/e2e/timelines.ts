@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING = 'true';
 
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire, sleep } from '../utils.js';
+import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
 
@@ -577,6 +577,23 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
 		});
+
+		test.concurrent('[withFiles: true] リスインしているユーザーのファイル付きノートのみ含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { fileIds: [file.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/user-list-timeline', { listId: list.id, withFiles: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		}, 1000 * 10);
 	});
 
 	// TODO: リノートミュート済みユーザーのテスト
