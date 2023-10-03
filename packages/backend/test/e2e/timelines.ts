@@ -486,6 +486,36 @@ describe('Timelines', () => {
 		});
 	});
 
+	describe('User List TL', () => {
+		test('リスインしているフォローしていないユーザーのノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test('リスインしているフォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+	});
+
 	// TODO: リノートミュート済みユーザーのテスト
 	// TODO: withFilesのテスト
 });
