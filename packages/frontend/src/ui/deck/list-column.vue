@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :with-renotes="withRenotes" :with-replies="withReplies"/>
+	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes"/>
 </XColumn>
 </template>
 
@@ -28,7 +28,6 @@ const props = defineProps<{
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
 const withRenotes = $ref(props.column.withRenotes ?? true);
-const withReplies = $ref(props.column.withReplies ?? true);
 
 if (props.column.listId == null) {
 	setList();
@@ -40,11 +39,6 @@ watch($$(withRenotes), v => {
 	});
 });
 
-watch($$(withReplies), v => {
-	updateColumn(props.column.id, {
-		withReplies: v,
-	});
-});
 async function setList() {
 	const lists = await os.api('users/lists/list');
 	const { canceled, result: list } = await os.select({
@@ -79,11 +73,6 @@ const menu = [
 		type: 'switch',
 		text: i18n.ts.showRenotes,
 		ref: $$(withRenotes),
-	},
-	{
-		type: 'switch',
-		text: i18n.ts.withReplies,
-		ref: $$(withReplies),
 	},
 ];
 </script>
