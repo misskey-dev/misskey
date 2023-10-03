@@ -123,6 +123,24 @@ export class UserListService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async updateMembership(target: MiUser, list: MiUserList, options: { withReplies?: boolean }) {
+		const joining = await this.userListJoiningsRepository.findOneBy({
+			userId: target.id,
+			userListId: list.id,
+		});
+
+		if (joining == null) {
+			throw new Error('User is not a member of the list');
+		}
+
+		await this.userListJoiningsRepository.update({
+			id: joining.id,
+		}, {
+			withReplies: options.withReplies,
+		});
+	}
+
+	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
 		this.membersCache.dispose();

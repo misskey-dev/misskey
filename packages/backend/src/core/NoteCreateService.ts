@@ -840,11 +840,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 				select: ['followerId', 'withReplies'],
 			});
 
-			const userLists = await this.userListJoiningsRepository.find({
+			const userListMemberships = await this.userListJoiningsRepository.find({
 				where: {
 					userId: user.id,
 				},
-				select: ['userListId'],
+				select: ['userListId', 'withReplies'],
 			});
 
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
@@ -875,21 +875,21 @@ export class NoteCreateService implements OnApplicationShutdown {
 			//	userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListUserId));
 			//}
 
-			for (const userList of userLists) {
+			for (const userListMembership of userListMemberships) {
 				// 自分自身以外への返信
 				if (note.replyId && note.replyUserId !== note.userId) {
-					if (!userList.withReplies) continue;
+					if (!userListMembership.withReplies) continue;
 				}
 
 				redisPipeline.xadd(
-					`userListTimeline:${userList.userListId}`,
+					`userListTimeline:${userListMembership.userListId}`,
 					'MAXLEN', '~', '200',
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
-						`userListTimelineWithFiles:${userList.userListId}`,
+						`userListTimelineWithFiles:${userListMembership.userListId}`,
 						'MAXLEN', '~', '100',
 						'*',
 						'note', note.id);
