@@ -10,7 +10,7 @@ import { signup, api, post, react, startServer, waitFire, sleep } from '../utils
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
 
-describe('Renote Mute', () => {
+describe('Timelines', () => {
 	let app: INestApplicationContext;
 
 	beforeAll(async () => {
@@ -268,6 +268,58 @@ describe('Renote Mute', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+	});
+
+	test('タイムラインにフォローしているユーザーが行ったミュートしているユーザーのリノートが含まれない', async () => {
+		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+		await api('/following/create', {
+			userId: bob.id,
+		}, alice);
+		await api('/mute/create', {
+			userId: carol.id,
+		}, alice);
+		const carolNote = await post(carol, { text: 'hi' });
+		const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
+
+		// redisに追加されるのを待つ
+		await sleep(100);
+
+		const res = await api('/notes/timeline', {
+			withRenotes: false,
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+	});
+
+	test('タイムラインに withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信が含まれない', async () => {
+		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+		await api('/following/create', {
+			userId: bob.id,
+		}, alice);
+		await api('/following/update', {
+			userId: bob.id,
+			withReplies: true,
+		}, alice);
+		await api('/mute/create', {
+			userId: carol.id,
+		}, alice);
+		const carolNote = await post(carol, { text: 'hi' });
+		const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+		// redisに追加されるのを待つ
+		await sleep(100);
+
+		const res = await api('/notes/timeline', {}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 	});
 
