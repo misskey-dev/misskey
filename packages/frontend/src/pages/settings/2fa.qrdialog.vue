@@ -83,6 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 											<template #value><code class="_monospace">{{ code }}</code></template>
 										</MkKeyValue>
 									</div>
+
+									<MkButton primary rounded gradate @click="downloadBackupCodes"><i class="ti ti-download"></i> {{ i18n.ts.download }}</MkButton>
 								</div>
 							</MkFolder>
 						</div>
@@ -108,6 +110,7 @@ import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { confetti } from '@/scripts/confetti.js';
+import { $i } from '@/account.js';
 
 defineProps<{
 	twoFactorData: {
@@ -141,6 +144,16 @@ async function tokenDone() {
 	confetti({
 		duration: 1000 * 3,
 	});
+}
+
+function downloadBackupCodes() {
+	if (backupCodes.value !== undefined) {
+		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
+		const dummya = document.createElement('a');
+		dummya.href = URL.createObjectURL(txtBlob);
+		dummya.download = `${$i?.username}-2fa-backup-codes.txt`;
+		dummya.click();
+	}
 }
 
 function allDone() {

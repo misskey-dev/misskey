@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { UserListJoiningsRepository, UserListsRepository, UsersRepository } from '@/models/_.js';
+import type { UserListMembershipsRepository, UserListsRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
@@ -29,8 +29,8 @@ export class ExportUserListsProcessorService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private utilityService: UtilityService,
 		private driveService: DriveService,
@@ -61,9 +61,9 @@ export class ExportUserListsProcessorService {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
 
 			for (const list of lists) {
-				const joinings = await this.userListJoiningsRepository.findBy({ userListId: list.id });
+				const memberships = await this.userListMembershipsRepository.findBy({ userListId: list.id });
 				const users = await this.usersRepository.findBy({
-					id: In(joinings.map(j => j.userId)),
+					id: In(memberships.map(j => j.userId)),
 				});
 
 				for (const u of users) {

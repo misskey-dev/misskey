@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/_.js';
+import type { UserListsRepository, UserListMembershipsRepository, BlockingsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -76,8 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
@@ -110,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name,
 			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
 
-			const users = (await this.userListJoiningsRepository.findBy({
+			const users = (await this.userListMembershipsRepository.findBy({
 				userListId: ps.listId,
 			})).map(x => x.userId);
 
@@ -132,7 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 
-				const exist = await this.userListJoiningsRepository.exist({
+				const exist = await this.userListMembershipsRepository.exist({
 					where: {
 						userListId: userList.id,
 						userId: currentUser.id,
