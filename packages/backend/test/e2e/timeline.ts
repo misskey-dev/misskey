@@ -24,7 +24,7 @@ describe('Renote Mute', () => {
 	test('タイムラインに自分の visibility: followers なノートが含まれる', async () => {
 		const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-		const aliceNote = await post(alice, { text: 'hi', visibility: 'followers'  });
+		const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
 
 		// redisに追加されるのを待つ
 		await sleep(100);
@@ -256,7 +256,7 @@ describe('Renote Mute', () => {
 			userId: bob.id,
 		}, alice);
 		const carolNote = await post(carol, { text: 'hi' });
-		const bobNote = await post(bob, { text: 'hi',  renoteId: carolNote.id });
+		const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
 		// redisに追加されるのを待つ
 		await sleep(100);
