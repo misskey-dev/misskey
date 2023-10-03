@@ -31,8 +31,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
 		});
@@ -40,9 +38,7 @@ describe('Timelines', () => {
 		test('フォローしているユーザーのノートが含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi' });
 			const carolNote = await post(carol, { text: 'hi' });
 
@@ -50,8 +46,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -59,9 +53,7 @@ describe('Timelines', () => {
 		test('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 			const carolNote = await post(carol, { text: 'hi' });
 
@@ -69,8 +61,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -79,9 +69,7 @@ describe('Timelines', () => {
 		test('withReplies: false でフォローしているユーザーの他人への返信が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -89,8 +77,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -98,13 +84,8 @@ describe('Timelines', () => {
 		test('withReplies: true でフォローしているユーザーの他人への返信が含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/following/update', {
-				userId: bob.id,
-				withReplies: true,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -112,8 +93,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -121,13 +100,8 @@ describe('Timelines', () => {
 		test('withReplies: true でフォローしているユーザーの他人へのDM返信が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/following/update', {
-				userId: bob.id,
-				withReplies: true,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
 
@@ -135,8 +109,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -144,13 +116,8 @@ describe('Timelines', () => {
 		test('withReplies: true でフォローしているユーザーの他人の visibility: followers な投稿への返信が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/following/update', {
-				userId: bob.id,
-				withReplies: true,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -158,8 +125,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -167,9 +132,7 @@ describe('Timelines', () => {
 		test('withReplies: false でフォローしているユーザーのそのユーザー自身への返信が含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
 
@@ -177,8 +140,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		});
@@ -193,8 +154,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 		});
@@ -202,9 +161,7 @@ describe('Timelines', () => {
 		test('フォローしているユーザーの他人の投稿のリノートが含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { renoteId: carolNote.id });
 
@@ -212,8 +169,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -221,9 +176,7 @@ describe('Timelines', () => {
 		test('[withRenotes: false] フォローしているユーザーの他人の投稿のリノートが含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { renoteId: carolNote.id });
 
@@ -233,8 +186,6 @@ describe('Timelines', () => {
 				withRenotes: false,
 			}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -242,9 +193,7 @@ describe('Timelines', () => {
 		test('[withRenotes: false] フォローしているユーザーの他人の投稿の引用が含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -254,8 +203,6 @@ describe('Timelines', () => {
 				withRenotes: false,
 			}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -263,12 +210,8 @@ describe('Timelines', () => {
 		test('フォローしているユーザーが行ったミュートしているユーザーのリノートが含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/mute/create', {
-				userId: carol.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/mute/create', { userId: carol.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -276,8 +219,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -285,16 +226,9 @@ describe('Timelines', () => {
 		test('withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/following/update', {
-				userId: bob.id,
-				withReplies: true,
-			}, alice);
-			await api('/mute/create', {
-				userId: carol.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await api('/mute/create', { userId: carol.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -302,8 +236,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -320,8 +252,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -339,8 +269,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 		});
@@ -348,9 +276,7 @@ describe('Timelines', () => {
 		test('ミュートしているユーザーのノートが含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/mute/create', {
-				userId: carol.id,
-			}, alice);
+			await api('/mute/create', { userId: carol.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -358,8 +284,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -367,12 +291,8 @@ describe('Timelines', () => {
 		test('フォローしているユーザーが行ったミュートしているユーザーのリノートが含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/mute/create', {
-				userId: carol.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/mute/create', { userId: carol.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
@@ -380,8 +300,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
@@ -389,16 +307,9 @@ describe('Timelines', () => {
 		test('withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: bob.id,
-			}, alice);
-			await api('/following/update', {
-				userId: bob.id,
-				withReplies: true,
-			}, alice);
-			await api('/mute/create', {
-				userId: carol.id,
-			}, alice);
+			await api('/following/create', { userId: bob.id }, alice);
+			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await api('/mute/create', { userId: carol.id }, alice);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
@@ -406,8 +317,6 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
