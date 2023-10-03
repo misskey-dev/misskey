@@ -27,6 +27,7 @@
 		"@vitejs/plugin-vue": "4.3.4",
 		"@vue-macros/reactivity-transform": "0.3.23",
 		"@vue/compiler-sfc": "3.3.4",
+		"@vueuse/core": "^10.4.1",
 		"astring": "1.8.6",
 		"autosize": "6.0.1",
 		"broadcast-channel": "5.3.0",
@@ -74,6 +75,7 @@
 		"vanilla-tilt": "1.8.1",
 		"vite": "4.4.9",
 		"vue": "3.3.4",
+		"vue-multiselect": "^2.1.7",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "next"
 	},

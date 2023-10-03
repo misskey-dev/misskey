@@ -39,10 +39,10 @@ function describe(file: Misskey.entities.DriveFile) {
 	}, 'closed');
 }
 
-function toggleSensitive(file: Misskey.entities.DriveFile) {
+function toggleSensitive(file: Misskey.entities.DriveFile , isSensitive?) {
 	os.api('drive/files/update', {
 		fileId: file.id,
-		isSensitive: !file.isSensitive,
+		isSensitive: isSensitive !== null ? isSensitive : !file.isSensitive
 	}).catch(err => {
 		os.alert({
 			type: 'error',
@@ -72,7 +72,20 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 		fileId: file.id,
 	});
 }
+async function deleteSelectFile(files) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: files.length+'つのファイルをまとめて削除しますか？',
+	});
 
+	if (canceled) return;
+	files.forEach((e) => {
+		os.api('drive/files/delete', {
+			fileId: e.id,
+		});
+	})
+
+}
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
 	const isImage = file.type.startsWith('image/');
 	let menu;
@@ -117,6 +130,38 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		icon: 'ti ti-trash',
 		danger: true,
 		action: () => deleteFile(file),
+	}];
+
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(file.id);
+			},
+		}]);
+	}
+
+	return menu;
+}
+
+export function getDriveFileMultiMenu(file, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
+
+	let menu;
+	menu = [{
+		text: i18n.ts.unmarkAsSensitive,
+		icon: 'ti ti-eye',
+		action: () => {file.forEach((e) => toggleSensitive(e,false))}
+	},{
+		text: i18n.ts.markAsSensitive,
+		icon: 'ti ti-eye-exclamation',
+		action: () => {file.forEach((e) => toggleSensitive(e,true))}
+		,
+	},{
+		text: i18n.ts.delete,
+		icon: 'ti ti-trash',
+		danger: true,
+		action: () =>  deleteSelectFile(file),
 	}];
 
 	if (defaultStore.state.devMode) {

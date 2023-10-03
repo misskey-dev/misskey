@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@upload="upload"
 				@removeFile="removeFile"
 				@removeFolder="removeFolder"
+        :multipleselect="multipleselect"
 			/>
 			<template v-for="f in hierarchyFolders">
 				<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -25,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@upload="upload"
 					@removeFile="removeFile"
 					@removeFolder="removeFolder"
+          :multipleselect="multipleselect"
 				/>
 			</template>
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -51,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
+          :multipleselect="multipleselect"
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
@@ -76,6 +79,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
+          @pointerdown="startLongPress(file)"
+          @pointerup="endLongPress"
+          @click.shift.left.exact="selectClick(file)"
+          @click.ctrl.left.exact="selectClick(file)"
+          :multipleselect="multipleselect"
+          :isLongPressing="isLongPressing"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
@@ -118,6 +127,24 @@ const props = withDefaults(defineProps<{
 	select: null,
 });
 
+const isLongPressing = ref(false);
+let longPressTimeout = null;
+
+function startLongPress(file) {
+  isLongPressing.value = true;
+  longPressTimeout = setTimeout(() => {
+    if (isLongPressing) {
+      selectClick(file)
+    }
+  }, 800); // 長押しと判断する時間（1秒）を設定
+}
+
+function endLongPress() {
+  isLongPressing.value = false;
+  clearTimeout(longPressTimeout);
+}
+
+
 const emit = defineEmits<{
 	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
 	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
@@ -140,7 +167,7 @@ const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = useStream().useChannel('drive');
 const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
-
+let multipleselect = ref([]);
 // ドロップされようとしているか
 const draghover = ref(false);
 
@@ -168,7 +195,18 @@ function onStreamDriveFileUpdated(file: Misskey.entities.DriveFile) {
 		addFile(file, true);
 	}
 }
+function selectClick(file) {
+  const index = multipleselect.value.findIndex(item => item.id === file.id);
 
+  if (index !== -1) {
+    // File is already selected, so remove it
+    multipleselect.value.splice(index, 1);
+  } else {
+    // File is not selected, so add it
+    multipleselect.value.push(file);
+  }
+
+}
 function onStreamDriveFileDeleted(fileId: string) {
 	removeFile(fileId);
 }
@@ -405,6 +443,7 @@ function chooseFile(file: Misskey.entities.DriveFile) {
 			emit('change-selection', [file]);
 		}
 	}
+
 }
 
 function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
@@ -427,6 +466,7 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 }
 
 function move(target?: Misskey.entities.DriveFolder) {
+  multipleselect.value = []
 	if (!target) {
 		goRoot();
 		return;
@@ -491,11 +531,17 @@ function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
 function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
 	folders.value = folders.value.filter(f => f.id !== folderIdToRemove);
+  const index = multipleselect.value.findIndex(item => item.id === file.id);
+  if (index !== -1) {
+    // File is already selected, so remove it
+    multipleselect.value.splice(index, 1);
+  }
 }
 
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
 	files.value = files.value.filter(f => f.id !== fileId);
+  multipleselect.value = multipleselect.value.filter(a => a.id !== fileId)
 }
 
 function appendFile(file: Misskey.entities.DriveFile) {
@@ -645,10 +691,12 @@ function getMenu() {
 }
 
 function showMenu(ev: MouseEvent) {
+  multipleselect.value = []
 	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 function onContextmenu(ev: MouseEvent) {
+  multipleselect.value = []
 	os.contextMenu(getMenu(), ev);
 }
 
