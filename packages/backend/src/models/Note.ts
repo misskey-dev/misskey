@@ -29,6 +29,12 @@ export class MiNote {
 	})
 	public updatedAt: Date | null;
 
+	@Column('timestamp with time zone', {
+		array: true,
+		default: null,
+	})
+	public updatedAtHistory: Date[] | null;
+
 	@Column('varchar', {
 		length: 3000,
 		array: true,

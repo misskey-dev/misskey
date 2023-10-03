@@ -181,6 +181,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.historyMain">
 						<div :class="$style.historyHeader">
 							<MkUserName :user="appearNote.user" :nowrap="true"/>
+							<MkTime :class="$style.updatedAt" :time="appearNote.updatedAtHistory![index]"/>
 						</div>
 						<div>
 							<div>
@@ -255,7 +256,7 @@ const props = defineProps<{
 const inChannel = inject('inChannel', null);
 
 let note = $ref(deepClone(props.note));
-
+console.log(note.updatedAtHistory);
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
@@ -853,11 +854,12 @@ function loadConversation() {
 }
 
 .historyHeader {
+	display: flex;
 	margin-bottom: 2px;
 	font-weight: bold;
 	width: 100%;
 	overflow: clip;
-    text-overflow: ellipsis;
+	text-overflow: ellipsis;
 }
 .avatar {
 	flex-shrink: 0 !important;
@@ -867,6 +869,12 @@ function loadConversation() {
 	height: 40px !important;
 	border-radius: 8px !important;
 	pointer-events: none !important;
+}
+
+.updatedAt {
+	flex-shrink: 0;
+	margin-left: auto;
+	font-size: 0.9em;
 }
 
 .muted {
