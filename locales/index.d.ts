@@ -1131,6 +1131,7 @@ export interface Locale {
     "fileAttachedOnly": string;
     "showRepliesToOthersInTimeline": string;
     "hideRepliesToOthersInTimeline": string;
+    "externalServices": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
