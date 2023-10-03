@@ -314,6 +314,29 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
+
+		test.concurrent('[withFiles: true] フォローしているユーザーのファイル付きノートのみ含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const [bobFile, carolFile] = await Promise.all([
+				uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
+				uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
+			]);
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { fileIds: [bobFile.id] });
+			const carolNote1 = await post(carol, { text: 'hi' });
+			const carolNote2 = await post(carol, { fileIds: [carolFile.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/timeline', { withFiles: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote2.id), false);
+		}, 1000 * 10);
 	});
 
 	describe('Local TL', () => {
@@ -408,6 +431,21 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
+
+		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { fileIds: [file.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/local-timeline', { withFiles: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		}, 1000 * 10);
 	});
 
 	describe('Social TL', () => {
@@ -485,6 +523,21 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
+
+		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { fileIds: [file.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/hybrid-timeline', { withFiles: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		}, 1000 * 10);
 	});
 
 	describe('User List TL', () => {
