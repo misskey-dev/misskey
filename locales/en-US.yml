@@ -1742,7 +1742,7 @@ _2fa:
   step3Title: "Enter an authentication code"
   step3: "Enter the token provided by your app to finish setup."
   setupCompleted: "Setup complete"
-  step4: "From now on, any future login attempts will ask for such a login token.\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
+  step4: "From now on, any future login attempts will ask for such a login token."
   securityKeyNotSupported: "Your browser does not support security keys."
   registerTOTPBeforeKey: "Please set up an authenticator app to register a security or pass key."
   securityKeyInfo: "Besides fingerprint or PIN authentication, you can also setup authentication via hardware security keys that support FIDO2 to further secure your account."

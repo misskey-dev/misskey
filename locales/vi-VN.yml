@@ -1523,7 +1523,7 @@ _2fa:
   step2Click: "Quét mã QR trên ứng dụng xác thực (Authy, Google authenticator, v.v.)"
   step3Title: "Nhập mã xác thực"
   step3: "Nhập mã token do ứng dụng của bạn cung cấp để hoàn tất thiết lập."
-  step4: "Kể từ bây giờ, những lần đăng nhập trong tương lai sẽ yêu cầu mã token đăng nhập đó.\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
+  step4: "Kể từ bây giờ, những lần đăng nhập trong tương lai sẽ yêu cầu mã token đăng nhập đó."
   securityKeyNotSupported: "Trình duyệt của bạn không hỗ trợ khóa bảo mật"
   registerTOTPBeforeKey: "Vui lòng thiết lập một ứng dụng xác thực để đăng ký khóa bảo mật hoặc mật khẩu."
   securityKeyInfo: "Bên cạnh xác minh bằng vân tay hoặc mã PIN, bạn cũng có thể thiết lập xác minh thông qua khóa bảo mật phần cứng hỗ trợ FIDO2 để bảo mật hơn nữa cho tài khoản của mình."

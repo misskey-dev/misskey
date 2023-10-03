@@ -1340,7 +1340,7 @@ _2fa:
   step1: "Спершу встановіть на свій пристрій програму автентифікації (наприклад {a} або {b})."
   step2: "Потім відскануйте QR-код, який відображається на цьому екрані."
   step3: "Щоб завершити налаштування, введіть токен, наданий вашою програмою."
-  step4: "Відтепер будь-які майбутні спроби входу вимагатимуть такого токена.\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
+  step4: "Відтепер будь-які майбутні спроби входу вимагатимуть такого токена."
   renewTOTPCancel: "Не зараз"
 _permissions:
   "read:account": "Переглядати дані профілю"
