@@ -148,7 +148,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			const bobNote = await post(bob, { text: 'hi' });
-			const aliceNote = await post(bob, { text: 'hi', replyId: bobNote.id });
+			const aliceNote = await post(alice, { text: 'hi', replyId: bobNote.id });
 
 			await sleep(100); // redisに追加されるのを待つ
 
