@@ -274,6 +274,7 @@ export class ApNoteService {
 		try {
 			return await this.noteCreateService.create(actor, {
 				createdAt: note.published ? new Date(note.published) : null,
+				updatedAt: note.updated ? new Date(note.updated) : null,
 				files,
 				reply,
 				renote: quote,
