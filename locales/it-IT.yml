@@ -1610,11 +1610,6 @@ _wordMute:
   muteWords: "Parole da filtrare"
   muteWordsDescription: "Separare con uno spazio indica la condizione \"E\". Separare con una interruzione di riga, indica la condizione \"O\""
   muteWordsDescription2: "Se vuoi indicare delle Espressioni Regolari (regexp), metti la condizione all'interno di due slash (/)"
-  softDescription: "Verranno nascoste da tutte le Timeline quelle Note che soddisfano le seguenti condizioni"
-  hardDescription: "Impedisci alla istanza di caricare Note che soddisfano le seguenti condizioni. Le Note già filtrate sono già scomparse in modo irreversibile, fino al cambiamento delle condizioni. Dopo di che scompariranno quelle che soddisfano le nuove condizioni."
-  soft: "Leggero"
-  hard: "Pesante"
-  mutedNotes: "Note filtrate"
 _instanceMute:
   instanceMuteDescription: "Disattiva tutte le note, le note di rinvio (condivisione) dell'istanza configurata, comprese le risposte agli utenti dell'istanza."
   instanceMuteDescription2: "Impostazione separata da una nuova riga"
