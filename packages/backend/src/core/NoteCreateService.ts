@@ -840,7 +840,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				select: ['followerId', 'withReplies'],
 			});
 
-			let userLists = await this.userListJoiningsRepository.find({
+			const userLists = await this.userListJoiningsRepository.find({
 				where: {
 					userId: user.id,
 				},
@@ -869,10 +869,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
-			if (note.visibility === 'followers') {
-				// TODO: 重そうだから何とかしたい Set 使う？
-				userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListId));
-			}
+			// TODO
+			//if (note.visibility === 'followers') {
+			//	// TODO: 重そうだから何とかしたい Set 使う？
+			//	userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListUserId));
+			//}
 
 			for (const userList of userLists) {
 				// 自分自身以外への返信
