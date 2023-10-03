@@ -54,8 +54,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
-				noteIdsRes = await this.redisClient.xrevrange(
+				noteIdsRes = await this.redisForTimelines.xrevrange(
 					`channelTimeline:${channel.id}`,
 					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
 					'-',
@@ -104,7 +104,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (me) {
 					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateMutedNoteQuery(query, me);
 					this.queryService.generateBlockedUserQuery(query, me);
 				}
 				//#endregion
@@ -129,7 +128,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (me) {
 					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateMutedNoteQuery(query, me);
 					this.queryService.generateBlockedUserQuery(query, me);
 				}
 				//#endregion
