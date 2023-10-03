@@ -1126,6 +1126,8 @@ edited: "編集済み"
 notificationRecieveConfig: "通知の受信設定"
 mutualFollow: "相互フォロー"
 fileAttachedOnly: "ファイル付きのみ"
+showRepliesToOthersInTimeline: "TLに他の人への返信を含める"
+hideRepliesToOthersInTimeline: "TLに他の人への返信を含めない"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1636,11 +1638,6 @@ _wordMute:
   muteWords: "ミュートするワード"
   muteWordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。"
   muteWordsDescription2: "キーワードをスラッシュで囲むと正規表現になります。"
-  softDescription: "指定した条件のノートをタイムラインから隠します。"
-  hardDescription: "指定した条件のノートをタイムラインに追加しないようにします。追加されなかったノートは、条件を変更しても除外されたままになります。"
-  soft: "ソフト"
-  hard: "ハード"
-  mutedNotes: "ミュートされたノート"
 
 _instanceMute:
   instanceMuteDescription: "ミュートしたサーバーのユーザーへの返信を含めて、設定したサーバーの全てのノートとRenoteをミュートします。"

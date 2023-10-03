@@ -133,6 +133,7 @@ describe('ユーザー', () => {
 			isMuted: user.isMuted ?? false,
 			isRenoteMuted: user.isRenoteMuted ?? false,
 			notify: user.notify ?? 'none',
+			withReplies: user.withReplies ?? false,
 		});
 	};
 
