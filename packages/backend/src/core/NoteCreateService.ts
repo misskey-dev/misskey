@@ -917,20 +917,20 @@ export class NoteCreateService implements OnApplicationShutdown {
 				if (note.replyId && note.replyUserId !== note.userId) {
 					redisPipeline.xadd(
 						`userTimelineWithReplies:${user.id}`,
-						'MAXLEN', '~', '200',
+						'MAXLEN', '~', '1000',
 						'*',
 						'note', note.id);
 				} else {
 					redisPipeline.xadd(
 						`userTimeline:${user.id}`,
-						'MAXLEN', '~', '200',
+						'MAXLEN', '~', '1000',
 						'*',
 						'note', note.id);
 
 					if (note.fileIds.length > 0) {
 						redisPipeline.xadd(
 							`userTimelineWithFiles:${user.id}`,
-							'MAXLEN', '~', '100',
+							'MAXLEN', '~', '500',
 							'*',
 							'note', note.id);
 					}
