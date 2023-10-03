@@ -1609,11 +1609,6 @@ _wordMute:
   muteWords: "禁用词"
   muteWordsDescription: "AND 条件用空格分隔，OR 条件用换行符分隔。"
   muteWordsDescription2: "正则表达式用斜线包裹"
-  softDescription: "隐藏时间线中指定条件的帖子。"
-  hardDescription: "防止将具有指定条件的帖子添加到时间线。 即使您更改条件，未添加的帖文也会被排除在外。"
-  soft: "软屏蔽"
-  hard: "硬屏蔽"
-  mutedNotes: "被屏蔽的帖子"
 _instanceMute:
   instanceMuteDescription: "屏蔽服务器中的所有帖子和转帖，包括这些服务器上的用户回复。"
   instanceMuteDescription2: "一行一个"
