@@ -12,14 +12,25 @@
 
 -->
 
-## 2023.x.x (unreleased)
+## 2023.10.0
+### NOTE
+- muted_noteテーブルは使われなくなったため手動で削除を行ってください。
+
+### Changes
+- API: users/notes, notes/local-timeline で fileType 指定はできなくなりました
+- API: notes/global-timeline は現在常に `[]` を返します
 
 ### General
+- Feat: ユーザーごとに他ユーザーへの返信をタイムラインに含めるか設定可能になりました
+- Feat: ユーザーリスト内のメンバーごとに他ユーザーへの返信をユーザーリストタイムラインに含めるか設定可能になりました
+- Enhance: ソフトワードミュートとハードワードミュートは統合されました
 
 ### Client
-- Fix: deck uiでuser listを見たときにリプライが表示されない
+- Enhance: 二要素認証のバックアップコード一覧をテキストファイルでダウンロード可能に
+- Fix: リアクションしたユーザ一覧のUIが稀に左上に残ってしまう不具合を修正
 
 ### Server
+- Enhance: タイムライン取得時のパフォーマンスを改善
 
 ## 2023.9.3
 ### General
