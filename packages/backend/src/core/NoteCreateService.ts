@@ -934,7 +934,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 							'note', note.id);
 					}
 
-					if (note.userHost == null) {
+					if (note.visibility === 'public' && note.userHost == null) {
 						redisPipeline.xadd(
 							'localTimeline',
 							'MAXLEN', '~', '1000',

@@ -130,7 +130,7 @@ describe('Timelines', () => {
 		});
 
 		test('withReplies: false でフォローしているユーザーのそのユーザー自身への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote1 = await post(bob, { text: 'hi' });
@@ -145,7 +145,7 @@ describe('Timelines', () => {
 		});
 
 		test('自分の他人への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			const bobNote = await post(bob, { text: 'hi' });
 			const aliceNote = await post(alice, { text: 'hi', replyId: bobNote.id });
@@ -239,6 +239,32 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
+
+		test('フォローしているリモートユーザーのノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
 	});
 
 	describe('Local TL', () => {
@@ -254,6 +280,18 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+		});
+
+		test('リモートユーザーのノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/local-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
 
 		test('フォローしているユーザーの visibility: home なノートが含まれる', async () => {
@@ -319,6 +357,83 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+		});
+	});
+
+	describe('Social TL', () => {
+		test('ローカルユーザーのノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/hybrid-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test('ローカルユーザーの visibility: home なノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/hybrid-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
+		test('フォローしているローカルユーザーの visibility: home なノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/hybrid-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test('リモートユーザーのノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/local-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
+		test('フォローしているリモートユーザーのノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/hybrid-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/notes/hybrid-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
 	});
 
