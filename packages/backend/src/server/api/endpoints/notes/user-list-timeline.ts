@@ -6,7 +6,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { NotesRepository, UserListsRepository, UserListJoiningsRepository, MiNote } from '@/models/_.js';
+import type { NotesRepository, UserListsRepository, UserListMembershipsRepository, MiNote } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';

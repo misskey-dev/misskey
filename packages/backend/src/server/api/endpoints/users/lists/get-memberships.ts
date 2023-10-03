@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository, UserListFavoritesRepository, UserListJoiningsRepository } from '@/models/_.js';
+import type { UserListsRepository, UserListFavoritesRepository, UserListMembershipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -45,8 +45,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userListEntityService: UserListEntityService,
 		private queryService: QueryService,
@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			const query = this.queryService.makePaginationQuery(this.userListJoiningsRepository.createQueryBuilder('membership'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.userListMembershipsRepository.createQueryBuilder('membership'), ps.sinceId, ps.untilId)
 				.andWhere('membership.userListId = :userListId', { userListId: userList.id })
 				.innerJoinAndSelect('membership.user', 'user');
 

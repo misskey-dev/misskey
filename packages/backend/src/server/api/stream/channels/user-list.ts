@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUserListJoining, UserListJoiningsRepository, UserListsRepository } from '@/models/_.js';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -18,12 +18,12 @@ class UserListChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private listId: string;
-	public membershipsMap: Record<string, Pick<MiUserListJoining, 'withReplies'> | undefined> = {};
+	public membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		private userListMembershipsRepository: UserListMembershipsRepository,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -58,14 +58,14 @@ class UserListChannel extends Channel {
 
 	@bindThis
 	private async updateListUsers() {
-		const memberships = await this.userListJoiningsRepository.find({
+		const memberships = await this.userListMembershipsRepository.find({
 			where: {
 				userListId: this.listId,
 			},
 			select: ['userId'],
 		});
 
-		const membershipsMap: Record<string, Pick<MiUserListJoining, 'withReplies'> | undefined> = {};
+		const membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 		for (const membership of memberships) {
 			membershipsMap[membership.userId] = {
 				withReplies: membership.withReplies,
@@ -137,8 +137,8 @@ export class UserListChannelService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {
@@ -148,7 +148,7 @@ export class UserListChannelService {
 	public create(id: string, connection: Channel['connection']): UserListChannel {
 		return new UserListChannel(
 			this.userListsRepository,
-			this.userListJoiningsRepository,
+			this.userListMembershipsRepository,
 			this.noteEntityService,
 			id,
 			connection,
