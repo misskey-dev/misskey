@@ -856,13 +856,17 @@ describe('Timelines', () => {
 
 			await api('/mute/create', { userId: bob.id }, alice);
 			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
+			const bobNote3 = await post(bob, { text: 'hi', renoteId: bobNote1.id });
 
 			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id }, alice);
 
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote3.id), true);
 		});
 	});
 
