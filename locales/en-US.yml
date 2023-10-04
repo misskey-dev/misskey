@@ -1128,6 +1128,7 @@ mutualFollow: "Mutual follow"
 fileAttachedOnly: "Only notes with files"
 showRepliesToOthersInTimeline: "Show replies to others in TL"
 hideRepliesToOthersInTimeline: "Hide replies to others from TL"
+externalServices: "External Services"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
