@@ -1458,7 +1458,6 @@ _role:
     gtlAvailable: "Can view the global timeline"
     ltlAvailable: "Can view the local timeline"
     canPublicNote: "Can send public notes"
-    canEditNote: "Note editing"
     canInvite: "Can create instance invite codes"
     inviteLimit: "Invite limit"
     inviteLimitCycle: "Invite limit cooldown"
