@@ -18,8 +18,6 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['users', 'notes'],
 
-	description: 'Show all notes that this user created.',
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -76,16 +74,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];
+			let repliesNoteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
-				noteIdsRes = await this.redisForTimelines.xrevrange(
-					ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : ps.withReplies ? `userTimelineWithReplies:${ps.userId}` : `userTimeline:${ps.userId}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
-					'COUNT', limit);
+				[noteIdsRes, repliesNoteIdsRes] = await Promise.all([
+					this.redisForTimelines.xrevrange(
+						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
+						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+						'-',
+						'COUNT', limit),
+					ps.withReplies
+						? this.redisForTimelines.xrevrange(
+							`userTimelineWithReplies:${ps.userId}`,
+							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+							'-',
+							'COUNT', limit)
+						: Promise.resolve([]),
+				]);
 			}
 
-			const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
+			let noteIds = Array.from(new Set([
+				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId),
+				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId),
+			]));
+			noteIds.sort((a, b) => a > b ? -1 : 1);
+			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
 				return [];

@@ -7,9 +7,13 @@ process.env.NODE_ENV = 'test';
 process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING = 'true';
 
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl } from '../utils.js';
+import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl, randomString } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
+
+function genHost() {
+	return randomString() + '.example.com';
+}
 
 let app: INestApplicationContext;
 
@@ -290,7 +294,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi' });
@@ -303,7 +307,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
@@ -355,7 +359,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('リモートユーザーのノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -487,7 +491,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('リモートユーザーのノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -499,7 +503,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi' });
@@ -512,7 +516,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
@@ -690,6 +694,92 @@ describe('Timelines', () => {
 			await sleep(100); // redisに追加されるのを待つ
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id, withFiles: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		}, 1000 * 10);
+	});
+
+	describe('User TL', () => {
+		test.concurrent('ノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test.concurrent('フォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
+		test.concurrent('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
+		});
+
+		test.concurrent('[withReplies: false] 他人への返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), false);
+		});
+
+		test.concurrent('[withReplies: true] 他人への返信が含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		});
+
+		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { fileIds: [file.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id, withFiles: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);

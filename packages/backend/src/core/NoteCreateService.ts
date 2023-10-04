@@ -482,12 +482,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Increment notes count (user)
 		this.incNotesCountOfUser(user);
 
-		if (data.visibility === 'public' || data.visibility === 'home') {
+		if (data.visibility === 'specified') {
+			// TODO?
+		} else {
 			this.pushToTl(note, user);
-		} else if (data.visibility === 'followers') {
-			this.pushToTl(note, user);
-		} else if (data.visibility === 'specified') {
-			// TODO
 		}
 
 		this.antennaService.addNoteToAntennas(note, user);
@@ -804,6 +802,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
+		const meta = await this.metaService.fetch();
+
 		const redisPipeline = this.redisForTimelines.pipeline();
 
 		if (note.channelId) {
@@ -817,14 +817,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			for (const channelFollowing of channelFollowings) {
 				redisPipeline.xadd(
 					`homeTimeline:${channelFollowing.followerId}`,
-					'MAXLEN', '~', '200',
+					'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`homeTimelineWithFiles:${channelFollowing.followerId}`,
-						'MAXLEN', '~', '100',
+						'MAXLEN', '~', (meta.perUserHomeTimelineCacheMax / 2).toString(),
 						'*',
 						'note', note.id);
 				}
@@ -856,14 +856,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				redisPipeline.xadd(
 					`homeTimeline:${following.followerId}`,
-					'MAXLEN', '~', '200',
+					'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`homeTimelineWithFiles:${following.followerId}`,
-						'MAXLEN', '~', '100',
+						'MAXLEN', '~', (meta.perUserHomeTimelineCacheMax / 2).toString(),
 						'*',
 						'note', note.id);
 				}
@@ -883,14 +883,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				redisPipeline.xadd(
 					`userListTimeline:${userListMembership.userListId}`,
-					'MAXLEN', '~', '200',
+					'MAXLEN', '~', meta.perUserListTimelineCacheMax.toString(),
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`userListTimelineWithFiles:${userListMembership.userListId}`,
-						'MAXLEN', '~', '100',
+						'MAXLEN', '~', (meta.perUserListTimelineCacheMax / 2).toString(),
 						'*',
 						'note', note.id);
 				}
@@ -899,56 +899,54 @@ export class NoteCreateService implements OnApplicationShutdown {
 			{ // 自分自身のHTL
 				redisPipeline.xadd(
 					`homeTimeline:${user.id}`,
-					'MAXLEN', '~', '200',
+					'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
 					'*',
 					'note', note.id);
 
 				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
 						`homeTimelineWithFiles:${user.id}`,
-						'MAXLEN', '~', '100',
+						'MAXLEN', '~', (meta.perUserHomeTimelineCacheMax / 2).toString(),
 						'*',
 						'note', note.id);
 				}
 			}
 
-			if (note.visibility === 'public' || note.visibility === 'home') {
-				// 自分自身以外への返信
-				if (note.replyId && note.replyUserId !== note.userId) {
+			// 自分自身以外への返信
+			if (note.replyId && note.replyUserId !== note.userId) {
+				redisPipeline.xadd(
+					`userTimelineWithReplies:${user.id}`,
+					'MAXLEN', '~', note.userHost == null ? meta.perLocalUserUserTimelineCacheMax.toString() : meta.perRemoteUserUserTimelineCacheMax.toString(),
+					'*',
+					'note', note.id);
+			} else {
+				redisPipeline.xadd(
+					`userTimeline:${user.id}`,
+					'MAXLEN', '~', note.userHost == null ? meta.perLocalUserUserTimelineCacheMax.toString() : meta.perRemoteUserUserTimelineCacheMax.toString(),
+					'*',
+					'note', note.id);
+
+				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
-						`userTimelineWithReplies:${user.id}`,
-						'MAXLEN', '~', '1000',
+						`userTimelineWithFiles:${user.id}`,
+						'MAXLEN', '~', note.userHost == null ? (meta.perLocalUserUserTimelineCacheMax / 2).toString() : (meta.perRemoteUserUserTimelineCacheMax / 2).toString(),
 						'*',
 						'note', note.id);
-				} else {
+				}
+
+				if (note.visibility === 'public' && note.userHost == null) {
 					redisPipeline.xadd(
-						`userTimeline:${user.id}`,
+						'localTimeline',
 						'MAXLEN', '~', '1000',
 						'*',
 						'note', note.id);
 
 					if (note.fileIds.length > 0) {
 						redisPipeline.xadd(
-							`userTimelineWithFiles:${user.id}`,
+							'localTimelineWithFiles',
 							'MAXLEN', '~', '500',
 							'*',
 							'note', note.id);
-					}
-
-					if (note.visibility === 'public' && note.userHost == null) {
-						redisPipeline.xadd(
-							'localTimeline',
-							'MAXLEN', '~', '1000',
-							'*',
-							'note', note.id);
-
-						if (note.fileIds.length > 0) {
-							redisPipeline.xadd(
-								'localTimelineWithFiles',
-								'MAXLEN', '~', '500',
-								'*',
-								'note', note.id);
-						}
 					}
 				}
 			}

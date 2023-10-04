@@ -96,16 +96,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let ltlNoteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
-				htlNoteIdsRes = await this.redisForTimelines.xrevrange(
-					ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
-					'COUNT', limit);
-				ltlNoteIdsRes = await this.redisForTimelines.xrevrange(
-					ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
-					'COUNT', limit);
+				[htlNoteIdsRes, ltlNoteIdsRes] = await Promise.all([
+					this.redisForTimelines.xrevrange(
+						ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
+						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+						'-',
+						'COUNT', limit),
+					this.redisForTimelines.xrevrange(
+						ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
+						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+						'-',
+						'COUNT', limit),
+				]);
 			}
 
 			const htlNoteIds = htlNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
