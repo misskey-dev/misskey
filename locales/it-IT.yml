@@ -1692,8 +1692,6 @@ _sfx:
   note: "Nota"
   noteMy: "Mia nota"
   notification: "Notifiche"
-  chat: "Messaggi"
-  chatBg: "Chat (sfondo)"
   antenna: "Ricezione dell'antenna"
   channel: "Notifiche di canale"
 _ago:

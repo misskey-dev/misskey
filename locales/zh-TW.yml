@@ -1695,8 +1695,6 @@ _sfx:
   note: "貼文"
   noteMy: "我的貼文"
   notification: "通知"
-  chat: "聊天"
-  chatBg: "聊天背景"
   antenna: "天線接收"
   channel: "頻道通知"
 _ago:
