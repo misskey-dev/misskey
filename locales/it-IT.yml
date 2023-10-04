@@ -1456,7 +1456,6 @@ _role:
     gtlAvailable: "Disponibilità della Timeline Federata"
     ltlAvailable: "Disponibilità della Timeline Locale"
     canPublicNote: "Scrivere Note con Visibilità Pubblica"
-    canEditNote: "Modificare Note"
     canInvite: "Generare codici di invito all'istanza"
     inviteLimit: "Limite di codici invito"
     inviteLimitCycle: "Intervallo di emissione del codice di invito"
