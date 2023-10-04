@@ -729,6 +729,7 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
 			await sleep(100); // redisに追加されるのを待つ
