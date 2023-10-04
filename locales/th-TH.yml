@@ -1447,7 +1447,6 @@ _role:
     gtlAvailable: "การดูไทม์ไลน์ทั่วโลก"
     ltlAvailable: "การดูไทม์ไลน์ในท้องถิ่น"
     canPublicNote: "สามารถส่งโน้ตสาธารณะ"
-    canEditNote: "กำลังแก้ไขโน้ต"
     canInvite: "สร้างรหัสเชิญอินสแตนซ์"
     inviteLimit: "จำกัดการเชิญ"
     inviteLimitCycle: "จำกัดการเชิญไว้คูลดาวน์"
