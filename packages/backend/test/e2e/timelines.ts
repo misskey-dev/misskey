@@ -701,6 +701,18 @@ describe('Timelines', () => {
 	});
 
 	describe('User TL', () => {
+		test.concurrent('ノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
 		test.concurrent('フォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -756,6 +768,21 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		});
+
+		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { fileIds: [file.id] });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id, withFiles: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		}, 1000 * 10);
 	});
 
 	// TODO: リノートミュート済みユーザーのテスト
