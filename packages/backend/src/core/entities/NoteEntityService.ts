@@ -98,13 +98,13 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (meId === packedNote.userId) {
 				hide = false;
 			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-			// 自分の投稿に対するリプライ
+				// 自分の投稿に対するリプライ
 				hide = false;
 			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-			// 自分へのメンション
+				// 自分へのメンション
 				hide = false;
 			} else {
-			// フォロワーかどうか
+				// フォロワーかどうか
 				const isFollowing = await this.followingsRepository.exist({
 					where: {
 						followeeId: packedNote.userId,
@@ -308,7 +308,6 @@ export class NoteEntityService implements OnModuleInit {
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
-			updatedAt: note.updatedAt ? note.updatedAt.toISOString() : undefined,
 			userId: note.userId,
 			user: this.userEntityService.pack(note.user ?? note.userId, me, {
 				detail: false,

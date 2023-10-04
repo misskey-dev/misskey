@@ -5,10 +5,10 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { UserListJoiningsRepository } from '@/models/_.js';
+import type { UserListMembershipsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserList } from '@/models/UserList.js';
-import type { MiUserListJoining } from '@/models/UserListJoining.js';
+import type { MiUserListMembership } from '@/models/UserListMembership.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -33,8 +33,8 @@ export class UserListService implements OnApplicationShutdown {
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
@@ -46,7 +46,7 @@ export class UserListService implements OnApplicationShutdown {
 		this.membersCache = new RedisKVCache<Set<string>>(this.redisClient, 'userListMembers', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
-			fetcher: (key) => this.userListJoiningsRepository.find({ where: { userListId: key }, select: ['userId'] }).then(xs => new Set(xs.map(x => x.userId))),
+			fetcher: (key) => this.userListMembershipsRepository.find({ where: { userListId: key }, select: ['userId'] }).then(xs => new Set(xs.map(x => x.userId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
@@ -85,19 +85,19 @@ export class UserListService implements OnApplicationShutdown {
 
 	@bindThis
 	public async addMember(target: MiUser, list: MiUserList, me: MiUser) {
-		const currentCount = await this.userListJoiningsRepository.countBy({
+		const currentCount = await this.userListMembershipsRepository.countBy({
 			userListId: list.id,
 		});
 		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
 			throw new UserListService.TooManyUsersError();
 		}
 
-		await this.userListJoiningsRepository.insert({
+		await this.userListMembershipsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			userId: target.id,
 			userListId: list.id,
-		} as MiUserListJoining);
+		} as MiUserListMembership);
 
 		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
 		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
@@ -113,13 +113,31 @@ export class UserListService implements OnApplicationShutdown {
 
 	@bindThis
 	public async removeMember(target: MiUser, list: MiUserList) {
-		await this.userListJoiningsRepository.delete({
+		await this.userListMembershipsRepository.delete({
 			userId: target.id,
 			userListId: list.id,
 		});
 
 		this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId: list.id, memberId: target.id });
 		this.globalEventService.publishUserListStream(list.id, 'userRemoved', await this.userEntityService.pack(target));
+	}
+
+	@bindThis
+	public async updateMembership(target: MiUser, list: MiUserList, options: { withReplies?: boolean }) {
+		const membership = await this.userListMembershipsRepository.findOneBy({
+			userId: target.id,
+			userListId: list.id,
+		});
+
+		if (membership == null) {
+			throw new Error('User is not a member of the list');
+		}
+
+		await this.userListMembershipsRepository.update({
+			id: membership.id,
+		}, {
+			withReplies: options.withReplies,
+		});
 	}
 
 	@bindThis

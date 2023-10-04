@@ -6,20 +6,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :max-height="300" :foldable="true">
 	<template #icon><i class="ti ti-photo"></i></template>
-	<template #header>{{ i18n.ts.images }}</template>
+	<template #header>{{ i18n.ts.files }}</template>
 	<div :class="$style.root">
 		<MkLoading v-if="fetching"/>
-		<div v-if="!fetching && images.length > 0" :class="$style.stream">
+		<div v-if="!fetching && files.length > 0" :class="$style.stream">
 			<MkA
-				v-for="image in images"
-				:key="image.note.id + image.file.id"
+				v-for="file in files"
+				:key="file.note.id + file.file.id"
 				:class="$style.img"
-				:to="notePage(image.note)"
+				:to="notePage(file.note)"
 			>
-				<ImgWithBlurhash :hash="image.file.blurhash" :src="thumbnail(image.file)" :title="image.file.name"/>
+				<!-- TODO: 画像以外のファイルに対応 -->
+				<ImgWithBlurhash :hash="file.file.blurhash" :src="thumbnail(file.file)" :title="file.file.name"/>
 			</MkA>
 		</div>
-		<p v-if="!fetching && images.length == 0" :class="$style.empty">{{ i18n.ts.nothing }}</p>
+		<p v-if="!fetching && files.length == 0" :class="$style.empty">{{ i18n.ts.nothing }}</p>
 	</div>
 </MkContainer>
 </template>
@@ -40,7 +41,7 @@ const props = defineProps<{
 }>();
 
 let fetching = $ref(true);
-let images = $ref<{
+let files = $ref<{
 	note: Misskey.entities.Note;
 	file: Misskey.entities.DriveFile;
 }[]>([]);
@@ -52,24 +53,15 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 }
 
 onMounted(() => {
-	const image = [
-		'image/jpeg',
-		'image/webp',
-		'image/avif',
-		'image/png',
-		'image/gif',
-		'image/apng',
-		'image/vnd.mozilla.apng',
-	];
 	os.api('users/notes', {
 		userId: props.user.id,
-		fileType: image,
+		withFiles: true,
 		excludeNsfw: defaultStore.state.nsfw !== 'ignore',
-		limit: 10,
+		limit: 15,
 	}).then(notes => {
 		for (const note of notes) {
 			for (const file of note.files) {
-				images.push({
+				files.push({
 					note,
 					file,
 				});

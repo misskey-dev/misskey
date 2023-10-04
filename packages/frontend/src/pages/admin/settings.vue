@@ -81,16 +81,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</FormSection>
 
 					<FormSection>
-						<template #label>DeepL Translation</template>
+						<template #label>Timeline caching</template>
 
 						<div class="_gaps_m">
-							<MkInput v-model="deeplAuthKey">
-								<template #prefix><i class="ti ti-key"></i></template>
-								<template #label>DeepL Auth Key</template>
+							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
+								<template #label>perLocalUserUserTimelineCacheMax</template>
 							</MkInput>
-							<MkSwitch v-model="deeplIsPro">
-								<template #label>Pro account</template>
-							</MkSwitch>
+
+							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
+								<template #label>perRemoteUserUserTimelineCacheMax</template>
+							</MkInput>
+
+							<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
+								<template #label>perUserHomeTimelineCacheMax</template>
+							</MkInput>
+
+							<MkInput v-model="perUserListTimelineCacheMax" type="number">
+								<template #label>perUserListTimelineCacheMax</template>
+							</MkInput>
 						</div>
 					</FormSection>
 				</div>
@@ -133,8 +141,10 @@ let cacheRemoteSensitiveFiles: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
 let swPublicKey: any = $ref(null);
 let swPrivateKey: any = $ref(null);
-let deeplAuthKey: string = $ref('');
-let deeplIsPro: boolean = $ref(false);
+let perLocalUserUserTimelineCacheMax: number = $ref(0);
+let perRemoteUserUserTimelineCacheMax: number = $ref(0);
+let perUserHomeTimelineCacheMax: number = $ref(0);
+let perUserListTimelineCacheMax: number = $ref(0);
 
 async function init(): Promise<void> {
 	const meta = await os.api('admin/meta');
@@ -149,8 +159,10 @@ async function init(): Promise<void> {
 	enableServiceWorker = meta.enableServiceWorker;
 	swPublicKey = meta.swPublickey;
 	swPrivateKey = meta.swPrivateKey;
-	deeplAuthKey = meta.deeplAuthKey;
-	deeplIsPro = meta.deeplIsPro;
+	perLocalUserUserTimelineCacheMax = meta.perLocalUserUserTimelineCacheMax;
+	perRemoteUserUserTimelineCacheMax = meta.perRemoteUserUserTimelineCacheMax;
+	perUserHomeTimelineCacheMax = meta.perUserHomeTimelineCacheMax;
+	perUserListTimelineCacheMax = meta.perUserListTimelineCacheMax;
 }
 
 function save(): void {
@@ -166,8 +178,10 @@ function save(): void {
 		enableServiceWorker,
 		swPublicKey,
 		swPrivateKey,
-		deeplAuthKey,
-		deeplIsPro,
+		perLocalUserUserTimelineCacheMax,
+		perRemoteUserUserTimelineCacheMax,
+		perUserHomeTimelineCacheMax,
+		perUserListTimelineCacheMax,
 	}).then(() => {
 		fetchInstance();
 	});
