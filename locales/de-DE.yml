@@ -1458,7 +1458,6 @@ _role:
     gtlAvailable: "Kann auf die globale Chronik zugreifen"
     ltlAvailable: "Kann auf die lokale Chronik zugreifen"
     canPublicNote: "Kann öffentliche Notizen erstellen"
-    canEditNote: "Notizbearbeitung"
     canInvite: "Erstellung von Einladungscodes für diese Instanz"
     inviteLimit: "Maximalanzahl an Einladungen"
     inviteLimitCycle: "Zyklus des Einladungslimits"
