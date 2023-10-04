@@ -18,8 +18,6 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['users', 'notes'],
 
-	description: 'Show all notes that this user created.',
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

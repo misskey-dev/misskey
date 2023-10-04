@@ -99,7 +99,7 @@ export const relativeFetch = async (path: string, init?: RequestInit | undefined
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
-function randomString(chars = 'abcdefghijklmnopqrstuvwxyz0123456789', length = 16) {
+export function randomString(chars = 'abcdefghijklmnopqrstuvwxyz0123456789', length = 16) {
 	let randomString = '';
 	for (let i = 0; i < length; i++) {
 		randomString += chars[Math.floor(Math.random() * chars.length)];

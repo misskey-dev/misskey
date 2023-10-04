@@ -7,9 +7,13 @@ process.env.NODE_ENV = 'test';
 process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING = 'true';
 
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl } from '../utils.js';
+import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl, randomString } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
+
+function genHost() {
+	return randomString() + '.example.com';
+}
 
 let app: INestApplicationContext;
 
@@ -290,7 +294,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi' });
@@ -303,7 +307,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
@@ -355,7 +359,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('リモートユーザーのノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -487,7 +491,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('リモートユーザーのノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -499,7 +503,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi' });
@@ -512,7 +516,7 @@ describe('Timelines', () => {
 		});
 
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: 'example.com' })]);
+			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
@@ -704,7 +708,7 @@ describe('Timelines', () => {
 
 			await sleep(100); // redisに追加されるのを待つ
 
-			const res = await api('/users/notes', {}, alice);
+			const res = await api('/users/notes', { userId: bob.id }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -717,7 +721,7 @@ describe('Timelines', () => {
 
 			await sleep(100); // redisに追加されるのを待つ
 
-			const res = await api('/users/notes', {}, alice);
+			const res = await api('/users/notes', { userId: bob.id }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
@@ -732,7 +736,7 @@ describe('Timelines', () => {
 
 			await sleep(100); // redisに追加されるのを待つ
 
-			const res = await api('/users/notes', {}, alice);
+			const res = await api('/users/notes', { userId: bob.id }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), false);
@@ -747,7 +751,7 @@ describe('Timelines', () => {
 
 			await sleep(100); // redisに追加されるのを待つ
 
-			const res = await api('/users/notes', { withReplies: true }, alice);
+			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
