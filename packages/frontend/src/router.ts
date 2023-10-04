@@ -127,17 +127,9 @@ export const routes = [{
 		name: 'import-export',
 		component: page(() => import('./pages/settings/import-export.vue')),
 	}, {
-		path: '/instance-mute',
-		name: 'instance-mute',
-		component: page(() => import('./pages/settings/instance-mute.vue')),
-	}, {
 		path: '/mute-block',
 		name: 'mute-block',
 		component: page(() => import('./pages/settings/mute-block.vue')),
-	}, {
-		path: '/word-mute',
-		name: 'word-mute',
-		component: page(() => import('./pages/settings/word-mute.vue')),
 	}, {
 		path: '/api',
 		name: 'api',

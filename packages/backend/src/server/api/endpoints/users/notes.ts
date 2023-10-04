@@ -13,6 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -70,6 +71,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const [
+				userIdsWhoMeMuting,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+			]) : [new Set<string>()];
+
 			let timeline: MiNote[] = [];
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
@@ -118,6 +125,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			timeline = await query.getMany();
 
 			timeline = timeline.filter(note => {
+				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+
 				if (note.renoteId) {
 					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
 						if (ps.withRenotes === false) return false;

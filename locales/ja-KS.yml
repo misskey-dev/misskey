@@ -1674,8 +1674,6 @@ _sfx:
   note: "ノート"
   noteMy: "ノート(自分)"
   notification: "通知"
-  chat: "チャット"
-  chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
 _ago:

@@ -15,6 +15,10 @@ function genHost() {
 	return randomString() + '.example.com';
 }
 
+function waitForPushToTl() {
+	return sleep(300);
+}
+
 let app: INestApplicationContext;
 
 beforeAll(async () => {
@@ -32,7 +36,7 @@ describe('Timelines', () => {
 
 			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -44,10 +48,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi' });
 			const carolNote = await post(carol, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -59,10 +64,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 			const carolNote = await post(carol, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -75,10 +81,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -91,10 +98,11 @@ describe('Timelines', () => {
 
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -107,10 +115,11 @@ describe('Timelines', () => {
 
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -123,10 +132,11 @@ describe('Timelines', () => {
 
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -140,10 +150,11 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/create', { userId: carol.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -158,10 +169,11 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/create', { userId: carol.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -173,10 +185,11 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -190,7 +203,7 @@ describe('Timelines', () => {
 			const bobNote = await post(bob, { text: 'hi' });
 			const aliceNote = await post(alice, { text: 'hi', replyId: bobNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -202,10 +215,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { renoteId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -217,10 +231,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { renoteId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {
 				withRenotes: false,
@@ -234,10 +249,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {
 				withRenotes: false,
@@ -251,9 +267,10 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -265,10 +282,11 @@ describe('Timelines', () => {
 
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/mute/create', { userId: carol.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -282,10 +300,11 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
 			await api('/mute/create', { userId: carol.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -297,9 +316,10 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -310,9 +330,10 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', {}, alice);
 
@@ -323,6 +344,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const [bobFile, carolFile] = await Promise.all([
 				uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
 				uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
@@ -332,7 +354,7 @@ describe('Timelines', () => {
 			const carolNote1 = await post(carol, { text: 'hi' });
 			const carolNote2 = await post(carol, { fileIds: [carolFile.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/timeline', { withFiles: true }, alice);
 
@@ -350,7 +372,7 @@ describe('Timelines', () => {
 			const carolNote = await post(carol, { text: 'hi', visibility: 'home' });
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -363,7 +385,7 @@ describe('Timelines', () => {
 
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -374,13 +396,12 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているユーザーの visibility: home なノートが含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-			await api('/following/create', {
-				userId: carol.id,
-			}, alice);
+			await api('/following/create', { userId: carol.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'home' });
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -392,10 +413,11 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('/mute/create', { userId: carol.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -408,10 +430,11 @@ describe('Timelines', () => {
 
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/mute/create', { userId: carol.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -425,10 +448,11 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
 			await api('/mute/create', { userId: carol.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -443,7 +467,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', { withFiles: true }, alice);
 
@@ -458,7 +482,7 @@ describe('Timelines', () => {
 
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/hybrid-timeline', {}, alice);
 
@@ -470,7 +494,7 @@ describe('Timelines', () => {
 
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/hybrid-timeline', {}, alice);
 
@@ -481,9 +505,10 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/hybrid-timeline', {}, alice);
 
@@ -495,7 +520,7 @@ describe('Timelines', () => {
 
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/local-timeline', {}, alice);
 
@@ -506,9 +531,10 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/hybrid-timeline', {}, alice);
 
@@ -519,9 +545,10 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/hybrid-timeline', {}, alice);
 
@@ -535,7 +562,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/hybrid-timeline', { withFiles: true }, alice);
 
@@ -550,9 +577,10 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -564,9 +592,10 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -579,9 +608,10 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -594,9 +624,10 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -609,10 +640,11 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -624,10 +656,11 @@ describe('Timelines', () => {
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -641,10 +674,11 @@ describe('Timelines', () => {
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
 			await api('/users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: true }, alice);
+			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi' });
 			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -657,9 +691,10 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -672,9 +707,10 @@ describe('Timelines', () => {
 			await api('/following/create', { userId: bob.id }, alice);
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
@@ -691,7 +727,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id, withFiles: true }, alice);
 
@@ -706,7 +742,7 @@ describe('Timelines', () => {
 
 			const bobNote = await post(bob, { text: 'hi' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id }, alice);
 
@@ -718,7 +754,7 @@ describe('Timelines', () => {
 
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id }, alice);
 
@@ -732,7 +768,7 @@ describe('Timelines', () => {
 			await sleep(1000);
 			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id }, alice);
 
@@ -747,7 +783,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id }, alice);
 
@@ -762,7 +798,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
 
@@ -777,7 +813,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified' });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
 
@@ -792,7 +828,7 @@ describe('Timelines', () => {
 			const bobNote1 = await post(bob, { text: 'hi' });
 			const bobNote2 = await post(bob, { fileIds: [file.id] });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id, withFiles: true }, alice);
 
@@ -800,17 +836,37 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		}, 1000 * 10);
 
+		test.concurrent('ミュートしているユーザーに関連する投稿が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			await api('/mute/create', { userId: carol.id }, alice);
+			await sleep(1000);
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
 		test.concurrent('ミュートしていても userId に指定したユーザーの投稿が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('/mute/create', { userId: bob.id }, alice);
-			const bobNote = await post(bob, { text: 'hi' });
+			await sleep(1000);
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
+			const bobNote3 = await post(bob, { text: 'hi', renoteId: bobNote1.id });
 
-			await sleep(100); // redisに追加されるのを待つ
+			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id }, alice);
 
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote3.id), true);
 		});
 	});
 

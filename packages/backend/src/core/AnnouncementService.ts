@@ -158,9 +158,13 @@ export class AnnouncementService {
 
 		if (moderator) {
 			if (announcement.userId) {
+				const user = await this.usersRepository.findOneByOrFail({ id: announcement.userId });
 				this.moderationLogService.log(moderator, 'deleteUserAnnouncement', {
 					announcementId: announcement.id,
 					announcement: announcement,
+					userId: announcement.userId,
+					userUsername: user.username,
+					userHost: user.host,
 				});
 			} else {
 				this.moderationLogService.log(moderator, 'deleteGlobalAnnouncement', {
