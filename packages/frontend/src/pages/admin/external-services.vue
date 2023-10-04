@@ -68,8 +68,8 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata({
-	title: i18n.ts.instanceBlocking,
-	icon: 'ti ti-ban',
+	title: i18n.ts.externalServices,
+	icon: 'ti ti-link',
 });
 </script>
 
