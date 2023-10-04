@@ -696,6 +696,64 @@ describe('Timelines', () => {
 		}, 1000 * 10);
 	});
 
+	describe('User TL', () => {
+		test.concurrent('フォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
+		test.concurrent('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			await api('/following/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
+		});
+
+		test.concurrent('[withReplies: false] 他人への返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), false);
+		});
+
+		test.concurrent('[withReplies: true] 他人への返信が含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { withReplies: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		});
+	});
+
 	// TODO: リノートミュート済みユーザーのテスト
 	// TODO: ページネーションのテスト
 });
