@@ -770,6 +770,21 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		});
 
+		test.concurrent('[withReplies: true] 他人への visibility: specified な返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), false);
+		});
+
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
