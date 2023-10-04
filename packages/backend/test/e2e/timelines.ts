@@ -799,6 +799,19 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		}, 1000 * 10);
+
+		test.concurrent('ミュートしていても userId に指定したユーザーの投稿が含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			await api('/mute/create', { userId: bob.id }, alice);
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await sleep(100); // redisに追加されるのを待つ
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
 	});
 
 	// TODO: リノートミュート済みユーザーのテスト
