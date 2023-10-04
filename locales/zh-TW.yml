@@ -1459,7 +1459,6 @@ _role:
     gtlAvailable: "瀏覽全域時間軸"
     ltlAvailable: "瀏覽本地時間軸"
     canPublicNote: "允許公開貼文"
-    canEditNote: "允許編輯貼文"
     canInvite: "發行實例邀請碼"
     inviteLimit: "可建立邀請碼的數量"
     inviteLimitCycle: "邀請碼的發放間隔"
