@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export function isUserRelated(note: any, userIds: Set<string>): boolean {
-	if (userIds.has(note.userId)) {
+export function isUserRelated(note: any, userIds: Set<string>, ignoreAuthor = false): boolean {
+	if (userIds.has(note.userId) && !ignoreAuthor) {
 		return true;
 	}
 

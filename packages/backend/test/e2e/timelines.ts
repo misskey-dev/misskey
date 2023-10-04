@@ -16,7 +16,7 @@ function genHost() {
 }
 
 function waitForPushToTl() {
-	return sleep(100);
+	return sleep(300);
 }
 
 let app: INestApplicationContext;
