@@ -1128,6 +1128,7 @@ mutualFollow: "Gegenseitig gefolgt"
 fileAttachedOnly: "Nur Notizen mit Dateien"
 showRepliesToOthersInTimeline: "Antworten in Chronik anzeigen"
 hideRepliesToOthersInTimeline: "Antworten nicht in Chronik anzeigen"
+externalServices: "Externe Dienste"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
