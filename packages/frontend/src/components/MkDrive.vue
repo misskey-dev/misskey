@@ -765,7 +765,6 @@ function filesAllSelect() {
 }
 
 function showMenu(ev: MouseEvent) {
-	console.log(selectedFiles.value.length);
 	if (selectedFiles.value.length === 0) {
 		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	} else {

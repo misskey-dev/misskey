@@ -75,7 +75,7 @@ watch(props.SelectFiles, () => {
 });
 
 function onClick(ev: MouseEvent) {
-	console.log('onclick');
+	 ('onclick');
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else if (!ev.shiftKey && !isTouchUsing && !isSelectedFile.value) {
@@ -88,7 +88,7 @@ function onClick(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	console.log('oncontext');
+	 ('oncontext');
 	if (!isTouchUsing) {
 		if (!ev.shiftKey && !isSelectedFile.value) {
 			os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
@@ -104,7 +104,7 @@ function onDragstart(ev: DragEvent) {
 		ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
 	}
 	isDragging.value = true;
-	console.log(isDragging.value)
+	 (isDragging.value)
 	emit('dragstart');
 }
 
