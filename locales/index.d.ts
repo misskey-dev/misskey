@@ -79,6 +79,9 @@ export interface Locale {
     "files": string;
     "download": string;
     "driveFileDeleteConfirm": string;
+    "driveFilesDeleteConfirm": string;
+    "driveFilesSensitiveonConfirm": string;
+    "driveFilesSensitiveoffConfirm": string;
     "driveFolderDeleteConfirm": string;
     "unfollowConfirm": string;
     "exportRequested": string;
