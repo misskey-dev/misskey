@@ -806,6 +806,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const redisPipeline = this.redisForTimelines.pipeline();
 
 		if (note.channelId) {
+			redisPipeline.xadd(
+				`userTimelineWithChannel:${user.id}`,
+				'MAXLEN', '~', note.userHost == null ? meta.perLocalUserUserTimelineCacheMax.toString() : meta.perRemoteUserUserTimelineCacheMax.toString(),
+				'*',
+				'note', note.id);
+
 			const channelFollowings = await this.channelFollowingsRepository.find({
 				where: {
 					followeeId: note.channelId,

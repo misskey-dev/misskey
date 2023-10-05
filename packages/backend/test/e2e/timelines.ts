@@ -877,6 +877,19 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
 		}, 1000 * 10);
 
+		test.concurrent('[withChannelNotes: true] チャンネル投稿が含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
 		test.concurrent('ミュートしているユーザーに関連する投稿が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
