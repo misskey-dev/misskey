@@ -27,14 +27,6 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 		where: 'account',
 		default: { type: 'syuilo/n-ea', volume: 1 },
 	},
-	sound_chat: {
-		where: 'account',
-		default: { type: 'syuilo/pope1', volume: 1 },
-	},
-	sound_chatBg: {
-		where: 'account',
-		default: { type: 'syuilo/waon', volume: 1 },
-	},
 	sound_antenna: {
 		where: 'account',
 		default: { type: 'syuilo/triple', volume: 1 },

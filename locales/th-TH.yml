@@ -1686,8 +1686,6 @@ _sfx:
   note: "หมายเหตุ"
   noteMy: "โน้ตของตัวเอง"
   notification: "การเเจ้งเตือน"
-  chat: "แชท"
-  chatBg: "แชท (พื้นหลัง)"
   antenna: "เสาอากาศ"
   channel: "การแจ้งเตือนช่อง"
 _ago:

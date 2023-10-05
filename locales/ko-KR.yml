@@ -1688,8 +1688,6 @@ _sfx:
   note: "새 노트"
   noteMy: "내 노트"
   notification: "알림"
-  chat: "대화"
-  chatBg: "대화 (백그라운드)"
   antenna: "안테나 수신"
   channel: "채널 알림"
 _ago:

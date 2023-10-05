@@ -1652,8 +1652,6 @@ _sfx:
   note: "Catatan"
   noteMy: "Catatan (Saya)"
   notification: "Notifikasi"
-  chat: "Pesan"
-  chatBg: "Obrolan (Latar Belakang)"
   antenna: "Penerimaan Antenna"
   channel: "Notifikasi Kanal"
 _ago:
