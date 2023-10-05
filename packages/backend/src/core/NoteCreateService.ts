@@ -253,19 +253,28 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.renote) {
-			// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
-			if (data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && !(data.renote.visibility === 'followers' && data.renote.userId === user.id)) {
-				throw new Error('Renote target is not public or home');
-			}
+			switch (data.renote.visibility) {
+				case 'public':
+					// public noteは無条件にrenote可能
+					break;
+				case 'home':
+					// home noteはhome以下にrenote可能
+					if (data.visibility === 'public') {
+						data.visibility = 'home';
+					}
+					break;
+				case 'followers':
+					// 他人のfollowers noteはreject
+					if (data.renote.userId !== user.id) {
+						throw new Error('Renote target is not public or home');
+					}
 
-			// Renote対象がpublicではないならhomeにする
-			if (data.renote.visibility !== 'public' && data.visibility === 'public') {
-				data.visibility = 'home';
-			}
-
-			// Renote対象がfollowersならfollowersにする
-			if (data.renote.visibility === 'followers') {
-				data.visibility = 'followers';
+					// Renote対象がfollowersならfollowersにする
+					data.visibility = 'followers';
+					break;
+				case 'specified':
+					// specified / direct noteはreject
+					throw new Error('Renote target is not public or home');
 			}
 		}
 
