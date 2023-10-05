@@ -26,6 +26,7 @@ import { i18n } from '@/i18n.js';
 const props = defineProps<{
 	folder?: Misskey.entities.DriveFolder;
 	parentFolder: Misskey.entities.DriveFolder | null;
+  selectedFiles: string[];
 }>();
 
 const emit = defineEmits<{
@@ -112,10 +113,19 @@ function onDrop(ev: DragEvent) {
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
-		os.api('drive/files/update', {
-			fileId: file.id,
-			folderId: props.folder ? props.folder.id : null,
-		});
+		if (props.selectedFiles.length > 0) {
+			props.selectedFiles.forEach((e) => {
+				os.api('drive/files/update', {
+					fileId: e.id,
+					folderId: props.folder ? props.folder.id : null,
+				});
+			});
+		} else {
+			os.api('drive/files/update', {
+				fileId: file.id,
+				folderId: props.folder ? props.folder.id : null,
+			});
+		}
 	}
 	//#endregion
 

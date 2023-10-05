@@ -44,6 +44,7 @@ const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
 	isSelected?: boolean;
 	selectMode?: boolean;
+  selectedFiles?: string[];
 }>(), {
 	isSelected: false,
 	selectMode: false,
@@ -143,10 +144,19 @@ function onDrop(ev: DragEvent) {
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
-		os.api('drive/files/update', {
-			fileId: file.id,
-			folderId: props.folder.id,
-		});
+    if (props.selectedFiles.length > 0) {
+      props.selectedFiles.forEach((e)=>{
+        os.api('drive/files/update', {
+          fileId: e.id,
+          folderId: props.folder.id,
+        });
+      })
+    }else{
+      os.api('drive/files/update', {
+        fileId: file.id,
+        folderId: props.folder.id,
+      });
+    }
 	}
 	//#endregion
 
@@ -221,29 +231,119 @@ function rename() {
 }
 
 function deleteFolder() {
-	os.api('drive/folders/delete', {
-		folderId: props.folder.id,
-	}).then(() => {
-		if (defaultStore.state.uploadFolder === props.folder.id) {
-			defaultStore.set('uploadFolder', null);
-		}
-	}).catch(err => {
-		switch (err.id) {
-			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-				os.alert({
-					type: 'error',
-					title: i18n.ts.unableToDelete,
-					text: i18n.ts.hasChildFilesOrFolders,
-				});
-				break;
-			default:
-				os.alert({
-					type: 'error',
-					text: i18n.ts.unableToDelete,
-				});
-		}
-	});
+  os.api('drive/folders/show', {
+    folderId: props.folder.id,
+  }).then(async (r) => {
+
+    if (r.foldersCount > 0) {
+      await os.alert({
+        type: 'error',
+        title: i18n.ts.unableToDelete,
+        text: 'フォルダ内にフォルダが存在するため、削除できません。 \n フォルダ内のフォルダを削除してから試してみてください。',
+      });
+    }
+
+    if (r.filesCount > 0) {
+
+      const {canceled} = await os.confirm({
+        type: 'warning',
+        text: i18n.t('driveFolderDeleteConfirm', {name: props.folder.name}),
+      });
+
+      if (canceled) return;
+
+      let allResults = [];
+      let Result = await os.api('drive/files', {folderId: props.folder.id, limit: 31});
+      allResults = allResults.concat(Result)
+      while (Result.length >= 31) {
+        const untilId = Result[Result.length - 1].id;
+        Result = await os.api('drive/files', { folderId: props.folder.id, limit: 31, untilId });
+        allResults = allResults.concat(Result); // pushをconcatに変更
+      }
+      allResults.forEach((r,i)=>{
+        os.api('drive/files/delete',{fileId: r.id})
+      })
+
+
+      os.api('drive/folders/show', {
+        folderId: props.folder.id,
+      }).then(async (r) =>{
+        if (r.filesCount > 0) {
+
+          let allResults = [];
+          let Result = await os.api('drive/files', {folderId: props.folder.id, limit: 31});
+          allResults = allResults.concat(Result)
+          while (Result.length >= 31) {
+            const untilId = Result[Result.length - 1].id;
+            Result = await os.api('drive/files', { folderId: props.folder.id, limit: 31, untilId });
+            allResults = allResults.concat(Result);
+          }
+          allResults.forEach((r,i)=>{
+            os.api('drive/files/delete',{fileId: r.id})
+          })
+
+          os.api('drive/folders/delete', {
+            folderId: props.folder.id,
+          }).then(() => {
+            if (defaultStore.state.uploadFolder === props.folder.id) {
+              defaultStore.set('uploadFolder', null);
+            }
+          }).catch(err => {
+            switch (err.id) {
+              case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
+                os.alert({
+                  type: 'error',
+                  title: i18n.ts.unableToDelete,
+                  text: i18n.ts.hasChildFilesOrFolders,
+                });
+                break;
+              default:
+                os.alert({
+                  type: 'error',
+                  text: i18n.ts.unableToDelete,
+                });
+            }
+          });
+
+          os.api('drive/folders/delete', {
+            folderId: props.folder.id,
+          })
+        }else{
+          os.api('drive/folders/delete', {
+            folderId: props.folder.id,
+          })
+        }
+      })
+
+    } else {
+
+      await os.api('drive/folders/delete', {
+        folderId: props.folder.id,
+      }).then(() => {
+        if (defaultStore.state.uploadFolder === props.folder.id) {
+          defaultStore.set('uploadFolder', null);
+        }
+      }).catch(err => {
+        switch (err.id) {
+          case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
+            os.alert({
+              type: 'error',
+              title: i18n.ts.unableToDelete,
+              text: i18n.ts.hasChildFilesOrFolders,
+            });
+            break;
+          default:
+            os.alert({
+              type: 'error',
+              text: i18n.ts.unableToDelete,
+            });
+        }
+      });
+    }
+  })
+
 }
+
 
 function setAsUploadFolder() {
 	defaultStore.set('uploadFolder', props.folder.id);
