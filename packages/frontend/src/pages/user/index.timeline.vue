@@ -29,7 +29,7 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-const include = ref<string | null>(null);
+const include = ref<string | null>('all');
 
 const pagination = {
 	endpoint: 'users/notes' as const,
