@@ -17,11 +17,6 @@ export const packedNoteSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		updatedAt: {
-			type: 'string',
-			optional: true, nullable: true,
-			format: 'date-time',
-		},
 		deletedAt: {
 			type: 'string',
 			optional: true, nullable: true,
