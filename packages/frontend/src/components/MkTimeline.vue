@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<{
 	onlyFiles?: boolean;
 }>(), {
 	withRenotes: true,
-	withReplies: false,
+	withReplies: true,
 	onlyFiles: false,
 });
 
