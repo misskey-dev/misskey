@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="profile _gaps">
 				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
-
+        <MkRemoteInfoUpdate v-if="user.host != null" :UserId="user.id" class="warn"/>
 				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
 						<div ref="bannerEl" class="banner" :style="style"></div>
@@ -168,6 +168,7 @@ import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os.js';
 import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import MkNotifyButton from "@/components/MkNotifyButton.vue";
+import MkRemoteInfoUpdate from "@/components/MkRemoteInfoUpdate.vue";
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

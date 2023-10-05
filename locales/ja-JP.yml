@@ -303,6 +303,7 @@ gamingModeInfo: "ボタンなどの装飾をいい感じのグラデーション
 light: "ライト"
 dark: "ダーク"
 lightThemes: "明るいテーマ"
+remoteUserInfoUpdate: "アイコンなどが正常に表示されない場合にここをクリックしてください。"
 darkThemes: "暗いテーマ"
 syncDeviceDarkMode: "デバイスのダークモードと同期する"
 drive: "ドライブ"

@@ -306,6 +306,7 @@ export interface Locale {
     "light": string;
     "dark": string;
     "lightThemes": string;
+    "remoteUserInfoUpdate": string;
     "darkThemes": string;
     "syncDeviceDarkMode": string;
     "drive": string;
