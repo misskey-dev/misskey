@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			let timeline: MiNote[] = [];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];
 			let repliesNoteIdsRes: [string, string[]][] = [];
 			let channelNoteIdsRes: [string, string[]][] = [];
@@ -90,29 +90,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					this.redisForTimelines.xrevrange(
 						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
 						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-						'-',
+						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
 						'COUNT', limit),
 					ps.withReplies
 						? this.redisForTimelines.xrevrange(
 							`userTimelineWithReplies:${ps.userId}`,
 							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							'-',
+							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
 							'COUNT', limit)
 						: Promise.resolve([]),
 					ps.withChannelNotes
 						? this.redisForTimelines.xrevrange(
 							`userTimelineWithChannel:${ps.userId}`,
 							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							'-',
+							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
 							'COUNT', limit)
 						: Promise.resolve([]),
 				]);
 			}
 
 			let noteIds = Array.from(new Set([
-				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId),
-				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId),
-				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId),
+				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
 			]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);

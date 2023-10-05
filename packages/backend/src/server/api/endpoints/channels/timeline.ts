@@ -79,14 +79,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			let timeline: MiNote[] = [];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
 				noteIdsRes = await this.redisForTimelines.xrevrange(
 					`channelTimeline:${channel.id}`,
 					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
+					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
 					'COUNT', limit);
 			}
 
@@ -110,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				timeline = await query.limit(ps.limit).getMany();
 			} else {
-				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
+				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
 
 				if (noteIds.length === 0) {
 					return [];
