@@ -12,7 +12,15 @@
 
 -->
 
-## 2023.9.3-kinel.2 (unreleased)
+## 2023.9.3-kinel.3 (unreleased)
+
+### General
+
+### Client
+
+### Server
+
+## 2023.9.3-kinel.2
 
 ### General
 - noteがデフォルトで編集できないようになりました。
