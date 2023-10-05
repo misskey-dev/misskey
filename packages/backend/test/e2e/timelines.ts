@@ -363,6 +363,21 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote2.id), false);
 		}, 1000 * 10);
+
+		test.concurrent('フォローしているユーザーのチャンネル投稿が含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+			await api('/following/create', { userId: bob.id }, alice);
+			await sleep(1000);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
 	});
 
 	describe('Local TL', () => {
@@ -378,6 +393,19 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
+		});
+
+		test.concurrent('チャンネル投稿が含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/local-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
 
 		test.concurrent('リモートユーザーのノートが含まれない', async () => {
@@ -774,6 +802,19 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
+		});
+
+		test.concurrent('チャンネル投稿が含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/users/notes', { userId: bob.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
 
 		test.concurrent('[withReplies: false] 他人への返信が含まれない', async () => {
