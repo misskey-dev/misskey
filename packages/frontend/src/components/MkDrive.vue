@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div :class="$style.root" @scroll="handleScroll">
 	<nav :class="$style.nav">
 		<div :class="$style.navPath" @contextmenu.prevent.stop="() => {}">
 			<XNavFolder
@@ -14,7 +14,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@upload="upload"
 				@removeFile="removeFile"
 				@removeFolder="removeFolder"
-        :multipleselect="multipleselect"
 			/>
 			<template v-for="f in hierarchyFolders">
 				<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -26,7 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@upload="upload"
 					@removeFile="removeFile"
 					@removeFolder="removeFolder"
-          :multipleselect="multipleselect"
 				/>
 			</template>
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -53,7 +51,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
-          :multipleselect="multipleselect"
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
@@ -76,15 +73,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:folder="folder"
 					:selectMode="select === 'file'"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					:SelectFiles="SelectFiles"
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
-          @pointerdown="startLongPress(file)"
-          @pointerup="endLongPress"
-          @click.shift.left.exact="selectClick(file)"
-          @click.ctrl.left.exact="selectClick(file)"
-          :multipleselect="multipleselect"
-          :isLongPressing="isLongPressing"
+					@pointerdown="startLongPress(file)"
+					@pointerup="endLongPress"
+					@pointermove="debounceEvent"
+					@pointercancel="debounceEvent"
+					@click.shift.left.exact="multipleSelect(file)"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
@@ -116,7 +113,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile, uploads } from '@/scripts/upload.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-
+import { isTouchUsing } from '@/scripts/touch.js';
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
 	type?: string;
@@ -126,24 +123,6 @@ const props = withDefaults(defineProps<{
 	multiple: false,
 	select: null,
 });
-
-const isLongPressing = ref(false);
-let longPressTimeout = null;
-
-function startLongPress(file) {
-  isLongPressing.value = true;
-  longPressTimeout = setTimeout(() => {
-    if (isLongPressing) {
-      selectClick(file)
-    }
-  }, 800); // 長押しと判断する時間（1秒）を設定
-}
-
-function endLongPress() {
-  isLongPressing.value = false;
-  clearTimeout(longPressTimeout);
-}
-
 
 const emit = defineEmits<{
 	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
@@ -167,7 +146,11 @@ const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = useStream().useChannel('drive');
 const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
-let multipleselect = ref([]);
+const SelectFiles = ref([]);
+const isLongPressing = ref(false);
+let longPressTimeout = null;
+const isScrolling = ref(false); // スクロール中でない状態で初期化
+
 // ドロップされようとしているか
 const draghover = ref(false);
 
@@ -186,6 +169,47 @@ watch(folder, () => emit('cd', folder.value));
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
 }
+let timeout;
+const debounceEvent = (event) => {
+  if (isTouchUsing &&  SelectFiles.value.length === 0) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      isLongPressing.value = false;
+    }, 900);
+  }else{
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      isLongPressing.value = false;
+		}, 80);
+  }
+};
+
+function startLongPress(file) {
+  console.log(SelectFiles.value.length)
+	if (isTouchUsing && SelectFiles.value.length === 0) {
+		isLongPressing.value = true;
+		longPressTimeout = setTimeout(() => {
+			if (isLongPressing.value) {
+				multipleSelect(file);
+			}
+		}, 1000);
+	}else{
+    isLongPressing.value = true;
+    longPressTimeout = setTimeout(() => {
+      if (isLongPressing.value) {
+        multipleSelect(file);
+      }
+    }, 100);
+  }
+}
+
+
+function endLongPress() {
+	if (isTouchUsing) {
+		isLongPressing.value = false;
+		clearTimeout(longPressTimeout);
+	}
+}
 
 function onStreamDriveFileUpdated(file: Misskey.entities.DriveFile) {
 	const current = folder.value ? folder.value.id : null;
@@ -195,18 +219,7 @@ function onStreamDriveFileUpdated(file: Misskey.entities.DriveFile) {
 		addFile(file, true);
 	}
 }
-function selectClick(file) {
-  const index = multipleselect.value.findIndex(item => item.id === file.id);
 
-  if (index !== -1) {
-    // File is already selected, so remove it
-    multipleselect.value.splice(index, 1);
-  } else {
-    // File is not selected, so add it
-    multipleselect.value.push(file);
-  }
-
-}
 function onStreamDriveFileDeleted(fileId: string) {
 	removeFile(fileId);
 }
@@ -214,7 +227,14 @@ function onStreamDriveFileDeleted(fileId: string) {
 function onStreamDriveFolderCreated(createdFolder: Misskey.entities.DriveFolder) {
 	addFolder(createdFolder, true);
 }
-
+function multipleSelect(file) {
+	const index = SelectFiles.value.findIndex(item => item.id === file.id);
+	if (index !== -1) {
+		SelectFiles.value.splice(index, 1);
+	} else {
+		SelectFiles.value.push(file);
+	}
+}
 function onStreamDriveFolderUpdated(updatedFolder: Misskey.entities.DriveFolder) {
 	const current = folder.value ? folder.value.id : null;
 	if (current !== updatedFolder.parentId) {
@@ -443,7 +463,6 @@ function chooseFile(file: Misskey.entities.DriveFile) {
 			emit('change-selection', [file]);
 		}
 	}
-
 }
 
 function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
@@ -466,7 +485,6 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 }
 
 function move(target?: Misskey.entities.DriveFolder) {
-  multipleselect.value = []
 	if (!target) {
 		goRoot();
 		return;
@@ -531,17 +549,11 @@ function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
 function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
 	folders.value = folders.value.filter(f => f.id !== folderIdToRemove);
-  const index = multipleselect.value.findIndex(item => item.id === file.id);
-  if (index !== -1) {
-    // File is already selected, so remove it
-    multipleselect.value.splice(index, 1);
-  }
 }
 
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
 	files.value = files.value.filter(f => f.id !== fileId);
-  multipleselect.value = multipleselect.value.filter(a => a.id !== fileId)
 }
 
 function appendFile(file: Misskey.entities.DriveFile) {
@@ -691,12 +703,10 @@ function getMenu() {
 }
 
 function showMenu(ev: MouseEvent) {
-  multipleselect.value = []
 	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
-
+const contents = ref(null);
 function onContextmenu(ev: MouseEvent) {
-  multipleselect.value = []
 	os.contextMenu(getMenu(), ev);
 }
 
@@ -733,6 +743,7 @@ onBeforeUnmount(() => {
 	connection.dispose();
 	ilFilesObserver.disconnect();
 });
+
 </script>
 
 <style lang="scss" module>

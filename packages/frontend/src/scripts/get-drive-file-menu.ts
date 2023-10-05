@@ -39,10 +39,10 @@ function describe(file: Misskey.entities.DriveFile) {
 	}, 'closed');
 }
 
-function toggleSensitive(file: Misskey.entities.DriveFile , isSensitive?) {
+function toggleSensitive(file: Misskey.entities.DriveFile) {
 	os.api('drive/files/update', {
 		fileId: file.id,
-		isSensitive: isSensitive !== null ? isSensitive : !file.isSensitive
+		isSensitive: !file.isSensitive,
 	}).catch(err => {
 		os.alert({
 			type: 'error',
@@ -72,16 +72,30 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 		fileId: file.id,
 	});
 }
-async function deleteSelectFile(files) {
+async function MultideleteFile(files: Misskey.entities.DriveFile[] | null) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: files.length+'つのファイルをまとめて削除しますか？',
+		text: i18n.t('driveMultiFileDeleteConfirm', { name: files.length }),
 	});
 
 	if (canceled) return;
-	files.forEach((e) => {
+	files.forEach((e)=>{
 		os.api('drive/files/delete', {
 			fileId: e.id,
+        });
+	})
+}
+function isSensitive(files: Misskey.entities.DriveFile[] | null ,sensitive:boolean) {
+	files.forEach((e)=>{
+		os.api('drive/files/update', {
+			fileId: e.id,
+			isSensitive: sensitive,
+		}).catch(err => {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.error,
+				text: err.message,
+			});
 		});
 	})
 
@@ -144,35 +158,22 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 
 	return menu;
 }
-
-export function getDriveFileMultiMenu(file, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
-
+export function getDriveMultiFileMenu(files: string[] & boolean): MenuItem[] {
 	let menu;
 	menu = [{
-		text: i18n.ts.unmarkAsSensitive,
+		text:  i18n.ts.unmarkAsSensitive,
 		icon: 'ti ti-eye',
-		action: () => {file.forEach((e) => toggleSensitive(e,false))}
+		action: () => isSensitive(files,false),
 	},{
 		text: i18n.ts.markAsSensitive,
-		icon: 'ti ti-eye-exclamation',
-		action: () => {file.forEach((e) => toggleSensitive(e,true))}
-		,
-	},{
+		icon:  'ti ti-eye-exclamation',
+		action: () => isSensitive(files,true),
+	}, {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		danger: true,
-		action: () =>  deleteSelectFile(file),
+		action: () => MultideleteFile(files),
 	}];
-
-	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
-			icon: 'ti ti-id',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(file.id);
-			},
-		}]);
-	}
 
 	return menu;
 }
