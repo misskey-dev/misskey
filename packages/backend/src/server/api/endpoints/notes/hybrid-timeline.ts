@@ -16,6 +16,7 @@ import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { ApiError } from '../../error.js';
+import {QueryService} from "@/core/QueryService.js";
 
 export const meta = {
 	tags: ['notes'],
@@ -67,7 +68,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
 		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
@@ -115,7 +120,69 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
+			if (noteIds.length < limit) {
+				const followingQuery = this.followingsRepository.createQueryBuilder('following')
+					.select('following.followeeId')
+					.where('following.followerId = :followerId', { followerId: me.id });
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
+					.andWhere(new Brackets(qb => {
+						qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id })
+							.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					}))
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.setParameters(followingQuery.getParameters());
 
+				this.queryService.generateChannelQuery(query, me);
+				this.queryService.generateVisibilityQuery(query, me);
+				this.queryService.generateMutedUserQuery(query, me);
+				this.queryService.generateBlockedUserQuery(query, me);
+				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+				if (ps.includeMyRenotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.userId != :meId', { meId: me.id });
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+					}));
+				}
+
+				if (ps.includeRenotedMyNotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.renoteUserId != :meId', { meId: me.id });
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+					}));
+				}
+
+				if (ps.includeLocalRenotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.renoteUserHost IS NOT NULL');
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+					}));
+				}
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
+				}
+				//#endregion
+				const ids = await query.limit(limit - noteIds.length).getMany();
+				noteIds = noteIds.concat(ids.map(note => note.id));
+
+			}
+			
 			if (noteIds.length === 0) {
 				return [];
 			}

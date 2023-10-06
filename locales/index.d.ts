@@ -1147,7 +1147,6 @@ export interface Locale {
     "edited": string;
     "notificationRecieveConfig": string;
     "mutualFollow": string;
-    "fileAttachedOnly": string;
     "showRepliesToOthersInTimeline": string;
     "hideRepliesToOthersInTimeline": string;
     "externalServices": string;

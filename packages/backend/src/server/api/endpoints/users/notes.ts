@@ -15,6 +15,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
+import {QueryService} from "@/core/QueryService.js";
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -66,6 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private queryService: QueryService,
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
 		private cacheService: CacheService,
@@ -116,6 +118,66 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
+
+			if (noteIds.length < limit) {
+				// Lookup user
+				const user = await this.getterService.getUser(ps.userId).catch(err => {
+					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+					throw err;
+				});
+
+				//#region Construct query
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('note.userId = :userId', { userId: user.id })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('note.channel', 'channel')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.channelId IS NULL');
+					qb.orWhere('channel.isSensitive = false');
+				}));
+
+				this.queryService.generateVisibilityQuery(query, me);
+				if (me) {
+					this.queryService.generateMutedUserQuery(query, me, user);
+					this.queryService.generateBlockedUserQuery(query, me);
+				}
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
+				}
+
+				if (!ps.withReplies) {
+					query.andWhere('note.replyId IS NULL');
+				}
+
+				if (ps.withRenotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere(new Brackets(qb => {
+							qb.orWhere('note.text IS NOT NULL');
+							qb.orWhere('note.fileIds != \'{}\'');
+						}));
+					}));
+				}
+
+				if (ps.includeMyRenotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.userId != :userId', { userId: user.id });
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+					}));
+				}
+
+				const ids = await query.limit(limit - noteIds.length).getMany();
+				noteIds = noteIds.concat(ids.map(note => note.id));
+			}
 
 			if (noteIds.length === 0) {
 				return [];
