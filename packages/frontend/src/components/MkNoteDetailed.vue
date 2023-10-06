@@ -93,6 +93,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<footer>
 			<div :class="$style.noteFooterInfo">
+				<div v-if="appearNote.updatedAt">
+					{{ i18n.ts.edited }}: <MkTime :time="appearNote.updatedAt" mode="detail"/>
+				</div>
 				<MkA :to="notePage(appearNote)">
 					<MkTime :time="appearNote.createdAt" mode="detail"/>
 				</MkA>
