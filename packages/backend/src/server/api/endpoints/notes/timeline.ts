@@ -94,10 +94,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// fallback to postgres
 			if (noteIds.length < limit) {
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note.id'),
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
-				if (followings.length > 0) {
-					const meOrFolloweeIds = [me.id, ...followings];
+				const followingIds = Object.keys(followings);
+				if (followingIds.length > 0) {
+					const meOrFolloweeIds = [me.id, ...followingIds];
 					query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
 				} else {
 					query.andWhere('note.userId = :meId', { meId: me.id });
@@ -107,11 +108,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateRepliesQuery(query, ps.withReplies, me);
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);
-				this.queryService.generateMutedNoteQuery(query, me);
 				this.queryService.generateBlockedUserQuery(query, me);
 				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-
-				noteIds = noteIds.concat(await query.limit(limit - noteIds.length).getMany());
+				let ids = await query.limit(limit - noteIds.length).getMany();
+				noteIds = noteIds.concat(ids.map(note => note.id));
 			}
 
 			if (noteIds.length === 0) {
