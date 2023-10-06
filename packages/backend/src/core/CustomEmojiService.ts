@@ -380,6 +380,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}
 	}
 
+	/**
+	 * ローカル内の絵文字に重複がないかチェックします
+	 * @param name 絵文字名
+	 */
+	@bindThis
+	public checkDuplicate(name: string): Promise<boolean> {
+		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
+	}
+
+	@bindThis
+	public getEmojiById(id: string): Promise<MiEmoji | null> {
+		return this.emojisRepository.findOneBy({ id });
+	}
+
 	@bindThis
 	public dispose(): void {
 		this.cache.dispose();
