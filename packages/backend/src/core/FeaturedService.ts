@@ -20,12 +20,6 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	private getCurrentPerUserFriendRankingWindow(): number {
-		const passed = new Date().getTime() - new Date(new Date().getFullYear(), 0, 1).getTime();
-		return Math.floor(passed / (1000 * 60 * 60 * 24 * 7)); // 1週間ごと
-	}
-
-	@bindThis
 	private getCurrentWindow(windowRange: number): number {
 		const passed = new Date().getTime() - new Date(new Date().getFullYear(), 0, 1).getTime();
 		return Math.floor(passed / windowRange);
@@ -79,22 +73,22 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	public async updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
+	public updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
 	}
 
 	@bindThis
-	public async updateInChannelNotesRanking(noteId: MiNote['id'], channelId: MiNote['channelId'], score = 1): Promise<void> {
+	public updateInChannelNotesRanking(noteId: MiNote['id'], channelId: MiNote['channelId'], score = 1): Promise<void> {
 		return this.updateRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
 	}
 
 	@bindThis
-	public async getGlobalNotesRanking(limit: number): Promise<MiNote['id'][]> {
+	public getGlobalNotesRanking(limit: number): Promise<MiNote['id'][]> {
 		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, limit);
 	}
 
 	@bindThis
-	public async getInChannelNotesRanking(channelId: MiNote['channelId'], limit: number): Promise<MiNote['id'][]> {
+	public getInChannelNotesRanking(channelId: MiNote['channelId'], limit: number): Promise<MiNote['id'][]> {
 		return this.getRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, limit);
 	}
 }
