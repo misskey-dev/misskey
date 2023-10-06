@@ -726,13 +726,17 @@ export class NoteCreateService implements OnApplicationShutdown {
 			.where('id = :id', { id: renote.id })
 			.execute();
 
-		// 30%の確率でハイライト用ランキング更新
-		if (Math.random() < 0.3) {
+		// 30%の確率、3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		if (Math.random() < 0.3 && (Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3) {
 			if (renote.channelId != null) {
-				this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
-			} else if (renote.visibility === 'public' && renote.userHost == null) {
-				this.featuredService.updateGlobalNotesRanking(renote.id, 5);
-				this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
+				if (renote.replyId == null) {
+					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
+				}
+			} else {
+				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
+					this.featuredService.updateGlobalNotesRanking(renote.id, 5);
+					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
+				}
 			}
 		}
 	}
