@@ -386,7 +386,6 @@ _theme:
 _sfx:
   note: "notlar"
   notification: "Bildirim"
-  chat: "Mesajlar"
 _2fa:
   renewTOTPCancel: "Hayır, teşekkürler"
 _permissions:

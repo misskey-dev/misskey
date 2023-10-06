@@ -15,11 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.tl">
 					<MkTimeline
 						ref="tlComponent"
-						:key="src + withRenotes + withReplies + onlyFiles"
+						:key="src + withRenotes +  onlyFiles"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
-						:withReplies="withReplies"
+
 						:onlyFiles="onlyFiles"
 						:sound="true"
 						@queue="queueUpdated"

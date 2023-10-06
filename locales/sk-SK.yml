@@ -1039,11 +1039,6 @@ _wordMute:
   muteWords: "Umlčané slová"
   muteWordsDescription: "Medzerami oddeľte pre podmienku AND a novými riadkami pre podmienku OR."
   muteWordsDescription2: "Regulárne výrazy sa použijú keď použijete okolo lomítka."
-  softDescription: "Skryje poznámky z časovej osi, ktoré spĺňajú podmienky."
-  hardDescription: "Zabráni poznámky spĺňajúce množinu podmienok, aby boli pridané do časovej osi. Navyše tieto poznámky nepribudnú v časovej osi ani keď sa podmienky zmenia."
-  soft: "Mäkké"
-  hard: "Tvrdé"
-  mutedNotes: "Umlčané poznámky"
 _instanceMute:
   instanceMuteDescription: "Toto umlčí všetky poznámky/preposlania zo zoznamu serverov, vrátane tých, na ktoré používatelia odpovedajú z umlčaného servera."
   instanceMuteDescription2: "Oddeľte novými riadkami"
@@ -1127,8 +1122,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Vlastná poznámka"
   notification: "Oznámenia"
-  chat: "Chat"
-  chatBg: "Chat (pozadie)"
   antenna: "Antény"
   channel: "Upozornenia kanála"
 _ago:

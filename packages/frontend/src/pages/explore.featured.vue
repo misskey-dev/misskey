@@ -22,7 +22,6 @@ import { i18n } from '@/i18n.js';
 const paginationForNotes = {
 	endpoint: 'notes/featured' as const,
 	limit: 10,
-	offsetMode: true,
 };
 
 const paginationForPolls = {

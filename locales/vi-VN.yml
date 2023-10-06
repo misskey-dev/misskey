@@ -1404,11 +1404,6 @@ _wordMute:
   muteWords: "Ẩn từ ngữ"
   muteWordsDescription: "Separate with spaces for an AND condition or with line breaks for an OR condition."
   muteWordsDescription2: "Bao quanh các từ khóa bằng dấu gạch chéo để sử dụng cụm từ thông dụng."
-  softDescription: "Ẩn các tút phù hợp điều kiện đã đặt khỏi bảng tin."
-  hardDescription: "Ngăn các tút đáp ứng các điều kiện đã đặt xuất hiện trên bảng tin. Lưu ý, những tút này sẽ không được thêm vào bảng tin ngay cả khi các điều kiện được thay đổi."
-  soft: "Yếu"
-  hard: "Mạnh"
-  mutedNotes: "Những tút đã ẩn"
 _instanceMute:
   instanceMuteDescription: "Thao tác này sẽ ẩn mọi tút/lượt đăng lại từ các máy chủ được liệt kê, bao gồm cả những tút  dạng trả lời từ máy chủ bị ẩn."
   instanceMuteDescription2: "Tách bằng cách xuống dòng"
@@ -1492,8 +1487,6 @@ _sfx:
   note: "Tút"
   noteMy: "Tút của tôi"
   notification: "Thông báo"
-  chat: "Trò chuyện"
-  chatBg: "Chat (Nền)"
   antenna: "Trạm phát sóng"
   channel: "Kênh"
 _ago:

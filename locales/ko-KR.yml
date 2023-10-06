@@ -1600,11 +1600,6 @@ _wordMute:
   muteWords: "뮤트할 단어"
   muteWordsDescription: "공백으로 구분하는 경우 AND, 줄바꿈으로 구분하는 경우 OR로 지정됩니다."
   muteWordsDescription2: "정규 표현식을 사용하려면 키워드를 빗금표(/)로 감싸 주세요."
-  softDescription: "지정한 조건의 노트를 타임라인에서 숨깁니다."
-  hardDescription: "지정한 조건의 노트를 타임라인에 추가하지 않습니다. 타임라인에 추가되지 않은 노트는 조건을 변경해도 표시되지 않습니다."
-  soft: "보통"
-  hard: "보다 높은 수준"
-  mutedNotes: "뮤트된 노트"
 _instanceMute:
   instanceMuteDescription: "뮤트한 서버에서 오는 답글을 포함한 모든 노트와 Renote를 뮤트합니다."
   instanceMuteDescription2: "한 줄에 하나씩 입력해 주세요"
@@ -1688,8 +1683,6 @@ _sfx:
   note: "새 노트"
   noteMy: "내 노트"
   notification: "알림"
-  chat: "대화"
-  chatBg: "대화 (백그라운드)"
   antenna: "안테나 수신"
   channel: "채널 알림"
 _ago:

@@ -186,7 +186,7 @@ import {deepClone} from '@/scripts/clone.js';
 import {useTooltip} from '@/scripts/use-tooltip.js';
 import {claimAchievement} from '@/scripts/achievements.js';
 import {getNoteSummary} from '@/scripts/get-note-summary.js';
-import {MenuItem} from '@/types/menu';
+import {MenuItem} from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import {showMovedDialog} from '@/scripts/show-moved-dialog.js';
 import {shouldCollapsed} from '@/scripts/collapsed.js';
@@ -232,11 +232,11 @@ const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : n
 const isLong = shouldCollapsed(appearNote);
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
-const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
+const muted = ref($i ? checkWordMute(appearNote, $i, $i.mutedWords) : false);
 const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
+const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i.id));
 let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
 
 const keymap = {
@@ -519,7 +519,6 @@ function focusAfter() {
 	focusNext(el.value);
 }
 
-
 function readPromo() {
 	os.api('promo/read', {
 		noteId: appearNote.id,
@@ -529,7 +528,6 @@ function readPromo() {
 </script>
 
 <style lang="scss" module>
-
 .root {
 	position: relative;
 	transition: box-shadow 0.1s ease;
@@ -557,7 +555,7 @@ function readPromo() {
 	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
 	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
 	//content-visibility: auto;
-	//contain-intrinsic-size: 0 128px;
+  //contain-intrinsic-size: 0 128px;
 
 	&:focus-visible {
 		outline: none;

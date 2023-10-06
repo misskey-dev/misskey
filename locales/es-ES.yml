@@ -1603,11 +1603,6 @@ _wordMute:
   muteWords: "Palabras que silenciar"
   muteWordsDescription: "Separar con espacios indica una declaracion And, separar con lineas nuevas indica una declaracion Or。"
   muteWordsDescription2: "Encerrar las palabras clave entre numerales para usar expresiones regulares"
-  softDescription: "Ocultar en la linea de tiempo las notas que cumplen las condiciones"
-  hardDescription: "Evitar que se agreguen a la linea de tiempo las notas que cumplen las condiciones. Las notas no agregadas seguirán quitadas aunque cambien las condiciones."
-  soft: "Suave"
-  hard: "Duro"
-  mutedNotes: "Notas silenciadas"
 _instanceMute:
   instanceMuteDescription: "Silencia todas las notas y reposts de la instancias seleccionadas, incluyendo respuestas a los usuarios de las mismas"
   instanceMuteDescription2: "Separar por líneas"
@@ -1691,8 +1686,6 @@ _sfx:
   note: "Notas"
   noteMy: "Nota (a mí mismo)"
   notification: "Notificaciones"
-  chat: "Chat"
-  chatBg: "Chat (Fondo)"
   antenna: "Antena receptora"
   channel: "Notificaciones del canal"
 _ago:

@@ -102,7 +102,6 @@ let searchKey = $ref('');
 const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
-	offsetMode: true,
 	params: {
 		channelId: props.channelId,
 	},

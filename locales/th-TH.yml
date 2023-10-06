@@ -1150,6 +1150,7 @@ _serverRules:
   description: "ชุดของกฎที่จะแสดงก่อนการลงทะเบียนเราขอแนะนำให้ตั้งค่าสรุปข้อกำหนดในการให้บริการ"
 _serverSettings:
   iconUrl: "ไอคอน URL"
+  manifestJsonOverride: "manifest.json โอเวอร์ลาย"
   shortName: "ชื่อย่อ"
 _accountMigration:
   moveFrom: "ย้ายข้อมูลบัญชีอื่นไปยังอีกบัญชีนี้หนึ่ง"
@@ -1407,6 +1408,7 @@ _achievements:
       flavor: "Misskey-Misskey La-Tu-Ma"
     _smashTestNotificationButton:
       title: "ทดสอบโอเวอร์โฟลว์"
+      description: "ทดสอบการแจ้งเตือนทริกเกอร์ซ้ำๆ ภายในระยะเวลาอันสั้นๆ"
 _role:
   new: "บทบาทใหม่"
   edit: "แก้ไขบทบาท"
@@ -1445,7 +1447,6 @@ _role:
     gtlAvailable: "การดูไทม์ไลน์ทั่วโลก"
     ltlAvailable: "การดูไทม์ไลน์ในท้องถิ่น"
     canPublicNote: "สามารถส่งโน้ตสาธารณะ"
-    canEditNote: "กำลังแก้ไขโน้ต"
     canInvite: "สร้างรหัสเชิญอินสแตนซ์"
     inviteLimit: "จำกัดการเชิญ"
     inviteLimitCycle: "จำกัดการเชิญไว้คูลดาวน์"
@@ -1465,6 +1466,7 @@ _role:
     descriptionOfRateLimitFactor: "ขีดจํากัดอัตราที่ต่ำกว่ามีข้อจํากัดน้อยกว่าข้อจํากัดที่สูงกว่า"
     canHideAds: "ซ่อนโฆษณา"
     canSearchNotes: "การใช้การค้นหาโน้ต"
+    canUseTranslator: "การใช้งานแปล"
   _condition:
     isLocal: "ผู้ใช้ภายใน"
     isRemote: "ผู้ใช้ระยะไกล"
@@ -1598,11 +1600,6 @@ _wordMute:
   muteWords: "ปิดเสียงคำ"
   muteWordsDescription: "คั่นด้วยช่องว่างสำหรับเงื่อนไข AND หรือด้วยการขึ้นบรรทัดใหม่สำหรับเงื่อนไข OR นะ"
   muteWordsDescription2: "ล้อมรอบคีย์เวิร์ดด้วยเครื่องหมายทับเพื่อใช้นิพจน์ทั่วไป"
-  softDescription: "ซ่อนโน้ตให้ตรงตามเงื่อนไขที่ตั้งไว้จากไทม์ไลน์"
-  hardDescription: "ป้องกันไม่ให้โน้ตย่อที่ตรงตามเงื่อนไขที่ตั้งไว้ไม่ให้ถูกเพิ่มลงในไทม์ไลน์ นอกจากนี้ โน้ตเหล่านี้จะไม่ถูกเพิ่มลงในไทม์ไลน์แม้ว่าจะมีการเปลี่ยนแปลงเงื่อนไขยังไงก็ตาม"
-  soft: "ซอฟ"
-  hard: "ยาก"
-  mutedNotes: "ปิดเสียงโน้ต"
 _instanceMute:
   instanceMuteDescription: "การดำเนินการนี้จะปิดเสียง\"โน้ต/รีโน้ต\"จากอินสแตนซ์ที่อยู่ในรายการ รวมถึงบันทึกของผู้ใช้ที่ตอบกลับผู้ใช้จากอินสแตนซ์ที่ปิดเสียง"
   instanceMuteDescription2: "คั่นด้วยการขึ้นบรรทัดใหม่"
@@ -1686,8 +1683,6 @@ _sfx:
   note: "หมายเหตุ"
   noteMy: "โน้ตของตัวเอง"
   notification: "การเเจ้งเตือน"
-  chat: "แชท"
-  chatBg: "แชท (พื้นหลัง)"
   antenna: "เสาอากาศ"
   channel: "การแจ้งเตือนช่อง"
 _ago:
@@ -1792,6 +1787,7 @@ _antennaSources:
   homeTimeline: "โน้ตจากผู้ใช้ที่ติดตาม"
   users: "โน้ตจากผู้ใช้ที่เฉพาะเจาะจง"
   userList: "โน้ตจากรายชื่อผู้ใช้ที่ระบุ"
+  userBlacklist: "โน้ตทั้งหมดยกเว้นโน้ตของผู้ใช้ที่ต้องระบุเจาะจงตั้งแต่หนึ่งรายขึ้นไป"
 _weekday:
   sunday: "วันอาทิตย์"
   monday: "วันจันทร์"
@@ -1891,6 +1887,7 @@ _profile:
   metadataContent: "เนื้อหา"
   changeAvatar: "เปลี่ยนอวาตาร์"
   changeBanner: "เปลี่ยนแบนเนอร์"
+  verifiedLinkDescription: "โดยการป้อน URL ที่มีลิงก์ไปยังโปรไฟล์ของคุณตรงนี้ ส่วนไอคอนการยืนยันความเป็นเจ้าของนั้นก็สามารถแสดงถัดจากฟิลด์ได้นะ"
 _exportOrImport:
   allNotes: "โน้ตทั้งหมด"
   favoritedNotes: "บันทึกที่ชื่นชอบ"
@@ -2104,7 +2101,17 @@ _moderationLogTypes:
   updateUserNote: "อัปเดตโน้ตการกลั่นกรองแล้ว"
   deleteDriveFile: "ลบไฟล์ออกแล้ว"
   deleteNote: "ลบโน้ตออกแล้ว"
+  createGlobalAnnouncement: "สร้างประกาศทั่วโลกแล้ว"
+  createUserAnnouncement: "สร้างประกาศผู้ใช้แล้ว"
+  updateGlobalAnnouncement: "อัปเดตประกาศทั่วโลกแล้ว"
+  updateUserAnnouncement: "อัปเดตประกาศผู้ใช้แล้ว"
+  deleteGlobalAnnouncement: "ลบประกาศทั่วโลกออกแล้ว"
+  deleteUserAnnouncement: "ลบประกาศผู้ใช้ออกแล้ว"
   resetPassword: "รีเซ็ตรหัสผ่าน"
+  suspendRemoteInstance: "อินสแตนซ์ระยะไกลถูกระงับ"
+  unsuspendRemoteInstance: "อินสแตนซ์ระยะไกลเลิกการระงับ"
+  markSensitiveDriveFile: "ทำเครื่องหมายไฟล์บอกว่าละเอียดอ่อน"
+  unmarkSensitiveDriveFile: "ยกเลิกทำเครื่องหมายไฟล์ว่าละเอียดอ่อน"
   resolveAbuseReport: "รายงานได้รับการแก้ไขแล้ว"
   createInvitation: "สร้างคำเชิญ"
   createAd: "สร้างโฆษณาแล้ว"

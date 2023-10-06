@@ -1586,11 +1586,6 @@ _wordMute:
   muteWords: "ミュートするワード"
   muteWordsDescription: "スペースで区切るとAND指定になって、改行で区切るとOR指定になるで。"
   muteWordsDescription2: "キーワードをスラッシュで囲むと正規表現になるで。"
-  softDescription: "指定した条件のノートをタイムラインから隠すで。"
-  hardDescription: "指定した条件のノートをタイムラインに追加しないようにするで。追加せーへんかったかったノートは、条件を変えても除外されたままになるで。"
-  soft: "ソフト"
-  hard: "ハード"
-  mutedNotes: "ミュートされたノート"
 _instanceMute:
   instanceMuteDescription: "ミュートしたサーバーのユーザーへの返信を含めて、設定したインスタンスの全てのノートとRenoteをミュートにするで。"
   instanceMuteDescription2: "改行で区切って設定するんやで"
@@ -1674,8 +1669,6 @@ _sfx:
   note: "ノート"
   noteMy: "ノート(自分)"
   notification: "通知"
-  chat: "チャット"
-  chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
 _ago:
