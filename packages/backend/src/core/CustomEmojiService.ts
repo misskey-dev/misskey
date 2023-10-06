@@ -48,7 +48,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
-				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
 				return new Map(JSON.parse(value).map((x: Serialized<MiEmoji>) => [x.name, {
 					...x,
 					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
