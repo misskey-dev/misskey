@@ -9,6 +9,8 @@ import type { MiNote } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
+const GLOBAL_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
+
 @Injectable()
 export class FeaturedService {
 	constructor(
@@ -26,7 +28,7 @@ export class FeaturedService {
 	@bindThis
 	private getCurrentGlobalNotesRankingWindow(): number {
 		const passed = new Date().getTime() - new Date(new Date().getFullYear(), 0, 1).getTime();
-		return Math.floor(passed / (1000 * 60 * 60 * 24 * 3)); // 3日ごと
+		return Math.floor(passed / GLOBAL_NOTES_RANKING_WINDOW);
 	}
 
 	@bindThis
@@ -40,7 +42,7 @@ export class FeaturedService {
 			noteId);
 		redisTransaction.expire(
 			`featuredGlobalNotesRanking:${currentWindow}`,
-			60 * 60 * 24 * 9, // 9日間保持
+			(GLOBAL_NOTES_RANKING_WINDOW * 3) / 1000,
 			'NX'); // "NX -- Set expiry only when the key has no expiry" = 有効期限がないときだけ設定
 		await redisTransaction.exec();
 	}
@@ -55,7 +57,7 @@ export class FeaturedService {
 			noteId);
 		redisTransaction.expire(
 			`featuredInChannelNotesRanking:${channelId}:${currentWindow}`,
-			60 * 60 * 24 * 9, // 9日間保持
+			(GLOBAL_NOTES_RANKING_WINDOW * 3) / 1000,
 			'NX'); // "NX -- Set expiry only when the key has no expiry" = 有効期限がないときだけ設定
 		await redisTransaction.exec();
 	}
