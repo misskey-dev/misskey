@@ -521,9 +521,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 		}
 
-		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
-		if (data.renote && (await this.noteEntityService.countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
-			if (!user.isBot) this.incRenoteCount(data.renote);
+		if (data.renote && data.renote.userId !== user.id && !user.isBot) {
+			this.incRenoteCount(data.renote);
 		}
 
 		if (data.poll && data.poll.expiresAt) {

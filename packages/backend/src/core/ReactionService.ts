@@ -193,7 +193,7 @@ export class ReactionService {
 			.execute();
 
 		// 30%の確率でハイライト用ランキング更新
-		if (Math.random() < 0.3) {
+		if (Math.random() < 0.3 && note.userId !== user.id) {
 			if (note.channelId != null) {
 				this.featuredService.updateInChannelNotesRanking(note.id, note.channelId, 1);
 			} else if (note.visibility === 'public' && note.userHost == null) {
