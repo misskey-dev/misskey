@@ -149,7 +149,10 @@ export class RedisSingleCache<T> {
 
 		const cached = await this.redisClient.get(`singlecache:${this.name}`);
 		if (cached == null) return undefined;
-		return this.fromRedisConverter(cached);
+		const parsed = this.fromRedisConverter(cached);
+    if (parsed == null) return undefined;
+		this.memoryCache.set(parsed);
+		return parsed;
 	}
 
 	@bindThis
