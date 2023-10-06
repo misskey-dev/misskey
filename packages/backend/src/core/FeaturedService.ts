@@ -5,11 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiNote } from '@/models/_.js';
+import type { MiNote, MiUser } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 const GLOBAL_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
+const PER_USER_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 7; // 1週間ごと
 
 @Injectable()
 export class FeaturedService {
@@ -78,8 +79,13 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	public updateInChannelNotesRanking(noteId: MiNote['id'], channelId: MiNote['channelId'], score = 1): Promise<void> {
+	public updateInChannelNotesRanking(channelId: MiNote['channelId'], noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
+	}
+
+	@bindThis
+	public updatePerUserNotesRanking(userId: MiUser['id'], noteId: MiNote['id'], score = 1): Promise<void> {
+		return this.updateRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, noteId, score);
 	}
 
 	@bindThis
@@ -90,5 +96,10 @@ export class FeaturedService {
 	@bindThis
 	public getInChannelNotesRanking(channelId: MiNote['channelId'], limit: number): Promise<MiNote['id'][]> {
 		return this.getRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, limit);
+	}
+
+	@bindThis
+	public getPerUserNotesRanking(userId: MiUser['id'], limit: number): Promise<MiNote['id'][]> {
+		return this.getRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, limit);
 	}
 }

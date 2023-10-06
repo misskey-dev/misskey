@@ -21,10 +21,12 @@
 ### Changes
 - API: users/notes, notes/local-timeline で fileType 指定はできなくなりました
 - API: notes/global-timeline は現在常に `[]` を返します
+- API: notes/featured でページネーションは他APIと同様 untilId を使って行うようになりました
 
 ### General
 - Feat: ユーザーごとに他ユーザーへの返信をタイムラインに含めるか設定可能になりました
 - Feat: ユーザーリスト内のメンバーごとに他ユーザーへの返信をユーザーリストタイムラインに含めるか設定可能になりました
+- Feat: ユーザーごとのハイライト
 - Enhance: ソフトワードミュートとハードワードミュートは統合されました
 - Enhance: モデレーションログ機能の強化
 - Enhance: ローカリゼーションの更新
