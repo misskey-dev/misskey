@@ -110,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateMutedUserQuery(query, me);
 				this.queryService.generateBlockedUserQuery(query, me);
 				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-				let ids = await query.limit(limit - noteIds.length).getMany();
+				const ids = await query.limit(limit - noteIds.length).getMany();
 				noteIds = noteIds.concat(ids.map(note => note.id));
 			}
 
