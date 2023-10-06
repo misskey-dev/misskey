@@ -729,10 +729,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// 30%の確率でハイライト用ランキング更新
 		if (Math.random() < 0.3) {
 			if (renote.channelId != null) {
-				this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
-			} else if (renote.visibility === 'public' && renote.userHost == null) {
-				this.featuredService.updateGlobalNotesRanking(renote.id, 5);
-				this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
+				if (renote.replyId == null) {
+					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
+				}
+			} else {
+				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
+					this.featuredService.updateGlobalNotesRanking(renote.id, 5);
+					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
+				}
 			}
 		}
 	}
