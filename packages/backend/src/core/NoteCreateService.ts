@@ -874,7 +874,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
-			for (const following of [...followings, note.userId]) {
+			for (const following in [...Object.keys(followings), note.userId]) {
 				// 自分自身以外への返信
 				if (note.replyId && note.replyUserId !== note.userId) {
 					if (!following.withReplies) continue;
