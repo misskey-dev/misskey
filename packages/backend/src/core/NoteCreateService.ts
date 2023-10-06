@@ -53,6 +53,7 @@ import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -200,6 +201,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private hashtagService: HashtagService,
 		private antennaService: AntennaService,
 		private webhookService: WebhookService,
+		private featuredService: FeaturedService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
@@ -721,10 +723,18 @@ export class NoteCreateService implements OnApplicationShutdown {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
 				renoteCount: () => '"renoteCount" + 1',
-				score: () => '"score" + 1',
 			})
 			.where('id = :id', { id: renote.id })
 			.execute();
+
+		// 30%の確率でハイライト用ランキング更新
+		if (Math.random() < 0.3) {
+			if (renote.channelId != null) {
+				this.featuredService.updateInChannelNotesRanking(renote.id, renote.channelId, 1);
+			} else if (renote.visibility === 'public' && renote.userHost == null) {
+				this.featuredService.updateGlobalNotesRanking(renote.id, 1);
+			}
+		}
 	}
 
 	@bindThis
