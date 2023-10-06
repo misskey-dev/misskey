@@ -89,7 +89,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					'COUNT', limit);
 			}
 
-			const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
+			let noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
+
+			// fallback to postgres
+			if (noteIds.length < limit) {
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note.id'),
+					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
+				if (followings.length > 0) {
+					const meOrFolloweeIds = [me.id, ...followings];
+					query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+				} else {
+					query.andWhere('note.userId = :meId', { meId: me.id });
+				}
+
+				this.queryService.generateChannelQuery(query, me);
+				this.queryService.generateRepliesQuery(query, ps.withReplies, me);
+				this.queryService.generateVisibilityQuery(query, me);
+				this.queryService.generateMutedUserQuery(query, me);
+				this.queryService.generateMutedNoteQuery(query, me);
+				this.queryService.generateBlockedUserQuery(query, me);
+				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+				noteIds = noteIds.concat(await query.limit(limit - noteIds.length).getMany());
+			}
 
 			if (noteIds.length === 0) {
 				return [];
