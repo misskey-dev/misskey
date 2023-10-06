@@ -379,16 +379,18 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			this.cache.set(`${emoji.name} ${emoji.host}`, emoji);
 		}
 	}
+
 	/**
 	 * ローカル内の絵文字に重複がないかチェックします
 	 * @param name 絵文字名
 	 */
-	public async isDuplicateCheck(name: string): Promise<boolean> {
-		return (await this.emojisRepository.findOneBy({ name, host: IsNull() })) !== null;
+	@bindThis
+	public checkDuplicate(name: string): Promise<boolean> {
+		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
 	}
 
 	@bindThis
-	public async getEmojiById(id: string): Promise<MiEmoji | null> {
+	public getEmojiById(id: string): Promise<MiEmoji | null> {
 		return this.emojisRepository.findOneBy({ id });
 	}
 
