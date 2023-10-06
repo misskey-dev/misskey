@@ -240,7 +240,7 @@ export function createPostgresDataSource(config: Config) {
 		} : false,
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
-		maxQueryExecutionTime: 300,
+		maxQueryExecutionTime: 10000, // 10s
 		entities: entities,
 		migrations: ['../../migration/*.js'],
 	});
