@@ -11,6 +11,7 @@ import { bindThis } from '@/decorators.js';
 
 const GLOBAL_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
 const PER_USER_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 7; // 1週間ごと
+const HASHTAG_RANKING_WINDOW = 1000 * 60 * 60; // 1時間ごと
 
 @Injectable()
 export class FeaturedService {
@@ -89,6 +90,11 @@ export class FeaturedService {
 	}
 
 	@bindThis
+	public updateHashtagsRanking(hashtag: string, score = 1): Promise<void> {
+		return this.updateRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, hashtag, score);
+	}
+
+	@bindThis
 	public getGlobalNotesRanking(limit: number): Promise<MiNote['id'][]> {
 		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, limit);
 	}
@@ -101,5 +107,10 @@ export class FeaturedService {
 	@bindThis
 	public getPerUserNotesRanking(userId: MiUser['id'], limit: number): Promise<MiNote['id'][]> {
 		return this.getRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, limit);
+	}
+
+	@bindThis
+	public getHashtagsRanking(limit: number): Promise<string[]> {
+		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, limit);
 	}
 }
