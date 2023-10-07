@@ -134,7 +134,6 @@ function close() {
 				justify-content: center;
 				border-radius: 99rem;
 
-
 				@media (max-width: 500px) {
 					top: 16px;
 					left: 8px;
