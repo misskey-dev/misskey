@@ -13,8 +13,9 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { QueryService } from '@/core/QueryService.js';
+import { QueryService } from '@/server/api/QueryService.js';
 import { ApiError } from '../../error.js';
+import { GetterService } from '@/core/GetterService.js'
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -66,6 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private getterService: GetterService,
 		private queryService: QueryService,
 		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
