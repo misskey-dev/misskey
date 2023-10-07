@@ -324,6 +324,7 @@ export class NoteEntityService implements OnModuleInit {
 		const reactionEmojiNames = Object.keys(note.reactions)
 			.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
+		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis([note]));
 		const packedFiles = options?._hint_?.packedFiles;
 
 		const packed: Packed<'Note'> = await awaitAll({
