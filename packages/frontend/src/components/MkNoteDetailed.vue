@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	v-if="!muted"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -173,7 +174,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 	</div>
-</div>
+</div><div v-else />
 </template>
 
 <script lang="ts" setup>
