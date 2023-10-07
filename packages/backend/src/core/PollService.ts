@@ -96,6 +96,8 @@ export class PollService {
 		const note = await this.notesRepository.findOneBy({ id: noteId });
 		if (note == null) throw new Error('note not found');
 
+		if (note.localOnly) return;
+
 		const user = await this.usersRepository.findOneBy({ id: note.userId });
 		if (user == null) throw new Error('note not found');
 
