@@ -189,6 +189,9 @@ export type ModerationLogPayloads = {
 	deleteUserAnnouncement: {
 		announcementId: string;
 		announcement: any;
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
 	};
 	resetPassword: {
 		userId: string;

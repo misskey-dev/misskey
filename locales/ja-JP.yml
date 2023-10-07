@@ -1132,6 +1132,9 @@ impressumDescription: "ドイツなどの一部の国と地域では表示が義
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+showRepliesToOthersInTimeline: "TLに他の人への返信を含める"
+hideRepliesToOthersInTimeline: "TLに他の人への返信を含めない"
+externalServices: "外部サービス"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1469,7 +1472,6 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
-    canEditNote: "ノートの編集"
     canInvite: "サーバー招待コードの発行"
     inviteLimit: "招待コードの作成可能数"
     inviteLimitCycle: "招待コードの発行間隔"
@@ -1642,11 +1644,6 @@ _wordMute:
   muteWords: "ミュートするワード"
   muteWordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。"
   muteWordsDescription2: "キーワードをスラッシュで囲むと正規表現になります。"
-  softDescription: "指定した条件のノートをタイムラインから隠します。"
-  hardDescription: "指定した条件のノートをタイムラインに追加しないようにします。追加されなかったノートは、条件を変更しても除外されたままになります。"
-  soft: "ソフト"
-  hard: "ハード"
-  mutedNotes: "ミュートされたノート"
 
 _instanceMute:
   instanceMuteDescription: "ミュートしたサーバーのユーザーへの返信を含めて、設定したサーバーの全てのノートとRenoteをミュートします。"
@@ -1734,8 +1731,6 @@ _sfx:
   note: "ノート"
   noteMy: "ノート(自分)"
   notification: "通知"
-  chat: "チャット"
-  chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
 

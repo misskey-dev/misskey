@@ -1267,11 +1267,6 @@ _wordMute:
   muteWords: "Mots à filtrer"
   muteWordsDescription: "Séparer avec des espaces pour la condition AND. Séparer avec un saut de ligne pour une condition OR."
   muteWordsDescription2: "Pour utiliser des expressions régulières (regex), mettez les mots-clés entre barres obliques."
-  softDescription: "Masquez les notes de votre fil selon les paramètres que vous définissez."
-  hardDescription: "Empêchez votre fil de charger les notes selon les paramètres que vous définissez. Cette action est irréversible : si vous modifiez ces paramètres plus tard, les notes précédemment filtrées ne seront pas récupérées."
-  soft: "Doux"
-  hard: "Strict"
-  mutedNotes: "Notes filtrées"
 _instanceMute:
   instanceMuteDescription: "Met en sourdine toutes les notes et renotes de l'instance configurée, y compris les réponses aux utilisateurs de l'instance muette."
   instanceMuteDescription2: "Séparer avec de nouvelles lignes"
@@ -1355,8 +1350,6 @@ _sfx:
   note: "Nouvelle note"
   noteMy: "Ma note"
   notification: "Notifications"
-  chat: "Discuter"
-  chatBg: "Discussion (arrière-plan)"
   antenna: "Réception de l’antenne"
   channel: "Notifications de canal"
 _ago:

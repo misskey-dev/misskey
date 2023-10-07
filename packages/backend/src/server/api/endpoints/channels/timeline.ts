@@ -54,8 +54,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -79,14 +79,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			let timeline: MiNote[] = [];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
-				noteIdsRes = await this.redisClient.xrevrange(
+				noteIdsRes = await this.redisForTimelines.xrevrange(
 					`channelTimeline:${channel.id}`,
 					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
+					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
 					'COUNT', limit);
 			}
 
@@ -104,14 +104,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (me) {
 					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateMutedNoteQuery(query, me);
 					this.queryService.generateBlockedUserQuery(query, me);
 				}
 				//#endregion
 
 				timeline = await query.limit(ps.limit).getMany();
 			} else {
-				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
+				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
 
 				if (noteIds.length === 0) {
 					return [];
@@ -129,7 +128,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (me) {
 					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateMutedNoteQuery(query, me);
 					this.queryService.generateBlockedUserQuery(query, me);
 				}
 				//#endregion

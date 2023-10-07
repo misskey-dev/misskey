@@ -31,7 +31,6 @@ export type Column = {
 	excludeTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
 	withRenotes?: boolean;
-	withReplies?: boolean;
 	onlyFiles?: boolean;
 };
 

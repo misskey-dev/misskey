@@ -1559,11 +1559,6 @@ _wordMute:
   muteWords: "Ztlumená slova"
   muteWordsDescription: "Podmínku AND oddělujte mezerami, podmínku OR oddělujte řádkovými zlomy."
   muteWordsDescription2: "Chcete-li použít regulární výrazy, obklopte klíčová slova lomítky."
-  softDescription: "Skrýt poznámky, které splňují nastavené podmínky, z časové osy."
-  hardDescription: "Zabrání přidání poznámek splňujících nastavené podmínky na časovou osu. Kromě toho nebudou tyto poznámky přidány na časovou osu, ani když se podmínky změní."
-  soft: "Měkký"
-  hard: "Tvrdý"
-  mutedNotes: "Ztlumené poznámky"
 _instanceMute:
   instanceMuteDescription: "Tímhle se ztlumí všechny poznámky/poznámky z uvedených instancí, včetně poznámek uživatelů, kteří odpovídají uživateli ze ztlumené instance."
   instanceMuteDescription2: "Oddělte novými řádky"
@@ -1647,8 +1642,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Moje poznámka"
   notification: "Oznámení"
-  chat: "Zprávy"
-  chatBg: "Chat (Pozadí)"
   antenna: "Antény"
   channel: "Oznámení kanálu"
 _ago:

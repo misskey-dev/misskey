@@ -5,18 +5,19 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/_.js';
+import * as Redis from 'ioredis';
+import type { MiNote, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { IdService } from '@/core/IdService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
-
-	description: 'Show all notes that this user created.',
 
 	res: {
 		type: 'array',
@@ -43,6 +44,7 @@ export const paramDef = {
 		userId: { type: 'string', format: 'misskey:id' },
 		withReplies: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		withChannelNotes: { type: 'boolean', default: false },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
@@ -50,9 +52,6 @@ export const paramDef = {
 		untilDate: { type: 'integer' },
 		includeMyRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
-		fileType: { type: 'array', items: {
-			type: 'string',
-		} },
 		excludeNsfw: { type: 'boolean', default: false },
 	},
 	required: ['userId'],
@@ -61,87 +60,95 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private queryService: QueryService,
 		private getterService: GetterService,
+		private cacheService: CacheService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// Lookup user
-			const user = await this.getterService.getUser(ps.userId).catch(err => {
-				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw err;
-			});
+			const [
+				userIdsWhoMeMuting,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+			]) : [new Set<string>()];
 
-			//#region Construct query
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.userId = :userId', { userId: user.id })
+			let timeline: MiNote[] = [];
+
+			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			let noteIdsRes: [string, string[]][] = [];
+			let repliesNoteIdsRes: [string, string[]][] = [];
+			let channelNoteIdsRes: [string, string[]][] = [];
+
+			if (!ps.sinceId && !ps.sinceDate) {
+				[noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
+					this.redisForTimelines.xrevrange(
+						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
+						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+						'COUNT', limit),
+					ps.withReplies
+						? this.redisForTimelines.xrevrange(
+							`userTimelineWithReplies:${ps.userId}`,
+							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+							'COUNT', limit)
+						: Promise.resolve([]),
+					ps.withChannelNotes
+						? this.redisForTimelines.xrevrange(
+							`userTimelineWithChannel:${ps.userId}`,
+							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+							'COUNT', limit)
+						: Promise.resolve([]),
+				]);
+			}
+
+			let noteIds = Array.from(new Set([
+				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+			]));
+			noteIds.sort((a, b) => a > b ? -1 : 1);
+			noteIds = noteIds.slice(0, ps.limit);
+
+			if (noteIds.length === 0) {
+				return [];
+			}
+
+			const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+
+			const query = this.notesRepository.createQueryBuilder('note')
+				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('note.channel', 'channel')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser');
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('note.channel', 'channel');
 
-			query.andWhere(new Brackets(qb => {
-				qb.orWhere('note.channelId IS NULL');
-				qb.orWhere('channel.isSensitive = false');
-			}));
+			timeline = await query.getMany();
 
-			this.queryService.generateVisibilityQuery(query, me);
-			if (me) {
-				this.queryService.generateMutedUserQuery(query, me, user);
-				this.queryService.generateBlockedUserQuery(query, me);
-			}
+			timeline = timeline.filter(note => {
+				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
-			if (ps.withFiles) {
-				query.andWhere('note.fileIds != \'{}\'');
-			}
-
-			if (ps.fileType != null) {
-				query.andWhere('note.fileIds != \'{}\'');
-				query.andWhere(new Brackets(qb => {
-					for (const type of ps.fileType!) {
-						const i = ps.fileType!.indexOf(type);
-						qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+				if (note.renoteId) {
+					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+						if (ps.withRenotes === false) return false;
 					}
-				}));
-
-				if (ps.excludeNsfw) {
-					query.andWhere('note.cw IS NULL');
-					query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
 				}
-			}
 
-			if (!ps.withReplies) {
-				query.andWhere('note.replyId IS NULL');
-			}
+				if (note.visibility === 'followers' && !isFollowing) return false;
 
-			if (ps.withRenotes === false) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.renoteId IS NULL');
-					qb.orWhere(new Brackets(qb => {
-						qb.orWhere('note.text IS NOT NULL');
-						qb.orWhere('note.fileIds != \'{}\'');
-					}));
-				}));
-			}
+				return true;
+			});
 
-			if (ps.includeMyRenotes === false) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.userId != :userId', { userId: user.id });
-					qb.orWhere('note.renoteId IS NULL');
-					qb.orWhere('note.text IS NOT NULL');
-					qb.orWhere('note.fileIds != \'{}\'');
-					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-				}));
-			}
-
-			//#endregion
-
-			const timeline = await query.limit(ps.limit).getMany();
+			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
 
 			return await this.noteEntityService.packMany(timeline, me);
 		});

@@ -1135,6 +1135,9 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+    "showRepliesToOthersInTimeline": string;
+    "hideRepliesToOthersInTimeline": string;
+    "externalServices": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1548,7 +1551,6 @@ export interface Locale {
             "gtlAvailable": string;
             "ltlAvailable": string;
             "canPublicNote": string;
-            "canEditNote": string;
             "canInvite": string;
             "inviteLimit": string;
             "inviteLimitCycle": string;
@@ -1725,11 +1727,6 @@ export interface Locale {
         "muteWords": string;
         "muteWordsDescription": string;
         "muteWordsDescription2": string;
-        "softDescription": string;
-        "hardDescription": string;
-        "soft": string;
-        "hard": string;
-        "mutedNotes": string;
     };
     "_instanceMute": {
         "instanceMuteDescription": string;
@@ -1817,8 +1814,6 @@ export interface Locale {
         "note": string;
         "noteMy": string;
         "notification": string;
-        "chat": string;
-        "chatBg": string;
         "antenna": string;
         "channel": string;
     };
