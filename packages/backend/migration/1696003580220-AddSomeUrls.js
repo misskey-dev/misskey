@@ -4,6 +4,8 @@
  */
 
 export class AddSomeUrls1696003580220 {
+    name = 'AddSomeUrls1696003580220'
+
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "meta" ADD "impressumUrl" character varying(1024)`);
         await queryRunner.query(`ALTER TABLE "meta" ADD "privacyPolicyUrl" character varying(1024)`);
