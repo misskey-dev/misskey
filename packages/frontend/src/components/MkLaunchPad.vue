@@ -8,16 +8,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action" :key="item.text" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate && item.indicateValue" class="indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
+					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
 					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
+				<MkA v-else :key="item.text" v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate && item.indicateValue" class="indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
+					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
 					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</MkA>
 			</template>

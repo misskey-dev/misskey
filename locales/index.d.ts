@@ -1138,6 +1138,7 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+    "showUnreadNotificationCount": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

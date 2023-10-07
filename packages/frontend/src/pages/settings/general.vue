@@ -119,6 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+				<MkSwitch v-model="showUnreadNotificationCount">{{ i18n.ts.showUnreadNotificationCount }}</MkSwitch>				
 				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 			</div>
 			<div>
@@ -249,6 +250,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
+const showUnreadNotificationCount = computed(defaultStore.makeGetterSetter('showUnreadNotificationCount'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -285,6 +287,7 @@ watch([
 	reactionsDisplaySize,
 	highlightSensitiveMedia,
 	keepScreenOn,
+	showUnreadNotificationCount,
 ], async () => {
 	await reloadAsk();
 });

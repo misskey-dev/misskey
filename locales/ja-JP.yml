@@ -1135,6 +1135,7 @@ impressumDescription: "ドイツなどの一部の国と地域では表示が義
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+showUnreadNotificationCount: "未読の通知の数を表示する"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

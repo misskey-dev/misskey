@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
 					<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator">
-						<span v-if="navbarItemDef[item].indicateValue" :class="$style.itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
+						<span v-if="navbarItemDef[item].indicateValue && defaultStore.state.showUnreadNotificationCount" :class="$style.itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
 						<i v-else class="_indicatorCircle"></i>
 					</span>
 				</component>
