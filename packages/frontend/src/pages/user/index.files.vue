@@ -61,10 +61,12 @@ onMounted(() => {
 	}).then(notes => {
 		for (const note of notes) {
 			for (const file of note.files) {
-				files.push({
-					note,
-					file,
-				});
+				if (file.isSensitive){
+					files.push({
+						note,
+						file,
+					});
+				}
 			}
 		}
 		fetching = false;
