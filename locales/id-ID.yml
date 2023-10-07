@@ -1100,6 +1100,7 @@ currentAnnouncements: "Pengumuman Saat Ini"
 pastAnnouncements: "Pengumuman Terdahulu"
 replies: "Balas"
 renotes: "Renote"
+dateAndTime: "Tanggal dan Waktu"
 _initialAccountSetting:
   accountCreated: "Akun kamu telah sukses dibuat!"
   letsStartAccountSetup: "Untuk pemula, ayo atur profilmu dulu."
@@ -1496,6 +1497,7 @@ _plugin:
   install: "Memasang plugin"
   installWarn: "Mohon jangan memasang plugin yang tidak dapat dipercayai."
   manage: "Manajemen plugin"
+  viewSource: "Lihat sumber"
 _preferencesBackups:
   list: "Cadangan yang dibuat"
   saveNew: "Simpan cadangan baru"
@@ -1562,11 +1564,6 @@ _wordMute:
   muteWords: "Kata yang dibisukan"
   muteWordsDescription: "Pisahkan dengan spasi untuk kondisi AND. Pisahkan dengan baris baru untuk kondisi OR."
   muteWordsDescription2: "Kurung kata kunci dengan garis miring untuk menggunakan ekspresi reguler."
-  softDescription: "Sembunyikan catatan yang memenuhi aturan kondisi dari lini masa."
-  hardDescription: "Cegah catatan memenuhi aturan kondisi dari ditambahkan ke lini masa. Dengan tambahan, catatan berikut tidak akan ditambahkan ke lini masa meskipun jika kondisi tersebut diubah."
-  soft: "Lembut"
-  hard: "Keras"
-  mutedNotes: "Catatan yang dibisukan"
 _instanceMute:
   instanceMuteDescription: "Pengaturan ini akan membisukan note/renote apa saja dari instansi yang terdaftar, termasuk pengguna yang membalas pengguna lain dalam instansi yang dibisukan."
   instanceMuteDescription2: "Pisah dengan baris baru"
@@ -1650,8 +1647,6 @@ _sfx:
   note: "Catatan"
   noteMy: "Catatan (Saya)"
   notification: "Notifikasi"
-  chat: "Pesan"
-  chatBg: "Obrolan (Latar Belakang)"
   antenna: "Penerimaan Antenna"
   channel: "Notifikasi Kanal"
 _ago:
@@ -2040,3 +2035,7 @@ _webhookSettings:
     renote: "Ketika direnote"
     reaction: "Ketika menerima reaksi"
     mention: "Ketika sedang disebut"
+_moderationLogTypes:
+  suspend: "Tangguhkan"
+  resetPassword: "Atur ulang kata sandi"
+  createInvitation: "Buat kode undangan"

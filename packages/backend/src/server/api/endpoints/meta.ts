@@ -40,6 +40,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			shortName: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			uri: {
 				type: 'string',
 				optional: false, nullable: false,
@@ -210,11 +214,11 @@ export const meta = {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					localTimeLine: {
+					localTimeline: {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					globalTimeLine: {
+					globalTimeline: {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
@@ -288,12 +292,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				version: this.config.version,
 
 				name: instance.name,
+				shortName: instance.shortName,
 				uri: this.config.url,
 				description: instance.description,
 				langs: instance.langs,
 				tosUrl: instance.termsOfServiceUrl,
 				repositoryUrl: instance.repositoryUrl,
 				feedbackUrl: instance.feedbackUrl,
+				impressumUrl: instance.impressumUrl,
+				privacyPolicyUrl: instance.privacyPolicyUrl,
 				disableRegistration: instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,

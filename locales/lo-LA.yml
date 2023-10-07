@@ -407,7 +407,6 @@ _theme:
 _sfx:
   note: "ບັນທຶກ"
   notification: "ການແຈ້ງເຕືອນ"
-  chat: "ແຊ໋ດ"
 _2fa:
   renewTOTPCancel: "ບໍ່​ແມ່ນ​ຕອນ​ນີ້"
 _widgets:
@@ -463,3 +462,5 @@ _deck:
     mentions: "ກ່າວເຖິງ"
 _webhookSettings:
   name: "ຊື່"
+_moderationLogTypes:
+  suspend: "ລະງັບ"

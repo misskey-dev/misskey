@@ -910,7 +910,6 @@ _theme:
 _sfx:
   note: "Qaydlar"
   notification: "Xabarnomalar"
-  chat: "Suhbat"
 _ago:
   minutesAgo: "{n} daqiqa oldin"
   hoursAgo: "{n} soat oldin"
@@ -1084,3 +1083,6 @@ _webhookSettings:
   _events:
     renote: "Qayta qayd qilinganda"
     mention: "Eslanganda"
+_moderationLogTypes:
+  suspend: "To'xtatish"
+  resetPassword: "Parolni tiklash"

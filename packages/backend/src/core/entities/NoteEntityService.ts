@@ -98,13 +98,13 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (meId === packedNote.userId) {
 				hide = false;
 			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-			// 自分の投稿に対するリプライ
+				// 自分の投稿に対するリプライ
 				hide = false;
 			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-			// 自分へのメンション
+				// 自分へのメンション
 				hide = false;
 			} else {
-			// フォロワーかどうか
+				// フォロワーかどうか
 				const isFollowing = await this.followingsRepository.exist({
 					where: {
 						followeeId: packedNote.userId,
@@ -449,20 +449,5 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 		return emojis.filter(x => x.name != null && x.host != null) as { name: string; host: string; }[];
-	}
-
-	@bindThis
-	public async countSameRenotes(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
-		// 指定したユーザーの指定したノートのリノートがいくつあるか数える
-		const query = this.notesRepository.createQueryBuilder('note')
-			.where('note.userId = :userId', { userId })
-			.andWhere('note.renoteId = :renoteId', { renoteId });
-
-		// 指定した投稿を除く
-		if (excludeNoteId) {
-			query.andWhere('note.id != :excludeNoteId', { excludeNoteId });
-		}
-
-		return await query.getCount();
 	}
 }

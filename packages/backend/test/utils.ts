@@ -99,9 +99,17 @@ export const relativeFetch = async (path: string, init?: RequestInit | undefined
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
+export function randomString(chars = 'abcdefghijklmnopqrstuvwxyz0123456789', length = 16) {
+	let randomString = '';
+	for (let i = 0; i < length; i++) {
+		randomString += chars[Math.floor(Math.random() * chars.length)];
+	}
+	return randomString;
+}
+
 export const signup = async (params?: Partial<misskey.Endpoints['signup']['req']>): Promise<NonNullable<misskey.Endpoints['signup']['res']>> => {
 	const q = Object.assign({
-		username: 'test',
+		username: randomString(),
 		password: 'test',
 	}, params);
 
@@ -293,12 +301,14 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 };
 
 export const uploadUrl = async (user: UserToken, url: string) => {
-	let file: any;
+	let resolve: unknown;
+	const file = new Promise(ok => resolve = ok);
 	const marker = Math.random().toString();
 
 	const ws = await connectStream(user, 'main', (msg) => {
 		if (msg.type === 'urlUploadFinished' && msg.body.marker === marker) {
-			file = msg.body.file;
+			ws.close();
+			resolve(msg.body.file);
 		}
 	});
 
@@ -307,9 +317,6 @@ export const uploadUrl = async (user: UserToken, url: string) => {
 		marker,
 		force: true,
 	}, user);
-
-	await sleep(7000);
-	ws.close();
 
 	return file;
 };

@@ -15,9 +15,10 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { StreamMessages } from '@/server/api/stream/types.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -31,6 +32,7 @@ export type RolePolicies = {
 	inviteExpirationTime: number;
 	canManageCustomEmojis: boolean;
 	canSearchNotes: boolean;
+	canUseTranslator: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
 	alwaysMarkNsfw: boolean;
@@ -55,6 +57,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	inviteExpirationTime: 0,
 	canManageCustomEmojis: false,
 	canSearchNotes: false,
+	canUseTranslator: true,
 	canHideAds: false,
 	driveCapacityMb: 100,
 	alwaysMarkNsfw: false,
@@ -98,6 +101,7 @@ export class RoleService implements OnApplicationShutdown {
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
+		private moderationLogService: ModerationLogService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -112,7 +116,7 @@ export class RoleService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as StreamMessages['internal']['payload'];
+			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'roleCreated': {
 					const cached = this.rolesCache.get();
@@ -298,6 +302,7 @@ export class RoleService implements OnApplicationShutdown {
 			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
+			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
@@ -374,8 +379,10 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null): Promise<void> {
+	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null, moderator?: MiUser): Promise<void> {
 		const now = new Date();
+
+		const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
 
 		const existing = await this.roleAssignmentsRepository.findOneBy({
 			roleId: roleId,
@@ -406,10 +413,22 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+
+		if (moderator) {
+			const user = await this.usersRepository.findOneByOrFail({ id: userId });
+			this.moderationLogService.log(moderator, 'assignRole', {
+				roleId: roleId,
+				roleName: role.name,
+				userId: userId,
+				userUsername: user.username,
+				userHost: user.host,
+				expiresAt: expiresAt ? expiresAt.toISOString() : null,
+			});
+		}
 	}
 
 	@bindThis
-	public async unassign(userId: MiUser['id'], roleId: MiRole['id']): Promise<void> {
+	public async unassign(userId: MiUser['id'], roleId: MiRole['id'], moderator?: MiUser): Promise<void> {
 		const now = new Date();
 
 		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
@@ -430,6 +449,20 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
+
+		if (moderator) {
+			const [user, role] = await Promise.all([
+				this.usersRepository.findOneByOrFail({ id: userId }),
+				this.rolesRepository.findOneByOrFail({ id: roleId }),
+			]);
+			this.moderationLogService.log(moderator, 'unassignRole', {
+				roleId: roleId,
+				roleName: role.name,
+				userId: userId,
+				userUsername: user.username,
+				userHost: user.host,
+			});
+		}
 	}
 
 	@bindThis
@@ -449,6 +482,75 @@ export class RoleService implements OnApplicationShutdown {
 		}
 
 		redisPipeline.exec();
+	}
+
+	@bindThis
+	public async create(values: Partial<MiRole>, moderator?: MiUser): Promise<MiRole> {
+		const date = new Date();
+		const created = await this.rolesRepository.insert({
+			id: this.idService.genId(),
+			createdAt: date,
+			updatedAt: date,
+			lastUsedAt: date,
+			name: values.name,
+			description: values.description,
+			color: values.color,
+			iconUrl: values.iconUrl,
+			target: values.target,
+			condFormula: values.condFormula,
+			isPublic: values.isPublic,
+			isAdministrator: values.isAdministrator,
+			isModerator: values.isModerator,
+			isExplorable: values.isExplorable,
+			asBadge: values.asBadge,
+			canEditMembersByModerator: values.canEditMembersByModerator,
+			displayOrder: values.displayOrder,
+			policies: values.policies,
+		}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
+
+		this.globalEventService.publishInternalEvent('roleCreated', created);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'createRole', {
+				roleId: created.id,
+				role: created,
+			});
+		}
+
+		return created;
+	}
+
+	@bindThis
+	public async update(role: MiRole, params: Partial<MiRole>, moderator?: MiUser): Promise<void> {
+		const date = new Date();
+		await this.rolesRepository.update(role.id, {
+			updatedAt: date,
+			...params,
+		});
+
+		const updated = await this.rolesRepository.findOneByOrFail({ id: role.id });
+		this.globalEventService.publishInternalEvent('roleUpdated', updated);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'updateRole', {
+				roleId: role.id,
+				before: role,
+				after: updated,
+			});
+		}
+	}
+
+	@bindThis
+	public async delete(role: MiRole, moderator?: MiUser): Promise<void> {
+		await this.rolesRepository.delete({ id: role.id });
+		this.globalEventService.publishInternalEvent('roleDeleted', role);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'deleteRole', {
+				roleId: role.id,
+				role: role,
+			});
+		}
 	}
 
 	@bindThis

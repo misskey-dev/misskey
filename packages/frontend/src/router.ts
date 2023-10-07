@@ -127,17 +127,9 @@ export const routes = [{
 		name: 'import-export',
 		component: page(() => import('./pages/settings/import-export.vue')),
 	}, {
-		path: '/instance-mute',
-		name: 'instance-mute',
-		component: page(() => import('./pages/settings/instance-mute.vue')),
-	}, {
 		path: '/mute-block',
 		name: 'mute-block',
 		component: page(() => import('./pages/settings/mute-block.vue')),
-	}, {
-		path: '/word-mute',
-		name: 'word-mute',
-		component: page(() => import('./pages/settings/word-mute.vue')),
 	}, {
 		path: '/api',
 		name: 'api',
@@ -396,6 +388,10 @@ export const routes = [{
 		name: 'abuses',
 		component: page(() => import('./pages/admin/abuses.vue')),
 	}, {
+		path: '/modlog',
+		name: 'modlog',
+		component: page(() => import('./pages/admin/modlog.vue')),
+	}, {
 		path: '/settings',
 		name: 'settings',
 		component: page(() => import('./pages/admin/settings.vue')),
@@ -431,6 +427,10 @@ export const routes = [{
 		path: '/proxy-account',
 		name: 'proxy-account',
 		component: page(() => import('./pages/admin/proxy-account.vue')),
+	}, {
+		path: '/external-services',
+		name: 'external-services',
+		component: page(() => import('./pages/admin/external-services.vue')),
 	}, {
 		path: '/other-settings',
 		name: 'other-settings',

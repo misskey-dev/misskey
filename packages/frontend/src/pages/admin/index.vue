@@ -145,6 +145,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
 		active: currentPage?.route.name === 'abuses',
+	}, {
+		icon: 'ti ti-list-search',
+		text: i18n.ts.moderationLogs,
+		to: '/admin/modlog',
+		active: currentPage?.route.name === 'modlog',
 	}],
 }, {
 	title: i18n.ts.settings,
@@ -193,6 +198,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.proxyAccount,
 		to: '/admin/proxy-account',
 		active: currentPage?.route.name === 'proxy-account',
+	}, {
+		icon: 'ti ti-link',
+		text: i18n.ts.externalServices,
+		to: '/admin/external-services',
+		active: currentPage?.route.name === 'external-services',
 	}, {
 		icon: 'ti ti-adjustments',
 		text: i18n.ts.other,

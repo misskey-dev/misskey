@@ -75,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				summary: ps.summary,
 				script: ps.script,
 				permissions: ps.permissions,
+				visibility: ps.visibility,
 			});
 		});
 	}

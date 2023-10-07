@@ -142,7 +142,7 @@ export const packedNoteSchema = {
 					isSensitive: {
 						type: 'boolean',
 						optional: true, nullable: false,
-					}
+					},
 				},
 			},
 		},

@@ -925,6 +925,7 @@ _plugin:
   install: "Zainstaluj wtyczki"
   installWarn: "Nie instaluj niezaufanych wtyczek."
   manage: "Zarządzanie wtyczkami"
+  viewSource: "Zobacz źródło"
 _preferencesBackups:
   list: "Utworzone kopie zapasowe"
   saveNew: "Zapisz nową kopię zapasową"
@@ -981,9 +982,6 @@ _menuDisplay:
 _wordMute:
   muteWords: "Słowo do wyciszenia"
   muteWordsDescription2: "Otocz słowa kluczowe ukośnikami, aby używać wyrażeń regularnych."
-  soft: "Łagodny"
-  hard: "Twardy"
-  mutedNotes: "Wyciszone wpisy"
 _instanceMute:
   title: "Ukrywa wpisy z wymienionych instancji."
   heading: "Lista instancji do wyciszenia"
@@ -1065,8 +1063,6 @@ _sfx:
   note: "Wpisy"
   noteMy: "Mój wpis"
   notification: "Powiadomienia"
-  chat: "Wiadomości"
-  chatBg: "Rozmowy (tło)"
   antenna: "Anteny"
   channel: "Powiadomienia kanału"
 _ago:
@@ -1401,3 +1397,6 @@ _webhookSettings:
     renote: "Po udostępnieniu wpisu"
     reaction: "Po otrzymaniu reakcji"
     mention: "Po zostaniu wspomnianym"
+_moderationLogTypes:
+  suspend: "Zawieś"
+  resetPassword: "Zresetuj hasło"

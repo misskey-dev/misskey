@@ -647,7 +647,6 @@ _theme:
 _sfx:
   note: "Note"
   notification: "Notificări"
-  chat: "Chat"
 _ago:
   invalid: "Nu e nimic de văzut aici"
 _widgets:
@@ -704,3 +703,6 @@ _deck:
     mentions: "Mențiuni"
 _webhookSettings:
   name: "Nume"
+_moderationLogTypes:
+  suspend: "Suspendă"
+  resetPassword: "Resetează parola"

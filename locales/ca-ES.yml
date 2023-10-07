@@ -398,7 +398,6 @@ _theme:
 _sfx:
   note: "Notes"
   notification: "Notificacions"
-  chat: "Xat"
   antenna: "Antenes"
 _2fa:
   renewTOTPCancel: "No, gràcies"
@@ -479,3 +478,6 @@ _deck:
     list: "Llistes"
     mentions: "Mencions"
     direct: "Publicacions directes"
+_moderationLogTypes:
+  suspend: "Suspèn"
+  resetPassword: "Restableix la contrasenya"

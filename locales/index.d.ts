@@ -421,6 +421,7 @@ export interface Locale {
     "moderation": string;
     "moderationNote": string;
     "addModerationNote": string;
+    "moderationLogs": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;
@@ -1123,6 +1124,21 @@ export interface Locale {
     "unnotifyNotes": string;
     "authentication": string;
     "authenticationRequiredToContinue": string;
+    "dateAndTime": string;
+    "showRenotes": string;
+    "edited": string;
+    "notificationRecieveConfig": string;
+    "mutualFollow": string;
+    "fileAttachedOnly": string;
+    "showRepliesToOthersInTimeline": string;
+    "hideRepliesToOthersInTimeline": string;
+    "externalServices": string;
+    "impressum": string;
+    "impressumUrl": string;
+    "impressumDescription": string;
+    "privacyPolicy": string;
+    "privacyPolicyUrl": string;
+    "tosAndPrivacyPolicy": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1159,6 +1175,8 @@ export interface Locale {
         "appIconStyleRecommendation": string;
         "appIconResolutionMustBe": string;
         "manifestJsonOverride": string;
+        "shortName": string;
+        "shortNameDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
@@ -1553,6 +1571,7 @@ export interface Locale {
             "descriptionOfRateLimitFactor": string;
             "canHideAds": string;
             "canSearchNotes": string;
+            "canUseTranslator": string;
         };
         "_condition": {
             "isLocal": string;
@@ -1633,6 +1652,7 @@ export interface Locale {
         "install": string;
         "installWarn": string;
         "manage": string;
+        "viewSource": string;
     };
     "_preferencesBackups": {
         "list": string;
@@ -1708,11 +1728,6 @@ export interface Locale {
         "muteWords": string;
         "muteWordsDescription": string;
         "muteWordsDescription2": string;
-        "softDescription": string;
-        "hardDescription": string;
-        "soft": string;
-        "hard": string;
-        "mutedNotes": string;
     };
     "_instanceMute": {
         "instanceMuteDescription": string;
@@ -1800,8 +1815,6 @@ export interface Locale {
         "note": string;
         "noteMy": string;
         "notification": string;
-        "chat": string;
-        "chatBg": string;
         "antenna": string;
         "channel": string;
     };
@@ -2166,6 +2179,7 @@ export interface Locale {
         "notificationWillBeDisplayedLikeThis": string;
         "_types": {
             "all": string;
+            "note": string;
             "follow": string;
             "mention": string;
             "reply": string;
@@ -2244,6 +2258,38 @@ export interface Locale {
             "reaction": string;
             "mention": string;
         };
+    };
+    "_moderationLogTypes": {
+        "createRole": string;
+        "deleteRole": string;
+        "updateRole": string;
+        "assignRole": string;
+        "unassignRole": string;
+        "suspend": string;
+        "unsuspend": string;
+        "addCustomEmoji": string;
+        "updateCustomEmoji": string;
+        "deleteCustomEmoji": string;
+        "updateServerSettings": string;
+        "updateUserNote": string;
+        "deleteDriveFile": string;
+        "deleteNote": string;
+        "createGlobalAnnouncement": string;
+        "createUserAnnouncement": string;
+        "updateGlobalAnnouncement": string;
+        "updateUserAnnouncement": string;
+        "deleteGlobalAnnouncement": string;
+        "deleteUserAnnouncement": string;
+        "resetPassword": string;
+        "suspendRemoteInstance": string;
+        "unsuspendRemoteInstance": string;
+        "markSensitiveDriveFile": string;
+        "unmarkSensitiveDriveFile": string;
+        "resolveAbuseReport": string;
+        "createInvitation": string;
+        "createAd": string;
+        "deleteAd": string;
+        "updateAd": string;
     };
 }
 declare const locales: {
