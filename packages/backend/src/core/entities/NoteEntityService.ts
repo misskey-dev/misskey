@@ -26,6 +26,7 @@ import type {
 } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { DebounceLoader } from '@/misc/loader.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -38,6 +39,7 @@ export class NoteEntityService implements OnModuleInit {
 	private driveFileEntityService: DriveFileEntityService;
 	private customEmojiService: CustomEmojiService;
 	private reactionService: ReactionService;
+	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -304,7 +306,7 @@ export class NoteEntityService implements OnModuleInit {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.notesRepository.findOneOrFail({ where: { id: src }, relations: ['user'] });
+		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 		const host = note.userHost;
 
 		let text = note.text;
@@ -482,5 +484,13 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		return await query.getCount();
+	}
+
+	@bindThis
+	private async findNoteOrFail(id: string): Promise<MiNote> {
+		return await this.notesRepository.findOneOrFail({
+			where: { id },
+			relations: ["user"],
+		});
 	}
 }
