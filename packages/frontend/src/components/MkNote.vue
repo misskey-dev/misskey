@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<div
-		v-if="!muted"
 		v-show="!isDeleted"
 		ref="el"
 		v-hotkey="keymap"
@@ -144,15 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</footer>
 			</div>
 		</article>
-	</div>
-	<div v-else :class="$style.muted" @click="muted = false">
-		<I18n :src="i18n.ts.userSaysSomething" tag="small">
-			<template #name>
-				<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-					<MkUserName :user="appearNote.user"/>
-				</MkA>
-			</template>
-		</I18n>
 	</div>
 </template>
 

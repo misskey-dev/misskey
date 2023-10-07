@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
+<div :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
@@ -27,15 +27,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-else :class="$style.more">
 		<MkA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
 	</div>
-</div>
-<div v-else :class="$style.muted" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
-		<template #name>
-			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
-				<MkUserName :user="note.user"/>
-			</MkA>
-		</template>
-	</I18n>
 </div>
 </template>
 
