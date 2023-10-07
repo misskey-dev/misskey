@@ -52,7 +52,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isMobile" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
+			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
+				<span v-if="$i?.unreadNotificationCount" :class="$style.navButtonIndicateValueIcon"><span>{{ $i.unreadNotificationCount > 20 ? '20+' : $i.unreadNotificationCount }}</span></span>
+				<i v-else class="_indicatorCircle"></i>
+			</span>
+		</button>
 		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
@@ -485,5 +491,24 @@ body {
 	color: var(--indicator);
 	font-size: 16px;
 	animation: blink 1s infinite;
+}
+
+.navButtonIndicateValueIcon {
+	display: inline-flex;
+	color: var(--fgOnAccent);
+	font-weight: 700;
+	background: var(--navIndicator);
+	height: 1em;
+	min-width: 1em;
+	align-items: center;
+	justify-content: center;
+	border-radius: 99rem;
+
+	& > span {
+		display: inline-block;
+		padding: 0 .25em;
+		font-size: .75em;
+		line-height: 1em;
+	}
 }
 </style>
