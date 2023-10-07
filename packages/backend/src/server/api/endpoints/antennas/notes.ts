@@ -86,17 +86,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			const noteIdsRes = await this.redisForTimelines.xrevrange(
+
+			const noteIds = await this.redisForTimelines.xrevrange(
 				`antennaTimeline:${antenna.id}`,
 				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
 				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit);
-
-			if (noteIdsRes.length === 0) {
-				return [];
-			}
-
-			const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
+				'COUNT', limit,
+			).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId));
 
 			if (noteIds.length === 0) {
 				return [];

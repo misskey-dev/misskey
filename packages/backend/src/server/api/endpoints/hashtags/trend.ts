@@ -5,8 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { HashtagService } from '@/core/HashtagService.js';
@@ -55,14 +53,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private metaService: MetaService,
 		private featuredService: FeaturedService,
 		private hashtagService: HashtagService,
 	) {
 		super(meta, paramDef, async () => {
-			const instance = await this.metaService.fetch(true);
-			const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
-
 			const ranking = await this.featuredService.getHashtagsRanking(10);
 
 			const charts = ranking.length === 0 ? {} : await this.hashtagService.getCharts(ranking, 20);

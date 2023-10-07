@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { getLineAndCharacterOfPosition } from 'typescript';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
@@ -15,6 +14,7 @@ import type { HashtagsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class HashtagService {
@@ -28,6 +28,7 @@ export class HashtagService {
 		private userEntityService: UserEntityService,
 		private featuredService: FeaturedService,
 		private idService: IdService,
+		private metaService: MetaService,
 	) {
 	}
 
@@ -157,7 +158,9 @@ export class HashtagService {
 
 	@bindThis
 	public async updateHashtagsRanking(hashtag: string, userId: MiUser['id']): Promise<void> {
-		// TODO: instance.hiddenTagsの考慮
+		const instance = await this.metaService.fetch();
+		const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
+		if (hiddenTags.includes(hashtag)) return;
 
 		// YYYYMMDDHHmm (10分間隔)
 		const now = new Date();
