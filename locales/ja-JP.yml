@@ -1129,6 +1129,12 @@ fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "TLに他の人への返信を含める"
 hideRepliesToOthersInTimeline: "TLに他の人への返信を含めない"
 externalServices: "外部サービス"
+impressum: "運営者情報"
+impressumUrl: "運営者情報URL"
+impressumDescription: "ドイツなどの一部の国と地域では表示が義務付けられています(Impressum)。"
+privacyPolicy: "プライバシーポリシー"
+privacyPolicyUrl: "プライバシーポリシーURL"
+tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
