@@ -61,7 +61,7 @@ onMounted(() => {
 	}).then(notes => {
 		for (const note of notes) {
 			for (const file of note.files) {
-				if (file.isSensitive){
+				if (!file.isSensitive){
 					files.push({
 						note,
 						file,
