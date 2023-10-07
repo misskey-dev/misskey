@@ -13,9 +13,9 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { QueryService } from '@/server/api/QueryService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '@/core/GetterService.js'
+import { GetterService } from '@/server/api/GetterService.js'
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -118,15 +118,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length < limit) {
-				// Lookup user
-				const user = await this.getterService.getUser(ps.userId).catch(err => {
-					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-					throw err;
-				});
 
 				//#region Construct query
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-					.andWhere('note.userId = :userId', { userId: user.id })
+					.andWhere('note.userId = :userId', { userId: ps.userId })
 					.innerJoinAndSelect('note.user', 'user')
 					.leftJoinAndSelect('note.reply', 'reply')
 					.leftJoinAndSelect('note.renote', 'renote')
@@ -141,7 +136,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				this.queryService.generateVisibilityQuery(query, me);
 				if (me) {
-					this.queryService.generateMutedUserQuery(query, me, user);
+					this.queryService.generateMutedUserQuery(query, me);
 					this.queryService.generateBlockedUserQuery(query, me);
 				}
 
@@ -165,7 +160,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (ps.includeMyRenotes === false) {
 					query.andWhere(new Brackets(qb => {
-						qb.orWhere('note.userId != :userId', { userId: user.id });
+						qb.orWhere('note.userId != :userId', { userId: ps.userId });
 						qb.orWhere('note.renoteId IS NULL');
 						qb.orWhere('note.text IS NOT NULL');
 						qb.orWhere('note.fileIds != \'{}\'');

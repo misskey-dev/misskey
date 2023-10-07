@@ -362,7 +362,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	onlyAndWithSave:{
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	onlyFiles:{
 		where: 'device',
@@ -370,7 +370,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	withReplies:{
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	withRenotes:{
 		where: 'device',

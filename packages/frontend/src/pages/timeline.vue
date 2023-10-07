@@ -65,7 +65,7 @@ const withReplies_store =  computed(defaultStore.makeGetterSetter('withRenotes')
 const withRenotes_store = computed(defaultStore.makeGetterSetter('withReplies'))
 const onlyFiles_store = computed(defaultStore.makeGetterSetter('onlyFiles'))
 const withRenotes = $ref(defaultStore.state.onlyAndWithSave ?  withRenotes_store : true);
-const withReplies = $ref(defaultStore.state.onlyAndWithSave ? withReplies_store : false);
+const withReplies = $ref(defaultStore.state.onlyAndWithSave ? withReplies_store : true);
 const onlyFiles = $ref(defaultStore.state.onlyAndWithSave ? onlyFiles_store : false);
 const isShowMediaTimeline = $ref(defaultStore.state.showMediaTimeline)
 watch($$(src), () => queue = 0);
