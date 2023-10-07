@@ -69,7 +69,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private queryService: QueryService,
 		private noteEntityService: NoteEntityService,
-		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
 	) {
