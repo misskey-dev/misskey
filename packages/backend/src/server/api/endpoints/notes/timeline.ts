@@ -59,6 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
@@ -89,7 +90,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					'COUNT', limit);
 			}
 
-			const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
+			let noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
+
+			// fallback to postgres
+			if (noteIds.length < limit) {
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
+				const followingIds = Object.keys(followings);
+				if (followingIds.length > 0) {
+					const meOrFolloweeIds = [me.id, ...followingIds];
+					query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+				} else {
+					query.andWhere('note.userId = :meId', { meId: me.id });
+				}
+
+				this.queryService.generateChannelQuery(query, me);
+				this.queryService.generateRepliesQuery(query, ps.withReplies, me);
+				this.queryService.generateVisibilityQuery(query, me);
+				this.queryService.generateMutedUserQuery(query, me);
+				this.queryService.generateBlockedUserQuery(query, me);
+				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+				const ids = await query.limit(limit - noteIds.length).getMany();
+				noteIds = noteIds.concat(ids.map(note => note.id));
+			}
 
 			if (noteIds.length === 0) {
 				return [];
