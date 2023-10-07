@@ -15,7 +15,6 @@ import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
-import {QueryService} from "@/core/QueryService.js";
 
 export const meta = {
 	tags: ['users', 'notes'],
