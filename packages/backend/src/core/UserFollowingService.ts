@@ -230,8 +230,7 @@ export class UserFollowingService implements OnModuleInit {
 
 			// 通知を作成
 			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
-				notifierId: followee.id,
-			});
+			}, followee.id);
 		}
 
 		if (alreadyFollowed) return;
@@ -304,8 +303,7 @@ export class UserFollowingService implements OnModuleInit {
 
 			// 通知を作成
 			this.notificationService.createNotification(followee.id, 'follow', {
-				notifierId: follower.id,
-			});
+			}, follower.id);
 		}
 	}
 
@@ -488,9 +486,8 @@ export class UserFollowingService implements OnModuleInit {
 
 			// 通知を作成
 			this.notificationService.createNotification(followee.id, 'receiveFollowRequest', {
-				notifierId: follower.id,
 				followRequestId: followRequest.id,
-			});
+			}, follower.id);
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
