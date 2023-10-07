@@ -20,7 +20,6 @@
 
 ### Changes
 - API: users/notes, notes/local-timeline で fileType 指定はできなくなりました
-- API: notes/global-timeline は現在常に `[]` を返します
 - API: notes/featured でページネーションは他APIと同様 untilId を使って行うようになりました
 
 ### General
