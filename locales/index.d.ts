@@ -543,6 +543,8 @@ export interface Locale {
     "deleteAll": string;
     "showFixedPostForm": string;
     "showFixedPostFormInChannel": string;
+    "FeaturedOrNote": string;
+    "FeaturedOrNoteInfo": string;
     "newNoteRecived": string;
     "sounds": string;
     "sound": string;
