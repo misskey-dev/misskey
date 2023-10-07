@@ -300,13 +300,13 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	};
 };
 
-export const uploadUrl = async (user: UserToken, url: string) => {
-	let file: any;
+export const uploadUrl = (user: UserToken, url: string) => new Promise(async ok => {
 	const marker = Math.random().toString();
 
 	const ws = await connectStream(user, 'main', (msg) => {
 		if (msg.type === 'urlUploadFinished' && msg.body.marker === marker) {
-			file = msg.body.file;
+			ws.close();
+			ok(msg.body.file);
 		}
 	});
 
@@ -315,12 +315,7 @@ export const uploadUrl = async (user: UserToken, url: string) => {
 		marker,
 		force: true,
 	}, user);
-
-	await sleep(7000);
-	ws.close();
-
-	return file;
-};
+});
 
 export function connectStream(user: UserToken, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
