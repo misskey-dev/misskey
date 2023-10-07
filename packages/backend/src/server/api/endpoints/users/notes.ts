@@ -10,10 +10,10 @@ import type { MiNote, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private getterService: GetterService,
+		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
 	) {
@@ -81,38 +81,36 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let timeline: MiNote[] = [];
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			let noteIdsRes: [string, string[]][] = [];
-			let repliesNoteIdsRes: [string, string[]][] = [];
-			let channelNoteIdsRes: [string, string[]][] = [];
 
-			if (!ps.sinceId && !ps.sinceDate) {
-				[noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
-					this.redisForTimelines.xrevrange(
-						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
+			const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
+				this.redisForTimelines.xrevrange(
+					ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
+					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+					'COUNT', limit,
+				).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId)),
+				ps.withReplies
+					? this.redisForTimelines.xrevrange(
+						`userTimelineWithReplies:${ps.userId}`,
 						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
 						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-						'COUNT', limit),
-					ps.withReplies
-						? this.redisForTimelines.xrevrange(
-							`userTimelineWithReplies:${ps.userId}`,
-							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-							'COUNT', limit)
-						: Promise.resolve([]),
-					ps.withChannelNotes
-						? this.redisForTimelines.xrevrange(
-							`userTimelineWithChannel:${ps.userId}`,
-							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-							'COUNT', limit)
-						: Promise.resolve([]),
-				]);
-			}
+						'COUNT', limit,
+					).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId))
+					: Promise.resolve([]),
+				ps.withChannelNotes
+					? this.redisForTimelines.xrevrange(
+						`userTimelineWithChannel:${ps.userId}`,
+						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+						'COUNT', limit,
+					).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId))
+					: Promise.resolve([]),
+			]);
 
 			let noteIds = Array.from(new Set([
-				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...noteIdsRes,
+				...repliesNoteIdsRes,
+				...channelNoteIdsRes,
 			]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
@@ -149,6 +147,43 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
+			// fallback to database
+			if (timeline.length === 0) {
+				//#region Construct query
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('note.userId = :userId', { userId: ps.userId })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('note.channel', 'channel')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.channelId IS NULL');
+					qb.orWhere('channel.isSensitive = false');
+				}));
+
+				this.queryService.generateVisibilityQuery(query, me);
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
+				}
+
+				if (ps.includeMyRenotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.userId != :userId', { userId: ps.userId });
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+					}));
+				}
+				//#endregion
+
+				timeline = await query.limit(ps.limit).getMany();
+			}
 
 			return await this.noteEntityService.packMany(timeline, me);
 		});
