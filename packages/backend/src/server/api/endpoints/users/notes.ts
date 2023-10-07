@@ -10,10 +10,10 @@ import type { MiNote, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private getterService: GetterService,
+		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
 	) {
@@ -147,6 +147,43 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
+			// fallback to database
+			if (timeline.length === 0) {
+				//#region Construct query
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('note.userId = :userId', { userId: ps.userId })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('note.channel', 'channel')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.channelId IS NULL');
+					qb.orWhere('channel.isSensitive = false');
+				}));
+
+				this.queryService.generateVisibilityQuery(query, me);
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
+				}
+
+				if (ps.includeMyRenotes === false) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.userId != :userId', { userId: ps.userId });
+						qb.orWhere('note.renoteId IS NULL');
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+					}));
+				}
+				//#endregion
+
+				timeline = await query.limit(ps.limit).getMany();
+			}
 
 			return await this.noteEntityService.packMany(timeline, me);
 		});
