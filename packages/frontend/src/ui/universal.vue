@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
 			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
 			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
-				<span v-if="$i?.unreadNotificationCount && defaultStore.state.showUnreadNotificationCount" :class="$style.navButtonIndicateValueIcon"><span>{{ $i.unreadNotificationCount > 20 ? '20+' : $i.unreadNotificationCount }}</span></span>
+				<span v-if="$i?.unreadNotificationCount && defaultStore.state.showUnreadNotificationCount" :class="$style.navButtonIndicateValueIcon"><span>{{ $i.unreadNotificationCount > 99 ? '99+' : $i.unreadNotificationCount }}</span></span>
 				<i v-else class="_indicatorCircle"></i>
 			</span>
 		</button>
