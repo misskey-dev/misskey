@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.9.3-kinel.2",
+	"version": "2023.9.3-kinel.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
