@@ -982,9 +982,6 @@ _menuDisplay:
 _wordMute:
   muteWords: "Słowo do wyciszenia"
   muteWordsDescription2: "Otocz słowa kluczowe ukośnikami, aby używać wyrażeń regularnych."
-  soft: "Łagodny"
-  hard: "Twardy"
-  mutedNotes: "Wyciszone wpisy"
 _instanceMute:
   title: "Ukrywa wpisy z wymienionych instancji."
   heading: "Lista instancji do wyciszenia"

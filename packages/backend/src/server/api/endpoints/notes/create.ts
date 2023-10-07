@@ -57,6 +57,12 @@ export const meta = {
 			id: 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a',
 		},
 
+		cannotRenoteDueToVisibility: {
+			message: 'You can not Renote due to target visibility.',
+			code: 'CANNOT_RENOTE_DUE_TO_VISIBILITY',
+			id: 'be9529e9-fe72-4de0-ae43-0b363c4938af',
+		},
+
 		noSuchReplyTarget: {
 			message: 'No such reply target.',
 			code: 'NO_SUCH_REPLY_TARGET',
@@ -230,6 +236,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					if (blockExist) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
+				}
+
+				if (renote.visibility === 'followers' && renote.userId !== me.id) {
+					// 他人のfollowers noteはreject
+					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+				} else if (renote.visibility === 'specified') {
+					// specified / direct noteはreject
+					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
 				}
 			}
 
