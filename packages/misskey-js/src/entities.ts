@@ -322,6 +322,8 @@ export type LiteInstanceMetadata = {
 	tosUrl: string | null;
 	repositoryUrl: string;
 	feedbackUrl: string;
+	impressumUrl: string | null;
+	privacyPolicyUrl: string | null;
 	disableRegistration: boolean;
 	disableLocalTimeline: boolean;
 	disableGlobalTimeline: boolean;
