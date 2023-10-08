@@ -2448,6 +2448,7 @@ type LiteInstanceMetadata = {
         url: string;
         imageUrl: string;
     }[];
+    notesPerOneAd: number;
     translatorAvailable: boolean;
     serverRules: string[];
 };
