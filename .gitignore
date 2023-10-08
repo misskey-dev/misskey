@@ -64,3 +64,6 @@ temp
 *.blend3
 *.blend4
 *.blend5
+
+# VSCode addon
+.favorites.json

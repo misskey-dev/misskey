@@ -87,7 +87,7 @@ const props = defineProps<{
 	channelId: string;
 }>();
 
-let tab = $ref('timeline');
+let tab = $ref('overview');
 let channel = $ref(null);
 let favorited = $ref(false);
 let searchQuery = $ref('');
@@ -107,6 +107,9 @@ watch(() => props.channelId, async () => {
 		channelId: props.channelId,
 	});
 	favorited = channel.isFavorited;
+	if (favorited || channel.isFollowing) {
+		tab = 'timeline';
+	}
 }, { immediate: true });
 
 function edit() {

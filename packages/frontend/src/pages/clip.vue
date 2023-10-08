@@ -55,7 +55,7 @@ watch(() => props.clipId, async () => {
 	favorited = clip.isFavorited;
 }, {
 	immediate: true,
-}); 
+});
 
 provide('currentClip', $$(clip));
 

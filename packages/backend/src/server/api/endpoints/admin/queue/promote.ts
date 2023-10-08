@@ -33,15 +33,35 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					delayedQueues = await this.queueService.deliverQueue.getDelayed();
 					for (let queueIndex = 0; queueIndex < delayedQueues.length; queueIndex++) {
 						const queue = delayedQueues[queueIndex];
-						await queue.promote();
+						try {
+							await queue.promote();
+						} catch (e) {
+							if (e instanceof Error) {
+								if (e.message.indexOf('not in a delayed state') !== -1) {
+									throw e;
+								}
+							} else {
+								throw e;
+							}
+						}
 					}
 					break;
-				
+
 				case 'inbox':
 					delayedQueues = await this.queueService.inboxQueue.getDelayed();
 					for (let queueIndex = 0; queueIndex < delayedQueues.length; queueIndex++) {
 						const queue = delayedQueues[queueIndex];
-						await queue.promote();
+						try {
+							await queue.promote();
+						} catch (e) {
+							if (e instanceof Error) {
+								if (e.message.indexOf('not in a delayed state') !== -1) {
+									throw e;
+								}
+							} else {
+								throw e;
+							}
+						}
 					}
 					break;
 			}

@@ -85,7 +85,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 		length: 100,
 	});
 });
@@ -122,4 +122,4 @@ onUnmounted(() => {
 		}
 	}
 }
-</style>	
+</style>

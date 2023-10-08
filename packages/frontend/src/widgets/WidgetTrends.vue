@@ -53,7 +53,7 @@ const stats = ref([]);
 const fetching = ref(true);
 
 const fetch = () => {
-	os.api('hashtags/trend').then(res => {
+	os.apiGet('hashtags/trend').then(res => {
 		stats.value = res;
 		fetching.value = false;
 	});

@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('muting.muterId = :meId', { meId: me.id });
 
 			const mutings = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.mutingEntityService.packMany(mutings, me);

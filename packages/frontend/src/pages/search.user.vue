@@ -67,7 +67,7 @@ async function search() {
 		endpoint: 'users/search',
 		limit: 10,
 		params: {
-			query: searchQuery,
+			query: query,
 			origin: searchOrigin,
 		},
 	};

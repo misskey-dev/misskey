@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import Ajv from 'ajv';
+import _Ajv from 'ajv';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import Logger from '@/logger.js';
@@ -10,16 +10,18 @@ import { QueueLoggerService } from '../QueueLoggerService.js';
 import { DBAntennaImportJobData } from '../types.js';
 import type * as Bull from 'bullmq';
 
+const Ajv = _Ajv.default;
+
 const validate = new Ajv().compile({
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
-		userListAccts: { 
-			type: 'array', 
+		userListAccts: {
+			type: 'array',
 			items: {
 				type: 'string',
-			}, 
+			},
 			nullable: true,
 		},
 		keywords: { type: 'array', items: {

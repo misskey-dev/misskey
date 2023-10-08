@@ -90,6 +90,7 @@ onMounted(async () => {
 					ticks: {
 						callback: (value, index, values) => value + '%',
 					},
+					min: 0,
 				},
 			},
 			interaction: {

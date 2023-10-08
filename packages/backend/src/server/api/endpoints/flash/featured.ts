@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('flash.likedCount > 0')
 				.orderBy('flash.likedCount', 'DESC');
 
-			const flashs = await query.take(10).getMany();
+			const flashs = await query.limit(10).getMany();
 
 			return await this.flashEntityService.packMany(flashs, me);
 		});

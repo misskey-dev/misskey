@@ -100,7 +100,7 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 	});
 });
 
@@ -121,10 +121,10 @@ function onStats(connStats) {
 	cpuPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${cpuPolylinePoints} ${viewBoxX},${viewBoxY}`;
 	memPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${memPolylinePoints} ${viewBoxX},${viewBoxY}`;
 
-	cpuHeadX = cpuPolylinePointsStats[cpuPolylinePointsStats.length - 1][0];
-	cpuHeadY = cpuPolylinePointsStats[cpuPolylinePointsStats.length - 1][1];
-	memHeadX = memPolylinePointsStats[memPolylinePointsStats.length - 1][0];
-	memHeadY = memPolylinePointsStats[memPolylinePointsStats.length - 1][1];
+	cpuHeadX = cpuPolylinePointsStats.at(-1)![0];
+	cpuHeadY = cpuPolylinePointsStats.at(-1)![1];
+	memHeadX = memPolylinePointsStats.at(-1)![0];
+	memHeadY = memPolylinePointsStats.at(-1)![1];
 
 	cpuP = (connStats.cpu * 100).toFixed(0);
 	memP = (connStats.mem.active / props.meta.mem.total * 100).toFixed(0);

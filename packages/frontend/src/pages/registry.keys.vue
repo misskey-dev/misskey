@@ -13,7 +13,7 @@
 					<template #value>{{ scope.join('/') }}</template>
 				</MkKeyValue>
 			</FormSplit>
-			
+
 			<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 			<FormSection v-if="keys">

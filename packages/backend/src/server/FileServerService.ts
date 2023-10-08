@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import rename from 'rename';
+import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
 import type { Config } from '@/config.js';
 import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -18,11 +20,9 @@ import { contentDisposition } from '@/misc/content-disposition.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import sharp from 'sharp';
-import { sharpBmp } from 'sharp-read-bmp';
 import { correctFilename } from '@/misc/correct-filename.js';
+import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -180,8 +180,8 @@ export class FileServerService {
 				reply.header('Content-Disposition',
 					contentDisposition(
 						'inline',
-						correctFilename(file.filename, image.ext)
-					)
+						correctFilename(file.filename, image.ext),
+					),
 				);
 				return image.data;
 			}
@@ -278,11 +278,11 @@ export class FileServerService {
 					};
 				} else {
 					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
-							.resize({
-								height: 'emoji' in request.query ? 128 : 320,
-								withoutEnlargement: true,
-							})
-							.webp(webpDefault);
+						.resize({
+							height: 'emoji' in request.query ? 128 : 320,
+							withoutEnlargement: true,
+						})
+						.webp(webpDefault);
 
 					image = {
 						data,
@@ -355,8 +355,8 @@ export class FileServerService {
 			reply.header('Content-Disposition',
 				contentDisposition(
 					'inline',
-					correctFilename(file.filename, image.ext)
-				)
+					correctFilename(file.filename, image.ext),
+				),
 			);
 			return image.data;
 		} catch (e) {

@@ -47,7 +47,7 @@ export class DriveFileEntityService {
 		private videoProcessingService: VideoProcessingService,
 	) {
 	}
-	
+
 	@bindThis
 	public validateFileName(name: string): boolean {
 		return (

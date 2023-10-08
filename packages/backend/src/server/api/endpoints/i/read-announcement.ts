@@ -47,19 +47,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Check if announcement exists
-			const announcement = await this.announcementsRepository.findOneBy({ id: ps.announcementId });
+			const announcementExist = await this.announcementsRepository.exist({ where: { id: ps.announcementId } });
 
-			if (announcement == null) {
+			if (!announcementExist) {
 				throw new ApiError(meta.errors.noSuchAnnouncement);
 			}
 
 			// Check if already read
-			const read = await this.announcementReadsRepository.findOneBy({
-				announcementId: ps.announcementId,
-				userId: me.id,
+			const alreadyRead = await this.announcementReadsRepository.exist({
+				where: {
+					announcementId: ps.announcementId,
+					userId: me.id,
+				},
 			});
 
-			if (read != null) {
+			if (alreadyRead) {
 				return;
 			}
 

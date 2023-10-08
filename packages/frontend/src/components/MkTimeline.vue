@@ -38,14 +38,6 @@ const prepend = note => {
 	}
 };
 
-const onUserAdded = () => {
-	tlComponent.pagingComponent?.reload();
-};
-
-const onUserRemoved = () => {
-	tlComponent.pagingComponent?.reload();
-};
-
 let endpoint;
 let query;
 let connection;
@@ -79,6 +71,17 @@ if (props.src === 'antenna') {
 		withReplies: defaultStore.state.showTimelineReplies,
 	};
 	connection = stream.useChannel('localTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
+	connection.on('note', prepend);
+} else if (props.src === 'media') {
+	endpoint = 'notes/hybrid-timeline';
+	query = {
+		withFiles: true,
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('hybridTimeline', {
+		withFiles: true,
 		withReplies: defaultStore.state.showTimelineReplies,
 	});
 	connection.on('note', prepend);
@@ -125,8 +128,6 @@ if (props.src === 'antenna') {
 		listId: props.list,
 	});
 	connection.on('note', prepend);
-	connection.on('userAdded', onUserAdded);
-	connection.on('userRemoved', onUserRemoved);
 } else if (props.src === 'channel') {
 	endpoint = 'channels/timeline';
 	query = {

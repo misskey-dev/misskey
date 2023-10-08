@@ -61,7 +61,7 @@ describe('RelayService', () => {
 		await app.close();
 	});
 
-	test('addRelay', async () => {	
+	test('addRelay', async () => {
 		const result = await relayService.addRelay('https://example.com');
 
 		expect(result.inbox).toBe('https://example.com');
@@ -72,7 +72,7 @@ describe('RelayService', () => {
 		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
 	});
 
-	test('listRelay', async () => {	
+	test('listRelay', async () => {
 		const result = await relayService.listRelay();
 
 		expect(result.length).toBe(1);
@@ -80,7 +80,7 @@ describe('RelayService', () => {
 		expect(result[0].status).toBe('requesting');
 	});
 
-	test('removeRelay: succ', async () => {	
+	test('removeRelay: succ', async () => {
 		await relayService.removeRelay('https://example.com');
 
 		expect(queueService.deliver).toHaveBeenCalled();
@@ -93,7 +93,7 @@ describe('RelayService', () => {
 		expect(list.length).toBe(0);
 	});
 
-	test('removeRelay: fail', async () => {	
+	test('removeRelay: fail', async () => {
 		await expect(relayService.removeRelay('https://x.example.com'))
 			.rejects.toThrow('relay not found');
 	});

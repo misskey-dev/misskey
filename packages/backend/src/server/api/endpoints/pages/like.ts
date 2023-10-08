@@ -66,12 +66,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// if already liked
-			const exist = await this.pageLikesRepository.findOneBy({
-				pageId: page.id,
-				userId: me.id,
+			const exist = await this.pageLikesRepository.exist({
+				where: {
+					pageId: page.id,
+					userId: me.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyLiked);
 			}
 

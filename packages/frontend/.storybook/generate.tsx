@@ -96,7 +96,7 @@ declare global {
 	}
 }
 
-function toStories(component: string): string {
+function toStories(component: string): Promise<string> {
 	const msw = `${component.slice(0, -'.vue'.length)}.msw`;
 	const implStories = `${component.slice(0, -'.vue'.length)}.stories.impl`;
 	const metaStories = `${component.slice(0, -'.vue'.length)}.stories.meta`;
@@ -394,18 +394,21 @@ function toStories(component: string): string {
 }
 
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
-Promise.all([
-	glob('src/components/global/*.vue'),
-	glob('src/components/Mk{A,B}*.vue'),
-	glob('src/components/MkDigitalClock.vue'),
-	glob('src/components/MkGalleryPostPreview.vue'),
-	glob('src/components/MkSignupServerRules.vue'),
-	glob('src/components/MkUserSetupDialog.vue'),
-	glob('src/components/MkUserSetupDialog.*.vue'),
-	glob('src/pages/user/home.vue'),
-])
-	.then((globs) => globs.flat())
-	.then((components) => Promise.all(components.map((component) => {
+(async () => {
+	const globs = await Promise.all([
+		glob('src/components/global/*.vue'),
+		glob('src/components/Mk{A,B}*.vue'),
+		glob('src/components/MkDigitalClock.vue'),
+		glob('src/components/MkGalleryPostPreview.vue'),
+		glob('src/components/MkSignupServerRules.vue'),
+		glob('src/components/MkUserSetupDialog.vue'),
+		glob('src/components/MkUserSetupDialog.*.vue'),
+		glob('src/components/MkInviteCode.vue'),
+		glob('src/pages/user/home.vue'),
+	]);
+	const components = globs.flat();
+	await Promise.all(components.map(async (component) => {
 		const stories = component.replace(/\.vue$/, '.stories.ts');
-		return writeFile(stories, toStories(component));
-	})));
+		await writeFile(stories, await toStories(component));
+	}))
+})();

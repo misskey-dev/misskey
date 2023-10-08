@@ -29,12 +29,12 @@ export class EmailService {
 	@bindThis
 	public async sendEmail(to: string, subject: string, html: string, text: string) {
 		const meta = await this.metaService.fetch(true);
-	
+
 		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
 		const emailSettingUrl = `${this.config.url}/settings/email`;
-	
+
 		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
-	
+
 		const transporter = nodemailer.createTransport({
 			host: meta.smtpHost,
 			port: meta.smtpPort,
@@ -46,7 +46,7 @@ export class EmailService {
 				pass: meta.smtpPass,
 			} : undefined,
 		} as any);
-	
+
 		try {
 			// TODO: htmlサニタイズ
 			const info = await transporter.sendMail({
@@ -135,7 +135,7 @@ export class EmailService {
 	</body>
 </html>`,
 			});
-	
+
 			this.logger.info(`Message sent: ${info.messageId}`);
 		} catch (err) {
 			this.logger.error(err as Error);
@@ -149,12 +149,12 @@ export class EmailService {
 		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp';
 	}> {
 		const meta = await this.metaService.fetch();
-	
+
 		const exist = await this.userProfilesRepository.countBy({
 			emailVerified: true,
 			email: emailAddress,
 		});
-	
+
 		const validated = meta.enableActiveEmailValidation ? await validateEmail({
 			email: emailAddress,
 			validateRegex: true,
@@ -163,9 +163,9 @@ export class EmailService {
 			validateDisposable: true, // 捨てアドかどうかチェック
 			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
 		}) : { valid: true, reason: null };
-	
+
 		const available = exist === 0 && validated.valid;
-	
+
 		return {
 			available,
 			reason: available ? null :

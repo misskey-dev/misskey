@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const emojis = await q
 				.orderBy('emoji.id', 'DESC')
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return this.emojiEntityService.packDetailedMany(emojis);

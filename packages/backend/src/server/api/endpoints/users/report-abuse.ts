@@ -1,4 +1,4 @@
-import * as sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

@@ -34,7 +34,7 @@ describe('DriveService', () => {
 		test('delete a file', async () => {
 			s3Mock.on(DeleteObjectCommand)
 				.resolves({} as DeleteObjectCommandOutput);
-			
+
 			await driveService.deleteObjectStorageFile('peace of the world');
 		});
 

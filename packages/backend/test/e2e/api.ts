@@ -1,14 +1,16 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, startServer } from '../utils.js';
+import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
+import { IncomingMessage } from 'http';
 
 describe('API', () => {
 	let app: INestApplicationContext;
-	let alice: any;
-	let bob: any;
-	let carol: any;
+	let alice: misskey.entities.MeSignup;
+	let bob: misskey.entities.MeSignup;
+	let carol: misskey.entities.MeSignup;
 
 	beforeAll(async () => {
 		app = await startServer();
@@ -79,5 +81,143 @@ describe('API', () => {
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.body.nullableDefault, 'hello');
 		});
+	});
+
+	test('管理者専用のAPIのアクセス制限', async () => {
+		// aliceは管理者、APIを使える
+		await successfulApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: alice,
+		});
+
+		// bobは一般ユーザーだからダメ
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: bob,
+		}, {
+			status: 403,
+			code: 'ROLE_PERMISSION_DENIED',
+			id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+		});
+
+		// publicアクセスももちろんダメ
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: undefined,
+		}, {
+			status: 401,
+			code: 'CREDENTIAL_REQUIRED',
+			id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+		});
+
+		// ごまがしもダメ
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: 'tsukawasete' },
+		}, {
+			status: 401,
+			code: 'AUTHENTICATION_FAILED',
+			id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+		});
+	});
+
+	describe('Authentication header', () => {
+		test('一般リクエスト', async () => {
+			await successfulApiCall({
+				endpoint: '/admin/get-index-stats',
+				parameters: {},
+				user: {
+					token: alice.token,
+					bearer: true,
+				},
+			});
+		});
+
+		test('multipartリクエスト', async () => {
+			const result = await uploadFile({
+				token: alice.token,
+				bearer: true,
+			});
+			assert.strictEqual(result.status, 200);
+		});
+
+		test('streaming', async () => {
+			const fired = await waitFire(
+				{
+					token: alice.token,
+					bearer: true,
+				},
+				'homeTimeline',
+				() => api('notes/create', { text: 'foo' }, alice),
+				msg => msg.type === 'note' && msg.body.text === 'foo',
+			);
+			assert.strictEqual(fired, true);
+		});
+	});
+
+	describe('tokenエラー応答でWWW-Authenticate headerを送る', () => {
+		describe('invalid_token', () => {
+			test('一般リクエスト', async () => {
+				const result = await api('/admin/get-index-stats', {}, {
+					token: 'syuilo',
+					bearer: true,
+				});
+				assert.strictEqual(result.status, 401);
+				assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
+			});
+
+			test('multipartリクエスト', async () => {
+				const result = await uploadFile({
+					token: 'syuilo',
+					bearer: true,
+				});
+				assert.strictEqual(result.status, 401);
+				assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
+			});
+
+			test('streaming', async () => {
+				await assert.rejects(connectStream(
+					{
+						token: 'syuilo',
+						bearer: true,
+					},
+					'homeTimeline',
+					() => { },
+				), (err: IncomingMessage) => {
+					assert.strictEqual(err.statusCode, 401);
+					assert.ok(err.headers['www-authenticate']?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
+					return true;
+				});
+			});
+		});
+
+		describe('tokenがないとrealmだけおくる', () => {
+			test('一般リクエスト', async () => {
+				const result = await api('/admin/get-index-stats', {});
+				assert.strictEqual(result.status, 401);
+				assert.strictEqual(result.headers.get('WWW-Authenticate'), 'Bearer realm="Misskey"');
+			});
+
+			test('multipartリクエスト', async () => {
+				const result = await uploadFile();
+				assert.strictEqual(result.status, 401);
+				assert.strictEqual(result.headers.get('WWW-Authenticate'), 'Bearer realm="Misskey"');
+			});
+		});
+
+		test('invalid_request', async () => {
+			const result = await api('/notes/create', { text: true }, {
+				token: alice.token,
+				bearer: true,
+			});
+			assert.strictEqual(result.status, 400);
+			assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_request", error_description'));
+		});
+
+		// TODO: insufficient_scope test (authテストが全然なくて書けない)
 	});
 });

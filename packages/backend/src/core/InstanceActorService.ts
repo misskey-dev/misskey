@@ -26,12 +26,12 @@ export class InstanceActorService {
 	public async getInstanceActor(): Promise<LocalUser> {
 		const cached = this.cache.get();
 		if (cached) return cached;
-	
+
 		const user = await this.usersRepository.findOneBy({
 			host: IsNull(),
 			username: ACTOR_USERNAME,
 		}) as LocalUser | undefined;
-	
+
 		if (user) {
 			this.cache.set(user);
 			return user;

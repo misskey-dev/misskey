@@ -115,3 +115,27 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		url: null,
 	};
 }
+
+export function inviteCode(isUsed = false, hasExpiration = false, isExpired = false, isCreatedBySystem = false) {
+	const date = new Date();
+	const createdAt = new Date();
+	createdAt.setDate(date.getDate() - 1)
+	const expiresAt = new Date();
+
+	if (isExpired) {
+		expiresAt.setHours(date.getHours() - 1)
+	} else {
+		expiresAt.setHours(date.getHours() + 1)
+	}
+
+	return {
+		id: "9gyqzizw77",
+		code: "SLF3JKF7UV2H9",
+		expiresAt: hasExpiration ? expiresAt.toISOString() : null,
+		createdAt: createdAt.toISOString(),
+		createdBy: isCreatedBySystem ? null : userDetailed('8i3rvznx32'),
+		usedBy: isUsed ? userDetailed('3i3r2znx1v') : null,
+		usedAt: isUsed ? date.toISOString() : null,
+		used: isUsed,
+	}
+}

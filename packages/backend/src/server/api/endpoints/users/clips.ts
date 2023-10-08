@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('clip.isPublic = true');
 
 			const clips = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.clipEntityService.packMany(clips, me);

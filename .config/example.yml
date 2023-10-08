@@ -30,6 +30,10 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
+# You can also use UNIX domain socket. 
+# socket: /path/to/misskey.sock
+# chmodSocket: '777'
+
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 
@@ -78,6 +82,8 @@ redis:
   #pass: example-pass
   #prefix: example-prefix
   #db: 1
+  # You can specify more ioredis options...
+  #username: example-username
 
 #redisForPubsub:
 #  host: localhost
@@ -86,6 +92,8 @@ redis:
 #  #pass: example-pass
 #  #prefix: example-prefix
 #  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
 #redisForJobQueue:
 #  host: localhost
@@ -94,6 +102,8 @@ redis:
 #  #pass: example-pass
 #  #prefix: example-prefix
 #  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
@@ -104,6 +114,7 @@ redis:
 #  apiKey: ''
 #  ssl: true
 #  index: ''
+#  scope: local
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────

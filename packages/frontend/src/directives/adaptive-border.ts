@@ -10,7 +10,7 @@ export default {
 				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
 			}
 		};
-	
+
 		const parentBg = getBgColor(src.parentElement);
 
 		const myBg = window.getComputedStyle(src).backgroundColor;

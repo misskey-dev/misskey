@@ -59,8 +59,8 @@ function draw(): void {
 
 	polygonPoints = `0,${ viewBoxY } ${ polylinePoints } ${ viewBoxX },${ viewBoxY }`;
 
-	headX = _polylinePoints[_polylinePoints.length - 1][0];
-	headY = _polylinePoints[_polylinePoints.length - 1][1];
+	headX = _polylinePoints.at(-1)![0];
+	headY = _polylinePoints.at(-1)![1];
 }
 
 watch(() => props.src, draw, { immediate: true });

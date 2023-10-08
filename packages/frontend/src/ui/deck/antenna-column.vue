@@ -44,11 +44,22 @@ async function setAntenna() {
 	});
 }
 
-const menu = [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.selectAntenna,
-	action: setAntenna,
-}];
+function editAntenna() {
+	os.pageWindow('my/antennas/' + props.column.antennaId);
+}
+
+const menu = [
+	{
+		icon: 'ti ti-pencil',
+		text: i18n.ts.selectAntenna,
+		action: setAntenna,
+	},
+	{
+		icon: 'ti ti-settings',
+		text: i18n.ts.editAntenna,
+		action: editAntenna,
+	},
+];
 
 /*
 function focus() {

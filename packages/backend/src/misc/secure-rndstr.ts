@@ -1,10 +1,9 @@
 import * as crypto from 'node:crypto';
 
-const L_CHARS = '0123456789abcdefghijklmnopqrstuvwxyz';
+export const L_CHARS = '0123456789abcdefghijklmnopqrstuvwxyz';
 const LU_CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-export function secureRndstr(length = 32, useLU = true): string {
-	const chars = useLU ? LU_CHARS : L_CHARS;
+export function secureRndstr(length = 32, { chars = LU_CHARS } = {}): string {
 	const chars_len = chars.length;
 
 	let str = '';

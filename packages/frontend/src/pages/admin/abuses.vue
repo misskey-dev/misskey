@@ -75,7 +75,7 @@ const pagination = {
 };
 
 function resolved(reportId) {
-	reports.removeItem(item => item.id === reportId);
+	reports.removeItem(reportId);
 }
 
 const headerActions = $computed(() => []);
