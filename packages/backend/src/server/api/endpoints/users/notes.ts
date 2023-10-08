@@ -15,7 +15,6 @@ import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '@/server/api/GetterService.js'
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -67,9 +66,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		private getterService: GetterService,
-		private queryService: QueryService,
 		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
 	) {
@@ -79,8 +77,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			] = me ? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 			]) : [new Set<string>()];
-
-			let timeline: MiNote[] = [];
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 
@@ -117,96 +113,40 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
-			if (noteIds.length < limit) {
+			if (noteIds.length > 0) {
+				const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
 
-				//#region Construct query
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-					.andWhere('note.userId = :userId', { userId: ps.userId })
+				const query = this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 					.innerJoinAndSelect('note.user', 'user')
 					.leftJoinAndSelect('note.reply', 'reply')
 					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('note.channel', 'channel')
 					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser');
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.leftJoinAndSelect('note.channel', 'channel');
 
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.channelId IS NULL');
-					qb.orWhere('channel.isSensitive = false');
-				}));
+				let timeline = await query.getMany();
 
-				this.queryService.generateVisibilityQuery(query, me);
-				if (me) {
-					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateBlockedUserQuery(query, me);
-				}
+				timeline = timeline.filter(note => {
+					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
-				if (ps.withFiles) {
-					query.andWhere('note.fileIds != \'{}\'');
-				}
-
-				if (!ps.withReplies) {
-					query.andWhere('note.replyId IS NULL');
-				}
-
-				if (ps.withRenotes === false) {
-					query.andWhere(new Brackets(qb => {
-						qb.orWhere('note.renoteId IS NULL');
-						qb.orWhere(new Brackets(qb => {
-							qb.orWhere('note.text IS NOT NULL');
-							qb.orWhere('note.fileIds != \'{}\'');
-						}));
-					}));
-				}
-
-				if (ps.includeMyRenotes === false) {
-					query.andWhere(new Brackets(qb => {
-						qb.orWhere('note.userId != :userId', { userId: ps.userId });
-						qb.orWhere('note.renoteId IS NULL');
-						qb.orWhere('note.text IS NOT NULL');
-						qb.orWhere('note.fileIds != \'{}\'');
-						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-					}));
-				}
-
-				const ids = await query.limit(limit - noteIds.length).getMany();
-				noteIds = noteIds.concat(ids.map(note => note.id));
-			}
-
-			if (noteIds.length === 0) {
-				return [];
-			}
-
-			const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
-
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
-
-			timeline = await query.getMany();
-
-			timeline = timeline.filter(note => {
-				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
-
-				if (note.renoteId) {
-					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-						if (ps.withRenotes === false) return false;
+					if (note.renoteId) {
+						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+							if (ps.withRenotes === false) return false;
+						}
 					}
-				}
 
-				if (note.visibility === 'followers' && !isFollowing) return false;
+					if (note.visibility === 'followers' && !isFollowing) return false;
 
-				return true;
-			});
+					return true;
+				});
 
-			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
 
-			// fallback to database
-			if (timeline.length === 0) {
+				return await this.noteEntityService.packMany(timeline, me);
+			} else {
+				// fallback to database
+
 				//#region Construct query
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 					.andWhere('note.userId = :userId', { userId: ps.userId })
@@ -217,10 +157,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser');
 
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.channelId IS NULL');
-					qb.orWhere('channel.isSensitive = false');
-				}));
+				if (!ps.withChannelNotes) {
+					query.andWhere('note.channelId IS NULL');
+				}
 
 				this.queryService.generateVisibilityQuery(query, me);
 
@@ -239,10 +178,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 				//#endregion
 
-				timeline = await query.limit(ps.limit).getMany();
-			}
+				const timeline = await query.limit(ps.limit).getMany();
 
-			return await this.noteEntityService.packMany(timeline, me);
+				return await this.noteEntityService.packMany(timeline, me);
+			}
 		});
 	}
 }
