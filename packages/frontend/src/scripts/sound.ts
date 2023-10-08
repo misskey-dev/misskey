@@ -7,10 +7,6 @@ import { markRaw } from 'vue';
 import { Storage } from '@/pizzax.js';
 
 export const soundConfigStore = markRaw(new Storage('sound', {
-	mediaVolume: {
-		where: 'device',
-		default: 0.5,
-	},
 	sound_masterVolume: {
 		where: 'device',
 		default: 0.3,
