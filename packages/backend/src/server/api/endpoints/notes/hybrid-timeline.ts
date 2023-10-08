@@ -93,20 +93,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 
-			const [htlNoteIds, ltlNoteIds] = await Promise.all([
-				this.redisForTimelines.xrevrange(
-					ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-					'COUNT', limit,
-				).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId)),
-				this.redisForTimelines.xrevrange(
-					ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-					'COUNT', limit,
-				).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId)),
-			]);
+			const redisPipeline = this.redisForTimelines.pipeline();
+			redisPipeline.xrevrange(
+				ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
+				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+				'COUNT', limit,
+			);
+			redisPipeline.xrevrange(
+				ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
+				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+				'COUNT', limit,
+			);
+			const [htlNoteIds, ltlNoteIds] = await redisPipeline.exec().then(res => res ? [
+				(res[0][1] as string[][]).map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				(res[1][1] as string[][]).map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+			] : []);
 
 			let noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
