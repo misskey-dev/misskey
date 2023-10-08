@@ -1546,6 +1546,10 @@ _ad:
   reduceFrequencyOfThisAd: "この広告の表示頻度を下げる"
   hide: "表示しない"
   timezoneinfo: "曜日はサーバーのタイムゾーンを元に指定されます。"
+  adsSettings: "広告配信設定"
+  notesPerOneAd: "リアルタイム更新中に広告を配信する間隔（ノートの個数）"
+  setZeroToDisable: "0でリアルタイム更新時の広告配信を無効"
+  adsTooClose: "広告の配信間隔が極めて短いため、ユーザー体験が著しく損われる可能性があります。"
 
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"
