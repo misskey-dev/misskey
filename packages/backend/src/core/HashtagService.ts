@@ -174,16 +174,15 @@ export class HashtagService {
 
 		const redisPipeline = this.redisClient.pipeline();
 
-		// TODO: これらの Set は Bloom Filter を使うようにしても良さそう
-
 		// チャート用
-		redisPipeline.sadd(`hashtagUsers:${hashtag}:${window}`, userId);
+		redisPipeline.pfadd(`hashtagUsers:${hashtag}:${window}`, userId);
 		redisPipeline.expire(`hashtagUsers:${hashtag}:${window}`,
 			60 * 60 * 24 * 3, // 3日間
 			'NX', // "NX -- Set expiry only when the key has no expiry" = 有効期限がないときだけ設定
 		);
 
 		// ユニークカウント用
+		// TODO: Bloom Filter を使うようにしても良さそう
 		redisPipeline.sadd(`hashtagUsers:${hashtag}`, userId);
 		redisPipeline.expire(`hashtagUsers:${hashtag}`,
 			60 * 60, // 1時間
@@ -202,7 +201,7 @@ export class HashtagService {
 
 		for (let i = 0; i < range; i++) {
 			const window = `${now.getUTCFullYear()}${(now.getUTCMonth() + 1).toString().padStart(2, '0')}${now.getUTCDate().toString().padStart(2, '0')}${now.getUTCHours().toString().padStart(2, '0')}${now.getUTCMinutes().toString().padStart(2, '0')}`;
-			redisPipeline.scard(`hashtagUsers:${hashtag}:${window}`);
+			redisPipeline.pfcount(`hashtagUsers:${hashtag}:${window}`);
 			now.setMinutes(now.getMinutes() - (i * 10), 0, 0);
 		}
 
@@ -223,7 +222,7 @@ export class HashtagService {
 		for (let i = 0; i < range; i++) {
 			const window = `${now.getUTCFullYear()}${(now.getUTCMonth() + 1).toString().padStart(2, '0')}${now.getUTCDate().toString().padStart(2, '0')}${now.getUTCHours().toString().padStart(2, '0')}${now.getUTCMinutes().toString().padStart(2, '0')}`;
 			for (const hashtag of hashtags) {
-				redisPipeline.scard(`hashtagUsers:${hashtag}:${window}`);
+				redisPipeline.pfcount(`hashtagUsers:${hashtag}:${window}`);
 			}
 			now.setMinutes(now.getMinutes() - (i * 10), 0, 0);
 		}
