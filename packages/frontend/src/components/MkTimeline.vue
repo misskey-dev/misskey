@@ -13,6 +13,7 @@ import MkNotes from '@/components/MkNotes.vue';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
@@ -38,7 +39,15 @@ provide('inChannel', computed(() => props.src === 'channel'));
 
 const tlComponent: InstanceType<typeof MkNotes> = $ref();
 
+let tlNotesCount = 0;
+
 const prepend = note => {
+	tlNotesCount++;
+
+	if (instance.notesPerOneAd > 0 && tlNotesCount % instance.notesPerOneAd === 0) {
+		note._shouldInsertAd_ = true;
+	}
+
 	tlComponent.pagingComponent?.prepend(note);
 
 	emit('note');
