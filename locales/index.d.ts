@@ -1627,6 +1627,10 @@ export interface Locale {
         "reduceFrequencyOfThisAd": string;
         "hide": string;
         "timezoneinfo": string;
+        "adsSettings": string;
+        "notesPerOneAd": string;
+        "setZeroToDisable": string;
+        "adsTooClose": string;
     };
     "_forgotPassword": {
         "enterEmail": string;

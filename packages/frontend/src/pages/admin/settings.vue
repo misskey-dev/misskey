@@ -107,6 +107,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkInput>
 						</div>
 					</FormSection>
+
+					<FormSection>
+						<template #label>{{ i18n.ts._ad.adsSettings }}</template>
+
+						<div class="_gaps_m">
+							<MkInput v-model="notesPerOneAd" type="number">
+								<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
+								<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
+							</MkInput>
+						</div>
+					</FormSection>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -152,6 +163,7 @@ let perLocalUserUserTimelineCacheMax: number = $ref(0);
 let perRemoteUserUserTimelineCacheMax: number = $ref(0);
 let perUserHomeTimelineCacheMax: number = $ref(0);
 let perUserListTimelineCacheMax: number = $ref(0);
+let notesPerOneAd: number = $ref(0);
 
 async function init(): Promise<void> {
 	const meta = await os.api('admin/meta');
@@ -171,10 +183,20 @@ async function init(): Promise<void> {
 	perRemoteUserUserTimelineCacheMax = meta.perRemoteUserUserTimelineCacheMax;
 	perUserHomeTimelineCacheMax = meta.perUserHomeTimelineCacheMax;
 	perUserListTimelineCacheMax = meta.perUserListTimelineCacheMax;
+	notesPerOneAd = meta.notesPerOneAd;
 }
 
-function save(): void {
-	os.apiWithDialog('admin/update-meta', {
+async function save(): void {
+	if (notesPerOneAd > 0 && notesPerOneAd <= 19) {
+		const confirm = await os.confirm({
+			type: 'question',
+			text: i18n.ts._ad.adsTooClose,
+		});
+
+		if (confirm.canceled) return;
+	}
+
+	await os.apiWithDialog('admin/update-meta', {
 		name,
 		shortName: shortName === '' ? null : shortName,
 		description,
@@ -191,9 +213,10 @@ function save(): void {
 		perRemoteUserUserTimelineCacheMax,
 		perUserHomeTimelineCacheMax,
 		perUserListTimelineCacheMax,
-	}).then(() => {
-		fetchInstance();
+		notesPerOneAd,
 	});
+
+	fetchInstance();
 }
 
 const headerTabs = $computed(() => []);
