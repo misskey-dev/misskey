@@ -46,6 +46,7 @@
 - Enhance: WebSocket接続が多い場合のパフォーマンスを向上
 - Enhance: 不要なPostgreSQLのインデックスを削除しパフォーマンスを向上
 - Fix: 連合なしアンケートに投票をするとUpdateがリモートに配信されてしまうのを修正
+- Fix: nodeinfoにおいてCORS用のヘッダーが設定されていないのを修正
 
 ## 2023.9.3
 ### General
