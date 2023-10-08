@@ -157,10 +157,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser');
 
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.channelId IS NULL');
-					qb.orWhere('channel.isSensitive = false');
-				}));
+				if (!ps.withChannelNotes) {
+					query.andWhere('note.channelId IS NULL');
+				}
 
 				this.queryService.generateVisibilityQuery(query, me);
 
