@@ -16,7 +16,7 @@ import Channel from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = true;
 	private withRenotes: boolean;
 

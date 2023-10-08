@@ -15,7 +15,7 @@ import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = false;
 	private withRenotes: boolean;
 
