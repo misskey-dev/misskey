@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<div class="_gaps_s">
-								<MkInput v-model="notesPerOneAd" type="number">
+								<MkInput v-model="notesPerOneAd" min="0" type="number">
 									<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
 									<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
 								</MkInput>
