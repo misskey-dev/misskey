@@ -44,7 +44,7 @@ let tlNotesCount = 0;
 const prepend = note => {
 	tlNotesCount++;
 
-	if (instance.notesPerOneAd !== 0 && tlNotesCount % instance.notesPerOneAd === 0) {
+	if (instance.notesPerOneAd > 0 && tlNotesCount % instance.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 
