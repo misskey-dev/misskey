@@ -297,6 +297,10 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			notesPerOneAd: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -408,6 +412,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
+				notesPerOneAd: instance.notesPerOneAd,
 			};
 		});
 	}
