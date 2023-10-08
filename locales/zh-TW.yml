@@ -1533,6 +1533,10 @@ _ad:
   reduceFrequencyOfThisAd: "降低此廣告的頻率 "
   hide: "隱藏"
   timezoneinfo: "星期幾是由伺服器的時區指定的。"
+  adsSettings: "廣告投放設定"
+  notesPerOneAd: "即時更新中投放廣告的間隔（貼文數）"
+  setZeroToDisable: "設為 0 則在即時更新時不投放廣告"
+  adsTooClose: "由於廣告投放的間隔極短，可能會嚴重影響使用者體驗。"
 _forgotPassword:
   enterEmail: "請輸入您的帳戶註冊的電子郵件地址。 密碼重置連結將被發送到該電子郵件地址。"
   ifNoEmail: "如果您還沒有註冊您的電子郵件地址，請聯繫管理員。 "
