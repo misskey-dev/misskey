@@ -114,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length > 0) {
-				const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+				const isFollowing = me ? me.id === ps.userId || Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
 
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
