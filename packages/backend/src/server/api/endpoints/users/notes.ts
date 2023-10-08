@@ -78,8 +78,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userMutingsCache.fetch(me.id),
 			]) : [new Set<string>()];
 
-			let timeline: MiNote[] = [];
-
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 
 			const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
@@ -115,41 +113,40 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
-			if (noteIds.length === 0) {
-				return [];
-			}
+			if (noteIds.length > 0) {
+				const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
 
-			const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+				const query = this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.leftJoinAndSelect('note.channel', 'channel');
 
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
+				let timeline = await query.getMany();
 
-			timeline = await query.getMany();
+				timeline = timeline.filter(note => {
+					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
-			timeline = timeline.filter(note => {
-				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
-
-				if (note.renoteId) {
-					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-						if (ps.withRenotes === false) return false;
+					if (note.renoteId) {
+						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+							if (ps.withRenotes === false) return false;
+						}
 					}
-				}
 
-				if (note.visibility === 'followers' && !isFollowing) return false;
+					if (note.visibility === 'followers' && !isFollowing) return false;
 
-				return true;
-			});
+					return true;
+				});
 
-			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
 
-			// fallback to database
-			if (timeline.length === 0) {
+				return await this.noteEntityService.packMany(timeline, me);
+			} else {
+				// fallback to database
+
 				//#region Construct query
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 					.andWhere('note.userId = :userId', { userId: ps.userId })
@@ -160,10 +157,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser');
 
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.channelId IS NULL');
-					qb.orWhere('channel.isSensitive = false');
-				}));
+				if (!ps.withChannelNotes) {
+					query.andWhere('note.channelId IS NULL');
+				}
 
 				this.queryService.generateVisibilityQuery(query, me);
 
@@ -182,10 +178,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 				//#endregion
 
-				timeline = await query.limit(ps.limit).getMany();
-			}
+				const timeline = await query.limit(ps.limit).getMany();
 
-			return await this.noteEntityService.packMany(timeline, me);
+				return await this.noteEntityService.packMany(timeline, me);
+			}
 		});
 	}
 }
