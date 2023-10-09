@@ -870,8 +870,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				where: {
 					userId: user.id,
 				},
-				select: ['userList', 'userListId', 'withReplies'],
-				relations: ['userList']
+				select: ['userListId', 'withReplies'],
 			});
 
 			if (note.visibility === 'specified') {
@@ -929,7 +928,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// ダイレクトのとき、そのリストが対象外のユーザーの場合
 				if (
 					note.visibility === 'specified' &&
-					!note.visibleUserIds.some(v => v === userListMembership.userList!.userId)
+					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
 				) continue;
 
 				// 自分自身以外への返信
