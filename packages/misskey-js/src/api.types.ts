@@ -521,6 +521,7 @@ export type Endpoints = {
 	'notes/reactions/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/renotes': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; noteId: Note['id']; }; res: Note[]; };
 	'notes/replies': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; noteId: Note['id']; }; res: Note[]; };
+	'notes/search-by-file-id': { req: TODO; res: TODO; };
 	'notes/search-by-tag': { req: TODO; res: TODO; };
 	'notes/search': { req: TODO; res: TODO; };
 	'notes/show': { req: { noteId: Note['id']; }; res: Note; };
