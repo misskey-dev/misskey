@@ -60,15 +60,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private queryService: QueryService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
 		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const untilId = ps.untilId ?? ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null;
-			const sinceId = ps.sinceId ?? ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null;
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
 
 			const [
 				followings,
@@ -82,39 +81,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let timeline: MiNote[] = [];
-
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			let noteIdsRes: [string, string[]][] = [];
-
-			if (!ps.sinceId && !ps.sinceDate) {
-				noteIdsRes = await this.redisForTimelines.xrevrange(
-					ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-					'COUNT', limit);
-			}
-
-			let noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId);
-			if (noteIds.length < limit) {
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
-				const followingIds = Object.keys(followings);
-				if (followingIds.length > 0) {
-					const meOrFolloweeIds = [me.id, ...followingIds];
-					query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
-				} else {
-					query.andWhere('note.userId = :meId', { meId: me.id });
-				}
-
-				this.queryService.generateChannelQuery(query, me);
-				this.queryService.generateVisibilityQuery(query, me);
-				this.queryService.generateMutedUserQuery(query, me);
-				this.queryService.generateBlockedUserQuery(query, me);
-				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-				const ids = await query.limit(limit - noteIds.length).getMany();
-				noteIds = noteIds.concat(ids.map(note => note.id));
-			}
+			let noteIds = await this.redisTimelineService.get(ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`, untilId, sinceId);
+			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
 				return [];
@@ -129,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			timeline = await query.getMany();
+			let timeline = await query.getMany();
 
 			timeline = timeline.filter(note => {
 				if (note.userId === me.id) {
