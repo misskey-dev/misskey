@@ -67,8 +67,7 @@ export class APIClient {
 			IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> :
 			IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> :
 			Endpoints[E]['res']['$switch']['$default']
-		: Endpoints[E]['res']>
-	{
+		: Endpoints[E]['res']> {
 		const promise = new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',

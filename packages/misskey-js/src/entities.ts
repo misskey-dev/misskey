@@ -278,6 +278,9 @@ export type Notification = {
 	user: User;
 	userId: User['id'];
 } | {
+	type: 'achievementEarned';
+	achievement: string;
+} | {
 	type: 'app';
 	header?: string | null;
 	body: string;
