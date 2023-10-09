@@ -9,6 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
@@ -34,6 +35,8 @@ export class QueryService {
 
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
+
+		private idService: IdService,
 	) {
 	}
 
@@ -49,15 +52,15 @@ export class QueryService {
 			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
 			q.orderBy(`${q.alias}.id`, 'DESC');
 		} else if (sinceDate && untilDate) {
-			q.andWhere(`${q.alias}.createdAt > :sinceDate`, { sinceDate: new Date(sinceDate) });
-			q.andWhere(`${q.alias}.createdAt < :untilDate`, { untilDate: new Date(untilDate) });
-			q.orderBy(`${q.alias}.createdAt`, 'DESC');
+			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: this.idService.genId(new Date(sinceDate)) });
+			q.andWhere(`${q.alias}.id < :untilId`, { untilId: this.idService.genId(new Date(untilDate)) });
+			q.orderBy(`${q.alias}.id`, 'DESC');
 		} else if (sinceDate) {
-			q.andWhere(`${q.alias}.createdAt > :sinceDate`, { sinceDate: new Date(sinceDate) });
-			q.orderBy(`${q.alias}.createdAt`, 'ASC');
+			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: this.idService.genId(new Date(sinceDate)) });
+			q.orderBy(`${q.alias}.id`, 'ASC');
 		} else if (untilDate) {
-			q.andWhere(`${q.alias}.createdAt < :untilDate`, { untilDate: new Date(untilDate) });
-			q.orderBy(`${q.alias}.createdAt`, 'DESC');
+			q.andWhere(`${q.alias}.id < :untilId`, { untilId: this.idService.genId(new Date(untilDate)) });
+			q.orderBy(`${q.alias}.id`, 'DESC');
 		} else {
 			q.orderBy(`${q.alias}.id`, 'DESC');
 		}
@@ -124,7 +127,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: MiUser): void {
+	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: { id: MiUser['id'] }): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });

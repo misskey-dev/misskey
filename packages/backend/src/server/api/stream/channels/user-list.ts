@@ -18,8 +18,9 @@ class UserListChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private listId: string;
-	public membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
+	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
+	private withFiles: boolean;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
@@ -37,6 +38,7 @@ class UserListChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		this.listId = params.listId as string;
+		this.withFiles = params.withFiles ?? false;
 
 		// Check existence and owner
 		const listExist = await this.userListsRepository.exist({
@@ -76,6 +78,8 @@ class UserListChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {

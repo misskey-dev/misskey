@@ -822,6 +822,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
+		// リモートから遅れて届いた(もしくは後から追加された)投稿日時が古い投稿が追加されるとページネーション時に問題を引き起こすため、3分以内に投稿されたもののみを追加する
+		// TODO: https://github.com/misskey-dev/misskey/issues/11404#issuecomment-1752480890 をやる
+		if (note.userHost != null && (Date.now() - note.createdAt.getTime()) > 1000 * 60 * 3) return;
+
 		const meta = await this.metaService.fetch();
 
 		const redisPipeline = this.redisForTimelines.pipeline();
