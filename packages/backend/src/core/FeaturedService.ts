@@ -47,12 +47,12 @@ export class FeaturedService {
 		const currentWindow = this.getCurrentWindow(windowRange);
 		const previousWindow = currentWindow - 1;
 
-		const [currentRankingResult, previousRankingResult] = await Promise.all([
-			this.redisClient.zrange(
-				`${name}:${currentWindow}`, 0, threshold, 'REV', 'WITHSCORES'),
-			this.redisClient.zrange(
-				`${name}:${previousWindow}`, 0, threshold, 'REV', 'WITHSCORES'),
-		]);
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.zrange(
+			`${name}:${currentWindow}`, 0, threshold, 'REV', 'WITHSCORES');
+		redisPipeline.zrange(
+			`${name}:${previousWindow}`, 0, threshold, 'REV', 'WITHSCORES');
+		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => r[1] as string[]) : [[], []]);
 
 		const ranking = new Map<string, number>();
 		for (let i = 0; i < currentRankingResult.length; i += 2) {
