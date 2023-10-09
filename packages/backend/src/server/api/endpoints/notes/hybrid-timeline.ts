@@ -81,8 +81,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
-			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
+			const untilId = ps.untilId ?? ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null;
+			const sinceId = ps.sinceId ?? ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null;
 
 			const policies = await this.roleService.getUserPolicies(me.id);
 			if (!policies.ltlAvailable) {
@@ -107,7 +107,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
-			if (noteIds.length < limit) {
+			if (noteIds.length < ps.limit) {
 				const followingQuery = this.followingsRepository.createQueryBuilder('following')
 					.select('following.followeeId')
 					.where('following.followerId = :followerId', { followerId: me.id });
@@ -165,11 +165,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					query.andWhere('note.fileIds != \'{}\'');
 				}
 				//#endregion
-				const ids = await query.limit(limit - noteIds.length).getMany();
+				const ids = await query.limit(ps.limit - noteIds.length).getMany();
 				noteIds = noteIds.concat(ids.map(note => note.id));
 
 			}
-			
+
 			if (noteIds.length === 0) {
 				return [];
 			}
