@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.10.0-beta.9",
+	"version": "2023.10.0-beta.14",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -55,7 +55,7 @@
 		"@typescript-eslint/parser": "6.7.4",
 		"cross-env": "7.0.3",
 		"cypress": "13.3.0",
-		"eslint": "8.50.0",
+		"eslint": "8.51.0",
 		"start-server-and-test": "2.0.1"
 	},
 	"optionalDependencies": {

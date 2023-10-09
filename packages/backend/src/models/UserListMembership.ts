@@ -50,4 +50,11 @@ export class MiUserListMembership {
 		default: false,
 	})
 	public withReplies: boolean;
+
+	//#region Denormalized fields
+	@Column({
+		...id(),
+	})
+	public userListUserId: MiUser['id'];
+	//#endregion
 }

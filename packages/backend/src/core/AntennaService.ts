@@ -16,6 +16,7 @@ import type { AntennasRepository, UserListMembershipsRepository } from '@/models
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -38,6 +39,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -84,12 +86,7 @@ export class AntennaService implements OnApplicationShutdown {
 		const redisPipeline = this.redisForTimelines.pipeline();
 
 		for (const antenna of matchedAntennas) {
-			redisPipeline.xadd(
-				`antennaTimeline:${antenna.id}`,
-				'MAXLEN', '~', '200',
-				'*',
-				'note', note.id);
-
+			this.redisTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
 
