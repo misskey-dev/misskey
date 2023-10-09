@@ -74,9 +74,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
-			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
-
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
 			if (!policies.ltlAvailable) {
 				throw new ApiError(meta.errors.ltlDisabled);
