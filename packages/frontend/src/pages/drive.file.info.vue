@@ -13,23 +13,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.fileQuickActionsRoot">
 			<button class="_button" :class="$style.fileNameEditBtn" @click="rename()">
-				<h2 class="_nowrap">{{ file.name }}</h2>
-				<i class="ti ti-pencil"></i>
+				<h2 class="_nowrap" :class="$style.fileName">{{ file.name }}</h2>
+				<i class="ti ti-pencil" :class="$style.fileNameEditIcon"></i>
 			</button>
 			<div :class="$style.fileQuickActionsOthers">
-				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" @click="postThis()">
+				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
 					<i class="ti ti-pencil"></i>
 				</button>
-				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" @click="toggleSensitive()">
+				<button v-if="isImage" v-tooltip="i18n.ts.cropImage" class="_button" :class="$style.fileQuickActionsOthersButton" @click="crop()">
+					<i class="ti ti-crop"></i>
+				</button>
+				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye"></i>
 				</button>
-				<button v-else v-tooltip="i18n.ts.markAsSensitive" class="_button" @click="toggleSensitive()">
+				<button v-else v-tooltip="i18n.ts.markAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye-exclamation"></i>
 				</button>
-				<a v-tooltip="i18n.ts.download" :href="file.url" :download="file.name" class="_button">
+				<a v-tooltip="i18n.ts.download" :href="file.url" :download="file.name" class="_button" :class="$style.fileQuickActionsOthersButton">
 					<i class="ti ti-download"></i>
 				</a>
-				<button v-tooltip="i18n.ts.delete" class="_button" :class="$style.danger" @click="deleteFile()">
+				<button v-tooltip="i18n.ts.delete" class="_button" :class="[$style.fileQuickActionsOthersButton, $style.danger]" @click="deleteFile()">
 					<i class="ti ti-trash"></i>
 				</button>
 			</div>
@@ -38,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_button" :class="$style.fileAltEditBtn" @click="describe()">
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.description }}</template>
-					<template #value>{{ file.comment ? file.comment : `(${i18n.ts.none})` }}<i class="ti ti-pencil"></i></template>
+					<template #value>{{ file.comment ? file.comment : `(${i18n.ts.none})` }}<i class="ti ti-pencil" :class="$style.fileAltEditIcon"></i></template>
 				</MkKeyValue>
 			</button>
 			<MkKeyValue :class="$style.fileMetaDataChildren">
@@ -63,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, defineAsyncComponent, onMounted } from 'vue';
+import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -82,6 +85,7 @@ const props = defineProps<{
 
 const fetching = ref(true);
 const file = ref<Misskey.entities.DriveFile>();
+const isImage = computed(() => file.value?.type.startsWith('image/'));
 
 async function fetch() {
 	fetching.value = true;
@@ -101,6 +105,15 @@ function postThis() {
 
 	os.post({
 		initialFiles: [file.value],
+	});
+}
+
+function crop() {
+	if (!file.value) return;
+
+	os.cropImage(file.value, {
+		aspectRatio: NaN,
+		uploadFolder: file.value.folderId ?? null,
 	});
 }
 
@@ -189,7 +202,15 @@ onMounted(async () => {
 
 .fileQuickActionsRoot {
 	display: flex;
-	align-items: center;
+	flex-direction: column;
+	gap: 8px;
+}
+
+@container (min-width: 500px) {
+	.fileQuickActionsRoot {
+		flex-direction: row;
+		align-items: center;
+	}
 }
 
 .fileQuickActionsOthers {
@@ -198,7 +219,7 @@ onMounted(async () => {
 	display: flex;
 	gap: 8px;
 
-	button,a {
+	.fileQuickActionsOthersButton {
 		padding: .5rem;
 		border-radius: 99rem;
 
@@ -222,7 +243,6 @@ onMounted(async () => {
 
 .fileNameEditBtn {
 	padding: .5rem 1rem;
-	margin-right: 1rem;
 	display: flex;
 	align-items: center;
 	min-width: 0;
@@ -230,20 +250,21 @@ onMounted(async () => {
 	border-radius: var(--radius);
 	font-size: .8rem;
 
-	>i {
+	>.fileNameEditIcon {
 		color: transparent;
 		visibility: hidden;
 		padding-left: .5rem;
 	}
 
-	>h2 {
+	>.fileName {
 		margin: 0;
 	}
 
 	&:hover {
 		background-color: var(--accentedBg);
 
-		>i,h2 {
+		>.fileName,
+		>.fileNameEditIcon {
 			visibility: visible;
 			color: var(--accent);
 		}
@@ -261,7 +282,7 @@ onMounted(async () => {
 	padding: .5rem 1rem;
 	border-radius: var(--radius);
 
-	i {
+	.fileAltEditIcon {
 		display: inline-block;
 		color: transparent;
 		visibility: hidden;
@@ -272,7 +293,7 @@ onMounted(async () => {
 		color: var(--accent);
 		background-color: var(--accentedBg);
 
-		i {
+		.fileAltEditIcon {
 			color: var(--accent);
 			visibility: visible;
 		}
