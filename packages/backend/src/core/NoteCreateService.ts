@@ -893,8 +893,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 							'note', note.id);
 					}
 				}
-			}
-			else {
+			} else {
 				// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
 				for (const following of followings) {
 					// 自分自身以外への返信
