@@ -228,7 +228,7 @@ export class AccountMoveService {
 			},
 		}).then(memberships => memberships.map(membership => membership.userListId));
 
-		const newMemberships: Map<string, { createdAt: Date; userId: string; userListId: string; }> = new Map();
+		const newMemberships: Map<string, { createdAt: Date; userId: string; userListId: string; userListUserId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
@@ -244,6 +244,7 @@ export class AccountMoveService {
 				createdAt: new Date(),
 				userId: dst.id,
 				userListId: membership.userListId,
+				userListUserId: membership.userListUserId,
 			});
 		}
 

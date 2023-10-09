@@ -187,6 +187,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'フランギ・シュウ',
 	icon: 'https://misskey-hub.net/patrons/3016d37e35f3430b90420176c912d304.jpg',
+}, {
+	name: '百日紅',
+	icon: 'https://misskey-hub.net/patrons/302dce2898dd457ba03c3f7dc037900b.jpg',
 }];
 
 const patrons = [
