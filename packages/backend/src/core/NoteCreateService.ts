@@ -494,11 +494,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Increment notes count (user)
 		this.incNotesCountOfUser(user);
 
-		if (data.visibility === 'specified') {
-			// TODO?
-		} else {
-			this.pushToTl(note, user);
-		}
+		this.pushToTl(note, user);
 
 		this.antennaService.addNoteToAntennas(note, user);
 
@@ -861,24 +857,34 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		} else {
 			// TODO: キャッシュ？
-			const followings = await this.followingsRepository.find({
-				where: {
-					followeeId: user.id,
-					followerHost: IsNull(),
-					isFollowerHibernated: false,
-				},
-				select: ['followerId', 'withReplies'],
-			});
+			// eslint-disable-next-line prefer-const
+			let [followings, userListMemberships] = await Promise.all([
+				this.followingsRepository.find({
+					where: {
+						followeeId: user.id,
+						followerHost: IsNull(),
+						isFollowerHibernated: false,
+					},
+					select: ['followerId', 'withReplies'],
+				}),
+				this.userListMembershipsRepository.find({
+					where: {
+						userId: user.id,
+					},
+					select: ['userListId', 'userListUserId', 'withReplies'],
+				}),
+			]);
 
-			const userListMemberships = await this.userListMembershipsRepository.find({
-				where: {
-					userId: user.id,
-				},
-				select: ['userListId', 'withReplies'],
-			});
+			if (note.visibility === 'followers') {
+				// TODO: 重そうだから何とかしたい Set 使う？
+				userListMemberships = userListMemberships.filter(x => followings.some(f => f.followerId === x.userListUserId));
+			}
 
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
 			for (const following of followings) {
+				// 基本的にvisibleUserIdsには自身のidが含まれている前提であること
+				if (note.visibility === 'specified' && !note.visibleUserIds.some(v => v === following.followerId)) continue;
+
 				// 自分自身以外への返信
 				if (note.replyId && note.replyUserId !== note.userId) {
 					if (!following.withReplies) continue;
@@ -899,13 +905,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
-			// TODO
-			//if (note.visibility === 'followers') {
-			//	// TODO: 重そうだから何とかしたい Set 使う？
-			//	userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListUserId));
-			//}
-
 			for (const userListMembership of userListMemberships) {
+				// ダイレクトのとき、そのリストが対象外のユーザーの場合
+				if (
+					note.visibility === 'specified' &&
+					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
+				) continue;
+
 				// 自分自身以外への返信
 				if (note.replyId && note.replyUserId !== note.userId) {
 					if (!userListMembership.withReplies) continue;
@@ -926,7 +932,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
-			{ // 自分自身のHTL
+			if (note.visibility !== 'specified' || !note.visibleUserIds.some(v => v === user.id)) { // 自分自身のHTL
 				redisPipeline.xadd(
 					`homeTimeline:${user.id}`,
 					'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
