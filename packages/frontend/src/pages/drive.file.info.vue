@@ -4,7 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_gaps">
+	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
 		<div :class="$style.filePreviewRoot">
@@ -64,6 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, defineAsyncComponent, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import bytes from '@/filters/bytes.js';

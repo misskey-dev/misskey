@@ -2301,6 +2301,7 @@ export interface Locale {
         "url": string;
         "uploadedAt": string;
         "attachedNotes": string;
+        "thisPageCanBeSeenFromTheAuthor": string;
     };
 }
 declare const locales: {
