@@ -15,6 +15,7 @@ import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -63,8 +64,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null;
+			const sinceId = ps.sinceId ?? ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null;
+
 			const [
 				followings,
 				userIdsWhoMeMuting,
