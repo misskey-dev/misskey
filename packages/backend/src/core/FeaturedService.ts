@@ -43,15 +43,15 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	private async getRankingOf(name: string, windowRange: number, limit: number): Promise<string[]> {
+	private async getRankingOf(name: string, windowRange: number, threshold: number): Promise<string[]> {
 		const currentWindow = this.getCurrentWindow(windowRange);
 		const previousWindow = currentWindow - 1;
 
 		const [currentRankingResult, previousRankingResult] = await Promise.all([
 			this.redisClient.zrange(
-				`${name}:${currentWindow}`, 0, limit, 'REV', 'WITHSCORES'),
+				`${name}:${currentWindow}`, 0, threshold, 'REV', 'WITHSCORES'),
 			this.redisClient.zrange(
-				`${name}:${previousWindow}`, 0, limit, 'REV', 'WITHSCORES'),
+				`${name}:${previousWindow}`, 0, threshold, 'REV', 'WITHSCORES'),
 		]);
 
 		const ranking = new Map<string, number>();
@@ -95,22 +95,22 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	public getGlobalNotesRanking(limit: number): Promise<MiNote['id'][]> {
-		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, limit);
+	public getGlobalNotesRanking(threshold: number): Promise<MiNote['id'][]> {
+		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, threshold);
 	}
 
 	@bindThis
-	public getInChannelNotesRanking(channelId: MiNote['channelId'], limit: number): Promise<MiNote['id'][]> {
-		return this.getRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, limit);
+	public getInChannelNotesRanking(channelId: MiNote['channelId'], threshold: number): Promise<MiNote['id'][]> {
+		return this.getRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, threshold);
 	}
 
 	@bindThis
-	public getPerUserNotesRanking(userId: MiUser['id'], limit: number): Promise<MiNote['id'][]> {
-		return this.getRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, limit);
+	public getPerUserNotesRanking(userId: MiUser['id'], threshold: number): Promise<MiNote['id'][]> {
+		return this.getRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, threshold);
 	}
 
 	@bindThis
-	public getHashtagsRanking(limit: number): Promise<string[]> {
-		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, limit);
+	public getHashtagsRanking(threshold: number): Promise<string[]> {
+		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, threshold);
 	}
 }
