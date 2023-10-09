@@ -21,6 +21,7 @@
 ### Changes
 - API: users/notes, notes/local-timeline で fileType 指定はできなくなりました
 - API: notes/featured でページネーションは他APIと同様 untilId を使って行うようになりました
+- API: drive/files/attached-notes がページネーションに対応しました
 
 ### General
 - Feat: ユーザーごとに他ユーザーへの返信をタイムラインに含めるか設定可能になりました
