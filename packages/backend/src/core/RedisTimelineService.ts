@@ -53,7 +53,7 @@ export class RedisTimelineService {
 				.then(ids => ids.filter(id => id > sinceId).sort((a, b) => a < b ? -1 : 1));
 		} else {
 			return this.redisForTimelines.lrange('list:' + name, 0, -1)
-				.then(ids => ids.sort((a, b) => a < b ? -1 : 1));
+				.then(ids => ids.sort((a, b) => a > b ? -1 : 1));
 		}
 	}
 
@@ -73,7 +73,7 @@ export class RedisTimelineService {
 						? ids.filter(id => id < untilId).sort((a, b) => a > b ? -1 : 1)
 						: sinceId
 							? ids.filter(id => id > sinceId).sort((a, b) => a < b ? -1 : 1)
-							: ids.sort((a, b) => a < b ? -1 : 1),
+							: ids.sort((a, b) => a > b ? -1 : 1),
 			);
 		});
 	}
