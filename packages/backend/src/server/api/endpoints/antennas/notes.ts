@@ -12,6 +12,7 @@ import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -69,8 +70,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private noteReadService: NoteReadService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null;
+			const sinceId = ps.sinceId ?? ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null;
+
 			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
 				userId: me.id,
@@ -85,15 +90,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				lastUsedAt: new Date(),
 			});
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-
-			const noteIds = await this.redisForTimelines.xrevrange(
-				`antennaTimeline:${antenna.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit,
-			).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId));
-
+			let noteIds = await this.redisTimelineService.get(`antennaTimeline:${antenna.id}`, untilId, sinceId);
+			noteIds = noteIds.slice(0, ps.limit);
 			if (noteIds.length === 0) {
 				return [];
 			}
