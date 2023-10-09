@@ -44,13 +44,13 @@ export class RedisTimelineService {
 	public get(name: string, untilId?: string | null, sinceId?: string | null) {
 		if (untilId && sinceId) {
 			return this.redisForTimelines.lrange('list:' + name, 0, -1)
-				.then(ids => ids.filter(id => id > untilId && id < sinceId).sort((a, b) => a > b ? -1 : 1));
+				.then(ids => ids.filter(id => id < untilId && id > sinceId).sort((a, b) => a > b ? -1 : 1));
 		} else if (untilId) {
 			return this.redisForTimelines.lrange('list:' + name, 0, -1)
-				.then(ids => ids.filter(id => id > untilId).sort((a, b) => a > b ? -1 : 1));
+				.then(ids => ids.filter(id => id < untilId).sort((a, b) => a > b ? -1 : 1));
 		} else if (sinceId) {
 			return this.redisForTimelines.lrange('list:' + name, 0, -1)
-				.then(ids => ids.filter(id => id < sinceId).sort((a, b) => a < b ? -1 : 1));
+				.then(ids => ids.filter(id => id > sinceId).sort((a, b) => a < b ? -1 : 1));
 		} else {
 			return this.redisForTimelines.lrange('list:' + name, 0, -1)
 				.then(ids => ids.sort((a, b) => a > b ? -1 : 1));
@@ -68,11 +68,11 @@ export class RedisTimelineService {
 			const tls = res.map(r => r[1] as string[]);
 			return tls.map(ids =>
 				(untilId && sinceId)
-					? ids.filter(id => id > untilId && id < sinceId).sort((a, b) => a > b ? -1 : 1)
+					? ids.filter(id => id < untilId && id > sinceId).sort((a, b) => a > b ? -1 : 1)
 					: untilId
-						? ids.filter(id => id > untilId).sort((a, b) => a > b ? -1 : 1)
+						? ids.filter(id => id < untilId).sort((a, b) => a > b ? -1 : 1)
 						: sinceId
-							? ids.filter(id => id < sinceId).sort((a, b) => a < b ? -1 : 1)
+							? ids.filter(id => id > sinceId).sort((a, b) => a < b ? -1 : 1)
 							: ids.sort((a, b) => a > b ? -1 : 1),
 			);
 		});
