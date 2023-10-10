@@ -129,7 +129,6 @@ export class AnnouncementService {
 			}));
 
 		query.orderBy({
-			'announcement."isActive"': 'DESC',
 			'announcement."displayOrder"': 'DESC',
 			'announcement."createdAt"': 'DESC',
 		});
