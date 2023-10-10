@@ -38,6 +38,9 @@ module.exports = {
 			'before': true,
 			'after': true,
 		}],
+		'brace-style': ['error', '1tbs', {
+			'allowSingleLine': true,
+		}],
 		'padded-blocks': ['error', 'never'],
 		/* TODO: path aliasを使わないとwarnする
 		'no-restricted-imports': ['warn', {

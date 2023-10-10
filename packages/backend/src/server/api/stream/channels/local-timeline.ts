@@ -15,9 +15,10 @@ import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = false;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -37,6 +38,7 @@ class LocalTimelineChannel extends Channel {
 		if (!policies.ltlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
+		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -44,6 +46,8 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		if (note.user.host !== null) return;
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;

@@ -10,10 +10,11 @@ import type { MiNote, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { QueryService } from '@/core/QueryService.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -67,90 +68,116 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private getterService: GetterService,
+		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const [
-				userIdsWhoMeMuting,
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-			]) : [new Set<string>()];
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
+			const isRangeSpecified = untilId != null && sinceId != null;
+			const isSelf = me && (me.id === ps.userId);
 
-			let timeline: MiNote[] = [];
+			if (isRangeSpecified || sinceId == null) {
+				const [
+					userIdsWhoMeMuting,
+				] = me ? await Promise.all([
+					this.cacheService.userMutingsCache.fetch(me.id),
+				]) : [new Set<string>()];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			let noteIdsRes: [string, string[]][] = [];
-			let repliesNoteIdsRes: [string, string[]][] = [];
-			let channelNoteIdsRes: [string, string[]][] = [];
-
-			if (!ps.sinceId && !ps.sinceDate) {
-				[noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
-					this.redisForTimelines.xrevrange(
-						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
-						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-						'COUNT', limit),
-					ps.withReplies
-						? this.redisForTimelines.xrevrange(
-							`userTimelineWithReplies:${ps.userId}`,
-							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-							'COUNT', limit)
-						: Promise.resolve([]),
-					ps.withChannelNotes
-						? this.redisForTimelines.xrevrange(
-							`userTimelineWithChannel:${ps.userId}`,
-							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-							'COUNT', limit)
-						: Promise.resolve([]),
+				const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
+					this.redisTimelineService.get(ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`, untilId, sinceId),
+					ps.withReplies ? this.redisTimelineService.get(`userTimelineWithReplies:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+					ps.withChannelNotes ? this.redisTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
 				]);
+
+				let noteIds = Array.from(new Set([
+					...noteIdsRes,
+					...repliesNoteIdsRes,
+					...channelNoteIdsRes,
+				]));
+				noteIds.sort((a, b) => a > b ? -1 : 1);
+				noteIds = noteIds.slice(0, ps.limit);
+
+				if (noteIds.length > 0) {
+					const isFollowing = me && Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId);
+
+					const query = this.notesRepository.createQueryBuilder('note')
+						.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+						.innerJoinAndSelect('note.user', 'user')
+						.leftJoinAndSelect('note.reply', 'reply')
+						.leftJoinAndSelect('note.renote', 'renote')
+						.leftJoinAndSelect('reply.user', 'replyUser')
+						.leftJoinAndSelect('renote.user', 'renoteUser')
+						.leftJoinAndSelect('note.channel', 'channel');
+
+					let timeline = await query.getMany();
+
+					timeline = timeline.filter(note => {
+						if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+
+						if (note.renoteId) {
+							if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+								if (ps.withRenotes === false) return false;
+							}
+						}
+
+						if (note.channel?.isSensitive && !isSelf) return false;
+						if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
+						if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
+
+						return true;
+					});
+
+					// TODO: フィルタで件数が減った場合の埋め合わせ処理
+
+					timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
+					if (timeline.length > 0) {
+						return await this.noteEntityService.packMany(timeline, me);
+					}
+				}
 			}
 
-			let noteIds = Array.from(new Set([
-				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-			]));
-			noteIds.sort((a, b) => a > b ? -1 : 1);
-			noteIds = noteIds.slice(0, ps.limit);
-
-			if (noteIds.length === 0) {
-				return [];
-			}
-
-			const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
-
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+			//#region fallback to database
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('note.userId = :userId', { userId: ps.userId })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('note.channel', 'channel')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
+				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			timeline = await query.getMany();
+			if (!ps.withChannelNotes) {
+				query.andWhere('note.channelId IS NULL');
+			}
 
-			timeline = timeline.filter(note => {
-				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+			this.queryService.generateVisibilityQuery(query, me);
+			if (me) {
+				this.queryService.generateMutedUserQuery(query, me, { id: ps.userId });
+				this.queryService.generateBlockedUserQuery(query, me);
+			}
 
-				if (note.renoteId) {
-					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-						if (ps.withRenotes === false) return false;
-					}
-				}
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
 
-				if (note.visibility === 'followers' && !isFollowing) return false;
+			if (ps.includeMyRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.userId != :userId', { userId: ps.userId });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
 
-				return true;
-			});
-
-			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+			const timeline = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(timeline, me);
+			//#endregion
 		});
 	}
 }

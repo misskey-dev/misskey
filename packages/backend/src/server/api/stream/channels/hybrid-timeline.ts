@@ -16,9 +16,10 @@ import Channel from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = true;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -38,6 +39,7 @@ class HybridTimelineChannel extends Channel {
 		if (!policies.ltlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
+		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -45,6 +47,8 @@ class HybridTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		// チャンネルの投稿ではなく、自分自身の投稿 または
 		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
 		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または

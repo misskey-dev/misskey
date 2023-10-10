@@ -16,9 +16,10 @@ import Channel from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {
 	public readonly chName = 'globalTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = false;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -38,6 +39,7 @@ class GlobalTimelineChannel extends Channel {
 		if (!policies.gtlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
+		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -45,6 +47,8 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 

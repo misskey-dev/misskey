@@ -14,9 +14,10 @@ import Channel from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = true;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -31,12 +32,15 @@ class HomeTimelineChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		this.withRenotes = params.withRenotes ?? true;
+		this.withFiles = params.withFiles ?? false;
 
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
 		} else {

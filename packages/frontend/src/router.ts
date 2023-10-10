@@ -468,6 +468,10 @@ export const routes = [{
 	component: page(() => import('./pages/drive.vue')),
 	loginRequired: true,
 }, {
+	path: '/my/drive/file/:fileId',
+	component: page(() => import('./pages/drive.file.vue')),
+	loginRequired: true,
+}, {
 	path: '/my/follow-requests',
 	component: page(() => import('./pages/follow-requests.vue')),
 	loginRequired: true,
