@@ -43,82 +43,18 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async getAnnouncements(
-		me: MiUser | null,
-		limit: number,
-		offset: number,
-		isActive?: boolean,
-	): Promise<Packed<'Announcement'>[]> {
-		const query = this.announcementsRepository.createQueryBuilder('announcement');
-		if (me) {
-			query.leftJoin(
-				MiAnnouncementRead,
-				'read',
-				'read."announcementId" = announcement.id AND read."userId" = :userId',
-				{ userId: me.id },
-			);
-			query.select([
-				'announcement.*',
-				'read.id IS NOT NULL as "isRead"',
-			]);
-			query
-				.andWhere(
-					new Brackets((qb) => {
-						qb.orWhere('announcement."userId" = :userId', { userId: me.id });
-						qb.orWhere('announcement."userId" IS NULL');
-					}),
-				)
-				.andWhere(
-					new Brackets((qb) => {
-						qb.orWhere('announcement."forExistingUsers" = false');
-						qb.orWhere('announcement."createdAt" > :createdAt', {
-							createdAt: me.createdAt,
-						});
-					}),
-				);
-		} else {
-			query.select([
-				'announcement.*',
-				'NULL as "isRead"',
-			]);
-			query.andWhere('announcement."userId" IS NULL');
-			query.andWhere('announcement."forExistingUsers" = false');
-		}
-
-		if (isActive !== undefined) {
-			query.andWhere('announcement."isActive" = :isActive', {
-				isActive: isActive,
-			});
-		}
-
-		query.orderBy({
-			'"isRead"': 'ASC',
-			'announcement."displayOrder"': 'DESC',
-			'announcement."createdAt"': 'DESC',
-		});
-
-		return this.packMany(
-			await query
-				.limit(limit)
-				.offset(offset)
-				.getRawMany<MiAnnouncement & { isRead?: boolean | null }>(),
-			me,
-		);
-	}
-
-	@bindThis
 	public async getUnreadAnnouncements(user: MiUser): Promise<Packed<'Announcement'>[]> {
-		const query = this.announcementsRepository.createQueryBuilder('announcement');
-		query.leftJoin(
+		const q = this.announcementsRepository.createQueryBuilder('announcement');
+		q.leftJoin(
 			MiAnnouncementRead,
 			'read',
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
 			{ userId: user.id },
 		);
-		query.andWhere('read.id IS NULL');
-		query.andWhere('announcement."isActive" = true');
+		q.andWhere('read.id IS NULL');
 
-		query
+		q
+			.where('announcement.isActive = true')
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
 				qb.orWhere('announcement.userId IS NULL');
@@ -128,13 +64,13 @@ export class AnnouncementService {
 				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
 			}));
 
-		query.orderBy({
+		q.orderBy({
 			'announcement."displayOrder"': 'DESC',
 			'announcement."createdAt"': 'DESC',
 		});
 
 		return this.packMany(
-			await query.getMany(),
+			await q.getMany(),
 			user,
 		);
 	}
@@ -312,6 +248,70 @@ export class AnnouncementService {
 				});
 			}
 		}
+	}
+
+	@bindThis
+	public async getAnnouncements(
+		me: MiUser | null,
+		limit: number,
+		offset: number,
+		isActive?: boolean,
+	): Promise<Packed<'Announcement'>[]> {
+		const query = this.announcementsRepository.createQueryBuilder('announcement');
+		if (me) {
+			query.leftJoin(
+				MiAnnouncementRead,
+				'read',
+				'read."announcementId" = announcement.id AND read."userId" = :userId',
+				{ userId: me.id },
+			);
+			query.select([
+				'announcement.*',
+				'read.id IS NOT NULL as "isRead"',
+			]);
+			query
+				.andWhere(
+					new Brackets((qb) => {
+						qb.orWhere('announcement."userId" = :userId', { userId: me.id });
+						qb.orWhere('announcement."userId" IS NULL');
+					}),
+				)
+				.andWhere(
+					new Brackets((qb) => {
+						qb.orWhere('announcement."forExistingUsers" = false');
+						qb.orWhere('announcement."createdAt" > :createdAt', {
+							createdAt: me.createdAt,
+						});
+					}),
+				);
+		} else {
+			query.select([
+				'announcement.*',
+				'NULL as "isRead"',
+			]);
+			query.andWhere('announcement."userId" IS NULL');
+			query.andWhere('announcement."forExistingUsers" = false');
+		}
+
+		if (isActive !== undefined) {
+			query.andWhere('announcement."isActive" = :isActive', {
+				isActive: isActive,
+			});
+		}
+
+		query.orderBy({
+			'"isRead"': 'ASC',
+			'announcement."displayOrder"': 'DESC',
+			'announcement."createdAt"': 'DESC',
+		});
+
+		return this.packMany(
+			await query
+				.limit(limit)
+				.offset(offset)
+				.getRawMany<MiAnnouncement & { isRead?: boolean | null }>(),
+			me,
+		);
 	}
 
 	@bindThis
