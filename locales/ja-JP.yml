@@ -2206,3 +2206,12 @@ _moderationLogTypes:
   createAd: "広告を作成"
   deleteAd: "広告を削除"
   updateAd: "広告を更新"
+
+_fileViewer:
+  title: "ファイルの詳細"
+  type: "ファイルタイプ"
+  size: "ファイルサイズ"
+  url: "URL"
+  uploadedAt: "追加日"
+  attachedNotes: "添付されているノート"
+  thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
