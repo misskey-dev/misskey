@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				] = me ? await Promise.all([
 					this.cacheService.userMutingsCache.fetch(me.id),
 				]) : [new Set<string>()];
-
+				console.log(userIdsWhoMeMuting)
 				let noteIds = await this.redisTimelineService.get(`channelTimeline:${channel.id}`, untilId, sinceId);
 				noteIds = noteIds.slice(0, ps.limit);
 
@@ -111,9 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					let timeline = await query.getMany();
 
 					timeline = timeline.filter(note => {
-						if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
-
-						return true;
+						return !isUserRelated(note, userIdsWhoMeMuting);
 					});
 
 					// TODO: フィルタで件数が減った場合の埋め合わせ処理

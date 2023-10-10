@@ -9,6 +9,9 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import {isUserRelated} from "@/misc/is-user-related.js";
+import {CacheService} from "@/core/CacheService.js";
+
 
 export const meta = {
 	tags: ['notes'],
@@ -47,6 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private cacheService: CacheService,
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
 	) {
@@ -63,6 +67,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					this.globalNotesRankingCacheLastFetchedAt = Date.now();
 				}
 			}
+			const [
+				userIdsWhoMeMuting,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+			]) : [new Set<string>()];
 
 			if (noteIds.length === 0) {
 				return [];
@@ -83,9 +92,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			const notes = await query.getMany();
+			let notes = await query.getMany();
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
-
+			notes = notes.filter(note => {
+				return !isUserRelated(note, userIdsWhoMeMuting);
+			});
 			// TODO: ミュート等考慮
 
 			return await this.noteEntityService.packMany(notes, me);
