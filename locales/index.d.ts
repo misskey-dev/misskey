@@ -1796,9 +1796,6 @@ export interface Locale {
             "infoFg": string;
             "infoWarnBg": string;
             "infoWarnFg": string;
-            "cwBg": string;
-            "cwFg": string;
-            "cwHoverBg": string;
             "toastBg": string;
             "toastFg": string;
             "buttonBg": string;
