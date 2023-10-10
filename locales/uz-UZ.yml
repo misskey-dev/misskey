@@ -910,7 +910,6 @@ _theme:
 _sfx:
   note: "Qaydlar"
   notification: "Xabarnomalar"
-  chat: "Suhbat"
 _ago:
   minutesAgo: "{n} daqiqa oldin"
   hoursAgo: "{n} soat oldin"
