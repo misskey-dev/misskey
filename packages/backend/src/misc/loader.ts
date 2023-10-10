@@ -1,9 +1,12 @@
 export type FetchFunction<K, V> = (key: K) => Promise<V>;
+
 type ResolveReject<V> = Parameters<ConstructorParameters<typeof Promise<V>>[0]>;
+
 type ResolverPair<V> = {
 	resolve: ResolveReject<V>[0];
 	reject: ResolveReject<V>[1];
 };
+
 export class DebounceLoader<K, V> {
 	private resolverMap = new Map<K, ResolverPair<V>>();
 	private promiseMap = new Map<K, Promise<V>>();

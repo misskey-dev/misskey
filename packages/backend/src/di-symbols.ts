@@ -10,6 +10,7 @@ export const DI = {
 	redis: Symbol('redis'),
 	redisForPub: Symbol('redisForPub'),
 	redisForSub: Symbol('redisForSub'),
+	redisForTimelines: Symbol('redisForTimelines'),
 
 	//#region Repositories
 	usersRepository: Symbol('usersRepository'),
@@ -31,7 +32,7 @@ export const DI = {
 	userPublickeysRepository: Symbol('userPublickeysRepository'),
 	userListsRepository: Symbol('userListsRepository'),
 	userListFavoritesRepository: Symbol('userListFavoritesRepository'),
-	userListJoiningsRepository: Symbol('userListJoiningsRepository'),
+	userListMembershipsRepository: Symbol('userListMembershipsRepository'),
 	userNotePiningsRepository: Symbol('userNotePiningsRepository'),
 	userIpsRepository: Symbol('userIpsRepository'),
 	usedUsernamesRepository: Symbol('usedUsernamesRepository'),
@@ -64,7 +65,6 @@ export const DI = {
 	promoNotesRepository: Symbol('promoNotesRepository'),
 	promoReadsRepository: Symbol('promoReadsRepository'),
 	relaysRepository: Symbol('relaysRepository'),
-	mutedNotesRepository: Symbol('mutedNotesRepository'),
 	channelsRepository: Symbol('channelsRepository'),
 	channelFollowingsRepository: Symbol('channelFollowingsRepository'),
 	channelFavoritesRepository: Symbol('channelFavoritesRepository'),

@@ -199,6 +199,11 @@ const menuDef = $computed(() => [{
 		to: '/admin/proxy-account',
 		active: currentPage?.route.name === 'proxy-account',
 	}, {
+		icon: 'ti ti-link',
+		text: i18n.ts.externalServices,
+		to: '/admin/external-services',
+		active: currentPage?.route.name === 'external-services',
+	}, {
 		icon: 'ti ti-adjustments',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',

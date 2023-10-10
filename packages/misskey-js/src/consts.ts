@@ -1,4 +1,4 @@
-export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app'] as const;
+export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'achievementEarned'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
@@ -189,6 +189,9 @@ export type ModerationLogPayloads = {
 	deleteUserAnnouncement: {
 		announcementId: string;
 		announcement: any;
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
 	};
 	resetPassword: {
 		userId: string;

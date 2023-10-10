@@ -100,13 +100,13 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (meId === packedNote.userId) {
 				hide = false;
 			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-			// 自分の投稿に対するリプライ
+				// 自分の投稿に対するリプライ
 				hide = false;
 			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-			// 自分へのメンション
+				// 自分へのメンション
 				hide = false;
 			} else {
-			// フォロワーかどうか
+				// フォロワーかどうか
 				const isFollowing = await this.followingsRepository.exist({
 					where: {
 						followeeId: packedNote.userId,
@@ -315,7 +315,6 @@ export class NoteEntityService implements OnModuleInit {
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
-			updatedAt: note.updatedAt ? note.updatedAt.toISOString() : undefined,
 			userId: note.userId,
 			user: this.userEntityService.pack(note.user ?? note.userId, me, {
 				detail: false,
@@ -462,25 +461,10 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async countSameRenotes(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
-		// 指定したユーザーの指定したノートのリノートがいくつあるか数える
-		const query = this.notesRepository.createQueryBuilder('note')
-			.where('note.userId = :userId', { userId })
-			.andWhere('note.renoteId = :renoteId', { renoteId });
-
-		// 指定した投稿を除く
-		if (excludeNoteId) {
-			query.andWhere('note.id != :excludeNoteId', { excludeNoteId });
-		}
-
-		return await query.getCount();
-	}
-
-	@bindThis
-	private async findNoteOrFail(id: string): Promise<MiNote> {
-		return await this.notesRepository.findOneOrFail({
+	private findNoteOrFail(id: string): Promise<MiNote> {
+		return this.notesRepository.findOneOrFail({
 			where: { id },
-			relations: ["user"],
+			relations: ['user'],
 		});
 	}
 }

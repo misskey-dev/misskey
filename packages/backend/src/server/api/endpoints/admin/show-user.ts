@@ -88,6 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSilenced: isSilenced,
 				isLimited: isLimited,
 				isSuspended: user.isSuspended,
+				isHibernated: user.isHibernated,
 				lastActiveDate: user.lastActiveDate,
 				moderationNote: profile.moderationNote ?? '',
 				signins,

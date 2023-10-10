@@ -20,13 +20,13 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
-	canEditNote: boolean;
 	canCreateContent: boolean;
 	canUpdateContent: boolean;
 	canDeleteContent: boolean;
@@ -55,7 +55,6 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
-	canEditNote: true,
 	canCreateContent: true,
 	canUpdateContent: true,
 	canDeleteContent: true,
@@ -110,6 +109,7 @@ export class RoleService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -304,7 +304,6 @@ export class RoleService implements OnApplicationShutdown {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
-			canEditNote: calc('canEditNote', vs => vs.some(v => v === true)),
 			canCreateContent: calc('canCreateContent', vs => vs.some(v => v === true)),
 			canUpdateContent: calc('canUpdateContent', vs => vs.some(v => v === true)),
 			canDeleteContent: calc('canDeleteContent', vs => vs.some(v => v === true)),
@@ -484,12 +483,7 @@ export class RoleService implements OnApplicationShutdown {
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (const role of roles) {
-			redisPipeline.xadd(
-				`roleTimeline:${role.id}`,
-				'MAXLEN', '~', '1000',
-				'*',
-				'note', note.id);
-
+			this.redisTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
 			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
 		}
 

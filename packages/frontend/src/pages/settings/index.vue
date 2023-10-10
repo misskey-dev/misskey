@@ -140,20 +140,10 @@ const menuDef = computed(() => [{
 		to: '/settings/roles',
 		active: currentPage?.route.name === 'roles',
 	}, {
-		icon: 'ti ti-planet-off',
-		text: i18n.ts.instanceMute,
-		to: '/settings/instance-mute',
-		active: currentPage?.route.name === 'instance-mute',
-	}, {
 		icon: 'ti ti-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
 		active: currentPage?.route.name === 'mute-block',
-	}, {
-		icon: 'ti ti-message-off',
-		text: i18n.ts.wordMute,
-		to: '/settings/word-mute',
-		active: currentPage?.route.name === 'word-mute',
 	}, {
 		icon: 'ti ti-api',
 		text: 'API',
