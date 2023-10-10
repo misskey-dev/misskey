@@ -2154,3 +2154,11 @@ _moderationLogTypes:
   createAd: "Ad created"
   deleteAd: "Ad deleted"
   updateAd: "Ad updated"
+_fileViewer:
+  title: "File details"
+  type: "File type"
+  size: "Filesize"
+  url: "URL"
+  uploadedAt: "Uploaded at"
+  attachedNotes: "Attached notes"
+  thisPageCanBeSeenFromTheAuthor: "This page can only be seen by the user who uploaded this file."

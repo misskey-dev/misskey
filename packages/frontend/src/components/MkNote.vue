@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p v-if="appearNote.cw != null" :class="$style.cw">
 						<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user"
 								 :i="$i"/>
-						<MkCwButton v-model="showContent" :note="appearNote"/>
+						<MkCwButton v-model="showContent" :note="appearNote" style="margin: 4px 0;"/>
 					</p>
 					<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 						<div :class="$style.text">
@@ -190,7 +190,6 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
-;
 let note = $ref(deepClone(props.note));
 
 // plugin

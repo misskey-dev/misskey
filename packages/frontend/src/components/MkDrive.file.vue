@@ -45,8 +45,11 @@ import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
+import { useRouter } from '@/router.js';
 import { getDriveFileMenu, getDriveMultiFileMenu } from '@/scripts/get-drive-file-menu.js';
 import { isTouchUsing } from '@/scripts/touch.js';
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
@@ -84,6 +87,8 @@ function onClick(ev: MouseEvent) {
 		os.popupMenu(getDriveMultiFileMenu(props.SelectFiles), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	} else if (isTouchUsing && !isSelectedFile.value && props.SelectFiles.length === 0) {
     os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	}else {
+		router.push(`/my/drive/file/${props.file.id}`);
 	}
 }
 

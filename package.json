@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.10.0-beta.15-prismisskey.4",
+	"version": "2023.10.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -16,7 +16,6 @@
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
 		"build-assets": "node ./scripts/build-assets.mjs",
-		"build-and-start": "pnpm build && pnpm start",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
@@ -52,8 +51,8 @@
 		"typescript": "5.2.2"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.7.4",
-		"@typescript-eslint/parser": "6.7.4",
+		"@typescript-eslint/eslint-plugin": "6.7.5",
+		"@typescript-eslint/parser": "6.7.5",
 		"cross-env": "7.0.3",
 		"cypress": "13.3.0",
 		"eslint": "8.51.0",

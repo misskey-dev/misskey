@@ -2144,3 +2144,11 @@ _moderationLogTypes:
   createAd: "Werbung erstellt"
   deleteAd: "Werbung gelöscht"
   updateAd: "Werbung aktualisiert"
+_fileViewer:
+  title: "Dateiinformationen"
+  type: "Dateityp"
+  size: "Dateigröße"
+  url: "URL"
+  uploadedAt: "Hochgeladen am"
+  attachedNotes: "Zugehörige Notizen"
+  thisPageCanBeSeenFromTheAuthor: "Nur der Benutzer, der diese Datei hochgeladen hat, kann diese Seite sehen."
