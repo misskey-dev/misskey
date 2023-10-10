@@ -62,7 +62,7 @@ import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
-import { MiUserListJoining } from '@/models/UserListJoining.js';
+import { MiUserListMembership } from '@/models/UserListMembership.js';
 import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { MiUserPending } from '@/models/UserPending.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
@@ -138,7 +138,7 @@ export const entities = [
 	MiUserPublickey,
 	MiUserList,
 	MiUserListFavorite,
-	MiUserListJoining,
+	MiUserListMembership,
 	MiUserNotePining,
 	MiUserSecurityKey,
 	MiUsedUsername,
