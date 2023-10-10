@@ -66,6 +66,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				icon: ps.icon,
 				forExistingUsers: ps.forExistingUsers,
 				needConfirmationToRead: ps.needConfirmationToRead,
+				closeDuration: ps.closeDuration,
+				displayOrder: ps.displayOrder,
 				isActive: ps.isActive,
 			}, me);
 		});

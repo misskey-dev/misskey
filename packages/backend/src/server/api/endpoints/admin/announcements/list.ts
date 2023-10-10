@@ -38,15 +38,15 @@ export const meta = {
 					optional: false, nullable: true,
 					format: 'date-time',
 				},
+				text: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
 				isActive: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
 				title: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				text: {
 					type: 'string',
 					optional: false, nullable: false,
 				},
@@ -87,7 +87,7 @@ export const meta = {
 					optional: false, nullable: true,
 					ref: 'UserLite',
 				},
-				readCount: {
+				reads: {
 					type: 'number',
 					optional: false, nullable: false,
 				},
@@ -130,7 +130,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				displayOrder: announcement.displayOrder,
 				userId: announcement.userId,
 				user: announcement.userInfo,
-				readCount: announcement.readCount,
+				reads: announcement.readCount,
 			}));
 		});
 	}
