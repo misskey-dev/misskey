@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				] = me ? await Promise.all([
 					this.cacheService.userMutingsCache.fetch(me.id),
 				]) : [new Set<string>()];
-				console.log(userIdsWhoMeMuting)
+
 				let noteIds = await this.redisTimelineService.get(`channelTimeline:${channel.id}`, untilId, sinceId);
 				noteIds = noteIds.slice(0, ps.limit);
 
