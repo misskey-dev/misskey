@@ -188,7 +188,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
+	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] } | null): void {
 		// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 		if (me == null) {
 			q.andWhere(new Brackets(qb => {

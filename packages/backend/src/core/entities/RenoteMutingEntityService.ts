@@ -27,7 +27,7 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiRenoteMuting['id'] | MiRenoteMuting,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'RenoteMuting'>> {
 		const muting = typeof src === 'object' ? src : await this.renoteMutingsRepository.findOneByOrFail({ id: src });
 

@@ -71,7 +71,7 @@ export class FollowingEntityService {
 	@bindThis
 	public async pack(
 		src: MiFollowing['id'] | MiFollowing,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
@@ -98,7 +98,7 @@ export class FollowingEntityService {
 	@bindThis
 	public async packMany(
 		followings: (MiFollowing['id'] | MiFollowing)[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;

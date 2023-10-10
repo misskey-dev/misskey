@@ -29,7 +29,7 @@ export class ClipEntityService {
 	@bindThis
 	public async pack(
 		src: MiClip['id'] | MiClip,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Clip'>> {
 		const meId = me ? me.id : null;
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
@@ -51,7 +51,7 @@ export class ClipEntityService {
 	@bindThis
 	public async packMany(
 		clips: (MiClip['id'] | MiClip)[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Clip'>[]> {
 		return (await Promise.allSettled(clips.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

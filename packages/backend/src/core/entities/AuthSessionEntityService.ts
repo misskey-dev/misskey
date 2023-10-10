@@ -25,7 +25,7 @@ export class AuthSessionEntityService {
 	@bindThis
 	public async pack(
 		src: MiAuthSession['id'] | MiAuthSession,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	) {
 		const session = typeof src === 'object' ? src : await this.authSessionsRepository.findOneByOrFail({ id: src });
 

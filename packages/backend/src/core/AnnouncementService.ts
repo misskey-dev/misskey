@@ -93,7 +93,7 @@ export class AnnouncementService {
 			userId: values.userId,
 		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
 
-		const packed = (await this.packMany([announcement]))[0];
+		const packed = (await this.packMany([announcement], null))[0];
 
 		if (values.userId) {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
@@ -366,7 +366,7 @@ export class AnnouncementService {
 	@bindThis
 	public async packMany(
 		announcements: (MiAnnouncement & { isRead?: boolean | null })[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Announcement'>[]> {
 		return announcements.map(announcement => ({
 			id: announcement.id,

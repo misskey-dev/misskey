@@ -32,7 +32,7 @@ export class GalleryPostEntityService {
 	@bindThis
 	public async pack(
 		src: MiGalleryPost['id'] | MiGalleryPost,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
@@ -58,7 +58,7 @@ export class GalleryPostEntityService {
 	@bindThis
 	public async packMany(
 		posts: MiGalleryPost[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'GalleryPost'>[]> {
 		return (await Promise.allSettled(posts.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

@@ -26,7 +26,7 @@ export class BlockingEntityService {
 	@bindThis
 	public async pack(
 		src: MiBlocking['id'] | MiBlocking,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Blocking'>> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
 

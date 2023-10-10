@@ -26,7 +26,7 @@ export class FollowRequestEntityService {
 	@bindThis
 	public async pack(
 		src: MiFollowRequest['id'] | MiFollowRequest,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'FollowRequest'>> {
 		const request = typeof src === 'object' ? src : await this.followRequestsRepository.findOneByOrFail({ id: src });
 

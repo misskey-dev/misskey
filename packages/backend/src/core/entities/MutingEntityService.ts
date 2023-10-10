@@ -27,7 +27,7 @@ export class MutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiMuting['id'] | MiMuting,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Muting'>> {
 		const muting = typeof src === 'object' ? src : await this.mutingsRepository.findOneByOrFail({ id: src });
 

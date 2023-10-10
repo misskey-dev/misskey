@@ -26,7 +26,7 @@ export class PageLikeEntityService {
 	@bindThis
 	public async pack(
 		src: MiPageLike['id'] | MiPageLike,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'PageLike'>> {
 		const like = typeof src === 'object' ? src : await this.pageLikesRepository.findOneByOrFail({ id: src });
 

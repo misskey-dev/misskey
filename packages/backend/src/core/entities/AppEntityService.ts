@@ -25,7 +25,7 @@ export class AppEntityService {
 	@bindThis
 	public async pack(
 		src: MiApp['id'] | MiApp,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecret?: boolean,

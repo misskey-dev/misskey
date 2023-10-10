@@ -28,7 +28,7 @@ export class RoleEntityService {
 	@bindThis
 	public async pack(
 		src: MiRole['id'] | MiRole,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Role'>> {
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
