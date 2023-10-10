@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -39,7 +40,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		withFiles: { type: 'boolean', default: false },
-		withReplies: { type: 'boolean', default: false },
+		withRenotes: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
@@ -77,10 +78,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			this.queryService.generateRepliesQuery(query, ps.withReplies, me);
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);
-				this.queryService.generateMutedNoteQuery(query, me);
 				this.queryService.generateBlockedUserQuery(query, me);
 				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 			}

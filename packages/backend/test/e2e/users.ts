@@ -133,6 +133,7 @@ describe('ユーザー', () => {
 			isMuted: user.isMuted ?? false,
 			isRenoteMuted: user.isRenoteMuted ?? false,
 			notify: user.notify ?? 'none',
+			withReplies: user.withReplies ?? false,
 		});
 	};
 
@@ -167,6 +168,7 @@ describe('ユーザー', () => {
 			mutedWords: user.mutedWords,
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
+			notificationRecieveConfig: user.notificationRecieveConfig,
 			emailNotificationTypes: user.emailNotificationTypes,
 			achievements: user.achievements,
 			loggedInDays: user.loggedInDays,
@@ -415,6 +417,7 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.mutedWords, []);
 		assert.deepStrictEqual(response.mutedInstances, []);
 		assert.deepStrictEqual(response.mutingNotificationTypes, []);
+		assert.deepStrictEqual(response.notificationRecieveConfig, {});
 		assert.deepStrictEqual(response.emailNotificationTypes, ['follow', 'receiveFollowRequest']);
 		assert.deepStrictEqual(response.achievements, []);
 		assert.deepStrictEqual(response.loggedInDays, 0);
@@ -495,8 +498,8 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ mutedWords: [] }) },
 		{ parameters: (): object => ({ mutedInstances: ['xxxx.xxxxx'] }) },
 		{ parameters: (): object => ({ mutedInstances: [] }) },
-		{ parameters: (): object => ({ mutingNotificationTypes: ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app'] }) },
-		{ parameters: (): object => ({ mutingNotificationTypes: [] }) },
+		{ parameters: (): object => ({ notificationRecieveConfig: { mention: { type: 'following' } } }) },
+		{ parameters: (): object => ({ notificationRecieveConfig: {} }) },
 		{ parameters: (): object => ({ emailNotificationTypes: ['mention', 'reply', 'quote', 'follow', 'receiveFollowRequest'] }) },
 		{ parameters: (): object => ({ emailNotificationTypes: [] }) },
 	] as const)('を書き換えることができる($#)', async ({ parameters }) => {

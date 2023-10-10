@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, DriveFilesRepository, UserListJoiningsRepository, UserListsRepository } from '@/models/_.js';
+import type { UsersRepository, DriveFilesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -33,8 +33,8 @@ export class ImportUserListsProcessorService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -99,9 +99,9 @@ export class ImportUserListsProcessorService {
 					target = await this.remoteUserResolveService.resolveUser(username, host);
 				}
 
-				if (await this.userListJoiningsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
+				if (await this.userListMembershipsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
-				this.userListService.push(target, list!, user);
+				this.userListService.addMember(target, list!, user);
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

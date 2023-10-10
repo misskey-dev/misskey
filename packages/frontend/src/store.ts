@@ -5,7 +5,7 @@
 
 import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { miLocalStorage } from './local-storage';
+import { miLocalStorage } from './local-storage.js';
 import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
@@ -101,17 +101,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
 	},
-	mutedWords: {
-		where: 'account',
-		default: [],
-	},
 	mutedAds: {
 		where: 'account',
 		default: [] as string[],
-	},
-	showTimelineReplies: {
-		where: 'account',
-		default: false,
 	},
 
 	menu: {

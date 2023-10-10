@@ -47,6 +47,7 @@ type Source = {
 	redis: RedisOptionsSource;
 	redisForPubsub?: RedisOptionsSource;
 	redisForJobQueue?: RedisOptionsSource;
+	redisForTimelines?: RedisOptionsSource;
 	meilisearch?: {
 		host: string;
 		port: string;
@@ -89,6 +90,7 @@ type Source = {
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
+	pidFile: string;
 };
 
 export type Config = {
@@ -160,9 +162,11 @@ export type Config = {
 	redis: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
+	redisForTimelines: RedisOptions & RedisOptionsSource;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
+	pidFile: string;
 };
 
 const _filename = fileURLToPath(import.meta.url);
@@ -225,6 +229,7 @@ export function loadConfig(): Config {
 		redis,
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
 		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,
+		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		id: config.id,
 		proxy: config.proxy,
 		proxySmtp: config.proxySmtp,
@@ -255,6 +260,7 @@ export function loadConfig(): Config {
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 300,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
+		pidFile: config.pidFile,
 	};
 }
 
