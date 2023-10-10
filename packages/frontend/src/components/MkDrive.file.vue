@@ -78,7 +78,7 @@ watch(props.SelectFiles, () => {
 });
 
 function onClick(ev: MouseEvent) {
-	 ('onclick');
+
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else if (!ev.shiftKey && !isTouchUsing && !isSelectedFile.value) {
@@ -93,7 +93,7 @@ function onClick(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	 ('oncontext');
+
 	if (!isTouchUsing) {
 		if (!ev.shiftKey && !isSelectedFile.value) {
 			os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
