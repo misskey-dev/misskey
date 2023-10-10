@@ -77,6 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
 			const isRangeSpecified = untilId != null && sinceId != null;
+			const isSelf = me && (me.id === ps.userId);
 
 			if (isRangeSpecified || sinceId == null) {
 				const [
@@ -100,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				noteIds = noteIds.slice(0, ps.limit);
 
 				if (noteIds.length > 0) {
-					const isFollowing = me ? me.id === ps.userId || Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+					const isFollowing = me && Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId);
 
 					const query = this.notesRepository.createQueryBuilder('note')
 						.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -122,8 +123,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							}
 						}
 
+						if (note.channel?.isSensitive && !isSelf) return false;
 						if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
-						if (note.visibility === 'followers' && !isFollowing) return false;
+						if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
 
 						return true;
 					});

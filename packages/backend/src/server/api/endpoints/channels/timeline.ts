@@ -111,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					let timeline = await query.getMany();
 
 					timeline = timeline.filter(note => {
-						if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+						if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 
 						return true;
 					});
