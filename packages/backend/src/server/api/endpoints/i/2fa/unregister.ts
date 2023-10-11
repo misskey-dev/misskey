@@ -47,10 +47,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const token = ps.token;
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
+			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
+			if (!passwordMatched) {
+				throw new ApiError(meta.errors.incorrectPassword);
+			}
+
 			if (profile.twoFactorEnabled) {
+				const token = ps.token;
 				if (token == null) {
 					throw new Error('authentication failed');
 				}
@@ -60,11 +65,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} catch (e) {
 					throw new Error('authentication failed');
 				}
-			}
-
-			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
-			if (!passwordMatched) {
-				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			await this.userProfilesRepository.update(me.id, {

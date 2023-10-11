@@ -58,7 +58,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userAuthService: UserAuthService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const token = ps.token;
 			const profile = await this.userProfilesRepository.findOne({
 				where: {
 					userId: me.id,
@@ -70,7 +69,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.userNotFound);
 			}
 
+			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
+			if (!passwordMatched) {
+				throw new ApiError(meta.errors.incorrectPassword);
+			}
+
 			if (profile.twoFactorEnabled) {
+				const token = ps.token;
 				if (token == null) {
 					throw new Error('authentication failed');
 				}
@@ -80,14 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				} catch (e) {
 					throw new Error('authentication failed');
 				}
-			}
-
-			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
-			if (!passwordMatched) {
-				throw new ApiError(meta.errors.incorrectPassword);
-			}
-
-			if (!profile.twoFactorEnabled) {
+			} else {
 				throw new ApiError(meta.errors.twoFactorNotEnabled);
 			}
 

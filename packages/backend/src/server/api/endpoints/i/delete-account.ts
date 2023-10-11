@@ -40,20 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const token = ps.token;
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
-
-			if (profile.twoFactorEnabled) {
-				if (token == null) {
-					throw new Error('authentication failed');
-				}
-
-				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
-					throw new Error('authentication failed');
-				}
-			}
 
 			const userDetailed = await this.usersRepository.findOneByOrFail({ id: me.id });
 			if (userDetailed.isDeleted) {
@@ -63,6 +50,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
 			if (!passwordMatched) {
 				throw new Error('incorrect password');
+			}
+
+			if (profile.twoFactorEnabled) {
+				const token = ps.token;
+				if (token == null) {
+					throw new Error('authentication failed');
+				}
+
+				try {
+					await this.userAuthService.twoFactorAuthenticate(profile, token);
+				} catch (e) {
+					throw new Error('authentication failed');
+				}
 			}
 
 			await this.deleteAccountService.deleteAccount(me);
