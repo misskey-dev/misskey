@@ -75,7 +75,6 @@
 		"vite": "4.4.11",
 		"vue": "3.3.4",
 		"vue-prism-editor": "2.0.0-alpha.2",
-		"vue-virtual-scroller": "2.0.0-beta.8",
 		"vuedraggable": "next"
 	},
 	"devDependencies": {

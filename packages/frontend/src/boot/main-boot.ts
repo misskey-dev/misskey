@@ -4,7 +4,6 @@
  */
 
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import VueVirtualScroller from 'vue-virtual-scroller';
 import { common } from './common.js';
 import { version, ui, lang, updateLocale } from '@/config.js';
 import { i18n, updateI18n } from '@/i18n.js';
@@ -28,7 +27,7 @@ export async function mainBoot() {
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
 		defineAsyncComponent(() => import('@/ui/universal.vue')),
-	).use(VueVirtualScroller));
+	));
 
 	reactionPicker.init();
 
