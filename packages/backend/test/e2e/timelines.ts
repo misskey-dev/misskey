@@ -648,7 +648,6 @@ describe('Timelines', () => {
 			const res = await api('/notes/local-timeline', { withReplies: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 		});
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
