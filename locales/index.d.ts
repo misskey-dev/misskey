@@ -1131,7 +1131,6 @@ export interface Locale {
     "notificationRecieveConfig": string;
     "mutualFollow": string;
     "fileAttachedOnly": string;
-    "externalServices": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

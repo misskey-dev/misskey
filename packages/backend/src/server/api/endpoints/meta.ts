@@ -214,11 +214,11 @@ export const meta = {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					localTimeline: {
+					localTimeLine: {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					globalTimeline: {
+					globalTimeLine: {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},

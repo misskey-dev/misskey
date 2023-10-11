@@ -105,32 +105,40 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			userStarForReactionFallback: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
 			pinnedUsers: {
 				type: 'array',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 				items: {
 					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			hiddenTags: {
 				type: 'array',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 				items: {
 					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			blockedHosts: {
 				type: 'array',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 				items: {
 					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			sensitiveWords: {
 				type: 'array',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 				items: {
 					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			preservedUsernames: {
@@ -138,124 +146,129 @@ export const meta = {
 				optional: false, nullable: false,
 				items: {
 					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			hcaptchaSecretKey: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			recaptchaSecretKey: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			turnstileSecretKey: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			sensitiveMediaDetection: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			sensitiveMediaDetectionSensitivity: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			setSensitiveFlagAutomatically: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			enableSensitiveMediaDetectionForVideos: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			proxyAccountId: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 				format: 'id',
+			},
+			summaryProxy: {
+				type: 'string',
+				optional: true, nullable: true,
 			},
 			email: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			smtpSecure: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			smtpHost: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			smtpPort: {
 				type: 'number',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			smtpUser: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			smtpPass: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			swPrivateKey: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			useObjectStorage: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			objectStorageBaseUrl: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStorageBucket: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStoragePrefix: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStorageEndpoint: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStorageRegion: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStoragePort: {
 				type: 'number',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStorageAccessKey: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStorageSecretKey: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: true, nullable: true,
 			},
 			objectStorageUseSSL: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			objectStorageUseProxy: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			objectStorageSetPublicRead: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			enableIpLogging: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			enableActiveEmailValidation: {
 				type: 'boolean',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			enableChartsForRemoteUser: {
 				type: 'boolean',
@@ -275,26 +288,10 @@ export const meta = {
 			},
 			manifestJsonOverride: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 			},
 			policies: {
 				type: 'object',
-				optional: false, nullable: false,
-			},
-			perLocalUserUserTimelineCacheMax: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			perRemoteUserUserTimelineCacheMax: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			perUserHomeTimelineCacheMax: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			perUserListTimelineCacheMax: {
-				type: 'number',
 				optional: false, nullable: false,
 			},
 		},
@@ -316,7 +313,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private metaService: MetaService,
 	) {
-		super(meta, paramDef, async () => {
+		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
 			return {
@@ -402,10 +399,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
-				perLocalUserUserTimelineCacheMax: instance.perLocalUserUserTimelineCacheMax,
-				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
-				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
-				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 			};
 		});
 	}
