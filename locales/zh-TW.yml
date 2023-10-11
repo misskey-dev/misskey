@@ -2148,3 +2148,4 @@ _fileViewer:
   url: "URL"
   uploadedAt: "加入日期"
   attachedNotes: "含有附件的貼文"
+  thisPageCanBeSeenFromTheAuthor: "本頁面僅限上傳了這個檔案的使用者可以檢視。"
