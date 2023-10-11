@@ -21,7 +21,7 @@ import { packedClipSchema } from '@/models/json-schema/clip.js';
 import { packedDriveFileSchema } from '@/models/json-schema/drive-file.js';
 import { packedDriveFolderSchema } from '@/models/json-schema/drive-folder.js';
 import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
-import { packedFlashLikeSchema } from '@/models/json-schema/flash.js';
+import { packedFlashLikeSchema, packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedFollowRequestSchema, packedFollowingSchema } from '@/models/json-schema/following.js';
 import { packedGalleryLikeSchema, packedGalleryPostSchema } from '@/models/json-schema/gallery.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
@@ -35,10 +35,9 @@ import { packedNotificationSchema } from '@/models/json-schema/notification.js';
 import { packedPageLikeSchema, packedPageSchema } from '@/models/json-schema/page.js';
 import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
-import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
 import { packedRoleSchema } from '@/models/json-schema/role.js';
-import { packedUserListSchema } from '@/models/json-schema/user-list.js';
+import { packedUserListMembershipSchema, packedUserListSchema } from '@/models/json-schema/user-list.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 
 export const refs = {
@@ -51,6 +50,7 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	UserListMembership: packedUserListMembershipSchema,
 	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,

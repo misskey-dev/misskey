@@ -37,3 +37,36 @@ export const packedUserListSchema = {
 		},
 	},
 } as const;
+
+export const packedUserListMembershipSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		createdAt: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'date-time',
+		},
+		userId: {
+			type: 'string',
+			nullable: false, optional: false,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		user: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'UserLite',
+		},
+		withReplies: {
+			type: 'boolean',
+			nullable: false,
+			optional: false,
+		},
+	},
+} as const;

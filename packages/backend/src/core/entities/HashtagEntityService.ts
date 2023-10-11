@@ -5,7 +5,6 @@
 
 import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
 import type { MiHashtag } from '@/models/Hashtag.js';
 import { bindThis } from '@/decorators.js';
 

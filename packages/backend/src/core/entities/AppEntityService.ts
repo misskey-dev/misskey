@@ -32,11 +32,11 @@ export class AppEntityService {
 			includeProfileImageIds?: boolean
 		},
 	): Promise<Packed<'App'>> {
-		const opts = Object.assign({
+		const opts = {
 			detail: false,
 			includeSecret: false,
-			includeProfileImageIds: false,
-		}, options);
+			includeProfileImageIds: false, ...options
+		};
 
 		const app = typeof src === 'object' ? src : await this.appsRepository.findOneByOrFail({ id: src });
 

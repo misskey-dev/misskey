@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { FlashLikesRepository } from '@/models/_.js';
-import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiFlashLike } from '@/models/FlashLike.js';
 import { bindThis } from '@/decorators.js';

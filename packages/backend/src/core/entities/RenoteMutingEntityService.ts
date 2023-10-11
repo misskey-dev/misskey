@@ -8,7 +8,6 @@ import { DI } from '@/di-symbols.js';
 import type { RenoteMutingsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { bindThis } from '@/decorators.js';

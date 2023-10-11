@@ -7,7 +7,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { MiUser, MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
 import type { MiUserList } from '@/models/UserList.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -45,17 +44,27 @@ export class UserListEntityService {
 	}
 
 	@bindThis
+	public async packMemberships(
+		src: MiUserListMembership,
+		me: { id: MiUser['id'] } | null | undefined,
+	): Promise<Packed<'UserListMembership'>> {
+		return {
+			id: src.id,
+			createdAt: src.createdAt.toISOString(),
+			userId: src.userId,
+			user: await this.userEntityService.pack(src.userId, me),
+			withReplies: src.withReplies,
+		};
+	}
+
+	@bindThis
 	public async packMembershipsMany(
 		memberships: MiUserListMembership[],
-		me: { id: MiUser['id']; } | null | undefined,
-	) {
-		return Promise.all(memberships.map(async x => ({
-			id: x.id,
-			createdAt: x.createdAt.toISOString(),
-			userId: x.userId,
-			user: await this.userEntityService.pack(x.userId, me),
-			withReplies: x.withReplies,
-		})));
+		me: { id: MiUser['id'] } | null | undefined,
+	): Promise<Packed<'UserListMembership'>[]> {
+		return (await Promise.allSettled(memberships.map(u => this.packMemberships(u, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'UserListMembership'>>).value);
 	}
 }
 

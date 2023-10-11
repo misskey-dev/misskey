@@ -289,7 +289,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: MiUser['id'] | MiUser,
-		me: { id: MiUser['id']; } | null | undefined,
+		me: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,

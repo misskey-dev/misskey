@@ -43,7 +43,7 @@ export class BlockingEntityService {
 	@bindThis
 	public async packMany(
 		blockings: (MiBlocking['id'] | MiBlocking)[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Blocking'>[]> {
 		return (await Promise.allSettled(blockings.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')
