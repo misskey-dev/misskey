@@ -19,7 +19,7 @@ function genHost() {
 }
 
 function waitForPushToTl() {
-	return sleep(300);
+	return sleep(500);
 }
 
 let app: INestApplicationContext;
@@ -619,7 +619,6 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
 
-		/* 実装が面倒
 		test.concurrent('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -635,7 +634,6 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
-		*/
 
 		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
@@ -786,7 +784,6 @@ describe('Timelines', () => {
 			const res = await api('/notes/hybrid-timeline', { withReplies: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 		});
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {

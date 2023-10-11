@@ -95,15 +95,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.withFiles) {
 				noteIds = await this.redisTimelineService.get('localTimelineWithFiles', untilId, sinceId);
-			} else if (ps.withReplies) {
+			} else {
 				const [nonReplyNoteIds, replyNoteIds] = await this.redisTimelineService.getMulti([
 					'localTimeline',
 					'localTimelineWithReplies',
 				], untilId, sinceId);
 				noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
 				noteIds.sort((a, b) => a > b ? -1 : 1);
-			} else {
-				noteIds = await this.redisTimelineService.get('localTimeline', untilId, sinceId);
 			}
 
 			noteIds = noteIds.slice(0, ps.limit);
@@ -127,6 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (me && (note.userId === me.id)) {
 					return true;
 				}
+				if (!ps.withReplies && note.replyId && (me == null || note.replyUserId !== me.id)) return false;
 				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 				if (note.renoteId) {
