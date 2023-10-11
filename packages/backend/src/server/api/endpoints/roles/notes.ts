@@ -13,6 +13,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import { ApiError } from '../../error.js';
+import {RoleService} from "@/core/RoleService.js";
 
 export const meta = {
 	tags: ['role', 'notes'],
@@ -62,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
-
+		private roleService: RoleService,
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
@@ -71,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
-
+			const isModerator = await this.roleService.isModerator(me);
 			const role = await this.rolesRepository.findOneBy({
 				id: ps.roleId,
 				isPublic: true,
@@ -90,15 +91,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (noteIds.length === 0) {
 				return [];
 			}
-
-			const query = this.notesRepository.createQueryBuilder('note')
+			const query = isModerator ? this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.andWhere('(note.visibility = \'public\')')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser');
+				.leftJoinAndSelect('renote.user', 'renoteUser') :
+				this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.andWhere('(note.visibility = \'public\')' )
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
 			this.queryService.generateMutedUserQuery(query, me);
@@ -106,7 +113,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const notes = await query.getMany();
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
-
 			return await this.noteEntityService.packMany(notes, me);
 		});
 	}
