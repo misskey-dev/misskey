@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<template #default="{ items: notes }">
-		<div :class="[$style.root, { [$style.noGap]: noGap }]">
+		<DynamicScroller :class="[$style.root, { [$style.noGap]: noGap }]" :minItemSize="74">
 			<MkDateSeparatedList
 				ref="notes"
 				v-slot="{ item: note }"
@@ -24,15 +24,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
+				<DynamicScrollerItem
+					:key="note._featuredId_ || note._prId_ || note.id"
+					:sizeDependencies="[
+						note.text,
+					]"
+				>
+					<MkNote :class="$style.note" :note="note"/>
+				</DynamicScrollerItem>
 			</MkDateSeparatedList>
-		</div>
+		</DynamicScroller>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
