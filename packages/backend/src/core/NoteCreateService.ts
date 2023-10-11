@@ -907,6 +907,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// 自分自身以外への返信
 			if (note.replyId && note.replyUserId !== note.userId) {
 				this.redisTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
+
+				if (note.visibility === 'public' && note.userHost == null) {
+					this.redisTimelineService.push('localTimelineWithReplies', note.id, 300, r);
+				}
 			} else {
 				this.redisTimelineService.push(`userTimeline:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
 				if (note.fileIds.length > 0) {

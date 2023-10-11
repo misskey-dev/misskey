@@ -512,6 +512,20 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
 
+		test.concurrent('他人の他人への返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/local-timeline', {}, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		});
+
 		test.concurrent('チャンネル投稿が含まれない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -623,6 +637,20 @@ describe('Timelines', () => {
 		});
 		*/
 
+		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/local-timeline', { withReplies: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		});
+
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -694,6 +722,20 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
 
+		test.concurrent('他人の他人への返信が含まれない', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/hybrid-timeline', { }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		});
+
 		test.concurrent('リモートユーザーのノートが含まれない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
@@ -732,6 +774,20 @@ describe('Timelines', () => {
 			const res = await api('/notes/hybrid-timeline', {}, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/hybrid-timeline', { withReplies: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 		});
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
