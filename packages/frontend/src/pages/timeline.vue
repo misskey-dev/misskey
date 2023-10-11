@@ -11,23 +11,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
 				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
-				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-				<div :class="$style.tl">
-					<MkTimeline
-						ref="tlComponent"
-						:key="src + withRenotes +  onlyFiles"
-						:src="src.split(':')[0]"
-						:list="src.split(':')[1]"
-						:withRenotes="withRenotes"
-
-						:onlyFiles="onlyFiles"
-						:sound="true"
-						@queue="queueUpdated"
-					/>
-				</div>
+			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+			<div :class="$style.tl">
+				<MkTimeline
+					ref="tlComponent"
+					:key="src + withRenotes + withReplies + onlyFiles"
+					:src="src.split(':')[0]"
+					:list="src.split(':')[1]"
+					:withRenotes="withRenotes"
+					:withReplies="withReplies"
+					:onlyFiles="onlyFiles"
+					:sound="true"
+					@queue="queueUpdated"
+				/>
 			</div>
-		</MkSpacer>
-	</MkStickyContainer>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
