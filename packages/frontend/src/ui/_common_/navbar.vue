@@ -120,7 +120,7 @@ let gaming = ref('');
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-let gamingType = computed(defaultStore.state.gamingType);
+
 
 if (darkMode.value) {
   bannerUrl.value = bannerDark;
