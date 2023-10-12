@@ -474,6 +474,11 @@ export class RoleService implements OnApplicationShutdown {
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (const role of roles) {
+			redisPipeline.xadd(
+				`roleTimeline:${role.id}`,
+				'MAXLEN', '~', '1000',
+				'*',
+				'note', note.id);
 			this.redisTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
 			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
 		}
