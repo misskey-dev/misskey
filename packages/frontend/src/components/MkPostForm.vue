@@ -86,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         <button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
         <button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
         <button v-tooltip="i18n.ts.mfm" :class="['_button', $style.footerButton]" @click="insertMfm"><i class="ti ti-wand"></i></button>
+        <button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
       </div>
       <div :class="$style.footerRight">
         <button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
@@ -848,6 +849,9 @@ async function insertEmoji(ev: MouseEvent) {
 }
 function insertMfm(){
   insertTextAtCursor(textareaEl, '$');
+}
+function insertRuby() {
+    insertTextAtCursor(textareaEl, '$[ruby 本文 上につくやつ]');
 }
 function showActions(ev) {
   os.popupMenu(postFormActions.map(action => ({

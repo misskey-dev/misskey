@@ -14,6 +14,7 @@ export interface Locale {
     "forgotPassword": string;
     "fetchingAsApObject": string;
     "ok": string;
+    "ruby": string;
     "gotIt": string;
     "cancel": string;
     "noThankYou": string;

@@ -330,6 +330,7 @@ import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
 import * as ep___users_featuredNotes from './endpoints/users/featured-notes.js';
+import * as ep___users_user_stats from './endpoints/users/stats.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
 import * as ep___users_lists_list from './endpoints/users/lists/list.js';
@@ -567,6 +568,7 @@ const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep_
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
 const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
+const $i_userstats: Provider = { provide: 'ep:i/stats', useClass: ep___users_user_stats.default }
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
 const $i_pin: Provider = { provide: 'ep:i/pin', useClass: ep___i_pin.default };
@@ -816,6 +818,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+        $i_userstats,
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
@@ -1103,6 +1106,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
         $admin_emoji_setisSensitiveBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
+        $i_userstats,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
 		$admin_federation_updateInstance,

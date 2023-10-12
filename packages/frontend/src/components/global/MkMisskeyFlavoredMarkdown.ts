@@ -340,9 +340,24 @@ export default function(props: {
 								text:base[1]
 							});
 						}else if(token.children.length === 2){
+							let txt,base;
 							console.log(token.children)
-							const base = token.children[0].type !== 'unicodeEmoji' ? token.children[0].props.text : token.children[0].props.emoji;
-							const txt = token.children[1].type !== 'unicodeEmoji' ? token.children[1].props.text : token.children[1].props.emoji;
+							if (token.children[1].type === 'emojiCode'){
+								txt = token.children[1].props.name
+							}else if(token.children[1].type === 'unicodeEmoji'){
+								txt = token.children[1].props.emoji
+							}else {
+								txt = token.children[1].props.text
+							}
+
+							if (token.children[0].type === 'emojiCode'){
+								base = token.children[0].props.name
+							}else if(token.children[0].type === 'unicodeEmoji'){
+								base = token.children[0].props.emoji
+							}else {
+								base = token.children[0].props.text
+							}
+
 							return h(MkRuby,{
 								base:base,
 								basetype:token.children[0].type,

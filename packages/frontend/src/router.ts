@@ -174,7 +174,11 @@ export const routes = [{
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
-	}, {
+	},{
+		path: '/account-stats',
+		name: 'other',
+		component: page(() => import('./pages/settings/account-stats.vue')),
+	},{
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],
