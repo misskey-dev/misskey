@@ -2141,3 +2141,11 @@ _moderationLogTypes:
   createAd: "建立廣告"
   deleteAd: "刪除廣告"
   updateAd: "更新廣告"
+_fileViewer:
+  title: "檔案詳細資訊"
+  type: "檔案類型 "
+  size: "檔案大小"
+  url: "URL"
+  uploadedAt: "加入日期"
+  attachedNotes: "含有附件的貼文"
+  thisPageCanBeSeenFromTheAuthor: "本頁面僅限上傳了這個檔案的使用者可以檢視。"

@@ -868,8 +868,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// 基本的にvisibleUserIdsには自身のidが含まれている前提であること
 				if (note.visibility === 'specified' && !note.visibleUserIds.some(v => v === following.followerId)) continue;
 
-				// 自分自身以外への返信
-				if (note.replyId && note.replyUserId !== note.userId) {
+				// 「自分自身への返信 or そのフォロワーへの返信」のどちらでもない場合
+				if (note.replyId && !(note.replyUserId === note.userId || note.replyUserId === following.followerId)) {
 					if (!following.withReplies) continue;
 				}
 
@@ -886,8 +886,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
 				) continue;
 
-				// 自分自身以外への返信
-				if (note.replyId && note.replyUserId !== note.userId) {
+				// 「自分自身への返信 or そのリストの作成者への返信」のどちらでもない場合
+				if (note.replyId && !(note.replyUserId === note.userId || note.replyUserId === userListMembership.userListUserId)) {
 					if (!userListMembership.withReplies) continue;
 				}
 
@@ -907,6 +907,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// 自分自身以外への返信
 			if (note.replyId && note.replyUserId !== note.userId) {
 				this.redisTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
+
+				if (note.visibility === 'public' && note.userHost == null) {
+					this.redisTimelineService.push('localTimelineWithReplies', note.id, 300, r);
+				}
 			} else {
 				this.redisTimelineService.push(`userTimeline:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
 				if (note.fileIds.length > 0) {

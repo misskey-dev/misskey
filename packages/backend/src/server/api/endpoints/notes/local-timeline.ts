@@ -45,6 +45,7 @@ export const paramDef = {
 	properties: {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		withReplies: { type: 'boolean', default: false },
 		excludeNsfw: { type: 'boolean', default: false },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
@@ -90,7 +91,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
 
-			let noteIds = await this.redisTimelineService.get(ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline', untilId, sinceId);
+			let noteIds: string[];
+
+			if (ps.withFiles) {
+				noteIds = await this.redisTimelineService.get('localTimelineWithFiles', untilId, sinceId);
+			} else {
+				const [nonReplyNoteIds, replyNoteIds] = await this.redisTimelineService.getMulti([
+					'localTimeline',
+					'localTimelineWithReplies',
+				], untilId, sinceId);
+				noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
+				noteIds.sort((a, b) => a > b ? -1 : 1);
+			}
+
 			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
@@ -112,6 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (me && (note.userId === me.id)) {
 					return true;
 				}
+				if (!ps.withReplies && note.replyId && (me == null || note.replyUserId !== me.id)) return false;
 				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 				if (note.renoteId) {
