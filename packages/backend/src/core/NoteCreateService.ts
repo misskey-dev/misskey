@@ -876,8 +876,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// 基本的にvisibleUserIdsには自身のidが含まれている前提であること
 				if (note.visibility === 'specified' && !note.visibleUserIds.some(v => v === following.followerId)) continue;
 
-				// 自分自身以外への返信
-				if (note.replyId && note.replyUserId !== note.userId) {
+				// 「自分自身への返信 or そのフォロワーへの返信」のどちらでもない場合
+				if (note.replyId && !(note.replyUserId === note.userId || note.replyUserId === following.followerId)) {
 					if (!this.config.nirila.withRepliesInHomeTL) continue;
 				}
 
@@ -894,8 +894,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 					!note.visibleUserIds.some(v => v === userListMembership.userList!.userId)
 				) continue;
 
-				// 自分自身以外への返信
-				if (note.replyId && note.replyUserId !== note.userId) {
+				// 「自分自身への返信 or そのリストの作成者への返信」のどちらでもない場合
+				if (note.replyId && !(note.replyUserId === note.userId || note.replyUserId === userListMembership.userList!.userId)) {
 					if (!this.config.nirila.withRepliesInHomeTL) continue;
 				}
 
