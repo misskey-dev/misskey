@@ -861,7 +861,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					where: {
 						userId: user.id,
 					},
-					select: ['userListId', 'userListUserId', 'withReplies'],
+					select: ['userListId', 'userListUserId'],
 				}),
 			]);
 
@@ -895,7 +895,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				// 自分自身以外への返信
 				if (note.replyId && note.replyUserId !== note.userId) {
-					if (!userListMembership.withReplies) continue;
+					if (!this.config.nirila.withRepliesInHomeTL) continue;
 				}
 
 				this.redisTimelineService.push(`userListTimeline:${userListMembership.userListId}`, note.id, 300, r);
