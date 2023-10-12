@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
-		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
+		<Mfm :text="getNoteSummary(appearNote, sensitiveChannelCW)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
@@ -206,7 +206,7 @@ const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
-const sensitiveChannelCW = collapseSensitiveChannel && appearNote.cw == null && note.channel?.isSensitive;
+const sensitiveChannelCW = collapseSensitiveChannel && appearNote.cw == null && appearNote.channel?.isSensitive;
 const cwExists = sensitiveChannelCW || appearNote.cw != null;
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
