@@ -861,13 +861,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 					where: {
 						userId: user.id,
 					},
-					select: ['userListId', 'userListUserId'],
+					select: ['userList', 'userListId'],
+					relations: ['userList'],
 				}),
 			]);
 
 			if (note.visibility === 'followers') {
 				// TODO: 重そうだから何とかしたい Set 使う？
-				userListMemberships = userListMemberships.filter(x => followings.some(f => f.followerId === x.userListUserId));
+				userListMemberships = userListMemberships.filter(x => followings.some(f => f.followerId === x.userList!.userId));
 			}
 
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
@@ -890,7 +891,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// ダイレクトのとき、そのリストが対象外のユーザーの場合
 				if (
 					note.visibility === 'specified' &&
-					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
+					!note.visibleUserIds.some(v => v === userListMembership.userList!.userId)
 				) continue;
 
 				// 自分自身以外への返信
