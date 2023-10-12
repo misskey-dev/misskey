@@ -99,19 +99,19 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 
 			if (recieveConfig?.type === 'following') {
-				const isFollowing = await this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId));
+				const isFollowing = await this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => followings.has(notifierId));
 				if (!isFollowing) {
 					return null;
 				}
 			} else if (recieveConfig?.type === 'follower') {
-				const isFollower = await this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId));
+				const isFollower = await this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => followings.has(notifieeId));
 				if (!isFollower) {
 					return null;
 				}
 			} else if (recieveConfig?.type === 'mutualFollow') {
 				const [isFollowing, isFollower] = await Promise.all([
-					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
-					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => followings.has(notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => followings.has(notifieeId)),
 				]);
 				if (!isFollowing && !isFollower) {
 					return null;

@@ -14,7 +14,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MutedNotesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MutedNotesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListJoiningsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -158,8 +158,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -176,8 +176,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		@Inject(DI.mutedNotesRepository)
 		private mutedNotesRepository: MutedNotesRepository,
@@ -353,7 +353,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		if (data.channel) {
-			this.redisForTimelines.xadd(
+			this.redisClient.xadd(
 				`channelTimeline:${data.channel.id}`,
 				'MAXLEN', '~', this.config.perChannelMaxNoteCacheCount.toString(),
 				'*',
@@ -836,7 +836,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
 		const meta = await this.metaService.fetch();
 
-		const r = this.redisForTimelines.pipeline();
+		const r = this.redisClient.pipeline();
 
 		if (note.channelId) {
 			this.redisTimelineService.push(`channelTimeline:${note.channelId}`, note.id, this.config.perChannelMaxNoteCacheCount, r);
@@ -864,11 +864,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 					where: {
 						followeeId: user.id,
 						followerHost: IsNull(),
-						isFollowerHibernated: false,
 					},
-					select: ['followerId', 'withReplies'],
+					select: ['followerId'],
 				}),
-				this.userListMembershipsRepository.find({
+				this.userListJoiningsRepository.find({
 					where: {
 						userId: user.id,
 					},
@@ -888,7 +887,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				// 自分自身以外への返信
 				if (note.replyId && note.replyUserId !== note.userId) {
-					if (!following.withReplies) continue;
+					if (!this.config.nirila.withRepliesInHomeTL) continue;
 				}
 
 				this.redisTimelineService.push(`homeTimeline:${following.followerId}`, note.id, 300, r);
@@ -944,51 +943,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			if (Math.random() < 0.1) {
-				process.nextTick(() => {
-					this.checkHibernation(followings);
-				});
 			}
 		}
 
 		r.exec();
-	}
-
-	@bindThis
-	public async checkHibernation(followings: MiFollowing[]) {
-		if (followings.length === 0) return;
-
-		const shuffle = (array: MiFollowing[]) => {
-			for (let i = array.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[array[i], array[j]] = [array[j], array[i]];
-			}
-			return array;
-		};
-
-		// ランダムに最大1000件サンプリング
-		const samples = shuffle(followings).slice(0, Math.min(followings.length, 1000));
-
-		const hibernatedUsers = await this.usersRepository.find({
-			where: {
-				id: In(samples.map(x => x.followerId)),
-				lastActiveDate: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 50))),
-			},
-			select: ['id'],
-		});
-
-		if (hibernatedUsers.length > 0) {
-			this.usersRepository.update({
-				id: In(hibernatedUsers.map(x => x.id)),
-			}, {
-				isHibernated: true,
-			});
-
-			this.followingsRepository.update({
-				followerId: In(hibernatedUsers.map(x => x.id)),
-			}, {
-				isFollowerHibernated: true,
-			});
-		}
 	}
 
 	@bindThis

@@ -53,7 +53,7 @@ import { MiUser } from '@/models/User.js';
 import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
-import { MiUserListMembership } from '@/models/UserListMembership.js';
+import { MiUserListJoining } from '@/models/UserListJoining.js';
 import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { MiUserPending } from '@/models/UserPending.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
@@ -122,7 +122,7 @@ export {
 	MiUserKeypair,
 	MiUserList,
 	MiUserListFavorite,
-	MiUserListMembership,
+	MiUserListJoining,
 	MiUserNotePining,
 	MiUserPending,
 	MiUserProfile,
@@ -189,7 +189,7 @@ export type UserIpsRepository = Repository<MiUserIp>;
 export type UserKeypairsRepository = Repository<MiUserKeypair>;
 export type UserListsRepository = Repository<MiUserList>;
 export type UserListFavoritesRepository = Repository<MiUserListFavorite>;
-export type UserListMembershipsRepository = Repository<MiUserListMembership>;
+export type UserListJoiningsRepository = Repository<MiUserListJoining>;
 export type UserNotePiningsRepository = Repository<MiUserNotePining>;
 export type UserPendingsRepository = Repository<MiUserPending>;
 export type UserProfilesRepository = Repository<MiUserProfile>;

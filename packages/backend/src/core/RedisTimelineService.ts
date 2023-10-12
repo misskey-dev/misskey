@@ -12,8 +12,8 @@ import { IdService } from '@/core/IdService.js';
 @Injectable()
 export class RedisTimelineService {
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		private idService: IdService,
 	) {
@@ -30,9 +30,9 @@ export class RedisTimelineService {
 			}
 		} else {
 			// 末尾のIDを取得
-			this.redisForTimelines.lindex('list:' + tl, -1).then(lastId => {
+			this.redisClient.lindex('list:' + tl, -1).then(lastId => {
 				if (lastId == null || (this.idService.parse(id).date.getTime() > this.idService.parse(lastId).date.getTime())) {
-					this.redisForTimelines.lpush('list:' + tl, id);
+					this.redisClient.lpush('list:' + tl, id);
 				} else {
 					Promise.resolve();
 				}
@@ -43,23 +43,23 @@ export class RedisTimelineService {
 	@bindThis
 	public get(name: string, untilId?: string | null, sinceId?: string | null) {
 		if (untilId && sinceId) {
-			return this.redisForTimelines.lrange('list:' + name, 0, -1)
+			return this.redisClient.lrange('list:' + name, 0, -1)
 				.then(ids => ids.filter(id => id < untilId && id > sinceId).sort((a, b) => a > b ? -1 : 1));
 		} else if (untilId) {
-			return this.redisForTimelines.lrange('list:' + name, 0, -1)
+			return this.redisClient.lrange('list:' + name, 0, -1)
 				.then(ids => ids.filter(id => id < untilId).sort((a, b) => a > b ? -1 : 1));
 		} else if (sinceId) {
-			return this.redisForTimelines.lrange('list:' + name, 0, -1)
+			return this.redisClient.lrange('list:' + name, 0, -1)
 				.then(ids => ids.filter(id => id > sinceId).sort((a, b) => a < b ? -1 : 1));
 		} else {
-			return this.redisForTimelines.lrange('list:' + name, 0, -1)
+			return this.redisClient.lrange('list:' + name, 0, -1)
 				.then(ids => ids.sort((a, b) => a > b ? -1 : 1));
 		}
 	}
 
 	@bindThis
 	public getMulti(name: string[], untilId?: string | null, sinceId?: string | null): Promise<string[][]> {
-		const pipeline = this.redisForTimelines.pipeline();
+		const pipeline = this.redisClient.pipeline();
 		for (const n of name) {
 			pipeline.lrange('list:' + n, 0, -1);
 		}

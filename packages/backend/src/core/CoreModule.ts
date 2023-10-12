@@ -46,7 +46,6 @@ import { SignupService } from './SignupService.js';
 import { WebAuthnService } from './WebAuthnService.js';
 import { UserBlockingService } from './UserBlockingService.js';
 import { CacheService } from './CacheService.js';
-import { UserService } from './UserService.js';
 import { UserFollowingService } from './UserFollowingService.js';
 import { UserKeypairService } from './UserKeypairService.js';
 import { UserListService } from './UserListService.js';
@@ -176,7 +175,6 @@ const $SignupService: Provider = { provide: 'SignupService', useExisting: Signup
 const $WebAuthnService: Provider = { provide: 'WebAuthnService', useExisting: WebAuthnService };
 const $UserBlockingService: Provider = { provide: 'UserBlockingService', useExisting: UserBlockingService };
 const $CacheService: Provider = { provide: 'CacheService', useExisting: CacheService };
-const $UserService: Provider = { provide: 'UserService', useExisting: UserService };
 const $UserFollowingService: Provider = { provide: 'UserFollowingService', useExisting: UserFollowingService };
 const $UserKeypairService: Provider = { provide: 'UserKeypairService', useExisting: UserKeypairService };
 const $UserListService: Provider = { provide: 'UserListService', useExisting: UserListService };
@@ -308,7 +306,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		WebAuthnService,
 		UserBlockingService,
 		CacheService,
-		UserService,
 		UserFollowingService,
 		UserKeypairService,
 		UserListService,
@@ -434,7 +431,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$WebAuthnService,
 		$UserBlockingService,
 		$CacheService,
-		$UserService,
 		$UserFollowingService,
 		$UserKeypairService,
 		$UserListService,
@@ -560,7 +556,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		WebAuthnService,
 		UserBlockingService,
 		CacheService,
-		UserService,
 		UserFollowingService,
 		UserKeypairService,
 		UserListService,
@@ -685,7 +680,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$WebAuthnService,
 		$UserBlockingService,
 		$CacheService,
-		$UserService,
 		$UserFollowingService,
 		$UserKeypairService,
 		$UserListService,

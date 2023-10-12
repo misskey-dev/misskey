@@ -8,14 +8,14 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
 
-@Entity('user_list_membership')
+@Entity('user_list_joining')
 @Index(['userId', 'userListId'], { unique: true })
-export class MiUserListMembership {
+export class MiUserListJoining {
 	@PrimaryColumn(id())
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the UserListMembership.',
+		comment: 'The created date of the UserListJoining.',
 	})
 	public createdAt: Date;
 

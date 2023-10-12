@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -23,7 +23,7 @@ class UserListChannel extends Channel {
 
 	constructor(
 		private userListsRepository: UserListsRepository,
-		private userListMembershipsRepository: UserListMembershipsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -58,7 +58,7 @@ class UserListChannel extends Channel {
 
 	@bindThis
 	private async updateListUsers() {
-		const users = await this.userListMembershipsRepository.find({
+		const users = await this.userListJoiningsRepository.find({
 			where: {
 				userListId: this.listId,
 			},
@@ -124,8 +124,8 @@ export class UserListChannelService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {
@@ -135,7 +135,7 @@ export class UserListChannelService {
 	public create(id: string, connection: Channel['connection']): UserListChannel {
 		return new UserListChannel(
 			this.userListsRepository,
-			this.userListMembershipsRepository,
+			this.userListJoiningsRepository,
 			this.noteEntityService,
 			id,
 			connection,

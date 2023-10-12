@@ -9,7 +9,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -42,8 +42,8 @@ export class AccountMoveService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -215,41 +215,41 @@ export class AccountMoveService {
 	@bindThis
 	public async updateLists(src: ThinUser, dst: MiUser): Promise<void> {
 		// Return if there is no list to be updated.
-		const oldMemberships = await this.userListMembershipsRepository.find({
+		const oldJoinings = await this.userListJoiningsRepository.find({
 			where: {
 				userId: src.id,
 			},
 		});
-		if (oldMemberships.length === 0) return;
+		if (oldJoinings.length === 0) return;
 
-		const existingUserListIds = await this.userListMembershipsRepository.find({
+		const existingUserListIds = await this.userListJoiningsRepository.find({
 			where: {
 				userId: dst.id,
 			},
-		}).then(memberships => memberships.map(membership => membership.userListId));
+		}).then(joinings => joinings.map(joining => joining.userListId));
 
-		const newMemberships: Map<string, { createdAt: Date; userId: string; userListId: string; userListUserId: string; }> = new Map();
+		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; userListUserId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
 			let id: string;
 			do {
 				id = this.idService.genId();
-			} while (newMemberships.has(id));
+			} while (newJoinings.has(id));
 			return id;
 		};
-		for (const membership of oldMemberships) {
-			if (existingUserListIds.includes(membership.userListId)) continue; // skip if dst exists in this user's list
-			newMemberships.set(genId(), {
+		for (const joining of oldJoinings) {
+			if (existingUserListIds.includes(joining.userListId)) continue; // skip if dst exists in this user's list
+			newJoinings.set(genId(), {
 				createdAt: new Date(),
 				userId: dst.id,
-				userListId: membership.userListId,
-				userListUserId: membership.userListUserId,
+				userListId: joining.userListId,
+				userListUserId: joining.userListUserId,
 			});
 		}
 
-		const arrayToInsert = Array.from(newMemberships.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
-		await this.userListMembershipsRepository.insert(arrayToInsert);
+		const arrayToInsert = Array.from(newJoinings.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
+		await this.userListJoiningsRepository.insert(arrayToInsert);
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
 		if (this.userEntityService.isRemoteUser(dst)) {

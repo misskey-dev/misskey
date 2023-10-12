@@ -57,9 +57,8 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		notify: { type: 'string', enum: ['normal', 'none'] },
-		withReplies: { type: 'boolean' },
 	},
-	required: ['userId'],
+	required: ['userId', 'notify'],
 } as const;
 
 @Injectable()
@@ -99,8 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.followingsRepository.update({
 				id: exist.id,
 			}, {
-				notify: ps.notify != null ? (ps.notify === 'none' ? null : ps.notify) : undefined,
-				withReplies: ps.withReplies != null ? ps.withReplies : undefined,
+				notify: ps.notify === 'none' ? null : ps.notify,
 			});
 
 			return await this.userEntityService.pack(follower.id, me);
