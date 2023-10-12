@@ -17,6 +17,7 @@
 ### General
 
 ### Client
+- Fix: Renoteの省略表示でセンシティブチャンネルの自動CWが聞かない問題
 
 ### Server
 
