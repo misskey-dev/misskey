@@ -18,6 +18,7 @@ class LocalTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private withRenotes: boolean;
+	private withReplies: boolean;
 	private withFiles: boolean;
 
 	constructor(
@@ -38,6 +39,7 @@ class LocalTimelineChannel extends Channel {
 		if (!policies.ltlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
+		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
@@ -66,7 +68,7 @@ class LocalTimelineChannel extends Channel {
 		}
 
 		// 関係ない返信は除外
-		if (note.reply && this.user && !this.following[note.userId]?.withReplies) {
+		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
 			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
