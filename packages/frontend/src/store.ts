@@ -304,6 +304,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: [] as string[],
 	},
+	enablehanntenn:{
+		where:'device',
+		default: false
+	},
 	recentlyUsedUsers: {
 		where: 'device',
 		default: [] as string[],

@@ -134,14 +134,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableUltimateDataSaverMode">{{ i18n.ts.UltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableCellularWithUltimateDataSaver">{{ i18n.ts.cellularWithUltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
-        <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
-			</div>
+                <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
+                <MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
+            </div>
 			<div>
 				<MkRadios v-model="emojiStyle">
 					<template #label>{{ i18n.ts.emojiStyle }}</template>
@@ -285,6 +285,7 @@ const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificati
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const enableonlyAndWithSave = computed(defaultStore.makeGetterSetter('onlyAndWithSave'));
+const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
 const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))

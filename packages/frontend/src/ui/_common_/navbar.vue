@@ -94,6 +94,7 @@ import {$i, openAccountMenu as openAccountMenu_} from '@/account';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';
 import {instance} from '@/instance';
+
 function hexToRgb(hex) {
   // 16進数のカラーコードから "#" を除去
   hex = hex.replace(/^#/, '');
@@ -105,6 +106,7 @@ function hexToRgb(hex) {
 
   return `${r},${g},${b}`;
 }
+
 document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
 document.documentElement.style.setProperty("--followerColor",hexToRgb(defaultStore.state.followerColor));
 document.documentElement.style.setProperty("--specifiedColor",hexToRgb(defaultStore.state.specifiedColor))
@@ -118,6 +120,7 @@ let gaming = ref('');
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+let gamingType = computed(defaultStore.state.gamingType);
 
 if (darkMode.value) {
   bannerUrl.value = bannerDark;
@@ -137,7 +140,6 @@ watch(darkMode, () => {
   }
 })
 
-// gaming.valueに新しい値を代入する
 if (darkMode.value && gamingMode.value == true) {
   gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {
@@ -167,17 +169,18 @@ watch(gamingMode, () => {
   }
 })
 
+
 const menu = computed(() => defaultStore.state.menu);
 const otherMenuItemIndicated = computed(() => {
-  for (const def in navbarItemDef) {
-    if (menu.value.includes(def)) continue;
-    if (navbarItemDef[def].indicated) return true;
-  }
-  return false;
+    for (const def in navbarItemDef) {
+        if (menu.value.includes(def)) continue;
+        if (navbarItemDef[def].indicated) return true;
+    }
+    return false;
 });
 
 const calcViewState = () => {
-  iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
+    iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
 };
 
 calcViewState();
@@ -185,19 +188,19 @@ calcViewState();
 window.addEventListener('resize', calcViewState);
 
 watch(defaultStore.reactiveState.menuDisplay, () => {
-  calcViewState();
+    calcViewState();
 });
 
 function openAccountMenu(ev: MouseEvent) {
-  openAccountMenu_({
-    withExtraOperation: true,
-  }, ev);
+    openAccountMenu_({
+        withExtraOperation: true,
+    }, ev);
 }
 
 function more(ev: MouseEvent) {
-  os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-    src: ev.currentTarget ?? ev.target,
-  }, {}, 'closed');
+    os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+        src: ev.currentTarget ?? ev.target,
+    }, {}, 'closed');
 }
 </script>
 
@@ -308,11 +311,11 @@ function more(ev: MouseEvent) {
     }
 
     &.gamingLight {
-			color: white !important;
+      color: white !important;
     }
 
     &.gamingDark {
-			color: black !important;
+      color: black !important;
     }
 
     &.gamingLight:before {
@@ -442,11 +445,11 @@ function more(ev: MouseEvent) {
     color: var(--navFg);
 
     &.gamingDark {
-			color: var(--navFg);
+      color: var(--navFg);
     }
 
     &.gamingLight {
-			color: var(--navFg);
+      color: var(--navFg);
     }
 
     &:hover {
@@ -775,7 +778,7 @@ function more(ev: MouseEvent) {
     text-align: center;
 
     &.gamingLight {
-			color: var(--fg);
+      color: var(--fg);
     }
 
     &:hover, &.active {

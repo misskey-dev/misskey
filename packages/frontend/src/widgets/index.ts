@@ -11,6 +11,7 @@ export default function(app: App) {
 	app.component('WidgetMemo', defineAsyncComponent(() => import('./WidgetMemo.vue')));
 	app.component('WidgetNotifications', defineAsyncComponent(() => import('./WidgetNotifications.vue')));
 	app.component('WidgetGamingMode', defineAsyncComponent(() => import('./WidgetGamingMode.vue')));
+	app.component('WidgetGyakubariMode', defineAsyncComponent(() => import('./WidgetGyakubariMode.vue')));
 	app.component('WidgetTimeline', defineAsyncComponent(() => import('./WidgetTimeline.vue')));
 	app.component('WidgetCalendar', defineAsyncComponent(() => import('./WidgetCalendar.vue')));
 	app.component('WidgetRss', defineAsyncComponent(() => import('./WidgetRss.vue')));
@@ -42,6 +43,7 @@ export const widgets = [
 	'memo',
 	'notifications',
 	'gamingMode',
+	'gyakubariMode',
 	'timeline',
 	'calendar',
 	'rss',

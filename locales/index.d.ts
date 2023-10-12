@@ -14,6 +14,8 @@ export interface Locale {
     "forgotPassword": string;
     "fetchingAsApObject": string;
     "ok": string;
+    "hanntenn": string;
+    "hanntennInfo": string;
     "ruby": string;
     "gotIt": string;
     "cancel": string;
@@ -1972,6 +1974,7 @@ export interface Locale {
         "memo": string;
         "notifications": string;
         "gamingMode": string;
+        "gyakubariMode": string;
         "timeline": string;
         "calendar": string;
         "trends": string;
