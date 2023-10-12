@@ -14,6 +14,7 @@ import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { defaultStore } from '@/store';
 import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
+import MkRuby from "@/components/global/MkRuby.vue";
 
 const QUOTE_STYLE = `
 display: block;
@@ -327,6 +328,31 @@ export default function(props: {
 						style = useAnim ? `--move-fromX: ${fromX}em; --move-fromY: ${fromY}em; --move-toX: ${toX}em; --move-toY: ${toY}em; animation: ${speed} ${ease} ${delay} infinite ${direction} mfm-move;` : '';
 						break;
 					}
+					case 'ruby': {
+	    				if (token.children.length === 1 ){
+							const base = token.children[0].props.text.split(/[ 　]+/);
+							if (base.length !== 2 ){
+								style = null;
+								break;
+							}
+							return h(MkRuby,{
+								base:base[0],
+								text:base[1]
+							});
+						}else if(token.children.length === 2){
+							console.log(token.children)
+							const base = token.children[0].type !== 'unicodeEmoji' ? token.children[0].props.text : token.children[0].props.emoji;
+							const txt = token.children[1].type !== 'unicodeEmoji' ? token.children[1].props.text : token.children[1].props.emoji;
+							return h(MkRuby,{
+								base:base,
+								basetype:token.children[0].type,
+								text:txt,
+							});
+						}else{
+							style = null;
+							break;
+						}
+					}
 					case 'mix': {
 						const ch = token.children;
 						if (ch.length != 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
@@ -395,7 +421,6 @@ export default function(props: {
 					username: token.props.username,
 				})];
 			}
-
 			case 'hashtag': {
 				return [h(MkA, {
 					key: Math.random(),
