@@ -228,7 +228,7 @@ export class AccountMoveService {
 			},
 		}).then(joinings => joinings.map(joining => joining.userListId));
 
-		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; userListUserId: string; }> = new Map();
+		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
@@ -244,7 +244,6 @@ export class AccountMoveService {
 				createdAt: new Date(),
 				userId: dst.id,
 				userListId: joining.userListId,
-				userListUserId: joining.userListUserId,
 			});
 		}
 

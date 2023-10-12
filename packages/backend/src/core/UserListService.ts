@@ -97,7 +97,6 @@ export class UserListService implements OnApplicationShutdown {
 			createdAt: new Date(),
 			userId: target.id,
 			userListId: list.id,
-			userListUserId: list.userId,
 		} as MiUserListJoining);
 
 		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
