@@ -4,29 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<div v-if="game.ready" :class="$style.game">
-		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-		<div :class="$style.count" class=""><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(cookies) }}</div>
-		<button v-click-anime class="_button" @click="onClick">
-			<img src="/client-assets/cookie.png" :class="$style.img">
-		</button>
+	<div>
+		<div v-if="game.ready" :class="$style.game">
+			<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
+			<div :class="$style.count" class=""><img :class="[$style.icon,{[$style.dark]:darkMode}]" alt="Cosaque daihuku"
+																							 src="https://media.discordapp.net/attachments/1153099592863334431/1162139796647448576/AfovawbDhjHYAAAAAElFTkSuQmCC.png"/>
+				{{ number(cookies) }}
+			</div>
+			<button v-click-anime class="_button" @click="onClick">
+				<img src="https://cdn.discordapp.com/attachments/1153099592863334431/1160169965568143391/dihk_cossack.gif"
+						 :class="$style.img">
+			</button>
+		</div>
+		<div v-else>
+			<MkLoading/>
+		</div>
 	</div>
-	<div v-else>
-		<MkLoading/>
-	</div>
-</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted } from 'vue';
+import {computed, onMounted, onUnmounted} from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import {useInterval} from '@/scripts/use-interval.js';
 import * as game from '@/scripts/clicker-game.js';
 import number from '@/filters/number.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import {claimAchievement} from '@/scripts/achievements.js';
+import {defaultStore} from "@/store.js";
 
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);
 let cps = $ref(0);
@@ -35,7 +41,7 @@ let prevCookies = $ref(0);
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
 	const y = ev.clientY;
-	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
+	os.popup(MkPlusOneEffect, {x, y}, {}, 'end');
 
 	saveData.value!.cookies++;
 	saveData.value!.totalCookies++;
@@ -91,5 +97,17 @@ onUnmounted(() => {
 
 .img {
 	max-width: 90px;
+}
+
+$color-scheme: var(--color-scheme);
+
+
+.icon {
+	width: 1.3em;
+	vertical-align: -24%;
+}
+
+.dark {
+	filter: invert(1);
 }
 </style>

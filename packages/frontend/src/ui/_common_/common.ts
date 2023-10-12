@@ -60,8 +60,8 @@ export function openInstanceMenu(ev: MouseEvent) {
 		}, {
 			type: 'link',
 			to: '/clicker',
-			text: '🍪👈',
-			icon: 'ti ti-cookie',
+			text: '●👈',
+			icon: 'ti ti-circle',
 		}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 			type: 'link',
 			to: '/custom-emojis-manager',

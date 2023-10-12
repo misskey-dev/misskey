@@ -272,6 +272,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	gamingType: {
+		where: 'device',
+    default: 'dark',
+	},
 	bannerUrl:{
 		where: 'device',
 		default: bannerDark
@@ -441,6 +445,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: false
 	}
 }));
+
 
 // TODO: 他のタブと永続化されたstateを同期
 
