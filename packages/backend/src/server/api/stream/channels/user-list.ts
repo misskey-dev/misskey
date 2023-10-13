@@ -82,27 +82,12 @@ class UserListChannel extends Channel {
 
 		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
 
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.noteEntityService.pack(note.id, this.user, {
-				detail: true,
-			});
-
-			if (note.isHidden) {
-				return;
-			}
+		if (note.visibility === 'followers') {
+			if (!Object.hasOwn(this.following, note.userId)) return;
+		} else if (note.visibility === 'specified') {
+			if (!note.visibleUserIds!.includes(this.user!.id)) return;
 		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-					detail: true,
-				});
-			}
+			// TODO: ZQT: populate my reaction
 		}
 
 		// 関係ない返信は除外

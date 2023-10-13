@@ -38,18 +38,7 @@ class ChannelChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-				detail: true,
-			});
-		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-				detail: true,
-			});
-		}
+		// TODO: ZQT: populate my reaction
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;

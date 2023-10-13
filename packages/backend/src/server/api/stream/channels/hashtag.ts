@@ -43,12 +43,7 @@ class HashtagChannel extends Channel {
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
 		if (!matched) return;
 
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-				detail: true,
-			});
-		}
+		// TODO: ZQT: populate my reaction
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
