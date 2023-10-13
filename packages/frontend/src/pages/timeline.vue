@@ -43,7 +43,7 @@ import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { antennasCache, userListsCache } from '@/cache';
+import { antennasCache, userListsCache } from '@/cache.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -62,10 +62,14 @@ let queue = $ref(0);
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 const withRenotes = $ref(true);
-const withReplies = $ref(false);
+const withReplies = $ref($i ? defaultStore.state.tlWithReplies : false);
 const onlyFiles = $ref(false);
 
 watch($$(src), () => queue = 0);
+
+watch($$(withReplies), (x) => {
+	if ($i) defaultStore.set('tlWithReplies', x);
+});
 
 function queueUpdated(q: number): void {
 	queue = q;
