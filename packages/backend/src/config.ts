@@ -95,6 +95,8 @@ type Source = {
 		abuseDiscordHook?: string;
 		disableAbuseRepository?: boolean;
 		maxWebImageSize?: number;
+		withRepliesInHomeTL?: boolean;
+		withRepliesInUserList?: boolean;
 	}
 };
 
@@ -176,6 +178,8 @@ export type Config = {
 		abuseDiscordHook?: string;
 		disableAbuseRepository?: boolean;
 		maxWebImageSize?: number;
+		withRepliesInHomeTL?: boolean,
+		withRepliesInUserList: boolean,
 	}
 };
 
@@ -219,7 +223,9 @@ export function loadConfig(): Config {
 
 	return {
 		// to avoid merge conflict in the future, this is at top
-		nirila: config.nirila ?? {},
+		nirila: Object.assign({
+			withRepliesInUserList: true,
+		}, config.nirila ?? {}),
 		version,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
