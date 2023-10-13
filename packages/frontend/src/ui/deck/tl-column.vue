@@ -61,12 +61,6 @@ watch($$(withRenotes), v => {
 	});
 });
 
-watch($$(withReplies), v => {
-	updateColumn(props.column.id, {
-		withReplies: v,
-	});
-});
-
 watch($$(onlyFiles), v => {
 	updateColumn(props.column.id, {
 		onlyFiles: v,
@@ -115,11 +109,11 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: $$(withRenotes),
-}, {
+}, props.column.tl === 'local' || props.column.tl === 'social' ? {
 	type: 'switch',
-	text: i18n.ts.withReplies,
+	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: $$(withReplies),
-}, {
+} : undefined, {
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
 	ref: $$(onlyFiles),

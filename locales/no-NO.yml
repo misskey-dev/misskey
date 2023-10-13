@@ -575,9 +575,6 @@ _channel:
   nameAndDescription: "Navn og beskrivelse"
 _menuDisplay:
   hide: "Skjul"
-_wordMute:
-  soft: "Myk"
-  hard: "Hard"
 _theme:
   description: "Beskrivelse"
   color: "Farge"
