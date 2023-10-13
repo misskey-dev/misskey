@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
-				<MkFolder v-if="!isRequest" >
+				<MkFolder>
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
@@ -74,14 +74,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 		<div :class="$style.footer">
 			<div :class="$style.footerButtons">
-				<MkButton v-if="!isRequest" danger rounded style="margin: 0 auto;" @click="del()"><i class="ti ti-check"></i> {{ i18n.ts.delete }}</MkButton>
+                <MkButton v-if="!isRequest" danger rounded style="margin: 0 auto;" @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 				<MkButton v-if="validation" primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 				<MkButton v-else rounded style="margin: 0 auto;"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 			</div>
-            <MkSwitch v-if="!isRequest" v-model="draft" :disabled="isRequest">
-                {{ i18n.ts.draft }}
-            </MkSwitch>
-            <MkButton v-if="!isRequest" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+
         </div>
 	</div>
 </MkModalWindow>
