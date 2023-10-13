@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import rndstr from 'rndstr';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
@@ -71,10 +70,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: [],
-			});
-
-			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
-				emojiId: emoji.id,
 			});
 
 			return {

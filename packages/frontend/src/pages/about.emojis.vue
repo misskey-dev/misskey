@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
 		<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
-		<MkButton v-if="$i && (!$i.isModerator && !$i.policies.canManageCustomEmojis && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
+        <MkButton v-if="$i && (!$i.isModerator ||  !$i.policies.canManageCustomEmojis ||  $i.policies.canRequestCustomEmojis)" primary @click="edit" style='margin-top: 8px;' >{{ i18n.ts.requestCustomEmojis }}</MkButton>
 
 		<div class="query" style="margin-top: 10px;">
 			<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
@@ -36,11 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkFoldableSection>
 	</MkSpacer>
-	<MkSpacer v-if="tab === 'new'" :contentMax="1000" :marginMin="20">
-		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in newEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
-		</div>
-	</MkSpacer>
+
 	<MkSpacer v-if="tab === 'draft'" :contentMax="1000" :marginMin="20">
 		<div :class="$style.emojis">
             <XEmoji v-for="emoji in draftEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
@@ -69,9 +65,6 @@ const headerTabs = $computed(() => [{
 	key: 'emojis',
 	title: i18n.ts.list,
 }, {
-	key: 'new',
-	title: i18n.ts.newEmojis,
-}, {
 	key: 'draft',
 	title: i18n.ts.draftEmojis,
 }]);
@@ -89,7 +82,7 @@ const pagination = {
 let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = $ref(new Set());
-
+const draftEmojis = customEmojis.value.filter(emoji => emoji.draft);
 function search() {
 	if ((q === '' || q == null) && selectedTags.size === 0) {
 		searchEmojis = null;
@@ -136,6 +129,11 @@ watch($$(q), () => {
 watch($$(selectedTags), () => {
 	search();
 }, { deep: true });
+
+definePageMetadata({
+    title: i18n.ts.customEmojis,
+    icon: null,
+});
 </script>
 
 <style lang="scss" module>

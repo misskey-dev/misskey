@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-    :with-ok-button="true"
+    :with-ok-button="false "
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
-					<div class="_gaps">
+					<div class="_gaps" v-if="!isRequest">
 						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 						<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
@@ -69,7 +69,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-if="!isRequest" v-model="draft" :disabled="isRequest">
 					{{ i18n.ts.draft }}
 				</MkSwitch>
-				<MkButton v-if="emoji" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
@@ -227,7 +226,7 @@ async function done() {
     if (file) {
         params.fileId = file.id;
     }
-
+    console.log(props.emoji)
     if (props.emoji) {
         await os.apiWithDialog('admin/emoji/update', {
             id: props.emoji.id,

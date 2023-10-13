@@ -10,21 +10,21 @@
 						<div class="imgDark"><img :src="emoji.url" :alt="emoji.name"/></div>
 					</div>
 					<div class="info">
-						<div class="name _monospace">{{ i18n.ts.name }}: {{ emoji.name }}</div>
+						<div class="name">{{ i18n.ts.name }}: {{ emoji.name }}</div>
 						<div class="category">{{ i18n.ts.category }}:{{ emoji.category }}</div>
 						<div class="aliases">{{ i18n.ts.tags }}:{{ emoji.aliases.join(' ') }}</div>
 						<div class="license">{{ i18n.ts.license }}:{{ emoji.license }}</div>
 					</div>
 					<div class="edit-button">
-						<button class="edit _button" @click="editDraft(emoji)">
+						<MkButton primary class="edit" @click="editDraft(emoji)">
 							{{ i18n.ts.edit }}
-						</button>
-						<button class="draft _button" @click="undrafted(emoji)">
+						</MkButton>
+						<MkButton class="draft" @click="undrafted(emoji)">
 							{{ i18n.ts.undrafted }}
-						</button>
-						<button class="delete _button" @click="deleteDraft(emoji)">
+						</MkButton>
+						<MkButton danger class="delete" @click="deleteDraft(emoji)">
 							{{ i18n.ts.delete }}
-						</button>
+						</MkButton>
 					</div>
 				</div>
 			</template>
@@ -38,6 +38,7 @@ import { computed, defineAsyncComponent, ref, shallowRef } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import MkButton from '@/components/MkButton.vue';
 
 const emojisDraftPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -87,7 +88,7 @@ async function undrafted(emoji) {
 		license: emoji.license,
 		draft: false,
 		isSensitive: emoji.isSensitive,
-		localOnly: emoji.localOnly, 
+		localOnly: emoji.localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
 	});
 
@@ -118,14 +119,10 @@ async function deleteDraft(emoji) {
 
 .ldhfsamy {
 	> .emoji {
-		display: grid;
-		grid-template-rows: 40px 1fr;
-		grid-template-columns: 1fr 150px;
 		align-items: center;
 		padding: 11px;
 		text-align: left;
 		border: solid 1px var(--panel);
-		width: 100%;
 		margin: 10px;
 
 		> .img {
@@ -140,9 +137,9 @@ async function deleteDraft(emoji) {
 				display: grid;
 				grid-column: 1;
 				background-color: #fff;
-				
+                margin-bottom: 12px;
 				> img {
-					max-height: 30px;
+                  max-height: 64px;
 					max-width: 100%;
 				}
 			}
@@ -151,9 +148,9 @@ async function deleteDraft(emoji) {
 				display: grid;
 				grid-column: 2;
 				background-color: #000;
-
+                margin-bottom: 12px;
 				> img {
-					max-height: 30px;
+					max-height: 64px;
 					max-width: 100%;
 				}
 			}
@@ -191,37 +188,25 @@ async function deleteDraft(emoji) {
 
 		> .edit-button {
 			display: grid;
-			grid-row: 2;
-			grid-template-rows: 30px 30px 30px;
+			grid-template-rows: 42px;
+            margin-top: 6px;
 
 			> .edit {
 				grid-row: 1;
-				background-color: var(--buttonBg);
-				margin: 2px;
-
-				&:hover {
-					color: var(--accent);
-				}
+                width: 100%;
+                margin: 6px 0;
 			}
 
 			> .draft {
 				grid-row: 2;
-				background-color: var(--buttonBg);
-				margin: 2px;
-
-				&:hover {
-					color: var(--accent);
-				}
+                width: 100%;
+                margin: 6px 0;
 			}
 
 			> .delete {
-				background-color: var(--buttonBg);
 				grid-row: 3;
-				margin: 2px;
-
-				&:hover {
-					color: var(--accent);
-				}
+                width: 100%;
+                margin: 6px 0;
 			}
 		}
 	}
