@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { format as DateFormat } from 'date-fns';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, MiUser } from '@/models/_.js';
+import type { AntennasRepository, UsersRepository, UserListMembershipsRepository, MiUser } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -29,8 +29,8 @@ export class ExportAntennasProcessorService {
 		@Inject(DI.antennasRepository)
 		private antennsRepository: AntennasRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private driveService: DriveService,
 		private utilityService: UtilityService,
@@ -65,9 +65,9 @@ export class ExportAntennasProcessorService {
 			for (const [index, antenna] of antennas.entries()) {
 				let users: MiUser[] | undefined;
 				if (antenna.userListId !== null) {
-					const joinings = await this.userListJoiningsRepository.findBy({ userListId: antenna.userListId });
+					const memberships = await this.userListMembershipsRepository.findBy({ userListId: antenna.userListId });
 					users = await this.usersRepository.findBy({
-						id: In(joinings.map(j => j.userId)),
+						id: In(memberships.map(j => j.userId)),
 					});
 				}
 				write(JSON.stringify({

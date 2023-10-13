@@ -86,6 +86,8 @@ export const paramDef = {
 		tosUrl: { type: 'string', nullable: true },
 		repositoryUrl: { type: 'string' },
 		feedbackUrl: { type: 'string' },
+		impressumUrl: { type: 'string' },
+		privacyPolicyUrl: { type: 'string' },
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
@@ -108,6 +110,11 @@ export const paramDef = {
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
+		perLocalUserUserTimelineCacheMax: { type: 'integer' },
+		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
+		perUserHomeTimelineCacheMax: { type: 'integer' },
+		perUserListTimelineCacheMax: { type: 'integer' },
+		notesPerOneAd: { type: 'integer' },
 	},
 	required: [],
 } as const;
@@ -341,6 +348,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.feedbackUrl = ps.feedbackUrl;
 			}
 
+			if (ps.impressumUrl !== undefined) {
+				set.impressumUrl = ps.impressumUrl;
+			}
+
+			if (ps.privacyPolicyUrl !== undefined) {
+				set.privacyPolicyUrl = ps.privacyPolicyUrl;
+			}
+
 			if (ps.useObjectStorage !== undefined) {
 				set.useObjectStorage = ps.useObjectStorage;
 			}
@@ -439,6 +454,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.manifestJsonOverride !== undefined) {
 				set.manifestJsonOverride = ps.manifestJsonOverride;
+			}
+
+			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
+				set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
+			}
+
+			if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {
+				set.perRemoteUserUserTimelineCacheMax = ps.perRemoteUserUserTimelineCacheMax;
+			}
+
+			if (ps.perUserHomeTimelineCacheMax !== undefined) {
+				set.perUserHomeTimelineCacheMax = ps.perUserHomeTimelineCacheMax;
+			}
+
+			if (ps.perUserListTimelineCacheMax !== undefined) {
+				set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
+			}
+
+			if (ps.notesPerOneAd !== undefined) {
+				set.notesPerOneAd = ps.notesPerOneAd;
 			}
 
 			const before = await this.metaService.fetch(true);

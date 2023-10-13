@@ -615,6 +615,8 @@ defineExpose({
 						height: 1.25em;
 						vertical-align: -.25em;
 						pointer-events: none;
+						width: 100%;
+						object-fit: contain;
 					}
 				}
 			}
