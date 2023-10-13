@@ -12,6 +12,17 @@
 
 -->
 
+## 2023.x.x (unreleased)
+
+### General
+-
+
+### Client
+- Enhance: TLの返信表示オプションを記憶するように
+
+### Server
+-
+
 ## 2023.10.1
 ### General
 - Enhance: ローカルタイムライン、ソーシャルタイムラインで返信を含むかどうか設定可能に
