@@ -50,6 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
+				<MkSwitch v-model="hideMutedNotes">{{ i18n.ts.hideMutedNotes }}</MkSwitch>
 				<MkSwitch v-model="showVisibilityColor">{{ i18n.ts.showVisibilityColor}}</MkSwitch>
         <MkColorInput v-if="showVisibilityColor" v-model="homeColor">
           <template #label>{{ i18n.ts._visibility.home }}</template>
@@ -251,6 +252,7 @@ const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNot
 const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
+const hideMutedNotes = computed(defaultStore.makeGetterSetter('hideMutedNotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));

@@ -456,6 +456,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	hideMutedNotes: {
+		where: 'device',
+		default: false,
+	},
 }));
 
 
