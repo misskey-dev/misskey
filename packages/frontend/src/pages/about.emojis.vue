@@ -29,8 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkFoldableSection>
 
-		<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
-			<template #header>{{ category || i18n.ts.other }}</template>
+		<MkFoldableSection v-for="category in filteredCategories" v-once :key="category">
+			<template  #header>{{ category || i18n.ts.other }}</template>
 			<div :class="$style.emojis">
 				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category && !e.draft)" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 			</div>
@@ -68,7 +68,11 @@ const headerTabs = $computed(() => [{
 	key: 'draft',
 	title: i18n.ts.draftEmojis,
 }]);
-
+const filteredCategories = computed(() => {
+    return customEmojiCategories.value.filter((category: any) => {
+        return customEmojis.value.some((e: any) => e.category === category && !e.draft);
+    });
+});
 definePageMetadata(ref({}));
 
 const pagination = {
