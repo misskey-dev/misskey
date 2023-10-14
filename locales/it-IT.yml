@@ -1879,9 +1879,9 @@ _poll:
   remainingSeconds: "Rimangono {s} secondi"
 _visibility:
   public: "Pubblica"
-  publicDescription: "Visibile per tutti sul Fediverso"
+  publicDescription: "Visibilità pubblica"
   home: "Home"
-  homeDescription: "Visibile solo sulla timeline locale"
+  homeDescription: "Visibile solo nella Home"
   followers: "Follower"
   followersDescription: "Visibile solo ai tuoi follower"
   specified: "Nota diretta"
