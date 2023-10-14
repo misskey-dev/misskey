@@ -5,11 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -361,25 +359,6 @@ export class NoteEntityService implements OnModuleInit {
 				} : {}),
 			} : {}),
 		});
-
-		if (packed.user.isCat && packed.text) {
-			const tokens = packed.text ? mfm.parse(packed.text) : [];
-			function nyaizeNode(node: mfm.MfmNode) {
-				if (node.type === 'quote') return;
-				if (node.type === 'text') {
-					node.props.text = nyaize(node.props.text);
-				}
-				if (node.children) {
-					for (const child of node.children) {
-						nyaizeNode(child);
-					}
-				}
-			}
-			for (const node of tokens) {
-				nyaizeNode(node);
-			}
-			packed.text = mfm.toString(tokens);
-		}
 
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);
