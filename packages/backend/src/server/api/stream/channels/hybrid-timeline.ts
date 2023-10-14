@@ -22,6 +22,7 @@ class HybridTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
+	private q: string[][] = [['delmulin']];
 
 	constructor(
 		private metaService: MetaService,
@@ -50,13 +51,16 @@ class HybridTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
+		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
+
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
 		} else {
 			// その投稿のユーザーをフォローしていなかったら弾く
-			if ((this.user!.id !== note.userId) && !Object.hasOwn(this.following, note.userId)) return;
+			if ((this.user!.id !== note.userId) &&  !Object.hasOwn(this.following, note.userId) && !matched) return;
 		}
 
 		// Ignore notes from instances the user has muted

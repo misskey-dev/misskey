@@ -15,7 +15,7 @@ class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
-	private q: string[][];
+	private q: string[][] = [['delmulin']];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -29,10 +29,6 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		this.q = [['delmulin']];
-
-		if (this.q == null) return;
-
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
 	}
