@@ -4,13 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { checkWordMute } from '@/misc/check-word-mute.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
@@ -18,14 +15,10 @@ class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
-	private withRenotes: boolean;
-	private withReplies: boolean;
-	private withFiles: boolean;
+	private q: string[][];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
-		private metaService: MetaService,
-		private roleService: RoleService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -36,31 +29,19 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
-		if (!policies.ltlAvailable) return;
+		this.q = [['delmulin']];
 
-		this.withRenotes = params.withRenotes ?? true;
-		this.withReplies = params.withReplies ?? false;
-		this.withFiles = params.withFiles ?? false;
+		if (this.q == null) return;
 
-		// Subscribe events
+		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
-
-		if (note.user.host !== null) return;
-		if (note.visibility !== 'public') return;
-		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
-
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-				detail: true,
-			});
-		}
+		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
+		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
+		if (!matched) return;
 
 		// Renoteなら再pack
 		if (note.renoteId != null) {
@@ -68,15 +49,6 @@ class LocalTimelineChannel extends Channel {
 				detail: true,
 			});
 		}
-
-		// 関係ない返信は除外
-		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
-			const reply = note.reply;
-			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
-		}
-
-		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
@@ -103,8 +75,6 @@ export class LocalTimelineChannelService {
 	public readonly requireCredential = LocalTimelineChannel.requireCredential;
 
 	constructor(
-		private metaService: MetaService,
-		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -113,8 +83,6 @@ export class LocalTimelineChannelService {
 	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
 		return new LocalTimelineChannel(
 			this.noteEntityService,
-			this.metaService,
-			this.roleService,
 			id,
 			connection,
 		);
