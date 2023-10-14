@@ -87,8 +87,9 @@ class HybridTimelineChannel extends Channel {
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
-		if (note.renote) {
-			// TODO: ZQT: populate my reaction
+		if (this.user && note.renote && !note.text) {
+			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+			note.renote.myReaction = myRenoteReaction;
 		}
 
 		this.connection.cacheNote(note);
