@@ -10,7 +10,7 @@ export class InstanceSilence1697247230117 {
         await queryRunner.query(`ALTER TABLE "meta" ADD "silencedHosts" character varying(1024) array NOT NULL DEFAULT '{}'`);
     }
 
-    async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "flash" ALTER COLUMN "visibility" DROP NOT NULL`);
-    }
+		async down(queryRunner) {
+				await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "silencedHosts"`);
+		}
 }
