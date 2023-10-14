@@ -102,9 +102,9 @@ class UserListChannel extends Channel {
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
-		if (this.user && note.renote && !note.text) {
-			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-			note.renote.myReaction = myRenoteReaction;
+		if (this.user && note.renoteId && !note.text) {
+			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renoteId, this.user.id);
+			note.renote!.myReaction = myRenoteReaction;
 		}
 
 		this.connection.cacheNote(note);
