@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
-import type { MiMeta } from '@/models/Meta.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MetaService } from '@/core/MetaService.js';
+import {Injectable} from '@nestjs/common';
+import type {MiMeta} from '@/models/Meta.js';
+import {ModerationLogService} from '@/core/ModerationLogService.js';
+import {Endpoint} from '@/server/api/endpoint-base.js';
+import {MetaService} from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -19,102 +19,119 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		disableRegistration: { type: 'boolean', nullable: true },
-		pinnedUsers: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		hiddenTags: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		blockedHosts: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		sensitiveWords: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
-		mascotImageUrl: { type: 'string', nullable: true },
-		bannerUrl: { type: 'string', nullable: true },
-		serverErrorImageUrl: { type: 'string', nullable: true },
-		infoImageUrl: { type: 'string', nullable: true },
-		notFoundImageUrl: { type: 'string', nullable: true },
-		iconUrl: { type: 'string', nullable: true },
-		app192IconUrl: { type: 'string', nullable: true },
-		app512IconUrl: { type: 'string', nullable: true },
-		backgroundImageUrl: { type: 'string', nullable: true },
-		logoImageUrl: { type: 'string', nullable: true },
-		name: { type: 'string', nullable: true },
-		shortName: { type: 'string', nullable: true },
-		description: { type: 'string', nullable: true },
-		defaultLightTheme: { type: 'string', nullable: true },
-		defaultDarkTheme: { type: 'string', nullable: true },
-		cacheRemoteFiles: { type: 'boolean' },
-		cacheRemoteSensitiveFiles: { type: 'boolean' },
-		emailRequiredForSignup: { type: 'boolean' },
-		enableHcaptcha: { type: 'boolean' },
-		hcaptchaSiteKey: { type: 'string', nullable: true },
-		hcaptchaSecretKey: { type: 'string', nullable: true },
-		enableRecaptcha: { type: 'boolean' },
-		recaptchaSiteKey: { type: 'string', nullable: true },
-		recaptchaSecretKey: { type: 'string', nullable: true },
-		enableTurnstile: { type: 'boolean' },
-		turnstileSiteKey: { type: 'string', nullable: true },
-		turnstileSecretKey: { type: 'string', nullable: true },
-		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
-		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
-		setSensitiveFlagAutomatically: { type: 'boolean' },
-		enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
-		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
-		maintainerName: { type: 'string', nullable: true },
-		maintainerEmail: { type: 'string', nullable: true },
-		langs: { type: 'array', items: {
-			type: 'string',
-		} },
-		summalyProxy: { type: 'string', nullable: true },
-		deeplAuthKey: { type: 'string', nullable: true },
-		deeplIsPro: { type: 'boolean' },
-		enableEmail: { type: 'boolean' },
-		email: { type: 'string', nullable: true },
-		smtpSecure: { type: 'boolean' },
-		smtpHost: { type: 'string', nullable: true },
-		smtpPort: { type: 'integer', nullable: true },
-		smtpUser: { type: 'string', nullable: true },
-		smtpPass: { type: 'string', nullable: true },
-		enableServiceWorker: { type: 'boolean' },
-		swPublicKey: { type: 'string', nullable: true },
-		swPrivateKey: { type: 'string', nullable: true },
-		tosUrl: { type: 'string', nullable: true },
-		repositoryUrl: { type: 'string' },
-		feedbackUrl: { type: 'string' },
-		impressumUrl: { type: 'string' },
-		privacyPolicyUrl: { type: 'string' },
-		useObjectStorage: { type: 'boolean' },
-		objectStorageBaseUrl: { type: 'string', nullable: true },
-		objectStorageBucket: { type: 'string', nullable: true },
-		objectStoragePrefix: { type: 'string', nullable: true },
-		objectStorageEndpoint: { type: 'string', nullable: true },
-		objectStorageRegion: { type: 'string', nullable: true },
-		objectStoragePort: { type: 'integer', nullable: true },
-		objectStorageAccessKey: { type: 'string', nullable: true },
-		objectStorageSecretKey: { type: 'string', nullable: true },
-		objectStorageUseSSL: { type: 'boolean' },
-		objectStorageUseProxy: { type: 'boolean' },
-		objectStorageSetPublicRead: { type: 'boolean' },
-		objectStorageS3ForcePathStyle: { type: 'boolean' },
-		enableIpLogging: { type: 'boolean' },
-		enableActiveEmailValidation: { type: 'boolean' },
-		enableChartsForRemoteUser: { type: 'boolean' },
-		enableChartsForFederatedInstances: { type: 'boolean' },
-		enableServerMachineStats: { type: 'boolean' },
-		enableIdenticonGeneration: { type: 'boolean' },
-		serverRules: { type: 'array', items: { type: 'string' } },
-		preservedUsernames: { type: 'array', items: { type: 'string' } },
-		manifestJsonOverride: { type: 'string' },
-		perLocalUserUserTimelineCacheMax: { type: 'integer' },
-		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
-		perUserHomeTimelineCacheMax: { type: 'integer' },
-		perUserListTimelineCacheMax: { type: 'integer' },
-		notesPerOneAd: { type: 'integer' },
+		disableRegistration: {type: 'boolean', nullable: true},
+		pinnedUsers: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			}
+		},
+		hiddenTags: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			}
+		},
+		blockedHosts: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			}
+		},
+		sensitiveWords: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			}
+		},
+		themeColor: {type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$'},
+		mascotImageUrl: {type: 'string', nullable: true},
+		bannerUrl: {type: 'string', nullable: true},
+		serverErrorImageUrl: {type: 'string', nullable: true},
+		infoImageUrl: {type: 'string', nullable: true},
+		notFoundImageUrl: {type: 'string', nullable: true},
+		iconUrl: {type: 'string', nullable: true},
+		app192IconUrl: {type: 'string', nullable: true},
+		app512IconUrl: {type: 'string', nullable: true},
+		backgroundImageUrl: {type: 'string', nullable: true},
+		logoImageUrl: {type: 'string', nullable: true},
+		name: {type: 'string', nullable: true},
+		shortName: {type: 'string', nullable: true},
+		description: {type: 'string', nullable: true},
+		defaultLightTheme: {type: 'string', nullable: true},
+		defaultDarkTheme: {type: 'string', nullable: true},
+		cacheRemoteFiles: {type: 'boolean'},
+		cacheRemoteSensitiveFiles: {type: 'boolean'},
+		emailRequiredForSignup: {type: 'boolean'},
+		enableHcaptcha: {type: 'boolean'},
+		hcaptchaSiteKey: {type: 'string', nullable: true},
+		hcaptchaSecretKey: {type: 'string', nullable: true},
+		enableRecaptcha: {type: 'boolean'},
+		recaptchaSiteKey: {type: 'string', nullable: true},
+		recaptchaSecretKey: {type: 'string', nullable: true},
+		enableTurnstile: {type: 'boolean'},
+		turnstileSiteKey: {type: 'string', nullable: true},
+		turnstileSecretKey: {type: 'string', nullable: true},
+		sensitiveMediaDetection: {type: 'string', enum: ['none', 'all', 'local', 'remote']},
+		sensitiveMediaDetectionSensitivity: {type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh']},
+		setSensitiveFlagAutomatically: {type: 'boolean'},
+		enableSensitiveMediaDetectionForVideos: {type: 'boolean'},
+		proxyAccountId: {type: 'string', format: 'misskey:id', nullable: true},
+		maintainerName: {type: 'string', nullable: true},
+		maintainerEmail: {type: 'string', nullable: true},
+		langs: {
+			type: 'array', items: {
+				type: 'string',
+			}
+		},
+		summalyProxy: {type: 'string', nullable: true},
+		deeplAuthKey: {type: 'string', nullable: true},
+		deeplIsPro: {type: 'boolean'},
+		enableEmail: {type: 'boolean'},
+		email: {type: 'string', nullable: true},
+		smtpSecure: {type: 'boolean'},
+		smtpHost: {type: 'string', nullable: true},
+		smtpPort: {type: 'integer', nullable: true},
+		smtpUser: {type: 'string', nullable: true},
+		smtpPass: {type: 'string', nullable: true},
+		enableServiceWorker: {type: 'boolean'},
+		swPublicKey: {type: 'string', nullable: true},
+		swPrivateKey: {type: 'string', nullable: true},
+		tosUrl: {type: 'string', nullable: true},
+		repositoryUrl: {type: 'string'},
+		feedbackUrl: {type: 'string'},
+		impressumUrl: {type: 'string'},
+		privacyPolicyUrl: {type: 'string'},
+		useObjectStorage: {type: 'boolean'},
+		objectStorageBaseUrl: {type: 'string', nullable: true},
+		objectStorageBucket: {type: 'string', nullable: true},
+		objectStoragePrefix: {type: 'string', nullable: true},
+		objectStorageEndpoint: {type: 'string', nullable: true},
+		objectStorageRegion: {type: 'string', nullable: true},
+		objectStoragePort: {type: 'integer', nullable: true},
+		objectStorageAccessKey: {type: 'string', nullable: true},
+		objectStorageSecretKey: {type: 'string', nullable: true},
+		objectStorageUseSSL: {type: 'boolean'},
+		objectStorageUseProxy: {type: 'boolean'},
+		objectStorageSetPublicRead: {type: 'boolean'},
+		objectStorageS3ForcePathStyle: {type: 'boolean'},
+		enableIpLogging: {type: 'boolean'},
+		enableActiveEmailValidation: {type: 'boolean'},
+		enableChartsForRemoteUser: {type: 'boolean'},
+		enableChartsForFederatedInstances: {type: 'boolean'},
+		enableServerMachineStats: {type: 'boolean'},
+		enableIdenticonGeneration: {type: 'boolean'},
+		serverRules: {type: 'array', items: {type: 'string'}},
+		preservedUsernames: {type: 'array', items: {type: 'string'}},
+		manifestJsonOverride: {type: 'string'},
+		perLocalUserUserTimelineCacheMax: {type: 'integer'},
+		perRemoteUserUserTimelineCacheMax: {type: 'integer'},
+		perUserHomeTimelineCacheMax: {type: 'integer'},
+		perUserListTimelineCacheMax: {type: 'integer'},
+		notesPerOneAd: {type: 'integer'},
+		silencedHosts: {
+			type: "array",
+			nullable: true,
+			items: {
+				type: "string",
+			},
+		},
 	},
 	required: [],
 } as const;
@@ -147,7 +164,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
-
+			if (Array.isArray(ps.silencedHosts)) {
+				let lastValue = "";
+				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== "" && h !== lv && !set.blockedHosts?.includes(h);
+				});
+			}
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
