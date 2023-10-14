@@ -54,8 +54,6 @@ class LocalTimelineChannel extends Channel {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
 
-		// TODO: ZQT: populate my reaction
-
 		// 関係ない返信は除外
 		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
 			const reply = note.reply;
@@ -71,6 +69,10 @@ class LocalTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (note.renote) {
+			// TODO: ZQT: populate my reaction
+		}
 
 		this.connection.cacheNote(note);
 

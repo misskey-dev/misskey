@@ -52,8 +52,6 @@ class GlobalTimelineChannel extends Channel {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 
-		// TODO: ZQT: populate my reaction
-
 		// 関係ない返信は除外
 		if (note.reply && !this.following[note.userId]?.withReplies) {
 			const reply = note.reply;
@@ -72,6 +70,10 @@ class GlobalTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (note.renote) {
+			// TODO: ZQT: populate my reaction
+		}
 
 		this.connection.cacheNote(note);
 

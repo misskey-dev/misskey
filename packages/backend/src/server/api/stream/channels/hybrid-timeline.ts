@@ -66,8 +66,6 @@ class HybridTimelineChannel extends Channel {
 			if (!Object.hasOwn(this.following, note.userId)) return;
 		} else if (note.visibility === 'specified') {
 			if (!note.visibleUserIds!.includes(this.user!.id)) return;
-		} else {
-			// TODO: ZQT: populate my reaction
 		}
 
 		// Ignore notes from instances the user has muted
@@ -88,6 +86,10 @@ class HybridTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (note.renote) {
+			// TODO: ZQT: populate my reaction
+		}
 
 		this.connection.cacheNote(note);
 

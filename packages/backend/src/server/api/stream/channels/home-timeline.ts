@@ -55,8 +55,6 @@ class HomeTimelineChannel extends Channel {
 			if (!Object.hasOwn(this.following, note.userId)) return;
 		} else if (note.visibility === 'specified') {
 			if (!note.visibleUserIds!.includes(this.user!.id)) return;
-		} else {
-			// TODO: ZQT: populate my reaction
 		}
 
 		// 関係ない返信は除外
@@ -74,6 +72,10 @@ class HomeTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (note.renote) {
+			// TODO: ZQT: populate my reaction
+		}
 
 		this.connection.cacheNote(note);
 

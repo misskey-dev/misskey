@@ -38,14 +38,16 @@ class ChannelChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
-		// TODO: ZQT: populate my reaction
-
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (note.renote) {
+			// TODO: ZQT: populate my reaction
+		}
 
 		this.connection.cacheNote(note);
 
