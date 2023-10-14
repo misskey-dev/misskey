@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
 					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
-                    <MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silence }}</MkSwitch>
+                    <MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
                     <MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>
