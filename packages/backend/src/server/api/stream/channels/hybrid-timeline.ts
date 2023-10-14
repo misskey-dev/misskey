@@ -59,7 +59,7 @@ class HybridTimelineChannel extends Channel {
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
 		} else {
-			// その投稿のユーザーをフォローしていなかったら弾く
+			// その投稿のユーザーをフォローしておらず、かつデフォルトタグが含まれていなかったら弾く
 			if ((this.user!.id !== note.userId) &&  !Object.hasOwn(this.following, note.userId) && !matched) return;
 		}
 
