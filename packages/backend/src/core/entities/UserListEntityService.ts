@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { UserList } from '@/models/entities/UserList.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUserList } from '@/models/UserList.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -13,8 +18,8 @@ export class UserListEntityService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userEntityService: UserEntityService,
 	) {
@@ -22,11 +27,11 @@ export class UserListEntityService {
 
 	@bindThis
 	public async pack(
-		src: UserList['id'] | UserList,
+		src: MiUserList['id'] | MiUserList,
 	): Promise<Packed<'UserList'>> {
 		const userList = typeof src === 'object' ? src : await this.userListsRepository.findOneByOrFail({ id: src });
 
-		const users = await this.userListJoiningsRepository.findBy({
+		const users = await this.userListMembershipsRepository.findBy({
 			userListId: userList.id,
 		});
 
@@ -37,6 +42,19 @@ export class UserListEntityService {
 			userIds: users.map(x => x.userId),
 			isPublic: userList.isPublic,
 		};
+	}
+
+	@bindThis
+	public async packMembershipsMany(
+		memberships: MiUserListMembership[],
+	) {
+		return Promise.all(memberships.map(async x => ({
+			id: x.id,
+			createdAt: x.createdAt.toISOString(),
+			userId: x.userId,
+			user: await this.userEntityService.pack(x.userId),
+			withReplies: x.withReplies,
+		})));
 	}
 }
 

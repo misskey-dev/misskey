@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" class="_panel">
 	<b>{{ clip.name }}</b>
@@ -10,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 defineProps<{
 	clip: any;

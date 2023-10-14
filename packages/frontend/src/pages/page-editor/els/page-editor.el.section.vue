@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
@@ -20,9 +25,9 @@
 import { defineAsyncComponent, inject, onMounted, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { deepClone } from '@/scripts/clone.js';
 import MkButton from '@/components/MkButton.vue';
 
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended }]">
 	<img class="icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
@@ -10,13 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import * as os from '@/os';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
+import * as os from '@/os.js';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
-	instance: misskey.entities.Instance;
+	instance: Misskey.entities.Instance;
 }>();
 
 let chartValues = $ref<number[] | null>(null);

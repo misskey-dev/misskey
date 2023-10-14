@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
-import { $i } from '@/account';
-import { url } from '@/config';
+import { $i } from '@/account.js';
+import { url } from '@/config.js';
 
 let stream: Misskey.Stream | null = null;
 

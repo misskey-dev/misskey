@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <XColumn :column="column" :isStacked="isStacked">
 	<template #header><i class="ti ti-mail" style="margin-right: 8px;"></i>{{ column.name }}</template>
@@ -9,7 +14,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XColumn from './column.vue';
-import { Column } from './deck-store';
+import { Column } from './deck-store.js';
 import MkNotes from '@/components/MkNotes.vue';
 
 defineProps<{

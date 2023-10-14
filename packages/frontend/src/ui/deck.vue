@@ -1,8 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="[$style.root, { [$style.rootIsMobile]: isMobile }]">
 	<XSidebar v-if="!isMobile"/>
 
 	<div :class="$style.main">
+		<XAnnouncements v-if="$i" :class="$style.announcements"/>
 		<XStatusBars/>
 		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
@@ -84,19 +90,19 @@
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store';
+import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollContainer } from '@/scripts/scroll';
-import * as os from '@/os';
-import { navbarItemDef } from '@/navbar';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { mainRouter } from '@/router';
-import { unisonReload } from '@/scripts/unison-reload';
-import { deviceKind } from '@/scripts/device-kind';
-import { defaultStore } from '@/store';
+import { getScrollContainer } from '@/scripts/scroll.js';
+import * as os from '@/os.js';
+import { navbarItemDef } from '@/navbar.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { mainRouter } from '@/router.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { deviceKind } from '@/scripts/device-kind.js';
+import { defaultStore } from '@/store.js';
 import XMainColumn from '@/ui/deck/main-column.vue';
 import XTlColumn from '@/ui/deck/tl-column.vue';
 import XAntennaColumn from '@/ui/deck/antenna-column.vue';
@@ -108,6 +114,7 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
+const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
 const columnComponents = {
 	main: XMainColumn,

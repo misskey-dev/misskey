@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <time :title="absolute">
 	<template v-if="invalid">{{ i18n.ts._ago.invalid }}</template>
@@ -10,8 +15,8 @@
 <script lang="ts" setup>
 import isChromatic from 'chromatic/isChromatic';
 import { onMounted, onUnmounted } from 'vue';
-import { i18n } from '@/i18n';
-import { dateTimeFormat } from '@/scripts/intl-const';
+import { i18n } from '@/i18n.js';
+import { dateTimeFormat } from '@/scripts/intl-const.js';
 
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const packedAntennaSchema = {
 	type: 'object',
 	properties: {
@@ -42,7 +47,7 @@ export const packedAntennaSchema = {
 		src: {
 			type: 'string',
 			optional: false, nullable: false,
-			enum: ['home', 'all', 'users', 'list'],
+			enum: ['home', 'all', 'users', 'list', 'users_blacklist'],
 		},
 		userListId: {
 			type: 'string',

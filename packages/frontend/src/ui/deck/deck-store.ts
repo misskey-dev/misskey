@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import { Storage } from '../../pizzax';
-import { api } from '@/os';
-import { deepClone } from '@/scripts/clone';
+import { Storage } from '@/pizzax.js';
+import { api } from '@/os.js';
+import { deepClone } from '@/scripts/clone.js';
 
 type ColumnWidget = {
 	name: string;
@@ -23,8 +28,11 @@ export type Column = {
 	listId?: string;
 	channelId?: string;
 	roleId?: string;
-	includingTypes?: typeof notificationTypes[number][];
+	excludeTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
+	withRenotes?: boolean;
+	withReplies?: boolean;
+	onlyFiles?: boolean;
 };
 
 export const deckStore = markRaw(new Storage('deck', {

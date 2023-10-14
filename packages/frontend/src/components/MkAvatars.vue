@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div v-for="user in users.slice(0, limit)" :key="user.id" style="display:inline-block;width:32px;height:32px;margin-right:8px;">
@@ -9,8 +14,8 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import * as os from '@/os';
-import { UserLite } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	userIds: string[];
@@ -19,11 +24,11 @@ const props = withDefaults(defineProps<{
 	limit: Infinity,
 });
 
-const users = ref<UserLite[]>([]);
+const users = ref<Misskey.entities.UserLite[]>([]);
 
 onMounted(async () => {
 	users.value = await os.api('users/show', {
 		userIds: props.userIds,
-	}) as unknown as UserLite[];
+	}) as unknown as Misskey.entities.UserLite[];
 });
 </script>

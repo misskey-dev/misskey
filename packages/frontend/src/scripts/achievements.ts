@@ -1,5 +1,10 @@
-import * as os from '@/os';
-import { $i } from '@/account';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
 
 export const ACHIEVEMENT_TYPES = [
 	'notes1',
@@ -76,6 +81,7 @@ export const ACHIEVEMENT_TYPES = [
 	'setNameToSyuilo',
 	'cookieClicked',
 	'brainDiver',
+	'smashTestNotificationButton',
 ] as const;
 
 export const ACHIEVEMENT_BADGES = {
@@ -447,6 +453,11 @@ export const ACHIEVEMENT_BADGES = {
 	'brainDiver': {
 		img: '/fluent-emoji/1f9e0.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
+		frame: 'bronze',
+	},
+	'smashTestNotificationButton': {
+		img: '/fluent-emoji/1f514.png',
+		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
 /* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>

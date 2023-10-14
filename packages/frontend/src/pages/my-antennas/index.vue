@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -23,18 +28,17 @@
 </template>
 
 <script lang="ts" setup>
-import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { antennasCache } from '@/cache';
-import { api } from '@/os';
 import { onActivated } from 'vue';
-import { infoImageUrl } from '@/instance';
+import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { antennasCache } from '@/cache';
+import { infoImageUrl } from '@/instance.js';
 
 const antennas = $computed(() => antennasCache.value.value ?? []);
 
 function fetch() {
-	antennasCache.fetch(() => api('antennas/list'));
+	antennasCache.fetch();
 }
 
 fetch();
@@ -57,7 +61,7 @@ definePageMetadata({
 });
 
 onActivated(() => {
-	antennasCache.fetch(() => api('antennas/list'));
+	antennasCache.fetch();
 });
 </script>
 

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	:class="[$style.root, { [$style.isSelected]: isSelected }]"
@@ -36,11 +41,14 @@
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import bytes from '@/filters/bytes';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
+import bytes from '@/filters/bytes.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { useRouter } from '@/router.js';
+import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
@@ -66,7 +74,7 @@ function onClick(ev: MouseEvent) {
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
-		os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+		router.push(`/my/drive/file/${props.file.id}`);
 	}
 }
 
