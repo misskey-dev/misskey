@@ -2226,6 +2226,22 @@ export type Endpoints = {
             };
         };
     };
+    'fetch-rss': {
+        req: {
+            url: string;
+        };
+        res: TODO;
+    };
+    'fetch-external-resources': {
+        req: {
+            url: string;
+            hash: string;
+        };
+        res: {
+            type: string;
+            data: string;
+        };
+    };
 };
 
 declare namespace entities {
