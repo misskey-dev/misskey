@@ -52,16 +52,15 @@ class HybridTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		// チャンネルの投稿ではなく、自分自身の投稿 または
-		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
-		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
-		// フォローしているチャンネルの投稿 の場合だけ
-		if (!(
-			(note.channelId == null && this.user!.id === note.userId) ||
-			(note.channelId == null && Object.hasOwn(this.following, note.userId)) ||
-			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
-			(note.channelId != null && this.followingChannels.has(note.channelId))
-		)) return;
+		if (note.channelId) {
+			if (!this.followingChannels.has(note.channelId)) return;
+		} else {
+			// その投稿のユーザーをフォローしていなかったら弾く
+			if ((this.user!.id !== note.userId) && !Object.hasOwn(this.following, note.userId)) return;
+		}
+
+		// Ignore notes from instances the user has muted
+		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await this.noteEntityService.pack(note.id, this.user!, {
@@ -90,7 +89,7 @@ class HybridTimelineChannel extends Channel {
 		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
 
 		// 関係ない返信は除外
-		if (note.reply && !this.following[note.userId]?.withReplies && !this.withReplies) {
+		if (note.reply && !this.following[note.userId]?.withReplies) {
 			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
