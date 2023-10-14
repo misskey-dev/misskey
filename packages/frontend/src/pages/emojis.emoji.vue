@@ -7,14 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <button v-if="emoji.draft" class="zuvgdzyu _button emoji-draft" @click="menu">
 	<img style="max-height: 64px;object-fit: contain;" :src="emoji.url" class="img" loading="lazy"/>
 	<div class="body">
-		<div  class="name _monospace">{{ emoji.name + ' (draft)' }}</div>
+		<div class="name _monospace">{{ emoji.name + ' (draft)' }}</div>
 		<div class="info">{{ emoji.aliases.join(' ') }}</div>
 	</div>
 </button>
 <button v-else class="_button" :class="$style.root" @click="menu">
 	<img :src="emoji.url" :class="$style.img" loading="lazy"/>
 	<div :class="$style.body">
-		<div :class="$style.name" >{{ emoji.name }}</div>
+		<div :class="$style.name">{{ emoji.name }}</div>
 		<div :class="$style.info">{{ emoji.aliases.join(' ') }}</div>
 	</div>
 </button>

@@ -97,7 +97,6 @@ import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-import { $i } from '@/account';
 
 const props = defineProps<{
 	emoji?: any,
@@ -117,6 +116,7 @@ let file = $ref<Misskey.entities.DriveFile>();
 let chooseFile: DriveFile|null = $ref(null);
 let draft = $ref(props.emoji ? props.emoji.draft : false);
 let isRequest = $ref(props.isRequest);
+let url;
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
@@ -242,8 +242,8 @@ async function done() {
 		dialog.close();
 	} else {
 		const created = isRequest
-		 ? await os.apiWithDialog('admin/emoji/add-draft', params)
-		 : await os.apiWithDialog('admin/emoji/add', params);
+			? await os.apiWithDialog('admin/emoji/add-draft', params)
+			: await os.apiWithDialog('admin/emoji/add', params);
 
 		emit('done', {
 			created: created,

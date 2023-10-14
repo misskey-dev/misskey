@@ -85,18 +85,10 @@ const headerTabs = $computed(() => [{
 }]);
 const filteredCategories = computed(() => {
 	return customEmojiCategories.value.filter((category: any) => {
-		return customEmojis.value.some((e: any) => e.category === category && !e.draft);
+		return customEmojis.value.some((em: any) => em.category === category && !em.draft);
 	});
 });
 definePageMetadata(ref({}));
-
-const pagination = {
-	endpoint: 'admin/emoji/list' as const,
-	limit: 30,
-	params: computed(() => ({
-		query: (query.value && query.value !== '') ? query.value : null,
-	})),
-};
 
 let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
