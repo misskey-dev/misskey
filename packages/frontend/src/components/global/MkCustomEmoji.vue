@@ -25,7 +25,7 @@ const props = defineProps<{
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
-const isDraft = computed(() => customEmojisNameMap.value.get(customEmojiName.value)?.draft ?? false);
+const isDraft = computed(() => customEmojisMap.get(customEmojiName.value)?.draft ?? false);
 
 const rawUrl = computed(() => {
 	if (props.url) {

@@ -19,7 +19,13 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type {
+	FollowingsRepository,
+	FollowRequestsRepository,
+	InstancesRepository,
+	UserProfilesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
@@ -51,25 +57,18 @@ export class UserFollowingService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-
 		@Inject(DI.config)
 		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
-
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
-
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
@@ -91,7 +90,9 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async follow(_follower: { id: MiUser['id'] }, _followee: { id: MiUser['id'] }, requestId?: string, silent = false): Promise<void> {
+	public async follow(_follower: { id: MiUser['id'] }, _followee: {
+		id: MiUser['id']
+	}, requestId?: string, silent = false): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
@@ -184,10 +185,18 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async insertFollowingDoc(
 		followee: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox']
 		},
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox']
 		},
 		silent = false,
 	): Promise<void> {
@@ -233,8 +242,7 @@ export class UserFollowingService implements OnModuleInit {
 			});
 
 			// 通知を作成
-			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
-			}, followee.id);
+			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {}, followee.id);
 		}
 
 		if (alreadyFollowed) return;
@@ -306,18 +314,25 @@ export class UserFollowingService implements OnModuleInit {
 			});
 
 			// 通知を作成
-			this.notificationService.createNotification(followee.id, 'follow', {
-			}, follower.id);
+			this.notificationService.createNotification(followee.id, 'follow', {}, follower.id);
 		}
 	}
 
 	@bindThis
 	public async unfollow(
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
 	): Promise<void> {
@@ -446,10 +461,18 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async createFollowRequest(
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox'];
 		},
 		requestId?: string,
 	): Promise<void> {
@@ -541,7 +564,11 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async acceptFollowRequest(
 		followee: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox'];
 		},
 		follower: MiUser,
 	): Promise<void> {
@@ -569,7 +596,11 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async acceptAllFollowRequests(
 		user: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id'];
+			host: MiUser['host'];
+			uri: MiUser['host'];
+			inbox: MiUser['inbox'];
+			sharedInbox: MiUser['sharedInbox'];
 		},
 	): Promise<void> {
 		const requests = await this.followRequestsRepository.findBy({

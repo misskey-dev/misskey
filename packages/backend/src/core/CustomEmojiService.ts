@@ -16,10 +16,8 @@ import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
 @Injectable()
@@ -30,12 +28,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -119,7 +111,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
-        draft: boolean;
+		draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
@@ -134,7 +126,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
-            draft: data.draft,
+			draft: data.draft,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
 		});
 

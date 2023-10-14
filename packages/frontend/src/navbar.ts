@@ -12,7 +12,6 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
-import {defaultStore} from "@/store.js";
 
 export const navbarItemDef = reactive({
 	notifications: {
