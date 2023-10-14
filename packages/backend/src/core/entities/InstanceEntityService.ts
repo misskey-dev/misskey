@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {Inject, Injectable} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
 import type { MiInstance } from '@/models/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
+import { shouldSilenceInstance } from '@/misc/should-block-instance.js';
+import { DI } from '@/di-symbols.js';
 import { UtilityService } from '../UtilityService.js';
-import {shouldSilenceInstance} from "@/misc/should-block-instance.js";
-import { DataSource } from 'typeorm';
-import {DI} from "@/di-symbols.js";
 
 @Injectable()
 export class InstanceEntityService {
@@ -49,7 +48,7 @@ export class InstanceEntityService {
 			description: instance.description,
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
-			isSilenced: await shouldSilenceInstance(instance.host,this.db),
+			isSilenced: await shouldSilenceInstance(instance.host, this.db),
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,

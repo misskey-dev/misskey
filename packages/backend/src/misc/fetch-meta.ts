@@ -1,16 +1,16 @@
 import { DataSource } from 'typeorm';
-import { MiMeta } from "@/models/Meta.js";
+import { MiMeta } from '@/models/Meta.js';
 
 let cache: MiMeta;
 
-export async function fetchMeta(noCache = false , db: DataSource): Promise<MiMeta> {
+export async function fetchMeta(noCache = false, db: DataSource): Promise<MiMeta> {
 	if (!noCache && cache) return cache;
 
 	return await db.transaction(async (transactionalEntityManager) => {
 		// New IDs are prioritized because multiple records may have been created due to past bugs.
 		const metas = await transactionalEntityManager.find(MiMeta, {
 			order: {
-				id: "DESC",
+				id: 'DESC',
 			},
 		});
 
@@ -25,9 +25,9 @@ export async function fetchMeta(noCache = false , db: DataSource): Promise<MiMet
 				.upsert(
 					MiMeta,
 					{
-						id: "x",
+						id: 'x',
 					},
-					["id"],
+					['id'],
 				)
 				.then((x) =>
 					transactionalEntityManager.findOneByOrFail(MiMeta, x.identifiers[0]),

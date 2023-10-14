@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" v-model:tab="tab" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32" >
+	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<MkTextarea v-if="tab === 'block'" v-model="blockedHosts">
 				<span>{{ i18n.ts.blockedInstances }}</span>
@@ -14,9 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkTextarea>
 			<MkTextarea v-else-if="tab === 'silence'" v-model="silencedHosts" class="_formBlock">
 				<span>{{ i18n.ts.silencedInstances }}</span>
-				<template #caption>{{
+				<template #caption>
+					{{
 						i18n.ts.silencedInstancesDescription
-					}}</template>
+					}}
+				</template>
 			</MkTextarea>
 			<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</FormSuspense>
@@ -25,7 +27,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -36,8 +37,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let blockedHosts: string = $ref('');
-let silencedHosts: string = $ref("");
-let tab = $ref("block");
+let silencedHosts: string = $ref('');
+let tab = $ref('block');
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -48,7 +49,7 @@ async function init() {
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		blockedHosts: blockedHosts.split('\n') || [],
-		silencedHosts: silencedHosts.split("\n") || [],
+		silencedHosts: silencedHosts.split('\n') || [],
 
 	}).then(() => {
 		fetchInstance();
@@ -59,14 +60,14 @@ const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [
 	{
-		key: "block",
+		key: 'block',
 		title: i18n.ts.block,
-		icon: "ph-prohibit ph-bold ph-lg",
+		icon: 'ph-prohibit ph-bold ph-lg',
 	},
 	{
-		key: "silence",
+		key: 'silence',
 		title: i18n.ts.silence,
-		icon: "ph-eye-slash ph-bold ph-lg",
+		icon: 'ph-eye-slash ph-bold ph-lg',
 	},
 ]);
 

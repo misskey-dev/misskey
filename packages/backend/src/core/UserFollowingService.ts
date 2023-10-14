@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import {DataSource, IsNull } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -28,9 +28,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { shouldSilenceInstance } from '@/misc/should-block-instance.js';
 import Logger from '../logger.js';
-import { shouldSilenceInstance } from "@/misc/should-block-instance.js";
-
 
 const logger = new Logger('following/create');
 
@@ -133,7 +132,7 @@ export class UserFollowingService implements OnModuleInit {
 			followee.isLocked ||
 			(followeeProfile.carefulBot && follower.isBot) ||
 			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
-			( this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && await shouldSilenceInstance(follower.host,this.db))
+			( this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && await shouldSilenceInstance(follower.host, this.db))
 		) {
 			let autoAccept = false;
 
