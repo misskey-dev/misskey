@@ -12,6 +12,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
+import {defaultStore} from "@/store.js";
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -149,30 +150,10 @@ export const navbarItemDef = reactive({
 			location.reload();
 		},
 	},
-	switchLightOrDarkMode: {
-		title: i18n.ts.switchLightOrDarkMode,
-		icon: 'ti ti-palette',
-		action: (ev) => {
-			const mode = defaultStore.makeGetterSetter('darkMode');
-			mode.set(!mode.get());
-		},
-	},
-	customEmojis: {
-		title: i18n.ts.customEmojis,
-		icon: 'ti ti-icons',
-		to: '/about#emojis',
-    },
 	profile: {
 		title: i18n.ts.profile,
 		icon: 'ti ti-user',
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
 	},
-	clearCache: {
-		title: i18n.ts.clearCache,
-		icon: 'ti ti-trash',
-		action: (ev) => {
-			clearCache();
-		},
-	}
 });
