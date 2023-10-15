@@ -577,7 +577,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// Pack the note
-			const noteObj = await this.noteEntityService.pack(note);
+			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true });
 
 			this.globalEventService.publishNotesStream(noteObj);
 

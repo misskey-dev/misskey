@@ -54,19 +54,6 @@ class LocalTimelineChannel extends Channel {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
 
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-				detail: true,
-			});
-		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-				detail: true,
-			});
-		}
-
 		// 関係ない返信は除外
 		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
 			const reply = note.reply;
@@ -82,6 +69,11 @@ class LocalTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (this.user && note.renoteId && !note.text) {
+			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renoteId, this.user.id);
+			note.renote!.myReaction = myRenoteReaction;
+		}
 
 		this.connection.cacheNote(note);
 
