@@ -51,7 +51,7 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 	return promise;
 }
 
-export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
+export async function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
 	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	const knownUrls = (await api('federation/instances', { blocked: false })).map(v => v.host);
