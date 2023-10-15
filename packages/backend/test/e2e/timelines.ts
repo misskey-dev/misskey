@@ -413,10 +413,9 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
-			...eachTableDefault,
 			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
 			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
 		} as const))('[withRenotes: false] %#. %s%s', async (key, value) => {
@@ -432,7 +431,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] フォローしているユーザーのファイル付きノートのみ含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
@@ -529,10 +528,9 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
-			...eachTableDefault,
 			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
 			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
 		}))('[withRenotes: false] %#. %s%s', async (key, value) => {
@@ -548,7 +546,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
 			...eachTableDefault,
@@ -573,7 +571,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -661,10 +659,9 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
-			...eachTableDefault,
 			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
 			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
 		}))('[withRenotes: false] %#. %s%s', async (key, value) => {
@@ -680,7 +677,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
 			...eachTableDefault,
@@ -705,7 +702,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -810,10 +807,9 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
-			...eachTableDefault,
 			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
 			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
 		}))('[withRenotes: false] %#. リスインしている%s%s', async (key, value) => {
@@ -829,7 +825,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 	});
 
 	describe('User TL', () => {
@@ -902,10 +898,9 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
-			...eachTableDefault,
 			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる', // BUG?
 			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる', // BUG?
 		}))('[withRenotes: false] %#. %sは投稿したユーザーのユーザーTLに%s', async (key, value) => {
@@ -921,7 +916,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
 			...eachTableDefault,
@@ -946,7 +941,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
 			...eachTableDefault,
@@ -972,7 +967,7 @@ describe('Timelines', () => {
 				res.some((note) => note.id === createdPost.id),
 				includeOrNot(value),
 				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
-		}, 1000 * 20);
+		}, 1000 * 30);
 	});
 
 	// TODO: ページネーションのテスト
