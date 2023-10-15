@@ -9,7 +9,6 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { MiInstance } from '@/models/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
-import { shouldSilenceInstance } from '@/misc/should-block-instance.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '../UtilityService.js';
 
@@ -48,7 +47,7 @@ export class InstanceEntityService {
 			description: instance.description,
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
-			isSilenced: await shouldSilenceInstance(instance.host, this.db),
+			isSilenced: this.utilityService.isSilencedHost(meta.silencedHosts, instance.host),
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,
