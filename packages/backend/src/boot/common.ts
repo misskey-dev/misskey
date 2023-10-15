@@ -17,7 +17,6 @@ export async function server() {
 	const app = await NestFactory.createApplicationContext(MainModule, {
 		logger: new NestLogger(),
 	});
-	app.enableShutdownHooks();
 
 	const serverService = app.get(ServerService);
 	await serverService.launch();
@@ -35,7 +34,6 @@ export async function jobQueue() {
 	const jobQueue = await NestFactory.createApplicationContext(QueueProcessorModule, {
 		logger: new NestLogger(),
 	});
-	jobQueue.enableShutdownHooks();
 
 	jobQueue.get(QueueProcessorService).start();
 	jobQueue.get(ChartManagementService).start();

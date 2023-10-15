@@ -16,10 +16,10 @@ import Channel from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {
 	public readonly chName = 'globalTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = false;
-	private withReplies: boolean;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -38,8 +38,8 @@ class GlobalTimelineChannel extends Channel {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.gtlAvailable) return;
 
-		this.withReplies = params.withReplies ?? false;
 		this.withRenotes = params.withRenotes ?? true;
+		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -47,6 +47,8 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 
@@ -64,7 +66,7 @@ class GlobalTimelineChannel extends Channel {
 		}
 
 		// 関係ない返信は除外
-		if (note.reply && !this.withReplies) {
+		if (note.reply && !this.following[note.userId]?.withReplies) {
 			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
@@ -81,13 +83,6 @@ class GlobalTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
-
-		// 流れてきたNoteがミュートすべきNoteだったら無視する
-		// TODO: 将来的には、単にMutedNoteテーブルにレコードがあるかどうかで判定したい(以下の理由により難しそうではある)
-		// 現状では、ワードミュートにおけるMutedNoteレコードの追加処理はストリーミングに流す処理と並列で行われるため、
-		// レコードが追加されるNoteでも追加されるより先にここのストリーミングの処理に到達することが起こる。
-		// そのためレコードが存在するかのチェックでは不十分なので、改めてcheckWordMuteを呼んでいる
-		if (this.userProfile && await checkWordMute(note, this.user, this.userProfile.mutedWords)) return;
 
 		this.connection.cacheNote(note);
 

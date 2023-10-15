@@ -507,7 +507,6 @@ _theme:
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
-  chat: "Chatt"
   antenna: "Antenner"
 _2fa:
   renewTOTPCancel: "Nej tack"

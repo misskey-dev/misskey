@@ -128,14 +128,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
-					<XPhotos :key="user.id" :user="user"/>
+					<XFiles :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination"/>
+				<div v-if="!disableNotes">
+					<div style="margin-bottom: 8px;">{{ i18n.ts.featured }}</div>
+					<MkNotes :class="$style.tl" :noGap="true" :pagination="pagination"/>
+				</div>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-			<XPhotos :key="user.id" :user="user"/>
+			<XFiles :key="user.id" :user="user"/>
 			<XActivity :key="user.id" :user="user"/>
 		</div>
 	</div>
@@ -182,7 +185,7 @@ function calcAge(birthdate: string): number {
 	return yearDiff;
 }
 
-const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
+const XFiles = defineAsyncComponent(() => import('./index.files.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
@@ -210,7 +213,7 @@ watch($$(moderationNote), async () => {
 });
 
 const pagination = {
-	endpoint: 'users/notes' as const,
+	endpoint: 'users/featured-notes' as const,
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
