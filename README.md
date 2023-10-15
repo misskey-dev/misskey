@@ -10,11 +10,14 @@
 - [ダイスキーブログ](https://blog.misskey.delmulin.com)へのリンクをノートのメニューに追加
 - モロヘイヤHOMEへのリンクを右メニューに追加
 - OAuth認証まわりでの文言修正
+  - 不自然な文言「アプリケーションに戻ってやっていってください」を修正。
+	- 認証キーが画面に表示されていなかった為、追加。
 - 「固定タグ」ウィジェット
-  - [karasugawasu/misskey](https://github.com/karasugawasu/misskey)からの移植
+  - [karasugawasu/misskey](https://github.com/karasugawasu/misskey)からの移植。
 - クラシックUIの廃止
+- パラメータ調整
 
 ### バックエンド
 
-- ローカルタイムラインのデフォルトハッシュタグ対応
-- ソーシャルタイムラインのデフォルトハッシュタグ対応
+- ローカルタイムラインのデフォルトハッシュタグ（`#delmulin`）対応
+- ソーシャルタイムラインのデフォルトハッシュタグ（`#delmulin`）対応
