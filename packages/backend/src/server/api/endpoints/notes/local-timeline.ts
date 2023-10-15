@@ -91,7 +91,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
 
-			/*
 			let noteIds: string[];
 
 			if (ps.withFiles) {
@@ -110,12 +109,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (noteIds.length === 0) {
 				return [];
 			}
-			*/
 
 			const query = this.notesRepository.createQueryBuilder('note')
-				//.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.where('note.visibility = \'public\'')
-				.where('\'delmulin\' = any(note.tags)')
+				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')

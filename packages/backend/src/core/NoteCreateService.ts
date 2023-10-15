@@ -908,7 +908,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (note.replyId && note.replyUserId !== note.userId) {
 				this.redisTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
 
-				if (note.visibility === 'public' && note.userHost == null) {
+				if (note.visibility === 'public' && note.tags.includes('delmulin')) {
 					this.redisTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 				}
 			} else {
@@ -917,7 +917,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					this.redisTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax / 2 : meta.perRemoteUserUserTimelineCacheMax / 2, r);
 				}
 
-				if (note.visibility === 'public' && note.userHost == null) {
+				if (note.visibility === 'public' && note.tags.includes('delmulin')) {
 					this.redisTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
 						this.redisTimelineService.push('localTimelineWithFiles', note.id, 500, r);

@@ -121,8 +121,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
+			if (noteIds.length === 0) {
+				return [];
+			}
+
 			const query = this.notesRepository.createQueryBuilder('note')
-				.where('(note.id IN (:...noteIds)) OR (\'delmulin\' = any(note.tags))', { noteIds: noteIds })
+				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
