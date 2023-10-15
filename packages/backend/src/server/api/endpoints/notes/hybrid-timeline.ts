@@ -122,7 +122,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds = noteIds.slice(0, ps.limit);
 
 			const query = this.notesRepository.createQueryBuilder('note')
-				.where('(note.id IN (:...noteIds)) OR (note.visibility = \'public\')', { noteIds: noteIds })
+				.where('(note.id IN (:...noteIds)) OR (\'delmulin\' = any(note.tags))', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
