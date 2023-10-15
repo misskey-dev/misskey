@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <template v-if="player.url && playerEnabled">
 	<div
@@ -23,7 +28,14 @@
 </template>
 <template v-else-if="tweetId && tweetExpanded">
 	<div ref="twitter">
-		<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
+		<iframe
+			ref="tweet"
+			allow="fullscreen;web-share"
+			sandbox="allow-popups allow-scripts allow-same-origin"
+			scrolling="no"
+			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
+			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
+		></iframe>
 	</div>
 	<div :class="$style.action">
 		<MkButton :small="true" inline @click="tweetExpanded = false">
@@ -33,7 +45,7 @@
 </template>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail" :class="$style.thumbnail" :style="`background-image: url('${thumbnail}')`">
+		<div v-if="thumbnail" :class="$style.thumbnail" :style="defaultStore.state.enableDataSaverMode ? '' : `background-image: url('${thumbnail}')`">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
@@ -55,7 +67,7 @@
 	<template v-if="showActions">
 		<div v-if="tweetId" :class="$style.action">
 			<MkButton :small="true" inline @click="tweetExpanded = true">
-				<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
+				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandTweet }}
 			</MkButton>
 		</div>
 		<div v-if="!playerEnabled && player.url" :class="$style.action">
@@ -73,13 +85,13 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted } from 'vue';
 import type { summaly } from 'summaly';
-import { url as local } from '@/config';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { deviceKind } from '@/scripts/device-kind';
+import { url as local } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
-import { versatileLang } from '@/scripts/intl-const';
-import { defaultStore } from '@/store';
+import { versatileLang } from '@/scripts/intl-const.js';
+import { defaultStore } from '@/store.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -121,7 +133,7 @@ let unknownUrl = $ref(false);
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
-if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com') {
+if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com' || requestUrl.hostname === 'x.com' || requestUrl.hostname === 'mobile.x.com') {
 	const m = requestUrl.pathname.match(/^\/.+\/status(?:es)?\/(\d+)/);
 	if (m) tweetId = m[1];
 }
@@ -248,6 +260,7 @@ onUnmounted(() => {
 	height: 100%;
 	background-position: center;
 	background-size: cover;
+	background-color: var(--bg);
 	display: flex;
 	justify-content: center;
 	align-items: center;

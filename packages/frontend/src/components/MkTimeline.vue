@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
@@ -5,19 +10,26 @@
 <script lang="ts" setup>
 import { computed, provide, onUnmounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
-import { useStream } from '@/stream';
-import * as sound from '@/scripts/sound';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
+import { useStream } from '@/stream.js';
+import * as sound from '@/scripts/sound.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	src: string;
 	list?: string;
 	antenna?: string;
 	channel?: string;
 	role?: string;
 	sound?: boolean;
-}>();
+	withRenotes?: boolean;
+	withReplies?: boolean;
+	onlyFiles?: boolean;
+}>(), {
+	withRenotes: true,
+	withReplies: false,
+	onlyFiles: false,
+});
 
 const emit = defineEmits<{
 	(ev: 'note'): void;
@@ -57,10 +69,14 @@ if (props.src === 'antenna') {
 } else if (props.src === 'home') {
 	endpoint = 'notes/timeline';
 	query = {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('homeTimeline', {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 
@@ -68,28 +84,40 @@ if (props.src === 'antenna') {
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
 	query = {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('localTimeline', {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'social') {
 	endpoint = 'notes/hybrid-timeline';
 	query = {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('hybridTimeline', {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
 	query = {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	};
 	connection = stream.useChannel('globalTimeline', {
-		withReplies: defaultStore.state.showTimelineReplies,
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'mentions') {
@@ -111,9 +139,15 @@ if (props.src === 'antenna') {
 } else if (props.src === 'list') {
 	endpoint = 'notes/user-list-timeline';
 	query = {
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 		listId: props.list,
 	};
 	connection = stream.useChannel('userList', {
+		withRenotes: props.withRenotes,
+		withReplies: props.withReplies,
+		withFiles: props.onlyFiles ? true : undefined,
 		listId: props.list,
 	});
 	connection.on('note', prepend);

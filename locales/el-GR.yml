@@ -287,6 +287,9 @@ searchByGoogle: "Αναζήτηση"
 file: "Αρχεία"
 recommended: "Προτεινόμενα"
 cannotUploadBecauseNoFreeSpace: "Το ανέβασμα απέτυχε λόγω ανεπαρκούς Αποθηκευτικού Χώρου"
+icon: "Εικονίδιο"
+replies: "Απάντηση"
+renotes: "Κοινοποίηση σημειώματος"
 _email:
   _follow:
     title: "Έχετε ένα νέο ακόλουθο"
@@ -394,3 +397,5 @@ _deck:
     mentions: "Επισημάνσεις"
 _webhookSettings:
   name: "Όνομα"
+_moderationLogTypes:
+  suspend: "Αποβολή"

@@ -16,10 +16,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [20.5.1]
 
     steps:
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v4.1.0
       with:
         submodules: true
     - name: Install pnpm
@@ -28,7 +28,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v3.8.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.container">
 	<div :class="$style.title">
@@ -44,10 +49,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { host } from '@/config';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { host } from '@/config.js';
 
 const tutorialsNumber = 4;
 

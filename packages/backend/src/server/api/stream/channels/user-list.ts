@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -13,8 +18,8 @@ class UserListChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private listId: string;
-	public listUsers: User['id'][] = [];
-	private listUsersClock: NodeJS.Timer;
+	public listUsers: MiUser['id'][] = [];
+	private listUsersClock: NodeJS.Timeout;
 
 	constructor(
 		private userListsRepository: UserListsRepository,

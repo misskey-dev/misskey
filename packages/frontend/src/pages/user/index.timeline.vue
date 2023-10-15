@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="800" style="padding-top: 0">
 	<MkStickyContainer>
 		<template #header>
 			<MkTab v-model="include" :class="$style.tab">
 				<option :value="null">{{ i18n.ts.notes }}</option>
-				<option value="replies">{{ i18n.ts.notesAndReplies }}</option>
+				<option value="all">{{ i18n.ts.all }}</option>
 				<option value="files">{{ i18n.ts.withFiles }}</option>
 			</MkTab>
 		</template>
@@ -15,13 +20,13 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 }>();
 
 const include = ref<string | null>(null);
@@ -31,7 +36,8 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
-		includeReplies: include.value === 'replies' || include.value === 'files',
+		withRenotes: include.value === 'all',
+		withReplies: include.value === 'all' || include.value === 'files',
 		withFiles: include.value === 'files',
 	})),
 };
@@ -46,7 +52,7 @@ const pagination = {
 
 .tl {
 	background: var(--bg);
-    border-radius: var(--radius);
-    overflow: clip;
+	border-radius: var(--radius);
+	overflow: clip;
 }
 </style>

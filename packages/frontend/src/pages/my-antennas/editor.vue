@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="700">
 	<div>
@@ -11,12 +16,13 @@
 				<!--<option value="home">{{ i18n.ts._antennaSources.homeTimeline }}</option>-->
 				<option value="users">{{ i18n.ts._antennaSources.users }}</option>
 				<!--<option value="list">{{ i18n.ts._antennaSources.userList }}</option>-->
+				<option value="users_blacklist">{{ i18n.ts._antennaSources.userBlacklist }}</option>
 			</MkSelect>
 			<MkSelect v-if="src === 'list'" v-model="userListId">
 				<template #label>{{ i18n.ts.userList }}</template>
 				<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 			</MkSelect>
-			<MkTextarea v-else-if="src === 'users'" v-model="users">
+			<MkTextarea v-else-if="src === 'users' || src === 'users_blacklist'" v-model="users">
 				<template #label>{{ i18n.ts.users }}</template>
 				<template #caption>{{ i18n.ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ i18n.ts.addUser }}</button></template>
 			</MkTextarea>
@@ -43,14 +49,14 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	antenna: any
@@ -122,7 +128,7 @@ async function deleteAntenna() {
 function addUser() {
 	os.selectUser().then(user => {
 		users = users.trim();
-		users += '\n@' + Acct.toString(user as any);
+		users += '\n@' + Misskey.acct.toString(user as any);
 		users = users.trim();
 	});
 }

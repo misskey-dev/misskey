@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <button class="_button" :class="$style.root" @click="menu">
 	<img :src="emoji.url" :class="$style.img" loading="lazy"/>
@@ -10,9 +15,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	emoji: {

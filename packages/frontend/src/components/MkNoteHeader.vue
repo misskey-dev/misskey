@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <header :class="$style.root">
 	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
@@ -9,6 +14,7 @@
 		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
 	</div>
 	<div :class="$style.info">
+		<span v-if="note.updatedAt" style="margin-right: 0.5em;" :title="i18n.ts.edited"><i class="ti ti-pencil"></i></span>
 		<MkA :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
@@ -25,14 +31,13 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
-import { i18n } from '@/i18n';
-import { notePage } from '@/filters/note';
-import { userPage } from '@/filters/user';
+import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { notePage } from '@/filters/note.js';
+import { userPage } from '@/filters/user.js';
 
 defineProps<{
-	note: misskey.entities.Note;
-	pinned?: boolean;
+	note: Misskey.entities.Note;
 }>();
 </script>
 

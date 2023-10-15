@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
+import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -37,13 +42,13 @@ export const paramDef = {
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		withReplies: { type: 'boolean', default: false },
+		withRenotes: { type: 'boolean', default: true },
 	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -65,7 +70,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 1826))) }) // 5年前ぐらいまで
+				// パフォーマンス上の利点が無さそう？
+				//.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
@@ -119,6 +125,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
+			}
+
+			if (ps.withRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere(new Brackets(qb => {
+						qb.orWhere('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+					}));
+				}));
 			}
 			//#endregion
 

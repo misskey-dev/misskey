@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
@@ -29,8 +34,8 @@
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
 				<div class="_gaps_s">
-					<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
-					<MkSwitch v-model="isBlocked" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
+					<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
+					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>
@@ -97,7 +102,7 @@
 		</div>
 		<div v-else-if="tab === 'users'" class="_gaps_m">
 			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
-				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
+				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/admin/user/${user.id}`">
 					<MkUserCardMini :user="user"/>
 				</MkA>
 			</MkPagination>
@@ -112,7 +117,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -122,15 +127,15 @@ import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import number from '@/filters/number';
-import { iAmModerator } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import number from '@/filters/number.js';
+import { iAmModerator, iAmAdmin } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
-import { dateString } from '@/filters/date';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { dateString } from '@/filters/date.js';
 
 const props = defineProps<{
 	host: string;
@@ -138,11 +143,11 @@ const props = defineProps<{
 
 let tab = $ref('overview');
 let chartSrc = $ref('instance-requests');
-let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
-let instance = $ref<misskey.entities.Instance | null>(null);
+let meta = $ref<Misskey.entities.AdminInstanceMetadata | null>(null);
+let instance = $ref<Misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
-let faviconUrl = $ref(null);
+let faviconUrl = $ref<string | null>(null);
 
 const usersPagination = {
 	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
@@ -155,7 +160,10 @@ const usersPagination = {
 	offsetMode: true,
 };
 
-async function fetch() {
+async function fetch(): Promise<void> {
+	if (iAmAdmin) {
+		meta = await os.api('admin/meta');
+	}
 	instance = await os.api('federation/show-instance', {
 		host: props.host,
 	});
@@ -164,21 +172,25 @@ async function fetch() {
 	faviconUrl = getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.iconUrl, 'preview');
 }
 
-async function toggleBlock(ev) {
-	if (meta == null) return;
+async function toggleBlock(): Promise<void> {
+	if (!meta) throw new Error('No meta?');
+	if (!instance) throw new Error('No instance?');
+	const { host } = instance;
 	await os.api('admin/update-meta', {
-		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host),
+		blockedHosts: isBlocked ? meta.blockedHosts.concat([host]) : meta.blockedHosts.filter(x => x !== host),
 	});
 }
 
-async function toggleSuspend(v) {
+async function toggleSuspend(): Promise<void> {
+	if (!instance) throw new Error('No instance?');
 	await os.api('admin/federation/update-instance', {
 		host: instance.host,
 		isSuspended: suspended,
 	});
 }
 
-function refreshMetadata() {
+function refreshMetadata(): void {
+	if (!instance) throw new Error('No instance?');
 	os.api('admin/federation/refresh-remote-instance-metadata', {
 		host: instance.host,
 	});

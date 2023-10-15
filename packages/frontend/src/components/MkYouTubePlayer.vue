@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkWindow :initialWidth="640" :initialHeight="402" :canResize="true" :closeButton="true">
 	<template #header>
@@ -20,8 +25,8 @@
 
 <script lang="ts" setup>
 import MkWindow from '@/components/MkWindow.vue';
-import { versatileLang } from '@/scripts/intl-const';
-import { defaultStore } from '@/store';
+import { versatileLang } from '@/scripts/intl-const.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	url: string;
