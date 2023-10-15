@@ -54,6 +54,8 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
 	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
+	const knownUrls = (await api('federation/instances', { blocked: false })).map(v => v.host);
+	if (!knownUrls.includes(URL(hostUrl).host)) throw new Error(hostname + 'is blocked by or not known to this server.');
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
