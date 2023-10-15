@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -26,6 +27,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
 
 const FALLBACK = '❤';
 
@@ -66,6 +68,9 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 @Injectable()
 export class ReactionService {
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -86,6 +91,7 @@ export class ReactionService {
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
 		private idService: IdService,
+		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
@@ -182,10 +188,27 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
-				... (!user.isBot ? { score: () => '"score" + 1' } : {}),
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
+
+		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		if (
+			Math.random() < 0.3 &&
+			note.userId !== user.id &&
+			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
+		) {
+			if (note.channelId != null) {
+				if (note.replyId == null) {
+					this.featuredService.updateInChannelNotesRanking(note.channelId, note.id, 1);
+				}
+			} else {
+				if (note.visibility === 'public' && note.userHost == null && note.replyId == null) {
+					this.featuredService.updateGlobalNotesRanking(note.id, 1);
+					this.featuredService.updatePerUserNotesRanking(note.userId, note.id, 1);
+				}
+			}
+		}
 
 		const meta = await this.metaService.fetch();
 
@@ -274,8 +297,6 @@ export class ReactionService {
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
-
-		if (!user.isBot) this.notesRepository.decrement({ id: note.id }, 'score', 1);
 
 		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,

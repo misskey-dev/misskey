@@ -1320,7 +1320,6 @@ _theme:
 _sfx:
   note: "Posts"
   notification: "Notificações"
-  chat: "Chat"
 _ago:
   invalid: "Não há nada aqui"
 _timelineTutorial:

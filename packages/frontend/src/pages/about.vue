@@ -46,14 +46,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #value>{{ instance.maintainerEmail }}</template>
 						</MkKeyValue>
 					</FormSplit>
-					<MkFolder v-if="instance.serverRules.length > 0">
-						<template #label>{{ i18n.ts.serverRules }}</template>
+					<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>{{ i18n.ts.impressum }}</FormLink>
+					<div class="_formLinks">
+						<MkFolder v-if="instance.serverRules.length > 0">
+							<template #label>{{ i18n.ts.serverRules }}</template>
 
-						<ol class="_gaps_s" :class="$style.rules">
-							<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
-						</ol>
-					</MkFolder>
-					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+							<ol class="_gaps_s" :class="$style.rules">
+								<li v-for="item, index in instance.serverRules" :key="index" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
+							</ol>
+						</MkFolder>
+						<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+						<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>{{ i18n.ts.privacyPolicy }}</FormLink>
+					</div>
 				</div>
 			</FormSection>
 
