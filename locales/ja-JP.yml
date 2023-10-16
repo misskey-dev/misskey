@@ -1967,6 +1967,7 @@ _exportOrImport:
   userLists: "リスト"
   excludeMutingUsers: "ミュートしているユーザーを除外"
   excludeInactiveUsers: "使われていないアカウントを除外"
+  withReplies: "インポートした人による返信をTLに含むようにする"
 
 _charts:
   federation: "連合"
