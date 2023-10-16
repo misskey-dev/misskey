@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended , blue: instance.isSilenced }]">
+<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended, blue: instance.isSilenced }]">
 	<img class="icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
 	<div class="body">
 		<span class="host">{{ instance.name ?? instance.host }}</span>
