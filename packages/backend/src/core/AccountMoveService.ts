@@ -186,7 +186,7 @@ export class AccountMoveService {
 		const genId = (): string => {
 			let id: string;
 			do {
-				id = this.idService.genId();
+				id = this.idService.gen();
 			} while (newMutings.has(id));
 			return id;
 		};
@@ -234,7 +234,7 @@ export class AccountMoveService {
 		const genId = (): string => {
 			let id: string;
 			do {
-				id = this.idService.genId();
+				id = this.idService.gen();
 			} while (newMemberships.has(id));
 			return id;
 		};
