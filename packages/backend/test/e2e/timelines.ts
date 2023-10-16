@@ -409,10 +409,13 @@ describe('Timelines', () => {
 				parameters: {},
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -427,10 +430,13 @@ describe('Timelines', () => {
 				parameters: { withRenotes: false },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] フォローしているユーザーのファイル付きノートのみ含まれる', async () => {
@@ -524,10 +530,13 @@ describe('Timelines', () => {
 				parameters: { limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -542,10 +551,13 @@ describe('Timelines', () => {
 				parameters: { withRenotes: false, limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -567,10 +579,13 @@ describe('Timelines', () => {
 				parameters: { withReplies: true, limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
@@ -655,10 +670,13 @@ describe('Timelines', () => {
 				parameters: { limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -673,10 +691,13 @@ describe('Timelines', () => {
 				parameters: { withRenotes: false, limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -698,10 +719,13 @@ describe('Timelines', () => {
 				parameters: { withReplies: true, limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
@@ -803,10 +827,13 @@ describe('Timelines', () => {
 				parameters: { listId: list.id, limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -821,10 +848,13 @@ describe('Timelines', () => {
 				parameters: { listId: list.id, withRenotes: false, limit: 100 },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 	});
 
@@ -894,10 +924,13 @@ describe('Timelines', () => {
 				parameters: { userId: createdPost.userId },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -912,10 +945,13 @@ describe('Timelines', () => {
 				parameters: { userId: createdPost.userId, withRenotes: false },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -937,10 +973,13 @@ describe('Timelines', () => {
 				parameters: { userId: createdPost.userId, withReplies: true },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 
 		test.concurrent.each(tableToEntries({
@@ -963,10 +1002,13 @@ describe('Timelines', () => {
 				parameters: { userId: createdPost.userId, withChannelNotes: true, withReplies: true },
 				user: alice,
 			});
-			assert.strictEqual(
-				res.some((note) => note.id === createdPost.id),
-				includeOrNot(value),
-				`expected ${inspect(createdPost.id)} vs. response ${inspect(res.map(s => s.id))}`);
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
 		}, 1000 * 30);
 	});
 
