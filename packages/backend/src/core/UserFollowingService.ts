@@ -187,7 +187,7 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'], defaultWithReplies: MiUser['defaultWithReplies'];
 		},
 		silent = false,
 	): Promise<void> {
@@ -199,6 +199,7 @@ export class UserFollowingService implements OnModuleInit {
 			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
+			withReplies: follower.defaultWithReplies,
 
 			// 非正規化
 			followerHost: follower.host,
