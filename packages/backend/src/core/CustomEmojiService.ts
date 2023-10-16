@@ -69,7 +69,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,

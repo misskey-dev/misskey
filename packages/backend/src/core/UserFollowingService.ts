@@ -196,8 +196,7 @@ export class UserFollowingService implements OnModuleInit {
 		let alreadyFollowed = false as boolean;
 
 		await this.followingsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
 
@@ -465,8 +464,7 @@ export class UserFollowingService implements OnModuleInit {
 		if (blocked) throw new Error('blocked');
 
 		const followRequest = await this.followRequestsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			followerId: follower.id,
 			followeeId: followee.id,
 			requestId,

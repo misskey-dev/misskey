@@ -57,14 +57,12 @@ export class AntennaService implements OnApplicationShutdown {
 				case 'antennaCreated':
 					this.antennas.push({
 						...body,
-						createdAt: new Date(body.createdAt),
 						lastUsedAt: new Date(body.lastUsedAt),
 					});
 					break;
 				case 'antennaUpdated':
 					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
 						...body,
-						createdAt: new Date(body.createdAt),
 						lastUsedAt: new Date(body.lastUsedAt),
 					};
 					break;

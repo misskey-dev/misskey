@@ -13,11 +13,6 @@ export class MiAntenna {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the Antenna.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column('timestamp with time zone')
 	public lastUsedAt: Date;
