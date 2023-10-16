@@ -203,7 +203,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { $i } from "@/account.js";
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -251,7 +250,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
-const defaultWithReplies = ref($i!.defaultWithReplies); // TODO
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -290,12 +289,6 @@ watch([
 	keepScreenOn,
 ], async () => {
 	await reloadAsk();
-});
-
-watch([defaultWithReplies], async () => {
-	os.api('i/update', {
-		defaultWithReplies: defaultWithReplies.value,
-	});
 });
 
 const emojiIndexLangs = ['en-US'];
