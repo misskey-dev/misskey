@@ -10,11 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
-			<MkTextarea v-model="blockedHosts">
+			<MkTextarea v-if="tab === 'block'" v-model="blockedHosts">
 				<span>{{ i18n.ts.blockedInstances }}</span>
 				<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
 			</MkTextarea>
-
+			<MkTextarea v-else-if="tab === 'silence'" v-model="silencedHosts" class="_formBlock">
+				<span>{{ i18n.ts.silencedInstances }}</span>
+				<template #caption>{{ i18n.ts.silencedInstancesDescription }}</template>
+			</MkTextarea>
 			<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</FormSuspense>
 	</MkSpacer>
@@ -22,7 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {} from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -33,15 +35,20 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let blockedHosts: string = $ref('');
+let silencedHosts: string = $ref('');
+let tab = $ref('block');
 
 async function init() {
 	const meta = await os.api('admin/meta');
 	blockedHosts = meta.blockedHosts.join('\n');
+	silencedHosts = meta.silencedHosts.join('\n');
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		blockedHosts: blockedHosts.split('\n') || [],
+		silencedHosts: silencedHosts.split('\n') || [],
+
 	}).then(() => {
 		fetchInstance();
 	});
@@ -49,7 +56,15 @@ function save() {
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	key: 'block',
+	title: i18n.ts.block,
+	icon: 'ti ti-ban',
+}, {
+	key: 'silence',
+	title: i18n.ts.silence,
+	icon: 'ti ti-eye-off',
+}]);
 
 definePageMetadata({
 	title: i18n.ts.instanceBlocking,
