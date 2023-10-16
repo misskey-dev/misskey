@@ -98,6 +98,8 @@ export class AntennaService implements OnApplicationShutdown {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
 
+		if (antenna.localOnly && noteUser.host != null) return false;
+
 		if (!antenna.withReplies && note.replyId != null) return false;
 
 		if (antenna.src === 'home') {

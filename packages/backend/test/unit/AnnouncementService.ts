@@ -35,7 +35,7 @@ describe('AnnouncementService', () => {
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
-			id: genAidx(new Date()),
+			id: genAidx(Date.now()),
 			username: un,
 			usernameLower: un,
 			...data,
