@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
@@ -202,6 +203,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events';
 import { claimAchievement } from '@/scripts/achievements.js';
+import {$i} from "@/account.js";
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -249,6 +251,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
+const defaultWithReplies = ref($i!.defaultWithReplies); // TODO
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -287,6 +290,12 @@ watch([
 	keepScreenOn,
 ], async () => {
 	await reloadAsk();
+});
+
+watch([defaultWithReplies], async () => {
+	os.api('i/update', {
+		defaultWithReplies: defaultWithReplies.value,
+	});
 });
 
 const emojiIndexLangs = ['en-US'];

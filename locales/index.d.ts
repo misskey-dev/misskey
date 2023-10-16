@@ -534,6 +534,7 @@ export interface Locale {
     "deleteAll": string;
     "showFixedPostForm": string;
     "showFixedPostFormInChannel": string;
+    "withRepliesByDefaultForNewlyFollowed": string;
     "newNoteRecived": string;
     "sounds": string;
     "sound": string;
