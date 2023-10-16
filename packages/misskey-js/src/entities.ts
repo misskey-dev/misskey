@@ -123,7 +123,6 @@ export type MeDetailed = UserDetailed & {
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
-	defaultWithReplies: boolean;
 	unreadAnnouncements: Announcement[];
 	twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
 	[other: string]: any;

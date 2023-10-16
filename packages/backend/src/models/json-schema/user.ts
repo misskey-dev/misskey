@@ -403,9 +403,6 @@ export const packedMeDetailedOnlySchema = {
 				nullable: false, optional: false,
 			},
 		},
-		defaultWithReplies: {
-			type: 'boolean',
-		},
 		//#region secrets
 		email: {
 			type: 'string',
