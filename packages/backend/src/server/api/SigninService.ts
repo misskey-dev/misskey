@@ -30,8 +30,7 @@ export class SigninService {
 		setImmediate(async () => {
 			// Append signin history
 			const record = await this.signinsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: user.id,
 				ip: request.ip,
 				headers: request.headers as any,

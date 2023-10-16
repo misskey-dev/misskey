@@ -71,8 +71,7 @@ export class NotePiningService {
 		}
 
 		await this.userNotePiningsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			userId: user.id,
 			noteId: note.id,
 		} as MiUserNotePining);
