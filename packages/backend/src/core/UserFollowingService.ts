@@ -176,8 +176,7 @@ export class UserFollowingService implements OnModuleInit {
 			}
 
 			if (!autoAccept) {
-				// TODO: withReplies
-				await this.createFollowRequest(follower, followee, requestId);
+				await this.createFollowRequest(follower, followee, requestId, withReplies);
 				return;
 			}
 		}
@@ -462,6 +461,7 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		requestId?: string,
+		withReplies?: boolean,
 	): Promise<void> {
 		if (follower.id === followee.id) return;
 
@@ -479,6 +479,7 @@ export class UserFollowingService implements OnModuleInit {
 			followerId: follower.id,
 			followeeId: followee.id,
 			requestId,
+			withReplies,
 
 			// 非正規化
 			followerHost: follower.host,
@@ -563,7 +564,7 @@ export class UserFollowingService implements OnModuleInit {
 			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No follow request.');
 		}
 
-		await this.insertFollowingDoc(followee, follower);
+		await this.insertFollowingDoc(followee, follower, false, request.withReplies);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee as MiPartialLocalUser, request.requestId!), followee));
