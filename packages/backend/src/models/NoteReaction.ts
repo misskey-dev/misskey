@@ -14,11 +14,6 @@ export class MiNoteReaction {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the NoteReaction.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column(id())
 	public userId: MiUser['id'];
