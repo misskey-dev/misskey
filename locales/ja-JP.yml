@@ -1897,6 +1897,7 @@ _postForm:
     d: "言いたいことは？"
     e: "ここに書いてください"
     f: "あなたが書くのを待っています..."
+  guidelineInfo: "[NSFWガイドライン]({nsfwGuideUrl})を必ずお読みになってからご利用ください。"
 
 _profile:
   name: "名前"
