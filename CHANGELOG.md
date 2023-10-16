@@ -13,6 +13,8 @@
 -->
 
 ## 2023.x.x (unreleased)
+### Changes
+- AiScript: `Mk:apiExternal`の送信先は連合中のサーバーに限定されるようになりました。
 
 ### General
 -
