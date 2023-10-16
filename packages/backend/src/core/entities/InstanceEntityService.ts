@@ -8,7 +8,6 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { MiInstance } from '@/models/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
-import { DI } from '@/di-symbols.js';
 import { UtilityService } from '../UtilityService.js';
 
 @Injectable()
