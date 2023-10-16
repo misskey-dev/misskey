@@ -36,8 +36,8 @@ export class UtilityService {
 	}
 
 	@bindThis
-	public isSilencedHost(silencedHosts: string[], host: string | null): boolean {
-		if (host == null) return false;
+	public isSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
+		if (!silencedHosts || host == null) return false;
 		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
