@@ -182,7 +182,10 @@ const exportAntennas = () => {
 
 const importFollowing = async (ev) => {
 	const file = await selectFile(ev.currentTarget ?? ev.target);
-	os.api('i/import-following', { fileId: file.id, withReplies }).then(onImportSuccess).catch(onError);
+	os.api('i/import-following', {
+		fileId: file.id,
+		withReplies: withReplies.value,
+	}).then(onImportSuccess).catch(onError);
 };
 
 const importUserLists = async (ev) => {
