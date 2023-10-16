@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiInstance } from '@/models/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
