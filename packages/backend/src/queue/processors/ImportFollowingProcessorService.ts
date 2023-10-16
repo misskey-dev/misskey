@@ -93,7 +93,7 @@ export class ImportFollowingProcessorService {
 			// skip myself
 			if (target.id === job.data.user.id) return;
 
-			this.logger.info(`Follow ${target.id} ...`);
+			this.logger.info(`Follow ${target.id} ${job.data.withReplies ? 'with replies' : 'without replies'} ...`);
 
 			this.queueService.createFollowJob([{ from: user, to: { id: target.id }, silent: true, withReplies: job.data.withReplies }]);
 		} catch (e) {

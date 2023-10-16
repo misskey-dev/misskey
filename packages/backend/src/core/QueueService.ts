@@ -385,6 +385,7 @@ export class QueueService {
 				to: { id: data.to.id },
 				silent: data.silent,
 				requestId: data.requestId,
+				withReplies: data.withReplies,
 			},
 			opts: {
 				removeOnComplete: true,
