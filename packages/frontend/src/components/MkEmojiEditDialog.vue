@@ -47,11 +47,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
-				<MkFolder>
+				<MkFolder v-if="!isRequest">
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
-					<div v-if="!isRequest" class="_gaps">
+					<div class="_gaps">
 						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 						<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">

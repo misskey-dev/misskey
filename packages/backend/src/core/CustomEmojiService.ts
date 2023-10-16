@@ -127,6 +127,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			draft: data.draft,
+			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
+			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
+			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
 		});
 
