@@ -56,7 +56,7 @@ export class ImportFollowingProcessorService {
 
 		const csv = await this.downloadService.downloadTextFile(file.url);
 		const targets = csv.trim().split('\n');
-		this.queueService.createImportFollowingToDbJob({ id: user.id }, targets);
+		this.queueService.createImportFollowingToDbJob({ id: user.id }, targets, job.data.withReplies);
 
 		this.logger.succ('Import jobs created');
 	}
@@ -95,7 +95,7 @@ export class ImportFollowingProcessorService {
 
 			this.logger.info(`Follow ${target.id} ...`);
 
-			this.queueService.createFollowJob([{ from: user, to: { id: target.id }, silent: true }]);
+			this.queueService.createFollowJob([{ from: user, to: { id: target.id }, silent: true, withReplies: job.data.withReplies }]);
 		} catch (e) {
 			this.logger.warn(`Error: ${e}`);
 		}

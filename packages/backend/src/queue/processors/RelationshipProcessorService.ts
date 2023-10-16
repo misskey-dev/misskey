@@ -37,7 +37,8 @@ export class RelationshipProcessorService {
 		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id}`);
 		await this.userFollowingService.follow(job.data.from, job.data.to, {
 			requestId: job.data.requestId,
-			silent: job.data.silent
+			silent: job.data.silent,
+			withReplies: job.data.withReplies,
 		});
 		return 'ok';
 	}
