@@ -15,7 +15,7 @@
 ## 2023.x.x (unreleased)
 
 ### General
--
+- Enhance: 新規にフォローした人のをデフォルトでTL二追加できるように
 
 ### Client
 - Enhance: TLの返信表示オプションを記憶するように
