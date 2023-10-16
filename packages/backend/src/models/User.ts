@@ -243,6 +243,12 @@ export class MiUser {
 	})
 	public token: string | null;
 
+	@Column('boolean', {
+		default: false,
+		comment: 'Default value of withReplies for newly followed users',
+	})
+	public defaultWithReplies: boolean;
+
 	constructor(data: Partial<MiUser>) {
 		if (data == null) return;
 
