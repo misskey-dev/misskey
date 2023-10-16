@@ -23,7 +23,7 @@
 		"@microsoft/api-extractor": "7.38.0",
 		"@swc/jest": "0.2.29",
 		"@types/jest": "29.5.5",
-		"@types/node": "20.8.4",
+		"@types/node": "20.8.6",
 		"@typescript-eslint/eslint-plugin": "6.7.5",
 		"@typescript-eslint/parser": "6.7.5",
 		"eslint": "8.51.0",
@@ -39,7 +39,7 @@
 	],
 	"dependencies": {
 		"@swc/cli": "0.1.62",
-		"@swc/core": "1.3.92",
+		"@swc/core": "1.3.93",
 		"eventemitter3": "5.0.1",
 		"reconnecting-websocket": "4.4.0"
 	}
