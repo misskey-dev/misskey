@@ -62,12 +62,12 @@ const headerTabs = $computed(() => [
 	{
 		key: 'block',
 		title: i18n.ts.block,
-		icon: 'ph-prohibit ph-bold ph-lg',
+		icon: 'ti ti-ban',
 	},
 	{
 		key: 'silence',
 		title: i18n.ts.silence,
-		icon: 'ph-eye-slash ph-bold ph-lg',
+		icon: 'ti ti-eye-off',
 	},
 ]);
 

@@ -53,9 +53,6 @@ export class UserFollowingService implements OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI.db)
-		private db: DataSource,
-
 		@Inject(DI.config)
 		private config: Config,
 

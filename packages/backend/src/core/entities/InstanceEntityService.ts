@@ -15,8 +15,6 @@ import { UtilityService } from '../UtilityService.js';
 @Injectable()
 export class InstanceEntityService {
 	constructor(
-		@Inject(DI.db)
-		private db: DataSource,
 
 		private metaService: MetaService,
 
