@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IsNull } from 'typeorm';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
@@ -28,6 +28,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -71,6 +72,7 @@ export class UserFollowingService implements OnModuleInit {
 		private instancesRepository: InstancesRepository,
 
 		private cacheService: CacheService,
+		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
@@ -118,15 +120,16 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
-
 		// フォロー対象が鍵アカウントである or
 		// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
-		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
+		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである or
+		// フォロワーがローカルユーザーであり、フォロー対象がサイレンスされているサーバーである
 		// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
 		if (
 			followee.isLocked ||
 			(followeeProfile.carefulBot && follower.isBot) ||
-			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true')
+			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
+			(this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && this.utilityService.isSilencedHost((await this.metaService.fetch()).silencedHosts, follower.host))
 		) {
 			let autoAccept = false;
 

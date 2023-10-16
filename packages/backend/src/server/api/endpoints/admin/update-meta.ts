@@ -20,18 +20,26 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		pinnedUsers: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		hiddenTags: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		blockedHosts: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		sensitiveWords: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
+		pinnedUsers: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		hiddenTags: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		blockedHosts: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		sensitiveWords: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -67,9 +75,11 @@ export const paramDef = {
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
-		langs: { type: 'array', items: {
-			type: 'string',
-		} },
+		langs: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		summalyProxy: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
@@ -115,6 +125,13 @@ export const paramDef = {
 		perUserHomeTimelineCacheMax: { type: 'integer' },
 		perUserListTimelineCacheMax: { type: 'integer' },
 		notesPerOneAd: { type: 'integer' },
+		silencedHosts: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'string',
+			},
+		},
 	},
 	required: [],
 } as const;
@@ -147,7 +164,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
-
+			if (Array.isArray(ps.silencedHosts)) {
+				let lastValue = '';
+				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
+				});
+			}
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
