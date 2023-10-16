@@ -203,7 +203,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events';
 import { claimAchievement } from '@/scripts/achievements.js';
-import {$i} from "@/account.js";
+import { $i } from "@/account.js";
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
