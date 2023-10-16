@@ -37,7 +37,7 @@ describe('RoleService', () => {
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
-			id: genAidx(new Date()),
+			id: genAidx(Date.now()),
 			username: un,
 			usernameLower: un,
 			...data,
@@ -47,7 +47,7 @@ describe('RoleService', () => {
 
 	function createRole(data: Partial<MiRole> = {}) {
 		return rolesRepository.insert({
-			id: genAidx(new Date()),
+			id: genAidx(Date.now()),
 			updatedAt: new Date(),
 			lastUsedAt: new Date(),
 			description: '',
