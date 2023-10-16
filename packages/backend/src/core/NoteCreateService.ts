@@ -56,6 +56,7 @@ import { SearchService } from '@/core/SearchService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import { nyaize } from '@/misc/nyaize.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -215,6 +216,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
 		private instanceChart: InstanceChart,
+		private utilityService: UtilityService,
 	) { }
 
 	@bindThis
@@ -257,6 +259,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
 			}
+		}
+
+		const inSilencedInstance = this.utilityService.isSilencedHost((await this.metaService.fetch()).silencedHosts, user.host);
+
+		if (data.visibility === 'public' && inSilencedInstance && user.host !== null) {
+			data.visibility = 'home';
 		}
 
 		if (data.renote) {
