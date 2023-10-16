@@ -17,7 +17,7 @@
 - AiScript: `Mk:apiExternal`の送信先は連合中のサーバーに限定されるようになりました。
 
 ### General
--
+- Feat: アンテナでローカルの投稿のみ収集できるようになりました
 
 ### Client
 - Enhance: TLの返信表示オプションを記憶するように
