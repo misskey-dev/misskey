@@ -196,10 +196,10 @@ describe('RoleService', () => {
 
 		test('conditional role', async () => {
 			const user1 = await createUser({
-				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
+				id: genAidx(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 			});
 			const user2 = await createUser({
-				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
+				id: genAidx(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 				followersCount: 10,
 			});
 			await createRole({
