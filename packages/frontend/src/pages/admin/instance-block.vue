@@ -58,18 +58,15 @@ function save() {
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => [
-	{
-		key: 'block',
-		title: i18n.ts.block,
-		icon: 'ti ti-ban',
-	},
-	{
-		key: 'silence',
-		title: i18n.ts.silence,
-		icon: 'ti ti-eye-off',
-	},
-]);
+const headerTabs = $computed(() => [{
+	key: 'block',
+	title: i18n.ts.block,
+	icon: 'ti ti-ban',
+}, {
+	key: 'silence',
+	title: i18n.ts.silence,
+	icon: 'ti ti-eye-off',
+}]);
 
 definePageMetadata({
 	title: i18n.ts.instanceBlocking,
