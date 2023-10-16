@@ -31,6 +31,7 @@ async function follow(user): Promise<void> {
 		userId: user.id,
 		withReplies: defaultStore.state.defaultWithReplies,
 	});
+	user.withReplies = defaultStore.state.defaultWithReplies;
 }
 
 const acct = new URL(location.href).searchParams.get('acct');

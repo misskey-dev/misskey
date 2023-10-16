@@ -98,6 +98,7 @@ async function onClick() {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});
+				props.user.withReplies = defaultStore.state.defaultWithReplies;
 				hasPendingFollowRequestFromYou = true;
 
 				claimAchievement('following1');
