@@ -55,6 +55,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { nyaize } from '@/misc/nyaize.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -221,9 +222,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 		id: MiUser['id'];
 		username: MiUser['username'];
 		host: MiUser['host'];
-		createdAt: MiUser['createdAt'];
 		isBot: MiUser['isBot'];
+		isCat: MiUser['isCat'];
 	}, data: Option, silent = false): Promise<MiNote> {
+		let patsedText: mfm.MfmNode[] | null = null;
+
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -302,6 +305,25 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
 			}
 			data.text = data.text.trim();
+
+			if (user.isCat) {
+				patsedText = patsedText ?? mfm.parse(data.text);
+				function nyaizeNode(node: mfm.MfmNode) {
+					if (node.type === 'quote') return;
+					if (node.type === 'text') {
+						node.props.text = nyaize(node.props.text);
+					}
+					if (node.children) {
+						for (const child of node.children) {
+							nyaizeNode(child);
+						}
+					}
+				}
+				for (const node of patsedText) {
+					nyaizeNode(node);
+				}
+				data.text = mfm.toString(patsedText);
+			}
 		} else {
 			data.text = null;
 		}
@@ -312,7 +334,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// Parse MFM if needed
 		if (!tags || !emojis || !mentionedUsers) {
-			const tokens = data.text ? mfm.parse(data.text)! : [];
+			const tokens = patsedText ?? (data.text ? mfm.parse(data.text)! : []);
 			const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
 			const choiceTokens = data.poll && data.poll.choices
 				? concat(data.poll.choices.map(choice => mfm.parse(choice)!))
@@ -360,8 +382,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new MiNote({
-			id: this.idService.genId(data.createdAt!),
-			createdAt: data.createdAt!,
+			id: this.idService.gen(data.createdAt?.getTime()),
 			fileIds: data.files ? data.files.map(file => file.id) : [],
 			replyId: data.reply ? data.reply.id : null,
 			renoteId: data.renote ? data.renote.id : null,
@@ -460,7 +481,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		id: MiUser['id'];
 		username: MiUser['username'];
 		host: MiUser['host'];
-		createdAt: MiUser['createdAt'];
 		isBot: MiUser['isBot'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		const meta = await this.metaService.fetch();
@@ -554,7 +574,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// Pack the note
-			const noteObj = await this.noteEntityService.pack(note);
+			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true });
 
 			this.globalEventService.publishNotesStream(noteObj);
 

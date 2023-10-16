@@ -61,6 +61,7 @@ type Antenna = {
     userGroupId: ID | null;
     users: string[];
     caseSensitive: boolean;
+    localOnly: boolean;
     notify: boolean;
     withReplies: boolean;
     withFile: boolean;

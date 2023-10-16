@@ -62,27 +62,10 @@ class HybridTimelineChannel extends Channel {
 			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
 
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.noteEntityService.pack(note.id, this.user!, {
-				detail: true,
-			});
-
-			if (note.isHidden) {
-				return;
-			}
-		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
-					detail: true,
-				});
-			}
+		if (note.visibility === 'followers') {
+			if (!Object.hasOwn(this.following, note.userId)) return;
+		} else if (note.visibility === 'specified') {
+			if (!note.visibleUserIds!.includes(this.user!.id)) return;
 		}
 
 		// Ignore notes from instances the user has muted
@@ -103,6 +86,11 @@ class HybridTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (this.user && note.renoteId && !note.text) {
+			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renoteId, this.user.id);
+			note.renote!.myReaction = myRenoteReaction;
+		}
 
 		this.connection.cacheNote(note);
 

@@ -12,11 +12,6 @@ export class MiClip {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the Clip.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,

@@ -13,6 +13,7 @@ import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class FeedService {
@@ -31,6 +32,7 @@ export class FeedService {
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -49,14 +51,14 @@ export class FeedService {
 				renoteId: IsNull(),
 				visibility: In(['public', 'home']),
 			},
-			order: { createdAt: -1 },
+			order: { id: -1 },
 			take: 20,
 		});
 
 		const feed = new Feed({
 			id: author.link,
 			title: `${author.name} (@${user.username}@${this.config.host})`,
-			updated: notes[0].createdAt,
+			updated: this.idService.parse(notes[0].id).date,
 			generator: 'Misskey',
 			description: `${user.notesCount} Notes, ${profile.ffVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.ffVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 			link: author.link,
@@ -78,7 +80,7 @@ export class FeedService {
 			feed.addItem({
 				title: `New note by ${author.name}`,
 				link: `${this.config.url}/notes/${note.id}`,
-				date: note.createdAt,
+				date: this.idService.parse(note.id).date,
 				description: note.cw ?? undefined,
 				content: note.text ?? undefined,
 				image: file ? this.driveFileEntityService.getPublicUrl(file) ?? undefined : undefined,

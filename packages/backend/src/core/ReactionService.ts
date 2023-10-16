@@ -153,8 +153,7 @@ export class ReactionService {
 		}
 
 		const record: MiNoteReaction = {
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			noteId: note.id,
 			userId: user.id,
 			reaction,
