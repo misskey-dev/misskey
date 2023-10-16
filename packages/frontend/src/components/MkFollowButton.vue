@@ -53,6 +53,10 @@ const props = withDefaults(defineProps<{
 	large: false,
 });
 
+const emit = defineEmits<{
+	(e: 'update:user', value: Misskey.entities.UserDetailed): void
+}>();
+
 let isFollowing = $ref(props.user.isFollowing);
 let hasPendingFollowRequestFromYou = $ref(props.user.hasPendingFollowRequestFromYou);
 let wait = $ref(false);
@@ -98,7 +102,10 @@ async function onClick() {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});
-				props.user.withReplies = defaultStore.state.defaultWithReplies;
+				emit('update:user', {
+					...props.user,
+					withReplies: defaultStore.state.defaultWithReplies
+				})
 				hasPendingFollowRequestFromYou = true;
 
 				claimAchievement('following1');

@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
-			<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
+			<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" v-model:user="user" mini/>
 		</div>
 		<div v-else>
 			<MkLoading/>
