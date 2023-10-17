@@ -204,7 +204,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events';
 import { claimAchievement } from '@/scripts/achievements.js';
-import {confirm} from "@/os.js";
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -334,10 +333,11 @@ async function setPinnedList() {
 }
 
 async function updateRepliesAll(withReplies: boolean) {
-	os.confirm({
+	const { canceled } = os.confirm({
 		type: 'warning',
 		text: withReplies ? i18n.ts.confirmShowRepliesAll : i18n.ts.confirmHideRepliesAll,
-	})
+	});
+	if (canceled) return;
 	await os.api('following/update-all', { withReplies });
 }
 
