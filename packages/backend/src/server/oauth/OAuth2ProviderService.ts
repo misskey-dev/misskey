@@ -94,6 +94,7 @@ interface ClientInformation {
 	id: string;
 	redirectUris: string[];
 	name: string;
+	secret?: string;
 }
 
 // https://indieauth.spec.indieweb.org/#client-information-discovery
@@ -251,7 +252,6 @@ export class OAuth2ProviderService {
 
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
-			clientName: string,
 			userId: string,
 			redirectUri: string,
 			codeChallenge: string,
@@ -286,7 +286,6 @@ export class OAuth2ProviderService {
 				const code = secureRndstr(128);
 				grantCodeCache.set(code, {
 					clientId: client.id,
-					clientName: client.name,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
@@ -321,6 +320,7 @@ export class OAuth2ProviderService {
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (body.client_id !== granted.clientId) return;
 				if (redirectUri !== granted.redirectUri) return;
+				// if (Boolean(client.secret) && client.secret !== body.client_secret) return; // Not sure if this works this way, so disabled for now
 
 				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
 				if (!body.code_verifier) return;
@@ -337,7 +337,7 @@ export class OAuth2ProviderService {
 					userId: granted.userId,
 					token: accessToken,
 					hash: accessToken,
-					name: `${granted.clientName} (${granted.clientId})`,
+					name: `${client.name} (${granted.clientId})`,
 					permission: granted.scopes,
 				});
 
@@ -432,7 +432,10 @@ export class OAuth2ProviderService {
 						id: clientID,
 						redirectUris: [clientApp.callbackUrl],
 						name: clientApp.name,
+						secret: clientApp.secret,
 					};
+
+					// TODO: Check whether can be skipped -> if already authorized, not revoked, and request no more scopes
 				} else {
 					// No such client, check with client method
 					const clientUrl = validateClientId(clientID);
