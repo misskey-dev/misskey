@@ -537,6 +537,7 @@ export interface Locale {
     "deleteAll": string;
     "showFixedPostForm": string;
     "showFixedPostFormInChannel": string;
+    "withRepliesByDefaultForNewlyFollowed": string;
     "newNoteRecived": string;
     "sounds": string;
     "sound": string;
@@ -2058,6 +2059,7 @@ export interface Locale {
         "userLists": string;
         "excludeMutingUsers": string;
         "excludeInactiveUsers": string;
+        "withReplies": string;
     };
     "_charts": {
         "federation": string;
