@@ -534,6 +534,7 @@ serverLogs: "サーバーログ"
 deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
 showFixedPostFormInChannel: "タイムライン上部に投稿フォームを表示する(チャンネル)"
+withRepliesByDefaultForNewlyFollowed: "フォローする際、デフォルトで返信をTLに含むようにする"
 newNoteRecived: "新しいノートがあります"
 sounds: "サウンド"
 sound: "サウンド"
@@ -1969,6 +1970,7 @@ _exportOrImport:
   userLists: "リスト"
   excludeMutingUsers: "ミュートしているユーザーを除外"
   excludeInactiveUsers: "使われていないアカウントを除外"
+  withReplies: "インポートした人による返信をTLに含むようにする"
 
 _charts:
   federation: "連合"
