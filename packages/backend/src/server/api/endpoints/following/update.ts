@@ -84,8 +84,9 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		notify: { type: 'string', enum: ['normal', 'none'] },
+		withReplies: { type: 'boolean' },
 	},
-	required: ['userId', 'notify'],
+	required: ['userId'],
 } as const;
 
 @Injectable()
@@ -116,6 +117,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
+
+			// Find and update followingsRepository
+			const exist = await this.followingsRepository.findOneBy({
+				followerId: follower.id,
+				followeeId: target.id,
+			});
+
+			if (exist) {
+				await this.followingsRepository.update({
+					id: exist.id,
+				}, {
+					notify: ps.notify != null ? (ps.notify === 'none' ? null : ps.notify) : undefined,
+					withReplies: ps.withReplies != null ? ps.withReplies : undefined,
+				});
+			}
 
 			// To subscribe
 			if (ps.notify === 'normal') {

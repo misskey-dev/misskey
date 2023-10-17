@@ -47,6 +47,7 @@ import { SignupService } from './SignupService.js';
 import { WebAuthnService } from './WebAuthnService.js';
 import { UserBlockingService } from './UserBlockingService.js';
 import { CacheService } from './CacheService.js';
+import { UserService } from './UserService.js';
 import { UserFollowingService } from './UserFollowingService.js';
 import { UserKeypairService } from './UserKeypairService.js';
 import { UserListService } from './UserListService.js';
@@ -60,6 +61,8 @@ import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
 import { SearchService } from './SearchService.js';
 import { ClipService } from './ClipService.js';
+import { FeaturedService } from './FeaturedService.js';
+import { RedisTimelineService } from './RedisTimelineService.js';
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
 import NotesChart from './chart/charts/notes.js';
@@ -176,6 +179,7 @@ const $SignupService: Provider = { provide: 'SignupService', useExisting: Signup
 const $WebAuthnService: Provider = { provide: 'WebAuthnService', useExisting: WebAuthnService };
 const $UserBlockingService: Provider = { provide: 'UserBlockingService', useExisting: UserBlockingService };
 const $CacheService: Provider = { provide: 'CacheService', useExisting: CacheService };
+const $UserService: Provider = { provide: 'UserService', useExisting: UserService };
 const $UserFollowingService: Provider = { provide: 'UserFollowingService', useExisting: UserFollowingService };
 const $UserKeypairService: Provider = { provide: 'UserKeypairService', useExisting: UserKeypairService };
 const $UserListService: Provider = { provide: 'UserListService', useExisting: UserListService };
@@ -188,6 +192,8 @@ const $UtilityService: Provider = { provide: 'UtilityService', useExisting: Util
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
 const $ClipService: Provider = { provide: 'ClipService', useExisting: ClipService };
+const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
+const $RedisTimelineService: Provider = { provide: 'RedisTimelineService', useExisting: RedisTimelineService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -308,6 +314,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		WebAuthnService,
 		UserBlockingService,
 		CacheService,
+		UserService,
 		UserFollowingService,
 		UserKeypairService,
 		UserListService,
@@ -320,6 +327,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FileInfoService,
 		SearchService,
 		ClipService,
+		FeaturedService,
+		RedisTimelineService,
 		ChartLoggerService,
 		FederationChart,
 		NotesChart,
@@ -433,6 +442,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$WebAuthnService,
 		$UserBlockingService,
 		$CacheService,
+		$UserService,
 		$UserFollowingService,
 		$UserKeypairService,
 		$UserListService,
@@ -445,6 +455,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FileInfoService,
 		$SearchService,
 		$ClipService,
+		$FeaturedService,
+		$RedisTimelineService,
 		$ChartLoggerService,
 		$FederationChart,
 		$NotesChart,
@@ -559,6 +571,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		WebAuthnService,
 		UserBlockingService,
 		CacheService,
+		UserService,
 		UserFollowingService,
 		UserKeypairService,
 		UserListService,
@@ -571,6 +584,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FileInfoService,
 		SearchService,
 		ClipService,
+		FeaturedService,
+		RedisTimelineService,
 		FederationChart,
 		NotesChart,
 		UsersChart,
@@ -683,6 +698,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$WebAuthnService,
 		$UserBlockingService,
 		$CacheService,
+		$UserService,
 		$UserFollowingService,
 		$UserKeypairService,
 		$UserListService,
@@ -695,6 +711,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FileInfoService,
 		$SearchService,
 		$ClipService,
+		$FeaturedService,
+		$RedisTimelineService,
 		$FederationChart,
 		$NotesChart,
 		$UsersChart,
