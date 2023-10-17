@@ -130,7 +130,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(timeline, me);
 			}
 
-			// TODO: 将来的に削除する
+			//TODO: 将来的に削除する
 			//#region fallback to db
 			const followees = await this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
@@ -205,7 +205,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}));
 				}));
 			}
-			//#endregion
 
 			let timeline = await query.limit(ps.limit).getMany();
 			timeline = timeline.filter(note => {
