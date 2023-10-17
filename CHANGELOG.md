@@ -25,6 +25,7 @@
 
 ### Server
 - Enhance: ストリーミングAPIのパフォーマンスを向上
+- Fix: users/notesでDBから参照した際にチャンネル投稿のみ取得される問題を修正
 
 ## 2023.10.1
 ### General
