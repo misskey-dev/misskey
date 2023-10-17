@@ -23,7 +23,7 @@ import { kinds } from '@/misc/api-permissions.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
+import type { AccessTokensRepository, UsersRepository, AppsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -242,6 +242,10 @@ export class OAuth2ProviderService {
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 		loggerService: LoggerService,
+
+		// Nya: inject app table
+		@Inject(DI.appsRepository)
+		private appsRepository: AppsRepository,
 	) {
 		this.#logger = loggerService.getLogger('oauth');
 
@@ -361,7 +365,7 @@ export class OAuth2ProviderService {
 				scopes_supported: kinds,
 				response_types_supported: ['code'],
 				grant_types_supported: ['authorization_code'],
-				service_documentation: 'https://misskey-hub.net',
+				service_documentation: 'https://docs.nya.one/develop/peripheral/auth/#oauth2',
 				code_challenge_methods_supported: ['S256'],
 				authorization_response_iss_parameter_supported: true,
 			});
@@ -404,21 +408,47 @@ export class OAuth2ProviderService {
 
 				this.#logger.info(`Validating authorization parameters, with client_id: ${clientID}, redirect_uri: ${redirectURI}, scope: ${scope}`);
 
-				const clientUrl = validateClientId(clientID);
+				// Prepare client information
+				let clientInfo: ClientInformation | null = null;
 
-				// https://indieauth.spec.indieweb.org/#client-information-discovery
-				// "the server may want to resolve the domain name first and avoid fetching the document
-				// if the IP address is within the loopback range defined by [RFC5735]
-				// or any other implementation-specific internal IP address."
-				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
-					const lookup = await dns.lookup(clientUrl.hostname);
-					if (ipaddr.parse(lookup.address).range() !== 'unicast') {
-						throw new AuthorizationError('client_id resolves to disallowed IP range.', 'invalid_request');
+				// Nya: Check App table to use already registered applications
+				const clientApp = await this.appsRepository.findOneBy({ id: clientID });
+				if (clientApp != null) {
+					// Validate callback url
+					if (clientApp.callbackUrl == null) {
+						throw new AuthorizationError('client doesn\'t have a valid callback url.', 'invalid_request');
 					}
-				}
 
-				// Find client information from the remote.
-				const clientInfo = await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
+					// Validate scopes field
+					for (const s in scope) {
+						if (!clientApp.permission.includes(s)) {
+							throw new AuthorizationError(`request scope exceeds authority: ${s}`, 'invalid_request');
+						}
+					}
+
+					clientInfo = {
+						id: clientID,
+						redirectUris: [clientApp.callbackUrl],
+						name: clientApp.name,
+					};
+				} else {
+					// No such client, check with client method
+					const clientUrl = validateClientId(clientID);
+
+					// https://indieauth.spec.indieweb.org/#client-information-discovery
+					// "the server may want to resolve the domain name first and avoid fetching the document
+					// if the IP address is within the loopback range defined by [RFC5735]
+					// or any other implementation-specific internal IP address."
+					if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
+						const lookup = await dns.lookup(clientUrl.hostname);
+						if (ipaddr.parse(lookup.address).range() !== 'unicast') {
+							throw new AuthorizationError('client_id resolves to disallowed IP range.', 'invalid_request');
+						}
+					}
+
+					// Find client information from the remote.
+					clientInfo = await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
+				}
 
 				// Require the redirect URI to be included in an explicit list, per
 				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
