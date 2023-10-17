@@ -71,6 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+	<MkInfo v-if="files.length > 0" warn :class="$style.guidelineInfo" :rounded="false"><Mfm :text="i18n.t('_postForm.guidelineInfo', { tosUrl: instance.tosUrl, nsfwGuideUrl })"/></MkInfo>
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
@@ -187,6 +188,8 @@ let hasNotSpecifiedMentions = $ref(false);
 let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
 let imeText = $ref('');
 let showingOptions = $ref(false);
+
+const nsfwGuideUrl = 'https://go.misskey.io/media-guideline';
 
 const draftKey = $computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -1186,6 +1189,10 @@ defineExpose({
 
 .previewButtonActive {
 	color: var(--accent);
+}
+
+.guidelineInfo {
+	margin-top: 8px;
 }
 
 @container (max-width: 500px) {

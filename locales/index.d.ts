@@ -2033,6 +2033,7 @@ export interface Locale {
             "e": string;
             "f": string;
         };
+        "guidelineInfo": string;
     };
     "_profile": {
         "name": string;

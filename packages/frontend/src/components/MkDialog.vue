@@ -27,13 +27,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
 		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
-			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
-			<template #caption>
-				<span v-if="okButtonDisabled && disabledReason === 'charactersExceeded'" v-text="i18n.t('_dialog.charactersExceeded', { current: (inputValue as string).length, max: input.maxLength ?? 'NaN' })"/>
-				<span v-else-if="okButtonDisabled && disabledReason === 'charactersBelow'" v-text="i18n.t('_dialog.charactersBelow', { current: (inputValue as string).length, min: input.minLength ?? 'NaN' })"/>
-			</template>
-		</MkInput>
+		<template v-if="input">
+			<MkInput v-if="input.type != 'textarea'" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
+				<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
+				<template #caption>
+					<span v-if="okButtonDisabled && disabledReason === 'charactersExceeded'" v-text="i18n.t('_dialog.charactersExceeded', { current: (inputValue as string).length, max: input.maxLength ?? 'NaN' })"/>
+					<span v-else-if="okButtonDisabled && disabledReason === 'charactersBelow'" v-text="i18n.t('_dialog.charactersBelow', { current: (inputValue as string).length, min: input.minLength ?? 'NaN' })"/>
+				</template>
+			</MkInput>
+			<MkTextarea v-if="input.type === 'textarea'" v-model="inputValue" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete">
+				<template #label>{{ input.placeholder }}</template>
+				<template #caption>
+					<span v-if="okButtonDisabled && disabledReason === 'charactersExceeded'" v-text="i18n.t('_dialog.charactersExceeded', { current: (inputValue as string).length, max: input.maxLength ?? 'NaN' })"/>
+					<span v-else-if="okButtonDisabled && disabledReason === 'charactersBelow'" v-text="i18n.t('_dialog.charactersBelow', { current: (inputValue as string).length, min: input.minLength ?? 'NaN' })"/>
+				</template>
+			</MkTextarea>
+		</template>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
@@ -61,10 +70,11 @@ import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import { i18n } from '@/i18n.js';
 
 type Input = {
-	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
+	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local' | 'textarea';
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string | number | null;

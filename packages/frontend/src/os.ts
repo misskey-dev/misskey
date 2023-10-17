@@ -251,7 +251,7 @@ export function actions<T extends {
 }
 
 export function inputText(props: {
-	type?: 'text' | 'email' | 'password' | 'url';
+	type?: 'text' | 'email' | 'password' | 'url' | 'textarea';
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
