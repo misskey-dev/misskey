@@ -251,6 +251,7 @@ export class OAuth2ProviderService {
 
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
+			clientName: string,
 			userId: string,
 			redirectUri: string,
 			codeChallenge: string,
@@ -285,6 +286,7 @@ export class OAuth2ProviderService {
 				const code = secureRndstr(128);
 				grantCodeCache.set(code, {
 					clientId: client.id,
+					clientName: client.name,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
@@ -335,7 +337,7 @@ export class OAuth2ProviderService {
 					userId: granted.userId,
 					token: accessToken,
 					hash: accessToken,
-					name: granted.clientId,
+					name: `${granted.clientName} (${granted.clientId})`,
 					permission: granted.scopes,
 				});
 
