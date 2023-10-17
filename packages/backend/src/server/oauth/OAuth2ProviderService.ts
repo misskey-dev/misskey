@@ -252,6 +252,8 @@ export class OAuth2ProviderService {
 
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
+			clientName: string,
+			clientSecret?: string,
 			userId: string,
 			redirectUri: string,
 			codeChallenge: string,
@@ -286,6 +288,8 @@ export class OAuth2ProviderService {
 				const code = secureRndstr(128);
 				grantCodeCache.set(code, {
 					clientId: client.id,
+					clientName: client.name,
+					clientSecret: client.secret,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
@@ -320,7 +324,7 @@ export class OAuth2ProviderService {
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (body.client_id !== granted.clientId) return;
 				if (redirectUri !== granted.redirectUri) return;
-				// if (Boolean(client.secret) && client.secret !== body.client_secret) return; // Not sure if this works this way, so disabled for now
+				// if (Boolean(granted.clientSecret) && granted.clientSecret !== body.client_secret) return; // Not sure if this works this way, so disabled for now
 
 				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
 				if (!body.code_verifier) return;
@@ -337,7 +341,7 @@ export class OAuth2ProviderService {
 					userId: granted.userId,
 					token: accessToken,
 					hash: accessToken,
-					name: `${client.name} (${granted.clientId})`,
+					name: `${granted.clientName} (${granted.clientId})`,
 					permission: granted.scopes,
 				});
 
