@@ -172,7 +172,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			//#region fallback to db
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 20))) }) // 20日前まで
+				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 20))) }); // 20日前まで
 
 			if (me && ps.withBelowPublic) {
 				const localFollowees = await this.followingsRepository.createQueryBuilder('following')

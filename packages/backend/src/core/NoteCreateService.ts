@@ -878,7 +878,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				this.redisTimelineService.push(`homeTimeline:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax, r);
 				if (note.userHost == null) {
-					this.redisTimelineService.push(`localHomeTimeline:${following.followerId}`, note.id, meta.perRemoteUserUserTimelineCacheMax, r)
+					this.redisTimelineService.push(`localHomeTimeline:${following.followerId}`, note.id, meta.perRemoteUserUserTimelineCacheMax, r);
 				}
 				if (note.fileIds.length > 0) {
 					this.redisTimelineService.push(`homeTimelineWithFiles:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax / 2, r);
