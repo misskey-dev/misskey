@@ -228,6 +228,7 @@ const setCategoryBulk = async () => {
 
 const setLicenseBulk = async () => {
 	const { canceled, result } = await os.inputText({
+		type: 'textarea',
 		title: 'License',
 	});
 	if (canceled) return;
