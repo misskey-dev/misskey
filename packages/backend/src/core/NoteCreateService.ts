@@ -252,8 +252,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
+		const meta = await this.metaService.fetch();
+
 		if (data.visibility === 'public' && data.channel == null) {
-			const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
+			const sensitiveWords = meta.sensitiveWords;
 			if (this.isSensitive(data, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
@@ -261,7 +263,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		const inSilencedInstance = this.utilityService.isSilencedHost((await this.metaService.fetch()).silencedHosts, user.host);
+		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
 
 		if (data.visibility === 'public' && inSilencedInstance && user.host !== null) {
 			data.visibility = 'home';
