@@ -46,8 +46,7 @@ export class ClipService {
 		}
 
 		const clip = await this.clipsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			userId: me.id,
 			name: name,
 			isPublic: isPublic,
@@ -109,7 +108,7 @@ export class ClipService {
 
 		try {
 			await this.clipNotesRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				noteId: noteId,
 				clipId: clip.id,
 			});

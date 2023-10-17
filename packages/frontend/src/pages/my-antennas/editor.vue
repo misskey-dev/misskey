@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.antennaExcludeKeywords }}</template>
 				<template #caption>{{ i18n.ts.antennaKeywordsDescription }}</template>
 			</MkTextarea>
+			<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
 			<MkSwitch v-model="notify">{{ i18n.ts.notifyAntenna }}</MkSwitch>
@@ -75,6 +76,7 @@ let users: string = $ref(props.antenna.users.join('\n'));
 let keywords: string = $ref(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
 let excludeKeywords: string = $ref(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
 let caseSensitive: boolean = $ref(props.antenna.caseSensitive);
+let localOnly: boolean = $ref(props.antenna.localOnly);
 let withReplies: boolean = $ref(props.antenna.withReplies);
 let withFile: boolean = $ref(props.antenna.withFile);
 let notify: boolean = $ref(props.antenna.notify);
@@ -95,6 +97,7 @@ async function saveAntenna() {
 		withFile,
 		notify,
 		caseSensitive,
+		localOnly,
 		users: users.trim().split('\n').map(x => x.trim()),
 		keywords: keywords.trim().split('\n').map(x => x.trim().split(' ')),
 		excludeKeywords: excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
