@@ -151,7 +151,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			if (ps.withChannelNotes) {
-				if (!isSelf) query.andWhere('channel.isSensitive = false');
+				if (!isSelf) query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.channelId IS NULL');
+					qb.orWhere('channel.isSensitive = false');
+				}));
 			} else {
 				query.andWhere('note.channelId IS NULL');
 			}
