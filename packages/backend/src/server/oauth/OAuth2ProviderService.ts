@@ -420,7 +420,7 @@ export class OAuth2ProviderService {
 					}
 
 					// Validate scopes field
-					for (const s in scope) {
+					for (const s of scope) {
 						if (!clientApp.permission.includes(s)) {
 							throw new AuthorizationError(`request scope exceeds authority: ${s}`, 'invalid_request');
 						}
