@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.10.1-nade1.3.5",
+	"version": "2023.10.1-nade1.4.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",

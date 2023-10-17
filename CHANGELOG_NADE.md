@@ -9,6 +9,10 @@
 ### Server
 -->
 
+## nade 1.4.0
+### Server
+- タイムラインがRedisにキャッシュされていない際にDBから取得します。
+
 ## nade 1.3.5
 ### General
 - Misskey 2023.9.1対応のための軽微な修正
