@@ -9,11 +9,11 @@
 ### Server
 -->
 
-## nade 1.4.0
+## nade 1.4.0 & 1.4.1
 ### Server
 - タイムラインがRedisにキャッシュされていない際にDBから取得します。
 
-## nade 1.3.5 && nade 1.3.6
+## nade 1.3.5 & nade 1.3.6
 ### NOTE
 nade 1.3.5 is not working
 ### General
