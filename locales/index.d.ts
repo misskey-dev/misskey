@@ -855,9 +855,9 @@ export interface Locale {
     "list": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
+    "showVisibilityColor": string;
     "newEmojis": string;
     "draftEmojis": string;
-    "showVisibilityColor": string;
     "previewNoteText": string;
     "customCss": string;
     "customCssWarn": string;
