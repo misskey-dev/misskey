@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				aliases: ps.aliases ?? [],
 				license: ps.license ?? null,
 				host: null,
-				draft: true,
+				draft: false,
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: [],
