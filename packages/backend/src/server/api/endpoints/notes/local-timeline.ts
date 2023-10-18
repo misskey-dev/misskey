@@ -5,7 +5,6 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import type { MiNote, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -15,7 +14,8 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -59,9 +59,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -70,7 +67,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -94,9 +92,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds: string[];
 
 			if (ps.withFiles) {
-				noteIds = await this.redisTimelineService.get('localTimelineWithFiles', untilId, sinceId);
+				noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
 			} else {
-				const [nonReplyNoteIds, replyNoteIds] = await this.redisTimelineService.getMulti([
+				const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
 					'localTimeline',
 					'localTimelineWithReplies',
 				], untilId, sinceId);
@@ -106,49 +104,75 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			noteIds = noteIds.slice(0, ps.limit);
 
-			if (noteIds.length === 0) {
-				return [];
-			}
+			if (noteIds.length > 0) {
+				const query = this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.leftJoinAndSelect('note.channel', 'channel');
 
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
+				let timeline = await query.getMany();
 
-			let timeline = await query.getMany();
-
-			timeline = timeline.filter(note => {
-				if (me && (note.userId === me.id)) {
-					return true;
-				}
-				if (!ps.withReplies && note.replyId && (me == null || note.replyUserId !== me.id)) return false;
-				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-				if (note.renoteId) {
-					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-						if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-						if (ps.withRenotes === false) return false;
+				timeline = timeline.filter(note => {
+					if (me && (note.userId === me.id)) {
+						return true;
 					}
+					if (!ps.withReplies && note.replyId && (me == null || note.replyUserId !== me.id)) return false;
+					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+					if (note.renoteId) {
+						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+							if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
+							if (ps.withRenotes === false) return false;
+						}
+					}
+
+					return true;
+				});
+
+				// TODO: フィルタした結果件数が足りなかった場合の対応
+
+				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
+				process.nextTick(() => {
+					if (me) {
+						this.activeUsersChart.read(me);
+					}
+				});
+
+				return await this.noteEntityService.packMany(timeline, me);
+			} else { // fallback to db
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				this.queryService.generateVisibilityQuery(query, me);
+				if (me) this.queryService.generateMutedUserQuery(query, me);
+				if (me) this.queryService.generateBlockedUserQuery(query, me);
+				if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
 				}
 
-				return true;
-			});
+				const timeline = await query.limit(ps.limit).getMany();
 
-			// TODO: フィルタした結果件数が足りなかった場合の対応
+				process.nextTick(() => {
+					if (me) {
+						this.activeUsersChart.read(me);
+					}
+				});
 
-			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-
-			process.nextTick(() => {
-				if (me) {
-					this.activeUsersChart.read(me);
-				}
-			});
-
-			return await this.noteEntityService.packMany(timeline, me);
+				return await this.noteEntityService.packMany(timeline, me);
+			}
 		});
 	}
 }
