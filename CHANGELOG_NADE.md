@@ -9,6 +9,10 @@
 ### Server
 -->
 
+## nade 1.4.3
+### Server
+- リストTLもDBへのフォールバックに対応させました
+
 ## nade 1.4.2
 ### Server
 - DBフォールバックの方法を本家Misskeyに揃えました
