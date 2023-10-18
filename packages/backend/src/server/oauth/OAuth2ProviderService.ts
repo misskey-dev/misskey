@@ -325,6 +325,8 @@ export class OAuth2ProviderService {
 				}
 				granted.used = true;
 
+				this.#logger.info(`Log request body for debug use only: ${JSON.stringify(body)}`); // TODO: Delete this
+
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (body.client_id !== granted.clientId) {
 					this.#logger.info(`Client ID mismatch. (expect ${granted.clientId}, got ${body.client_id})`);
