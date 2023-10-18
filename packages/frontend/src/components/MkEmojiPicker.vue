@@ -72,19 +72,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
+
 			<XSection
-				v-for="category in customEmojiCategories"
+				v-for="category in groupedData"
 				:key="`custom:${category}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).filter(filterAvailable).map(e => `:${e.name}:`))"
-				@chosen="chosen"
-			>
-				{{ category || i18n.ts.other }}
-			</XSection>
+				:emojis="computed(() => customEmojis.filter(filterAvailable))"
+                :category="category"
+                @chosen="chosen"
+			/>
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" @chosen="chosen">{{ category }}</XSection>
+			<XSection
+				v-for="category in categories"
+				:key="category"
+				:emojis="emojiCharByCategory.get(category) ?? []"
+				@chosen="chosen"
+			>{{ category }}
+			</XSection>
+
 		</div>
 	</div>
 	<div class="tabs">
@@ -107,7 +114,7 @@ import { isTouchUsing } from '@/scripts/touch.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
-import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
+import {customEmojiCategories, customEmojis, customEmojisMap} from '@/custom-emojis.js';
 import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
@@ -143,6 +150,23 @@ const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
+let split_categories = [];
+customEmojiCategories.value.forEach(e => {
+    if (e !== null){
+        split_categories.push(e.split('/'))
+    }
+});
+
+const groupedData = {};
+split_categories.forEach((item) => {
+        if (!groupedData[item[0]]) {
+            groupedData[item[0]] = [];
+            groupedData[item[0]].push(item[0]);
+        }else{
+            groupedData[item[0]].push(item[1]);
+        }
+});
+console.log(groupedData)
 
 watch(q, () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
