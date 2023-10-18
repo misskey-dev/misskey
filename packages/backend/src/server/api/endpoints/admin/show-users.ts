@@ -35,7 +35,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'] },
-		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended'], default: 'all' },
+		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended', 'approved'], default: 'all' },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		username: { type: 'string', nullable: true, default: null },
 		hostname: {
@@ -64,6 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				case 'available': query.where('user.isSuspended = FALSE'); break;
 				case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 				case 'suspended': query.where('user.isSuspended = TRUE'); break;
+				case 'approved': query.where('user.approved = FALSE'); break;
 				case 'admin': {
 					const adminIds = await this.roleService.getAdministratorIds();
 					if (adminIds.length === 0) return [];
