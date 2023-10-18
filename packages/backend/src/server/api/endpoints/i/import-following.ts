@@ -52,6 +52,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		fileId: { type: 'string', format: 'misskey:id' },
+		withReplies: { type: 'boolean' },
 	},
 	required: ['fileId'],
 } as const;
@@ -79,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			);
 			if (checkMoving ? file.size > 32 * 1024 * 1024 : file.size > 64 * 1024) throw new ApiError(meta.errors.tooBigFile);
 
-			this.queueService.createImportFollowingJob(me, file.id);
+			this.queueService.createImportFollowingJob(me, file.id, ps.withReplies);
 		});
 	}
 }

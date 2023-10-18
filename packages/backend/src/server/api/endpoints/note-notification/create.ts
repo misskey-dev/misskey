@@ -106,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Create
 			const noteNotification = await this.noteNotificationRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				createdAt: new Date(),
 				userId: me.id,
 				targetUserId: target.id,

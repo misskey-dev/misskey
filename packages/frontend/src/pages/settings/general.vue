@@ -30,6 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkSwitch v-model="showLocalTimelineBelowPublic">{{ i18n.ts.flagShowLocalTimelineBelowPublic }} <span class="_beta">{{ i18n.ts.originalFeature }}</span> <template #caption>{{ i18n.ts.flagShowLocalTimelineBelowPublicDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
+			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
@@ -251,6 +252,7 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const showLocalTimelineBelowPublic = computed(defaultStore.makeGetterSetter('showLocalTimelineBelowPublic'));
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

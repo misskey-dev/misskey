@@ -129,7 +129,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: exist.id,
 				}, {
 					notify: ps.notify != null ? (ps.notify === 'none' ? null : ps.notify) : undefined,
-					withReplies: ps.withReplies != null ? ps.withReplies : undefined,
+					withReplies: ps.withReplies ?? undefined,
 				});
 			}
 
@@ -157,7 +157,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				// Create
 				const noteNotification = await this.noteNotificationRepository.insert({
-					id: this.idService.genId(),
+					id: this.idService.gen(),
 					createdAt: new Date(),
 					userId: me.id,
 					targetUserId: target.id,

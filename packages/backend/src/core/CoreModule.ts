@@ -62,7 +62,7 @@ import { FileInfoService } from './FileInfoService.js';
 import { SearchService } from './SearchService.js';
 import { ClipService } from './ClipService.js';
 import { FeaturedService } from './FeaturedService.js';
-import { RedisTimelineService } from './RedisTimelineService.js';
+import { FunoutTimelineService } from './FunoutTimelineService.js';
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
 import NotesChart from './chart/charts/notes.js';
@@ -193,7 +193,7 @@ const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: Fi
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
 const $ClipService: Provider = { provide: 'ClipService', useExisting: ClipService };
 const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
-const $RedisTimelineService: Provider = { provide: 'RedisTimelineService', useExisting: RedisTimelineService };
+const $FunoutTimelineService: Provider = { provide: 'FunoutTimelineService', useExisting: FunoutTimelineService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -328,7 +328,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SearchService,
 		ClipService,
 		FeaturedService,
-		RedisTimelineService,
+		FunoutTimelineService,
 		ChartLoggerService,
 		FederationChart,
 		NotesChart,
@@ -456,7 +456,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SearchService,
 		$ClipService,
 		$FeaturedService,
-		$RedisTimelineService,
+		$FunoutTimelineService,
 		$ChartLoggerService,
 		$FederationChart,
 		$NotesChart,
@@ -585,7 +585,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SearchService,
 		ClipService,
 		FeaturedService,
-		RedisTimelineService,
+		FunoutTimelineService,
 		FederationChart,
 		NotesChart,
 		UsersChart,
@@ -712,7 +712,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SearchService,
 		$ClipService,
 		$FeaturedService,
-		$RedisTimelineService,
+		$FunoutTimelineService,
 		$FederationChart,
 		$NotesChart,
 		$UsersChart,

@@ -80,8 +80,6 @@ class UserListChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
-
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await this.noteEntityService.pack(note.id, this.user, {
 				detail: true,
@@ -105,19 +103,19 @@ class UserListChannel extends Channel {
 			}
 		}
 
-		// 関係ない返信は除外
-		if (note.reply && !this.membershipsMap[note.userId]?.withReplies) {
-			const reply = note.reply;
-			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
-		}
-
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (this.user && note.renoteId && !note.text) {
+			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renoteId, this.user.id);
+			note.renote!.myReaction = myRenoteReaction;
+		}
+
+		this.connection.cacheNote(note);
 
 		this.send('note', note);
 	}
