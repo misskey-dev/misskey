@@ -153,20 +153,35 @@ const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 let split_categories = [];
 customEmojiCategories.value.forEach(e => {
     if (e !== null){
-        split_categories.push(e.split('/'))
+        split_categories.push(e.split('/',2))
     }
 });
 
 const groupedData = {};
 split_categories.forEach((item) => {
-        if (!groupedData[item[0]]) {
-            groupedData[item[0]] = [];
-            groupedData[item[0]].push(item[0]);
-        }else{
-            groupedData[item[0]].push(item[1]);
+    if (!groupedData[item[0]]) {
+        groupedData[item[0]] = {};
+        groupedData[item[0]][item[0]] = true;
+        if (item.length > 1) {
+            for (let i = 1; i < item.length; i++) {
+                groupedData[item[0]][item[i]] = true;
+            }
         }
+    } else {
+        if (item.length > 1) {
+            for (let i = 1; i < item.length; i++) {
+                groupedData[item[0]][item[i]] = true;
+            }
+        }
+    }
 });
-console.log(groupedData)
+
+// 結果を配列に変換
+for (const key in groupedData) {
+    groupedData[key] = Object.keys(groupedData[key]);
+}
+
+console.log(split_categories,groupedData)
 
 watch(q, () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
