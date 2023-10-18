@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return ips.map(x => ({
 				ip: x.ip,
-				createdAt: this.idService.parse(x.id).date.toISOString(),
+				createdAt: x.createdAt.toISOString(),
 			}));
 		});
 	}
