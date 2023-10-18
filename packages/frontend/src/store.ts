@@ -396,6 +396,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	showGlobalTimeline:{
+		where: 'device',
+		default: true,
+	},
 	showVisibilityColor:{
 		where: 'device',
 		default: false,

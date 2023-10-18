@@ -21,6 +21,7 @@ export interface Locale {
     "cancel": string;
     "noThankYou": string;
     "enterUsername": string;
+    "showGlobalTimeline": string;
     "renotedBy": string;
     "noNotes": string;
     "noNotifications": string;

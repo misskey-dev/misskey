@@ -50,7 +50,7 @@ provide('shouldOmitHeaderTitle', true);
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
-const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
+const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable && defaultStore.state.showGlobalTimeline) || ($i != null && $i.policies.gtlAvailable && defaultStore.state.showGlobalTimeline);
 const keymap = {
 	't': focus,
 };
@@ -190,7 +190,7 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-rocket',
 	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
+}] : []), ...(isGlobalTimelineAvailable  ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-whirl',
