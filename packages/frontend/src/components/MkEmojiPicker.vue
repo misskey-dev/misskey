@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                         v-for="category in groupedData"
                         :key="`custom:${category}`"
                         :initialShown="false"
-                        :emojis="computed(() => customEmojis.filter(filterAvailable))"
+                        :emojis="computed(() => customEmojis.filter(emoji => !emoji.draft).filter(filterAvailable))"
                         :category="category"
                         @chosen="chosen"
                 />
@@ -181,7 +181,7 @@ watch(q, () => {
 
     const searchCustom = () => {
         const max = 100;
-        const emojis = customEmojis.value;
+        const emojis = customEmojis.value.filter(emoji => !emoji.draft);;
         const matches = new Set<Misskey.entities.CustomEmoji>();
 
         const exactMatch = emojis.find(emoji => emoji.name === newQ);
