@@ -7,10 +7,6 @@ import { markRaw } from 'vue';
 import { Storage } from '@/pizzax.js';
 
 export const soundConfigStore = markRaw(new Storage('sound', {
-	mediaVolume: {
-		where: 'device',
-		default: 0.5,
-	},
 	sound_masterVolume: {
 		where: 'device',
 		default: 0.3,
@@ -26,14 +22,6 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 	sound_notification: {
 		where: 'account',
 		default: { type: 'syuilo/n-ea', volume: 1 },
-	},
-	sound_chat: {
-		where: 'account',
-		default: { type: 'syuilo/pope1', volume: 1 },
-	},
-	sound_chatBg: {
-		where: 'account',
-		default: { type: 'syuilo/waon', volume: 1 },
 	},
 	sound_antenna: {
 		where: 'account',

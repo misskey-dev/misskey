@@ -371,7 +371,6 @@ export type Endpoints = {
 	'i/favorites': { req: { limit?: number; sinceId?: NoteFavorite['id']; untilId?: NoteFavorite['id']; }; res: NoteFavorite[]; };
 	'i/gallery/likes': { req: TODO; res: TODO; };
 	'i/gallery/posts': { req: TODO; res: TODO; };
-	'i/get-word-muted-notes-count': { req: TODO; res: TODO; };
 	'i/import-following': { req: TODO; res: TODO; };
 	'i/import-user-lists': { req: TODO; res: TODO; };
 	'i/move': { req: TODO; res: TODO; };

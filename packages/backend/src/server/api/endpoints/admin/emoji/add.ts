@@ -23,6 +23,11 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
+		duplicateName: {
+			message: 'Duplicate name.',
+			code: 'DUPLICATE_NAME',
+			id: 'f7a3462c-4e6e-4069-8421-b9bd4f4c3975',
+		},
 	},
 } as const;
 
@@ -64,6 +69,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
+			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
+			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
 
 			const emoji = await this.customEmojiService.add({
 				driveFile,

@@ -407,7 +407,6 @@ _theme:
 _sfx:
   note: "ບັນທຶກ"
   notification: "ການແຈ້ງເຕືອນ"
-  chat: "ແຊ໋ດ"
 _2fa:
   renewTOTPCancel: "ບໍ່​ແມ່ນ​ຕອນ​ນີ້"
 _widgets:

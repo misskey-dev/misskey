@@ -57,9 +57,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('poll.userHost IS NULL')
 				.andWhere('poll.userId != :meId', { meId: me.id })
 				.andWhere('poll.noteVisibility = \'public\'')
-				.andWhere(new Brackets(qb => { qb
-					.where('poll.expiresAt IS NULL')
-					.orWhere('poll.expiresAt > :now', { now: new Date() });
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('poll.expiresAt IS NULL')
+						.orWhere('poll.expiresAt > :now', { now: new Date() });
 				}));
 
 			//#region exclude arleady voted polls
