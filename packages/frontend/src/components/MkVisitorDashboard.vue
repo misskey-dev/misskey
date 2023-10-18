@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 			</div>
 			<div v-if="instance.approvalRequiredForSignup" :class="$style.mainWarn">
-				<MkInfo warn>This instance is only accepting users who specify a reason for registration.<br />You must enter a reason during sign up as to why you want to join this instance.</MkInfo>
+				<MkInfo warn>{{ i18n.ts.approvalRequiredToRegister }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>

@@ -147,6 +147,7 @@ export interface Locale {
     "blockConfirm": string;
     "unblockConfirm": string;
     "suspendConfirm": string;
+    "approveConfirm": string;
     "unsuspendConfirm": string;
     "selectList": string;
     "editList": string;
@@ -875,6 +876,7 @@ export interface Locale {
     "on": string;
     "off": string;
     "emailRequiredForSignup": string;
+    "approvalRequiredForSignup": string;
     "unread": string;
     "filter": string;
     "controlPanel": string;
@@ -933,6 +935,11 @@ export interface Locale {
     "isSystemAccount": string;
     "typeToConfirm": string;
     "deleteAccount": string;
+    "approveAccount": string;
+    "denyAccount": string;
+    "approved": string;
+    "notApproved": string;
+    "approvalStatus": string;
     "document": string;
     "numberOfPageCache": string;
     "numberOfPageCacheDescription": string;
@@ -1023,6 +1030,7 @@ export interface Locale {
     "disableFederationConfirmWarn": string;
     "disableFederationOk": string;
     "invitationRequiredToRegister": string;
+    "approvalRequiredToRegister": string;
     "emailNotSupported": string;
     "postToTheChannel": string;
     "cannotBeChangedLater": string;
@@ -1758,6 +1766,8 @@ export interface Locale {
         "almostThere": string;
         "emailAddressInfo": string;
         "emailSent": string;
+        "approvalPending": string;
+        "reasonInfo": string;
     };
     "_accountDelete": {
         "accountDelete": string;

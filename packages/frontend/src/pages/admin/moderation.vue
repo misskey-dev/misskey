@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 
 					<MkSwitch v-model="approvalRequiredForSignup">
-						<template #label>Require approval for new sign-ups</template>
+						<template #label>{{ i18n.ts.approvalRequiredForSignup }}</template>
 					</MkSwitch>
 
 					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>

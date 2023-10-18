@@ -15,7 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
-							<span v-if="!approved" class="silenced">Not Approved</span>
+							<span v-if="!approved" class="silenced">{{ i18n.ts.notApproved }}</span>
+							<span v-if="approved" class="moderator">{{ i18n.ts.approved }}</span>
 							<span v-if="suspended" class="suspended">Suspended</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
@@ -201,16 +202,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-else-if="tab === 'approval'" class="_gaps_m">
 				<MkKeyValue oneline>
-					<template #key>Approval Status</template>
-					<template #value><span class="_monospace">{{ approved ? 'Approved' : 'Not Approved' }}</span></template>
+					<template #key>{{ i18n.ts.approvalStatus }}</template>
+					<template #value><span class="_monospace">{{ approved ? {{ i18n.ts.approved }} : {{ i18n.ts.notApproved }} }}</span></template>
 				</MkKeyValue>
 
 				<MkTextarea v-model="signupReason" readonly>
 					<template #label>Reason</template>
 				</MkTextarea>
 
-				<MkButton v-if="$i.isAdmin" inline success @click="approveAccount">Approve</MkButton>
-				<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">Deny & Delete</MkButton>
+				<MkButton v-if="$i.isAdmin" inline success @click="approveAccount">{{ i18n.ts.approveAccount }}</MkButton>
+				<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.denyAccount }}</MkButton>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -427,7 +428,7 @@ async function deleteAccount() {
 async function approveAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.suspendConfirm,
+		text: i18n.ts.approveConfirm,
 	});
 	if (confirm.canceled) return;
 	await os.api('admin/approve-user', { userId: user.id });
