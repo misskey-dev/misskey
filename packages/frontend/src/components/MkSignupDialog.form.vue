@@ -62,6 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
 				</template>
 			</MkInput>
+			<MkInput v-if="instance.approvalRequiredForSignup" v-model="reason" type="text" :spellcheck="false" required data-cy-signup-reason>
+				<template #label>Reason <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ph-question ph-bold ph-lg"></i></div></template>
+				<template #prefix><i class="ph-envelope ph-bold ph-lg"></i></template>
+			</MkInput>
 			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
@@ -97,6 +101,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'signup', user: Record<string, any>): void;
 	(ev: 'signupEmailPending'): void;
+	(ev: 'approvalPending'): void;
 }>();
 
 const host = toUnicode(config.host);
@@ -109,6 +114,7 @@ const username = ref<string>('');
 const password = ref<string>('');
 const retypedPassword = ref<string>('');
 const invitationCode = ref<string>('');
+const reason = ref<string>('');
 const email = ref('');
 const usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
 const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:banned' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
@@ -250,6 +256,7 @@ async function onSubmit(): Promise<void> {
 			password: password.value,
 			emailAddress: email.value,
 			invitationCode: invitationCode.value,
+			reason: reason.value,
 			'hcaptcha-response': hCaptchaResponse.value,
 			'g-recaptcha-response': reCaptchaResponse.value,
 			'turnstile-response': turnstileResponse.value,
@@ -261,6 +268,13 @@ async function onSubmit(): Promise<void> {
 				text: i18n.t('_signup.emailSent', { email: email.value }),
 			});
 			emit('signupEmailPending');
+		} else if (instance.approvalRequiredForSignup) {
+			os.alert({
+				type: 'success',
+				title: i18n.ts._signup.almostThere,
+				text: i18n.t('_signup.emailSent', { email }),
+			});
+			emit('approvalPending');
 		} else {
 			const res = await os.api('signin', {
 				username: username.value,

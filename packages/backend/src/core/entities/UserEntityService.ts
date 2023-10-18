@@ -489,6 +489,8 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.includeSecrets ? {
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
+				approved: user.approved,
+				signupReason: user.signupReason,
 				securityKeysList: profile!.twoFactorEnabled
 					? this.userSecurityKeysRepository.find({
 						where: {

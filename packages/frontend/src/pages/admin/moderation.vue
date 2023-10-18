@@ -18,6 +18,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
 					</MkSwitch>
 
+					<MkSwitch v-model="approvalRequiredForSignup">
+						<template #label>Require approval for new sign-ups</template>
+					</MkSwitch>
+
 					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
 					<MkInput v-model="tosUrl" type="url">
@@ -74,6 +78,7 @@ import FormLink from '@/components/form/link.vue';
 
 const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
+const approvalRequiredForSignup = ref<boolean>(false);
 const sensitiveWords = ref<string>('');
 const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
@@ -84,6 +89,7 @@ async function init() {
 	const meta = await os.api('admin/meta');
 	enableRegistration.value = !meta.disableRegistration;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
+	approvalRequiredForSignup.value = meta.approvalRequiredForSignup;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	hiddenTags.value = meta.hiddenTags.join('\n');
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
@@ -95,6 +101,7 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		disableRegistration: !enableRegistration.value,
 		emailRequiredForSignup: emailRequiredForSignup.value,
+		approvalRequiredForSignup: approvalRequiredForSignup.value,
 		tosUrl: tosUrl.value,
 		privacyPolicyUrl: privacyPolicyUrl.value,
 		sensitiveWords: sensitiveWords.value.split('\n'),
