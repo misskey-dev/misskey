@@ -80,8 +80,7 @@ export class ImportUserListsProcessorService {
 
 				if (list == null) {
 					list = await this.userListsRepository.insert({
-						id: this.idService.genId(),
-						createdAt: new Date(),
+						id: this.idService.gen(),
 						userId: user.id,
 						name: listName,
 					}).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));

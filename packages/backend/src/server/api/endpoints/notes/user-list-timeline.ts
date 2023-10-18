@@ -15,7 +15,7 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -80,11 +80,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private cacheService: CacheService,
 		private idService: IdService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
-			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 
 			const list = await this.userListsRepository.findOneBy({
 				id: ps.listId,
@@ -105,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let noteIds = await this.redisTimelineService.get(ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`, untilId, sinceId);
+			let noteIds = await this.funoutTimelineService.get(ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`, untilId, sinceId);
 			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
