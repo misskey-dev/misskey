@@ -49,7 +49,7 @@ class HomeTimelineChannel extends Channel {
 		}
 
 		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
+		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances))) return;
 
 		if (note.visibility === 'followers') {
 			if (!Object.hasOwn(this.following, note.userId)) return;
