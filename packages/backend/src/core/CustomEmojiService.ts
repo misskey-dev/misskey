@@ -331,7 +331,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		const queryOrNull = async () => (await this.emojisRepository.findOneBy({
 			name,
-			host: host ?? IsNull(),
+			host,
 		})) ?? null;
 
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
