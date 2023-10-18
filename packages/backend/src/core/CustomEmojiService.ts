@@ -16,10 +16,8 @@ import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
 @Injectable()
@@ -66,6 +64,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
+        draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
@@ -82,6 +81,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			draft: data.draft,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {
@@ -111,6 +111,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
+		draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
@@ -125,6 +126,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
+			draft: data.draft,
 			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
 			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
 			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,

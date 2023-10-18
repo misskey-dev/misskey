@@ -284,6 +284,7 @@ type CustomEmoji = {
     url: string;
     category: string;
     aliases: string[];
+    draft: boolean;
 };
 
 // @public (undocumented)

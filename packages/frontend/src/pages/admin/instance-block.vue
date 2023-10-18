@@ -5,7 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header>
+		<XHeader :actions="headerActions" :tabs="headerTabs"/>
+	</template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<MkTextarea v-if="tab === 'block'" v-model="blockedHosts">

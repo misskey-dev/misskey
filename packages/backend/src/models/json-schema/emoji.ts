@@ -40,6 +40,10 @@ export const packedEmojiSimpleSchema = {
 				format: 'id',
 			},
 		},
+		draft: {
+			type: 'boolean',
+			optional: false, nullable: true,
+		},
 	},
 } as const;
 
@@ -79,6 +83,10 @@ export const packedEmojiDetailedSchema = {
 		},
 		license: {
 			type: 'string',
+			optional: false, nullable: true,
+		},
+		draft: {
+			type: 'boolean',
 			optional: false, nullable: true,
 		},
 		isSensitive: {

@@ -272,6 +272,7 @@ export interface Locale {
     "removed": string;
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
+    "undraftAreYouSure": string;
     "resetAreYouSure": string;
     "saved": string;
     "messaging": string;
@@ -676,6 +677,8 @@ export interface Locale {
     "regenerateLoginToken": string;
     "regenerateLoginTokenDescription": string;
     "setMultipleBySeparatingWithSpace": string;
+    "emojiNameValidation": string;
+    "isSensitive": string;
     "fileIdOrUrl": string;
     "behavior": string;
     "sample": string;
@@ -849,8 +852,11 @@ export interface Locale {
     "low": string;
     "GamingSpeedChange": string;
     "GamingSpeedChangeInfo": string;
+    "list": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
+    "newEmojis": string;
+    "draftEmojis": string;
     "showVisibilityColor": string;
     "previewNoteText": string;
     "customCss": string;
@@ -1004,6 +1010,7 @@ export interface Locale {
     "unassign": string;
     "color": string;
     "manageCustomEmojis": string;
+    "requestCustomEmojis": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
@@ -1046,6 +1053,8 @@ export interface Locale {
     "sensitiveWordsDescription2": string;
     "notesSearchNotAvailable": string;
     "license": string;
+    "draft": string;
+    "undrafted": string;
     "unfavoriteConfirm": string;
     "myClips": string;
     "drivecleaner": string;
@@ -1585,6 +1594,7 @@ export interface Locale {
             "inviteLimitCycle": string;
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
+            "canRequestCustomEmojis": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;
