@@ -34,7 +34,6 @@ import { GlobalTimelineChannelService } from './api/stream/channels/global-timel
 import { HashtagChannelService } from './api/stream/channels/hashtag.js';
 import { HomeTimelineChannelService } from './api/stream/channels/home-timeline.js';
 import { HybridTimelineChannelService } from './api/stream/channels/hybrid-timeline.js';
-import { HybridAllTimelineChannelService } from './api/stream/channels/hybrid-all-timeline.js';
 import { LocalTimelineChannelService } from './api/stream/channels/local-timeline.js';
 import { QueueStatsChannelService } from './api/stream/channels/queue-stats.js';
 import { ServerStatsChannelService } from './api/stream/channels/server-stats.js';
@@ -80,7 +79,6 @@ import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 		RoleTimelineChannelService,
 		HomeTimelineChannelService,
 		HybridTimelineChannelService,
-		HybridAllTimelineChannelService,
 		LocalTimelineChannelService,
 		QueueStatsChannelService,
 		ServerStatsChannelService,

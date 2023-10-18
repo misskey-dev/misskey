@@ -127,18 +127,7 @@ if (props.src === 'antenna') {
 		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
-} else if (props.src === 'all') {
-    endpoint = 'notes/hybrid-all-timeline';
-    query = {
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-    };
-    connection = stream.useChannel('hybridAllTimeline', {
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-    });
-    connection.on('note', prepend);
-} else if (props.src === 'global') {
+}else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
 	query = {
 		withRenotes: props.withRenotes,
