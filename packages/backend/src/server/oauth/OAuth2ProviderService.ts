@@ -92,6 +92,7 @@ function validateClientId(raw: string): URL {
 
 interface ClientInformation {
 	id: string;
+	registered: boolean;
 	redirectUris: string[];
 	name: string;
 	secret?: string;
@@ -134,6 +135,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 
 		return {
 			id,
+			registered: false,
 			redirectUris: redirectUris.map(uri => new URL(uri, res.url).toString()),
 			name: typeof name === 'string' ? name : id,
 		};
@@ -254,6 +256,7 @@ export class OAuth2ProviderService {
 			clientId: string,
 			clientName: string,
 			clientSecret?: string,
+			clientRegistered: boolean,
 			userId: string,
 			redirectUri: string,
 			codeChallenge: string,
@@ -290,6 +293,7 @@ export class OAuth2ProviderService {
 					clientId: client.id,
 					clientName: client.name,
 					clientSecret: client.secret,
+					clientRegistered: client.registered,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
@@ -333,21 +337,30 @@ export class OAuth2ProviderService {
 				const accessToken = secureRndstr(128);
 				const now = new Date();
 
-				// NOTE: we don't have a setup for automatic token expiration
-				await accessTokensRepository.insert({
-					id: idService.genId(),
-					createdAt: now,
-					lastUsedAt: now,
-					userId: granted.userId,
-					token: accessToken,
-					hash: accessToken,
-					name: `${granted.clientName} (${granted.clientId})`,
-					permission: granted.scopes,
-				});
+				// Nya: Revoke old tokens and generate new one
+				if (granted.clientRegistered) {
+					await accessTokensRepository.delete({
+						userId: granted.userId,
+						appId: granted.clientId,
+					});
+				}
 
-				if (granted.revoked) {
+				if (!granted.revoked) {
+					// NOTE: we don't have a setup for automatic token expiration
+					await accessTokensRepository.insert({
+						id: idService.genId(),
+						createdAt: now,
+						lastUsedAt: now,
+						userId: granted.userId,
+						token: accessToken,
+						hash: accessToken,
+						name: granted.clientName,
+						permission: granted.scopes,
+						appId: granted.clientRegistered ? granted.clientId : null,
+					});
+				} else {
+					// Token been revoked
 					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
-					await accessTokensRepository.delete({ token: accessToken });
 					return;
 				}
 
@@ -434,6 +447,7 @@ export class OAuth2ProviderService {
 
 					clientInfo = {
 						id: clientID,
+						registered: true,
 						redirectUris: [clientApp.callbackUrl],
 						name: clientApp.name,
 						secret: clientApp.secret,
