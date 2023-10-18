@@ -326,13 +326,28 @@ export class OAuth2ProviderService {
 				granted.used = true;
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
-				if (body.client_id !== granted.clientId) return;
-				if (redirectUri !== granted.redirectUri) return;
+				if (body.client_id !== granted.clientId) {
+					this.#logger.info(`Client ID mismatch. (expect ${granted.clientId}, got ${body.client_id})`);
+					return;
+				}
+				if (redirectUri !== granted.redirectUri) {
+					this.#logger.info(`Redirect URI mismatch. (expect ${granted.redirectUri}, got ${redirectUri})`);
+					return;
+				}
 				// if (Boolean(granted.clientSecret) && granted.clientSecret !== body.client_secret) return; // Not sure if this works this way, so disabled for now
+				if (body.client_secret) {
+					this.#logger.info('Client secret detected.');
+				}
 
 				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
-				if (!body.code_verifier) return;
-				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return;
+				if (!body.code_verifier) {
+					this.#logger.info('Missing code verifier.');
+					return;
+				}
+				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) {
+					this.#logger.info('Incorrect code verifier, cannot verify challenge.');
+					return;
+				}
 
 				const accessToken = secureRndstr(128);
 				const now = new Date();
