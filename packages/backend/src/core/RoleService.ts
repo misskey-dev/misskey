@@ -8,6 +8,7 @@ import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { MiRole, MiRoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -79,9 +80,6 @@ export const DEFAULT_POLICIES: RolePolicies = {
 export class RoleService implements OnApplicationShutdown {
 	private rolesCache: MemorySingleCache<MiRole[]>;
 	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
-
-	public static AlreadyAssignedError = class extends Error {};
-	public static NotAssignedError = class extends Error {};
 
 	constructor(
 		@Inject(DI.redis)
@@ -386,50 +384,53 @@ export class RoleService implements OnApplicationShutdown {
 	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null): Promise<void> {
 		const now = new Date();
 
-		const existing = await this.roleAssignmentsRepository.findOneBy({
-			roleId: roleId,
-			userId: userId,
-		});
-
-		if (existing) {
-			if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
-				await this.roleAssignmentsRepository.delete({
-					roleId: roleId,
-					userId: userId,
-				});
-			} else {
-				throw new RoleService.AlreadyAssignedError();
-			}
+		let existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
+		if (existing?.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
+			await this.roleAssignmentsRepository.delete({
+				roleId: roleId,
+				userId: userId,
+			});
+			existing = null;
 		}
 
-		const created = await this.roleAssignmentsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: now,
-			expiresAt: expiresAt,
-			roleId: roleId,
-			userId: userId,
-		}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));
+		if (!existing) {
+			const created = await this.roleAssignmentsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: now,
+				expiresAt: expiresAt,
+				roleId: roleId,
+				userId: userId,
+			}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));
+
+			this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+		} else if (existing.expiresAt !== expiresAt) {
+			await this.roleAssignmentsRepository.update(existing.id, {
+				expiresAt: expiresAt,
+			});
+		} else {
+			throw new IdentifiableError('67d8689c-25c6-435f-8ced-631e4b81fce1', 'User is already assigned to this role.');
+		}
 
 		this.rolesRepository.update(roleId, {
 			lastUsedAt: new Date(),
 		});
-
-		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
 	}
 
 	@bindThis
 	public async unassign(userId: MiUser['id'], roleId: MiRole['id']): Promise<void> {
 		const now = new Date();
 
-		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
-		if (existing == null) {
-			throw new RoleService.NotAssignedError();
-		} else if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
+		let existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
+		if (existing?.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
 			await this.roleAssignmentsRepository.delete({
 				roleId: roleId,
 				userId: userId,
 			});
-			throw new RoleService.NotAssignedError();
+			existing = null;
+		}
+
+		if (!existing) {
+			throw new IdentifiableError('b9060ac7-5c94-4da4-9f55-2047c953df44', 'User was not assigned to this role.');
 		}
 
 		await this.roleAssignmentsRepository.delete(existing.id);

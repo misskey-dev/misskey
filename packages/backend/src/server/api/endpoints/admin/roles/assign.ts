@@ -29,6 +29,12 @@ export const meta = {
 			id: '558ea170-f653-4700-94d0-5a818371d0df',
 		},
 
+		alreadyAssigned: {
+			message: 'User is already assigned to this role.',
+			code: 'ALREADY_ASSIGNED',
+			id: '67d8689c-25c6-435f-8ced-631e4b81fce1',
+		},
+
 		accessDenied: {
 			message: 'Only administrators can edit members of the role.',
 			code: 'ACCESS_DENIED',
