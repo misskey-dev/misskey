@@ -26,7 +26,8 @@
 ### Client
 - Enhance: TLの返信表示オプションを記憶するように
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
-	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください（TODO）
+	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
+	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 
 ### Server
 - Enhance: ストリーミングAPIのパフォーマンスを向上
