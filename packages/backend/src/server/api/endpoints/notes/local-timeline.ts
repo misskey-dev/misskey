@@ -15,7 +15,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -94,9 +94,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds: string[];
 
 			if (ps.withFiles) {
-				noteIds = await this.redisTimelineService.get('localTimelineWithFiles', untilId, sinceId);
+				noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
 			} else {
-				const [nonReplyNoteIds, replyNoteIds] = await this.redisTimelineService.getMulti([
+				const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
 					'localTimeline',
 					'localTimelineWithReplies',
 				], untilId, sinceId);

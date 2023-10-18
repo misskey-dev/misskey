@@ -10,7 +10,7 @@ import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 
 @Injectable()
-export class RedisTimelineService {
+export class FunoutTimelineService {
 	constructor(
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
