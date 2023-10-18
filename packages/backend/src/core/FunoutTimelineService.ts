@@ -77,4 +77,9 @@ export class FunoutTimelineService {
 			);
 		});
 	}
+
+	@bindThis
+	public purge(name: string) {
+		return this.redisForTimelines.del('list:' + name);
+	}
 }
