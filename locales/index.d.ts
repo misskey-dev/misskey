@@ -2486,6 +2486,7 @@ export interface Locale {
         "updateRole": string;
         "assignRole": string;
         "unassignRole": string;
+        "approve": string;
         "suspend": string;
         "unsuspend": string;
         "addCustomEmoji": string;

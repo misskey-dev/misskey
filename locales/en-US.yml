@@ -2250,6 +2250,7 @@ _moderationLogTypes:
   updateRole: "Role updated"
   assignRole: "Assigned to role"
   unassignRole: "Removed from role"
+  approve: "Approved"
   suspend: "Suspended"
   unsuspend: "Unsuspended"
   addCustomEmoji: "Custom emoji added"
