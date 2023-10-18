@@ -6,14 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
     <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
     <section>
-        <!-- categoryが定義されてない(Unicodeの絵文字とか) -->
+
+
         <header v-if="!category" class="_acrylic" @click="shown = !shown">
             <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
             <slot></slot>
             ({{ emojis.length }})
         </header>
-
-        <!-- categoryが定義されてるけど中身が1つしかない -->
         <header v-else-if="category.length === 1" class="_acrylic" @click="shown = !shown">
             <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
             {{ category[0] }}
@@ -21,8 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
                 emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category[0]).length
             }})
         </header>
-
-        <!-- categoryに1つ以上要素がある(フォルダが有る) -->
         <header v-else class="_acrylic" style="top:unset;" @click="toggleShown_fol">
             <i class="toggle ti-fw" :class="shown_fol? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
             {{ category[0] || i18n.ts.other }}
@@ -32,16 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
             <template v-else>
                 ({{
                     emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category[0]).length
-                }})
+                }}) 2
             </template>
         </header>
-        <!-- フォルダが有るときのフォルダと絵文字表示する部分 -->
         <template v-for="(n, index) in category" v-if="shown_fol">
-
-            <!-- フォルダの部分 -->
             <header
                     v-if="emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category[0]).length !== 0 || index!==0"
-                    style="padding-left: 18px;"
+                    style="top:unset;padding-left: 18px;"
                     class="_acrylic"
                     @click="toggleShown(index)"
             >
@@ -51,8 +45,6 @@ SPDX-License-Identifier: AGPL-3.0-only
                     emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === (index === 0 && category !== undefined ? category[0] : `${category[0]}/${n}`)).length
                 }})
             </header>
-
-            <!-- 絵文字の部分 -->
             <div v-if="shown_fold[index]" class="body">
                 <button
                         v-for="emoji in emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category ===( index === 0 && category !== undefined ? category[0] : `${category[0]}/${n}`)).map(e => `:${e.name}:`)"
@@ -68,7 +60,6 @@ SPDX-License-Identifier: AGPL-3.0-only
             </div>
         </template>
 
-        <!-- categoryが1つしかないときのフォルダと絵文字表示する部分 -->
         <div v-if="shown && category" class="body">
             <button
                     v-for="emoji in emojis.filter(e => e.category === category[0]).map(e => `:${e.name}:`)"
@@ -82,8 +73,6 @@ SPDX-License-Identifier: AGPL-3.0-only
                 <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
             </button>
         </div>
-
-        <!-- Unicodeのやつ -->
         <div v-else-if="shown && !category" class="body">
             <button
                     v-for="emoji in emojis"
@@ -118,6 +107,7 @@ const emit = defineEmits<{
 
 const toggleShown = (index) => {
     shown_fold.value[index] = !shown_fold.value[index];
+
 };
 
 const toggleShown_fol = () => {
