@@ -51,13 +51,20 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 	return promise;
 }
 
-export async function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
-	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
+export async function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(host: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
-	const knownUrls = (await api('federation/instances', { blocked: false })).map(v => v.host);
-	if (!knownUrls.includes(URL(hostUrl).host)) throw new Error(hostname + 'is blocked by or not known to this server.');
-	pendingApiRequestsCount.value++;
+	const [hostName, hostUrl] = await (new Promise(resolve => resolve(URL(host))))
+		.then(url => {
+			if (['http:', 'https:'].includes(url.protocol)) return [url.host, host];
+			else throw new Error('Only http and https are allowed as url protocol.');
+		}, err => {
+			if (err instanceof TypeError) return [host, 'https://' + host];
+			else throw err;
+		});
+	const serverInfo = await api('federation/show-instance', { host: hostName });
+	if ((!serverInfo) || serverInfo.isBlocked) throw new Error(hostName + 'is blocked by or not known to this server.');
 
+	pendingApiRequestsCount.value++;
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
