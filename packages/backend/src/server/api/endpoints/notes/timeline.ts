@@ -127,8 +127,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const followees = await this.userFollowingService.getFollowees(me.id);
 
 				//#region Construct query
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('note.channelId IS NULL')
 					.innerJoinAndSelect('note.user', 'user')
 					.leftJoinAndSelect('note.reply', 'reply')
 					.leftJoinAndSelect('note.renote', 'renote')
@@ -142,6 +142,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else {
 					query.andWhere('note.userId = :meId', { meId: me.id });
 				}
+
+				query.andWhere(new Brackets(qb => {
+					qb
+						.where('note.replyId IS NULL') // 返信ではない
+						.orWhere(new Brackets(qb => {
+							qb // 返信だけど投稿者自身への返信
+								.where('note.replyId IS NOT NULL')
+								.andWhere('note.replyUserId = note.userId');
+						}));
+				}));
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);

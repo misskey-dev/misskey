@@ -163,8 +163,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} else { // fallback to db
 				const followees = await this.userFollowingService.getFollowees(me.id);
 
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 					.andWhere(new Brackets(qb => {
 						if (followees.length > 0) {
 							const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
@@ -180,6 +179,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('note.renote', 'renote')
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				query.andWhere(new Brackets(qb => {
+					qb
+						.where('note.replyId IS NULL') // 返信ではない
+						.orWhere(new Brackets(qb => {
+							qb // 返信だけど投稿者自身への返信
+								.where('note.replyId IS NOT NULL')
+								.andWhere('note.replyUserId = note.userId');
+						}));
+				}));
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);
