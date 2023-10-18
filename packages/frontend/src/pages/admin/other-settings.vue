@@ -36,6 +36,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
 					</MkSwitch>
 				</div>
+                <MkInput v-model="DiscordWebhookUrl" type="password">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>Discord Webhook URL</template>
+                </MkInput>
+                <MkInput v-model="EmojiBotToken" type="password">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>EmojiBotToken</template>
+                </MkInput>
+                <MkInput v-model="ApiBase">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>ApiBase</template>
+                </MkInput>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -51,18 +63,24 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from "@/components/MkInput.vue";
 
 let enableServerMachineStats: boolean = $ref(false);
 let enableIdenticonGeneration: boolean = $ref(false);
 let enableChartsForRemoteUser: boolean = $ref(false);
 let enableChartsForFederatedInstances: boolean = $ref(false);
-
+let DiscordWebhookUrl: string | null = $ref(null);
+let EmojiBotToken: string | null = $ref(null);
+let ApiBase:string | null = $ref(null)
 async function init() {
 	const meta = await os.api('admin/meta');
 	enableServerMachineStats = meta.enableServerMachineStats;
 	enableIdenticonGeneration = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances = meta.enableChartsForFederatedInstances;
+    DiscordWebhookUrl = meta.DiscordWebhookUrl;
+    EmojiBotToken = meta.EmojiBotToken;
+    ApiBase = meta.ApiBase;
 }
 
 function save() {
@@ -71,6 +89,9 @@ function save() {
 		enableIdenticonGeneration,
 		enableChartsForRemoteUser,
 		enableChartsForFederatedInstances,
+        DiscordWebhookUrl,
+        EmojiBotToken,
+        ApiBase
 	}).then(() => {
 		fetchInstance();
 	});

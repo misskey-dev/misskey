@@ -200,7 +200,22 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public DiscordWebhookUrl: string | null;
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public EmojiBotToken: string | null;
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public recaptchaSiteKey: string | null;
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public ApiBase: string | null;
 
 	@Column('varchar', {
 		length: 1024,

@@ -311,6 +311,10 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			DiscordWebhookUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	},
 } as const;
@@ -424,6 +428,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				notesPerOneAd: instance.notesPerOneAd,
+				DiscordWebhookUrl: instance.DiscordWebhookUrl,
+				EmojiBotToken: instance.EmojiBotToken,
+				ApiBase: instance.ApiBase
 			};
 		});
 	}
