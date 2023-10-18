@@ -29,8 +29,8 @@ function getRandom() {
 	return str;
 }
 
-export function genObjectId(date: Date): string {
-	return getTime(date.getTime()) + getRandom();
+export function genObjectId(t: number): string {
+	return getTime(t) + getRandom();
 }
 
 export function parseObjectId(id: string): { date: Date; } {
