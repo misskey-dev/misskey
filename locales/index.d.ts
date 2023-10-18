@@ -927,6 +927,7 @@ export interface Locale {
     "recentNDays": string;
     "noEmailServerWarning": string;
     "thereIsUnresolvedAbuseReportWarning": string;
+    "pendingUserApprovals": string;
     "recommended": string;
     "check": string;
     "driveCapOverrideLabel": string;
