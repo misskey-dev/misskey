@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-adaptive-bg :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
+<div v-adaptive-bg :class="[$style.root, { yellow: user.isSilenced, blue: !user.approved, red: user.isSuspended, gray: false }]">
 	<MkAvatar class="avatar" :user="user" indicator/>
 	<div class="body">
 		<span class="name"><MkUserName class="name" :user="user"/></span>
@@ -93,6 +93,12 @@ onMounted(() => {
 
 	&:global(.yellow) {
 		--c: rgb(255 196 0 / 15%);
+		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
+		background-size: 16px 16px;
+	}
+
+	&:global(.blue) {
+		--c: rgba(0 153 255 / 15%);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}
