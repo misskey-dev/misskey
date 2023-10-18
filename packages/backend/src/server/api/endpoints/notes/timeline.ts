@@ -59,11 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
-
 		private noteEntityService: NoteEntityService,
-		private queryService: QueryService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
@@ -88,125 +84,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds = await this.redisTimelineService.get(ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`, untilId, sinceId);
 			noteIds = noteIds.slice(0, ps.limit);
 
-			if (noteIds.length > 0) {
-				const query = this.notesRepository.createQueryBuilder('note')
-					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
-
-				let timeline = await query.getMany();
-
-				timeline = timeline.filter(note => {
-					if (note.userId === me.id) {
-						return true;
-					}
-					if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
-					if (isUserRelated(note, userIdsWhoMeMuting)) return false;
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-							if (ps.withRenotes === false) return false;
-						}
-					}
-					if (note.reply && note.reply.visibility === 'followers') {
-						if (!Object.hasOwn(followings, note.reply.userId)) return false;
-					}
-
-					return true;
-				});
-
-				// TODO: フィルタした結果件数が足りなかった場合の対応
-
-				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-
-				process.nextTick(() => {
-					this.activeUsersChart.read(me);
-				});
-
-				return await this.noteEntityService.packMany(timeline, me);
+			if (noteIds.length === 0) {
+				return [];
 			}
 
-			//TODO: 将来的に削除する
-			//#region fallback to db
-			const followees = await this.followingsRepository.createQueryBuilder('following')
-				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: me.id })
-				.getMany();
-
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				// パフォーマンス上の利点が無さそう？
-				//.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
+			const query = this.notesRepository.createQueryBuilder('note')
+				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser');
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('note.channel', 'channel');
 
-			if (followees.length > 0) {
-				const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
+			let timeline = await query.getMany();
 
-				query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
-			} else {
-				query.andWhere('note.userId = :meId', { meId: me.id });
-			}
-
-			this.queryService.generateChannelQuery(query, me);
-			this.queryService.generateRepliesQuery(query, true, me);
-			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
-			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-
-			if (ps.includeMyRenotes === false) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.userId != :meId', { meId: me.id });
-					qb.orWhere('note.renoteId IS NULL');
-					qb.orWhere('note.text IS NOT NULL');
-					qb.orWhere('note.fileIds != \'{}\'');
-					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-				}));
-			}
-
-			if (ps.includeRenotedMyNotes === false) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.renoteUserId != :meId', { meId: me.id });
-					qb.orWhere('note.renoteId IS NULL');
-					qb.orWhere('note.text IS NOT NULL');
-					qb.orWhere('note.fileIds != \'{}\'');
-					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-				}));
-			}
-
-			if (ps.includeLocalRenotes === false) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.renoteUserHost IS NOT NULL');
-					qb.orWhere('note.renoteId IS NULL');
-					qb.orWhere('note.text IS NOT NULL');
-					qb.orWhere('note.fileIds != \'{}\'');
-					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-				}));
-			}
-
-			if (ps.withFiles) {
-				query.andWhere('note.fileIds != \'{}\'');
-			}
-
-			if (ps.withRenotes === false) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.renoteId IS NULL');
-					qb.orWhere(new Brackets(qb => {
-						qb.orWhere('note.text IS NOT NULL');
-						qb.orWhere('note.fileIds != \'{}\'');
-					}));
-				}));
-			}
-
-			let timeline = await query.limit(ps.limit).getMany();
 			timeline = timeline.filter(note => {
 				if (note.userId === me.id) {
 					return true;
@@ -226,12 +118,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return true;
 			});
 
+			// TODO: フィルタした結果件数が足りなかった場合の対応
+
+			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
 			process.nextTick(() => {
 				this.activeUsersChart.read(me);
 			});
 
 			return await this.noteEntityService.packMany(timeline, me);
-			//#engregion
 		});
 	}
 }
