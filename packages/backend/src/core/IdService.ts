@@ -26,17 +26,21 @@ export class IdService {
 		this.method = config.id.toLowerCase();
 	}
 
+	/**
+	 * 時間を元にIDを生成します(省略時は現在日時)
+	 * @param time 日時
+	 */
 	@bindThis
-	public genId(date?: Date): string {
-		if (!date || (date > new Date())) date = new Date();
+	public gen(time?: number): string {
+		const t = (!time || (time > Date.now())) ? Date.now() : time;
 
 		switch (this.method) {
-			case 'aid': return genAid(date);
-			case 'aidx': return genAidx(date);
-			case 'meid': return genMeid(date);
-			case 'meidg': return genMeidg(date);
-			case 'ulid': return ulid(date.getTime());
-			case 'objectid': return genObjectId(date);
+			case 'aid': return genAid(t);
+			case 'aidx': return genAidx(t);
+			case 'meid': return genMeid(t);
+			case 'meidg': return genMeidg(t);
+			case 'ulid': return ulid(t);
+			case 'objectid': return genObjectId(t);
 			default: throw new Error('unrecognized id generation method');
 		}
 	}

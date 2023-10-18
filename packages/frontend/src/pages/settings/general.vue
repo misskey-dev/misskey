@@ -29,9 +29,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-			<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
-      <MkSwitch v-model="FeaturedOrNote">{{ i18n.ts.FeaturedOrNote}}<template #caption>{{ i18n.ts.FeaturedOrNoteInfo }} </template></MkSwitch>
-      <MkFolder>
+            <MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
+            <MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
+            <MkSwitch v-model="FeaturedOrNote">{{ i18n.ts.FeaturedOrNote}}<template #caption>{{ i18n.ts.FeaturedOrNoteInfo }} </template></MkSwitch>
+
+            <MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
 				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
@@ -289,6 +291,8 @@ const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'))
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
 const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
+
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');

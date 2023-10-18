@@ -207,6 +207,7 @@ export interface Locale {
     "perDay": string;
     "stopActivityDelivery": string;
     "blockThisInstance": string;
+    "silenceThisInstance": string;
     "operations": string;
     "software": string;
     "version": string;
@@ -226,6 +227,8 @@ export interface Locale {
     "clearCachedFilesConfirm": string;
     "blockedInstances": string;
     "blockedInstancesDescription": string;
+    "silencedInstances": string;
+    "silencedInstancesDescription": string;
     "muteAndBlock": string;
     "mutedUsers": string;
     "blockedUsers": string;
@@ -549,6 +552,7 @@ export interface Locale {
     "showFixedPostFormInChannel": string;
     "FeaturedOrNote": string;
     "FeaturedOrNoteInfo": string;
+    "withRepliesByDefaultForNewlyFollowed": string;
     "newNoteRecived": string;
     "sounds": string;
     "sound": string;
@@ -2080,6 +2084,7 @@ export interface Locale {
         "userLists": string;
         "excludeMutingUsers": string;
         "excludeInactiveUsers": string;
+        "withReplies": string;
     };
     "_charts": {
         "federation": string;

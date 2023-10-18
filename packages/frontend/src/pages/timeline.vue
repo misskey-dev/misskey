@@ -43,7 +43,7 @@ import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { antennasCache, userListsCache } from '@/cache';
+import { antennasCache, userListsCache } from '@/cache.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -69,6 +69,10 @@ const withReplies = $ref(defaultStore.state.onlyAndWithSave ? withReplies_store 
 const onlyFiles = $ref(defaultStore.state.onlyAndWithSave ? onlyFiles_store : false);
 const isShowMediaTimeline = $ref(defaultStore.state.showMediaTimeline)
 watch($$(src), () => queue = 0);
+
+watch($$(withReplies), (x) => {
+	if ($i) defaultStore.set('tlWithReplies', x);
+});
 
 function queueUpdated(q: number): void {
 	queue = q;

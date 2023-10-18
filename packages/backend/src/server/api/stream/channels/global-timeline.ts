@@ -87,6 +87,11 @@ class GlobalTimelineChannel extends Channel {
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
+		if (this.user && note.renoteId && !note.text) {
+			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renoteId, this.user.id);
+			note.renote!.myReaction = myRenoteReaction;
+		}
+
 		this.connection.cacheNote(note);
 
 		this.send('note', note);

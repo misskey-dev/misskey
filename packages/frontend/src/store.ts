@@ -443,7 +443,15 @@ export const defaultStore = markRaw(new Storage('base', {
 	FeaturedOrNote: {
 		where: 'device',
 		default: false
-	}
+	},
+	tlWithReplies: {
+		where: 'device',
+		default: false,
+	},
+	defaultWithReplies: {
+		where: 'account',
+		default: false,
+	},
 }));
 
 
