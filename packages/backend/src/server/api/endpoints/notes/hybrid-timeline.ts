@@ -15,7 +15,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -98,20 +98,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds: string[];
 
 			if (ps.withFiles) {
-				const [htlNoteIds, ltlNoteIds] = await this.redisTimelineService.getMulti([
+				const [htlNoteIds, ltlNoteIds] = await this.funoutTimelineService.getMulti([
 					`homeTimelineWithFiles:${me.id}`,
 					'localTimelineWithFiles',
 				], untilId, sinceId);
 				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
 			} else if (ps.withReplies) {
-				const [htlNoteIds, ltlNoteIds, ltlReplyNoteIds] = await this.redisTimelineService.getMulti([
+				const [htlNoteIds, ltlNoteIds, ltlReplyNoteIds] = await this.funoutTimelineService.getMulti([
 					`homeTimeline:${me.id}`,
 					'localTimeline',
 					'localTimelineWithReplies',
 				], untilId, sinceId);
 				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds, ...ltlReplyNoteIds]));
 			} else {
-				const [htlNoteIds, ltlNoteIds] = await this.redisTimelineService.getMulti([
+				const [htlNoteIds, ltlNoteIds] = await this.funoutTimelineService.getMulti([
 					`homeTimeline:${me.id}`,
 					'localTimeline',
 				], untilId, sinceId);
