@@ -293,10 +293,14 @@ export class SignupApiService {
 					pendingUserId: null,
 				});
 			}
-			
+
 			if (instance.approvalRequiredForSignup) {
-				reply.code(204);
-				return;
+				if (pendingUser.email) {
+					this.emailService.sendEmail(pendingUser.email, 'Approval pending',
+						'Congratulations! Your account is now pending approval. You will get notified when you have been accepted.',
+						'Congratulations! Your account is now pending approval. You will get notified when you have been accepted.');
+				}
+				return { pendingApproval: true };
 			}
 
 			return this.signinService.signin(request, reply, account as MiLocalUser);

@@ -203,7 +203,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'approval'" class="_gaps_m">
 				<MkKeyValue oneline>
 					<template #key>{{ i18n.ts.approvalStatus }}</template>
-					<template #value><span class="_monospace">{{ approved ? {{ i18n.ts.approved }} : {{ i18n.ts.notApproved }} }}</span></template>
+					<template #value><span class="_monospace">{{ approved ? i18n.ts.approved : i18n.ts.notApproved }}</span></template>
 				</MkKeyValue>
 
 				<MkTextarea v-model="signupReason" readonly>
