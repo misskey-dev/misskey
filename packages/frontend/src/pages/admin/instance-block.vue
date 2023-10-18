@@ -33,6 +33,8 @@ import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkSpacer from "@/components/global/MkSpacer.vue";
+import MkStickyContainer from "@/components/global/MkStickyContainer.vue";
 
 let blockedHosts: string = $ref('');
 let silencedHosts: string = $ref('');
