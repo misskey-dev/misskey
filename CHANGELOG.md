@@ -12,9 +12,7 @@
 
 -->
 
-## 2023.9.3-kinel.4 (unreleased)
-
-### General
+## 2023.9.3-kinel.4
 
 ### Client
 - Fix: Renoteの省略表示でセンシティブチャンネルの自動CWが聞かない問題
