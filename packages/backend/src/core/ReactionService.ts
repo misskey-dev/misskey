@@ -187,6 +187,9 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
+				...(note.reactionAndUserPairCache.length < 10 ? {
+					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}:${reaction}')`,
+				} : {}),
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
@@ -293,6 +296,7 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
+				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}:${exist.reaction}')`,
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
