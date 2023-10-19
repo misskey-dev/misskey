@@ -214,6 +214,20 @@ export class UserFollowingService implements OnModuleInit {
 			}
 
 			if (!autoAccept) {
+				// autoAcceptが無効かつautoRejectが有効な場合はフォローリクエストを拒否する
+				if (this.userEntityService.isLocalUser(followee) && followeeProfile.autoRejectFollowRequest) {
+					if (this.userEntityService.isRemoteUser(follower)) {
+						// リモートからならRejectを返す
+						const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
+						this.queueService.deliver(followee, content, follower.inbox, false);
+					}
+
+					// ローカルユーザーに対しては敢えてpublishUnfollowせずにお茶を濁す
+					// フォローできない不具合と勘違いされたりフォローリクエストを連打される可能性があるため
+
+					return;
+				}
+
 				await this.createFollowRequest(follower, followee, requestId, withReplies);
 				return;
 			}
@@ -579,7 +593,9 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		if (!requestExist) {
-			throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
+			// throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
+			// 本来ならエラーを返すが、フォローリクエストの自動拒否機能の関係上、エラーを返さずに無視する
+			return;
 		}
 
 		await this.followRequestsRepository.delete({
