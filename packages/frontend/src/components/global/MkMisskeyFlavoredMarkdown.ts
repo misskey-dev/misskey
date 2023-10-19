@@ -60,7 +60,7 @@ export default function(props: {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
-				if (!disableNyaize && props.author.isCat) {
+				if (!disableNyaize && props.author?.isCat) {
 					text = nyaize(text);
 				}
 
