@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	:withOkButton="false "
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
@@ -116,7 +115,6 @@ let file = $ref<Misskey.entities.DriveFile>();
 let chooseFile: DriveFile|null = $ref(null);
 let draft = $ref(props.emoji ? props.emoji.draft : false);
 let isRequest = $ref(props.isRequest);
-let url;
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
@@ -130,16 +128,6 @@ const emit = defineEmits<{
   (ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
   (ev: 'closed'): void
 }>();
-
-function ok() {
-	if (isRequest) {
-		if (chooseFile !== null && name.match(/^[a-zA-Z0-9_]+$/)) {
-			add();
-		}
-	} else {
-		update();
-	}
-}
 
 async function add() {
 	const ret = await os.api('admin/emoji/add-draft', {
@@ -251,13 +239,6 @@ async function done() {
 
 		dialog.close();
 	}
-}
-
-function chooseFileFrom(ev) {
-	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
-		chooseFile = files_[0];
-		url = chooseFile.url;
-	});
 }
 
 async function del() {

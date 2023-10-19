@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, defineAsyncComponent, ref, computed } from 'vue';
+import { watch, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
