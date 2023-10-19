@@ -325,20 +325,17 @@ export class OAuth2ProviderService {
 				}
 				granted.used = true;
 
-				this.#logger.info(`Log request body for debug use only: ${JSON.stringify(body)}`); // TODO: Delete this
+				// this.#logger.info(`Log request body for debug use only: ${JSON.stringify(body)}`);
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
-				if (body.client_id !== granted.clientId) {
+				if (!granted.clientRegistered && body.client_id !== granted.clientId) {
+					// REQUIRED, if the client is not authenticating with the authorization server
 					this.#logger.info(`Client ID mismatch. (expect ${granted.clientId}, got ${body.client_id})`);
 					return;
 				}
 				if (redirectUri !== granted.redirectUri) {
 					this.#logger.info(`Redirect URI mismatch. (expect ${granted.redirectUri}, got ${redirectUri})`);
 					return;
-				}
-				// if (Boolean(granted.clientSecret) && granted.clientSecret !== body.client_secret) return; // Not sure if this works this way, so disabled for now
-				if (body.client_secret) {
-					this.#logger.info('Client secret detected.');
 				}
 
 				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
