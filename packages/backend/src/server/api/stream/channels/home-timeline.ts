@@ -49,7 +49,7 @@ class HomeTimelineChannel extends Channel {
 		}
 
 		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
+		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances))) return;
 
 		if (note.visibility === 'followers') {
 			if (!Object.hasOwn(this.following, note.userId)) return;
@@ -74,8 +74,10 @@ class HomeTimelineChannel extends Channel {
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
 		if (this.user && note.renoteId && !note.text) {
-			const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renoteId, this.user.id);
-			note.renote!.myReaction = myRenoteReaction;
+			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+				note.renote.myReaction = myRenoteReaction;
+			}
 		}
 
 		this.connection.cacheNote(note);

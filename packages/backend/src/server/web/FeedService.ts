@@ -83,7 +83,7 @@ export class FeedService {
 				date: this.idService.parse(note.id).date,
 				description: note.cw ?? undefined,
 				content: note.text ?? undefined,
-				image: file ? this.driveFileEntityService.getPublicUrl(file) ?? undefined : undefined,
+				image: file ? this.driveFileEntityService.getPublicUrl(file) : undefined,
 			});
 		}
 
