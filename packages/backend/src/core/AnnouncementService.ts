@@ -53,7 +53,7 @@ export class AnnouncementService {
 			}))
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
-				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
+				qb.orWhere('announcement.id > :userId', { userId: user.id });
 			}))
 			.andWhere(`announcement.id NOT IN (${ readsQuery.getQuery() })`);
 
@@ -65,8 +65,7 @@ export class AnnouncementService {
 	@bindThis
 	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			updatedAt: null,
 			title: values.title,
 			text: values.text,
@@ -179,8 +178,7 @@ export class AnnouncementService {
 	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				announcementId: announcementId,
 				userId: user.id,
 			});
@@ -204,7 +202,7 @@ export class AnnouncementService {
 		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
 		return announcements.map(announcement => ({
 			id: announcement.id,
-			createdAt: announcement.createdAt.toISOString(),
+			createdAt: this.idService.parse(announcement.id).date.toISOString(),
 			updatedAt: announcement.updatedAt?.toISOString() ?? null,
 			text: announcement.text,
 			title: announcement.title,
