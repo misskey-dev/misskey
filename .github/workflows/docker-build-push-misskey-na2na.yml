@@ -22,7 +22,7 @@ jobs:
       MISSKEY_VERSION: ${{ env.MISSKEY_VERSION }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
       - name: Get current version
         id: get_version
         run: |
@@ -48,7 +48,7 @@ jobs:
     if: ${{ needs.Check-image-already-exists.outputs.tag_exists == 'false' }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3.0.0
