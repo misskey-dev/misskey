@@ -199,20 +199,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkObjectView tall :value="user">
 				</MkObjectView>
 			</div>
-
-			<div v-else-if="tab === 'approval'" class="_gaps_m">
-				<MkKeyValue oneline>
-					<template #key>{{ i18n.ts.approvalStatus }}</template>
-					<template #value><span class="_monospace">{{ approved ? i18n.ts.approved : i18n.ts.notApproved }}</span></template>
-				</MkKeyValue>
-
-				<MkTextarea v-model="signupReason" readonly>
-					<template #label>Reason</template>
-				</MkTextarea>
-
-				<MkButton v-if="$i.isAdmin" inline success @click="approveAccount">{{ i18n.ts.approveAccount }}</MkButton>
-				<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.denyAccount }}</MkButton>
-			</div>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -262,7 +248,6 @@ const silenced = ref(false);
 const approved = ref(false);
 const suspended = ref(false);
 const moderationNote = ref('');
-const signupReason = ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -295,7 +280,6 @@ function createFetcher() {
 		approved.value = info.value.approved;
 		suspended.value = info.value.isSuspended;
 		moderationNote.value = info.value.moderationNote;
-		signupReason.value = info.value.signupReason;
 
 		watch(moderationNote, async () => {
 			await os.api('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
@@ -425,16 +409,6 @@ async function deleteAccount() {
 	}
 }
 
-async function approveAccount() {
-	const confirm = await os.confirm({
-		type: 'warning',
-		text: i18n.ts.approveConfirm,
-	});
-	if (confirm.canceled) return;
-	await os.api('admin/approve-user', { userId: user.id });
-	await refreshUser();
-}
-
 async function assignRole() {
 	const roles = await os.api('admin/roles/list');
 
@@ -545,11 +519,7 @@ const headerTabs = computed(() => [{
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',
-}, (iAmAdmin && !approved) ? {
-	key: 'approval',
-	title: 'Approval',
-	icon: 'ti ti-eye',
-} : undefined]);
+});
 
 definePageMetadata(computed(() => ({
 	title: user.value ? acct(user.value) : i18n.ts.userInfo,
