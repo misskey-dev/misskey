@@ -211,7 +211,7 @@ export class SignupApiService {
 			reply.code(204);
 			return;
 		} else if (instance.approvalRequiredForSignup) {
-			await this.signupService.signup({
+			const { account } = await this.signupService.signup({
 				username, password, host, reason,
 			});
 
@@ -219,6 +219,14 @@ export class SignupApiService {
 				this.emailService.sendEmail(emailAddress, 'Approval pending',
 					'Congratulations! Your account is now pending approval. You will get notified when you have been accepted.',
 					'Congratulations! Your account is now pending approval. You will get notified when you have been accepted.');
+			}
+
+			if (ticket) {
+				await this.registrationTicketsRepository.update(ticket.id, {
+					usedAt: new Date(),
+					usedBy: account,
+					usedById: account.id,
+				});
 			}
 
 			reply.code(204);
