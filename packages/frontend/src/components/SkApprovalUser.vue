@@ -19,8 +19,8 @@
 			</div>
 		</div>
 		<div :class="$style.buttons">
-			<MkButton inline success @click="approveAccount(user)">{{ i18n.ts.approveAccount }}</MkButton>
-			<MkButton inline danger @click="deleteAccount(user)">{{ i18n.ts.denyAccount }}</MkButton>
+			<MkButton inline success @click="approveAccount()">{{ i18n.ts.approveAccount }}</MkButton>
+			<MkButton inline danger @click="deleteAccount()">{{ i18n.ts.denyAccount }}</MkButton>
 		</div>
 	</div>
 </MkFolder>
@@ -54,7 +54,7 @@ const emits = defineEmits<{
 	(event: 'deleted', value: string): void;
 }>();
 
-async function deleteAccount(user) {
+async function deleteAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.deleteAccountConfirm,
@@ -62,15 +62,15 @@ async function deleteAccount(user) {
 	if (confirm.canceled) return;
 
 	const typed = await os.inputText({
-		text: i18n.t('typeToConfirm', { x: user?.username }),
+		text: i18n.t('typeToConfirm', { x: props.user.username }),
 	});
 	if (typed.canceled) return;
 
-	if (typed.result === user?.username) {
+	if (typed.result === props.user.username) {
 		await os.apiWithDialog('admin/delete-account', {
-			userId: user.id,
+			userId: props.user.id,
 		});
-		emits('deleted', user.id);
+		emits('deleted', props.user.id);
 	} else {
 		os.alert({
 			type: 'error',
@@ -79,14 +79,14 @@ async function deleteAccount(user) {
 	}
 }
 
-async function approveAccount(user) {
+async function approveAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.approveConfirm,
 	});
 	if (confirm.canceled) return;
-	await os.api('admin/approve-user', { userId: user.id });
-	emits('deleted', user.id);
+	await os.api('admin/approve-user', { userId: props.user.id });
+	emits('deleted', props.user.id);
 }
 </script>
 
