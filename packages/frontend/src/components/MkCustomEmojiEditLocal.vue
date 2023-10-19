@@ -64,12 +64,13 @@ const pagination = {
 };
 
 const selectAll = () => {
-	if (selectedEmojis.value.length > 0) {
-		selectedEmojis.value = [];
-	} else {
-		selectedEmojis.value = emojisPaginationComponent.value.items.map(item => item.id);
-	}
+    if (selectedEmojis.value.length > 0) {
+        selectedEmojis.value = [];
+    } else {
+        selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values(), item => item.id);
+    }
 };
+
 
 const toggleSelect = (emoji) => {
 	if (selectedEmojis.value.includes(emoji.id)) {
