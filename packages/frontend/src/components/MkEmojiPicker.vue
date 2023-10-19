@@ -159,15 +159,19 @@ customEmojiCategories.value.forEach(e => {
 
 const groupedData = {};
 split_categories.forEach((item) => {
-    if (!groupedData[item[0]]) {
-        groupedData[item[0]] = [];
-        groupedData[item[0]].push(item[0]);
-    }else{
-        groupedData[item[0]].push(item[1]);
-    }
-});
-console.log(groupedData)
+    const key = item[0];
 
+    if (!groupedData[key]) {
+        groupedData[key] = [];
+        groupedData[key].push(item[0]);
+    }
+    if (item[1] !== undefined){
+        groupedData[key].push(item[1]);
+    }
+
+});
+
+console.log(groupedData)
 watch(q, () => {
     if (emojisEl.value) emojisEl.value.scrollTop = 0;
 
