@@ -22,8 +22,8 @@
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.38.0",
 		"@swc/jest": "0.2.29",
-		"@types/jest": "29.5.5",
-		"@types/node": "20.8.6",
+		"@types/jest": "29.5.6",
+		"@types/node": "20.8.7",
 		"@typescript-eslint/eslint-plugin": "6.8.0",
 		"@typescript-eslint/parser": "6.8.0",
 		"eslint": "8.51.0",
