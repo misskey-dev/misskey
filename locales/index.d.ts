@@ -4998,6 +4998,8 @@ export interface Locale extends ILocale {
             "section3": string;
         };
     };
+    "autoRejectFollowRequest": string;
+    "autoRejectFollowRequestDescription": string;
     "_announcement": {
         /**
          * 既存ユーザーのみ
