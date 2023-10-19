@@ -37,6 +37,7 @@ export interface Locale {
     "uploading": string;
     "save": string;
     "users": string;
+    "approvals": string;
     "addUser": string;
     "favorite": string;
     "favorites": string;
