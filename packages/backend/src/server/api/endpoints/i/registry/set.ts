@@ -53,8 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 			} else {
 				await this.registryItemsRepository.insert({
-					id: this.idService.genId(),
-					createdAt: new Date(),
+					id: this.idService.gen(),
 					updatedAt: new Date(),
 					userId: me.id,
 					domain: null,

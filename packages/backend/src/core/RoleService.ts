@@ -20,7 +20,7 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -103,7 +103,7 @@ export class RoleService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -125,7 +125,6 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						cached.push({
 							...body,
-							createdAt: new Date(body.createdAt),
 							updatedAt: new Date(body.updatedAt),
 							lastUsedAt: new Date(body.lastUsedAt),
 						});
@@ -139,7 +138,6 @@ export class RoleService implements OnApplicationShutdown {
 						if (i > -1) {
 							cached[i] = {
 								...body,
-								createdAt: new Date(body.createdAt),
 								updatedAt: new Date(body.updatedAt),
 								lastUsedAt: new Date(body.lastUsedAt),
 							};
@@ -159,7 +157,6 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						cached.push({
 							...body,
-							createdAt: new Date(body.createdAt),
 							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
 						});
 					}
@@ -198,10 +195,10 @@ export class RoleService implements OnApplicationShutdown {
 					return this.userEntityService.isRemoteUser(user);
 				}
 				case 'createdLessThan': {
-					return user.createdAt.getTime() > (Date.now() - (value.sec * 1000));
+					return this.idService.parse(user.id).date.getTime() > (Date.now() - (value.sec * 1000));
 				}
 				case 'createdMoreThan': {
-					return user.createdAt.getTime() < (Date.now() - (value.sec * 1000));
+					return this.idService.parse(user.id).date.getTime() < (Date.now() - (value.sec * 1000));
 				}
 				case 'followersLessThanOrEq': {
 					return user.followersCount <= value.value;
@@ -382,7 +379,7 @@ export class RoleService implements OnApplicationShutdown {
 
 	@bindThis
 	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null, moderator?: MiUser): Promise<void> {
-		const now = new Date();
+		const now = Date.now();
 
 		const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
 
@@ -392,7 +389,7 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		if (existing) {
-			if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
+			if (existing.expiresAt && (existing.expiresAt.getTime() < now)) {
 				await this.roleAssignmentsRepository.delete({
 					roleId: roleId,
 					userId: userId,
@@ -403,8 +400,7 @@ export class RoleService implements OnApplicationShutdown {
 		}
 
 		const created = await this.roleAssignmentsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: now,
+			id: this.idService.gen(now),
 			expiresAt: expiresAt,
 			roleId: roleId,
 			userId: userId,
@@ -474,7 +470,7 @@ export class RoleService implements OnApplicationShutdown {
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (const role of roles) {
-			this.redisTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
+			this.funoutTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
 			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
 		}
 
@@ -485,8 +481,7 @@ export class RoleService implements OnApplicationShutdown {
 	public async create(values: Partial<MiRole>, moderator?: MiUser): Promise<MiRole> {
 		const date = new Date();
 		const created = await this.rolesRepository.insert({
-			id: this.idService.genId(),
-			createdAt: date,
+			id: this.idService.gen(date.getTime()),
 			updatedAt: date,
 			lastUsedAt: date,
 			name: values.name,
