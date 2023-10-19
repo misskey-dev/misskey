@@ -182,15 +182,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser');
 
-				query.andWhere(new Brackets(qb => {
-					qb
-						.where('note.replyId IS NULL') // 返信ではない
-						.orWhere(new Brackets(qb => {
-							qb // 返信だけど投稿者自身への返信
-								.where('note.replyId IS NOT NULL')
-								.andWhere('note.replyUserId = note.userId');
-						}));
-				}));
+				if (!ps.withReplies) {
+					query.andWhere(new Brackets(qb => {
+						qb
+							.where('note.replyId IS NULL') // 返信ではない
+							.orWhere(new Brackets(qb => {
+								qb // 返信だけど投稿者自身への返信
+									.where('note.replyId IS NOT NULL')
+									.andWhere('note.replyUserId = note.userId');
+							}));
+					}));
+				}
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);
