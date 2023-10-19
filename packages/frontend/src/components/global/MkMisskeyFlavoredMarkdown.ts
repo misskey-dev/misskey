@@ -15,6 +15,7 @@ import { host } from '@/config';
 import { defaultStore } from '@/store';
 import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 import MkRuby from "@/components/global/MkRuby.vue";
+import { nyaize } from '@/scripts/nyaize.js';
 
 const QUOTE_STYLE = `
 display: block;
@@ -85,10 +86,13 @@ export default function(props: {
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
-				const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+				if (!disableNyaize && props.author.isCat) {
+					text = nyaize(text);
+				}
 
 				if (!props.plain) {
 					const res: (VNode | string)[] = [];
@@ -426,7 +430,7 @@ export default function(props: {
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-				}, genEl(token.children, scale))];
+				}, genEl(token.children, scale, true))];
 			}
 
 			case 'mention': {
@@ -464,11 +468,11 @@ export default function(props: {
 				if (!props.nowrap) {
 					return [h('div', {
 						style: QUOTE_STYLE,
-					}, genEl(token.children, scale))];
+					}, genEl(token.children, scale, true))];
 				} else {
 					return [h('span', {
 						style: QUOTE_STYLE,
-					}, genEl(token.children, scale))];
+					}, genEl(token.children, scale, true))];
 				}
 			}
 
@@ -523,7 +527,7 @@ export default function(props: {
 			}
 
 			case 'plain': {
-				return [h('span', genEl(token.children, scale))];
+				return [h('span', genEl(token.children, scale, true))];
 			}
 
 			default: {

@@ -227,8 +227,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
 	}, data: Option, silent = false): Promise<MiNote> {
-		let patsedText: mfm.MfmNode[] | null = null;
-
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -315,25 +313,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
 			}
 			data.text = data.text.trim();
-
-			if (user.isCat) {
-				patsedText = mfm.parse(data.text);
-				function nyaizeNode(node: mfm.MfmNode) {
-					if (node.type === 'quote') return;
-					if (node.type === 'text') {
-						node.props.text = nyaize(node.props.text);
-					}
-					if (node.children) {
-						for (const child of node.children) {
-							nyaizeNode(child);
-						}
-					}
-				}
-				for (const node of patsedText) {
-					nyaizeNode(node);
-				}
-				data.text = mfm.toString(patsedText);
-			}
 		} else {
 			data.text = null;
 		}
@@ -344,7 +323,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// Parse MFM if needed
 		if (!tags || !emojis || !mentionedUsers) {
-			const tokens = patsedText ?? (data.text ? mfm.parse(data.text)! : []);
+			const tokens = (data.text ? mfm.parse(data.text)! : []);
 			const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
 			const choiceTokens = data.poll && data.poll.choices
 				? concat(data.poll.choices.map(choice => mfm.parse(choice)!))
@@ -584,7 +563,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// Pack the note
-			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true });
+			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 
 			this.globalEventService.publishNotesStream(noteObj);
 
