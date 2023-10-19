@@ -94,6 +94,11 @@ export function useNoteCapture(props: {
 			connection.send('un', {
 				id: note.value.id,
 			});
+			if (pureNote.value.id !== note.value.id) {
+				connection.send('un', {
+					id: pureNote.value.id,
+				});
+			}
 			if (withHandler) connection.off('noteUpdated', onStreamNoteUpdated);
 		}
 	}
