@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
 							<span v-if="!approved" class="silenced">{{ i18n.ts.notApproved }}</span>
-							<span v-if="approved" class="moderator">{{ i18n.ts.approved }}</span>
+							<span v-if="approved && !user.host" class="moderator">{{ i18n.ts.approved }}</span>
 							<span v-if="suspended" class="suspended">Suspended</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
