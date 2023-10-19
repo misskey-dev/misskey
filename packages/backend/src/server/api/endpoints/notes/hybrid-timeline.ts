@@ -123,6 +123,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
+			shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
+
 			if (!shouldFallbackToDb) {
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
