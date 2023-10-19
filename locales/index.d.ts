@@ -824,6 +824,7 @@ export interface Locale {
     "high": string;
     "middle": string;
     "low": string;
+    "list": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
     "previewNoteText": string;
@@ -1022,6 +1023,10 @@ export interface Locale {
     "notesSearchNotAvailable": string;
     "license": string;
     "draft": string;
+    "newEmojis": string;
+    "undrafted": string;
+    "draftEmojis": string;
+    "emojiNameValidation": string;
     "unfavoriteConfirm": string;
     "myClips": string;
     "drivecleaner": string;

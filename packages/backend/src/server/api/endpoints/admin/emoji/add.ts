@@ -51,7 +51,7 @@ export const paramDef = {
 			type: 'string',
 		} },
 	},
-	required: ['name','fileId', 'draft'],
+	required: ['name', 'fileId', 'draft'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す

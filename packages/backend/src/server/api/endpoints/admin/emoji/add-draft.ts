@@ -35,6 +35,8 @@ export const paramDef = {
 			type: 'string',
 		} },
 		license: { type: 'string', nullable: true },
+		isSensitive: { type: 'boolean', nullable: true },
+		localOnly: { type: 'boolean', nullable: true },
 		fileId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['name', 'fileId'],
@@ -42,8 +44,8 @@ export const paramDef = {
 
 // TODO: ロジックをサービスに切り出す
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
+// eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
@@ -64,12 +66,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				category: ps.category ?? null,
 				aliases: ps.aliases ?? [],
 				license: ps.license ?? null,
+				isSensitive: ps.isSensitive ?? false,
+				localOnly: ps.localOnly ?? false,
 				host: null,
 				draft: true,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 			});
 
-			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
+			await this.moderationLogService.log(me, 'addCustomEmoji', {
 				emojiId: emoji.id,
+				emoji: emoji,
 			});
 
 			return {
