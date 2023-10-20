@@ -11,12 +11,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
 		</MkTextarea>
 	</div>
+    <MkSwitch v-model="hideMutedNotes">{{ i18n.ts._wordMute.hideMutedNotes }}</MkSwitch>
 	<MkButton primary inline :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import {computed, ref, watch} from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -28,6 +29,7 @@ import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkSwitch from "@/components/MkSwitch.vue";
 
 const render = (mutedWords) => mutedWords.map(x => {
 	if (Array.isArray(x)) {
@@ -37,10 +39,9 @@ const render = (mutedWords) => mutedWords.map(x => {
 	}
 }).join('\n');
 
-const tab = ref('soft');
 const mutedWords = ref(render($i!.mutedWords));
 const changed = ref(false);
-
+const hideMutedNotes = computed(defaultStore.makeGetterSetter('hideMutedNotes'));
 watch(mutedWords, () => {
 	changed.value = true;
 });

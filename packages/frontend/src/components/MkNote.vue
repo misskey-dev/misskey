@@ -141,6 +141,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</I18n>
 </div>
+    <div v-else-if="hideMutedNotes" />
+
 </template>
 
 <script lang="ts" setup>
@@ -274,6 +276,7 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 }
 
 function renote(viaKeyboard = false) {
+    if (muted && !hideMutedNotes) return;
 	pleaseLogin();
 	showMovedDialog();
 
@@ -286,7 +289,7 @@ function renote(viaKeyboard = false) {
 			action: () => {
 				const el = renoteButton.value as HTMLElement | null | undefined;
 				if (el) {
-					const rect = el.getBoundingClientRect();
+					const rect = el?.getBoundingClientRect();
 					const x = rect.left + (el.offsetWidth / 2);
 					const y = rect.top + (el.offsetHeight / 2);
 					os.popup(MkRippleEffect, {x, y}, {}, 'end');
@@ -317,7 +320,7 @@ function renote(viaKeyboard = false) {
 		action: () => {
 			const el = renoteButton.value as HTMLElement | null | undefined;
 			if (el) {
-				const rect = el.getBoundingClientRect();
+				const rect = el?.getBoundingClientRect();
 				const x = rect.left + (el.offsetWidth / 2);
 				const y = rect.top + (el.offsetHeight / 2);
 				os.popup(MkRippleEffect, {x, y}, {}, 'end');
@@ -356,6 +359,7 @@ function renote(viaKeyboard = false) {
 }
 
 function reply(viaKeyboard = false): void {
+    if (muted && !hideMutedNotes) return;
 	pleaseLogin();
 	os.post({
 		reply: appearNote,
@@ -367,6 +371,7 @@ function reply(viaKeyboard = false): void {
 }
 
 function react(viaKeyboard = false): void {
+    if (muted && !hideMutedNotes) return;
 	pleaseLogin();
 	showMovedDialog();
 	if (appearNote.reactionAcceptance === 'likeOnly') {
@@ -376,7 +381,7 @@ function react(viaKeyboard = false): void {
 		});
 		const el = reactButton.value as HTMLElement | null | undefined;
 		if (el) {
-			const rect = el.getBoundingClientRect();
+			const rect = el?.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
 			os.popup(MkRippleEffect, {x, y}, {}, 'end');
@@ -398,6 +403,7 @@ function react(viaKeyboard = false): void {
 }
 
 function undoReact(note): void {
+    if (muted && !hideMutedNotes) return;
 	const oldReaction = note.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
@@ -406,6 +412,7 @@ function undoReact(note): void {
 }
 
 function onContextmenu(ev: MouseEvent): void {
+    if (muted && !hideMutedNotes) return;
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
 		// 再生速度の選択などのために、Audio要素のコンテキストメニューはブラウザデフォルトとする。
@@ -434,6 +441,7 @@ function onContextmenu(ev: MouseEvent): void {
 }
 
 function menu(viaKeyboard = false): void {
+    if (muted && !hideMutedNotes) return;
 	const {menu, cleanup} = getNoteMenu({
 		note: note,
 		translating,
@@ -448,6 +456,7 @@ function menu(viaKeyboard = false): void {
 }
 
 async function clip() {
+    if (muted && !hideMutedNotes) return;
 	os.popupMenu(await getNoteClipMenu({
 		note: note,
 		isDeleted,
@@ -456,6 +465,7 @@ async function clip() {
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
+    if (muted && !hideMutedNotes) return;
 	function getUnrenote(): MenuItem {
 		return {
 			text: i18n.ts.unrenote,
@@ -492,18 +502,22 @@ function showRenoteMenu(viaKeyboard = false): void {
 }
 
 function focus() {
+    if (muted && !hideMutedNotes) return;
 	el.value.focus();
 }
 
 function blur() {
+    if (muted && !hideMutedNotes) return;
 	el.value.blur();
 }
 
 function focusBefore() {
+    if (muted && !hideMutedNotes) return;
 	focusPrev(el.value);
 }
 
 function focusAfter() {
+    if (muted && !hideMutedNotes) return;
 	focusNext(el.value);
 }
 
