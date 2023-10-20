@@ -215,6 +215,8 @@ jobs:
           $(cat ./api.json.diff)
           \`\`\`
           </details>
+
+          [Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})
           EOF
       - name: Write diff comment
         uses: thollander/actions-comment-pull-request@v2
