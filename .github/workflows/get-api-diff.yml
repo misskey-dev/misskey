@@ -60,7 +60,7 @@ jobs:
     - name: Launch misskey
       run: |
         screen -S misskey -dm pnpm run dev
-        sleep 60s
+        sleep 30s
     - name: Wait for Misskey to be ready
       run: |
         MAX_RETRIES=6
@@ -142,7 +142,7 @@ jobs:
     - name: Launch misskey
       run: |
         screen -S misskey -dm pnpm run dev
-        sleep 40s
+        sleep 30s
     - name: Wait for Misskey to be ready
       run: |
         MAX_RETRIES=6
