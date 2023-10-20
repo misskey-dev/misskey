@@ -194,6 +194,15 @@ jobs:
           jq '.' ./artifacts/api-head.json > ./api-head.json
       - name: Get diff of 2 files
         run: diff -u --label=base --label=head ./api-base.json ./api-head.json | cat > api.json.diff
+      - name: Get full diff
+        run: diff --label=base --label=head --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' ./api-base.json ./api-head.json | cat > api-full.json.diff
+      - name: Echo full diff
+        run: cat ./api-full.json.diff
+      - name: Upload full diff to Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-artifact
+          path: api-full.json.diff
       - id: out-diff
         name: Build diff Comment
         run: |
@@ -212,6 +221,3 @@ jobs:
         with:
           comment_tag: show_diff
           filePath: ./output.md
-      - name: Echo full diff
-        run: diff --label=base --label=head --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' ./api-base.json ./api-head.json | cat
-
