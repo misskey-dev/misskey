@@ -1107,6 +1107,7 @@ export interface Locale {
     "currentAnnouncements": string;
     "pastAnnouncements": string;
     "youHaveUnreadAnnouncements": string;
+    "externalServices": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

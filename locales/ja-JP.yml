@@ -1104,6 +1104,7 @@ forYou: "あなたへ"
 currentAnnouncements: "現在のお知らせ"
 pastAnnouncements: "過去のお知らせ"
 youHaveUnreadAnnouncements: "未読のお知らせがあります。"
+externalServices: "外部サービス"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

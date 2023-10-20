@@ -282,6 +282,22 @@ export const meta = {
 				type: 'object',
 				optional: false, nullable: false,
 			},
+			perLocalUserUserTimelineCacheMax: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			perRemoteUserUserTimelineCacheMax: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			perUserHomeTimelineCacheMax: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			perUserListTimelineCacheMax: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -384,6 +400,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
+				perLocalUserUserTimelineCacheMax: instance.perLocalUserUserTimelineCacheMax,
+				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
+				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
+				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 			};
 		});
 	}

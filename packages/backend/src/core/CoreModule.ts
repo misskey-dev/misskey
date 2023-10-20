@@ -57,6 +57,8 @@ import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
 import { SearchService } from './SearchService.js';
+import { FeaturedService } from './FeaturedService.js';
+import { RedisTimelineService } from './RedisTimelineService.js';
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
 import NotesChart from './chart/charts/notes.js';
@@ -182,6 +184,8 @@ const $WebhookService: Provider = { provide: 'WebhookService', useExisting: Webh
 const $UtilityService: Provider = { provide: 'UtilityService', useExisting: UtilityService };
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
+const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
+const $RedisTimelineService: Provider = { provide: 'RedisTimelineService', useExisting: RedisTimelineService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -311,6 +315,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UtilityService,
 		FileInfoService,
 		SearchService,
+		FeaturedService,
+		RedisTimelineService,
 		ChartLoggerService,
 		FederationChart,
 		NotesChart,
@@ -433,6 +439,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UtilityService,
 		$FileInfoService,
 		$SearchService,
+		$FeaturedService,
+		$RedisTimelineService,
 		$ChartLoggerService,
 		$FederationChart,
 		$NotesChart,
@@ -556,6 +564,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UtilityService,
 		FileInfoService,
 		SearchService,
+		FeaturedService,
+		RedisTimelineService,
 		FederationChart,
 		NotesChart,
 		UsersChart,
@@ -677,6 +687,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UtilityService,
 		$FileInfoService,
 		$SearchService,
+		$FeaturedService,
+		$RedisTimelineService,
 		$FederationChart,
 		$NotesChart,
 		$UsersChart,

@@ -53,6 +53,7 @@ export type Source = {
 	redis: RedisOptionsSource;
 	redisForPubsub?: RedisOptionsSource;
 	redisForJobQueue?: RedisOptionsSource;
+	redisForTimelines?: RedisOptionsSource;
 	meilisearch?: {
 		host: string;
 		port: string;
@@ -94,6 +95,10 @@ export type Source = {
 	videoThumbnailGenerator?: string;
 
 	signToActivityPubGet?: boolean;
+
+	perChannelMaxNoteCacheCount?: number;
+	perUserNotificationsMaxCount?: number;
+	deactivateAntennaThreshold?: number;
 };
 
 /**
@@ -118,6 +123,10 @@ export type Mixin = {
 	redis: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
+	redisForTimelines: RedisOptions & RedisOptionsSource;
+	perChannelMaxNoteCacheCount: number;
+	perUserNotificationsMaxCount: number;
+	deactivateAntennaThreshold: number;
 };
 
 export type Config = Source & Mixin;
@@ -182,6 +191,10 @@ export function loadConfig() {
 	mixin.redis = convertRedisOptions(config.redis, mixin.host);
 	mixin.redisForPubsub = config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, mixin.host) : mixin.redis;
 	mixin.redisForJobQueue = config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, mixin.host) : mixin.redis;
+	mixin.redisForTimelines = config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, mixin.host) : mixin.redis;
+	mixin.perChannelMaxNoteCacheCount = config.perChannelMaxNoteCacheCount ?? 1000;
+	mixin.perUserNotificationsMaxCount = config.perUserNotificationsMaxCount ?? 300;
+	mixin.deactivateAntennaThreshold = config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7);
 
 	return Object.assign(config, mixin);
 }

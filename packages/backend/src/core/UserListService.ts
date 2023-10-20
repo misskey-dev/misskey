@@ -53,6 +53,7 @@ export class UserListService {
 			createdAt: new Date(),
 			userId: target.id,
 			userListId: list.id,
+			userListUserId: list.userId,
 		} as MiUserListJoining);
 
 		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target, me));
