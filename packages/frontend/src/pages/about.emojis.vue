@@ -65,7 +65,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.list,
 }, {
 	key: 'draft',
-	title: i18n.ts.draftEmojis,
+	title: i18n.ts.requestEmojis,
 }]);
 
 definePageMetadata(ref({}));
