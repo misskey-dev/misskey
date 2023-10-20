@@ -283,6 +283,12 @@ useTooltip(reactionRef, (showing) => {
 
 .quote:first-child {
 	margin-right: 4px;
+	position: relative;
+
+	&:before {
+		position: absolute;
+		transform: rotate(180deg);
+	}
 }
 
 .quote:last-child {
