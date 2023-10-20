@@ -1027,9 +1027,8 @@ export interface Locale {
     "notesSearchNotAvailable": string;
     "license": string;
     "draft": string;
-    "newEmojis": string;
     "undrafted": string;
-    "draftEmojis": string;
+    "requestEmojisEmojis": string;
     "emojiNameValidation": string;
     "unfavoriteConfirm": string;
     "myClips": string;
