@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors, cherrypick contributors
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,12 +7,13 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, NotesRepository, DriveFilesRepository, MiDriveFile } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { ApiError } from '../../error.js';
+import type { DriveFilesRepository, MiDriveFile } from "@/models/_.js";
 
 export const meta = {
 	tags: ['notes'],
@@ -38,6 +39,11 @@ export const meta = {
 			message: 'Some files are not found.',
 			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
+		},
+		cannotCreateAlreadyExpiredPoll: {
+			message: 'Poll is already expired.',
+			code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL',
+			id: '04da457d-b083-4055-9082-955525eda5a5',
 		},
 	},
 } as const;
@@ -66,7 +72,7 @@ export const paramDef = {
 			type: 'string',
 			minLength: 1,
 			maxLength: MAX_NOTE_TEXT_LENGTH,
-			nullable: true,
+			nullable: false,
 		},
 		fileIds: {
 			type: 'array',
@@ -99,31 +105,23 @@ export const paramDef = {
 			},
 			required: ['choices'],
 		},
+		disableRightClick: { type: 'boolean', default: false },
 	},
-	// (re)note with text, files and poll are optional
-	anyOf: [
-		{ required: ['text'] },
-		{ required: ['renoteId'] },
-		{ required: ['fileIds'] },
-		{ required: ['mediaIds'] },
-		{ required: ['poll'] },
-	],
+	required: ['noteId', 'text', 'cw'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
     @Inject(DI.driveFilesRepository)
     private driveFilesRepository: DriveFilesRepository,
 
 		private getterService: GetterService,
-		private globalEventService: GlobalEventService,
+		private noteEntityService: NoteEntityService,
+		private noteUpdateService: NoteUpdateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
@@ -131,9 +129,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			let files: MiDriveFile[] = [];
-			const fileIds = ps.fileIds ?? null;
+			if (note.userId !== me.id) {
+				throw new ApiError(meta.errors.noSuchNote);
+			}
 
+
+			let files: MiDriveFile[] = [];
+			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
 			if (fileIds != null) {
 				files = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
@@ -149,31 +151,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			if (note.userId !== me.id) {
-				throw new ApiError(meta.errors.noSuchNote);
+			if (ps.poll) {
+				if (typeof ps.poll.expiresAt === 'number') {
+					if (ps.poll.expiresAt < Date.now()) {
+						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+					}
+				} else if (typeof ps.poll.expiredAfter === 'number') {
+					ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
+				}
 			}
 
-			await this.notesRepository.update({ id: note.id }, {
-				updatedAt: new Date(),
-				cw: ps.cw,
+			const data = {
 				text: ps.text,
-				fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
+				files: files,
+				cw: ps.cw,
 				poll: ps.poll ? {
 					choices: ps.poll.choices,
 					multiple: ps.poll.multiple ?? false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				} : undefined,
-				localOnly: ps.localOnly,
-				reactionAcceptance: ps.reactionAcceptance,
-				apMentions: ps.noExtractMentions ? [] : undefined,
-				apHashtags: ps.noExtractHashtags ? [] : undefined,
-				apEmojis: ps.noExtractEmojis ? [] : undefined,
-			});
+			};
 
-			this.globalEventService.publishNoteStream(note.id, 'updated', {
-				cw: ps.cw,
-				text: ps.text,
-			});
+			const updatedNote = await this.noteUpdateService.update(me, data, note, false);
+
+			return {
+				updatedNote: await this.noteEntityService.pack(updatedNote!, me),
+			};
 		});
 	}
 }

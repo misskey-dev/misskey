@@ -122,6 +122,7 @@ const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
 document.documentElement.style.setProperty('--followerColor', hexToRgb(defaultStore.state.followerColor));
 document.documentElement.style.setProperty('--specifiedColor', hexToRgb(defaultStore.state.specifiedColor));
+document.documentElement.style.setProperty('--localOnlyColor', hexToRgb(defaultStore.state.localOnlyColor));
 document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed + 's');
 
 let gaming = ref();
