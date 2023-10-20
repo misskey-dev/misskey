@@ -63,7 +63,7 @@ jobs:
         sleep 30s
     - name: Wait for Misskey to be ready
       run: |
-        MAX_RETRIES=6
+        MAX_RETRIES=12
         RETRY_DELAY=5
         count=0
         until $(curl --output /dev/null --silent --head --fail http://localhost:3000) || [[ $count -eq $MAX_RETRIES ]]; do
@@ -145,7 +145,7 @@ jobs:
         sleep 30s
     - name: Wait for Misskey to be ready
       run: |
-        MAX_RETRIES=6
+        MAX_RETRIES=12
         RETRY_DELAY=5
         count=0
         until $(curl --output /dev/null --silent --head --fail http://localhost:3000) || [[ $count -eq $MAX_RETRIES ]]; do
