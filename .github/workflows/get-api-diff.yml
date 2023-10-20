@@ -52,9 +52,9 @@ jobs:
       run: cp .config/example.yml .config/default.yml
     - name: Build
       run: pnpm build
-    - name : migrate
+    - name : Migrate
       run: pnpm migrate
-    - name: launch misskey
+    - name: Launch misskey
       run: |
         screen -S misskey -dm pnpm run dev
         sleep 60s
@@ -74,7 +74,7 @@ jobs:
           exit 1
         fi
     - id: fetch
-      name: get API
+      name: Get api.json from Misskey
       run: |
         RESULT=$(curl --retry 5 --retry-delay 5 --retry-max-time 60 http://localhost:3000/api.json)
         echo $RESULT > api-base.json
@@ -83,9 +83,7 @@ jobs:
       with:
         name: api-artifact
         path: api-base.json
-    - name: echo output
-      run: echo ${{ steps.fetch.outputs.result }}
-    - name: kill Misskey Job
+    - name: Kill Misskey Job
       run: screen -S misskey -X quit
 
   get-head:
@@ -133,9 +131,9 @@ jobs:
       run: cp .config/example.yml .config/default.yml
     - name: Build
       run: pnpm build
-    - name : migrate
+    - name : Migrate
       run: pnpm migrate
-    - name: launch misskey
+    - name: Launch misskey
       run: |
         screen -S misskey -dm pnpm run dev
         sleep 40s
@@ -155,7 +153,7 @@ jobs:
           exit 1
         fi
     - id: fetch
-      name: get API
+      name: Get api.json from Misskey
       run: |
         RESULT=$(curl --retry 5 --retry-delay 5 --retry-max-time 60 http://localhost:3000/api.json)
         echo $RESULT > api-head.json
@@ -164,9 +162,7 @@ jobs:
       with:
         name: api-artifact
         path: api-head.json
-    - name: echo output
-      run: echo ${{ steps.fetch.outputs.result }}
-    - name: kill Misskey Job
+    - name: Kill Misskey Job
       run: screen -S misskey -X quit
 
   compare-diff:
@@ -180,18 +176,18 @@ jobs:
         with:
           name: api-artifact
           path: ./artifacts
-      - name: just out base
+      - name: Output base
         run: cat ./artifacts/api-base.json
-      - name: just out head
+      - name: Output head
         run: cat ./artifacts/api-head.json
-      - name: sort
+      - name: Arrange json files
         run: |
           jq '.' ./artifacts/api-base.json > ./api-base.json
           jq '.' ./artifacts/api-head.json > ./api-head.json
-      - name: get diff
+      - name: Get diff of 2 files
         run: diff -u ./api-base.json ./api-head.json | cat > api.json.diff
       - id: out-diff
-        name: out diff
+        name: Build diff Comment
         run: |
           cat <<- EOF > ./output.md
           このPRによるapi.jsonの差分
