@@ -18,9 +18,8 @@ class GlobalTimelineChannel extends Channel {
 	public readonly chName = 'globalTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
-	private withReplies: boolean;
-	private withFiles: boolean;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -39,7 +38,6 @@ class GlobalTimelineChannel extends Channel {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.gtlAvailable) return;
 
-		this.withReplies = params.withReplies ?? false;
 		this.withRenotes = params.withRenotes ?? true;
 		this.withFiles = params.withFiles ?? false;
 
@@ -49,24 +47,10 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
-
-		// ファイルを含まない投稿は除外
-		if (this.withFiles && (note.files === undefined || note.files.length === 0)) return;
-
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-				detail: true,
-			});
-		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-				detail: true,
-			});
-		}
 
 		// 関係ない返信は除外
 		if (note.reply && !this.following[note.userId]?.withReplies) {

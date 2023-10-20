@@ -39,9 +39,9 @@ class HybridTimelineChannel extends Channel {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.ltlAvailable) return;
 
-		this.withReplies = params.withReplies ?? false;
 		this.withRenotes = params.withRenotes ?? true;
-		this.withFiles = params.withFiles as boolean;
+		this.withReplies = params.withReplies ?? false;
+		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -64,9 +64,6 @@ class HybridTimelineChannel extends Channel {
 			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
 
-		// ファイルを含まない投稿は除外
-		if (this.withFiles && (note.files === undefined || note.files.length === 0)) return;
-
 		if (note.visibility === 'followers') {
 			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
 		} else if (note.visibility === 'specified') {
@@ -75,7 +72,6 @@ class HybridTimelineChannel extends Channel {
 
 		// Ignore notes from instances the user has muted
 		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances))) return;
-
 		// 関係ない返信は除外
 		if (note.reply && !this.following[note.userId]?.withReplies && !this.withReplies) {
 			const reply = note.reply;

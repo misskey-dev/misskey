@@ -16,9 +16,8 @@ class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = false;
 	public static requireCredential = true;
-	private withReplies: boolean;
-	private withFiles: boolean;
 	private withRenotes: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -32,9 +31,8 @@ class HomeTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		this.withReplies = params.withReplies ?? false;
 		this.withRenotes = params.withRenotes ?? true;
-		this.withFiles = params.withFiles as boolean;
+		this.withFiles = params.withFiles ?? false;
 
 		this.subscriber.on('notesStream', this.onNote);
 	}
@@ -54,9 +52,6 @@ class HomeTimelineChannel extends Channel {
 
 		// Ignore notes from instances the user has muted
 		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances))) return;
-
-		// ファイルを含まない投稿は除外
-		if (this.withFiles && (note.files === undefined || note.files.length === 0)) return;
 
 		if (note.visibility === 'followers') {
 			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
