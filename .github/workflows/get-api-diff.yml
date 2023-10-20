@@ -193,7 +193,7 @@ jobs:
           jq '.' ./artifacts/api-base.json > ./api-base.json
           jq '.' ./artifacts/api-head.json > ./api-head.json
       - name: Get diff of 2 files
-        run: diff -u ./api-base.json ./api-head.json | cat > api.json.diff
+        run: diff -u --label=base --label=head ./api-base.json ./api-head.json | cat > api.json.diff
       - id: out-diff
         name: Build diff Comment
         run: |
