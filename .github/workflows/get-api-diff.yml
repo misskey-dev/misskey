@@ -9,6 +9,8 @@ on:
 jobs:
   get-base:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     strategy:
       matrix:
@@ -89,6 +91,8 @@ jobs:
 
   get-head:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     strategy:
       matrix:
@@ -171,6 +175,8 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     needs: [get-base, get-head]
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Download Artifact
