@@ -115,10 +115,30 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
+			test('自分の visibility: followers な投稿が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',	// ayano:Home
+					() => api('notes/create', { text: 'foo', visibility: 'followers' }, ayano),	// ayano posts
+					msg => msg.type === 'note' && msg.body.text === 'foo',
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
 			test('フォローしているユーザーの投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'homeTimeline',		// ayano:home
 					() => api('notes/create', { text: 'foo' }, kyoko),	// kyoko posts
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('フォローしているユーザーの visibility: followers な投稿が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'homeTimeline',		// ayano:home
+					() => api('notes/create', { text: 'foo', visibility: 'followers' }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
@@ -241,6 +261,16 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
+			test('自分の visibility: followers な投稿が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'hybridTimeline',
+					() => api('notes/create', { text: 'foo', visibility: 'followers' }, ayano),	// ayano posts
+					msg => msg.type === 'note' && msg.body.text === 'foo',
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
 			test('フォローしていないローカルユーザーの投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
@@ -287,6 +317,16 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('フォローしているユーザーの visibility: followers な投稿が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'hybridTimeline',	// ayano:Hybrid
+					() => api('notes/create', { text: 'foo', visibility: 'followers' }, kyoko),
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
