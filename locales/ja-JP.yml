@@ -1139,7 +1139,7 @@ impressumDescription: "ドイツなどの一部の国と地域では表示が義
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
-avatarDecorations: "アイコンのデコレーション"
+avatarDecorations: "アイコンデコレーション"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2209,9 +2209,9 @@ _moderationLogTypes:
   createAd: "広告を作成"
   deleteAd: "広告を削除"
   updateAd: "広告を更新"
-  createAvatarDecoration: "アバターデコレーションを作成"
-  updateAvatarDecoration: "アバターデコレーションを更新"
-  deleteAvatarDecoration: "アバターデコレーションを削除"
+  createAvatarDecoration: "アイコンデコレーションを作成"
+  updateAvatarDecoration: "アイコンデコレーションを更新"
+  deleteAvatarDecoration: "アイコンデコレーションを削除"
 
 _fileViewer:
   title: "ファイルの詳細"
