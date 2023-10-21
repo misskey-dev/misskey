@@ -1150,6 +1150,7 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+    "avatarDecorations": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2303,6 +2304,9 @@ export interface Locale {
         "createAd": string;
         "deleteAd": string;
         "updateAd": string;
+        "createAvatarDecoration": string;
+        "updateAvatarDecoration": string;
+        "deleteAvatarDecoration": string;
     };
     "_fileViewer": {
         "title": string;
