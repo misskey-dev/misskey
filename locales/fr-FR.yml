@@ -1052,6 +1052,7 @@ notifyNotes: "Notifier à propos des nouvelles notes"
 authentication: "Authentification"
 authenticationRequiredToContinue: "Veuillez vous authentifier pour continuer"
 showRenotes: "Afficher les renotes"
+avatarDecorations: "Décorations d'avatar"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
 _initialAccountSetting:
@@ -1744,8 +1745,14 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendre"
   resetPassword: "Réinitialiser le mot de passe"
+  createAvatarDecoration: "Décoration d'avatar créée"
+  updateAvatarDecoration: "Décoration d'avatar mise à jour"
+  deleteAvatarDecoration: "Décoration d'avatar supprimée"
 _externalResourceInstaller:
+  _plugin:
+    metaTitle: "Informations sur l'extension"
   _theme:
+    title: "Voulez-vous installer ce thème ?"
     metaTitle: "Informations sur le thème"
   _meta:
     base: "Palette de couleurs de base"
@@ -1763,10 +1770,16 @@ _externalResourceInstaller:
     _failedToFetch:
       title: "Échec de récupération des données"
       fetchErrorDescription: "La communication avec le site externe a échoué. Si vous réessayez et que cela ne s'améliore pas, veuillez contacter l'administrateur du site."
+      parseErrorDescription: "Les données obtenues à partir du site externe n'ont pas pu être parsées. Veuillez contacter l'administrateur du site."
     _pluginParseFailed:
       title: "Erreur d'AiScript"
+      description: "Bien que les données aient été obtenues, elles n'ont pas pu être lues, car il y a eu une erreur lors du parsage d'AiScript. Veuillez contacter l'auteur de l'extension. Pour plus de détails sur l'erreur, veuillez consulter la console JavaScript."
+    _pluginInstallFailed:
+      title: "Échec d'installation de l'extension"
+      description: "Il y a eu un problème lors de l'installation de l'extension. Veuillez réessayer. Pour plus de détails sur l'erreur, veuillez consulter la console JavaScript."
     _themeParseFailed:
       title: "Erreur de parsage du thème"
-      description: "Bien que les données aient été obtenues, elles n'ont pas pu être lues, car il y a eu une erreur lors du parsage du fichier du thème. Veuillez contacter l'auteur du thème et consulter la console JavaScript pour plus de détails sur l'erreur."
+      description: "Bien que les données aient été obtenues, elles n'ont pas pu être lues, car il y a eu une erreur lors du parsage du fichier du thème. Veuillez contacter l'auteur du thème. Pour plus de détails sur l'erreur, veuillez consulter la console JavaScript."
     _themeInstallFailed:
       title: "Échec d'installation du thème"
+      description: "Il y a eu un problème lors de l'installation du thème. Veuillez réessayer. Pour plus de détails sur l'erreur, veuillez consulter la console JavaScript."
