@@ -78,8 +78,8 @@ async function build() {
   await Promise.all([
     copyFrontendFonts(),
     copyFrontendTablerIcons(),
-		copyFrontendLocales(),
-		copyFrontendShikiAssets(),
+    copyFrontendLocales(),
+    copyFrontendShikiAssets(),
     copyBackendViews(),
     buildBackendScript(),
     buildBackendStyle(),
