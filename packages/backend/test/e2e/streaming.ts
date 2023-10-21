@@ -145,6 +145,20 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
+			/* なんか失敗する
+			test('フォローしているユーザーの visibility: followers な投稿への返信が流れる', async () => {
+				const note = await api('notes/create', { text: 'foo', visibility: 'followers' }, kyoko);
+
+				const fired = await waitFire(
+					ayano, 'homeTimeline',		// ayano:home
+					() => api('notes/create', { text: 'bar', visibility: 'followers', replyId: note.body.id }, kyoko),	// kyoko posts
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.reply.text === 'foo',
+				);
+
+				assert.strictEqual(fired, true);
+			});
+			*/
+
 			test('フォローしていないユーザーの投稿は流れない', async () => {
 				const fired = await waitFire(
 					kyoko, 'homeTimeline',	// kyoko:home

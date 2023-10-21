@@ -7,8 +7,8 @@ import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
 import type { summaly } from 'summaly';
-import { components } from '@/components';
-import { directives } from '@/directives';
+import { components } from '@/components/index.js';
+import { directives } from '@/directives/index.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;

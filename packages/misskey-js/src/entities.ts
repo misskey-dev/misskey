@@ -16,6 +16,10 @@ export type UserLite = {
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 	avatarUrl: string;
 	avatarBlurhash: string;
+	avatarDecorations: {
+		id: ID;
+		url: string;
+	}[];
 	emojis: {
 		name: string;
 		url: string;
@@ -695,4 +699,16 @@ export type ModerationLog = {
 } | {
 	type: 'deleteAd';
 	info: ModerationLogPayloads['deleteAd'];
+} | {
+	type: 'createAvatarDecoration';
+	info: ModerationLogPayloads['createAvatarDecoration'];
+} | {
+	type: 'updateAvatarDecoration';
+	info: ModerationLogPayloads['updateAvatarDecoration'];
+} | {
+	type: 'deleteAvatarDecoration';
+	info: ModerationLogPayloads['deleteAvatarDecoration'];
+} | {
+	type: 'resolveAbuseReport';
+	info: ModerationLogPayloads['resolveAbuseReport'];
 });

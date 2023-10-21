@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts.edited }}: <MkTime :time="appearNote.updatedAt" mode="detail"/>
 				</div>
 				<MkA :to="notePage(appearNote)">
-					<MkTime :time="appearNote.createdAt" mode="detail"/>
+					<MkTime :time="appearNote.createdAt" mode="detail" colored/>
 				</MkA>
 			</div>
 			<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>

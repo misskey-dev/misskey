@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe && gaming === '' , [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :to="url" :style="{ background: bgCss }">
-	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
+	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
 		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
@@ -16,11 +16,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
 import {computed, ref, watch} from 'vue';
-import { } from 'vue';
+import { computed } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 let gaming = ref('');
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
@@ -67,6 +68,12 @@ const isMe = $i && (
 
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 bg.setAlpha(0.1);
+const bgCss = bg.toRgbString();
+
+const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
+	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
+	: `/avatar/@${props.username}@${props.host}`,
+);
 const bgCss = (gaming.value === '') ? bg.toRgbString() : "";
 //const bgCss = `background:${bg.toRgbString()}; ${result}` ;
 </script>
