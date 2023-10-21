@@ -1132,6 +1132,10 @@ mutualFollow: "相互フォロー"
 fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "TLに他の人への返信を含める"
 hideRepliesToOthersInTimeline: "TLに他の人への返信を含めない"
+showRepliesToOthersInTimelineAll: "TLに現在フォロー中の人全員の返信を含めるようにする"
+hideRepliesToOthersInTimelineAll: "TLに現在フォロー中の人全員の返信を含めないようにする"
+confirmShowRepliesAll: "この操作は元の戻せません。本当にTLに現在フォロー中の人全員の返信を含めるようにしますか"
+confirmHideRepliesAll: "この操作は元の戻せません。本当にTLに現在フォロー中の人全員の返信を含めないようにしますか"
 externalServices: "外部サービス"
 impressum: "運営者情報"
 impressumUrl: "運営者情報URL"
@@ -1139,6 +1143,7 @@ impressumDescription: "ドイツなどの一部の国と地域では表示が義
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+avatarDecorations: "アイコンデコレーション"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2208,6 +2213,9 @@ _moderationLogTypes:
   createAd: "広告を作成"
   deleteAd: "広告を削除"
   updateAd: "広告を更新"
+  createAvatarDecoration: "アイコンデコレーションを作成"
+  updateAvatarDecoration: "アイコンデコレーションを更新"
+  deleteAvatarDecoration: "アイコンデコレーションを削除"
 
 _fileViewer:
   title: "ファイルの詳細"
@@ -2217,3 +2225,45 @@ _fileViewer:
   uploadedAt: "追加日"
   attachedNotes: "添付されているノート"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
+
+_externalResourceInstaller:
+  title: "外部サイトからインストール"
+  checkVendorBeforeInstall: "配布元が信頼できるかを確認した上でインストールしてください。"
+  _plugin:
+    title: "このプラグインをインストールしますか？"
+    metaTitle: "プラグイン情報"
+  _theme:
+    title: "このテーマをインストールしますか？"
+    metaTitle: "テーマ情報"
+  _meta:
+    base: "基本のカラースキーム"
+  _vendorInfo:
+    title: "配布元情報"
+    endpoint: "参照したエンドポイント"
+    hashVerify: "ファイル整合性の確認"
+  _errors:
+    _invalidParams:
+      title: "パラメータが不足しています"
+      description: "外部サイトからデータを取得するために必要な情報が不足しています。URLをお確かめください。"
+    _resourceTypeNotSupported:
+      title: "この外部リソースには対応していません"
+      description: "この外部サイトから取得したリソースの種別には対応していません。サイト管理者にお問い合わせください。"
+    _failedToFetch:
+      title: "データの取得に失敗しました"
+      fetchErrorDescription: "外部サイトとの通信に失敗しました。もう一度試しても改善しない場合、サイト管理者にお問い合わせください。"
+      parseErrorDescription: "外部サイトから取得したデータが読み取れませんでした。サイト管理者にお問い合わせください。"
+    _hashUnmatched:
+      title: "正しいデータが取得できませんでした"
+      description: "提供されたデータの整合性の確認に失敗しました。セキュリティ上、インストールは続行できません。サイト管理者にお問い合わせください。"
+    _pluginParseFailed:
+      title: "AiScript エラー"
+      description: "データは取得できたものの、AiScriptの解析時にエラーがあったため読み込めませんでした。プラグインの作者にお問い合わせください。エラーの詳細はJavascriptコンソールをご確認ください。"
+    _pluginInstallFailed:
+      title: "プラグインのインストールに失敗しました"
+      description: "プラグインのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+    _themeParseFailed:
+      title: "テーマ解析エラー"
+      description: "データは取得できたものの、テーマファイルの解析時にエラーがあったため読み込めませんでした。テーマの作者にお問い合わせください。エラーの詳細はJavascriptコンソールをご確認ください。"
+    _themeInstallFailed:
+      title: "テーマのインストールに失敗しました"
+      description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"

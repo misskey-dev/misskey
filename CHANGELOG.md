@@ -15,6 +15,19 @@
 ## 2023.x.x (unreleased)
 
 ### General
+-
+
+## Client
+- Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
+	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
+	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+
+### Server
+-
+
+## 2023.10.2
+
+### General
 - Feat: アンテナでローカルの投稿のみ収集できるようになりました
 - Feat: サーバーサイレンス機能が追加されました
 - Enhance: 新規にフォローした人の返信をデフォルトでTLに追加できるオプションを追加
@@ -22,6 +35,7 @@
 - Enhance: フォロー/フォロー解除したときに過去分のHTLにも含まれる投稿が反映されるように
 - Enhance: ローカリゼーションの更新
 - Enhance: 依存関係の更新
+- Enhance: すでにフォローしたすべての人の返信をTLに追加できるように
 
 ### Client
 - Enhance: TLの返信表示オプションを記憶するように

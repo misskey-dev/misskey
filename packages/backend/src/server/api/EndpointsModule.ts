@@ -18,6 +18,10 @@ import * as ep___admin_announcements_create from './endpoints/admin/announcement
 import * as ep___admin_announcements_delete from './endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from './endpoints/admin/announcements/update.js';
+import * as ep___admin_avatarDecorations_create from './endpoints/admin/avatar-decorations/create.js';
+import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-decorations/delete.js';
+import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
+import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
@@ -161,6 +165,7 @@ import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
 import * as ep___following_update from './endpoints/following/update.js';
+import * as ep___following_update_all from './endpoints/following/update-all.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
 import * as ep___following_requests_accept from './endpoints/following/requests/accept.js';
 import * as ep___following_requests_cancel from './endpoints/following/requests/cancel.js';
@@ -176,6 +181,7 @@ import * as ep___gallery_posts_show from './endpoints/gallery/posts/show.js';
 import * as ep___gallery_posts_unlike from './endpoints/gallery/posts/unlike.js';
 import * as ep___gallery_posts_update from './endpoints/gallery/posts/update.js';
 import * as ep___getOnlineUsersCount from './endpoints/get-online-users-count.js';
+import * as ep___getAvatarDecorations from './endpoints/get-avatar-decorations.js';
 import * as ep___hashtags_list from './endpoints/hashtags/list.js';
 import * as ep___hashtags_search from './endpoints/hashtags/search.js';
 import * as ep___hashtags_show from './endpoints/hashtags/show.js';
@@ -351,6 +357,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
+import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -368,6 +375,10 @@ const $admin_announcements_create: Provider = { provide: 'ep:admin/announcements
 const $admin_announcements_delete: Provider = { provide: 'ep:admin/announcements/delete', useClass: ep___admin_announcements_delete.default };
 const $admin_announcements_list: Provider = { provide: 'ep:admin/announcements/list', useClass: ep___admin_announcements_list.default };
 const $admin_announcements_update: Provider = { provide: 'ep:admin/announcements/update', useClass: ep___admin_announcements_update.default };
+const $admin_avatarDecorations_create: Provider = { provide: 'ep:admin/avatar-decorations/create', useClass: ep___admin_avatarDecorations_create.default };
+const $admin_avatarDecorations_delete: Provider = { provide: 'ep:admin/avatar-decorations/delete', useClass: ep___admin_avatarDecorations_delete.default };
+const $admin_avatarDecorations_list: Provider = { provide: 'ep:admin/avatar-decorations/list', useClass: ep___admin_avatarDecorations_list.default };
+const $admin_avatarDecorations_update: Provider = { provide: 'ep:admin/avatar-decorations/update', useClass: ep___admin_avatarDecorations_update.default };
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
 const $admin_drive_cleanRemoteFiles: Provider = { provide: 'ep:admin/drive/clean-remote-files', useClass: ep___admin_drive_cleanRemoteFiles.default };
 const $admin_drive_cleanup: Provider = { provide: 'ep:admin/drive/cleanup', useClass: ep___admin_drive_cleanup.default };
@@ -511,6 +522,7 @@ const $federation_stats: Provider = { provide: 'ep:federation/stats', useClass: 
 const $following_create: Provider = { provide: 'ep:following/create', useClass: ep___following_create.default };
 const $following_delete: Provider = { provide: 'ep:following/delete', useClass: ep___following_delete.default };
 const $following_update: Provider = { provide: 'ep:following/update', useClass: ep___following_update.default };
+const $following_update_all: Provider = { provide: 'ep:following/update-all', useClass: ep___following_update_all.default };
 const $following_invalidate: Provider = { provide: 'ep:following/invalidate', useClass: ep___following_invalidate.default };
 const $following_requests_accept: Provider = { provide: 'ep:following/requests/accept', useClass: ep___following_requests_accept.default };
 const $following_requests_cancel: Provider = { provide: 'ep:following/requests/cancel', useClass: ep___following_requests_cancel.default };
@@ -526,6 +538,7 @@ const $gallery_posts_show: Provider = { provide: 'ep:gallery/posts/show', useCla
 const $gallery_posts_unlike: Provider = { provide: 'ep:gallery/posts/unlike', useClass: ep___gallery_posts_unlike.default };
 const $gallery_posts_update: Provider = { provide: 'ep:gallery/posts/update', useClass: ep___gallery_posts_update.default };
 const $getOnlineUsersCount: Provider = { provide: 'ep:get-online-users-count', useClass: ep___getOnlineUsersCount.default };
+const $getAvatarDecorations: Provider = { provide: 'ep:get-avatar-decorations', useClass: ep___getAvatarDecorations.default };
 const $hashtags_list: Provider = { provide: 'ep:hashtags/list', useClass: ep___hashtags_list.default };
 const $hashtags_search: Provider = { provide: 'ep:hashtags/search', useClass: ep___hashtags_search.default };
 const $hashtags_show: Provider = { provide: 'ep:hashtags/show', useClass: ep___hashtags_show.default };
@@ -701,6 +714,7 @@ const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_s
 const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
+const $fetchExternalResources: Provider = { provide: 'ep:fetch-external-resources', useClass: ep___fetchExternalResources.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
 @Module({
@@ -722,6 +736,10 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_announcements_delete,
 		$admin_announcements_list,
 		$admin_announcements_update,
+		$admin_avatarDecorations_create,
+		$admin_avatarDecorations_delete,
+		$admin_avatarDecorations_list,
+		$admin_avatarDecorations_update,
 		$admin_deleteAllFilesOfAUser,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
@@ -865,6 +883,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$following_create,
 		$following_delete,
 		$following_update,
+		$following_update_all,
 		$following_invalidate,
 		$following_requests_accept,
 		$following_requests_cancel,
@@ -880,6 +899,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$gallery_posts_unlike,
 		$gallery_posts_update,
 		$getOnlineUsersCount,
+		$getAvatarDecorations,
 		$hashtags_list,
 		$hashtags_search,
 		$hashtags_show,
@@ -1055,6 +1075,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
+		$fetchExternalResources,
 		$retention,
 	],
 	exports: [
@@ -1070,6 +1091,10 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_announcements_delete,
 		$admin_announcements_list,
 		$admin_announcements_update,
+		$admin_avatarDecorations_create,
+		$admin_avatarDecorations_delete,
+		$admin_avatarDecorations_list,
+		$admin_avatarDecorations_update,
 		$admin_deleteAllFilesOfAUser,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
@@ -1213,6 +1238,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$following_create,
 		$following_delete,
 		$following_update,
+		$following_update_all,
 		$following_invalidate,
 		$following_requests_accept,
 		$following_requests_cancel,
@@ -1228,6 +1254,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$gallery_posts_unlike,
 		$gallery_posts_update,
 		$getOnlineUsersCount,
+		$getAvatarDecorations,
 		$hashtags_list,
 		$hashtags_search,
 		$hashtags_show,
@@ -1400,6 +1427,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
+		$fetchExternalResources,
 		$retention,
 	],
 })
