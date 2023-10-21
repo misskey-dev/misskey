@@ -7,8 +7,8 @@ import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
 import type * as Misskey from 'misskey-js';
-import { directives } from '@/directives';
-import { components } from '@/components/index';
+import { directives } from '@/directives/index.js';
+import { components } from '@/components/index.js';
 import XHome from '@/pages/user/home.vue';
 
 describe('XHome', () => {
