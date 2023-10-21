@@ -23,6 +23,7 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { MiRemoteUser } from '@/models/User.js';
+import { genAidx } from '@/misc/id/aidx.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
@@ -200,7 +201,7 @@ describe('ActivityPub', () => {
 	describe('Renderer', () => {
 		test('Render an announce with visibility: followers', () => {
 			rendererService.renderAnnounce(null, {
-				createdAt: new Date(0),
+				id: genAidx(Date.now()),
 				visibility: 'followers',
 			} as MiNote);
 		});
