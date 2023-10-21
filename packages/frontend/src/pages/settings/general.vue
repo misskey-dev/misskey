@@ -30,6 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
+			<MkButton danger @click="updateRepliesAll(true)"><i class="ti ti-messages"></i> {{ i18n.ts.showRepliesToOthersInTimelineAll }}</MkButton>
+			<MkButton danger @click="updateRepliesAll(false)"><i class="ti ti-messages-off"></i> {{ i18n.ts.hideRepliesToOthersInTimelineAll }}</MkButton>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
@@ -330,6 +332,15 @@ async function setPinnedList() {
 	if (canceled) return;
 
 	defaultStore.set('pinnedUserLists', [list]);
+}
+
+async function updateRepliesAll(withReplies: boolean) {
+	const { canceled } = os.confirm({
+		type: 'warning',
+		text: withReplies ? i18n.ts.confirmShowRepliesAll : i18n.ts.confirmHideRepliesAll,
+	});
+	if (canceled) return;
+	await os.api('following/update-all', { withReplies });
 }
 
 function removePinnedList() {

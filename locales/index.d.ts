@@ -1135,6 +1135,10 @@ export interface Locale {
     "fileAttachedOnly": string;
     "showRepliesToOthersInTimeline": string;
     "hideRepliesToOthersInTimeline": string;
+    "showRepliesToOthersInTimelineAll": string;
+    "hideRepliesToOthersInTimelineAll": string;
+    "confirmShowRepliesAll": string;
+    "confirmHideRepliesAll": string;
     "externalServices": string;
     "impressum": string;
     "impressumUrl": string;
