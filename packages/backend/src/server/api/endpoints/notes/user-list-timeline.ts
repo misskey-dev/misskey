@@ -8,6 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
@@ -77,6 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private userFollowingService: UserFollowingService,
 		private activeUsersChart: ActiveUsersChart,
 		private cacheService: CacheService,
 		private idService: IdService,
@@ -144,6 +146,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				return await this.noteEntityService.packMany(timeline, me);
 			} else { // fallback to db
+				const followees = await this.userFollowingService.getFollowees(me.id);
+				const followeeIds = followees.map(folowee => folowee.id);
+
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 					.innerJoin(this.userListMembershipsRepository.metadata.targetName, 'userListMembership', 'userListMembership.userId = note.userId')
 					.innerJoinAndSelect('note.user', 'user')
@@ -151,7 +156,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('note.renote', 'renote')
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.andWhere('userListMembership.userListId = :userListId', { userListId: list.id });
+					.andWhere('userListMembership.userListId = :userListId', { userListId: list.id })
+					.andWhere('note.channelId IS NULL')
+					.andWhere('note.reply.user NOT IN (:...followeeIds)', { followeeIds: followeeIds });
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);
