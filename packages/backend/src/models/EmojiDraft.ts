@@ -17,7 +17,6 @@ export class MiEmojiDraft {
 	})
 	public updatedAt: Date | null;
 
-	@Index()
 	@Column('varchar', {
 		length: 128,
 	})
