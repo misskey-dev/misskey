@@ -1430,6 +1430,7 @@ _achievements:
       flavor: "Misskey-Misskey La-Tu-Ma"
     _smashTestNotificationButton:
       title: "テスト過剰"
+      description: "通知テストをごく短時間のうちに連続して行ったねん"
 _role:
   new: "ロールの作成"
   edit: "ロールの編集"
@@ -1487,6 +1488,7 @@ _role:
     descriptionOfRateLimitFactor: "ちっちゃいほど制限が緩なって、大きいほど制限されるで。"
     canHideAds: "広告を表示させへん"
     canSearchNotes: "ノート検索を使わすかどうか"
+    canUseTranslator: "翻訳機能の利用"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
@@ -1536,6 +1538,9 @@ _ad:
   hide: "表示せん"
   timezoneinfo: "曜日はサーバーのタイムゾーンを元に指定されるで。"
   adsSettings: "広告配信設定"
+  notesPerOneAd: "リアタイ更新中に広告を出す間隔（ノートの個数な）"
+  setZeroToDisable: "0でリアタイ更新時の広告配信を無効にすんで"
+  adsTooClose: "広告を出す間隔がめっちゃ短いから、ユーザー体験が著しく損なわれる可能性があんで。"
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスをここに入力してや。そのアドレス宛に、パスワードリセット用のリンクが送られるから待っててな～。"
   ifNoEmail: "メールアドレスを登録してへんのやったら、管理者まで教えてな～。"
@@ -1735,6 +1740,7 @@ _2fa:
   step1: "ほんなら、{a}や{b}とかの認証アプリを使っとるデバイスにインストールしてな。"
   step2: "次に、ここにあるQRコードをアプリでスキャンしてな～。"
   step2Click: "QRコードをクリックすると、今使とる端末に入っとる認証アプリとかキーリングに登録できるで。"
+  step2Uri: "デスクトップアプリを使う時は次のURIを入れるで"
   step3Title: "確認コードを入れてーや"
   step3: "アプリに表示されているトークンを入力して終わりや。"
   setupCompleted: "設定が完了したで。"
@@ -1753,6 +1759,7 @@ _2fa:
   renewTOTPOk: "もっかい設定する"
   renewTOTPCancel: "やめとく"
   checkBackupCodesBeforeCloseThisWizard: "このウィザードを閉じる前に、したのバックアップコードを確認しいや。"
+  backupCodes: "バックアップコード"
   backupCodesDescription: "認証アプリが使用できんなった場合、以下のバックアップコードを使ってアカウントにアクセスできるで。これらのコードは必ず安全な場所に置いときや。各コードは一回だけ使用できるで。"
   backupCodeUsedWarning: "バックアップコードが使用されたで。認証アプリが使えなくなってるん場合、なるべく早く認証アプリを再設定しや。"
   backupCodesExhaustedWarning: "バックアップコードが全て使用されたで。認証アプリを利用できん場合、これ以上アカウントにアクセスできなくなるで。認証アプリを再登録しや。"
@@ -1808,6 +1815,7 @@ _antennaSources:
   homeTimeline: "フォローしとるユーザーのノート"
   users: "選らんだ一人か複数のユーザーのノート"
   userList: "選んだリストのユーザーのノート"
+  userBlacklist: "選んだ１人か複数のユーザーのノート"
 _weekday:
   sunday: "日曜日"
   monday: "月曜日"
@@ -1907,6 +1915,7 @@ _profile:
   metadataContent: "内容"
   changeAvatar: "アバター画像を変更するで"
   changeBanner: "バナー画像を変更するで"
+  verifiedLinkDescription: "内容をURLに設定すると、リンク先のwebサイトに自分のプロフのリンクが含まれてる場合に所有者確認済みアイコンを表示させることができるで。"
 _exportOrImport:
   allNotes: "全てのノート"
   favoritedNotes: "お気に入りにしたノート"
@@ -1916,6 +1925,7 @@ _exportOrImport:
   userLists: "リスト"
   excludeMutingUsers: "ミュートしてるユーザーは入れんとくわ"
   excludeInactiveUsers: "使われてなさそうなアカウントは入れんとくわ"
+  withReplies: "インポートした人による返信をTLに含むようにすんで。"
 _charts:
   federation: "連合"
   apRequest: "リクエスト"
@@ -2029,11 +2039,13 @@ _notification:
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしといたで"
   achievementEarned: "実績を獲得しとるで"
+  testNotification: "通知テスト"
   checkNotificationBehavior: "通知の表示を確かめるで"
   sendTestNotification: "テスト通知を送信するで"
   notificationWillBeDisplayedLikeThis: "通知はこのように表示されるで"
   _types:
     all: "すべて"
+    note: "あんたらの新規投稿"
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"
@@ -2068,6 +2080,7 @@ _deck:
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選んでウィジェットを追加してなー"
   useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となるで"
+  flexible: "幅を自動調整"
   _columns:
     main: "メイン"
     widgets: "ウィジェット"
@@ -2106,6 +2119,7 @@ _moderationLogTypes:
   createRole: "ロールを追加すんで"
   deleteRole: "ロールほかす"
   updateRole: "ロールの更新すんで"
+  assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサインほかす"
   suspend: "凍結"
   unsuspend: "凍結解除"
