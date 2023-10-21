@@ -22,6 +22,7 @@ import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import instance from './endpoints/charts/instance.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class SignupApiService {
@@ -51,6 +52,7 @@ export class SignupApiService {
 		private signupService: SignupService,
 		private signinService: SigninService,
 		private emailService: EmailService,
+		private roleService: RoleService,
 	) {
 	}
 
@@ -229,6 +231,18 @@ export class SignupApiService {
 				});
 			}
 
+			const moderators = await this.roleService.getModerators();
+
+			for (const moderator of moderators) {
+				const profile = await this.userProfilesRepository.findOneBy({ userId: moderator.id });
+
+				if (profile?.email) {
+					this.emailService.sendEmail(profile.email, 'New user awaiting approval',
+						`A new user called ${account.username} is awaiting approval with the following reason: "${reason}"`,
+						`A new user called ${account.username} is awaiting approval with the following reason: "${reason}"`);
+				}
+			}
+
 			reply.code(204);
 			return;
 		} else {
@@ -308,6 +322,19 @@ export class SignupApiService {
 						'Congratulations! Your account is now pending approval. You will get notified when you have been accepted.',
 						'Congratulations! Your account is now pending approval. You will get notified when you have been accepted.');
 				}
+
+				const moderators = await this.roleService.getModerators();
+
+				for (const moderator of moderators) {
+					const profile = await this.userProfilesRepository.findOneBy({ userId: moderator.id });
+
+					if (profile?.email) {
+						this.emailService.sendEmail(profile.email, 'New user awaiting approval',
+							`A new user called ${pendingUser.username} is awaiting approval with the following reason: "${pendingUser.reason}"`,
+							`A new user called ${pendingUser.username} is awaiting approval with the following reason: "${pendingUser.reason}"`);
+					}
+				}
+
 				return { pendingApproval: true };
 			}
 
