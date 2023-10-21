@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
-	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
+	<img v-if="decoration || user.avatarDecorations.length > 0" :class="[$style.decoration]" :src="decoration ?? user.avatarDecorations[0].url" alt="">
 </component>
 </template>
 
@@ -47,6 +48,7 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
+	decoration?: string;
 }>(), {
 	target: null,
 	link: false,
@@ -134,7 +136,7 @@ watch(() => props.user.avatarBlurhash, () => {
 
 .indicator {
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 	bottom: 0;
 	left: 0;
 	width: 20%;
@@ -277,5 +279,14 @@ watch(() => props.user.avatarBlurhash, () => {
 			}
 		}
 	}
+}
+
+.decoration {
+	position: absolute;
+	z-index: 1;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	pointer-events: none;
 }
 </style>
