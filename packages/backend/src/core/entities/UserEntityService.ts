@@ -21,9 +21,10 @@ import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { IdService } from '@/core/IdService.js';
+import type { AnnouncementService } from '@/core/AnnouncementService.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { AnnouncementService } from '../AnnouncementService.js';
-import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
@@ -62,6 +63,7 @@ export class UserEntityService implements OnModuleInit {
 	private roleService: RoleService;
 	private federatedInstanceService: FederatedInstanceService;
 	private idService: IdService;
+	private avatarDecorationService: AvatarDecorationService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -126,6 +128,7 @@ export class UserEntityService implements OnModuleInit {
 		this.roleService = this.moduleRef.get('RoleService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 		this.idService = this.moduleRef.get('IdService');
+		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 	}
 
 	//#region Validators
@@ -328,8 +331,6 @@ export class UserEntityService implements OnModuleInit {
 				...announcement,
 			})) : null;
 
-		const falsy = opts.detail ? false : undefined;
-
 		const packed = {
 			id: user.id,
 			name: user.name,
@@ -337,6 +338,10 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
 			avatarBlurhash: user.avatarBlurhash,
+			avatarDecorations: user.avatarDecorations.length > 0 ? this.avatarDecorationService.getAll().then(decorations => decorations.filter(decoration => user.avatarDecorations.includes(decoration.id)).map(decoration => ({
+				id: decoration.id,
+				url: decoration.url,
+			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
