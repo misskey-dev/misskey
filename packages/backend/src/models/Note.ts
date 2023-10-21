@@ -165,6 +165,11 @@ export class MiNote {
 	public mentionedRemoteUsers: string;
 
 	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
+	public reactionAndUserPairCache: string[];
+
+	@Column('varchar', {
 		length: 128, array: true, default: '{}',
 	})
 	public emojis: string[];

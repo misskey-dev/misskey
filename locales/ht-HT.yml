@@ -1,1 +1,18 @@
 ---
+_lang_: "Japonè"
+password: "modpas"
+ok: "OK"
+gotIt: "Konprann"
+cancel: "anile"
+noThankYou: "Sispann"
+instance: "sèvè"
+profile: "pwofil"
+save: "kenbe"
+delete: "efase"
+instances: "sèvè"
+remove: "efase"
+smtpPass: "modpas"
+_2fa:
+  renewTOTPCancel: "Sispann"
+_widgets:
+  profile: "pwofil"

@@ -84,6 +84,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSlot>
 
 	<MkFolder>
+		<template #icon><i class="ti ti-sparkles"></i></template>
+		<template #label>{{ i18n.ts.avatarDecorations }}</template>
+
+		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-gap: 12px;">
+			<div
+				v-for="avatarDecoration in avatarDecorations"
+				:key="avatarDecoration.id"
+				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
+				@click="toggleDecoration(avatarDecoration)"
+			>
+				<div :class="$style.avatarDecorationName">{{ avatarDecoration.name }}</div>
+				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="avatarDecoration.url"/>
+			</div>
+		</div>
+	</MkFolder>
+
+	<MkFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
 
 		<div class="_gaps_m">
@@ -126,6 +143,7 @@ import MkInfo from '@/components/MkInfo.vue';
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
+let avatarDecorations: any[] = $ref([]);
 
 const profile = reactive({
 	name: $i.name,
@@ -145,6 +163,10 @@ watch(() => profile, () => {
 
 const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
+
+os.api('get-avatar-decorations').then(_avatarDecorations => {
+	avatarDecorations = _avatarDecorations;
+});
 
 function addField() {
 	fields.value.push({
@@ -244,6 +266,20 @@ function changeBanner(ev) {
 	});
 }
 
+function toggleDecoration(avatarDecoration) {
+	if ($i.avatarDecorations.some(x => x.id === avatarDecoration.id)) {
+		os.apiWithDialog('i/update', {
+			avatarDecorations: [],
+		});
+		$i.avatarDecorations = [];
+	} else {
+		os.apiWithDialog('i/update', {
+			avatarDecorations: [avatarDecoration.id],
+		});
+		$i.avatarDecorations.push(avatarDecoration);
+	}
+}
+
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);
@@ -337,5 +373,24 @@ definePageMetadata({
 
 .dragItemForm {
 	flex-grow: 1;
+}
+
+.avatarDecoration {
+	cursor: pointer;
+	padding: 16px 16px 24px 16px;
+	border: solid 2px var(--divider);
+	border-radius: 8px;
+	text-align: center;
+}
+
+.avatarDecorationActive {
+	border-color: var(--accent);
+}
+
+.avatarDecorationName {
+	position: relative;
+	z-index: 10;
+	font-weight: bold;
+	margin-bottom: 16px;
 }
 </style>

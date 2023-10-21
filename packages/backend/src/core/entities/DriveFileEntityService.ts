@@ -90,7 +90,7 @@ export class DriveFileEntityService {
 		if (file.type.startsWith('video')) {
 			if (file.thumbnailUrl) return file.thumbnailUrl;
 
-			return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url ?? file.uri);
+			return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url);
 		} else if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			// 動画ではなくリモートかつメディアプロキシ
 			return this.getProxiedUrl(file.uri, 'static');
@@ -145,7 +145,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) ?? 0;
+		return parseInt(sum, 10) || 0;
 	}
 
 	@bindThis
@@ -157,7 +157,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) ?? 0;
+		return parseInt(sum, 10) || 0;
 	}
 
 	@bindThis
@@ -169,7 +169,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) ?? 0;
+		return parseInt(sum, 10) || 0;
 	}
 
 	@bindThis
@@ -181,7 +181,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) ?? 0;
+		return parseInt(sum, 10) || 0;
 	}
 
 	@bindThis
