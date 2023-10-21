@@ -5,7 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
-<section>
+<!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
+<section v-if="!isChildrenExits">
 	<header class="_acrylic" @click="shown = !shown">
 		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
 	</header>
@@ -23,15 +24,54 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</div>
 </section>
+<!-- フォルダの中にはカスタム絵文字やフォルダがある -->
+<section v-else>
+  <header class="_acrylic" @click="shown = !shown">
+    <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ i18n.ts.Folder }} : {{customEmojiTree.length}} {{ i18n.ts.customEmojis}} : {{emojis.length}})
+  </header>
+  <div v-if="shown" class="body">
+    <button
+        v-for="emoji in emojis"
+        :key="emoji"
+        :data-emoji="emoji"
+        class="_button item"
+        @pointerenter="computeButtonTitle"
+        @click="emit('chosen', emoji, $event)"
+    >
+      <MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+      <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+    </button>
+  </div>
+  <div v-if="shown" style="padding-left: 18px;">
+    <!-- TODO: 再帰へのイベントの渡し方が微妙なのか反応はするがエフェクトが出ない -->
+    <MkEmojiPickerSection
+        v-if="shown"
+        v-for="child in customEmojiTree"
+        :key="`custom:${child.value}`"
+        :initialShown="initialShown"
+        :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
+        :isChildrenExits="child.children.length!==0"
+        :customEmojiTree="child.children"
+        @chosen="emit('chosen', $event)"
+    >
+      {{ child.value }}
+    </MkEmojiPickerSection>
+  </div>
+</section>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
-import { getEmojiName } from '@/scripts/emojilist.js';
+import {CustomEmojiFolderTree, getEmojiName} from '@/scripts/emojilist.js';
+import {i18n} from "../i18n.js";
+import {customEmojis} from "@/custom-emojis.js";
+import MkEmojiPickerSection from "@/components/MkEmojiPicker.section.vue";
 
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;
 	initialShown?: boolean;
+  isChildrenExits?: boolean;
+  customEmojiTree?: CustomEmojiFolderTree[];
 }>();
 
 const emit = defineEmits<{
@@ -48,5 +88,4 @@ function computeButtonTitle(ev: MouseEvent): void {
 	const emoji = elm.dataset.emoji as string;
 	elm.title = getEmojiName(emoji) ?? emoji;
 }
-
 </script>
