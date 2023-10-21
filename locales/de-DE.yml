@@ -1139,6 +1139,7 @@ impressumDescription: "In manchen Ländern, wie Deutschland und dessen Umgebung,
 privacyPolicy: "Datenschutzerklärung"
 privacyPolicyUrl: "Datenschutzerklärungs-URL"
 tosAndPrivacyPolicy: "Nutzungsbedingungen und Datenschutzerklärung"
+avatarDecorations: "Profilbilddekoration"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
@@ -2146,6 +2147,9 @@ _moderationLogTypes:
   createAd: "Werbung erstellt"
   deleteAd: "Werbung gelöscht"
   updateAd: "Werbung aktualisiert"
+  createAvatarDecoration: "Profilbilddekoration erstellt"
+  updateAvatarDecoration: "Profilbilddekoration aktualisiert"
+  deleteAvatarDecoration: "Profilbilddekoration gelöscht"
 _fileViewer:
   title: "Dateiinformationen"
   type: "Dateityp"
@@ -2154,3 +2158,32 @@ _fileViewer:
   uploadedAt: "Hochgeladen am"
   attachedNotes: "Zugehörige Notizen"
   thisPageCanBeSeenFromTheAuthor: "Nur der Benutzer, der diese Datei hochgeladen hat, kann diese Seite sehen."
+_externalResourceInstaller:
+  title: "Von externer Seite installieren"
+  checkVendorBeforeInstall: "Überprüfe vor Installation die Vertrauenswürdigkeit des Vertreibers."
+  _plugin:
+    title: "Möchtest du dieses Plugin installieren?"
+    metaTitle: "Plugininformation"
+  _theme:
+    title: "Möchten du dieses Farbschema installieren?"
+    metaTitle: "Farbschemainfo"
+  _meta:
+    base: "Farbschemavorlage"
+  _vendorInfo:
+    title: "Vertreiber"
+    endpoint: "Referenzierter Endpunkt"
+    hashVerify: "Hash-Verifikation"
+  _errors:
+    _invalidParams:
+      title: "Ungültige Parameter"
+    _resourceTypeNotSupported:
+      title: "Diese Ressource wird nicht unterstützt"
+    _failedToFetch:
+      title: "Fehler beim Abrufen der Daten"
+    _pluginParseFailed:
+      title: "AiScript-Fehler"
+    _themeParseFailed:
+      title: "Parsing des Farbschemas fehlgeschlagen"
+    _themeInstallFailed:
+      title: "Das Farbschema konnte nicht intalliert werden"
+      description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
