@@ -18,7 +18,7 @@ import type { MiSignin } from '@/models/Signin.js';
 import type { MiPage } from '@/models/Page.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { MiMeta } from '@/models/Meta.js';
-import { MiRole, MiRoleAssignment } from '@/models/_.js';
+import { MiAvatarDecoration, MiRole, MiRoleAssignment } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -188,6 +188,9 @@ export interface InternalEventTypes {
 	antennaCreated: MiAntenna;
 	antennaDeleted: MiAntenna;
 	antennaUpdated: MiAntenna;
+	avatarDecorationCreated: MiAvatarDecoration;
+	avatarDecorationDeleted: MiAvatarDecoration;
+	avatarDecorationUpdated: MiAvatarDecoration;
 	metaUpdated: MiMeta;
 	followChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	unfollowChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };

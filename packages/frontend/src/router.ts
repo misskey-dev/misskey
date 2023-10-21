@@ -348,6 +348,10 @@ export const routes = [{
 		name: 'emojis',
 		component: page(() => import('./pages/custom-emojis-manager.vue')),
 	}, {
+		path: '/avatar-decorations',
+		name: 'avatarDecorations',
+		component: page(() => import('./pages/admin/avatar-decorations.vue')),
+	}, {
 		path: '/queue',
 		name: 'queue',
 		component: page(() => import('./pages/admin/queue.vue')),

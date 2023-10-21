@@ -1135,6 +1135,10 @@ export interface Locale {
     "fileAttachedOnly": string;
     "showRepliesToOthersInTimeline": string;
     "hideRepliesToOthersInTimeline": string;
+    "showRepliesToOthersInTimelineAll": string;
+    "hideRepliesToOthersInTimelineAll": string;
+    "confirmShowRepliesAll": string;
+    "confirmHideRepliesAll": string;
     "externalServices": string;
     "impressum": string;
     "impressumUrl": string;
@@ -1142,6 +1146,7 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+    "avatarDecorations": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2295,6 +2300,9 @@ export interface Locale {
         "createAd": string;
         "deleteAd": string;
         "updateAd": string;
+        "createAvatarDecoration": string;
+        "updateAvatarDecoration": string;
+        "deleteAvatarDecoration": string;
     };
     "_fileViewer": {
         "title": string;
