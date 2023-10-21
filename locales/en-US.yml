@@ -1139,6 +1139,7 @@ impressumDescription: "In some countries, like germany, the inclusion of operato
 privacyPolicy: "Privacy Policy"
 privacyPolicyUrl: "Privacy Policy URL"
 tosAndPrivacyPolicy: "Terms of Service and Privacy Policy"
+avatarDecorations: "Avatar decorations"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
@@ -2146,6 +2147,9 @@ _moderationLogTypes:
   createAd: "Ad created"
   deleteAd: "Ad deleted"
   updateAd: "Ad updated"
+  createAvatarDecoration: "Avatar decoration created"
+  updateAvatarDecoration: "Avatar decoration updated"
+  deleteAvatarDecoration: "Avatar decoration deleted"
 _fileViewer:
   title: "File details"
   type: "File type"
@@ -2154,3 +2158,32 @@ _fileViewer:
   uploadedAt: "Uploaded at"
   attachedNotes: "Attached notes"
   thisPageCanBeSeenFromTheAuthor: "This page can only be seen by the user who uploaded this file."
+_externalResourceInstaller:
+  title: "Install from external site"
+  checkVendorBeforeInstall: "Make sure the distributor of this resource is trustworthy before installation."
+  _plugin:
+    title: "Do you want to install this plugin?"
+    metaTitle: "Plugin information"
+  _theme:
+    title: "Do you want to install this theme?"
+    metaTitle: "Theme information"
+  _meta:
+    base: "Base color scheme"
+  _vendorInfo:
+    title: "Distributor information"
+    endpoint: "Referenced endpoint"
+    hashVerify: "Hash verification"
+  _errors:
+    _invalidParams:
+      title: "Invalid parameters"
+    _resourceTypeNotSupported:
+      title: "This external resource is not supported"
+    _failedToFetch:
+      title: "Failed to fetch data"
+    _pluginParseFailed:
+      title: "AiScript Error"
+    _themeParseFailed:
+      title: "Theme parsing failed"
+    _themeInstallFailed:
+      title: "Failed to install theme"
+      description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."
