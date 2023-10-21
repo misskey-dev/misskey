@@ -610,7 +610,7 @@ permission: "Autorisations "
 enableAll: "Tout activer"
 disableAll: "Tout désactiver"
 tokenRequested: "Autoriser l'accès au compte"
-pluginTokenRequestedDescription: "Ce plugin pourra utiliser les autorisations définies ici."
+pluginTokenRequestedDescription: "Cette extension pourra utiliser les autorisations définies ici."
 notificationType: "Type de notifications"
 edit: "Editer"
 emailServer: "Serveur de messagerie"
@@ -1259,9 +1259,9 @@ _email:
   _receiveFollowRequest:
     title: "Vous avez reçu une demande de suivi"
 _plugin:
-  install: "Installation de plugin"
+  install: "Installation d'extensions"
   installWarn: "N’installez que des extensions provenant de sources de confiance."
-  manage: "Gestion des plugins"
+  manage: "Gestion des extensions"
   viewSource: "Afficher la source"
 _preferencesBackups:
   list: "Sauvegardes créées"
@@ -1757,5 +1757,16 @@ _externalResourceInstaller:
     _invalidParams:
       title: "Paramètres invalides"
       description: "Il y a un manque d'informations nécessaires pour obtenir des données à partir de sites externes. Veuillez vérifier l'URL."
+    _resourceTypeNotSupported:
+      title: "Cette ressource externe n'est pas prise en charge."
+      description: "Le type de ressource obtenue à partir de ce site externe n'est pas pris en charge. Veuillez contacter l'administrateur du site."
+    _failedToFetch:
+      title: "Échec de récupération des données"
+      fetchErrorDescription: "La communication avec le site externe a échoué. Si vous réessayez et que cela ne s'améliore pas, veuillez contacter l'administrateur du site."
     _pluginParseFailed:
       title: "Erreur d'AiScript"
+    _themeParseFailed:
+      title: "Erreur de parsage du thème"
+      description: "Bien que les données aient été obtenues, elles n'ont pas pu être lues, car il y a eu une erreur lors du parsage du fichier du thème. Veuillez contacter l'auteur du thème et consulter la console JavaScript pour plus de détails sur l'erreur."
+    _themeInstallFailed:
+      title: "Échec d'installation du thème"
