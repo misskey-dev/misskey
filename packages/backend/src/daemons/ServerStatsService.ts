@@ -108,6 +108,5 @@ async function net() {
 
 // FS STAT
 async function fs() {
-	const data = await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
-	return data ?? { rIO_sec: 0, wIO_sec: 0 };
+	return await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
 }

@@ -29,6 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
+			<MkButton danger @click="updateRepliesAll(true)"><i class="ti ti-messages"></i> {{ i18n.ts.showRepliesToOthersInTimelineAll }}</MkButton>
+			<MkButton danger @click="updateRepliesAll(false)"><i class="ti ti-messages-off"></i> {{ i18n.ts.hideRepliesToOthersInTimelineAll }}</MkButton>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
@@ -119,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch v-model="showUnreadNotificationCount">{{ i18n.ts.showUnreadNotificationCount }}</MkSwitch>				
+				<MkSwitch v-model="showUnreadNotificationCount">{{ i18n.ts.showUnreadNotificationCount }}</MkSwitch>
 				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 			</div>
 			<div>
@@ -250,6 +253,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 const showUnreadNotificationCount = computed(defaultStore.makeGetterSetter('showUnreadNotificationCount'));
 
 watch(lang, () => {
@@ -331,6 +335,15 @@ async function setPinnedList() {
 	if (canceled) return;
 
 	defaultStore.set('pinnedUserLists', [list]);
+}
+
+async function updateRepliesAll(withReplies: boolean) {
+	const { canceled } = os.confirm({
+		type: 'warning',
+		text: withReplies ? i18n.ts.confirmShowRepliesAll : i18n.ts.confirmHideRepliesAll,
+	});
+	if (canceled) return;
+	await os.api('following/update-all', { withReplies });
 }
 
 function removePinnedList() {

@@ -10,15 +10,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<MkLoading v-if="fetching"/>
 		<div v-if="!fetching && files.length > 0" :class="$style.stream">
-			<MkA
-				v-for="file in files"
-				:key="file.note.id + file.file.id"
-				:class="$style.img"
-				:to="notePage(file.note)"
-			>
-				<!-- TODO: 画像以外のファイルに対応 -->
-				<ImgWithBlurhash :hash="file.file.blurhash" :src="thumbnail(file.file)" :title="file.file.name"/>
-			</MkA>
+			<template v-for="file in files" :key="file.note.id + file.file.id">
+				<div v-if="file.file.isSensitive && !showingFiles.includes(file.file.id)" :class="$style.sensitive" @click="showingFiles.push(file.file.id)">
+					<div>
+						<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
+						<div>{{ i18n.ts.clickToShow }}</div>
+					</div>
+				</div>
+				<MkA v-else :class="$style.img" :to="notePage(file.note)">
+					<!-- TODO: 画像以外のファイルに対応 -->
+					<ImgWithBlurhash :hash="file.file.blurhash" :src="thumbnail(file.file)" :title="file.file.name"/>
+				</MkA>
+			</template>
 		</div>
 		<p v-if="!fetching && files.length == 0" :class="$style.empty">{{ i18n.ts.nothing }}</p>
 	</div>
@@ -45,6 +48,7 @@ let files = $ref<{
 	note: Misskey.entities.Note;
 	file: Misskey.entities.DriveFile;
 }[]>([]);
+let showingFiles = $ref<string[]>([]);
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
@@ -93,5 +97,10 @@ onMounted(() => {
 	margin: 0;
 	padding: 16px;
 	text-align: center;
+}
+
+.sensitive {
+	display: grid;
+  place-items: center;
 }
 </style>

@@ -321,7 +321,10 @@ export type Endpoints = {
 	'federation/users': { req: { host: string; limit?: number; sinceId?: User['id']; untilId?: User['id']; }; res: UserDetailed[]; };
 
 	// following
-	'following/create': { req: { userId: User['id'] }; res: User; };
+	'following/create': { req: {
+		userId: User['id'],
+		withReplies?: boolean,
+	}; res: User; };
 	'following/delete': { req: { userId: User['id'] }; res: User; };
 	'following/requests/accept': { req: { userId: User['id'] }; res: null; };
 	'following/requests/cancel': { req: { userId: User['id'] }; res: User; };
@@ -636,4 +639,11 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
+
+	// fetching external data
+	'fetch-rss': { req: { url: string; }; res: TODO; };
+	'fetch-external-resources': {
+		req: { url: string; hash: string; };
+		res: { type: string; data: string; };
+	};
 };

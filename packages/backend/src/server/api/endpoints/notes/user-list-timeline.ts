@@ -3,18 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { NotesRepository, UserListsRepository, UserListMembershipsRepository, MiNote } from '@/models/_.js';
+import type { NotesRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -66,9 +64,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -79,8 +74,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private cacheService: CacheService,
 		private idService: IdService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
+
 			const list = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
@@ -100,16 +99,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let timeline: MiNote[] = [];
-
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-
-			const noteIds = await this.redisForTimelines.xrevrange(
-				ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit,
-			).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId));
+			let noteIds = await this.funoutTimelineService.get(ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`, untilId, sinceId);
+			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
 				return [];
@@ -124,7 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			timeline = await query.getMany();
+			let timeline = await query.getMany();
 
 			timeline = timeline.filter(note => {
 				if (note.userId === me.id) {

@@ -5,7 +5,6 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import type { MiNote, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -15,6 +14,8 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -44,6 +45,7 @@ export const paramDef = {
 	properties: {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		withReplies: { type: 'boolean', default: false },
 		excludeNsfw: { type: 'boolean', default: false },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
@@ -57,9 +59,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -68,8 +67,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
+		private funoutTimelineService: FunoutTimelineService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
+
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
 			if (!policies.ltlAvailable) {
 				throw new ApiError(meta.errors.ltlDisabled);
@@ -85,57 +89,102 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
 
-			let timeline: MiNote[] = [];
+			let noteIds: string[];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-
-			const noteIds = await this.redisForTimelines.xrevrange(
-				ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit,
-			).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId));
-
-			if (noteIds.length === 0) {
-				return [];
+			if (ps.withFiles) {
+				noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
+			} else {
+				const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
+					'localTimeline',
+					'localTimelineWithReplies',
+				], untilId, sinceId);
+				noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
+				noteIds.sort((a, b) => a > b ? -1 : 1);
 			}
 
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
+			noteIds = noteIds.slice(0, ps.limit);
 
-			timeline = await query.getMany();
+			if (noteIds.length > 0) {
+				const query = this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.leftJoinAndSelect('note.channel', 'channel');
 
-			timeline = timeline.filter(note => {
-				if (me && (note.userId === me.id)) {
-					return true;
-				}
-				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-				if (note.renoteId) {
-					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-						if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-						if (ps.withRenotes === false) return false;
+				let timeline = await query.getMany();
+
+				timeline = timeline.filter(note => {
+					if (me && (note.userId === me.id)) {
+						return true;
 					}
+					if (!ps.withReplies && note.replyId && (me == null || note.replyUserId !== me.id)) return false;
+					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+					if (note.renoteId) {
+						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+							if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
+							if (ps.withRenotes === false) return false;
+						}
+					}
+
+					return true;
+				});
+
+				// TODO: フィルタした結果件数が足りなかった場合の対応
+
+				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+
+				process.nextTick(() => {
+					if (me) {
+						this.activeUsersChart.read(me);
+					}
+				});
+
+				return await this.noteEntityService.packMany(timeline, me);
+			} else { // fallback to db
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				this.queryService.generateVisibilityQuery(query, me);
+				if (me) this.queryService.generateMutedUserQuery(query, me);
+				if (me) this.queryService.generateBlockedUserQuery(query, me);
+				if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
 				}
 
-				return true;
-			});
-
-			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-
-			process.nextTick(() => {
-				if (me) {
-					this.activeUsersChart.read(me);
+				if (!ps.withReplies) {
+					query.andWhere(new Brackets(qb => {
+						qb
+							.where('note.replyId IS NULL') // 返信ではない
+							.orWhere(new Brackets(qb => {
+								qb // 返信だけど投稿者自身への返信
+									.where('note.replyId IS NOT NULL')
+									.andWhere('note.replyUserId = note.userId');
+							}));
+					}));
 				}
-			});
 
-			return await this.noteEntityService.packMany(timeline, me);
+				const timeline = await query.limit(ps.limit).getMany();
+
+				process.nextTick(() => {
+					if (me) {
+						this.activeUsersChart.read(me);
+					}
+				});
+
+				return await this.noteEntityService.packMany(timeline, me);
+			}
 		});
 	}
 }

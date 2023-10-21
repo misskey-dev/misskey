@@ -37,6 +37,26 @@ export const packedUserLiteSchema = {
 			type: 'string',
 			nullable: true, optional: false,
 		},
+		avatarDecorations: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'object',
+				nullable: false, optional: false,
+				properties: {
+					id: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'id',
+					},
+					url: {
+						type: 'string',
+						format: 'url',
+						nullable: false, optional: false,
+					},
+				},
+			},
+		},
 		isAdmin: {
 			type: 'boolean',
 			nullable: false, optional: true,

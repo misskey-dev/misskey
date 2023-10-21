@@ -323,6 +323,10 @@ export const routes = [{
 	path: '/registry',
 	component: page(() => import('./pages/registry.vue')),
 }, {
+	path: '/install-extentions',
+	component: page(() => import('./pages/install-extentions.vue')),
+	loginRequired: true,
+}, {
 	path: '/admin/user/:userId',
 	component: iAmModerator ? page(() => import('./pages/admin-user.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
@@ -343,6 +347,10 @@ export const routes = [{
 		path: '/emojis',
 		name: 'emojis',
 		component: page(() => import('./pages/custom-emojis-manager.vue')),
+	}, {
+		path: '/avatar-decorations',
+		name: 'avatarDecorations',
+		component: page(() => import('./pages/admin/avatar-decorations.vue')),
 	}, {
 		path: '/queue',
 		name: 'queue',
@@ -466,6 +474,10 @@ export const routes = [{
 }, {
 	path: '/my/drive',
 	component: page(() => import('./pages/drive.vue')),
+	loginRequired: true,
+}, {
+	path: '/my/drive/file/:fileId',
+	component: page(() => import('./pages/drive.file.vue')),
 	loginRequired: true,
 }, {
 	path: '/my/follow-requests',

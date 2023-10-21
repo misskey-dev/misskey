@@ -15,7 +15,7 @@ import { getUrlWithLoginId } from '@/scripts/login-id.js';
 export const cli = new Misskey.api.APIClient({ origin, fetch: (...args): Promise<Response> => fetch(...args) });
 
 export async function api<E extends keyof Misskey.Endpoints, O extends Misskey.Endpoints[E]['req']>(endpoint: E, userId?: string, options?: O): Promise<void | ReturnType<typeof cli.request<E, O>>> {
-	let account: { token: string; id: string } | void;
+	let account: { token: string; id: string } | void = undefined;
 
 	if (userId) {
 		account = await getAccountFromId(userId);

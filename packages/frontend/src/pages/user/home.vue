@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 						<div v-if="$i" class="actions">
 							<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
-							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+							<MkFollowButton v-if="$i.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
 					<MkAvatar class="avatar" :user="user" indicator/>
@@ -198,6 +198,7 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
+let user = $ref(props.user);
 let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
 let rootEl = $ref<null | HTMLElement>(null);
@@ -232,7 +233,7 @@ const age = $computed(() => {
 });
 
 function menu(ev) {
-	const { menu, cleanup } = getUserMenu(props.user, router);
+	const { menu, cleanup } = getUserMenu(user, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
