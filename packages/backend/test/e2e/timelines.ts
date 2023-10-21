@@ -10,7 +10,8 @@ process.env.NODE_ENV = 'test';
 process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING = 'true';
 
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl, randomString } from '../utils.js';
+import { inspect } from 'node:util';
+import { signup, api, post, react, startServer, waitFire, sleep, uploadUrl, randomString, successfulApiCall, channel } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
 
@@ -19,6 +20,7 @@ function genHost() {
 }
 
 function waitForPushToTl() {
+	// redisのMONITORをうまく使えば無駄な待ち時間を短縮できるかもしれない
 	return sleep(500);
 }
 
@@ -32,332 +34,410 @@ afterAll(async () => {
 	await app.close();
 });
 
+const noteText = 'hi.';
+const createNoteFor = {
+	'自分のノート': async ({ alice }) => {
+		return await post(alice, { text: noteText });
+	},
+	'自分の visibility: home なノート': async ({ alice }) => {
+		return await post(alice, { text: noteText, visibility: 'home' });
+	},
+	'自分の visibility: followers なノート': async ({ alice }) => {
+		return await post(alice, { text: noteText, visibility: 'followers' });
+	},
+	'自分の自分自身宛ての visibility: specified なノート': async ({ alice }) => {
+		return await post(alice, { text: noteText, visibility: 'specified', visibleUserIds: [alice.id] });
+	},
+	'自分の他人宛ての visibility: specified なノート': async ({ alice, carol }) => {
+		return await post(alice, { text: noteText, visibility: 'specified', visibleUserIds: [carol.id] });
+	},
+	'自分の自分自身への返信': async ({ alice }) => {
+		const aliceNote = await post(alice, { text: noteText });
+		return await post(alice, { text: noteText, replyId: aliceNote.id });
+	},
+	'自分の他人への返信': async ({ alice, bob }) => {
+		const bobNote = await post(bob, { text: noteText });
+		return await post(alice, { text: noteText, replyId: bobNote.id });
+	},
+	'自分のチャンネル投稿': async ({ alice, bob }) => {
+		const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+		return await post(alice, { text: noteText, channelId: channel.id });
+	},
+	'自分のフォロー中のチャンネル投稿': async ({ alice, bob }) => {
+		const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+		await api('channels/follow', { channelId: channel.id }, alice);
+		return await post(alice, { text: noteText, channelId: channel.id });
+	},
+	'自分のフォロー中のセンシティブ設定のチャンネル投稿': async ({ alice, bob }) => {
+		const ch = await channel(bob, { isSensitive: true });
+		await api('channels/follow', { channelId: ch.id }, alice);
+		return await post(alice, { text: noteText, channelId: ch.id });
+	},
+	'他人のノート': async ({ carol }) => {
+		return await post(carol, { text: noteText });
+	},
+	'他人のファイル付きノート': async ({ carol }) => {
+		const carolFile = await uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png') as misskey.entities.DriveFile;
+		return await post(carol, { fileIds: [carolFile.id] });
+	},
+	'他人の visibility: home なノート': async ({ carol }) => {
+		return await post(carol, { text: noteText, visibility: 'home' });
+	},
+	'他人の visibility: followers なノート': async ({ carol }) => {
+		return await post(carol, { text: noteText, visibility: 'followers' });
+	},
+	'他人の他人自身宛ての visibility: specified なノート': async ({ bob }) => {
+		return await post(bob, { text: noteText, visibility: 'specified', visibleUserIds: [bob.id] });
+	},
+	'他人の別の他人宛ての visibility: specified なノート': async ({ carol }) => {
+		const [user] = await Promise.all([signup()]);
+		return await post(carol, { text: noteText, visibility: 'specified', visibleUserIds: [user.id] });
+	},
+	'他人の自分への返信': async ({ alice, carol }) => {
+		const aliceNote = await post(alice, { text: noteText });
+		return await post(carol, { text: noteText, replyId: aliceNote.id });
+	},
+	'他人の他人自身への返信': async ({ carol }) => {
+		const carolNote = await post(carol, { text: noteText });
+		return await post(carol, { text: noteText, replyId: carolNote.id });
+	},
+	'他人の別の他人への返信': async ({ carol }) => {
+		const [user] = await Promise.all([signup()]);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(user, { text: noteText, replyId: carolNote.id });
+	},
+	'他人の自分の visibility: specified なノートへの返信': async ({ alice, bob }) => {
+		const aliceNote = await post(alice, { text: noteText, visibility: 'specified', visibleUserIds: [bob.id] });
+		return await post(bob, { text: noteText, visibility: 'specified', visibleUserIds: [alice.id], replyId: aliceNote.id });
+	},
+	'他人のリモートユーザーのノート': async ({ remote }) => {
+		return await post(remote, { text: noteText });
+	},
+	'他人のチャンネル投稿': async ({ bob }) => {
+		const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+		return await post(bob, { text: noteText, channelId: channel.id });
+	},
+	'他人のフォロー中のチャンネル投稿': async ({ alice, bob }) => {
+		const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+		await api('channels/follow', { channelId: channel.id }, alice);
+		return await post(bob, { text: noteText, channelId: channel.id });
+	},
+	'他人のフォロー中のセンシティブ設定のチャンネル投稿': async ({ alice, bob }) => {
+		const ch = await channel(bob, { isSensitive: true });
+		await api('channels/follow', { channelId: ch.id }, alice);
+		return await post(bob, { text: noteText, channelId: ch.id });
+	},
+	'フォローしているユーザーのノート': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText });
+	},
+	'フォローしているユーザーのファイル付きノート': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const bobFile = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png') as misskey.entities.DriveFile;
+		return await post(bob, { fileIds: [bobFile.id] });
+	},
+	'フォローしているユーザーの visibility: home なノート': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText, visibility: 'home' });
+	},
+	'フォローしているユーザーの visibility: followers なノート': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText, visibility: 'followers' });
+	},
+	'フォローしているユーザーの自分への返信': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const aliceNote = await post(alice, { text: noteText });
+		return await post(bob, { text: noteText, replyId: aliceNote.id });
+	},
+	'フォローしているユーザーの他人への返信': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { text: noteText, replyId: carolNote.id });
+	},
+	'フォローしているユーザーの他人への visibility: specified なノート': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		return await post(bob, {
+			text: noteText,
+			visibility: 'specified',
+			visibleUserIds: [carol.id] });
+	},
+	'フォローしているユーザーのそのユーザー自身への返信': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const bobNote1 = await post(bob, { text: noteText });
+		return await post(bob, { text: noteText, replyId: bobNote1.id });
+	},
+	'フォローしているリモートユーザーのノート': async ({ alice, remote }) => {
+		await api('/following/create', { userId: remote.id }, alice);
+		await sleep(1000);
+		return await post(remote, { text: noteText });
+	},
+	'フォローしているリモートユーザーの visibility: home なノート': async ({ alice, remote }) => {
+		await api('/following/create', { userId: remote.id }, alice);
+		await sleep(1000);
+		return await post(remote, { text: noteText, visibility: 'home' });
+	},
+	'withReplies: true でフォローしているユーザーの他人への返信': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { text: noteText, replyId: carolNote.id });
+	},
+	'withReplies: true でフォローしているユーザーの他人へのDM返信': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, {
+			text: noteText,
+			replyId: carolNote.id,
+			visibility: 'specified',
+			visibleUserIds: [carolNote.id] });
+	},
+	'withReplies: true でフォローしているユーザーの他人の visibility: followers なノート': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText, visibility: 'followers' });
+		return await post(bob, { text: noteText, replyId: carolNote.id });
+	},
+	'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/following/create', { userId: carol.id }, alice);
+		await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText, visibility: 'followers' });
+		return await post(bob, { text: noteText, replyId: carolNote.id });
+	},
+	'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/following/create', { userId: carol.id }, alice);
+		await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, {
+			text: noteText,
+			replyId: carolNote.id,
+			visibility: 'specified',
+			visibleUserIds: [carolNote.id] });
+	},
+	'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/following/update', { userId: bob.id, withReplies: true }, alice);
+		await api('/mute/create', { userId: carol.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { text: noteText, replyId: carolNote.id });
+	},
+	'フォローしているユーザーの他人の投稿のリノート': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { renoteId: carolNote.id });
+	},
+	'フォローしているユーザーの他人のファイル付き投稿のリノート': async ({ alice, bob, carol }) => {
+		const carolFile = await uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png') as misskey.entities.DriveFile;
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText, fileIds: [carolFile.id] });
+		return await post(bob, { renoteId: carolNote.id });
+	},
+	'フォローしているユーザーが行ったミュートしているユーザーのリノート': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/mute/create', { userId: carol.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { renoteId: carolNote.id });
+	},
+	'フォローしているユーザーの他人の投稿の引用': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { text: noteText, renoteId: carolNote.id });
+	},
+	'フォローしているユーザーが行ったミュートしているユーザーの引用': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/mute/create', { userId: carol.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { text: noteText, renoteId: carolNote.id });
+	},
+	'フォローしているユーザーのチャンネル投稿': async ({ alice, bob }) => {
+		const ch = await channel(bob);
+		await api('/following/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText, channelId: ch.id });
+	},
+	'フォローしているユーザーのフォロー中のチャンネル投稿': async ({ alice, bob }) => {
+		const ch = await channel(bob);
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('channels/follow', { channelId: ch.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText, channelId: ch.id });
+	},
+	'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': async ({ alice, bob }) => {
+		const ch = await channel(bob, { isSensitive: true });
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('channels/follow', { channelId: ch.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText, channelId: ch.id });
+	},
+	'フォローしているかつミュートしているユーザーのノート': async ({ alice, bob }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('/mute/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		return await post(bob, { text: noteText });
+	},
+	'フォローしているかつリノートミュートしているユーザーの他人の投稿のリノート': async ({ alice, bob, carol }) => {
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('renote-mute/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText });
+		return await post(bob, { renoteId: carolNote.id });
+	},
+	'フォローしているかつリノートミュートしているユーザーの他人のファイル付き投稿のリノート': async ({ alice, bob, carol }) => {
+		const carolFile = await uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png') as misskey.entities.DriveFile;
+		await api('/following/create', { userId: bob.id }, alice);
+		await api('renote-mute/create', { userId: bob.id }, alice);
+		await sleep(1000);
+		const carolNote = await post(carol, { text: noteText, fileIds: [carolFile.id] });
+		return await post(bob, { renoteId: carolNote.id });
+	},
+	'ミュートしているユーザーのノート': async ({ alice, carol }) => {
+		await api('/mute/create', { userId: carol.id }, alice);
+		await sleep(1000);
+		return await post(carol, { text: noteText });
+	},
+	'ブロックしているユーザーのノート': async ({ alice, carol }) => {
+		await api('/blocking/create', { userId: carol.id }, alice);
+		await sleep(1000);
+		return await post(carol, { text: noteText });
+	},
+	'ブロックしてきているユーザーのノート': async ({ alice, carol }) => {
+		await api('/blocking/create', { userId: alice.id }, carol);
+		await sleep(1000);
+		return await post(carol, { text: noteText });
+	},
+} as const satisfies Record<string, (users: {
+	alice: any,
+	bob: any,
+	carol: any,
+	remote: any,
+}) => Promise<misskey.entities.Note>>;
+
+function tableToEntries<T extends object>(table: T) {
+	return Object.entries(table) as [keyof T, IncludeOrNotNotation][];
+}
+
+type IncludeOrNotNotation = 'は含まれる' | 'は含まれない';
+function includeOrNot(value: IncludeOrNotNotation) {
+	return value === 'は含まれる';
+}
+
 describe('Timelines', () => {
 	describe('Home TL', () => {
-		test.concurrent('自分の visibility: followers なノートが含まれる', async () => {
-			const [alice] = await Promise.all([signup()]);
-
-			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
-
+		const eachTableDefault = {
+			'自分のノート': 'は含まれる',
+			'自分の visibility: home なノート': 'は含まれる',
+			'自分の visibility: followers なノート': 'は含まれる',
+			'自分の自分自身宛ての visibility: specified なノート': 'は含まれない', // BUG? 一つ下が含まれるのに？
+			'自分の他人宛ての visibility: specified なノート': 'は含まれる',
+			'自分の自分自身への返信': 'は含まれる',
+			'自分の他人への返信': 'は含まれる',
+			'自分のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のチャンネル投稿': 'は含まれる',
+			'自分のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'他人のノート': 'は含まれない',
+			'他人のファイル付きノート': 'は含まれない',
+			'他人の visibility: home なノート': 'は含まれない',
+			'他人の visibility: followers なノート': 'は含まれない',
+			'他人の他人自身宛ての visibility: specified なノート': 'は含まれない',
+			'他人の別の他人宛ての visibility: specified なノート': 'は含まれない',
+			'他人の自分への返信': 'は含まれない',
+			'他人の他人自身への返信': 'は含まれない',
+			'他人の別の他人への返信': 'は含まれない',
+			'他人の自分の visibility: specified なノートへの返信': 'は含まれない', // 含まれるのが理想だけど実装が面倒かも
+			'他人のリモートユーザーのノート': 'は含まれない',
+			'他人のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のチャンネル投稿': 'は含まれる',
+			'他人のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'フォローしているユーザーのノート': 'は含まれる',
+			'フォローしているユーザーのファイル付きノート': 'は含まれる',
+			'フォローしているユーザーの visibility: home なノート': 'は含まれる',
+			'フォローしているユーザーの visibility: followers なノート': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる', // 1f0c27e フォローしているユーザーからの自分の投稿への返信がタイムラインに含まれない問題を修正
+			'フォローしているユーザーの他人への返信': 'は含まれない',
+			'フォローしているユーザーの他人への visibility: specified なノート': 'は含まれない',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'フォローしているリモートユーザーのノート': 'は含まれる',
+			'フォローしているリモートユーザーの visibility: home なノート': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人へのDM返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人の visibility: followers なノート': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる', // #12027
+			'フォローしているユーザーが行ったミュートしているユーザーのリノート': 'は含まれない',
+			'フォローしているユーザーの他人の投稿の引用': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーの引用': 'は含まれない',
+			'フォローしているユーザーのチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のチャンネル投稿': 'は含まれる',
+			'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'フォローしているかつミュートしているユーザーのノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+			'ミュートしているユーザーのノート': 'は含まれない',
+			'ブロックしているユーザーのノート': 'は含まれない',
+			'ブロックしてきているユーザーのノート': 'は含まれない',
+		} as const satisfies Record<keyof typeof createNoteFor, IncludeOrNotNotation>;
+		test.concurrent.each(tableToEntries(eachTableDefault))('[パラメタ指定なし] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/timeline',
+				parameters: {},
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
-		});
-
-		test.concurrent('フォローしているユーザーのノートが含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi' });
-			const carolNote = await post(carol, { text: 'hi' });
-
+		test.concurrent.each(tableToEntries({
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+		} as const))('[withRenotes: false] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
-			const carolNote = await post(carol, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: false でフォローしているユーザーの他人への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーの他人への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーの他人へのDM返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーの他人の visibility: followers な投稿への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/create', { userId: carol.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === carolNote.id).text, 'hi');
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/create', { userId: carol.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified', visibleUserIds: [carolNote.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
-		});
-
-		test.concurrent('withReplies: false でフォローしているユーザーのそのユーザー自身への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
-		});
-
-		test.concurrent('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const aliceNote = await post(alice, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('自分の他人への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi' });
-			const aliceNote = await post(alice, { text: 'hi', replyId: bobNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-		});
-
-		test.concurrent('フォローしているユーザーの他人の投稿のリノートが含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { renoteId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('[withRenotes: false] フォローしているユーザーの他人の投稿のリノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { renoteId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', {
-				withRenotes: false,
-			}, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('[withRenotes: false] フォローしているユーザーの他人の投稿の引用が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', {
-				withRenotes: false,
-			}, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('フォローしているユーザーの他人への visibility: specified なノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('フォローしているユーザーが行ったミュートしているユーザーのリノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await api('/mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/timeline',
+				parameters: { withRenotes: false },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] フォローしているユーザーのファイル付きノートのみ含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
@@ -368,7 +448,7 @@ describe('Timelines', () => {
 				uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
 				uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png'),
 			]);
-			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote1 = await post(bob, { text: noteText });
 			const bobNote2 = await post(bob, { fileIds: [bobFile.id] });
 			const carolNote1 = await post(carol, { text: 'hi' });
 			const carolNote2 = await post(carol, { fileIds: [carolFile.id] });
@@ -382,271 +462,131 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote2.id), false);
 		}, 1000 * 10);
-
-		test.concurrent('フォローしているユーザーのチャンネル投稿が含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('自分の visibility: specified なノートが含まれる', async () => {
-			const [alice] = await Promise.all([signup()]);
-
-			const aliceNote = await post(alice, { text: 'hi', visibility: 'specified' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
-		});
-
-		test.concurrent('フォローしているユーザーの自身を visibleUserIds に指定した visibility: specified なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
-		});
-
-		test.concurrent('フォローしていないユーザーの自身を visibleUserIds に指定した visibility: specified なノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('フォローしているユーザーの自身を visibleUserIds に指定していない visibility: specified なノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('フォローしていないユーザーからの visibility: specified なノートに返信したときの自身のノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
-			const aliceNote = await post(alice, { text: 'ok', visibility: 'specified', visibleUserIds: [bob.id], replyId: bobNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'ok');
-		});
-
-		/* TODO
-		test.concurrent('自身の visibility: specified なノートへのフォローしていないユーザーからの返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const aliceNote = await post(alice, { text: 'hi', visibility: 'specified', visibleUserIds: [bob.id] });
-			const bobNote = await post(bob, { text: 'ok', visibility: 'specified', visibleUserIds: [alice.id], replyId: aliceNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'ok');
-		});
-		*/
-
-		// ↑の挙動が理想だけど実装が面倒かも
-		test.concurrent('自身の visibility: specified なノートへのフォローしていないユーザーからの返信が含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const aliceNote = await post(alice, { text: 'hi', visibility: 'specified', visibleUserIds: [bob.id] });
-			const bobNote = await post(bob, { text: 'ok', visibility: 'specified', visibleUserIds: [alice.id], replyId: aliceNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
 	});
 
 	describe('Local TL', () => {
-		test.concurrent('visibility: home なノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi', visibility: 'home' });
-			const bobNote = await post(bob, { text: 'hi' });
-
+		const eachTableDefault = {
+			'自分のノート': 'は含まれる',
+			'自分の visibility: home なノート': 'は含まれない',
+			'自分の visibility: followers なノート': 'は含まれない',
+			'自分の自分自身宛ての visibility: specified なノート': 'は含まれない',
+			'自分の他人宛ての visibility: specified なノート': 'は含まれない',
+			'自分の自分自身への返信': 'は含まれる',
+			'自分の他人への返信': 'は含まれる',
+			'自分のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'他人のノート': 'は含まれる',
+			'他人のファイル付きノート': 'は含まれる',
+			'他人の visibility: home なノート': 'は含まれない',
+			'他人の visibility: followers なノート': 'は含まれない',
+			'他人の他人自身宛ての visibility: specified なノート': 'は含まれない',
+			'他人の別の他人宛ての visibility: specified なノート': 'は含まれない',
+			'他人の自分への返信': 'は含まれる',
+			'他人の他人自身への返信': 'は含まれない',
+			'他人の別の他人への返信': 'は含まれない',
+			'他人の自分の visibility: specified なノートへの返信': 'は含まれない',
+			'他人のリモートユーザーのノート': 'は含まれない',
+			'他人のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのノート': 'は含まれる',
+			'フォローしているユーザーのファイル付きノート': 'は含まれる',
+			'フォローしているユーザーの visibility: home なノート': 'は含まれない', // 含まれても良いと思うけど実装が面倒なので含まれない
+			'フォローしているユーザーの visibility: followers なノート': 'は含まれない',
+			'フォローしているユーザーの自分への返信': 'は含まれる', // a26d9ea LTLでフォローしているユーザーからの自分への返信が含まれるように
+			'フォローしているユーザーの他人への返信': 'は含まれない',
+			'フォローしているユーザーの他人への visibility: specified なノート': 'は含まれない',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれない',
+			'フォローしているリモートユーザーのノート': 'は含まれない',
+			'フォローしているリモートユーザーの visibility: home なノート': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人へのDM返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人の visibility: followers なノート': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーのリノート': 'は含まれない',
+			'フォローしているユーザーの他人の投稿の引用': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーの引用': 'は含まれない',
+			'フォローしているユーザーのチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'フォローしているかつミュートしているユーザーのノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+			'ミュートしているユーザーのノート': 'は含まれない',
+			'ブロックしているユーザーのノート': 'は含まれる', // #12012
+			'ブロックしてきているユーザーのノート': 'は含まれない',
+		} as const satisfies Record<keyof typeof createNoteFor, IncludeOrNotNotation>;
+		test.concurrent.each(tableToEntries(eachTableDefault))('[パラメタ指定なし] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/local-timeline',
+				parameters: { limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('他人の他人への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
+		test.concurrent.each(tableToEntries({
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+		}))('[withRenotes: false] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/local-timeline',
+				parameters: { withRenotes: false, limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
-		});
-
-		test.concurrent('チャンネル投稿が含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
+		test.concurrent.each(tableToEntries({
+			...eachTableDefault,
+			'他人の自分への返信': 'は含まれる',
+			'他人の他人自身への返信': 'は含まれる',
+			'他人の別の他人への返信': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる',
+			'フォローしているユーザーの他人への返信': 'は含まれる',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+		}))('[withReplies: true] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('リモートユーザーのノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
-
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		// 含まれても良いと思うけど実装が面倒なので含まれない
-		test.concurrent('フォローしているユーザーの visibility: home なノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi', visibility: 'home' });
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('ミュートしているユーザーのノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('フォローしているユーザーが行ったミュートしているユーザーのリノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/update', { userId: bob.id, withReplies: true }, alice);
-			await api('/mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
-		});
-
-		test.concurrent('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const aliceNote = await post(alice, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100, withReplies: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/local-timeline',
+				parameters: { withReplies: true, limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -665,126 +605,128 @@ describe('Timelines', () => {
 	});
 
 	describe('Social TL', () => {
-		test.concurrent('ローカルユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi' });
-
+		const eachTableDefault = {
+			'自分のノート': 'は含まれる',
+			'自分の visibility: home なノート': 'は含まれる',
+			'自分の visibility: followers なノート': 'は含まれる',
+			'自分の自分自身宛ての visibility: specified なノート': 'は含まれない', // BUG? 一つ下が含まれるのに？
+			'自分の他人宛ての visibility: specified なノート': 'は含まれる',
+			'自分の自分自身への返信': 'は含まれる',
+			'自分の他人への返信': 'は含まれる',
+			'自分のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のチャンネル投稿': 'は含まれる',
+			'自分のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'他人のノート': 'は含まれる',
+			'他人のファイル付きノート': 'は含まれる',
+			'他人の visibility: home なノート': 'は含まれない',
+			'他人の visibility: followers なノート': 'は含まれない',
+			'他人の他人自身宛ての visibility: specified なノート': 'は含まれない',
+			'他人の別の他人宛ての visibility: specified なノート': 'は含まれない',
+			'他人の自分への返信': 'は含まれない',
+			'他人の他人自身への返信': 'は含まれる',
+			'他人の別の他人への返信': 'は含まれない',
+			'他人の自分の visibility: specified なノートへの返信': 'は含まれない',
+			'他人のリモートユーザーのノート': 'は含まれない',
+			'他人のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のチャンネル投稿': 'は含まれる',
+			'他人のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'フォローしているユーザーのノート': 'は含まれる',
+			'フォローしているユーザーのファイル付きノート': 'は含まれる',
+			'フォローしているユーザーの visibility: home なノート': 'は含まれる',
+			'フォローしているユーザーの visibility: followers なノート': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる',
+			'フォローしているユーザーの他人への返信': 'は含まれない',
+			'フォローしているユーザーの他人への visibility: specified なノート': 'は含まれない',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'フォローしているリモートユーザーのノート': 'は含まれる',
+			'フォローしているリモートユーザーの visibility: home なノート': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人へのDM返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人の visibility: followers なノート': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーのリノート': 'は含まれない',
+			'フォローしているユーザーの他人の投稿の引用': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーの引用': 'は含まれない',
+			'フォローしているユーザーのチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のチャンネル投稿': 'は含まれる',
+			'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'フォローしているかつミュートしているユーザーのノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+			'ミュートしているユーザーのノート': 'は含まれない',
+			'ブロックしているユーザーのノート': 'は含まれる', // #12012
+			'ブロックしてきているユーザーのノート': 'は含まれない',
+		} as const satisfies Record<keyof typeof createNoteFor, IncludeOrNotNotation>;
+		test.concurrent.each(tableToEntries(eachTableDefault))('[パラメタ指定なし] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/hybrid-timeline',
+				parameters: { limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('ローカルユーザーの visibility: home なノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
-
+		test.concurrent.each(tableToEntries({
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+		}))('[withRenotes: false] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/hybrid-timeline',
+				parameters: { withRenotes: false, limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('フォローしているローカルユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
-
+		test.concurrent.each(tableToEntries({
+			...eachTableDefault,
+			'他人の自分への返信': 'は含まれる',
+			'他人の他人自身への返信': 'は含まれる',
+			'他人の別の他人への返信': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる',
+			'フォローしているユーザーの他人への返信': 'は含まれる',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+		}))('[withReplies: false] %#. %s%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
-
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const aliceNote = await post(alice, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('他人の他人への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
-		});
-
-		test.concurrent('リモートユーザーのノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
-
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/hybrid-timeline', { limit: 100, withReplies: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/hybrid-timeline',
+				parameters: { withReplies: true, limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -803,439 +745,272 @@ describe('Timelines', () => {
 	});
 
 	describe('User List TL', () => {
-		test.concurrent('リスインしているフォローしていないユーザーのノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
+		async function listedUsers() {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
 
 			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			// aliceはリストの作成主、かつ自分をリスインしている
+			await api('/users/lists/push', { listId: list.id, userId: alice.id }, alice);
+			// bobはフォローしている、かつリスインしている
 			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('リスインしているフォローしていないユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('リスインしているフォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('リスインしているフォローしていないユーザーの他人への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('リスインしているフォローしていないユーザーのユーザー自身への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
-		});
-
-		test.concurrent('withReplies: false でリスインしているフォローしていないユーザーからの自分への返信が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const aliceNote = await post(alice, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: aliceNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id, withReplies: false }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('withReplies: true でリスインしているフォローしていないユーザーの他人への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await api('/users/lists/update-membership', { listId: list.id, userId: bob.id, withReplies: true }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('リスインしているフォローしているユーザーの visibility: home なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('リスインしているフォローしているユーザーの visibility: followers なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
-		});
-
-		test.concurrent('リスインしているユーザーのチャンネルノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('[withFiles: true] リスインしているユーザーのファイル付きノートのみ含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { fileIds: [file.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id, withFiles: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
-		}, 1000 * 10);
-
-		test.concurrent('リスインしているユーザーの自身宛ての visibility: specified なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
-		});
-
-		test.concurrent('リスインしているユーザーの自身宛てではない visibility: specified なノートが含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
-			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			// carolはフォローしていないが、リスインはしている
 			await api('/users/lists/push', { listId: list.id, userId: carol.id }, alice);
+			// remoteはリモートかつフォローしていないが、リスインはしている
+			await api('/users/lists/push', { listId: list.id, userId: remote.id }, alice);
 			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [carol.id] });
 
+			return { list, alice, bob, carol, remote };
+		}
+
+		const eachTableDefault = {
+			'自分のノート': 'は含まれる',
+			'自分の visibility: home なノート': 'は含まれる',
+			'自分の visibility: followers なノート': 'は含まれない',
+			'自分の自分自身宛ての visibility: specified なノート': 'は含まれる',
+			'自分の他人宛ての visibility: specified なノート': 'は含まれない',
+			'自分の自分自身への返信': 'は含まれる',
+			'自分の他人への返信': 'は含まれない',
+			'自分のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'他人のノート': 'は含まれる',
+			'他人のファイル付きノート': 'は含まれる',
+			'他人の visibility: home なノート': 'は含まれる',
+			'他人の visibility: followers なノート': 'は含まれない',
+			'他人の他人自身宛ての visibility: specified なノート': 'は含まれない',
+			'他人の別の他人宛ての visibility: specified なノート': 'は含まれない',
+			'他人の自分への返信': 'は含まれる',
+			'他人の他人自身への返信': 'は含まれる',
+			'他人の別の他人への返信': 'は含まれない',
+			'他人の自分の visibility: specified なノートへの返信': 'は含まれる',
+			'他人のリモートユーザーのノート': 'は含まれる',
+			'他人のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのノート': 'は含まれる',
+			'フォローしているユーザーのファイル付きノート': 'は含まれる',
+			'フォローしているユーザーの visibility: home なノート': 'は含まれる',
+			'フォローしているユーザーの visibility: followers なノート': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる',
+			'フォローしているユーザーの他人への返信': 'は含まれない',
+			'フォローしているユーザーの他人への visibility: specified なノート': 'は含まれない',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'フォローしているリモートユーザーのノート': 'は含まれる',
+			'フォローしているリモートユーザーの visibility: home なノート': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人へのDM返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人の visibility: followers なノート': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーのリノート': 'は含まれない',
+			'フォローしているユーザーの他人の投稿の引用': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーの引用': 'は含まれない',
+			'フォローしているユーザーのチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'フォローしているかつミュートしているユーザーのノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているかつリノートミュートしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+			'ミュートしているユーザーのノート': 'は含まれない',
+			'ブロックしているユーザーのノート': 'は含まれる', // #12012
+			'ブロックしてきているユーザーのノート': 'は含まれない',
+		} as const satisfies Record<keyof typeof createNoteFor, IncludeOrNotNotation>;
+		test.concurrent.each(tableToEntries(eachTableDefault))('[パラメタ指定なし] %#. リスインしている%s%s', async (key, value) => {
+			const { list, alice, bob, carol, remote } = await listedUsers();
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/user-list-timeline',
+				parameters: { listId: list.id, limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
+		test.concurrent.each(tableToEntries({
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれない',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれない',
+		}))('[withRenotes: false] %#. リスインしている%s%s', async (key, value) => {
+			const { list, alice, bob, carol, remote } = await listedUsers();
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
+			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/notes/user-list-timeline',
+				parameters: { listId: list.id, withRenotes: false, limit: 100 },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 	});
 
 	describe('User TL', () => {
-		test.concurrent('ノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi' });
-
+		const eachTableDefault = {
+			'自分のノート': 'は含まれる',
+			'自分の visibility: home なノート': 'は含まれる',
+			'自分の visibility: followers なノート': 'は含まれる', // 457b4cf users/notes で 自身の visibility: followers なノートが含まれない問題を修正
+			'自分の自分自身宛ての visibility: specified なノート': 'は含まれる',
+			'自分の他人宛ての visibility: specified なノート': 'は含まれる',
+			'自分の自分自身への返信': 'は含まれる',
+			'自分の他人への返信': 'は含まれる',
+			'自分のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のチャンネル投稿': 'は含まれない',
+			'自分のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'他人のノート': 'は含まれる',
+			'他人のファイル付きノート': 'は含まれる',
+			'他人の visibility: home なノート': 'は含まれる',
+			'他人の visibility: followers なノート': 'は含まれない',
+			'他人の他人自身宛ての visibility: specified なノート': 'は含まれない',
+			'他人の別の他人宛ての visibility: specified なノート': 'は含まれない',
+			'他人の自分への返信': 'は含まれる',
+			'他人の他人自身への返信': 'は含まれる',
+			'他人の別の他人への返信': 'は含まれる', // BUG? withRepliesなしで含まれる？
+			'他人の自分の visibility: specified なノートへの返信': 'は含まれる',
+			'他人のリモートユーザーのノート': 'は含まれる',
+			'他人のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のチャンネル投稿': 'は含まれない',
+			'他人のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのノート': 'は含まれる',
+			'フォローしているユーザーのファイル付きノート': 'は含まれる',
+			'フォローしているユーザーの visibility: home なノート': 'は含まれる',
+			'フォローしているユーザーの visibility: followers なノート': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる',
+			'フォローしているユーザーの他人への返信': 'は含まれる',
+			'フォローしているユーザーの他人への visibility: specified なノート': 'は含まれない',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'フォローしているリモートユーザーのノート': 'は含まれる',
+			'フォローしているリモートユーザーの visibility: home なノート': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人へのDM返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーの他人の visibility: followers なノート': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの投稿への visibility: specified な返信': 'は含まれない',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる',
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーのリノート': 'は含まれない',
+			'フォローしているユーザーの他人の投稿の引用': 'は含まれる',
+			'フォローしているユーザーが行ったミュートしているユーザーの引用': 'は含まれない',
+			'フォローしているユーザーのチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない', // 854ac95 センシティブ設定されたチャンネルの投稿をusers/notesで返さないように
+			'フォローしているかつミュートしているユーザーのノート': 'は含まれる',
+			'フォローしているかつリノートミュートしているユーザーの他人の投稿のリノート': 'は含まれる',
+			'フォローしているかつリノートミュートしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる',
+			'ミュートしているユーザーのノート': 'は含まれる',
+			'ブロックしているユーザーのノート': 'は含まれる', // #12012
+			'ブロックしてきているユーザーのノート': 'は含まれる', // #12012#issuecomment-1759594337
+		} as const satisfies Record<keyof typeof createNoteFor, IncludeOrNotNotation>;
+		test.concurrent.each(tableToEntries(eachTableDefault))('[パラメタ指定なし] %#. %sは投稿したユーザーのユーザーTLに%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/users/notes',
+				parameters: { userId: createdPost.userId },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('フォローしていないユーザーの visibility: followers なノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
-
+		test.concurrent.each(tableToEntries({
+			'フォローしているユーザーの他人の投稿のリノート': 'は含まれる', // BUG?
+			'フォローしているユーザーの他人のファイル付き投稿のリノート': 'は含まれる', // BUG?
+		}))('[withRenotes: false] %#. %sは投稿したユーザーのユーザーTLに%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/users/notes',
+				parameters: { userId: createdPost.userId, withRenotes: false },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
-
+		test.concurrent.each(tableToEntries({
+			...eachTableDefault,
+			'他人の自分への返信': 'は含まれる',
+			'他人の他人自身への返信': 'は含まれる',
+			'他人の別の他人への返信': 'は含まれる',
+			'フォローしているユーザーの自分への返信': 'は含まれる',
+			'フォローしているユーザーの他人への返信': 'は含まれる',
+			'フォローしているユーザーのそのユーザー自身への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーの他人への返信': 'は含まれる',
+			'withReplies: true でフォローしているユーザーが行ったミュートしているユーザーの投稿への返信': 'は含まれない',
+		}))('[withReplies: true] %#. %sは投稿したユーザーのユーザーTLに%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/users/notes',
+				parameters: { userId: createdPost.userId, withReplies: true },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
-		});
-
-		test.concurrent('自身の visibility: followers なノートが含まれる', async () => {
-			const [alice] = await Promise.all([signup()]);
-
-			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
-
+		test.concurrent.each(tableToEntries({
+			...eachTableDefault,
+			'自分のチャンネル投稿': 'は含まれる',
+			'自分のフォロー中のチャンネル投稿': 'は含まれる',
+			'自分のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれる',
+			'他人のチャンネル投稿': 'は含まれる',
+			'他人のフォロー中のチャンネル投稿': 'は含まれる',
+			'他人のフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+			'フォローしているユーザーのチャンネル投稿': 'は含まれる',
+			'フォローしているユーザーのフォロー中のチャンネル投稿': 'は含まれる',
+			'フォローしているユーザーのフォロー中のセンシティブ設定のチャンネル投稿': 'は含まれない',
+		}))('[withChannelNotes: true, withReplies: true] %#. %sは投稿したユーザーのユーザーTLに%s', async (key, value) => {
+			const [alice, bob, carol, remote] = await Promise.all([signup(), signup(), signup(), signup({ host: genHost() })]);
+			const createdPost = await createNoteFor[key]({ alice, bob, carol, remote });
 			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: alice.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
-		});
-
-		test.concurrent('チャンネル投稿が含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('[withReplies: false] 他人への返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), false);
-		});
-
-		test.concurrent('[withReplies: true] 他人への返信が含まれる', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
-		});
-
-		test.concurrent('[withReplies: true] 他人への visibility: specified な返信が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { text: 'hi', replyId: carolNote.id, visibility: 'specified' });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), false);
-		});
-
-		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/icon.png');
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { fileIds: [file.id] });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withFiles: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
-		}, 1000 * 10);
-
-		test.concurrent('[withChannelNotes: true] チャンネル投稿が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('[withChannelNotes: true] 他人が取得した場合センシティブチャンネル投稿が含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel', isSensitive: true }, bob).then(x => x.body);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('[withChannelNotes: true] 自分が取得した場合センシティブチャンネル投稿が含まれる', async () => {
-			const [bob] = await Promise.all([signup()]);
-
-			const channel = await api('/channels/create', { name: 'channel', isSensitive: true }, bob).then(x => x.body);
-			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, bob);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		});
-
-		test.concurrent('ミュートしているユーザーに関連する投稿が含まれない', async () => {
-			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
-
-			await api('/mute/create', { userId: carol.id }, alice);
-			await sleep(1000);
-			const carolNote = await post(carol, { text: 'hi' });
-			const bobNote = await post(bob, { text: 'hi', renoteId: carolNote.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
-
-		test.concurrent('ミュートしていても userId に指定したユーザーの投稿が含まれる', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			await api('/mute/create', { userId: bob.id }, alice);
-			await sleep(1000);
-			const bobNote1 = await post(bob, { text: 'hi' });
-			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
-			const bobNote3 = await post(bob, { text: 'hi', renoteId: bobNote1.id });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote3.id), true);
-		});
-
-		test.concurrent('自身の visibility: specified なノートが含まれる', async () => {
-			const [alice] = await Promise.all([signup()]);
-
-			const aliceNote = await post(alice, { text: 'hi', visibility: 'specified' });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: alice.id, withReplies: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-		});
-
-		test.concurrent('visibleUserIds に指定されてない visibility: specified なノートが含まれない', async () => {
-			const [alice, bob] = await Promise.all([signup(), signup()]);
-
-			const bobNote = await post(bob, { text: 'hi', visibility: 'specified' });
-
-			await waitForPushToTl();
-
-			const res = await api('/users/notes', { userId: bob.id, withReplies: true }, alice);
-
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		});
+			const res: misskey.entities.Note[] = await successfulApiCall({
+				endpoint: '/users/notes',
+				parameters: { userId: createdPost.userId, withChannelNotes: true, withReplies: true },
+				user: alice,
+			});
+			const responseNote = res.filter((note) => note.id === createdPost.id);
+			if (includeOrNot(value)) {
+				assert.strictEqual(responseNote.length, 1);
+				assert.strictEqual(responseNote[0]?.text, createdPost.text);
+			} else {
+				assert.strictEqual(responseNote.length, 0);
+			}
+		}, 1000 * 30);
 	});
 
-	// TODO: リノートミュート済みユーザーのテスト
 	// TODO: ページネーションのテスト
 });
