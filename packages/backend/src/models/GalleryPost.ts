@@ -15,12 +15,6 @@ export class MiGalleryPost {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the GalleryPost.',
-	})
-	public createdAt: Date;
-
-	@Index()
-	@Column('timestamp with time zone', {
 		comment: 'The updated date of the GalleryPost.',
 	})
 	public updatedAt: Date;

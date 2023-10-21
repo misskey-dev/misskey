@@ -42,6 +42,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
+import { defaultStore } from "@/store.js";
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -51,6 +52,10 @@ const props = withDefaults(defineProps<{
 	full: false,
 	large: false,
 });
+
+const emit = defineEmits<{
+	(_: 'update:user', value: Misskey.entities.UserDetailed): void
+}>();
 
 let isFollowing = $ref(props.user.isFollowing);
 let hasPendingFollowRequestFromYou = $ref(props.user.hasPendingFollowRequestFromYou);
@@ -95,6 +100,11 @@ async function onClick() {
 			} else {
 				await os.api('following/create', {
 					userId: props.user.id,
+					withReplies: defaultStore.state.defaultWithReplies,
+				});
+				emit('update:user', {
+					...props.user,
+					withReplies: defaultStore.state.defaultWithReplies
 				});
 				hasPendingFollowRequestFromYou = true;
 

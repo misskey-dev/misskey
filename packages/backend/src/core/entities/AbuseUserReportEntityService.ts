@@ -11,6 +11,7 @@ import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import type { MiUser } from '@/models/User.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -20,6 +21,7 @@ export class AbuseUserReportEntityService {
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -32,7 +34,7 @@ export class AbuseUserReportEntityService {
 
 		return await awaitAll({
 			id: report.id,
-			createdAt: report.createdAt.toISOString(),
+			createdAt: this.idService.parse(report.id).date.toISOString(),
 			comment: report.comment,
 			resolved: report.resolved,
 			reporterId: report.reporterId,

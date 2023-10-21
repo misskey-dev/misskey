@@ -33,6 +33,7 @@ export type RelationshipJobData = {
 	to: ThinUser;
 	silent?: boolean;
 	requestId?: string;
+	withReplies?: boolean;
 }
 
 export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
@@ -80,6 +81,7 @@ export type DbUserDeleteJobData = {
 export type DbUserImportJobData = {
 	user: ThinUser;
 	fileId: MiDriveFile['id'];
+	withReplies?: boolean;
 };
 
 export type DBAntennaImportJobData = {
@@ -90,6 +92,7 @@ export type DBAntennaImportJobData = {
 export type DbUserImportToDbJobData = {
 	user: ThinUser;
 	target: string;
+	withReplies?: boolean;
 };
 
 export type DbAbuseReportJobData = MiAbuseUserReport;

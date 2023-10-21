@@ -46,25 +46,21 @@ class RoleTimelineChannel extends Channel {
 			}
 			if (note.visibility !== 'public') return;
 
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-					detail: true,
-				});
-			}
-
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+			if (this.user && note.renoteId && !note.text) {
+				if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+					const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+					note.renote.myReaction = myRenoteReaction;
+				}
+			}
+
+			this.connection.cacheNote(note);
 
 			this.send('note', note);
 		} else {

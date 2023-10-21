@@ -61,12 +61,12 @@ export class AnnouncementService {
 			}))
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
-				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
+				qb.orWhere('announcement.id > :userId', { userId: user.id });
 			}));
 
 		q.orderBy({
 			'announcement."displayOrder"': 'DESC',
-			'announcement."createdAt"': 'DESC',
+			'announcement.id': 'DESC',
 		});
 
 		return this.packMany(
@@ -78,8 +78,7 @@ export class AnnouncementService {
 	@bindThis
 	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			updatedAt: null,
 			title: values.title,
 			text: values.text,
@@ -146,7 +145,7 @@ export class AnnouncementService {
 		query.orderBy({
 			'announcement."isActive"': 'DESC',
 			'announcement."displayOrder"': 'DESC',
-			'announcement."createdAt"': 'DESC',
+			'announcement.id': 'DESC',
 		});
 
 		const announcements = await query
@@ -279,9 +278,7 @@ export class AnnouncementService {
 				.andWhere(
 					new Brackets((qb) => {
 						qb.orWhere('announcement."forExistingUsers" = false');
-						qb.orWhere('announcement."createdAt" > :createdAt', {
-							createdAt: me.createdAt,
-						});
+						qb.orWhere('announcement.id > :userId', { userId: me.id });
 					}),
 				);
 		} else {
@@ -302,7 +299,7 @@ export class AnnouncementService {
 		query.orderBy({
 			'"isRead"': 'ASC',
 			'announcement."displayOrder"': 'DESC',
-			'announcement."createdAt"': 'DESC',
+			'announcement.id': 'DESC',
 		});
 
 		return this.packMany(
@@ -336,9 +333,7 @@ export class AnnouncementService {
 			.andWhere(
 				new Brackets((qb) => {
 					qb.orWhere('announcement."forExistingUsers" = false');
-					qb.orWhere('announcement."createdAt" > :createdAt', {
-						createdAt: me.createdAt,
-					});
+					qb.orWhere('announcement.id > :userId', { userId: me.id });
 				}),
 			);
 
@@ -349,8 +344,7 @@ export class AnnouncementService {
 	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				announcementId: announcementId,
 				userId: user.id,
 			});
@@ -370,7 +364,7 @@ export class AnnouncementService {
 	): Promise<Packed<'Announcement'>[]> {
 		return announcements.map(announcement => ({
 			id: announcement.id,
-			createdAt: announcement.createdAt.toISOString(),
+			createdAt: this.idService.parse(announcement.id).date.toISOString(),
 			updatedAt: announcement.updatedAt?.toISOString() ?? null,
 			text: announcement.text,
 			title: announcement.title,

@@ -8,6 +8,7 @@ import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/mod
 import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -110,13 +111,15 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private announcementService: AnnouncementService,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const announcements = await this.announcementService.list(ps.userId ?? null, ps.limit, ps.offset, me);
 
 			return announcements.map(announcement => ({
 				id: announcement.id,
-				createdAt: announcement.createdAt.toISOString(),
+				createdAt: this.idService.parse(announcement.id).date.toISOString(),
 				updatedAt: announcement.updatedAt?.toISOString() ?? null,
 				title: announcement.title,
 				text: announcement.text,

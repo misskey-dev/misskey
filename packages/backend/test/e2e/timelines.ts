@@ -727,7 +727,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', { }, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);

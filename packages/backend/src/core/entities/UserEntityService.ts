@@ -21,6 +21,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { IdService } from '@/core/IdService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AnnouncementService } from '../AnnouncementService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -61,6 +62,7 @@ export class UserEntityService implements OnModuleInit {
 	private announcementService: AnnouncementService;
 	private roleService: RoleService;
 	private federatedInstanceService: FederatedInstanceService;
+	private idService: IdService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -112,13 +114,6 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
-
-		//private noteEntityService: NoteEntityService,
-		//private driveFileEntityService: DriveFileEntityService,
-		//private pageEntityService: PageEntityService,
-		//private customEmojiService: CustomEmojiService,
-		//private antennaService: AntennaService,
-		//private roleService: RoleService,
 	) {
 	}
 
@@ -131,6 +126,7 @@ export class UserEntityService implements OnModuleInit {
 		this.announcementService = this.moduleRef.get('AnnouncementService');
 		this.roleService = this.moduleRef.get('RoleService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
+		this.idService = this.moduleRef.get('IdService');
 	}
 
 	//#region Validators
@@ -326,8 +322,8 @@ export class UserEntityService implements OnModuleInit {
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && opts.detail ? await this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && opts.detail ? await this.roleService.isAdministrator(user) : null;
+		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
+		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
 		const policies = opts.detail ? await this.roleService.getUserPolicies(user.id) : null;
 		const unreadAnnouncements = isMe && opts.detail ? await this.announcementService.getUnreadAnnouncements(user) : null;
 
@@ -340,8 +336,8 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
 			avatarBlurhash: user.avatarBlurhash,
-			isBot: user.isBot ?? falsy,
-			isCat: user.isCat ?? falsy,
+			isBot: user.isBot,
+			isCat: user.isCat,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
@@ -367,7 +363,7 @@ export class UserEntityService implements OnModuleInit {
 					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
 						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
 					: null,
-				createdAt: user.createdAt.toISOString(),
+				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
 				bannerUrl: user.bannerUrl,
@@ -375,7 +371,7 @@ export class UserEntityService implements OnModuleInit {
 				isLocked: user.isLocked,
 				isSilenced: !policies?.canPublicNote,
 				isLimited: !(policies?.canCreateContent && policies.canUpdateContent && policies.canDeleteContent),
-				isSuspended: user.isSuspended ?? falsy,
+				isSuspended: user.isSuspended,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
