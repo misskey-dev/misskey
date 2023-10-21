@@ -33,7 +33,7 @@ import { packedClipSchema } from '@/models/json-schema/clip.js';
 import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
 import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
-import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
+import { packedEmojiDetailedSchema, packedEmojiDraftSimpleSchema, packedEmojiSimpleSchema, packedEmojiDraftDetailedSchema } from '@/models/json-schema/emoji.js';
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 
@@ -69,7 +69,9 @@ export const refs = {
 	FederationInstance: packedFederationInstanceSchema,
 	GalleryPost: packedGalleryPostSchema,
 	EmojiSimple: packedEmojiSimpleSchema,
+	EmojiDraftSimple: packedEmojiDraftSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
+	EmojiDraftDetailed: packedEmojiDraftDetailedSchema,
 	Flash: packedFlashSchema,
 };
 

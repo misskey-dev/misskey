@@ -37,6 +37,7 @@ import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-al
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
+import * as ep___admin_emoji_draftUpdate from './endpoints/admin/emoji/draft-update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -243,6 +244,7 @@ import * as ep___invite_list from './endpoints/invite/list.js';
 import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
+import * as ep___emojiDrafts from './endpoints/emoji-drafts.js';
 import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -386,6 +388,7 @@ const eps = [
 	['admin/emoji/set-category-bulk', ep___admin_emoji_setCategoryBulk],
 	['admin/emoji/set-license-bulk', ep___admin_emoji_setLicenseBulk],
 	['admin/emoji/update', ep___admin_emoji_update],
+	['admin/emoji/draft-update', ep___admin_emoji_draftUpdate],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
 	['admin/federation/remove-all-following', ep___admin_federation_removeAllFollowing],
@@ -592,6 +595,7 @@ const eps = [
 	['invite/limit', ep___invite_limit],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
+	['emoji-drafts', ep___emojiDrafts],
 	['emoji', ep___emoji],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],

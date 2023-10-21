@@ -6,9 +6,9 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 import { id } from './util/id.js';
 
-@Entity('emoji')
-@Index(['name', 'host'], { unique: true })
-export class MiEmoji {
+@Entity('emoji_draft')
+@Index(['name'], { unique: true })
+export class MiEmojiDraft {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -22,12 +22,6 @@ export class MiEmoji {
 		length: 128,
 	})
 	public name: string;
-
-	@Index()
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public host: string | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -45,11 +39,6 @@ export class MiEmoji {
 	})
 	public publicUrl: string;
 
-	@Column('varchar', {
-		length: 512, nullable: true,
-	})
-	public uri: string | null;
-
 	// publicUrlの方のtypeが入る
 	@Column('varchar', {
 		length: 64, nullable: true,
@@ -66,6 +55,11 @@ export class MiEmoji {
 	})
 	public license: string | null;
 
+	@Column('varchar', {
+		length: 1024, nullable: false,
+	})
+	public fileId: string;
+
 	@Column('boolean', {
 		default: false,
 	})
@@ -75,10 +69,4 @@ export class MiEmoji {
 		default: false,
 	})
 	public isSensitive: boolean;
-
-	// TODO: 定期ジョブで存在しなくなったロールIDを除去するようにする
-	@Column('varchar', {
-		array: true, length: 128, default: '{}',
-	})
-	public roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
 }

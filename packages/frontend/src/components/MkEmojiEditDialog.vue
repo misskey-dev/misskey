@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
-				<MkFolder v-if="!isRequest">
+				<MkFolder v-if="!isRequest && !isDraftEdit">
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkSwitch v-model="isSensitive">isSensitive</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-				<MkSwitch v-if="!isRequest" v-model="draft" :disabled="isRequest">
+				<MkSwitch v-if="!isRequest" v-model="isDraft" :disabled="isRequest">
 					{{ i18n.ts.draft }}
 				</MkSwitch>
 			</div>
@@ -100,6 +100,7 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 const props = defineProps<{
   emoji?: any,
   isRequest: boolean,
+  isDraftEdit?: boolean,
 }>();
 
 let dialog = $ref(null);
@@ -109,18 +110,18 @@ let aliases: string = $ref(props.emoji ? props.emoji.aliases.join(' ') : '');
 let license: string = $ref(props.emoji ? (props.emoji.license ?? '') : '');
 let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
 let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
-let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
+let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref((props.emoji && props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction) ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<Misskey.entities.DriveFile>();
 let chooseFile: DriveFile|null = $ref(null);
-let draft = $ref(props.emoji ? props.emoji.draft : false);
 let isRequest = $ref(props.isRequest);
-
+let isDraftEdit = $ref(props.isDraftEdit ?? false);
+let isDraft = $ref(!!(isDraftEdit || props.isRequest));
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
+const imgUrl = computed(() => file ? file.url : props.emoji && !isDraftEdit ? `/emoji/${props.emoji.name}.webp` : props.emoji && props.emoji.url ? props.emoji.url : null);
 const validation = computed(() => {
 	return name.match(/^[a-zA-Z0-9_]+$/) && imgUrl.value != null;
 });
@@ -129,28 +130,6 @@ const emit = defineEmits<{
   (ev: 'closed'): void
 }>();
 
-async function add() {
-	const ret = await os.api('admin/emoji/add-draft', {
-		name: name,
-		category: category,
-		aliases: aliases.split(' '),
-		license: license === '' ? null : license,
-		fileId: chooseFile.id,
-	});
-
-	emit('done', {
-		updated: {
-			id: ret.id,
-			name,
-			category,
-			aliases: aliases.split(' '),
-			license: license === '' ? null : license,
-			draft: true,
-		},
-	});
-
-	dialog.close();
-}
 async function changeImage(ev) {
 	file = await selectFile(ev.currentTarget ?? ev.target, null);
 	const candidate = file.name.replace(/\.(.+)$/, '');
@@ -174,37 +153,13 @@ async function addRole() {
 async function removeRole(role, ev) {
 	rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
 }
-async function update() {
-	await os.apiWithDialog('admin/emoji/update', {
-		id: props.emoji.id,
-		name,
-		category,
-		aliases: aliases.split(' '),
-		license: license === '' ? null : license,
-		fileId: chooseFile?.id,
-		draft: draft,
-	});
-
-	emit('done', {
-		updated: {
-			id: props.emoji.id,
-			name,
-			category,
-			aliases: aliases.split(' '),
-			license: license === '' ? null : license,
-			draft: draft,
-		},
-	});
-
-	dialog.close();
-}
 async function done() {
 	const params = {
 		name,
 		category: category === '' ? null : category,
 		aliases: aliases.replace('　', ' ').split(' ').filter(x => x !== ''),
 		license: license === '' ? null : license,
-		draft: draft,
+		draft: isDraft,
 		isSensitive,
 		localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
@@ -213,12 +168,19 @@ async function done() {
 	if (file) {
 		params.fileId = file.id;
 	}
-	console.log(props.emoji);
+
 	if (props.emoji) {
-		await os.apiWithDialog('admin/emoji/update', {
-			id: props.emoji.id,
-			...params,
-		});
+		if (isDraftEdit) {
+			await os.apiWithDialog('admin/emoji/draft-update', {
+				id: props.emoji.id,
+				...params,
+			});
+		} else {
+			await os.apiWithDialog('admin/emoji/update', {
+				id: props.emoji.id,
+				...params,
+			});
+		}
 
 		emit('done', {
 			updated: {

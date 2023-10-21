@@ -133,7 +133,13 @@ export class DriveFileEntityService {
 		}
 		return url;
 	}
+	@bindThis
+	public async getFromUrl(url: string): Promise<MiDriveFile | null> {
+		const file = await this.driveFilesRepository.findOneBy({ url: url });
+		if (file === null ) return null;
 
+		return file;
+	}
 	@bindThis
 	public async calcDriveUsageOf(user: MiUser['id'] | { id: MiUser['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;

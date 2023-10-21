@@ -261,6 +261,7 @@ export interface Locale {
     "imageUrl": string;
     "remove": string;
     "removed": string;
+    "undraftAreYouSure": string;
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
     "resetAreYouSure": string;

@@ -12,12 +12,13 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiEmoji } from '@/models/Emoji.js';
-import type { EmojisRepository, MiRole, MiUser, DriveFilesRepository } from '@/models/_.js';
+import type { EmojisRepository, EmojiDraftsRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { MiEmojiDraft } from '@/models/EmojiDraft.js';
 
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
@@ -33,8 +34,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		@Inject(DI.emojiDraftsRepository)
+		private emojiDraftsRepository: EmojiDraftsRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -59,6 +60,40 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async draft(data: {
+		driveFile: MiDriveFile;
+		name: string;
+		category: string | null;
+		aliases: string[];
+		license: string | null;
+		isSensitive: boolean;
+		localOnly: boolean;
+	}, me?: MiUser): Promise<MiEmojiDraft> {
+		const emoji = await this.emojiDraftsRepository.insert({
+			id: this.idService.gen(),
+			updatedAt: new Date(),
+			name: data.name,
+			category: data.category,
+			aliases: data.aliases,
+			originalUrl: data.driveFile.url,
+			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
+			type: data.driveFile.webpublicType ?? data.driveFile.type,
+			license: data.license,
+			isSensitive: data.isSensitive,
+			localOnly: data.localOnly,
+			fileId: data.driveFile.id,
+		}).then(x => this.emojiDraftsRepository.findOneByOrFail(x.identifiers[0]));
+
+		if (me) {
+			this.moderationLogService.log(me, 'addCustomEmoji', {
+				emojiId: emoji.id,
+				emoji: emoji,
+			});
+		}
+
+		return emoji;
+	}
+	@bindThis
 	public async add(data: {
 		driveFile: MiDriveFile;
 		name: string;
@@ -68,7 +103,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
-        draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
@@ -85,7 +119,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
-			draft: data.draft,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {
@@ -113,44 +146,27 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		category?: string | null;
 		aliases?: string[];
 		license?: string | null;
-        fileId?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
-        draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
-		const driveFile = data.fileId !== null ? await this.driveFilesRepository.findOneBy({ id: data.fileId }) : null;
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
 		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
 
-		if (driveFile !== null) {
-			await this.emojisRepository.update(emoji.id, {
-				updatedAt: new Date(),
-				name: data.name,
-				category: data.category,
-				aliases: data.aliases,
-				license: data.license,
-				isSensitive: data.isSensitive,
-				localOnly: data.localOnly,
-				originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
-				publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
-				type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
-				draft: data.draft,
-			});
-		} else {
-			await this.emojisRepository.update(emoji.id, {
-				updatedAt: new Date(),
-				name: data.name,
-				category: data.category,
-				aliases: data.aliases,
-				license: data.license,
-				isSensitive: data.isSensitive,
-				localOnly: data.localOnly,
-				draft: data.draft,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
-			});
-		}
+		await this.emojisRepository.update(emoji.id, {
+			updatedAt: new Date(),
+			name: data.name,
+			category: data.category,
+			aliases: data.aliases,
+			license: data.license,
+			isSensitive: data.isSensitive,
+			localOnly: data.localOnly,
+			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
+			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
+			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
+		});
 
 		this.localEmojisCache.refresh();
 
@@ -179,7 +195,35 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 		}
 	}
+	@bindThis
+	public async draftUpdate(id: MiEmoji['id'], data: {
+		driveFile?: MiDriveFile;
+		name?: string;
+		category?: string | null;
+		aliases?: string[];
+		license?: string | null;
+		isSensitive?: boolean;
+		localOnly?: boolean;
+	}, moderator?: MiUser): Promise<void> {
+		const emoji = await this.emojiDraftsRepository.findOneByOrFail({ id: id });
+		const sameNameEmoji = await this.emojiDraftsRepository.findOneBy({ name: data.name });
+		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
 
+		await this.emojiDraftsRepository.update(emoji.id, {
+			updatedAt: new Date(),
+			name: data.name,
+			category: data.category,
+			aliases: data.aliases,
+			license: data.license,
+			isSensitive: data.isSensitive,
+			localOnly: data.localOnly,
+			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
+			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
+			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
+		});
+
+		this.localEmojisCache.refresh();
+	}
 	@bindThis
 	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
 		const emojis = await this.emojisRepository.findBy({
@@ -287,7 +331,12 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 		}
 	}
+	@bindThis
+	public async draftDelete(id: MiEmojiDraft['id']) {
+		const emoji = await this.emojiDraftsRepository.findOneByOrFail({ id: id });
 
+		await this.emojiDraftsRepository.delete(emoji.id);
+	}
 	@bindThis
 	public async deleteBulk(ids: MiEmoji['id'][], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
@@ -408,12 +457,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	public checkDuplicate(name: string): Promise<boolean> {
 		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
 	}
+	@bindThis
+	public checkDraftDuplicate(name: string): Promise<boolean> {
+		return this.emojiDraftsRepository.exist({ where: { name } });
+	}
 
 	@bindThis
 	public getEmojiById(id: string): Promise<MiEmoji | null> {
 		return this.emojisRepository.findOneBy({ id });
 	}
 
+	@bindThis
+	public getEmojiDraftById(id: string): Promise<MiEmojiDraft | null> {
+		return this.emojiDraftsRepository.findOneBy({ id });
+	}
 	@bindThis
 	public dispose(): void {
 		this.cache.dispose();

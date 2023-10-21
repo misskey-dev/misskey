@@ -45,18 +45,19 @@ const emojisDraftPaginationComponent = shallowRef<InstanceType<typeof MkPaginati
 const query = ref(null);
 
 const paginationDraft = {
-	endpoint: 'admin/emoji/list' as const,
+	endpoint: 'emoji-drafts' as const,
 	limit: 30,
 	params: computed(() => ({
 		query: (query.value && query.value !== '') ? query.value : null,
-		draft: true,
 	})),
 };
 
 const editDraft = (emoji) => {
+	emoji.isDraft = true;
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
 		emoji: emoji,
 		isRequest: false,
+		isDraftEdit: true,
 	}, {
 		done: result => {
 			if (result.updated) {
@@ -80,16 +81,16 @@ async function undrafted(emoji) {
 	});
 	if (canceled) return;
 
-	await os.api('admin/emoji/update', {
+	await os.api('admin/emoji/draft-update', {
 		id: emoji.id,
+		fileId: emoji.fileId,
 		name: emoji.name,
 		category: emoji.category,
 		aliases: emoji.aliases,
 		license: emoji.license,
-		draft: false,
 		isSensitive: emoji.isSensitive,
 		localOnly: emoji.localOnly,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+		isDraft: false,
 	});
 
 	emojisDraftPaginationComponent.value.removeItem((item) => item.id === emoji.id);

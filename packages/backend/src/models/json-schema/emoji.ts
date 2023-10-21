@@ -40,9 +40,35 @@ export const packedEmojiSimpleSchema = {
 				format: 'id',
 			},
 		},
-		draft: {
-			type: 'boolean',
+	},
+} as const;
+export const packedEmojiDraftSimpleSchema = {
+	type: 'object',
+	properties: {
+		aliases: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
+		name: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		category: {
+			type: 'string',
 			optional: false, nullable: true,
+		},
+		url: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		isSensitive: {
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 	},
 } as const;
@@ -85,10 +111,6 @@ export const packedEmojiDetailedSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
-		draft: {
-			type: 'boolean',
-			optional: false, nullable: true,
-		},
 		isSensitive: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -105,6 +127,54 @@ export const packedEmojiDetailedSchema = {
 				optional: false, nullable: false,
 				format: 'id',
 			},
+		},
+	},
+} as const;
+
+export const packedEmojiDraftDetailedSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+		},
+		aliases: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
+		name: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		category: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		url: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		license: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		isSensitive: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		localOnly: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		fileId: {
+			type: 'string',
+			optional: false, nullable: false,
 		},
 	},
 } as const;

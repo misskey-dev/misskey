@@ -37,6 +37,7 @@ import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-al
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
+import * as ep___admin_emoji_draftUpdate from './endpoints/admin/emoji/draft-update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -243,6 +244,7 @@ import * as ep___invite_list from './endpoints/invite/list.js';
 import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
+import * as ep___emojiDrafts from './endpoints/emoji-drafts.js';
 import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -388,6 +390,7 @@ const $admin_emoji_setAliasesBulk: Provider = { provide: 'ep:admin/emoji/set-ali
 const $admin_emoji_setCategoryBulk: Provider = { provide: 'ep:admin/emoji/set-category-bulk', useClass: ep___admin_emoji_setCategoryBulk.default };
 const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-license-bulk', useClass: ep___admin_emoji_setLicenseBulk.default };
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
+const $admin_emoji_draftUpdate: Provider = { provide: 'ep:admin/emoji/draft-update', useClass: ep___admin_emoji_draftUpdate.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
 const $admin_federation_removeAllFollowing: Provider = { provide: 'ep:admin/federation/remove-all-following', useClass: ep___admin_federation_removeAllFollowing.default };
@@ -594,6 +597,7 @@ const $invite_list: Provider = { provide: 'ep:invite/list', useClass: ep___invit
 const $invite_limit: Provider = { provide: 'ep:invite/limit', useClass: ep___invite_limit.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
+const $emoji_drafts: Provider = { provide: 'ep:emoji-drafts', useClass: ep___emojiDrafts.default };
 const $emoji: Provider = { provide: 'ep:emoji', useClass: ep___emoji.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
@@ -743,6 +747,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
+		$admin_emoji_draftUpdate,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
@@ -949,6 +954,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$invite_limit,
 		$meta,
 		$emojis,
+		$emoji_drafts,
 		$emoji,
 		$miauth_genToken,
 		$mute_create,
@@ -1092,6 +1098,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
+		$admin_emoji_draftUpdate,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
@@ -1298,6 +1305,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$invite_limit,
 		$meta,
 		$emojis,
+		$emoji_drafts,
 		$emoji,
 		$miauth_genToken,
 		$mute_create,

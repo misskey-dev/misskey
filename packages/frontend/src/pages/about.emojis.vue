@@ -32,13 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
 			<template #header>{{ category || i18n.ts.other }}</template>
 			<div :class="$style.emojis">
-				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category && !e.draft)" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji"/>
 			</div>
 		</MkFoldableSection>
 	</MkSpacer>
 	<MkSpacer v-if="tab === 'draft'" :contentMax="1000" :marginMin="20">
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in draftEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+			<XEmoji v-for="emoji in draftEmojis.emojis" :key="emoji.name" :emoji="emoji" :draft="true"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -73,8 +73,7 @@ definePageMetadata(ref({}));
 let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = $ref(new Set());
-const draftEmojis = customEmojis.value.filter(emoji => emoji.draft);
-
+const draftEmojis = await os.apiGet('emoji-drafts');
 function search() {
 	if ((q === '' || q == null) && selectedTags.size === 0) {
 		searchEmojis = null;

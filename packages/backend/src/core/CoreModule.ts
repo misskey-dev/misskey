@@ -86,6 +86,7 @@ import { ClipEntityService } from './entities/ClipEntityService.js';
 import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
 import { DriveFolderEntityService } from './entities/DriveFolderEntityService.js';
 import { EmojiEntityService } from './entities/EmojiEntityService.js';
+import { EmojiDraftsEntityService } from './entities/EmojiDraftsEntityService.js';
 import { FollowingEntityService } from './entities/FollowingEntityService.js';
 import { FollowRequestEntityService } from './entities/FollowRequestEntityService.js';
 import { GalleryLikeEntityService } from './entities/GalleryLikeEntityService.js';
@@ -217,6 +218,7 @@ const $ClipEntityService: Provider = { provide: 'ClipEntityService', useExisting
 const $DriveFileEntityService: Provider = { provide: 'DriveFileEntityService', useExisting: DriveFileEntityService };
 const $DriveFolderEntityService: Provider = { provide: 'DriveFolderEntityService', useExisting: DriveFolderEntityService };
 const $EmojiEntityService: Provider = { provide: 'EmojiEntityService', useExisting: EmojiEntityService };
+const $EmojiDraftsEntityService: Provider = { provide: 'EmojiDraftsEntityService', useExisting: EmojiDraftsEntityService };
 const $FollowingEntityService: Provider = { provide: 'FollowingEntityService', useExisting: FollowingEntityService };
 const $FollowRequestEntityService: Provider = { provide: 'FollowRequestEntityService', useExisting: FollowRequestEntityService };
 const $GalleryLikeEntityService: Provider = { provide: 'GalleryLikeEntityService', useExisting: GalleryLikeEntityService };
@@ -348,6 +350,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		DriveFileEntityService,
 		DriveFolderEntityService,
 		EmojiEntityService,
+		EmojiDraftsEntityService,
 		FollowingEntityService,
 		FollowRequestEntityService,
 		GalleryLikeEntityService,
@@ -474,6 +477,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$DriveFileEntityService,
 		$DriveFolderEntityService,
 		$EmojiEntityService,
+		$EmojiDraftsEntityService,
 		$FollowingEntityService,
 		$FollowRequestEntityService,
 		$GalleryLikeEntityService,
@@ -600,6 +604,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		DriveFileEntityService,
 		DriveFolderEntityService,
 		EmojiEntityService,
+		EmojiDraftsEntityService,
 		FollowingEntityService,
 		FollowRequestEntityService,
 		GalleryLikeEntityService,
@@ -725,6 +730,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$DriveFileEntityService,
 		$DriveFolderEntityService,
 		$EmojiEntityService,
+		$EmojiDraftsEntityService,
 		$FollowingEntityService,
 		$FollowRequestEntityService,
 		$GalleryLikeEntityService,

@@ -5,34 +5,32 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository } from '@/models/_.js';
+import type { EmojiDraftsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
-import type { MiEmoji } from '@/models/Emoji.js';
 import { bindThis } from '@/decorators.js';
+import { MiEmojiDraft } from '@/models/EmojiDraft.js';
 
 @Injectable()
-export class EmojiEntityService {
+export class EmojiDraftsEntityService {
 	constructor(
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
+		@Inject(DI.emojiDraftsRepository)
+		private emojiDraftsRepository: EmojiDraftsRepository,
 	) {
 	}
 
 	@bindThis
 	public async packSimple(
-		src: MiEmoji['id'] | MiEmoji,
-	): Promise<Packed<'EmojiSimple'>> {
-		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
+		src: MiEmojiDraft['id'] | MiEmojiDraft,
+	): Promise<Packed<'EmojiDraftSimple'>> {
+		const emoji = typeof src === 'object' ? src : await this.emojiDraftsRepository.findOneByOrFail({ id: src });
 
 		return {
 			aliases: emoji.aliases,
 			name: emoji.name,
 			category: emoji.category,
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url: emoji.publicUrl || emoji.originalUrl,
+			url: emoji.publicUrl,
 			isSensitive: emoji.isSensitive ? true : undefined,
-			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length > 0 ? emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : undefined,
 		};
 	}
 
@@ -45,22 +43,20 @@ export class EmojiEntityService {
 
 	@bindThis
 	public async packDetailed(
-		src: MiEmoji['id'] | MiEmoji,
-	): Promise<Packed<'EmojiDetailed'>> {
-		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
+		src: MiEmojiDraft['id'] | MiEmojiDraft,
+	): Promise<Packed<'EmojiDraftDetailed'>> {
+		const emoji = typeof src === 'object' ? src : await this.emojiDraftsRepository.findOneByOrFail({ id: src });
 
 		return {
 			id: emoji.id,
 			aliases: emoji.aliases,
 			name: emoji.name,
 			category: emoji.category,
-			host: emoji.host,
-			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url: emoji.publicUrl || emoji.originalUrl,
+			url: emoji.publicUrl,
 			license: emoji.license,
 			isSensitive: emoji.isSensitive,
 			localOnly: emoji.localOnly,
-			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			fileId: emoji.fileId,
 		};
 	}
 
