@@ -15,14 +15,15 @@
 ## 2023.x.x (unreleased)
 
 ### General
-- 
+-
 
-### Client
+## Client
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
-	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください（TODO）
+	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
+	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 
 ### Server
-- 
+-
 
 ## 2023.10.2
 
