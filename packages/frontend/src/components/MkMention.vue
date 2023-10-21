@@ -16,7 +16,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
 import {computed, ref, watch} from 'vue';
-import { computed } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config.js';
 import { $i } from '@/account.js';
@@ -68,7 +67,6 @@ const isMe = $i && (
 
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 bg.setAlpha(0.1);
-const bgCss = bg.toRgbString();
 
 const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
