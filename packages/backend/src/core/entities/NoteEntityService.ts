@@ -73,7 +73,7 @@ export class NoteEntityService implements OnModuleInit {
 
 	@bindThis
 	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null) {
-	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
+		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
 		// visibility が specified かつ自分が指定されていなかったら非表示
@@ -83,7 +83,7 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (meId === packedNote.userId) {
 				hide = false;
 			} else {
-			// 指定されているかどうか
+				// 指定されているかどうか
 				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
 
 				if (specified) {
@@ -360,12 +360,14 @@ export class NoteEntityService implements OnModuleInit {
 
 				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
+					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
 				}) : undefined,
 
 				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
+					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
 				}) : undefined,

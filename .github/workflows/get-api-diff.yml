@@ -1,0 +1,225 @@
+name: Report API Diff
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  get-base:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [20.5.1]
+
+    services:
+      db:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_USER: example-misskey-user
+          POSTGRESS_PASS: example-misskey-pass
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        repository: ${{ github.event.pull_request.base.repo.full_name }}
+        ref: ${{ github.base_ref }}
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3.8.1
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .config/example.yml .config/default.yml
+    - name: Build
+      run: pnpm build
+    - name : Migrate
+      run: pnpm migrate
+    - name: Launch misskey
+      run: |
+        screen -S misskey -dm pnpm run dev
+        sleep 30s
+    - name: Wait for Misskey to be ready
+      run: |
+        MAX_RETRIES=12
+        RETRY_DELAY=5
+        count=0
+        until $(curl --output /dev/null --silent --head --fail http://localhost:3000) || [[ $count -eq $MAX_RETRIES ]]; do
+          printf '.'
+          sleep $RETRY_DELAY
+          count=$((count + 1))
+        done
+
+        if [[ $count -eq $MAX_RETRIES ]]; then
+          echo "Failed to connect to Misskey after $MAX_RETRIES attempts."
+          exit 1
+        fi
+    - id: fetch
+      name: Get api.json from Misskey
+      run: |
+        RESULT=$(curl --retry 5 --retry-delay 5 --retry-max-time 60 http://localhost:3000/api.json)
+        echo $RESULT > api-base.json
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: api-artifact
+        path: api-base.json
+    - name: Kill Misskey Job
+      run: screen -S misskey -X quit
+
+  get-head:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [20.5.1]
+
+    services:
+      db:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_USER: example-misskey-user
+          POSTGRESS_PASS: example-misskey-pass
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.head_ref }}
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3.8.1
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .config/example.yml .config/default.yml
+    - name: Build
+      run: pnpm build
+    - name : Migrate
+      run: pnpm migrate
+    - name: Launch misskey
+      run: |
+        screen -S misskey -dm pnpm run dev
+        sleep 30s
+    - name: Wait for Misskey to be ready
+      run: |
+        MAX_RETRIES=12
+        RETRY_DELAY=5
+        count=0
+        until $(curl --output /dev/null --silent --head --fail http://localhost:3000) || [[ $count -eq $MAX_RETRIES ]]; do
+          printf '.'
+          sleep $RETRY_DELAY
+          count=$((count + 1))
+        done
+
+        if [[ $count -eq $MAX_RETRIES ]]; then
+          echo "Failed to connect to Misskey after $MAX_RETRIES attempts."
+          exit 1
+        fi
+    - id: fetch
+      name: Get api.json from Misskey
+      run: |
+        RESULT=$(curl --retry 5 --retry-delay 5 --retry-max-time 60 http://localhost:3000/api.json)
+        echo $RESULT > api-head.json
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: api-artifact
+        path: api-head.json
+    - name: Kill Misskey Job
+      run: screen -S misskey -X quit
+
+  compare-diff:
+    runs-on: ubuntu-latest
+    if: success()
+    needs: [get-base, get-head]
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: api-artifact
+          path: ./artifacts
+      - name: Output base
+        run: cat ./artifacts/api-base.json
+      - name: Output head
+        run: cat ./artifacts/api-head.json
+      - name: Arrange json files
+        run: |
+          jq '.' ./artifacts/api-base.json > ./api-base.json
+          jq '.' ./artifacts/api-head.json > ./api-head.json
+      - name: Get diff of 2 files
+        run: diff -u --label=base --label=head ./api-base.json ./api-head.json | cat > api.json.diff
+      - name: Get full diff
+        run: diff --label=base --label=head --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' ./api-base.json ./api-head.json | cat > api-full.json.diff
+      - name: Echo full diff
+        run: cat ./api-full.json.diff
+      - name: Upload full diff to Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-artifact
+          path: api-full.json.diff
+      - id: out-diff
+        name: Build diff Comment
+        run: |
+          cat <<- EOF > ./output.md
+          このPRによるapi.jsonの差分
+          <details>
+          <summary>差分はこちら</summary>
+
+          \`\`\`diff
+          $(cat ./api.json.diff)
+          \`\`\`
+          </details>
+
+          [Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})
+          EOF
+      - name: Write diff comment
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          comment_tag: show_diff
+          filePath: ./output.md

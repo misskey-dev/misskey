@@ -41,7 +41,7 @@ const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
-	limit: 10,
+	limit: 20,
 	params: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
