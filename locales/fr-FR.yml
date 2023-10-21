@@ -1744,3 +1744,18 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendre"
   resetPassword: "Réinitialiser le mot de passe"
+_externalResourceInstaller:
+  _theme:
+    metaTitle: "Informations sur le thème"
+  _meta:
+    base: "Palette de couleurs de base"
+  _vendorInfo:
+    title: "Informations sur le distributeur"
+    endpoint: "Point de terminaison référencé"
+    hashVerify: "Vérification du code haché"
+  _errors:
+    _invalidParams:
+      title: "Paramètres invalides"
+      description: "Il y a un manque d'informations nécessaires pour obtenir des données à partir de sites externes. Veuillez vérifier l'URL."
+    _pluginParseFailed:
+      title: "Erreur d'AiScript"
