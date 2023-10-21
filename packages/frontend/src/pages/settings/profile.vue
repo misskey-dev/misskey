@@ -84,9 +84,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSlot>
 
 	<MkFolder>
+		<template #icon><i class="ti ti-sparkles"></i></template>
 		<template #label>{{ i18n.ts.avatarDecorations }}</template>
 
-		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); grid-gap: 12px;">
+		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-gap: 12px;">
 			<div
 				v-for="avatarDecoration in avatarDecorations"
 				:key="avatarDecoration.id"
@@ -377,7 +378,7 @@ definePageMetadata({
 .avatarDecoration {
 	cursor: pointer;
 	padding: 16px 16px 24px 16px;
-	border: solid 1px var(--divider);
+	border: solid 2px var(--divider);
 	border-radius: 8px;
 	text-align: center;
 }
