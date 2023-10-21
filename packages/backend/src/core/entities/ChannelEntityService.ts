@@ -11,6 +11,7 @@ import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 import { In } from 'typeorm';
@@ -38,6 +39,7 @@ export class ChannelEntityService {
 
 		private noteEntityService: NoteEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -81,7 +83,7 @@ export class ChannelEntityService {
 
 		return {
 			id: channel.id,
-			createdAt: channel.createdAt.toISOString(),
+			createdAt: this.idService.parse(channel.id).date.toISOString(),
 			lastNotedAt: channel.lastNotedAt ? channel.lastNotedAt.toISOString() : null,
 			name: channel.name,
 			description: channel.description,

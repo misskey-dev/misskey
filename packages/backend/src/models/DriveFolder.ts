@@ -12,12 +12,6 @@ export class MiDriveFolder {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Index()
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the DriveFolder.',
-	})
-	public createdAt: Date;
-
 	@Column('varchar', {
 		length: 128,
 		comment: 'The name of the DriveFolder.',

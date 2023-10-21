@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const copied = await this.emojisRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				updatedAt: new Date(),
 				name: emoji.name,
 				host: null,
