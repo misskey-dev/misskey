@@ -140,6 +140,13 @@ function focus(): void {
 }
 
 const headerActions = $computed(() => [{
+	icon: 'ti ti-refresh',
+	text: i18n.ts.reload,
+	handler: (ev) => {
+		console.log('called');
+		tlComponent.reloadTimeline();
+	},
+}, {
 	icon: 'ti ti-dots',
 	text: i18n.ts.options,
 	handler: (ev) => {

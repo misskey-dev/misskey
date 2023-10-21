@@ -4,13 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+	<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, onUnmounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
-import { useStream } from '@/stream.js';
+import { useStream, reloadStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
@@ -181,6 +181,18 @@ const pagination = {
 onUnmounted(() => {
 	connection.dispose();
 	if (connection2) connection2.dispose();
+});
+
+const reloadTimeline = () => {
+	tlNotesCount = 0;
+
+	tlComponent.pagingComponent?.reload().then(() => {
+		reloadStream();
+	});
+};
+
+defineExpose({
+	reloadTimeline
 });
 
 /* TODO
