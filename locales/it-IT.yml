@@ -1136,7 +1136,7 @@ externalServices: "Servizi esterni"
 impressum: "Dichiarazione di proprietà"
 impressumUrl: "URL della dichiarazione di proprietà"
 impressumDescription: "La dichiarazione di proprietà, è obbligatoria in alcuni paesi come la Germania (Impressum)."
-privacyPolicy: "Informativa ai sensi degli artt. 13 e 14 del Regolamento UE 2016/679 per la protezione dei dati personali (GDPR)"
+privacyPolicy: "Informativa privacy ai sensi del Regolamento UE 2016/679 (GDPR)"
 privacyPolicyUrl: "URL della informativa privacy"
 tosAndPrivacyPolicy: "Condizioni d'uso e informativa privacy"
 _announcement:
