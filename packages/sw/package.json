@@ -9,7 +9,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"esbuild": "0.19.4",
+		"esbuild": "0.19.5",
 		"idb-keyval": "6.2.1",
 		"misskey-js": "workspace:*"
 	},

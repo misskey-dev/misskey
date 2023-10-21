@@ -123,6 +123,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
+			shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
+
 			if (!shouldFallbackToDb) {
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -180,15 +182,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser');
 
-				query.andWhere(new Brackets(qb => {
-					qb
-						.where('note.replyId IS NULL') // 返信ではない
-						.orWhere(new Brackets(qb => {
-							qb // 返信だけど投稿者自身への返信
-								.where('note.replyId IS NOT NULL')
-								.andWhere('note.replyUserId = note.userId');
-						}));
-				}));
+				if (!ps.withReplies) {
+					query.andWhere(new Brackets(qb => {
+						qb
+							.where('note.replyId IS NULL') // 返信ではない
+							.orWhere(new Brackets(qb => {
+								qb // 返信だけど投稿者自身への返信
+									.where('note.replyId IS NOT NULL')
+									.andWhere('note.replyUserId = note.userId');
+							}));
+					}));
+				}
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);

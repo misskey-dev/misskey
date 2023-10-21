@@ -12,7 +12,7 @@ export type UserLite = {
 	id: ID;
 	username: string;
 	host: string | null;
-	name: string;
+	name: string | null;
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 	avatarUrl: string;
 	avatarBlurhash: string;
@@ -28,6 +28,8 @@ export type UserLite = {
 		faviconUrl: Instance['faviconUrl'];
 		themeColor: Instance['themeColor'];
 	};
+	isCat?: boolean;
+	isBot?: boolean;
 };
 
 export type UserDetailed = UserLite & {
