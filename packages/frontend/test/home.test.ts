@@ -34,6 +34,8 @@ describe('XHome', () => {
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
+			avatarUrl: 'https://example.com',
+			avatarDecorations: [],
 		});
 
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');
@@ -54,6 +56,8 @@ describe('XHome', () => {
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
+			avatarUrl: 'https://example.com',
+			avatarDecorations: [],
 		});
 
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');
