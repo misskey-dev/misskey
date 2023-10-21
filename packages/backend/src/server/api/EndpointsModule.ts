@@ -357,6 +357,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
+import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -713,6 +714,7 @@ const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_s
 const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
+const $fetchExternalResources: Provider = { provide: 'ep:fetch-external-resources', useClass: ep___fetchExternalResources.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
 @Module({
@@ -1073,6 +1075,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
+		$fetchExternalResources,
 		$retention,
 	],
 	exports: [
@@ -1424,6 +1427,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
+		$fetchExternalResources,
 		$retention,
 	],
 })

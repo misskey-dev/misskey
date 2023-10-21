@@ -323,6 +323,10 @@ export const routes = [{
 	path: '/registry',
 	component: page(() => import('./pages/registry.vue')),
 }, {
+	path: '/install-extentions',
+	component: page(() => import('./pages/install-extentions.vue')),
+	loginRequired: true,
+}, {
 	path: '/admin/user/:userId',
 	component: iAmModerator ? page(() => import('./pages/admin-user.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
