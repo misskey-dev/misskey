@@ -12,6 +12,20 @@
 
 -->
 
+## 2023.11.0 (unreleased)
+
+### General
+- Feat: アイコンデコレーション機能
+- Enhance: すでにフォローしたすべての人の返信をTLに追加できるように
+
+## Client
+- Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
+	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
+	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+
+### Server
+- Fix: リストTLに自分のフォロワー限定投稿が含まれない問題を修正
+
 ## 2023.10.2
 
 ### General
