@@ -639,4 +639,11 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
+
+	// fetching external data
+	'fetch-rss': { req: { url: string; }; res: TODO; };
+	'fetch-external-resources': {
+		req: { url: string; hash: string; };
+		res: { type: string; data: string; };
+	};
 };

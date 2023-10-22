@@ -868,7 +868,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			if (note.visibility === 'followers') {
 				// TODO: 重そうだから何とかしたい Set 使う？
-				userListMemberships = userListMemberships.filter(x => followings.some(f => f.followerId === x.userListUserId));
+				userListMemberships = userListMemberships.filter(x => x.userListUserId === user.id || followings.some(f => f.followerId === x.userListUserId));
 			}
 
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
