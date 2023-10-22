@@ -1139,6 +1139,7 @@ impressumDescription: "Pada beberapa negara seperti Jerman, inklusi dari informa
 privacyPolicy: "Kebijakan Privasi"
 privacyPolicyUrl: "Tautan Kebijakan Privasi"
 tosAndPrivacyPolicy: "Syarat dan Ketentuan serta Kebijakan Privasi"
+flip: "Balik"
 _announcement:
   forExistingUsers: "Hanya pengguna yang telah ada"
   forExistingUsersDescription: "Pengumuman ini akan dimunculkan ke pengguna yang sudah ada dari titik waktu publikasi jika dinyalakan. Apabila dimatikan, mereka yang baru mendaftar setelah publikasi ini akan juga melihatnya."
