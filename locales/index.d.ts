@@ -1155,7 +1155,7 @@ export interface Locale {
     "releaseToRefresh": string;
     "refreshing": string;
     "pullDownToRefresh": string;
-    "disableWebSocket": string;
+    "disableStreamingTimeline": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

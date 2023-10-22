@@ -369,7 +369,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
-	disableWebSocket: {
+	disableStreamingTimeline: {
 		where: 'device',
 		default: false,
 	},

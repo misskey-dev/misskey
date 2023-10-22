@@ -181,7 +181,7 @@ if (props.src === 'antenna') {
 	};
 }
 
-if (!defaultStore.state.disableWebSocket) {
+if (!defaultStore.state.disableStreamingTimeline) {
 	connectChannel();
 
 	onUnmounted(() => {

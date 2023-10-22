@@ -1152,7 +1152,7 @@ showAvatarDecorations: "アイコンのデコレーションを表示"
 releaseToRefresh: "離してリロード"
 refreshing: "リロード中"
 pullDownToRefresh: "引っ張ってリロード"
-disableWebSocket: "タイムラインのリアルタイム更新を無効にする"
+disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
