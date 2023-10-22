@@ -1053,6 +1053,7 @@ authentication: "Authentification"
 authenticationRequiredToContinue: "Veuillez vous authentifier pour continuer"
 showRenotes: "Afficher les renotes"
 avatarDecorations: "Décorations d'avatar"
+flip: "Inverser"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
 _initialAccountSetting:
