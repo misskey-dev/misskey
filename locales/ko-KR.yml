@@ -1122,6 +1122,7 @@ showRenotes: "리노트 표시"
 edited: "수정됨"
 notificationRecieveConfig: "알림 설정"
 mutualFollow: "맞팔로우"
+flip: "플립"
 _announcement:
   forExistingUsers: "기존 유저에게만 알림"
   forExistingUsersDescription: "활성화하면 이 공지사항을 게시한 시점에서 이미 가입한 유저에게만 표시합니다. 비활성화하면 게시 후에 가입한 유저에게도 표시합니다."
