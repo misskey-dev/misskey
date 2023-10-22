@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
 				@click="toggleDecoration(avatarDecoration)"
 			>
-				<div :class="$style.avatarDecorationName">{{ avatarDecoration.name }}</div>
+				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="2 / 3">{{ avatarDecoration.name }}</MkCondensedLine></div>
 				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="avatarDecoration.url"/>
 			</div>
 		</div>
@@ -377,13 +377,17 @@ definePageMetadata({
 
 .avatarDecoration {
 	cursor: pointer;
-	padding: 16px 16px 24px 16px;
+	padding: 16px 16px 28px 16px;
 	border: solid 2px var(--divider);
 	border-radius: 8px;
 	text-align: center;
+	font-size: 90%;
+	overflow: clip;
+	contain: content;
 }
 
 .avatarDecorationActive {
+	background-color: var(--accentedBg);
 	border-color: var(--accent);
 }
 
@@ -391,6 +395,6 @@ definePageMetadata({
 	position: relative;
 	z-index: 10;
 	font-weight: bold;
-	margin-bottom: 16px;
+	margin-bottom: 20px;
 }
 </style>
