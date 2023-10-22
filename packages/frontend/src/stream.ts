@@ -35,7 +35,6 @@ export function reloadStream() {
 	stream.stream.reconnect();
 	timeoutHeadBeat = window.setTimeout(heartbeat, 1000 * 60);
 
-
 	return stream;
 }
 

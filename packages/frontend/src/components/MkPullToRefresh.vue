@@ -39,7 +39,7 @@ let scrollEl: HTMLElement | null = null;
 let disabled = false;
 
 const emits = defineEmits<{
-	(e: 'refresh'): void;
+	(ev: 'refresh'): void;
 }>();
 
 const getScrollableParentElement = (node) => {
@@ -49,8 +49,7 @@ const getScrollableParentElement = (node) => {
 
 	if (node.scrollHeight > node.clientHeight) {
 		return node;
-	}
-	else {
+	} else {
 		return getScrollableParentElement(node.parentNode);
 	}
 };
@@ -62,10 +61,10 @@ const getScreenY = (event) => {
 	return event.touches[0].screenY;
 };
 
-const moveStart = (e) => {
+const moveStart = (event) => {
 	if (!isPullStart && !isRefreshing && !disabled) {
 		isPullStart = true;
-		startScreenY = getScreenY(e);
+		startScreenY = getScreenY(event);
 		currentHeight = 0;
 	}
 };
@@ -111,14 +110,13 @@ const moveEnd = () => {
 			isPullEnd = false;
 			isRefreshing = true;
 			fixOverContent().then(() => emits('refresh'));
-		}
-		else {
+		} else {
 			closeContent().then(() => isPullStart = false);
 		}
 	}
 };
 
-const moving = (e) => {
+const moving = (event) => {
 	if (!isPullStart || isRefreshing || disabled) return;
 
 	if (!scrollEl) {
@@ -132,18 +130,16 @@ const moving = (e) => {
 	}
 
 	if (startScreenY === null) {
-		startScreenY = getScreenY(e);
+		startScreenY = getScreenY(event);
 	}
-	const moveScreenY = getScreenY(e);
+	const moveScreenY = getScreenY(event);
 
 	const moveHeight = moveScreenY - startScreenY!;
 	if (moveHeight < 0) {
 		currentHeight = 0;
-	}
-	else if (moveHeight >= maxFrameSize) {
+	} else if (moveHeight >= maxFrameSize) {
 		currentHeight = maxFrameSize;
-	}
-	else {
+	} else {
 		currentHeight = moveHeight;
 	}
 
@@ -157,12 +153,11 @@ onMounted(() => {
 		rootEl.addEventListener('pointerdown', moveStart);
 		// ポインターの場合、ポップアップ系の動作をするとdownだけ発火されてupが発火されないため
 		window.addEventListener('pointerup', moveEnd);
-		rootEl.addEventListener('pointermove', moving, {passive: true});
-	}
-	else {
+		rootEl.addEventListener('pointermove', moving, { passive: true });
+	} else {
 		rootEl.addEventListener('touchstart', moveStart);
 		rootEl.addEventListener('touchend', moveEnd);
-		rootEl.addEventListener('touchmove', moving, {passive: true});
+		rootEl.addEventListener('touchmove', moving, { passive: true });
 	}
 });
 
