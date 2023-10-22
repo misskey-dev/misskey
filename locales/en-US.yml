@@ -1132,6 +1132,10 @@ mutualFollow: "Mutual follow"
 fileAttachedOnly: "Only notes with files"
 showRepliesToOthersInTimeline: "Show replies to others in timeline"
 hideRepliesToOthersInTimeline: "Hide replies to others from timeline"
+showRepliesToOthersInTimelineAll: "Show replies to others from everyone you follow in timeline"
+hideRepliesToOthersInTimelineAll: "Hide replies to others from everyone you follow in timeline"
+confirmShowRepliesAll: "This operation is irreversible. Would you really like to show replies to others from everyone you follow in your timeline?"
+confirmHideRepliesAll: "This operation is irreversible. Would you really like to hide replies to others from everyone you follow in your timeline?"
 externalServices: "External Services"
 impressum: "Impressum"
 impressumUrl: "Impressum URL"
@@ -2181,14 +2185,26 @@ _externalResourceInstaller:
   _errors:
     _invalidParams:
       title: "Invalid parameters"
+      description: "There is not enough information to load data from an external site. Please confirm the entered URL."
     _resourceTypeNotSupported:
       title: "This external resource is not supported"
+      description: "The type of this external resource is not supported. Please contact the site administrator."
     _failedToFetch:
       title: "Failed to fetch data"
+      fetchErrorDescription: "An error occurred communicating with the external site. If trying again does not fix this issue, please contact the site administrator."
+      parseErrorDescription: "An error occurred processing the data of the external site. Please contact the site administrator."
+    _hashUnmatched:
+      title: "Data verification failed"
+      description: "An error occurred verifying the integrity of the fetched data. As a security measure, installation cannot continue. Please contact the site administrator."
     _pluginParseFailed:
       title: "AiScript Error"
+      description: "The requested data was fetched successfully, but an error occurred attempting during AiScript parsing. Please contact the plugin author. Error details can be viewed in the Javascript console."
+    _pluginInstallFailed:
+      title: "Plugin installation failed"
+      description: "A problem occurred during plugin installation. Please try again. Error details can be viewed in the Javascript console."
     _themeParseFailed:
       title: "Theme parsing failed"
+      description: "The requested data was fetched successfully, but an error occurred attempting during theme parsing. Please contact the theme author. Error details can be viewed in the Javascript console."
     _themeInstallFailed:
       title: "Failed to install theme"
       description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."
