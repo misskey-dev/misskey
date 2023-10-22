@@ -1139,6 +1139,7 @@ impressumDescription: "La dichiarazione di proprietà, è obbligatoria in alcuni
 privacyPolicy: "Informativa privacy ai sensi del Regolamento UE 2016/679 (GDPR)"
 privacyPolicyUrl: "URL della informativa privacy"
 tosAndPrivacyPolicy: "Condizioni d'uso e informativa privacy"
+flip: "Inverti"
 _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
