@@ -301,6 +301,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	showAvatarDecorations: {
+		where: 'device',
+		default: true,
+	},
 	postFormWithHashtags: {
 		where: 'device',
 		default: false,
