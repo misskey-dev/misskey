@@ -1140,6 +1140,7 @@ privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
+flip: "反転"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
