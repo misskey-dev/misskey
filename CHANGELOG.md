@@ -12,7 +12,7 @@
 
 -->
 
-## 2023.x.x (unreleased)
+## 2023.11.0 (unreleased)
 
 ### General
 -
@@ -23,7 +23,7 @@
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 
 ### Server
--
+- Fix: リストTLに自分のフォロワー限定投稿が含まれない問題を修正
 
 ## 2023.10.2
 
