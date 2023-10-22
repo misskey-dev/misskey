@@ -23,7 +23,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<img v-if="decoration || user.avatarDecorations.length > 0" :class="[$style.decoration]" :src="decoration ?? user.avatarDecorations[0].url" alt="">
+	<img
+		v-if="showDecoration && (decoration || user.avatarDecorations.length > 0)"
+		:class="[$style.decoration]"
+		:src="decoration?.url ?? user.avatarDecorations[0].url"
+		:style="{
+			rotate: getDecorationAngle(),
+			scale: getDecorationScale(),
+		}"
+		alt=""
+	>
 </component>
 </template>
 
@@ -48,17 +57,27 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
-	decoration?: string;
+	decoration?: {
+		url: string;
+		angle?: number;
+		flipH?: boolean;
+		flipV?: boolean;
+	};
+	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
+	decoration: undefined,
+	forceShowDecoration: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'click', v: MouseEvent): void;
 }>();
+
+const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
 
 const bound = $computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
@@ -71,6 +90,30 @@ const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
 	emit('click', ev);
+}
+
+function getDecorationAngle() {
+	let angle;
+	if (props.decoration) {
+		angle = props.decoration.angle ?? 0;
+	} else if (props.user.avatarDecorations.length > 0) {
+		angle = props.user.avatarDecorations[0].angle ?? 0;
+	} else {
+		angle = 0;
+	}
+	return angle === 0 ? undefined : `${angle * 360}deg`;
+}
+
+function getDecorationScale() {
+	let scaleX;
+	if (props.decoration) {
+		scaleX = props.decoration.flipH ? -1 : 1;
+	} else if (props.user.avatarDecorations.length > 0) {
+		scaleX = props.user.avatarDecorations[0].flipH ? -1 : 1;
+	} else {
+		scaleX = 1;
+	}
+	return scaleX === 1 ? undefined : `${scaleX} 1`;
 }
 
 let color = $ref<string | undefined>();
