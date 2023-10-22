@@ -1139,10 +1139,6 @@ impressumDescription: "In some countries, like germany, the inclusion of operato
 privacyPolicy: "Privacy Policy"
 privacyPolicyUrl: "Privacy Policy URL"
 tosAndPrivacyPolicy: "Terms of Service and Privacy Policy"
-releaseToRefresh: "Release to reload"
-refreshing: "Reloading"
-pullDownToRefresh: "Pull down to reload"
-disableStreamingTimeline: "Disable realtime update on timeline"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
