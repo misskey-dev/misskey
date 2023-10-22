@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@click="openDecoration(avatarDecoration)"
 			>
 				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="2 / 3">{{ avatarDecoration.name }}</MkCondensedLine></div>
-				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
+				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
 			</div>
 		</div>
 	</MkFolder>
