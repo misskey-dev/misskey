@@ -153,12 +153,11 @@ const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
-
 const customEmojiFolderRoot: CustomEmojiFolderTree = { value: "", category: "", children: [] };
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
   const parts = input.split('/');
-  var category = ""
+  let category = ""
   let currentNode: CustomEmojiFolderTree = root;
 
   for (const part of parts) {

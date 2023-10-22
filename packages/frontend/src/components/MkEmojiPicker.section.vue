@@ -42,11 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
       <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
     </button>
   </div>
-  <div v-if="shown" style="padding-left: 18px;">
+  <div v-if="shown" v-for="child in customEmojiTree" style="padding-left: 18px;">
     <!-- TODO: 再帰へのイベントの渡し方が微妙なのか反応はするがエフェクトが出ない -->
     <MkEmojiPickerSection
-        v-if="shown"
-        v-for="child in customEmojiTree"
         :key="`custom:${child.value}`"
         :initialShown="initialShown"
         :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
@@ -62,9 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
-import {CustomEmojiFolderTree, getEmojiName} from '@/scripts/emojilist.js';
-import {i18n} from "../i18n.js";
-import {customEmojis} from "@/custom-emojis.js";
+import { CustomEmojiFolderTree, getEmojiName } from '@/scripts/emojilist.js';
+import { i18n } from "../i18n.js";
+import { customEmojis } from "@/custom-emojis.js";
 import MkEmojiPickerSection from "@/components/MkEmojiPicker.section.vue";
 
 const props = defineProps<{
