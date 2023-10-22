@@ -12,6 +12,22 @@
 
 -->
 
+<<<<<<< HEAD
+=======
+## 2023.11.0 (unreleased)
+
+### General
+-
+
+## Client
+- Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
+	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
+	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+
+### Server
+- Fix: リストTLに自分のフォロワー限定投稿が含まれない問題を修正
+
+>>>>>>> 72327716c (fix(backend): リストTLに自分のフォロワー限定投稿が含まれない問題を修正)
 ## 2023.10.2
 
 ### General
