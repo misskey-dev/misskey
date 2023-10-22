@@ -3,8 +3,8 @@ name: Test (frontend)
 on:
   push:
     branches:
-      - master
-      - develop
+      - nyaone
+      - nyadev
   pull_request:
 
 jobs:
