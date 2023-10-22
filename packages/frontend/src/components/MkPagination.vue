@@ -489,7 +489,7 @@ const createInitialScrollListener = () => {
 			});
 		});
 	});
-}
+};
 
 watch($$(contentEl), () => {
 	if (props.disableObserver) {

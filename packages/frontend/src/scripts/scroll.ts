@@ -137,10 +137,10 @@ export function onScrollDownOnce(el: HTMLElement, cb: () => unknown): () => void
 	const containerEl = getScrollContainer(el);
 	const targetEl = containerEl ?? window;
 
-	let initialScrollTop = containerEl?.scrollTop || 0;
+	const initialScrollTop = containerEl?.scrollTop ?? 0;
 
 	const listener = () => {
-		if ((containerEl?.scrollTop || 0) > initialScrollTop) {
+		if ((containerEl?.scrollTop ?? 0) > initialScrollTop) {
 			cb();
 			targetEl.removeEventListener('scroll', listener);
 		}
@@ -157,10 +157,10 @@ export function onScrollUpOnce(el: HTMLElement, cb: () => unknown): () => void {
 	const containerEl = getScrollContainer(el);
 	const targetEl = containerEl ?? window;
 
-	let initialScrollTop = containerEl?.scrollTop || 0;
+	const initialScrollTop = containerEl?.scrollTop ?? 0;
 
 	const listener = () => {
-		if ((containerEl?.scrollTop || 0) < initialScrollTop) {
+		if ((containerEl?.scrollTop ?? 0) < initialScrollTop) {
 			cb();
 			targetEl.removeEventListener('scroll', listener);
 		}
