@@ -28,9 +28,9 @@ export function getScrollPosition(el: HTMLElement | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false) {
+export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false, immediate = true) {
 	// とりあえず評価してみる
-	if (el.isConnected && isTopVisible(el)) {
+	if (el.isConnected && isTopVisible(el) && immediate) {
 		cb();
 		if (once) return null;
 	}
@@ -50,11 +50,11 @@ export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, o
 	return removeListener;
 }
 
-export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false) {
+export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false, immediate = true) {
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
-	if (el.isConnected && isBottomVisible(el, tolerance, container)) {
+	if (el.isConnected && isBottomVisible(el, tolerance, container) && immediate) {
 		cb();
 		if (once) return null;
 	}
@@ -131,4 +131,44 @@ export function getBodyScrollHeight() {
 		document.body.offsetHeight, document.documentElement.offsetHeight,
 		document.body.clientHeight, document.documentElement.clientHeight,
 	);
+}
+
+export function onScrollDownOnce(el: HTMLElement, cb: () => unknown): () => void {
+	const containerEl = getScrollContainer(el);
+	const targetEl = containerEl ?? window;
+
+	let initialScrollTop = containerEl?.scrollTop || 0;
+
+	const listener = () => {
+		if ((containerEl?.scrollTop || 0) > initialScrollTop) {
+			cb();
+			targetEl.removeEventListener('scroll', listener);
+		}
+	};
+
+	targetEl.addEventListener('scroll', listener, { passive: true });
+
+	return () => {
+		targetEl.removeEventListener('scroll', listener);
+	};
+}
+
+export function onScrollUpOnce(el: HTMLElement, cb: () => unknown): () => void {
+	const containerEl = getScrollContainer(el);
+	const targetEl = containerEl ?? window;
+
+	let initialScrollTop = containerEl?.scrollTop || 0;
+
+	const listener = () => {
+		if ((containerEl?.scrollTop || 0) < initialScrollTop) {
+			cb();
+			targetEl.removeEventListener('scroll', listener);
+		}
+	};
+
+	targetEl.addEventListener('scroll', listener, { passive: true });
+
+	return () => {
+		targetEl.removeEventListener('scroll', listener);
+	};
 }

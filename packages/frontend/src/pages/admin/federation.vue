@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #header><XHeader :actions="headerActions"/></template>
 		<MkSpacer :contentMax="900">
 			<div class="_gaps">
-				<div>
+				<div ref="form">
 					<MkInput v-model="host" :debounce="true" class="">
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.host }}</template>
@@ -42,8 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSelect>
 					</FormSplit>
 				</div>
-
-				<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
+				<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination" :tolerance="1" disable-observer>
 					<div :class="$style.instances">
 						<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.instance" :to="`/instance-info/${instance.host}`">
 							<MkInstanceCardMini :instance="instance"/>
@@ -70,13 +69,14 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 let host = $ref('');
 let state = $ref('federating');
 let sort = $ref('+pubSub');
+
 const pagination = {
 	endpoint: 'federation/instances' as const,
-	limit: 10,
+	limit: 30,
 	offsetMode: true,
 	params: computed(() => ({
 		sort: sort,
-		host: host !== '' ? host : null,
+		host: host || null,
 		...(
 			state === 'federating' ? { federating: true } :
 			state === 'subscribing' ? { subscribing: true } :
