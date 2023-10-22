@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
     </button>
   </div>
-  <div v-if="shown" v-for="child in customEmojiTree" style="padding-left: 18px;">
+  <div v-for="child in customEmojiTree" v-if="shown" style="padding-left: 18px;">
     <!-- TODO: 再帰へのイベントの渡し方が微妙なのか反応はするがエフェクトが出ない -->
     <MkEmojiPickerSection
         :key="`custom:${child.value}`"
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
         :isChildrenExits="child.children.length!==0"
         :customEmojiTree="child.children"
-        @chosen="emit('chosen', $event)"
+				@chosen="emit('chosen', $event, $event)"
     >
       {{ child.value }}
     </MkEmojiPickerSection>

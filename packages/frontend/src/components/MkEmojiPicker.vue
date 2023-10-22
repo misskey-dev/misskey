@@ -157,7 +157,7 @@ const customEmojiFolderRoot: CustomEmojiFolderTree = { value: "", category: "", 
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
   const parts = input.split('/');
-  let category = ""
+  let category = "";
   let currentNode: CustomEmojiFolderTree = root;
 
   for (const part of parts) {
@@ -179,15 +179,13 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
   return currentNode;
 }
 
-customEmojiCategories.value.forEach(e => {
-  if (e !== null){
-    parseAndMergeCategories(e, customEmojiFolderRoot);
+customEmojiCategories.value.forEach(ec => {
+  if (ec !== null) {
+    parseAndMergeCategories(ec, customEmojiFolderRoot);
   }
 });
 
 parseAndMergeCategories(i18n.ts.other, customEmojiFolderRoot);
-
-console.log(customEmojiFolderRoot)
 
 watch(q, () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
