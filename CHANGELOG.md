@@ -23,6 +23,7 @@
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
 
 ### Server
 - Fix: リストTLに自分のフォロワー限定投稿が含まれない問題を修正
