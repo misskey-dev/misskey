@@ -133,7 +133,13 @@ export const paramDef = {
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)] as string[], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		avatarDecorations: { type: 'array', maxItems: 1, items: {
-			type: 'string',
+			type: 'object',
+			properties: {
+				id: { type: 'string', format: 'misskey:id' },
+				angle: { type: 'number', nullable: true, maximum: 0.5, minimum: -0.5 },
+				flipH: { type: 'boolean', nullable: true },
+			},
+			required: ['id'],
 		} },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		fields: {
@@ -309,7 +315,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
 					.map(d => d.id);
 
-				updates.avatarDecorations = ps.avatarDecorations.filter(id => decorationIds.includes(id));
+				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
+					id: d.id,
+					angle: d.angle ?? 0,
+					flipH: d.flipH ?? false,
+				}));
 			}
 
 			if (ps.pinnedPageId) {

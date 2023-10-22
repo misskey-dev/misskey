@@ -1148,6 +1148,10 @@ privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
+attach: "付ける"
+detach: "外す"
+angle: "角度"
+flip: "反転"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

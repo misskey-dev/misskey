@@ -92,10 +92,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="avatarDecoration in avatarDecorations"
 				:key="avatarDecoration.id"
 				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
-				@click="toggleDecoration(avatarDecoration)"
+				@click="openDecoration(avatarDecoration)"
 			>
-				<div :class="$style.avatarDecorationName">{{ avatarDecoration.name }}</div>
-				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="avatarDecoration.url"/>
+				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="2 / 3">{{ avatarDecoration.name }}</MkCondensedLine></div>
+				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="{ url: avatarDecoration.url }"/>
 			</div>
 		</div>
 	</MkFolder>
@@ -266,18 +266,10 @@ function changeBanner(ev) {
 	});
 }
 
-function toggleDecoration(avatarDecoration) {
-	if ($i.avatarDecorations.some(x => x.id === avatarDecoration.id)) {
-		os.apiWithDialog('i/update', {
-			avatarDecorations: [],
-		});
-		$i.avatarDecorations = [];
-	} else {
-		os.apiWithDialog('i/update', {
-			avatarDecorations: [avatarDecoration.id],
-		});
-		$i.avatarDecorations.push(avatarDecoration);
-	}
+function openDecoration(avatarDecoration) {
+	os.popup(defineAsyncComponent(() => import('./profile.avatar-decoration-dialog.vue')), {
+		decoration: avatarDecoration,
+	}, {}, 'closed');
 }
 
 const headerActions = $computed(() => []);
