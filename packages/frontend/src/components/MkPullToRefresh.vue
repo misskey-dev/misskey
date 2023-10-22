@@ -1,5 +1,5 @@
 <template>
-	<div ref="rootEl" :class="$style.root">
+	<div ref="rootEl">
 		<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${currentHeight}px;`">
 			<div :class="$style.contents">
 				<i v-if="!isRefreshing" :class="['ti', 'ti-arrow-bar-to-down', { [$style.refresh]: isPullEnd }]"></i>
@@ -9,12 +9,14 @@
 				<p v-else>{{ i18n.ts.pullDownToRefresh }}</p>
 			</div>
 		</div>
-		<slot />
+		<div :class="{ [$style.slotClip]: isPullStart }">
+			<slot />
+		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { i18n } from '@/i18n.js';
 
@@ -153,7 +155,8 @@ onMounted(() => {
 
 	if (supportPointerDesktop) {
 		rootEl.addEventListener('pointerdown', moveStart);
-		rootEl.addEventListener('pointerup', moveEnd);
+		// ポインターの場合、ポップアップ系の動作をするとdownだけ発火されてupが発火されないため
+		window.addEventListener('pointerup', moveEnd);
 		rootEl.addEventListener('pointermove', moving, {passive: true});
 	}
 	else {
@@ -161,6 +164,10 @@ onMounted(() => {
 		rootEl.addEventListener('touchend', moveEnd);
 		rootEl.addEventListener('touchmove', moving, {passive: true});
 	}
+});
+
+onUnmounted(() => {
+	if (supportPointerDesktop) window.removeEventListener('pointerup', moveEnd);
 });
 
 /**
@@ -231,5 +238,9 @@ defineExpose({
 				margin: 5px 0;
 			}
 		}
+	}
+
+	.slotClip {
+		overflow-y: clip;
 	}
 </style>
