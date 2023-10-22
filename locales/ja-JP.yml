@@ -1139,6 +1139,10 @@ impressumDescription: "ドイツなどの一部の国と地域では表示が義
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+releaseToRefresh: "離してリロード"
+refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロード"
+disableWebSocket: "タイムラインのリアルタイム更新を無効にする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

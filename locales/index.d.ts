@@ -1142,6 +1142,10 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+    "releaseToRefresh": string;
+    "refreshing": string;
+    "pullDownToRefresh": string;
+    "disableWebSocket": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

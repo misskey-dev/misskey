@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
-				<MkSwitch v-model="disableWebSocket">{{ i18n.ts.disableWebSocket ?? 'タイムラインのリアルタイム更新を無効にする' }}</MkSwitch>
+				<MkSwitch v-model="disableWebSocket">{{ i18n.ts.disableWebSocket }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
