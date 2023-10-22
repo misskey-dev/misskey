@@ -1053,7 +1053,11 @@ authentication: "Authentification"
 authenticationRequiredToContinue: "Veuillez vous authentifier pour continuer"
 showRenotes: "Afficher les renotes"
 avatarDecorations: "Décorations d'avatar"
+attach: "Mettre"
+detach: "Enlever"
+angle: "Angle"
 flip: "Inverser"
+showAvatarDecorations: "Afficher les décorations d'avatar"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
 _initialAccountSetting:
@@ -1750,7 +1754,10 @@ _moderationLogTypes:
   updateAvatarDecoration: "Décoration d'avatar mise à jour"
   deleteAvatarDecoration: "Décoration d'avatar supprimée"
 _externalResourceInstaller:
+  title: "Installer depuis un site externe"
+  checkVendorBeforeInstall: "Veuillez confirmer que le distributeur est fiable avant l'installation."
   _plugin:
+    title: "Voulez-vous installer cette extension ?"
     metaTitle: "Informations sur l'extension"
   _theme:
     title: "Voulez-vous installer ce thème ?"
@@ -1760,7 +1767,7 @@ _externalResourceInstaller:
   _vendorInfo:
     title: "Informations sur le distributeur"
     endpoint: "Point de terminaison référencé"
-    hashVerify: "Vérification du code haché"
+    hashVerify: "Vérification de l'intégrité du fichier"
   _errors:
     _invalidParams:
       title: "Paramètres invalides"
@@ -1772,6 +1779,9 @@ _externalResourceInstaller:
       title: "Échec de récupération des données"
       fetchErrorDescription: "La communication avec le site externe a échoué. Si vous réessayez et que cela ne s'améliore pas, veuillez contacter l'administrateur du site."
       parseErrorDescription: "Les données obtenues à partir du site externe n'ont pas pu être parsées. Veuillez contacter l'administrateur du site."
+    _hashUnmatched:
+      title: "Échec de vérification des données"
+      description: "La vérification de l'intégrité des données fournies a échoué. Pour des raisons de sécurité, l'installation ne peut pas continuer. Veuillez contacter l'administrateur du site."
     _pluginParseFailed:
       title: "Erreur d'AiScript"
       description: "Bien que les données aient été obtenues, elles n'ont pas pu être lues, car il y a eu une erreur lors du parsage d'AiScript. Veuillez contacter l'auteur de l'extension. Pour plus de détails sur l'erreur, veuillez consulter la console JavaScript."
