@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<img
-		v-if="decoration || user.avatarDecorations.length > 0"
+		v-if="showDecoration && (decoration || user.avatarDecorations.length > 0)"
 		:class="[$style.decoration]"
 		:src="decoration?.url ?? user.avatarDecorations[0].url"
 		:style="{
@@ -63,17 +63,21 @@ const props = withDefaults(defineProps<{
 		flipH?: boolean;
 		flipV?: boolean;
 	};
+	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
 	decoration: undefined,
+	forceShowDecoration: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'click', v: MouseEvent): void;
 }>();
+
+const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
 
 const bound = $computed(() => props.link
 	? { to: userPage(props.user), target: props.target }

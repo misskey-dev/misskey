@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :marginMin="20" :marginMax="28">
 			<div style="text-align: center;">
 				<div :class="$style.name">{{ decoration.name }}</div>
-				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decoration="{ url: decoration.url, angle, flipH }"/>
+				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decoration="{ url: decoration.url, angle, flipH }" forceShowDecoration/>
 			</div>
 			<div class="_gaps_s">
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">

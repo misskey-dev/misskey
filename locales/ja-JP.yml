@@ -1148,6 +1148,7 @@ attach: "付ける"
 detach: "外す"
 angle: "角度"
 flip: "反転"
+showAvatarDecorations: "アイコンのデコレーションを表示"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
