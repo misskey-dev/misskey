@@ -1132,6 +1132,10 @@ mutualFollow: "Gegenseitig gefolgt"
 fileAttachedOnly: "Nur Notizen mit Dateien"
 showRepliesToOthersInTimeline: "Antworten in Chronik anzeigen"
 hideRepliesToOthersInTimeline: "Antworten nicht in Chronik anzeigen"
+showRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutzern in Chronik anzeigen"
+hideRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutzern nicht in Chronik anzeigen"
+confirmShowRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern in der Chronik anzeigen?"
+confirmHideRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern nicht in der Chronik anzeigen?"
 externalServices: "Externe Dienste"
 impressum: "Impressum"
 impressumUrl: "Impressums-URL"
@@ -2181,14 +2185,26 @@ _externalResourceInstaller:
   _errors:
     _invalidParams:
       title: "Ungültige Parameter"
+      description: "Es fehlen Informationen zum Laden der externen Ressource. Überprüfe die übergebene URL."
     _resourceTypeNotSupported:
       title: "Diese Ressource wird nicht unterstützt"
+      description: "Dieser Ressourcentyp wird nicht unterstützt. Bitte kontaktiere den Seitenbesitzer."
     _failedToFetch:
       title: "Fehler beim Abrufen der Daten"
+      fetchErrorDescription: "Während der Kommunikation mit der externen Seite ist ein Fehler aufgetreten. Kontaktiere den Seitenbesitzer, falls ein erneutes Probieren dieses Problem nicht löst."
+      parseErrorDescription: "Während dem Auslesen der externen Daten ist ein Fehler aufgetreten. Kontaktiere den Seitenbesitzer."
+    _hashUnmatched:
+      title: "Datenverifizierung fehlgeschlagen"
+      description: "Die Integritätsprüfung der geladenen Daten ist fehlgeschlagen. Aus Sicherheitsgründen kann die Installation nicht fortgesetzt werden. Kontaktiere den Seitenbesitzer."
     _pluginParseFailed:
       title: "AiScript-Fehler"
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des AiScript-Parsings ein Fehler auf. Kontaktiere den Autor des Plugins. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _pluginInstallFailed:
+      title: "Das Plugin konnte nicht installiert werden"
+      description: "Während der Installation des Plugin ist ein Problem aufgetreten. Bitte versuche es erneut. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
     _themeParseFailed:
       title: "Parsing des Farbschemas fehlgeschlagen"
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des Farbschema-Parsings ein Fehler auf. Kontaktiere den Autor des Farbschemas. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
     _themeInstallFailed:
-      title: "Das Farbschema konnte nicht intalliert werden"
+      title: "Das Farbschema konnte nicht installiert werden"
       description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
