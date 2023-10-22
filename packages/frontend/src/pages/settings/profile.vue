@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
+			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
 			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@click="openDecoration(avatarDecoration)"
 			>
 				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="2 / 3">{{ avatarDecoration.name }}</MkCondensedLine></div>
-				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="{ url: avatarDecoration.url }"/>
+				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
 			</div>
 		</div>
 	</MkFolder>

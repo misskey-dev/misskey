@@ -87,9 +87,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, ref, watch} from 'vue';
-import {openInstanceMenu} from './common';
+import {openInstanceMenu} from './common.js';
 import * as os from '@/os';
-import {navbarItemDef} from '@/navbar';
+import {navbarItemDef} from '@/navbar.js';
 import {$i, openAccountMenu as openAccountMenu_} from '@/account';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';
@@ -396,16 +396,17 @@ function more(ev: MouseEvent) {
     position: relative;
   }
 
-  .account {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding-left: 30px;
-    width: 100%;
-    text-align: left;
-    box-sizing: border-box;
-    margin-top: 16px;
-  }
+	.account {
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding-left: 30px;
+		width: 100%;
+		text-align: left;
+		box-sizing: border-box;
+		margin-top: 16px;
+		overflow: clip;
+	}
 
   .avatar {
     display: block;
@@ -744,11 +745,12 @@ function more(ev: MouseEvent) {
     display: none;
   }
 
-  .account {
-    display: block;
-    text-align: center;
-    width: 100%;
-  }
+	.account {
+		display: block;
+		text-align: center;
+		width: 100%;
+		overflow: clip;
+	}
 
   .avatar {
     display: inline-block;

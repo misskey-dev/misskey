@@ -1185,6 +1185,7 @@ export interface Locale {
     "detach": string;
     "angle": string;
     "flip": string;
+    "showAvatarDecorations": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
