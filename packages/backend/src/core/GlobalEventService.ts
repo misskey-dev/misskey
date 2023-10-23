@@ -79,9 +79,9 @@ export interface MainEventTypes {
 	myTokenRegenerated: undefined;
 	signin: {
 		id: MiSignin['id'];
-		createAt: Date;
+		createdAt: string;
 		ip: string;
-		headers: any;
+		headers: Record<string, any>;
 		success: boolean;
 	};
 	registryUpdated: {
