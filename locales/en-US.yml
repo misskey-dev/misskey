@@ -1184,6 +1184,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.json Override"
   shortName: "Short name"
   shortNameDescription: "A shorthand for the instance's name that can be displayed if the full official name is long."
+  fanoutTimelineDescription: "Greatly increases performance of timeline retrieval and reduces load on the database when enabled. In exchange, memory usage of Redis will increase. Consider disabling this in case of low server memory or server instability."
 _accountMigration:
   moveFrom: "Migrate another account to this one"
   moveFromSub: "Create alias to another account"
@@ -2192,19 +2193,19 @@ _externalResourceInstaller:
     _failedToFetch:
       title: "Failed to fetch data"
       fetchErrorDescription: "An error occurred communicating with the external site. If trying again does not fix this issue, please contact the site administrator."
-      parseErrorDescription: "An error occurred processing the data of the external site. Please contact the site administrator."
+      parseErrorDescription: "An error occurred processing the data loaded from the external site. Please contact the site administrator."
     _hashUnmatched:
       title: "Data verification failed"
       description: "An error occurred verifying the integrity of the fetched data. As a security measure, installation cannot continue. Please contact the site administrator."
     _pluginParseFailed:
       title: "AiScript Error"
-      description: "The requested data was fetched successfully, but an error occurred attempting during AiScript parsing. Please contact the plugin author. Error details can be viewed in the Javascript console."
+      description: "The requested data was fetched successfully, but an error occurred during AiScript parsing. Please contact the plugin author. Error details can be viewed in the Javascript console."
     _pluginInstallFailed:
       title: "Plugin installation failed"
       description: "A problem occurred during plugin installation. Please try again. Error details can be viewed in the Javascript console."
     _themeParseFailed:
       title: "Theme parsing failed"
-      description: "The requested data was fetched successfully, but an error occurred attempting during theme parsing. Please contact the theme author. Error details can be viewed in the Javascript console."
+      description: "The requested data was fetched successfully, but an error occurred during theme parsing. Please contact the theme author. Error details can be viewed in the Javascript console."
     _themeInstallFailed:
       title: "Failed to install theme"
       description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."
