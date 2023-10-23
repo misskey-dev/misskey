@@ -77,7 +77,13 @@ export interface MainEventTypes {
 	unreadAntenna: MiAntenna;
 	readAllAnnouncements: undefined;
 	myTokenRegenerated: undefined;
-	signin: MiSignin;
+	signin: {
+		id: MiSignin['id'];
+		createAt: Date;
+		ip: string;
+		headers: any;
+		success: boolean;
+	};
 	registryUpdated: {
 		scope?: string[];
 		key: string;
