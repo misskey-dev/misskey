@@ -1,18 +1,18 @@
 <template>
-	<div ref="rootEl">
-		<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${currentHeight}px;`">
-			<div :class="$style.contents">
-				<i v-if="!isRefreshing" :class="['ti', 'ti-arrow-bar-to-down', { [$style.refresh]: isPullEnd }]"></i>
-				<MkLoading v-else :em="true"/>
-				<p v-if="isPullEnd">{{ i18n.ts.releaseToRefresh }}</p>
-				<p v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</p>
-				<p v-else>{{ i18n.ts.pullDownToRefresh }}</p>
-			</div>
-		</div>
-		<div :class="{ [$style.slotClip]: isPullStart }">
-			<slot />
+<div ref="rootEl">
+	<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${currentHeight}px;`">
+		<div :class="$style.contents">
+			<i v-if="!isRefreshing" :class="['ti', 'ti-arrow-bar-to-down', { [$style.refresh]: isPullEnd }]"></i>
+			<MkLoading v-else :em="true"/>
+			<p v-if="isPullEnd">{{ i18n.ts.releaseToRefresh }}</p>
+			<p v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</p>
+			<p v-else>{{ i18n.ts.pullDownToRefresh }}</p>
 		</div>
 	</div>
+	<div :class="{ [$style.slotClip]: isPullStart }">
+		<slot/>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -42,7 +42,7 @@ const emits = defineEmits<{
 	(ev: 'refresh'): void;
 }>();
 
-const getScrollableParentElement = (node) => {
+function getScrollableParentElement(node) {
 	if (node == null) {
 		return null;
 	}
@@ -52,58 +52,60 @@ const getScrollableParentElement = (node) => {
 	} else {
 		return getScrollableParentElement(node.parentNode);
 	}
-};
+}
 
-const getScreenY = (event) => {
+function getScreenY(event) {
 	if (supportPointerDesktop) {
 		return event.screenY;
 	}
 	return event.touches[0].screenY;
-};
+}
 
-const moveStart = (event) => {
+function moveStart(event) {
 	if (!isPullStart && !isRefreshing && !disabled) {
 		isPullStart = true;
 		startScreenY = getScreenY(event);
 		currentHeight = 0;
 	}
-};
+}
 
-const moveBySystem = (to: number): Promise<void> => new Promise(r => {
-	const startHeight = currentHeight;
-	const overHeight = currentHeight - to;
-	if (overHeight < 1) {
-		r();
-		return;
-	}
-	const startTime = Date.now();
-	let intervalId = setInterval(() => {
-		const time = Date.now() - startTime;
-		if (time > fixTimeMs) {
-			currentHeight = to;
-			clearInterval(intervalId);
+function moveBySystem(to: number): Promise<void> {
+	return new Promise(r => {
+		const startHeight = currentHeight;
+		const overHeight = currentHeight - to;
+		if (overHeight < 1) {
 			r();
 			return;
 		}
-		const nextHeight = startHeight - (overHeight / fixTimeMs) * time;
-		if (currentHeight < nextHeight) return;
-		currentHeight = nextHeight;
-	}, 1);
-});
+		const startTime = Date.now();
+		let intervalId = setInterval(() => {
+			const time = Date.now() - startTime;
+			if (time > fixTimeMs) {
+				currentHeight = to;
+				clearInterval(intervalId);
+				r();
+				return;
+			}
+			const nextHeight = startHeight - (overHeight / fixTimeMs) * time;
+			if (currentHeight < nextHeight) return;
+			currentHeight = nextHeight;
+		}, 1);
+	});
+}
 
-const fixOverContent = async () => {
+async function fixOverContent() {
 	if (currentHeight > refreshFrameSize) {
 		await moveBySystem(refreshFrameSize);
 	}
-};
+}
 
-const closeContent = async () => {
+async function closeContent() {
 	if (currentHeight > 0) {
 		await moveBySystem(0);
 	}
-};
+}
 
-const moveEnd = () => {
+function moveEnd() {
 	if (isPullStart && !isRefreshing) {
 		startScreenY = null;
 		if (isPullEnd) {
@@ -114,9 +116,9 @@ const moveEnd = () => {
 			closeContent().then(() => isPullStart = false);
 		}
 	}
-};
+}
 
-const moving = (event) => {
+function moving(event) {
 	if (!isPullStart || isRefreshing || disabled) return;
 
 	if (!scrollEl) {
@@ -144,7 +146,23 @@ const moving = (event) => {
 	}
 
 	isPullEnd = currentHeight >= refreshFrameSize;
-};
+}
+
+/**
+ * emit(refresh)が完了したことを知らせる関数
+ *
+ * タイムアウトがないのでこれを最終的に実行しないと出たままになる
+ */
+function refreshFinished() {
+	closeContent().then(() => {
+		isPullStart = false;
+		isRefreshing = false;
+	});
+}
+
+function setDisabled(value) {
+	disabled = value;
+}
 
 onMounted(() => {
 	supportPointerDesktop = !!window.PointerEvent && deviceKind === 'desktop';
@@ -165,77 +183,60 @@ onUnmounted(() => {
 	if (supportPointerDesktop) window.removeEventListener('pointerup', moveEnd);
 });
 
-/**
- * emit(refresh)が完了したことを知らせる関数
- * 
- * タイムアウトがないのでこれを最終的に実行しないと出たままになる
- */
-const refreshFinished = () => {
-	closeContent().then(() => {
-		isPullStart = false;
-		isRefreshing = false;
-	});
-};
-
-const setDisabled = (value) => {
-	disabled = value;
-};
-
 defineExpose({
 	refreshFinished,
 	setDisabled,
 });
-
 </script>
 
 <style lang="scss" module>
-	.frame {
-		position: relative;
-		overflow: clip;
+.frame {
+	position: relative;
+	overflow: clip;
 
+	width: 100%;
+	min-height: var(--frame-min-height, 0px);
+
+	box-shadow: inset 0px -7px 10px -10px rgba(0,0,0,.1);
+	mask-image: linear-gradient(90deg, #000 0%, #000 80%, transparent);
+	-webkit-mask-image: -webkit-linear-gradient(90deg, #000 0%, #000 80%, transparent);
+
+	pointer-events: none;
+
+	> .contents {
+		position: absolute;
+
+		bottom: 0;
 		width: 100%;
-		min-height: var(--frame-min-height, 0px);
 
-		box-shadow: inset 0px -7px 10px -10px rgba(0,0,0,.1);
-		mask-image: linear-gradient(90deg, #000 0%, #000 80%, transparent);
-		-webkit-mask-image: -webkit-linear-gradient(90deg, #000 0%, #000 80%, transparent);
+		margin: 5px 0;
 
-		pointer-events: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-		> .contents {
-			position: absolute;
+		margin: 5px 0;
 
-			bottom: 0;
-			width: 100%;
+		font-size: 14px;
 
-			margin: 5px 0;
+		> i, > div {
+			margin: 6px 0;
+		}
+		> i {
+			transition: transform .25s;
 
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-
-			margin: 5px 0;
-
-			font-size: 14px;
-
-			> i, > div {
-				margin: 6px 0;
-			}
-			> i {
-				transition: transform .25s;
-
-				&.refresh {
-					transform: rotate(180deg);
-				}
-			}
-
-			> p {
-				margin: 5px 0;
+			&.refresh {
+				transform: rotate(180deg);
 			}
 		}
-	}
 
-	.slotClip {
-		overflow-y: clip;
+		> p {
+			margin: 5px 0;
+		}
 	}
+}
+
+.slotClip {
+	overflow-y: clip;
+}
 </style>
