@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<MkAvatar :class="$style.avatar" :user="$i" link preview/>
+	<MkAvatar :class="$style.avatar" :user="user" link preview/>
 	<div :class="$style.main">
 		<div :class="$style.header">
-			<MkUserName :user="$i" :nowrap="true"/>
+			<MkUserName :user="user" :nowrap="true"/>
 		</div>
 		<div>
 			<div>
-				<Mfm :text="text.trim()" :author="$i" :i="$i"/>
+				<Mfm :text="text.trim()" :author="user" :i="user"/>
 			</div>
 		</div>
 	</div>
@@ -21,10 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { $i } from '@/account.js';
+import * as Misskey from 'misskey-js';
 
 const props = defineProps<{
 	text: string;
+	user: Misskey.entities.User;
 }>();
 </script>
 

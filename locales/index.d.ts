@@ -1148,6 +1148,11 @@ export interface Locale {
     "tosAndPrivacyPolicy": string;
     "avatarDecorations": string;
     "showUnreadNotificationCount": string;
+    "attach": string;
+    "detach": string;
+    "angle": string;
+    "flip": string;
+    "showAvatarDecorations": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1186,6 +1191,7 @@ export interface Locale {
         "manifestJsonOverride": string;
         "shortName": string;
         "shortNameDescription": string;
+        "fanoutTimelineDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;

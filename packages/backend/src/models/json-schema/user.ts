@@ -54,6 +54,14 @@ export const packedUserLiteSchema = {
 						format: 'url',
 						nullable: false, optional: false,
 					},
+					angle: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
+					flipH: {
+						type: 'boolean',
+						nullable: false, optional: true,
+					},
 				},
 			},
 		},

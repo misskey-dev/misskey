@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.11.0-beta.1",
+	"version": "2023.11.0-beta.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -22,6 +22,7 @@
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
 		"migrate": "cd packages/backend && pnpm migrate",
+		"revert": "cd packages/backend && pnpm revert",
 		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
@@ -55,7 +56,7 @@
 		"@typescript-eslint/parser": "6.8.0",
 		"cross-env": "7.0.3",
 		"cypress": "13.3.2",
-		"eslint": "8.51.0",
+		"eslint": "8.52.0",
 		"start-server-and-test": "2.0.1"
 	},
 	"optionalDependencies": {
