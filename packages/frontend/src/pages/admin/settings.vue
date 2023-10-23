@@ -87,9 +87,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</FormSection>
 
 					<FormSection>
-						<template #label>Timeline caching</template>
+						<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
 
 						<div class="_gaps_m">
+							<MkSwitch v-model="enableFanoutTimeline">
+								<template #label>{{ i18n.ts.enable }}</template>
+								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
+							</MkSwitch>
+
 							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
 								<template #label>perLocalUserUserTimelineCacheMax</template>
 							</MkInput>
@@ -165,6 +170,7 @@ let cacheRemoteSensitiveFiles: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
 let swPublicKey: any = $ref(null);
 let swPrivateKey: any = $ref(null);
+let enableFanoutTimeline: boolean = $ref(false);
 let perLocalUserUserTimelineCacheMax: number = $ref(0);
 let perRemoteUserUserTimelineCacheMax: number = $ref(0);
 let perUserHomeTimelineCacheMax: number = $ref(0);
@@ -185,6 +191,7 @@ async function init(): Promise<void> {
 	enableServiceWorker = meta.enableServiceWorker;
 	swPublicKey = meta.swPublickey;
 	swPrivateKey = meta.swPrivateKey;
+	enableFanoutTimeline = meta.enableFanoutTimeline;
 	perLocalUserUserTimelineCacheMax = meta.perLocalUserUserTimelineCacheMax;
 	perRemoteUserUserTimelineCacheMax = meta.perRemoteUserUserTimelineCacheMax;
 	perUserHomeTimelineCacheMax = meta.perUserHomeTimelineCacheMax;
@@ -206,6 +213,7 @@ async function save(): void {
 		enableServiceWorker,
 		swPublicKey,
 		swPrivateKey,
+		enableFanoutTimeline,
 		perLocalUserUserTimelineCacheMax,
 		perRemoteUserUserTimelineCacheMax,
 		perUserHomeTimelineCacheMax,

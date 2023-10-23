@@ -825,6 +825,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
 		const meta = await this.metaService.fetch();
+		if (!meta.enableFanoutTimeline) return;
 
 		const r = this.redisForTimelines.pipeline();
 
