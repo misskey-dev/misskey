@@ -7,7 +7,7 @@ import { correctFilename } from '@/misc/correct-filename.js';
 
 describe(correctFilename, () => {
 	it('no ext to null', () => {
-		expect(correctFilename('test', null)).toBe('test.unknown');
+		expect(correctFilename('test', null)).toBe('test');
 	});
 	it('no ext to jpg', () => {
 		expect(correctFilename('test', 'jpg')).toBe('test.jpg');
