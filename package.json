@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.11.0-beta.3",
+	"version": "2023.11.0-beta.3-prismisskey.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -17,6 +17,7 @@
 		"build-pre": "node ./scripts/build-pre.js",
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
+		"build-and-start": "cross-env NODE_ENV=development pnpm build && cross-env NODE_ENV=development pnpm start",
 		"build-storybook": "pnpm --filter frontend build-storybook",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
