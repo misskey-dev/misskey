@@ -1144,6 +1144,11 @@ privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
+attach: "付ける"
+detach: "外す"
+angle: "角度"
+flip: "反転"
+showAvatarDecorations: "アイコンのデコレーションを表示"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1183,6 +1188,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.jsonのオーバーライド"
   shortName: "略称"
   shortNameDescription: "サーバーの正式名称が長い場合に、代わりに表示することのできる略称や通称。"
+  fanoutTimelineDescription: "有効にすると、各種タイムラインを取得する際のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。サーバーのメモリ容量が少ない場合、または動作が不安定な場合は無効にすることができます。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
