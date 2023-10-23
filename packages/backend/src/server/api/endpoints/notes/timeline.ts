@@ -140,6 +140,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						includeRenotedMyNotes: ps.includeRenotedMyNotes,
 						includeLocalRenotes: ps.includeLocalRenotes,
 						withFiles: ps.withFiles,
+						withRenotes: ps.withRenotes,
 					}, me);
 				}
 			} else {
@@ -151,12 +152,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					includeRenotedMyNotes: ps.includeRenotedMyNotes,
 					includeLocalRenotes: ps.includeLocalRenotes,
 					withFiles: ps.withFiles,
+					withRenotes: ps.withRenotes,
 				}, me);
 			}
 		});
 	}
 
-	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; }, me: MiLocalUser) {
+	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
 
 		//#region Construct query
@@ -223,6 +225,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		if (ps.withFiles) {
 			query.andWhere('note.fileIds != \'{}\'');
+		}
+
+		if (ps.withRenotes === false) {
+			query.andWhere('note.renoteId IS NULL');
 		}
 		//#endregion
 
