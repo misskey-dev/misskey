@@ -1184,6 +1184,7 @@ _serverSettings:
   manifestJsonOverride: "覆寫 manifest.json"
   shortName: "簡稱"
   shortNameDescription: "如果伺服器的正式名稱很長，可用簡稱或通稱代替。"
+  fanoutTimelineDescription: "如果啟用的話，檢索各個時間軸的性能會顯著提昇，資料庫的負荷也會減少。不過，Redis 的記憶體使用量會增加。如果伺服器的記憶體容量比較少或者運行不穩定，可以停用。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
