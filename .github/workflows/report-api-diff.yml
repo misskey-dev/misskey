@@ -59,7 +59,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: api-artifact
-          path: api-full.json.diff
+          path: |
+            api-full.json.diff
+            api-base.json
+            api-head.json
       - id: out-diff
         name: Build diff Comment
         run: |
