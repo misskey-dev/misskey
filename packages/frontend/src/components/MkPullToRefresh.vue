@@ -6,12 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="rootEl">
 	<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${currentHeight / 3}px;`">
-		<div :class="$style.contents">
-			<i v-if="!isRefreshing" :class="['ti', 'ti-arrow-bar-to-down', { [$style.refresh]: isPullEnd }]"></i>
-			<MkLoading v-else :em="true"/>
-			<p v-if="isPullEnd">{{ i18n.ts.releaseToRefresh }}</p>
-			<p v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</p>
-			<p v-else>{{ i18n.ts.pullDownToRefresh }}</p>
+		<div :class="$style.frameContent">
+			<MkLoading v-if="isRefreshing" :class="$style.loader" :em="true"/>
+			<i v-else class="ti ti-arrow-bar-to-down" :class="[$style.icon, { [$style.refresh]: isPullEnd }]"></i>
+			<div :class="$style.text">
+				<template v-if="isPullEnd">{{ i18n.ts.releaseToRefresh }}</template>
+				<template v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</template>
+				<template v-else>{{ i18n.ts.pullDownToRefresh }}</template>
+			</div>
 		</div>
 	</div>
 	<div :class="{ [$style.slotClip]: isPullStart }">
@@ -201,37 +203,32 @@ defineExpose({
 	-webkit-mask-image: -webkit-linear-gradient(90deg, #000 0%, #000 80%, transparent);
 
 	pointer-events: none;
+}
 
-	> .contents {
-		position: absolute;
+.frameContent {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	margin: 5px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 14px;
 
-		bottom: 0;
-		width: 100%;
+	> .icon, > .loader {
+		margin: 6px 0;
+	}
 
+	> .icon {
+		transition: transform .25s;
+
+		&.refresh {
+			transform: rotate(180deg);
+		}
+	}
+
+	> .text {
 		margin: 5px 0;
-
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		margin: 5px 0;
-
-		font-size: 14px;
-
-		> i, > div {
-			margin: 6px 0;
-		}
-		> i {
-			transition: transform .25s;
-
-			&.refresh {
-				transform: rotate(180deg);
-			}
-		}
-
-		> p {
-			margin: 5px 0;
-		}
 	}
 }
 
