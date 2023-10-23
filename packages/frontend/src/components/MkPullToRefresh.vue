@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl">
-	<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${currentHeight}px;`">
+	<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${currentHeight / 3}px;`">
 		<div :class="$style.contents">
 			<i v-if="!isRefreshing" :class="['ti', 'ti-arrow-bar-to-down', { [$style.refresh]: isPullEnd }]"></i>
 			<MkLoading v-else :em="true"/>
@@ -30,8 +30,8 @@ let isPullEnd = $ref(false);
 let isRefreshing = $ref(false);
 
 const scrollStop = 10;
-const maxFrameSize = 75;
-const refreshFrameSize = 65;
+const maxFrameSize = Infinity;
+const refreshFrameSize = 200;
 const fixTimeMs = 200;
 let currentHeight = $ref(0);
 
