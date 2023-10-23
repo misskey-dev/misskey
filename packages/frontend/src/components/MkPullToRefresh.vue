@@ -137,13 +137,7 @@ function moving(event) {
 	const moveScreenY = getScreenY(event);
 
 	const moveHeight = moveScreenY - startScreenY!;
-	if (moveHeight < 0) {
-		currentHeight = 0;
-	} else if (moveHeight >= maxFrameSize) {
-		currentHeight = maxFrameSize;
-	} else {
-		currentHeight = moveHeight;
-	}
+	currentHeight = Math.min(Math.max(moveHeight, 0), maxFrameSize);
 
 	isPullEnd = currentHeight >= refreshFrameSize;
 }
