@@ -1184,6 +1184,7 @@ _serverSettings:
   manifestJsonOverride: "Überschreiben von manifest.json"
   shortName: "Abkürzung"
   shortNameDescription: "Ein Kürzel für den Namen der Instanz, der angezeigt werden kann, falls der volle Instanzname lang ist."
+  fanoutTimelineDescription: "Ist diese Option aktiviert, kann eine erhebliche Verbesserung im Abrufen von Chroniken und eine Reduzierung der Datenbankbelastung erzielt werden, im Gegenzug zu einer Steigerung in der Speichernutzung von Redis. Bei geringem Serverspeicher oder Serverinstabilität kann diese Option deaktiviert werden."
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"
