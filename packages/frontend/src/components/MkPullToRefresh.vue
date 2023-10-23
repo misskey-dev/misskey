@@ -25,14 +25,14 @@ import { onMounted, onUnmounted } from 'vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { i18n } from '@/i18n.js';
 
+const SCROLL_STOP = 10;
+const MAX_PULL_DISTANCE = Infinity;
+const FIRE_THRESHOLD = 200;
+const RELEASE_TRANSITION_DURATION = 200;
+
 let isPullStart = $ref(false);
 let isPullEnd = $ref(false);
 let isRefreshing = $ref(false);
-
-const scrollStop = 10;
-const maxFrameSize = Infinity;
-const refreshFrameSize = 200;
-const fixTimeMs = 200;
 let currentHeight = $ref(0);
 
 let supportPointerDesktop = false;
@@ -85,13 +85,13 @@ function moveBySystem(to: number): Promise<void> {
 		const startTime = Date.now();
 		let intervalId = setInterval(() => {
 			const time = Date.now() - startTime;
-			if (time > fixTimeMs) {
+			if (time > RELEASE_TRANSITION_DURATION) {
 				currentHeight = to;
 				clearInterval(intervalId);
 				r();
 				return;
 			}
-			const nextHeight = startHeight - (overHeight / fixTimeMs) * time;
+			const nextHeight = startHeight - (overHeight / RELEASE_TRANSITION_DURATION) * time;
 			if (currentHeight < nextHeight) return;
 			currentHeight = nextHeight;
 		}, 1);
@@ -99,8 +99,8 @@ function moveBySystem(to: number): Promise<void> {
 }
 
 async function fixOverContent() {
-	if (currentHeight > refreshFrameSize) {
-		await moveBySystem(refreshFrameSize);
+	if (currentHeight > FIRE_THRESHOLD) {
+		await moveBySystem(FIRE_THRESHOLD);
 	}
 }
 
@@ -129,7 +129,7 @@ function moving(event) {
 	if (!scrollEl) {
 		scrollEl = getScrollableParentElement(rootEl);
 	}
-	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? scrollStop : scrollStop + currentHeight)) {
+	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + currentHeight)) {
 		currentHeight = 0;
 		isPullEnd = false;
 		moveEnd();
@@ -142,9 +142,9 @@ function moving(event) {
 	const moveScreenY = getScreenY(event);
 
 	const moveHeight = moveScreenY - startScreenY!;
-	currentHeight = Math.min(Math.max(moveHeight, 0), maxFrameSize);
+	currentHeight = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
 
-	isPullEnd = currentHeight >= refreshFrameSize;
+	isPullEnd = currentHeight >= FIRE_THRESHOLD;
 }
 
 /**
