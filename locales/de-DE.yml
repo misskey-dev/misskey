@@ -2199,13 +2199,13 @@ _externalResourceInstaller:
       description: "Die Integritätsprüfung der geladenen Daten ist fehlgeschlagen. Aus Sicherheitsgründen kann die Installation nicht fortgesetzt werden. Kontaktiere den Seitenbesitzer."
     _pluginParseFailed:
       title: "AiScript-Fehler"
-      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des AiScript-Parsings ein Fehler auf. Kontaktiere den Autor des Plugins. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des AiScript-Parsings ein Fehler auf. Kontaktiere den Autor des Plugins. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
     _pluginInstallFailed:
       title: "Das Plugin konnte nicht installiert werden"
-      description: "Während der Installation des Plugin ist ein Problem aufgetreten. Bitte versuche es erneut. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+      description: "Während der Installation des Plugin ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
     _themeParseFailed:
       title: "Parsing des Farbschemas fehlgeschlagen"
-      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des Farbschema-Parsings ein Fehler auf. Kontaktiere den Autor des Farbschemas. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des Farbschema-Parsings ein Fehler auf. Kontaktiere den Autor des Farbschemas. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
     _themeInstallFailed:
       title: "Das Farbschema konnte nicht installiert werden"
-      description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detailierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+      description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
