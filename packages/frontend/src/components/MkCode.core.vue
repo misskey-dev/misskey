@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-	<div class="codeBlockRoot" v-html="html"></div>
+<div class="codeBlockRoot" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import { getHighlighter } from '@/scripts/code-highlighter.js';
 import { BUNDLED_LANGUAGES } from 'shiki';
-import type { Lang } from 'shiki';
+import type { Lang as ShikiLang } from 'shiki';
+import { getHighlighter } from '@/scripts/code-highlighter.js';
 
 const props = defineProps<{
 	code: string;
@@ -21,14 +21,14 @@ const props = defineProps<{
 
 const highlighter = await getHighlighter();
 
-const lang = ref<Lang | 'aiscript'>('js');
+const codeLang = ref<ShikiLang | 'aiscript'>('js');
 const html = computed(() => highlighter.codeToHtml(props.code, {
-	lang: lang.value,
+	lang: codeLang.value,
 	theme: 'dark-plus',
 }));
 
 async function fetchLanguage(to) {
-	const language = to as Lang;
+	const language = to as ShikiLang;
 
 	// Check for the loaded languages, and load the language if it's not loaded yet.
 	if (!highlighter.getLoadedLanguages().includes(language)) {
@@ -39,17 +39,17 @@ async function fetchLanguage(to) {
 		});
 		if (bundles.length > 0) {
 			await highlighter.loadLanguage(language);
-			lang.value = language;
+			codeLang.value = language;
 		} else {
-			lang.value = 'js';
+			codeLang.value = 'js';
 		}
 	} else {
-		lang.value = language;
+		codeLang.value = language;
 	}
 }
 
 watch(() => props.lang, async (to) => {
-	if (lang.value === to) return;
+	if (codeLang.value === to) return;
 	await fetchLanguage(to);
 }, { immediate: true, });
 </script>
