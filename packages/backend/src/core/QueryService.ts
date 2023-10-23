@@ -40,7 +40,7 @@ export class QueryService {
 	) {
 	}
 
-	public makePaginationQuery<T extends ObjectLiteral>(q: SelectQueryBuilder<T>, sinceId?: string, untilId?: string, sinceDate?: number, untilDate?: number): SelectQueryBuilder<T> {
+	public makePaginationQuery<T extends ObjectLiteral>(q: SelectQueryBuilder<T>, sinceId?: string | null, untilId?: string | null, sinceDate?: number | null, untilDate?: number | null): SelectQueryBuilder<T> {
 		if (sinceId && untilId) {
 			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });
 			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
