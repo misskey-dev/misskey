@@ -95,7 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@click="openDecoration(avatarDecoration)"
 			>
 				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="2 / 3">{{ avatarDecoration.name }}</MkCondensedLine></div>
-				<MkAvatar style="width: 64px; height: 64px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
+				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
+				<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
 			</div>
 		</div>
 	</MkFolder>
@@ -369,13 +370,17 @@ definePageMetadata({
 
 .avatarDecoration {
 	cursor: pointer;
-	padding: 16px 16px 24px 16px;
+	padding: 16px 16px 28px 16px;
 	border: solid 2px var(--divider);
 	border-radius: 8px;
 	text-align: center;
+	font-size: 90%;
+	overflow: clip;
+	contain: content;
 }
 
 .avatarDecorationActive {
+	background-color: var(--accentedBg);
 	border-color: var(--accent);
 }
 
@@ -383,6 +388,12 @@ definePageMetadata({
 	position: relative;
 	z-index: 10;
 	font-weight: bold;
-	margin-bottom: 16px;
+	margin-bottom: 20px;
+}
+
+.avatarDecorationLock {
+	position: absolute;
+	bottom: 12px;
+	right: 12px;
 }
 </style>
