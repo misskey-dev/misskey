@@ -1174,9 +1174,45 @@ export interface Locale {
         "pushNotificationDescription": string;
         "initialAccountSettingCompleted": string;
         "haveFun": string;
-        "ifYouNeedLearnMore": string;
+        "youCanContinueTutorial": string;
+        "startTutorial": string;
         "skipAreYouSure": string;
         "laterAreYouSure": string;
+    };
+    "_initialTutorial": {
+        "title": string;
+        "wellDone": string;
+        "_note": {
+            "description": string;
+            "date": string;
+            "reply": string;
+            "renote": string;
+            "reaction": string;
+            "howToNote": string;
+        };
+        "_reaction": {
+            "description": string;
+            "letsTryReacting": string;
+            "reactDone": string;
+        };
+        "_timeline": {
+            "description1": string;
+            "home": string;
+            "local": string;
+            "social": string;
+            "global": string;
+            "description2": string;
+        };
+        "_done": {
+            "title": string;
+            "description": string;
+        };
+    };
+    "_timelineDescription": {
+        "home": string;
+        "local": string;
+        "social": string;
+        "global": string;
     };
     "_serverRules": {
         "description": string;
@@ -1850,17 +1886,6 @@ export interface Locale {
         "minute": string;
         "hour": string;
         "day": string;
-    };
-    "_timelineTutorial": {
-        "title": string;
-        "step1_1": string;
-        "step1_2": string;
-        "step2_1": string;
-        "step2_2": string;
-        "step3_1": string;
-        "step3_2": string;
-        "step4_1": string;
-        "step4_2": string;
     };
     "_2fa": {
         "alreadyRegistered": string;
