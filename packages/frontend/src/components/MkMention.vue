@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe && gaming === '' , [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :to="url" :style="{ background: bgCss }">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe && gamingType === '' , [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" :to="url" :style="{ background: bgCss }">
 	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
@@ -21,37 +21,9 @@ import { host as localHost } from '@/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-let gaming = ref('');
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = defineProps<{
 	username: string;
 	host: string;

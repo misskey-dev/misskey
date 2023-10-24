@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div :class="{gamingDark: gaming === 'dark',gamingLight: gaming === 'light'}" class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
+				<div :class="{gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light'}" class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
 			</div>
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
 			</div>
-			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" :class="{gamingDark: gaming === 'dark',gamingLight: gaming === 'light'}" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
+			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" :class="{gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light'}" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
 		</div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
@@ -27,10 +27,8 @@ import * as os from '@/os.js';
 import {defaultStore} from "@/store.js";
 
 
-let gaming = ref('');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 if (darkMode.value && gamingMode.value == true) {
   gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {

@@ -8,12 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" v-click-anime class="_button item" :class="{gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action" v-click-anime class="_button item" :class="{gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else v-click-anime :to="item.to" class="item" :class="{gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }" @click.passive="close()">
+				<MkA v-else v-click-anime :to="item.to" class="item" :class="{gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
@@ -31,37 +31,8 @@ import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 
-let gaming = ref('');
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
 	anchor?: { x: string; y: string; };

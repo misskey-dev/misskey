@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       </div>
       <div :class="$style.middle">
         <MkA v-tooltip.noDelay.right="i18n.ts.timeline"
-             :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+             :class="[$style.item, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
              :activeClass="$style.active" to="/" exact>
           <i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{
             i18n.ts.timeline
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
               v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
               v-tooltip.noDelay.right="navbarItemDef[item].title"
               class="_button"
-              :class="[$style.item, { [$style.active]: gaming === '' && navbarItemDef[item].active, [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+              :class="[$style.item, { [$style.active]: gamingType === '' && navbarItemDef[item].active, [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
               :activeClass="$style.active"
               :to="navbarItemDef[item].to"
               v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
@@ -36,29 +36,29 @@ SPDX-License-Identifier: AGPL-3.0-only
             <i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
               :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
             <span v-if="navbarItemDef[item].indicated"
-                  :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
+                  :class="[$style.itemIndicator,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]"><i
                 class="_indicatorCircle"></i></span>
           </component>
         </template>
         <div :class="$style.divider"></div>
         <MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel"
-             :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+             :class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
              :activeClass="$style.active" to="/admin">
           <i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
             :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
         </MkA>
         <button class="_button"
-                :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+                :class="[$style.item, { [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
                 @click="more">
           <i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
             i18n.ts.more
           }}</span>
           <span v-if="otherMenuItemIndicated"
-                :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
+                :class="[$style.itemIndicator,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]"><i
               class="_indicatorCircle"></i></span>
         </button>
         <MkA v-tooltip.noDelay.right="i18n.ts.settings"
-             :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+             :class="[$style.item, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
              :activeClass="$style.active"
              to="/settings">
           <i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span
@@ -67,11 +67,11 @@ SPDX-License-Identifier: AGPL-3.0-only
       </div>
       <div :class="$style.bottom">
         <button v-tooltip.noDelay.right="i18n.ts.note" class="_button"
-                :class="[$style.post ,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}]"
+                :class="[$style.post ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}]"
                 data-cy-open-post-form
                 @click="os.post">
           <i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span
-            :class="$style.postText,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}">{{
+            :class="$style.postText,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}">{{
             i18n.ts.note
           }}</span>
         </button>
@@ -96,10 +96,7 @@ import {i18n} from '@/i18n';
 import {instance} from '@/instance';
 
 function hexToRgb(hex) {
-  // 16進数のカラーコードから "#" を除去
   hex = hex.replace(/^#/, '');
-
-  // 16進数をRGBに変換
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
@@ -116,7 +113,7 @@ document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.n
 const iconOnly = ref(false);
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref();
-let gaming = ref('');
+let gamingType = ref(defaultStore.state.gamingType);
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
@@ -141,34 +138,22 @@ watch(darkMode, () => {
 })
 
 if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
+	gamingType.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
+	gamingType.value = 'light';
 } else {
-  gaming.value = '';
+	gamingType.value = '';
 }
 
-watch(darkMode, () => {
-
+watch([darkMode,gamingMode], () => {
   if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
+		gamingType.value = 'dark';
   } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
+		gamingType.value = 'light';
   } else {
-    gaming.value = '';
+		gamingType.value = '';
   }
 })
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
 
 const menu = computed(() => defaultStore.state.menu);
 const otherMenuItemIndicated = computed(() => {

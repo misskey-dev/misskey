@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
         [$style.large]: large,
         [$style.transparent]: transparent,
         [$style.asLike]: asLike,
-        [$style.gamingDark]: gaming === 'dark',
-        [$style.gamingLight]: gaming === 'light',
+        [$style.gamingDark]: gamingType === 'dark',
+        [$style.gamingLight]: gamingType === 'light',
       }
     ]"
       :type="type"
@@ -50,8 +50,8 @@ SPDX-License-Identifier: AGPL-3.0-only
       [$style.large]: large,
       [$style.transparent]: transparent,
       [$style.asLike]: asLike,
-      [$style.gamingDark]: gaming === 'dark',
-      [$style.gamingLight]: gaming === 'light',
+      [$style.gamingDark]: gamingType === 'dark',
+      [$style.gamingLight]: gamingType === 'light',
     }
   ]"
       :to="to"
@@ -90,39 +90,9 @@ const props = defineProps<{
   name?: string;
   value?: string;
 }>();
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-// gamingをrefで初期化する
-let gaming = ref(''); // 0-off , 1-dark , 2-light
 
-// gaming.valueに新しい値を代入する
-if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-  gaming.value = 'light';
-}else{
-  gaming.value = '';
-}
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value && props.primary|| darkMode.value && gamingMode.value && props.gradate) {
-    gaming.value = 'light';
-  }else{
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary|| darkMode.value && gamingMode.value && props.gradate ) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-    gaming.value = 'light';
-  }else{
-    gaming.value = '';
-  }
-})
 
 const emit = defineEmits<{
   (ev: 'click', payload: MouseEvent): void;

@@ -10,15 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="items">
 			<template v-for="(item, i) in group.items">
-				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active, gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }">
+				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active, gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</a>
-				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }" :disabled="item.active" @click="ev => item.action(ev)">
+				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }" :disabled="item.active" @click="ev => item.action(ev)">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</button>
-				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gaming === 'dark',gamingLight: gaming === 'light' }">
+				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active , gamingDark: gamingType === 'dark',gamingLight: gamingType === 'light' }">
 					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
@@ -32,37 +32,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import {ref , computed , watch } from 'vue';
 import {defaultStore} from "@/store.js";
 
-let gaming = ref('');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 defineProps<{
 	def: any[];
 	grid?: boolean;

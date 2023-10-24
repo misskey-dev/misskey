@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.disabled]: disabled && gaming === '', [$style.checked]: checked && gaming === '' }]">
+<div :class="[$style.root, { [$style.disabled]: disabled && gamingType === '', [$style.checked]: checked && gamingType === '' }]">
 	<input
 		ref="input"
 		type="checkbox"
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@keydown.enter="toggle"
 	>
 	<XButton :checked="checked" :disabled="disabled" @toggle="toggle"/>
-	<span :class="$style.body,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}">
+	<span :class="$style.body,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}">
 		<!-- TODO: 無名slotの方は廃止 -->
 		<span :class="$style.label">
 			<span @click="toggle">
@@ -30,39 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import {toRefs, Ref, ref, computed, watch} from 'vue';
 import XButton from '@/components/MkSwitch.button.vue';
 import {defaultStore} from "@/store.js";
-let gaming = ref('');
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-
-// gaming.valueに新しい値を代入する
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  console.log(gaming)
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;

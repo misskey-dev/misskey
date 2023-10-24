@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           <span v-else><i class="ti ti-icons"></i></span>
         </button>
         <button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
-          <div :class="[$style.submitInner ,{  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]">
+          <div :class="[$style.submitInner ,{  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
             <template v-if="posted"></template>
             <template v-else-if="posting"><MkEllipsis/></template>
             <template v-else>{{ submitText }}</template>
@@ -135,7 +135,7 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 const modal = inject('modal');
-let gaming = ref('');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));

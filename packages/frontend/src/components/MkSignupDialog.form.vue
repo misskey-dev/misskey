@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
   <div>
-    <div :class="[$style.banner ,{[$style.gamingDark]: gaming==='dark' , [$style.gamingLight]: gaming==='light'}]">
+    <div :class="[$style.banner ,{[$style.gamingDark]: gamingType ==='dark' , [$style.gamingLight]: gamingType ==='light'}]">
       <i class="ti ti-user-edit"></i>
     </div>
     <MkSpacer :marginMin="20" :marginMax="32">
@@ -124,37 +124,9 @@ import {instance} from '@/instance.js';
 import {i18n} from '@/i18n.js';
 import {defaultStore} from "@/store.js";
 
-let gaming = ref('');
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = withDefaults(defineProps<{
   autoSet?: boolean;
 }>(), {

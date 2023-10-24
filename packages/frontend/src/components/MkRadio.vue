@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-adaptive-border
-  :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked ,[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' } ]"
+  :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked ,[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' } ]"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
 	@click="toggle"
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:disabled="disabled"
 		:class="$style.input"
 	>
-	<span :class="[$style.button , {[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
+	<span :class="[$style.button , {[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">
 		<span></span>
 	</span>
 	<span :class="$style.label"><slot></slot></span>
@@ -27,37 +27,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref,computed,watch } from 'vue';
 import {defaultStore} from "@/store.js";
 
-let gaming = ref('');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = defineProps<{
 	modelValue: any;
 	value: any;

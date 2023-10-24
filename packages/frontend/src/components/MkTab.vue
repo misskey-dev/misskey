@@ -7,37 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import {computed, defineComponent, h, resolveDirective, withDirectives , ref , watch} from 'vue';
 import {defaultStore} from "@/store.js";
 
-let gaming = ref('');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 export default defineComponent({
 	props: {
 		modelValue: {
@@ -50,7 +21,7 @@ export default defineComponent({
 		return () => h('div', {
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
-			class: ['_button', { active: props.modelValue === option.props.value , gamingDark: gaming.value == 'dark' && props.modelValue === option.props.value,gamingLight: gaming.value == 'light' && props.modelValue === option.props.value } ],
+			class: ['_button', { active: props.modelValue === option.props.value , gamingDark: gamingType.value == 'dark' && props.modelValue === option.props.value,gamingLight: gamingType.value == 'light' && props.modelValue === option.props.value } ],
 			key: option.key,
 			disabled: props.modelValue === option.props.value,
 			onClick: () => {

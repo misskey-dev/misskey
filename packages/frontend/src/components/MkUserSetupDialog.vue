@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div style="overflow-x: clip;">
 		<div :class="$style.progressBar">
-			<div :class="[$style.progressBarValue , {[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :style="{ width: `${(page / 5) * 100}%` }"></div>
+			<div :class="[$style.progressBarValue , {[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" :style="{ width: `${(page / 5) * 100}%` }"></div>
 		</div>
 		<Transition
 			mode="out-in"
@@ -136,39 +136,8 @@ import { host } from '@/config.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-let gaming = ref('');
-
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();

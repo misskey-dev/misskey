@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
     v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff"
     :class="{
 		[$style.button]: true,
-		[$style.gamingDark]: gaming === 'dark' && checked,
-		[$style.gamingLight]: gaming === 'light' && checked,
+		[$style.gamingDark]: gamingType === 'dark' && checked,
+		[$style.gamingLight]: gamingType === 'light' && checked,
 		[$style.buttonChecked]: checked,
 		[$style.buttonDisabled]: props.disabled,
 
@@ -18,47 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
     @click.prevent.stop="toggle"
 >
 	<div
-      :class="{ [$style.knob]: true, [$style.knobChecked]: checked,	[$style.gamingDark]: gaming === 'dark' && checked,[$style.gamingLight]: gaming === 'light' && checked}"></div>
+      :class="{ [$style.knob]: true, [$style.knobChecked]: checked,	[$style.gamingDark]: gamingType === 'dark' && checked,[$style.gamingLight]: gamingType === 'light' && checked}"></div>
 </span>
 </template>
 
 <script lang="ts" setup>
-import {toRefs, Ref, ref, computed, watch} from 'vue';
+import {toRefs, Ref, computed} from 'vue';
 import {i18n} from '@/i18n.js';
 import {defaultStore} from "@/store.js";
 
-let gaming = ref('');
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  console.log(gaming)
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = withDefaults(defineProps<{
   checked: boolean | Ref<boolean>;
   disabled?: boolean;

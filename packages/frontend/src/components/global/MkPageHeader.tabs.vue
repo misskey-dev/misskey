@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		ref="tabHighlightEl"
-		:class="[$style.tabHighlight, { [$style.animate]: defaultStore.reactiveState.animation.value , [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+		:class="[$style.tabHighlight, { [$style.animate]: defaultStore.reactiveState.animation.value , [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"
 	></div>
 </div>
 </template>
@@ -55,37 +55,9 @@ export type Tab = {
 <script lang="ts" setup>
 import {onMounted, onUnmounted, watch, nextTick, shallowRef, ref, computed} from 'vue';
 import { defaultStore } from '@/store.js';
-let gaming = ref('');
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;

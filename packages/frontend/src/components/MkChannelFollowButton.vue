@@ -6,27 +6,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
   <button
       class="_button"
-      :class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing, [$style.full]: full },[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]]"
+      :class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing, [$style.full]: full },[$style.text,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]]"
       :disabled="wait"
       @click="onClick"
   >
     <template v-if="!wait">
       <template v-if="isFollowing">
         <span v-if="full"
-              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">{{
+              :class="[$style.text,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">{{
             i18n.ts.unfollow
           }}</span><i class="ti ti-minus"></i>
       </template>
       <template v-else>
         <span v-if="full"
-              :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">{{
+              :class="[$style.text,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">{{
             i18n.ts.follow
           }}</span><i class="ti ti-plus"></i>
       </template>
     </template>
     <template v-else>
       <span v-if="full"
-            :class="[$style.text,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">{{
+            :class="[$style.text,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">{{
           i18n.ts.processing
         }}</span>
       <MkLoading :em="true"/>
@@ -47,39 +47,8 @@ const props = withDefaults(defineProps<{
   full: false,
 });
 
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-let gaming = ref('');
-
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  console.log(gaming)
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const isFollowing = ref<boolean>(props.channel.isFollowing);
 const wait = ref(false);
 
