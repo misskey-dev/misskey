@@ -22,6 +22,10 @@
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Enhance: コードのシンタックスハイライトエンジンをShikiに変更
+  - AiScriptのシンタックスハイライトに対応
+  - MFMでAiScriptをハイライトする場合、コードブロックの開始部分を ` ```is ` もしくは ` ```aiscript ` としてください
+  - インラインコードのシンタックスハイライトはパフォーマンスの都合上廃止しました
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
 
 ### Server
