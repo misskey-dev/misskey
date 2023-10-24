@@ -23,6 +23,7 @@
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
+- Feat: プラグインで`Plugin:register_note_view_interruptor`を用いてnoteの代わりにnullを返却することでノートを非表示にできるようになりました
 
 ### Server
 - Enhance: RedisへのTLのキャッシュをオフにできるように
