@@ -45,7 +45,7 @@ jobs:
         run: |
           # find first pull requests that targets this repository
           PR_NUMBER="$(echo "$PULL_REQUESTS" \
-              | jq --arg REPO_ID "$REPO_ID" '[.[] | select ($REPO_ID == (.base.repo.id | tostring)) | .number ][0]')"
+              | jq --arg REPO_ID "$REPO_ID" '[.[] | select ($REPO_ID == (.base.repo.id | tostring)) | .id ][0]')"
           echo "pr-number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
       - name: Output base
