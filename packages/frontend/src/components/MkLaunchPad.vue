@@ -7,17 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModal ref="modal" v-slot="{ type, maxHeight }" :preferType="preferedModalType" :anchor="anchor" :transparentBg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
-			<template v-for="item in items">
-				<button v-if="item.action" :key="item.text" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
+			<template v-for="item in items" :key="item.text">
+				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
+					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
 					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else :key="item.text" v-click-anime :to="item.to" class="item" @click.passive="close()">
+				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
+					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
 					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</MkA>
 			</template>
@@ -123,26 +123,10 @@ function close() {
 				position: absolute;
 				top: 32px;
 				left: 16px;
-				font-size: 8px;
-				display: inline-flex;
-				color: var(--fgOnAccent);
-				font-weight: 700;
-				background: var(--indicator);
-				height: 1.5em;
-				min-width: 1.5em;
-				align-items: center;
-				justify-content: center;
-				border-radius: 99rem;
 
 				@media (max-width: 500px) {
 					top: 16px;
 					left: 8px;
-				}
-
-				> span {
-					display: inline-block;
-					padding: 0 .25em;
-					line-height: 1.5em;
 				}
 			}
 

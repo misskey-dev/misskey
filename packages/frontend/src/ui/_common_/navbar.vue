@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
 					<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator">
-						<span v-if="navbarItemDef[item].indicateValue && defaultStore.state.showUnreadNotificationCount" :class="$style.itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
+						<span v-if="navbarItemDef[item].indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter" :class="$style.itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
 						<i v-else class="_indicatorCircle"></i>
 					</span>
 				</component>
@@ -131,24 +131,6 @@ function more(ev: MouseEvent) {
 	contain: strict;
 	display: flex;
 	flex-direction: column;
-}
-
-.itemIndicateValueIcon {
-	display: inline-flex;
-	color: var(--fgOnAccent);
-	font-weight: 700;
-	background: var(--navIndicator);
-	height: 1.5em;
-	min-width: 1.5em;
-	align-items: center;
-	justify-content: center;
-	border-radius: 99rem;
-
-	& > span {
-		display: inline-block;
-		padding: 0 .25em;
-		line-height: 1.5em;
-	}
 }
 
 .root:not(.iconOnly) {
@@ -338,6 +320,7 @@ function more(ev: MouseEvent) {
 			animation: none;
 			left: auto;
 			right: 40px;
+			font-size: 10px;
 		}
 	}
 
@@ -502,6 +485,13 @@ function more(ev: MouseEvent) {
 		color: var(--navIndicator);
 		font-size: 8px;
 		animation: blink 1s infinite;
+
+		&:has(.itemIndicateValueIcon) {
+			animation: none;
+			top: 4px;
+			left: 20px;
+			font-size: 10px;
+		}
 	}
 }
 </style>

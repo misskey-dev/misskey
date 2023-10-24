@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="item" activeClass="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
 			<span v-if="navbarItemDef[item].indicated" class="indicator">
-				<span v-if="navbarItemDef[item].indicateValue && defaultStore.state.showUnreadNotificationCount" class="itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
+				<span v-if="navbarItemDef[item].indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
 				<i v-else class="_indicatorCircle"></i>
 			</span>
 		</component>
@@ -226,24 +226,6 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 				animation: none;
 				left: auto;
 				right: 20px;
-			}
-
-			& > .itemIndicateValueIcon {
-				display: inline-flex;
-				color: var(--fgOnAccent);
-				font-weight: 700;
-				background: var(--navIndicator);
-				height: 1.5em;
-				min-width: 1.5em;
-				align-items: center;
-				justify-content: center;
-				border-radius: 99rem;
-
-				& > span {
-					display: inline-block;
-					padding: 0 .25em;
-					line-height: 1.5em;
-				}
 			}
 		}
 
