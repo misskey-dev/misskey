@@ -50,7 +50,6 @@ import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 
-const parser = new Parser();
 let aiscript: Interpreter;
 const code = ref('');
 const logs = ref<any[]>([]);
@@ -146,10 +145,6 @@ async function run() {
 			text: err.toString(),
 		});
 	}
-}
-
-function highlighter(code) {
-	return highlight(code, languages.js, 'javascript');
 }
 
 onDeactivated(() => {

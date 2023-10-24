@@ -1,4 +1,5 @@
-name: Report API Diff
+# this name is used in report-api-diff.yml so be careful when change name
+name: Get api.json from Misskey
 
 on:
   pull_request:
@@ -171,55 +172,15 @@ jobs:
     - name: Kill Misskey Job
       run: screen -S misskey -X quit
 
-  compare-diff:
+  save-pr-number:
     runs-on: ubuntu-latest
-    if: success()
-    needs: [get-base, get-head]
-    permissions:
-      pull-requests: write
-
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v3
+      - name: Save PR number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          echo "$PR_NUMBER" > ./pr_number
+      - uses: actions/upload-artifact@v3
         with:
           name: api-artifact
-          path: ./artifacts
-      - name: Output base
-        run: cat ./artifacts/api-base.json
-      - name: Output head
-        run: cat ./artifacts/api-head.json
-      - name: Arrange json files
-        run: |
-          jq '.' ./artifacts/api-base.json > ./api-base.json
-          jq '.' ./artifacts/api-head.json > ./api-head.json
-      - name: Get diff of 2 files
-        run: diff -u --label=base --label=head ./api-base.json ./api-head.json | cat > api.json.diff
-      - name: Get full diff
-        run: diff --label=base --label=head --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' ./api-base.json ./api-head.json | cat > api-full.json.diff
-      - name: Echo full diff
-        run: cat ./api-full.json.diff
-      - name: Upload full diff to Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: api-artifact
-          path: api-full.json.diff
-      - id: out-diff
-        name: Build diff Comment
-        run: |
-          cat <<- EOF > ./output.md
-          このPRによるapi.jsonの差分
-          <details>
-          <summary>差分はこちら</summary>
-
-          \`\`\`diff
-          $(cat ./api.json.diff)
-          \`\`\`
-          </details>
-
-          [Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})
-          EOF
-      - name: Write diff comment
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          comment_tag: show_diff
-          filePath: ./output.md
+          path: pr_number
