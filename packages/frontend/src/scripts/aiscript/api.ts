@@ -9,7 +9,7 @@ import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
-import { nyaize } from '../nyaize.js';
+import { nyaize } from '@/scripts/nyaize.js';
 
 export function createAiScriptEnv(opts) {
 	return {
