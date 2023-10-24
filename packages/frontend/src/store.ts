@@ -371,6 +371,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	showUnreadNotificationCount: {
 		where: 'deviceAccount',
+		default: true,
 	},
 }));
 
