@@ -261,7 +261,7 @@ export interface Locale {
     "imageUrl": string;
     "remove": string;
     "removed": string;
-    "undraftAreYouSure": string;
+    "requestApprovalAreYouSure": string;
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
     "resetAreYouSure": string;
@@ -1027,8 +1027,8 @@ export interface Locale {
     "sensitiveWordsDescription2": string;
     "notesSearchNotAvailable": string;
     "license": string;
-    "draft": string;
-    "undrafted": string;
+    "requestPending": string;
+    "requestApproval": string;
     "requestEmojis": string;
     "emojiNameValidation": string;
     "unfavoriteConfirm": string;

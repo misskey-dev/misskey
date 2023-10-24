@@ -37,12 +37,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const emoji = await this.customEmojiService.getEmojiById(ps.id);
-			const draftEmoji = await this.customEmojiService.getEmojiDraftById(ps.id);
+			const RequestEmoji = await this.customEmojiService.getEmojiRequestById(ps.id);
 			if (emoji != null) {
 				await this.customEmojiService.delete(ps.id, me);
 			}
-			if (draftEmoji != null) {
-				await this.customEmojiService.draftDelete(ps.id);
+			if (RequestEmoji != null) {
+				await this.customEmojiService.RequestDelete(ps.id);
 			}
 		});
 	}

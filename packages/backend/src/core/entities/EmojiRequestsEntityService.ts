@@ -5,24 +5,24 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { EmojiDraftsRepository } from '@/models/_.js';
+import type { EmojiRequestsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
-import { MiEmojiDraft } from '@/models/EmojiDraft.js';
+import { MiEmojiRequest } from '@/models/EmojiRequest.js';
 
 @Injectable()
-export class EmojiDraftsEntityService {
+export class EmojiRequestsEntityService {
 	constructor(
-		@Inject(DI.emojiDraftsRepository)
-		private emojiDraftsRepository: EmojiDraftsRepository,
+		@Inject(DI.emojiRequestsRepository)
+		private emojiRequestsRepository: EmojiRequestsRepository,
 	) {
 	}
 
 	@bindThis
 	public async packSimple(
-		src: MiEmojiDraft['id'] | MiEmojiDraft,
-	): Promise<Packed<'EmojiDraftSimple'>> {
-		const emoji = typeof src === 'object' ? src : await this.emojiDraftsRepository.findOneByOrFail({ id: src });
+		src: MiEmojiRequest['id'] | MiEmojiRequest,
+	): Promise<Packed<'EmojiRequestSimple'>> {
+		const emoji = typeof src === 'object' ? src : await this.emojiRequestsRepository.findOneByOrFail({ id: src });
 
 		return {
 			aliases: emoji.aliases,
@@ -43,9 +43,9 @@ export class EmojiDraftsEntityService {
 
 	@bindThis
 	public async packDetailed(
-		src: MiEmojiDraft['id'] | MiEmojiDraft,
-	): Promise<Packed<'EmojiDraftDetailed'>> {
-		const emoji = typeof src === 'object' ? src : await this.emojiDraftsRepository.findOneByOrFail({ id: src });
+		src: MiEmojiRequest['id'] | MiEmojiRequest,
+	): Promise<Packed<'EmojiRequestDetailed'>> {
+		const emoji = typeof src === 'object' ? src : await this.emojiRequestsRepository.findOneByOrFail({ id: src });
 
 		return {
 			id: emoji.id,

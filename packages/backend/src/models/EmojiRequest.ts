@@ -6,9 +6,9 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 import { id } from './util/id.js';
 
-@Entity('emoji_draft')
+@Entity('emoji_request')
 @Index(['name'], { unique: true })
-export class MiEmojiDraft {
+export class MiEmojiRequest {
 	@PrimaryColumn(id())
 	public id: string;
 

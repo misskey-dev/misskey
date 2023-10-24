@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { EmojiDraftsRepository } from '@/models/_.js';
+import type { EmojiRequestsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { EmojiDraftsEntityService } from '@/core/entities/EmojiDraftsEntityService.js';
+import { EmojiRequestsEntityService } from '@/core/entities/EmojiRequestsEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -27,7 +26,7 @@ export const meta = {
 				items: {
 					type: 'object',
 					optional: false, nullable: false,
-					ref: 'EmojiDraftSimple',
+					ref: 'EmojiRequestSimple',
 				},
 			},
 		},
@@ -44,13 +43,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.emojiDraftsRepository)
-		private emojiDraftsRepository: EmojiDraftsRepository,
+		@Inject(DI.emojiRequestsRepository)
+		private emojiRequestsRepository: EmojiRequestsRepository,
 
-		private emojiDraftsEntityService: EmojiDraftsEntityService,
+		private emojiRequestsEntityService: EmojiRequestsEntityService,
 	) {
 		super(meta, paramDef, async () => {
-			const emojis = await this.emojiDraftsRepository.find({
+			const emojis = await this.emojiRequestsRepository.find({
 				order: {
 					category: 'ASC',
 					name: 'ASC',
@@ -58,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			return {
-				emojis: await this.emojiDraftsEntityService.packSimpleMany(emojis),
+				emojis: await this.emojiRequestsEntityService.packSimpleMany(emojis),
 			};
 		});
 	}

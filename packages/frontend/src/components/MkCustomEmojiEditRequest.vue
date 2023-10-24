@@ -1,5 +1,5 @@
 <template>
-<MkPagination ref="emojisDraftPaginationComponent" :pagination="paginationDraft">
+<MkPagination ref="emojisRequestPaginationComponent" :pagination="paginationRequest">
 	<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 	<template #default="{items}">
 		<div class="ldhfsamy">
@@ -16,13 +16,13 @@
 						<div class="license">{{ i18n.ts.license }}:{{ emoji.license }}</div>
 					</div>
 					<div class="edit-button">
-						<MkButton primary class="edit" @click="editDraft(emoji)">
+						<MkButton primary class="edit" @click="editRequest(emoji)">
 							{{ i18n.ts.edit }}
 						</MkButton>
-						<MkButton class="draft" @click="undrafted(emoji)">
-							{{ i18n.ts.undrafted }}
+						<MkButton class="request" @click="unrequested(emoji)">
+							{{ i18n.ts.requestApproval }}
 						</MkButton>
-						<MkButton danger class="delete" @click="deleteDraft(emoji)">
+						<MkButton danger class="delete" @click="deleteRequest(emoji)">
 							{{ i18n.ts.delete }}
 						</MkButton>
 					</div>
@@ -40,48 +40,48 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkButton from '@/components/MkButton.vue';
 
-const emojisDraftPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const emojisRequestPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const query = ref(null);
 
-const paginationDraft = {
-	endpoint: 'admin/emoji/list-draft' as const,
+const paginationRequest = {
+	endpoint: 'admin/emoji/list-request' as const,
 	limit: 30,
 	params: computed(() => ({
 		query: (query.value && query.value !== '') ? query.value : null,
 	})),
 };
 
-const editDraft = (emoji) => {
-	emoji.isDraft = true;
+const editRequest = (emoji) => {
+	emoji.requestNow = true;
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
 		emoji: emoji,
-		isRequest: false,
-		isDraftEdit: true,
+		requestNow: false,
+		isRequestEdit: true,
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisDraftPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
+				emojisRequestPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
 					...oldEmoji,
 					...result.updated,
 				}));
-				emojisDraftPaginationComponent.value.reload();
+				emojisRequestPaginationComponent.value.reload();
 			} else if (result.deleted) {
-				emojisDraftPaginationComponent.value.removeItem((item) => item.id === emoji.id);
-				emojisDraftPaginationComponent.value.reload();
+				emojisRequestPaginationComponent.value.removeItem((item) => item.id === emoji.id);
+				emojisRequestPaginationComponent.value.reload();
 			}
 		},
 	}, 'closed');
 };
 
-async function undrafted(emoji) {
+async function unrequested(emoji) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('undraftAreYouSure', { x: emoji.name }),
+		text: i18n.t('requestApprovalAreYouSure', { x: emoji.name }),
 	});
 	if (canceled) return;
 
-	await os.api('admin/emoji/update-draft', {
+	await os.api('admin/emoji/update-request', {
 		id: emoji.id,
 		fileId: emoji.fileId,
 		name: emoji.name,
@@ -90,14 +90,14 @@ async function undrafted(emoji) {
 		license: emoji.license,
 		isSensitive: emoji.isSensitive,
 		localOnly: emoji.localOnly,
-		isDraft: false,
+		isRequest: false,
 	});
 
-	emojisDraftPaginationComponent.value.removeItem((item) => item.id === emoji.id);
-	emojisDraftPaginationComponent.value.reload();
+	emojisRequestPaginationComponent.value.removeItem((item) => item.id === emoji.id);
+	emojisRequestPaginationComponent.value.reload();
 }
 
-async function deleteDraft(emoji) {
+async function deleteRequest(emoji) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.t('removeAreYouSure', { x: emoji.name }),
@@ -107,8 +107,8 @@ async function deleteDraft(emoji) {
 	os.api('admin/emoji/delete', {
 		id: emoji.id,
 	}).then(() => {
-		emojisDraftPaginationComponent.value.removeItem((item) => item.id === emoji.id);
-		emojisDraftPaginationComponent.value.reload();
+		emojisRequestPaginationComponent.value.removeItem((item) => item.id === emoji.id);
+		emojisRequestPaginationComponent.value.reload();
 	});
 }
 </script>
@@ -198,7 +198,7 @@ async function deleteDraft(emoji) {
 				margin: 6px 0;
 			}
 
-			> .draft {
+			> .request {
 				grid-row: 2;
 				width: 100%;
 				margin: 6px 0;

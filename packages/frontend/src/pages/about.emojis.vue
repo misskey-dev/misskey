@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkFoldableSection v-if="searchEmojis">
 			<template #header>{{ i18n.ts.searchResult }}</template>
 			<div :class="$style.emojis">
-				<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+				<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :request="emoji.request"/>
 			</div>
 		</MkFoldableSection>
 
@@ -36,9 +36,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkFoldableSection>
 	</MkSpacer>
-	<MkSpacer v-if="tab === 'draft'" :contentMax="1000" :marginMin="20">
+	<MkSpacer v-if="tab === 'request'" :contentMax="1000" :marginMin="20">
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in draftEmojis.emojis" :key="emoji.name" :emoji="emoji" :draft="true"/>
+			<XEmoji v-for="emoji in requestEmojis.emojis" :key="emoji.name" :emoji="emoji" :request="true"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -64,7 +64,7 @@ const headerTabs = $computed(() => [{
 	key: 'emojis',
 	title: i18n.ts.list,
 }, {
-	key: 'draft',
+	key: 'request',
 	title: i18n.ts.requestEmojis,
 }]);
 
@@ -73,7 +73,7 @@ definePageMetadata(ref({}));
 let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = $ref(new Set());
-const draftEmojis = await os.apiGet('emoji-drafts');
+const requestEmojis = await os.apiGet('emoji-requests');
 function search() {
 	if ((q === '' || q == null) && selectedTags.size === 0) {
 		searchEmojis = null;
@@ -97,7 +97,7 @@ function search() {
 
 const edit = () => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
-		isRequest: true,
+		requestNow: true,
 	}, {
 		done: result => {
 			window.location.reload();

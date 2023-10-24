@@ -56,7 +56,7 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
 			type: 'string',
 		} },
-		draft: { type: 'boolean' },
+		Request: { type: 'boolean' },
 	},
 	required: ['id', 'name', 'aliases'],
 } as const;
@@ -72,22 +72,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let driveFile;
-			const isDraft = !!ps.draft;
+			const isRequest = !!ps.Request;
 			if (ps.fileId) {
 				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const emoji = await this.customEmojiService.getEmojiDraftById(ps.id);
+			const emoji = await this.customEmojiService.getEmojiRequestById(ps.id);
 			if (emoji != null) {
 				if (ps.name !== emoji.name) {
-					const isDuplicate = await this.customEmojiService.checkDraftDuplicate(ps.name);
+					const isDuplicate = await this.customEmojiService.checkRequestDuplicate(ps.name);
 					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
 				}
 			} else {
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
-			if (!isDraft) {
+			if (!isRequest) {
 				const file = await this.driveFileEntityService.getFromUrl(emoji.originalUrl);
 				if (file === null) throw new ApiError(meta.errors.noSuchFile);
 				await this.customEmojiService.add({
@@ -101,9 +101,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					localOnly: ps.localOnly ?? false,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 				}, me);
-				await this.customEmojiService.draftDelete(ps.id);
+				await this.customEmojiService.RequestDelete(ps.id);
 			} else {
-				await this.customEmojiService.draftUpdate(ps.id, {
+				await this.customEmojiService.RequestUpdate(ps.id, {
 					name: ps.name,
 					category: ps.category ?? null,
 					aliases: ps.aliases ?? [],

@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="tab === 'local'" class="local">
 					<MkCustomEmojiEditLocal/>
 				</div>
-				<div v-if="tab === 'draft'" class="draft">
-					<MkCustomEmojiEditDraft/>
+				<div v-if="tab === 'request'" class="request">
+					<MkCustomEmojiEditRequest/>
 				</div>
 				<div v-else-if="tab === 'remote'" class="remote">
 					<MkCustomEmojiEditRemote/>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
-import MkCustomEmojiEditDraft from '@/components/MkCustomEmojiEditDraft.vue';
+import MkCustomEmojiEditRequest from '@/components/MkCustomEmojiEditRequest.vue';
 import MkCustomEmojiEditLocal from '@/components/MkCustomEmojiEditLocal.vue';
 import MkCustomEmojiEditRemote from '@/components/MkCustomEmojiEditRemote.vue';
 import { selectFile } from '@/scripts/select-file';
@@ -34,7 +34,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const tab = ref('draft');
+const tab = ref('request');
 
 const add = async (ev: MouseEvent) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
@@ -102,7 +102,7 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	key: 'draft',
+	key: 'request',
 	title: i18n.ts.requestEmojis,
 }, {
 	key: 'local',

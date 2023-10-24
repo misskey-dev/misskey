@@ -29,20 +29,20 @@ import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
 import * as ep___admin_drive_showFile from './endpoints/admin/drive/show-file.js';
 import * as ep___admin_emoji_addAliasesBulk from './endpoints/admin/emoji/add-aliases-bulk.js';
 import * as ep___admin_emoji_add from './endpoints/admin/emoji/add.js';
-import * as ep___admin_emoji_addDraft from './endpoints/admin/emoji/add-draft.js';
+import * as ep___admin_emoji_addRequest from './endpoints/admin/emoji/add-request.js';
 import * as ep___admin_emoji_copy from './endpoints/admin/emoji/copy.js';
 import * as ep___admin_emoji_deleteBulk from './endpoints/admin/emoji/delete-bulk.js';
 import * as ep___admin_emoji_delete from './endpoints/admin/emoji/delete.js';
 import * as ep___admin_emoji_importZip from './endpoints/admin/emoji/import-zip.js';
 import * as ep___admin_emoji_listRemote from './endpoints/admin/emoji/list-remote.js';
 import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
-import * as ep___admin_emoji_listDraft from './endpoints/admin/emoji/list-draft.js';
+import * as ep___admin_emoji_listRequest from './endpoints/admin/emoji/list-request.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
-import * as ep___admin_emoji_updateDraft from './endpoints/admin/emoji/update-draft.js';
+import * as ep___admin_emoji_updateRequest from './endpoints/admin/emoji/update-request.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -251,7 +251,7 @@ import * as ep___invite_list from './endpoints/invite/list.js';
 import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
-import * as ep___emojiDrafts from './endpoints/emoji-drafts.js';
+import * as ep___emojiRequests from './endpoints/emoji-requests.js';
 import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -388,20 +388,20 @@ const eps = [
 	['admin/drive/show-file', ep___admin_drive_showFile],
 	['admin/emoji/add-aliases-bulk', ep___admin_emoji_addAliasesBulk],
 	['admin/emoji/add', ep___admin_emoji_add],
-	['admin/emoji/add-draft', ep___admin_emoji_addDraft],
+	['admin/emoji/add-request', ep___admin_emoji_addRequest],
 	['admin/emoji/copy', ep___admin_emoji_copy],
 	['admin/emoji/delete-bulk', ep___admin_emoji_deleteBulk],
 	['admin/emoji/delete', ep___admin_emoji_delete],
 	['admin/emoji/import-zip', ep___admin_emoji_importZip],
 	['admin/emoji/list-remote', ep___admin_emoji_listRemote],
-	['admin/emoji/list-draft', ep___admin_emoji_listDraft],
 	['admin/emoji/list', ep___admin_emoji_list],
+	['admin/emoji/list-request', ep___admin_emoji_listRequest],
 	['admin/emoji/remove-aliases-bulk', ep___admin_emoji_removeAliasesBulk],
 	['admin/emoji/set-aliases-bulk', ep___admin_emoji_setAliasesBulk],
 	['admin/emoji/set-category-bulk', ep___admin_emoji_setCategoryBulk],
 	['admin/emoji/set-license-bulk', ep___admin_emoji_setLicenseBulk],
 	['admin/emoji/update', ep___admin_emoji_update],
-	['admin/emoji/update-draft', ep___admin_emoji_updateDraft],
+	['admin/emoji/update-request', ep___admin_emoji_updateRequest],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
 	['admin/federation/remove-all-following', ep___admin_federation_removeAllFollowing],
@@ -610,7 +610,7 @@ const eps = [
 	['invite/limit', ep___invite_limit],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
-	['emoji-drafts', ep___emojiDrafts],
+	['emoji-requests', ep___emojiRequests],
 	['emoji', ep___emoji],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],

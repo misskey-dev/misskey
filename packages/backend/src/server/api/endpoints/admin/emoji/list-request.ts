@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojiDraftsRepository } from '@/models/_.js';
-import type { MiEmojiDraft } from '@/models/EmojiDraft.js';
+import type { EmojiRequestsRepository } from '@/models/_.js';
+import type { MiEmojiRequest } from '@/models/EmojiRequest.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { EmojiDraftsEntityService } from '@/core/entities/EmojiDraftsEntityService.js';
+import { EmojiRequestsEntityService } from '@/core/entities/EmojiRequestsEntityService.js';
 //import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
@@ -69,16 +69,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.emojiDraftsRepository)
-		private emojiDraftsRepository: EmojiDraftsRepository,
+		@Inject(DI.emojiRequestsRepository)
+		private emojiRequestsRepository: EmojiRequestsRepository,
 
-		private emojiDraftsEntityService: EmojiDraftsEntityService,
+		private emojiRequestsEntityService: EmojiRequestsEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const q = this.queryService.makePaginationQuery(this.emojiDraftsRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+			const q = this.queryService.makePaginationQuery(this.emojiRequestsRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
 
-			let emojis: MiEmojiDraft[];
+			let emojis: MiEmojiRequest[];
 
 			if (ps.query) {
 				//q.andWhere('emoji.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
@@ -102,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emojis = await q.limit(ps.limit).getMany();
 			}
 
-			return this.emojiDraftsEntityService.packDetailedMany(emojis);
+			return this.emojiRequestsEntityService.packDetailedMany(emojis);
 		});
 	}
 }

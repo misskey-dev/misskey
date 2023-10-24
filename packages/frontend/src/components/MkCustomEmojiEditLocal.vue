@@ -20,10 +20,10 @@
 	<template #default="{items}">
 		<div class="ldhfsamy">
 			<div v-for="emoji in items" :key="emoji.id">
-				<button v-if="emoji.draft" class="emoji _panel _button emoji-draft" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+				<button v-if="emoji.request" class="emoji _panel _button emoji-request" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 					<img :src="emoji.url" class="img" :alt="emoji.name"/>
 					<div class="body">
-						<div class="name _monospace">{{ emoji.name + ' (draft)' }}</div>
+						<div class="name _monospace">{{ emoji.name }}</div>
 						<div class="info">{{ emoji.category }}</div>
 					</div>
 				</button>
@@ -82,7 +82,7 @@ const toggleSelect = (emoji) => {
 const edit = (emoji) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
 		emoji: emoji,
-		isRequest: false,
+		requestNow: false,
 	}, {
 		done: result => {
 			if (result.updated) {
@@ -217,7 +217,7 @@ const delBulk = async () => {
 	}
 }
 
-.emoji-draft {
+.emoji-request {
 	--c: rgb(255 196 0 / 15%);;
 	background-image: linear-gradient(45deg,var(--c) 16.67%,transparent 16.67%,transparent 50%,var(--c) 50%,var(--c) 66.67%,transparent 66.67%,transparent 100%);
 	background-size: 16px 16px;

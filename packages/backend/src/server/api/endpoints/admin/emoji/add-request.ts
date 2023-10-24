@@ -61,14 +61,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
-			const isDraftDuplicate = await this.customEmojiService.checkDraftDuplicate(ps.name);
+			const isRequestDuplicate = await this.customEmojiService.checkRequestDuplicate(ps.name);
 
-			if (isDuplicate || isDraftDuplicate) throw new ApiError(meta.errors.duplicateName);
+			if (isDuplicate || isRequestDuplicate) throw new ApiError(meta.errors.duplicateName);
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 
-			const emoji = await this.customEmojiService.draft({
+			const emoji = await this.customEmojiService.Request({
 				driveFile,
 				name: ps.name,
 				category: ps.category ?? null,

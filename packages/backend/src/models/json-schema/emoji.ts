@@ -42,7 +42,7 @@ export const packedEmojiSimpleSchema = {
 		},
 	},
 } as const;
-export const packedEmojiDraftSimpleSchema = {
+export const packedEmojiRequestSimpleSchema = {
 	type: 'object',
 	properties: {
 		aliases: {
@@ -131,7 +131,7 @@ export const packedEmojiDetailedSchema = {
 	},
 } as const;
 
-export const packedEmojiDraftDetailedSchema = {
+export const packedEmojiRequestDetailedSchema = {
 	type: 'object',
 	properties: {
 		id: {

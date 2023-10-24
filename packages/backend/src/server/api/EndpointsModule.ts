@@ -29,20 +29,20 @@ import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
 import * as ep___admin_drive_showFile from './endpoints/admin/drive/show-file.js';
 import * as ep___admin_emoji_addAliasesBulk from './endpoints/admin/emoji/add-aliases-bulk.js';
 import * as ep___admin_emoji_add from './endpoints/admin/emoji/add.js';
-import * as ep___admin_emoji_addDraft from './endpoints/admin/emoji/add-draft.js';
+import * as ep___admin_emoji_addRequest from './endpoints/admin/emoji/add-request.js';
 import * as ep___admin_emoji_copy from './endpoints/admin/emoji/copy.js';
 import * as ep___admin_emoji_deleteBulk from './endpoints/admin/emoji/delete-bulk.js';
 import * as ep___admin_emoji_delete from './endpoints/admin/emoji/delete.js';
 import * as ep___admin_emoji_importZip from './endpoints/admin/emoji/import-zip.js';
 import * as ep___admin_emoji_listRemote from './endpoints/admin/emoji/list-remote.js';
 import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
-import * as ep___admin_emoji_listDraft from './endpoints/admin/emoji/list-draft.js';
+import * as ep___admin_emoji_listRequest from './endpoints/admin/emoji/list-request.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
-import * as ep___admin_emoji_updateDraft from './endpoints/admin/emoji/update-draft.js';
+import * as ep___admin_emoji_updateRequest from './endpoints/admin/emoji/update-request.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -251,7 +251,7 @@ import * as ep___invite_list from './endpoints/invite/list.js';
 import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
-import * as ep___emojiDrafts from './endpoints/emoji-drafts.js';
+import * as ep___emojiRequests from './endpoints/emoji-requests.js';
 import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -390,20 +390,20 @@ const $admin_drive_files: Provider = { provide: 'ep:admin/drive/files', useClass
 const $admin_drive_showFile: Provider = { provide: 'ep:admin/drive/show-file', useClass: ep___admin_drive_showFile.default };
 const $admin_emoji_addAliasesBulk: Provider = { provide: 'ep:admin/emoji/add-aliases-bulk', useClass: ep___admin_emoji_addAliasesBulk.default };
 const $admin_emoji_add: Provider = { provide: 'ep:admin/emoji/add', useClass: ep___admin_emoji_add.default };
-const $admin_emoji_addDraft: Provider = { provide: 'ep:admin/emoji/add-draft', useClass: ep___admin_emoji_addDraft.default };
+const $admin_emoji_addRequest: Provider = { provide: 'ep:admin/emoji/add-request', useClass: ep___admin_emoji_addRequest.default };
 const $admin_emoji_copy: Provider = { provide: 'ep:admin/emoji/copy', useClass: ep___admin_emoji_copy.default };
 const $admin_emoji_deleteBulk: Provider = { provide: 'ep:admin/emoji/delete-bulk', useClass: ep___admin_emoji_deleteBulk.default };
 const $admin_emoji_delete: Provider = { provide: 'ep:admin/emoji/delete', useClass: ep___admin_emoji_delete.default };
 const $admin_emoji_importZip: Provider = { provide: 'ep:admin/emoji/import-zip', useClass: ep___admin_emoji_importZip.default };
 const $admin_emoji_listRemote: Provider = { provide: 'ep:admin/emoji/list-remote', useClass: ep___admin_emoji_listRemote.default };
 const $admin_emoji_list: Provider = { provide: 'ep:admin/emoji/list', useClass: ep___admin_emoji_list.default };
-const $admin_emoji_listDraft: Provider = { provide: 'ep:admin/emoji/list-draft', useClass: ep___admin_emoji_listDraft.default };
+const $admin_emoji_listRequest: Provider = { provide: 'ep:admin/emoji/list-request', useClass: ep___admin_emoji_listRequest.default };
 const $admin_emoji_removeAliasesBulk: Provider = { provide: 'ep:admin/emoji/remove-aliases-bulk', useClass: ep___admin_emoji_removeAliasesBulk.default };
 const $admin_emoji_setAliasesBulk: Provider = { provide: 'ep:admin/emoji/set-aliases-bulk', useClass: ep___admin_emoji_setAliasesBulk.default };
 const $admin_emoji_setCategoryBulk: Provider = { provide: 'ep:admin/emoji/set-category-bulk', useClass: ep___admin_emoji_setCategoryBulk.default };
 const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-license-bulk', useClass: ep___admin_emoji_setLicenseBulk.default };
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
-const $admin_emoji_updateDraft: Provider = { provide: 'ep:admin/emoji/update-draft', useClass: ep___admin_emoji_updateDraft.default };
+const $admin_emoji_updateRequest: Provider = { provide: 'ep:admin/emoji/update-request', useClass: ep___admin_emoji_updateRequest.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
 const $admin_federation_removeAllFollowing: Provider = { provide: 'ep:admin/federation/remove-all-following', useClass: ep___admin_federation_removeAllFollowing.default };
@@ -612,7 +612,7 @@ const $invite_list: Provider = { provide: 'ep:invite/list', useClass: ep___invit
 const $invite_limit: Provider = { provide: 'ep:invite/limit', useClass: ep___invite_limit.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
-const $emoji_drafts: Provider = { provide: 'ep:emoji-drafts', useClass: ep___emojiDrafts.default };
+const $emoji_requests: Provider = { provide: 'ep:emoji-requests', useClass: ep___emojiRequests.default };
 const $emoji: Provider = { provide: 'ep:emoji', useClass: ep___emoji.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
@@ -755,20 +755,20 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_drive_showFile,
 		$admin_emoji_addAliasesBulk,
 		$admin_emoji_add,
-		$admin_emoji_addDraft,
+		$admin_emoji_addRequest,
 		$admin_emoji_copy,
 		$admin_emoji_deleteBulk,
 		$admin_emoji_delete,
 		$admin_emoji_importZip,
 		$admin_emoji_listRemote,
 		$admin_emoji_list,
-		$admin_emoji_listDraft,
+		$admin_emoji_listRequest,
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
-		$admin_emoji_updateDraft,
+		$admin_emoji_updateRequest,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
@@ -977,7 +977,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$invite_limit,
 		$meta,
 		$emojis,
-		$emoji_drafts,
+		$emoji_requests,
 		$emoji,
 		$miauth_genToken,
 		$mute_create,
@@ -1114,20 +1114,20 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_drive_showFile,
 		$admin_emoji_addAliasesBulk,
 		$admin_emoji_add,
-		$admin_emoji_addDraft,
+		$admin_emoji_addRequest,
 		$admin_emoji_copy,
 		$admin_emoji_deleteBulk,
 		$admin_emoji_delete,
 		$admin_emoji_importZip,
 		$admin_emoji_listRemote,
 		$admin_emoji_list,
-		$admin_emoji_listDraft,
+		$admin_emoji_listRequest,
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
-		$admin_emoji_updateDraft,
+		$admin_emoji_updateRequest,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
@@ -1336,7 +1336,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$invite_limit,
 		$meta,
 		$emojis,
-		$emoji_drafts,
+		$emoji_requests,
 		$emoji,
 		$miauth_genToken,
 		$mute_create,

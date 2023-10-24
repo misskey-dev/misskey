@@ -12,13 +12,13 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiEmoji } from '@/models/Emoji.js';
-import type { EmojisRepository, EmojiDraftsRepository, MiRole, MiUser } from '@/models/_.js';
+import type { EmojisRepository, EmojiRequestsRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { MiEmojiDraft } from '@/models/EmojiDraft.js';
+import { MiEmojiRequest } from '@/models/EmojiRequest.js';
 
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
@@ -34,8 +34,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
-		@Inject(DI.emojiDraftsRepository)
-		private emojiDraftsRepository: EmojiDraftsRepository,
+		@Inject(DI.emojiRequestsRepository)
+		private emojiRequestsRepository: EmojiRequestsRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -60,7 +60,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async draft(data: {
+	public async Request(data: {
 		driveFile: MiDriveFile;
 		name: string;
 		category: string | null;
@@ -68,8 +68,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
-	}, me?: MiUser): Promise<MiEmojiDraft> {
-		const emoji = await this.emojiDraftsRepository.insert({
+	}, me?: MiUser): Promise<MiEmojiRequest> {
+		const emoji = await this.emojiRequestsRepository.insert({
 			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
@@ -82,7 +82,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			fileId: data.driveFile.id,
-		}).then(x => this.emojiDraftsRepository.findOneByOrFail(x.identifiers[0]));
+		}).then(x => this.emojiRequestsRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (me) {
 			this.moderationLogService.log(me, 'addCustomEmoji', {
@@ -196,7 +196,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}
 	}
 	@bindThis
-	public async draftUpdate(id: MiEmoji['id'], data: {
+	public async RequestUpdate(id: MiEmoji['id'], data: {
 		driveFile?: MiDriveFile;
 		name?: string;
 		category?: string | null;
@@ -205,11 +205,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		isSensitive?: boolean;
 		localOnly?: boolean;
 	}, moderator?: MiUser): Promise<void> {
-		const emoji = await this.emojiDraftsRepository.findOneByOrFail({ id: id });
-		const sameNameEmoji = await this.emojiDraftsRepository.findOneBy({ name: data.name });
+		const emoji = await this.emojiRequestsRepository.findOneByOrFail({ id: id });
+		const sameNameEmoji = await this.emojiRequestsRepository.findOneBy({ name: data.name });
 		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
 
-		await this.emojiDraftsRepository.update(emoji.id, {
+		await this.emojiRequestsRepository.update(emoji.id, {
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,
@@ -332,10 +332,10 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}
 	}
 	@bindThis
-	public async draftDelete(id: MiEmojiDraft['id']) {
-		const emoji = await this.emojiDraftsRepository.findOneByOrFail({ id: id });
+	public async RequestDelete(id: MiEmojiRequest['id']) {
+		const emoji = await this.emojiRequestsRepository.findOneByOrFail({ id: id });
 
-		await this.emojiDraftsRepository.delete(emoji.id);
+		await this.emojiRequestsRepository.delete(emoji.id);
 	}
 	@bindThis
 	public async deleteBulk(ids: MiEmoji['id'][], moderator?: MiUser) {
@@ -458,8 +458,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
 	}
 	@bindThis
-	public checkDraftDuplicate(name: string): Promise<boolean> {
-		return this.emojiDraftsRepository.exist({ where: { name } });
+	public checkRequestDuplicate(name: string): Promise<boolean> {
+		return this.emojiRequestsRepository.exist({ where: { name } });
 	}
 
 	@bindThis
@@ -468,8 +468,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public getEmojiDraftById(id: string): Promise<MiEmojiDraft | null> {
-		return this.emojiDraftsRepository.findOneBy({ id });
+	public getEmojiRequestById(id: string): Promise<MiEmojiRequest | null> {
+		return this.emojiRequestsRepository.findOneBy({ id });
 	}
 	@bindThis
 	public dispose(): void {

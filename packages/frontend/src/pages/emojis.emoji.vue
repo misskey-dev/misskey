@@ -4,10 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<button v-if="draft" class="_button emoji-draft" :class="$style.root" @click="menu">
+<button v-if="request" class="_button emoji-request" :class="$style.root" @click="menu">
 	<img :src="emoji.url" :class="$style.img" loading="lazy"/>
 	<div class="body">
-		<div class="name _monospace">{{ emoji.name + ' (draft)' }}</div>
+		<div class="name _monospace">{{ emoji.name + ' (request)' }}</div>
 		<div class="info">{{ emoji.aliases.join(' ') }}</div>
 	</div>
 </button>
@@ -32,7 +32,7 @@ const props = defineProps<{
     category: string;
     url: string;
   };
-  draft?: boolean;
+  request?: boolean;
 }>();
 
 function menu(ev) {
@@ -50,7 +50,7 @@ function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: () => {
-			os.apiGet('emoji-drafts', { name: props.emoji.name }).then(res => {
+			os.apiGet('emoji-requests', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
 					text: `License: ${res.license}`,
@@ -99,7 +99,7 @@ function menu(ev) {
   overflow: hidden;
 }
 
-.emoji-draft {
+.emoji-request {
   --c: rgb(255 196 0 / 15%);;
   background-image: linear-gradient(45deg,var(--c) 16.67%,transparent 16.67%,transparent 50%,var(--c) 50%,var(--c) 66.67%,transparent 66.67%,transparent 100%);
   background-size: 16px 16px;
