@@ -422,10 +422,10 @@ describe('アンテナ', () => {
 				],
 			},
 			{
-				label: 'サイレンスのノートも含まれる',
+				label: 'サイレンスのノートは含まれない',
 				parameters: (): object => ({}),
 				posts: [
-					{ note: (): Promise<Note> => post(userSilenced, { text: `${keyword}` }), included: true },
+					{ note: (): Promise<Note> => post(userSilenced, { text: `${keyword}` }) },
 				],
 			},
 			{
