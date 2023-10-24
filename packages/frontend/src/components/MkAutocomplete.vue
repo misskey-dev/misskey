@@ -96,10 +96,6 @@ const emojiDb = computed(() => {
 	const customEmojiDB: EmojiDef[] = [];
 
 	for (const x of customEmojis.value) {
-		if (x.draft) {
-			continue;
-		}
-
 		customEmojiDB.push({
 			name: x.name,
 			emoji: `:${x.name}:`,
