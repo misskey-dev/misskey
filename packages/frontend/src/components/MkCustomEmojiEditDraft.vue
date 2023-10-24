@@ -45,7 +45,7 @@ const emojisDraftPaginationComponent = shallowRef<InstanceType<typeof MkPaginati
 const query = ref(null);
 
 const paginationDraft = {
-	endpoint: 'emoji-drafts' as const,
+	endpoint: 'admin/emoji/list-draft' as const,
 	limit: 30,
 	params: computed(() => ({
 		query: (query.value && query.value !== '') ? query.value : null,
@@ -81,7 +81,7 @@ async function undrafted(emoji) {
 	});
 	if (canceled) return;
 
-	await os.api('admin/emoji/draft-update', {
+	await os.api('admin/emoji/update-draft', {
 		id: emoji.id,
 		fileId: emoji.fileId,
 		name: emoji.name,

@@ -201,9 +201,6 @@ async function init(): Promise<void> {
 		...params,
 		limit: props.pagination.limit ?? 10,
 	}).then(res => {
-		if (props.pagination.endpoint === 'emoji-drafts') {
-			res = res.emojis;
-		}
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
@@ -242,9 +239,6 @@ const fetchMore = async (): Promise<void> => {
 			untilId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
-		if (props.pagination.endpoint === 'emoji-drafts') {
-			res = res.emojis;
-		}
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
@@ -309,9 +303,6 @@ const fetchMoreAhead = async (): Promise<void> => {
 			sinceId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
-		if (props.pagination.endpoint === 'emoji-drafts') {
-			res = res.emojis;
-		}
 		if (res.length === 0) {
 			items.value = concatMapWithArray(items.value, res);
 			more.value = false;

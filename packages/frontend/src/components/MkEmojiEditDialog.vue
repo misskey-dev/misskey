@@ -171,7 +171,7 @@ async function done() {
 
 	if (props.emoji) {
 		if (isDraftEdit) {
-			await os.apiWithDialog('admin/emoji/draft-update', {
+			await os.apiWithDialog('admin/emoji/update-draft', {
 				id: props.emoji.id,
 				...params,
 			});
