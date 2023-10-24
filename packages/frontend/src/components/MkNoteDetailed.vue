@@ -522,7 +522,7 @@ function loadQuotes() {
 		noteId: appearNote.id,
 		limit: 30,
 	}).then(res => {
-		res.filter(item => item.renoteId != null)
+		res.filter(item => item.renoteId != null);
 		quotes.value = res;
 	});
 }
