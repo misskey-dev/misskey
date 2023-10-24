@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
     </button>
   </div>
-  <div v-if="shown" style="padding-left: 18px;">
+  <div v-if="shown" style="padding-left: 9px;">
     <MkEmojiPickerSection
         v-for="child in customEmojiTree"
         :key="`custom:${child.value}`"
