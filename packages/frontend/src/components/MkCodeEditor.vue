@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, toRefs, shallowRef } from 'vue';
+import { ref, watch, toRefs, shallowRef, nextTick } from 'vue';
 import XCode from '@/components/MkCode.core.vue';
 
 const props = withDefaults(defineProps<{
@@ -66,6 +66,20 @@ const onKeydown = (ev: KeyboardEvent) => {
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
+		const pos = inputEl.value?.selectionStart ?? 0;
+		const posEnd = inputEl.value?.selectionEnd ?? vModel.value.length;
+		if (pos === posEnd) {
+			const lines = vModel.value.slice(0, pos).split('\n');
+			const currentLine = lines[lines.length - 1];
+			const currentLineSpaces = currentLine.match(/^\s+/);
+			const posDelta = currentLineSpaces ? currentLineSpaces[0].length : 0;
+			ev.preventDefault();
+			vModel.value = vModel.value.slice(0, pos) + '\n' + (currentLineSpaces ? currentLineSpaces[0] : '') + vModel.value.slice(pos);
+			v.value = vModel.value;
+			nextTick(() => {
+				inputEl.value?.setSelectionRange(pos + 1 + posDelta, pos + 1 + posDelta);
+			});
+		}
 		emit('enter');
 	}
 
@@ -74,7 +88,9 @@ const onKeydown = (ev: KeyboardEvent) => {
 		const posEnd = inputEl.value?.selectionEnd ?? vModel.value.length;
 		vModel.value = vModel.value.slice(0, pos) + '\t' + vModel.value.slice(posEnd);
 		v.value = vModel.value;
-		inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		nextTick(() => {
+			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		});
 		ev.preventDefault();
 	}
 };

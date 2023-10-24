@@ -88,7 +88,7 @@ watch(() => props.lang, (to) => {
 		overflow: visible;
 		text-rendering: inherit;
     text-transform: inherit;
-    white-space: pre-wrap;
+    white-space: pre;
 	}
 }
 </style>
