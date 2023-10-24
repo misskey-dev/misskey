@@ -43,7 +43,6 @@ SPDX-License-Identifier: AGPL-3.0-only
     </button>
   </div>
   <div v-if="shown" style="padding-left: 18px;">
-    <!-- TODO: 再帰へのイベントの渡し方が微妙なのか反応はするがエフェクトが出ない -->
     <MkEmojiPickerSection
         v-for="child in customEmojiTree"
         :key="`custom:${child.value}`"
@@ -51,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
         :isChildrenExits="child.children.length!==0"
         :customEmojiTree="child.children"
-        @chosen="emit('chosen', $event, $event)"
+        @chosen="nestedChosen"
     >
       {{ child.value }}
     </MkEmojiPickerSection>
@@ -86,5 +85,9 @@ function computeButtonTitle(ev: MouseEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
 	elm.title = getEmojiName(emoji) ?? emoji;
+}
+
+function nestedChosen(emoji: any, ev?: MouseEvent) {
+	emit('chosen', emoji, ev);
 }
 </script>
