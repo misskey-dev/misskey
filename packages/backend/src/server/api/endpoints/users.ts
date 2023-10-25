@@ -74,8 +74,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			switch (ps.sort) {
 				case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
 				case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
-				case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
-				case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+				case '+createdAt': query.orderBy('user.id', 'DESC'); break;
+				case '-createdAt': query.orderBy('user.id', 'ASC'); break;
 				case '+updatedAt': query.andWhere('user.updatedAt IS NOT NULL').orderBy('user.updatedAt', 'DESC'); break;
 				case '-updatedAt': query.andWhere('user.updatedAt IS NOT NULL').orderBy('user.updatedAt', 'ASC'); break;
 				default: query.orderBy('user.id', 'ASC'); break;

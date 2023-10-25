@@ -164,7 +164,7 @@ export class ApInboxService {
 		}
 
 		// don't queue because the sender may attempt again when timeout
-		await this.userFollowingService.follow(actor, followee, activity.id);
+		await this.userFollowingService.follow(actor, followee, { requestId: activity.id });
 		return 'ok';
 	}
 
@@ -514,8 +514,7 @@ export class ApInboxService {
 		if (users.length < 1) return 'skip';
 
 		await this.abuseUserReportsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			targetUserId: users[0].id,
 			targetUserHost: users[0].host,
 			reporterId: actor.id,

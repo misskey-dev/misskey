@@ -10,6 +10,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUserList } from '@/models/UserList.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class UserListEntityService {
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -37,7 +39,7 @@ export class UserListEntityService {
 
 		return {
 			id: userList.id,
-			createdAt: userList.createdAt.toISOString(),
+			createdAt: this.idService.parse(userList.id).date.toISOString(),
 			name: userList.name,
 			userIds: users.map(x => x.userId),
 			isPublic: userList.isPublic,
@@ -50,7 +52,7 @@ export class UserListEntityService {
 	) {
 		return Promise.all(memberships.map(async x => ({
 			id: x.id,
-			createdAt: x.createdAt.toISOString(),
+			createdAt: this.idService.parse(x.id).date.toISOString(),
 			userId: x.userId,
 			user: await this.userEntityService.pack(x.userId),
 			withReplies: x.withReplies,

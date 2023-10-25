@@ -37,8 +37,7 @@ describe('RoleService', () => {
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
-			id: genAidx(new Date()),
-			createdAt: new Date(),
+			id: genAidx(Date.now()),
 			username: un,
 			usernameLower: un,
 			...data,
@@ -48,8 +47,7 @@ describe('RoleService', () => {
 
 	function createRole(data: Partial<MiRole> = {}) {
 		return rolesRepository.insert({
-			id: genAidx(new Date()),
-			createdAt: new Date(),
+			id: genAidx(Date.now()),
 			updatedAt: new Date(),
 			lastUsedAt: new Date(),
 			description: '',
@@ -198,10 +196,10 @@ describe('RoleService', () => {
 
 		test('conditional role', async () => {
 			const user1 = await createUser({
-				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
+				id: genAidx(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 			});
 			const user2 = await createUser({
-				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
+				id: genAidx(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 				followersCount: 10,
 			});
 			await createRole({

@@ -128,8 +128,7 @@ export class SigninApiService {
 		const fail = async (status?: number, failure?: { id: string }) => {
 			// Append signin history
 			await this.signinsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: user.id,
 				ip: request.ip,
 				headers: request.headers as any,
