@@ -14,11 +14,6 @@ export class MiUserListMembership {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the UserListMembership.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column({
 		...id(),

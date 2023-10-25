@@ -131,7 +131,7 @@ export class SearchService {
 
 			await this.meilisearchNoteIndex?.addDocuments([{
 				id: note.id,
-				createdAt: note.createdAt.getTime(),
+				createdAt: this.idService.parse(note.id).date.getTime(),
 				userId: note.userId,
 				userHost: note.userHost,
 				channelId: note.channelId,

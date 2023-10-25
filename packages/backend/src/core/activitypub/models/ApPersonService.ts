@@ -295,10 +295,9 @@ export class ApPersonService implements OnModuleInit {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new MiUser({
-					id: this.idService.genId(),
+					id: this.idService.gen(),
 					avatarId: null,
 					bannerId: null,
-					createdAt: new Date(),
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
 					isLocked: person.manuallyApprovesFollowers,
@@ -607,8 +606,7 @@ export class ApPersonService implements OnModuleInit {
 			for (const note of featuredNotes.filter((note): note is MiNote => note != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(MiUserNotePining, {
-					id: this.idService.genId(new Date(Date.now() + td)),
-					createdAt: new Date(),
+					id: this.idService.gen(Date.now() + td),
 					userId: user.id,
 					noteId: note.id,
 				});
