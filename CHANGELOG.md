@@ -32,6 +32,7 @@
 - Fix: 自分のフォローしているユーザーの自分のフォローしていないユーザーの visibility: followers な投稿への返信がストリーミングで流れてくる問題を修正
 - Fix: RedisへのTLキャッシュが有効の場合にHTL/LTL/STLが空になることがある問題を修正
 - Fix: STLでフォローしていないチャンネルが取得される問題を修正
+- Fix: `hashtags/trend`にてRedisからトレンドの情報が取得できない際にInternal Server Errorになる問題を修正
 
 ## 2023.10.2
 
