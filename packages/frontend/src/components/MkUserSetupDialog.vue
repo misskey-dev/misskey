@@ -49,24 +49,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<XProfile/>
-						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<XProfile/>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<XPrivacy/>
-						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<XPrivacy/>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 3">
@@ -119,42 +127,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 6">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<XTutorialNote phase="aboutNote"/>
-					</MkSpacer>
-					<div :class="$style.pageFooter">
-						<div class="_buttonsCenter">
-							<MkButton v-if="!onlyTutorial" rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<XTutorialNote phase="aboutNote"/>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton v-if="!onlyTutorial" rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
 					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 7">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<div class="_gaps">
-							<XTutorialNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
-							<div v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</div>
-						</div>
-					</MkSpacer>
-					<div :class="$style.pageFooter">
-						<div class="_buttonsCenter">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate :disabled="!isReactionTutorialPushed" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<div class="_gaps">
+								<XTutorialNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
+								<div v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</div>
+							</div>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate :disabled="!isReactionTutorialPushed" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
 					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 8">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<XTutorialTimeline phase="howToReact"/>
-					</MkSpacer>
-					<div :class="$style.pageFooter">
-						<div class="_buttonsCenter">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<XTutorialTimeline phase="howToReact"/>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -294,10 +308,21 @@ async function later(later: boolean) {
 	box-sizing: border-box;
 }
 
+.pageRoot {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+.pageMain {
+	flex-grow: 1;
+}
+
 .pageFooter {
 	position: sticky;
 	bottom: 0;
 	left: 0;
+	flex-shrink: 0;
 	padding: 12px;
 	border-top: solid 0.5px var(--divider);
 	-webkit-backdrop-filter: blur(15px);
