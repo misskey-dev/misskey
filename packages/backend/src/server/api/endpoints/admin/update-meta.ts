@@ -20,18 +20,26 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		pinnedUsers: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		hiddenTags: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		blockedHosts: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		sensitiveWords: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
+		pinnedUsers: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		hiddenTags: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		blockedHosts: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		sensitiveWords: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -67,9 +75,11 @@ export const paramDef = {
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
-		langs: { type: 'array', items: {
-			type: 'string',
-		} },
+		langs: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		summalyProxy: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
@@ -86,6 +96,8 @@ export const paramDef = {
 		tosUrl: { type: 'string', nullable: true },
 		repositoryUrl: { type: 'string' },
 		feedbackUrl: { type: 'string' },
+		impressumUrl: { type: 'string', nullable: true },
+		privacyPolicyUrl: { type: 'string', nullable: true },
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
@@ -108,6 +120,19 @@ export const paramDef = {
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
+		enableFanoutTimeline: { type: 'boolean' },
+		perLocalUserUserTimelineCacheMax: { type: 'integer' },
+		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
+		perUserHomeTimelineCacheMax: { type: 'integer' },
+		perUserListTimelineCacheMax: { type: 'integer' },
+		notesPerOneAd: { type: 'integer' },
+		silencedHosts: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'string',
+			},
+		},
 	},
 	required: [],
 } as const;
@@ -140,7 +165,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
-
+			if (Array.isArray(ps.silencedHosts)) {
+				let lastValue = '';
+				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
+				});
+			}
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
@@ -341,6 +373,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.feedbackUrl = ps.feedbackUrl;
 			}
 
+			if (ps.impressumUrl !== undefined) {
+				set.impressumUrl = ps.impressumUrl;
+			}
+
+			if (ps.privacyPolicyUrl !== undefined) {
+				set.privacyPolicyUrl = ps.privacyPolicyUrl;
+			}
+
 			if (ps.useObjectStorage !== undefined) {
 				set.useObjectStorage = ps.useObjectStorage;
 			}
@@ -439,6 +479,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.manifestJsonOverride !== undefined) {
 				set.manifestJsonOverride = ps.manifestJsonOverride;
+			}
+
+			if (ps.enableFanoutTimeline !== undefined) {
+				set.enableFanoutTimeline = ps.enableFanoutTimeline;
+			}
+
+			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
+				set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
+			}
+
+			if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {
+				set.perRemoteUserUserTimelineCacheMax = ps.perRemoteUserUserTimelineCacheMax;
+			}
+
+			if (ps.perUserHomeTimelineCacheMax !== undefined) {
+				set.perUserHomeTimelineCacheMax = ps.perUserHomeTimelineCacheMax;
+			}
+
+			if (ps.perUserListTimelineCacheMax !== undefined) {
+				set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
+			}
+
+			if (ps.notesPerOneAd !== undefined) {
+				set.notesPerOneAd = ps.notesPerOneAd;
 			}
 
 			const before = await this.metaService.fetch(true);

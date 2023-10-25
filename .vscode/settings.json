@@ -7,5 +7,17 @@
         "*.test.ts": "typescript"
     },
     "jest.jestCommandLine": "pnpm run jest",
-    "jest.autoRun": "off"
+    "jest.autoRun": "off",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "misskey",
+            "database": "misskey",
+            "username": "postgres",
+            "password": "postgres"
+        }
+    ]
 }

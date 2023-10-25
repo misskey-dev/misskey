@@ -5,47 +5,35 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MutedNotesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
-	tags: ['account'],
+	tags: ['admin'],
 
 	requireCredential: true,
+	requireModerator: true,
 
-	kind: 'read:account',
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			count: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-		},
+	errors: {
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
-	required: [],
+	properties: {
+		id: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['id'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MutedNotesRepository,
+		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			return {
-				count: await this.mutedNotesRepository.countBy({
-					userId: me.id,
-					reason: 'word',
-				}),
-			};
+			await this.avatarDecorationService.delete(ps.id, me);
 		});
 	}
 }

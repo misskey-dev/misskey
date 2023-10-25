@@ -32,6 +32,7 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
@@ -131,6 +132,15 @@ export const paramDef = {
 		birthday: { ...birthdaySchema, nullable: true },
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)] as string[], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
+		avatarDecorations: { type: 'array', maxItems: 1, items: {
+			type: 'object',
+			properties: {
+				id: { type: 'string', format: 'misskey:id' },
+				angle: { type: 'number', nullable: true, maximum: 0.5, minimum: -0.5 },
+				flipH: { type: 'boolean', nullable: true },
+			},
+			required: ['id'],
+		} },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		fields: {
 			type: 'array',
@@ -207,6 +217,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 		private cacheService: CacheService,
 		private httpRequestService: HttpRequestService,
+		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
@@ -294,6 +305,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				updates.bannerId = null;
 				updates.bannerUrl = null;
 				updates.bannerBlurhash = null;
+			}
+
+			if (ps.avatarDecorations) {
+				const decorations = await this.avatarDecorationService.getAll(true);
+				const myRoles = await this.roleService.getUserRoles(user.id);
+				const allRoles = await this.roleService.getRoles();
+				const decorationIds = decorations
+					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
+					.map(d => d.id);
+
+				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
+					id: d.id,
+					angle: d.angle ?? 0,
+					flipH: d.flipH ?? false,
+				}));
 			}
 
 			if (ps.pinnedPageId) {

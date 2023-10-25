@@ -9,15 +9,10 @@ import { MiUser } from './User.js';
 
 @Entity('following')
 @Index(['followerId', 'followeeId'], { unique: true })
+@Index(['followeeId', 'followerHost', 'isFollowerHibernated'])
 export class MiFollowing {
 	@PrimaryColumn(id())
 	public id: string;
-
-	@Index()
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the Following.',
-	})
-	public createdAt: Date;
 
 	@Index()
 	@Column({
@@ -44,6 +39,17 @@ export class MiFollowing {
 	})
 	@JoinColumn()
 	public follower: MiUser | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isFollowerHibernated: boolean;
+
+	// タイムラインにその人のリプライまで含めるかどうか
+	@Column('boolean', {
+		default: false,
+	})
+	public withReplies: boolean;
 
 	@Index()
 	@Column('varchar', {

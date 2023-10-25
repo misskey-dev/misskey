@@ -54,7 +54,6 @@ https://github.com/sindresorhus/file-type/blob/main/core.js
 https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
 */
 
-
 export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app'] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
@@ -62,13 +61,13 @@ export const ROLE_POLICIES = [
 	'gtlAvailable',
 	'ltlAvailable',
 	'canPublicNote',
-	'canEditNote',
 	'canInvite',
 	'inviteLimit',
 	'inviteLimitCycle',
 	'inviteExpirationTime',
 	'canManageCustomEmojis',
 	'canSearchNotes',
+	'canUseTranslator',
 	'canHideAds',
 	'driveCapacityMb',
 	'alwaysMarkNsfw',

@@ -116,6 +116,11 @@ const menuDef = $computed(() => [{
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',
 	}, {
+		icon: 'ti ti-sparkles',
+		text: i18n.ts.avatarDecorations,
+		to: '/admin/avatar-decorations',
+		active: currentPage?.route.name === 'avatarDecorations',
+	}, {
 		icon: 'ti ti-whirl',
 		text: i18n.ts.federation,
 		to: '/admin/federation',
@@ -198,6 +203,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.proxyAccount,
 		to: '/admin/proxy-account',
 		active: currentPage?.route.name === 'proxy-account',
+	}, {
+		icon: 'ti ti-link',
+		text: i18n.ts.externalServices,
+		to: '/admin/external-services',
+		active: currentPage?.route.name === 'external-services',
 	}, {
 		icon: 'ti ti-adjustments',
 		text: i18n.ts.other,

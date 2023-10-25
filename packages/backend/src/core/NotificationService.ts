@@ -80,7 +80,10 @@ export class NotificationService implements OnApplicationShutdown {
 		notifierId?: MiUser['id'] | null,
 	): Promise<MiNotification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
-		const recieveConfig = profile.notificationRecieveConfig[type];
+
+		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		const recieveConfig = (profile.notificationRecieveConfig ?? {})[type];
 		if (recieveConfig?.type === 'never') {
 			return null;
 		}
@@ -96,19 +99,19 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 
 			if (recieveConfig?.type === 'following') {
-				const isFollowing = await this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => followings.has(notifierId));
+				const isFollowing = await this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId));
 				if (!isFollowing) {
 					return null;
 				}
 			} else if (recieveConfig?.type === 'follower') {
-				const isFollower = await this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => followings.has(notifieeId));
+				const isFollower = await this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId));
 				if (!isFollower) {
 					return null;
 				}
 			} else if (recieveConfig?.type === 'mutualFollow') {
 				const [isFollowing, isFollower] = await Promise.all([
-					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => followings.has(notifierId)),
-					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => followings.has(notifieeId)),
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
 				]);
 				if (!isFollowing && !isFollower) {
 					return null;
@@ -122,7 +125,7 @@ export class NotificationService implements OnApplicationShutdown {
 		}
 
 		const notification = {
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			createdAt: new Date(),
 			type: type,
 			notifierId: notifierId,

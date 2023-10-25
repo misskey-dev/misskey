@@ -9,7 +9,22 @@
 ### Server
 -->
 
-## nade 1.3.5 && nade 1.3.6
+## nade 1.4.4
+2023/10/25日時点でMisskey 2023.11.0-betaに含まれるTL系の修正、並びにアバターデコレーションをチェリーピックしました
+
+## nade 1.4.3
+### Server
+- リストTLもDBへのフォールバックに対応させました
+
+## nade 1.4.2
+### Server
+- DBフォールバックの方法を本家Misskeyに揃えました
+
+## nade 1.4.0 & 1.4.1
+### Server
+- タイムラインがRedisにキャッシュされていない際にDBから取得します。
+
+## nade 1.3.5 & nade 1.3.6
 ### NOTE
 nade 1.3.5 is not working
 ### General

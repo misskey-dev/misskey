@@ -20,9 +20,11 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { IdService } from '@/core/IdService.js';
+import type { AnnouncementService } from '@/core/AnnouncementService.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { AnnouncementService } from '../AnnouncementService.js';
-import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
@@ -60,6 +62,8 @@ export class UserEntityService implements OnModuleInit {
 	private announcementService: AnnouncementService;
 	private roleService: RoleService;
 	private federatedInstanceService: FederatedInstanceService;
+	private idService: IdService;
+	private avatarDecorationService: AvatarDecorationService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -114,13 +118,6 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
-
-		//private noteEntityService: NoteEntityService,
-		//private driveFileEntityService: DriveFileEntityService,
-		//private pageEntityService: PageEntityService,
-		//private customEmojiService: CustomEmojiService,
-		//private antennaService: AntennaService,
-		//private roleService: RoleService,
 	) {
 	}
 
@@ -133,6 +130,8 @@ export class UserEntityService implements OnModuleInit {
 		this.announcementService = this.moduleRef.get('AnnouncementService');
 		this.roleService = this.moduleRef.get('RoleService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
+		this.idService = this.moduleRef.get('IdService');
+		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 	}
 
 	//#region Validators
@@ -149,71 +148,84 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public async getRelation(me: MiUser['id'], target: MiUser['id']) {
-		const following = await this.followingsRepository.findOneBy({
-			followerId: me,
-			followeeId: target,
-		});
-		return awaitAll({
-			id: target,
+		const [
 			following,
-			isFollowing: following != null,
-			isFollowed: this.followingsRepository.count({
+			isFollowed,
+			hasPendingFollowRequestFromYou,
+			hasPendingFollowRequestToYou,
+			isBlocking,
+			isBlocked,
+			isMuted,
+			isRenoteMuted,
+			isNoteSubscribing,
+		] = await Promise.all([
+			this.followingsRepository.findOneBy({
+				followerId: me,
+				followeeId: target,
+			}),
+			this.followingsRepository.exist({
 				where: {
 					followerId: target,
 					followeeId: me,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			hasPendingFollowRequestFromYou: this.followRequestsRepository.count({
+			}),
+			this.followRequestsRepository.exist({
 				where: {
 					followerId: me,
 					followeeId: target,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			hasPendingFollowRequestToYou: this.followRequestsRepository.count({
+			}),
+			this.followRequestsRepository.exist({
 				where: {
 					followerId: target,
 					followeeId: me,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			isBlocking: this.blockingsRepository.count({
+			}),
+			this.blockingsRepository.exist({
 				where: {
 					blockerId: me,
 					blockeeId: target,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			isBlocked: this.blockingsRepository.count({
+			}),
+			this.blockingsRepository.exist({
 				where: {
 					blockerId: target,
 					blockeeId: me,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			isMuted: this.mutingsRepository.count({
+			}),
+			this.mutingsRepository.exist({
 				where: {
 					muterId: me,
 					muteeId: target,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			isRenoteMuted: this.renoteMutingsRepository.count({
+			}),
+			this.renoteMutingsRepository.exist({
 				where: {
 					muterId: me,
 					muteeId: target,
 				},
-				take: 1,
-			}).then(n => n > 0),
-			isNoteSubscribing: this.noteNotificationsRepository.count({
+			}),
+			this.noteNotificationsRepository.exist({
 				where: {
 					userId: me,
 					targetUserId: target,
 				},
-				take: 1,
-			}).then(n => n > 0),
-		});
+			}),
+		]);
+
+		return {
+			id: target,
+			following,
+			isFollowing: following != null,
+			isFollowed,
+			hasPendingFollowRequestFromYou,
+			hasPendingFollowRequestToYou,
+			isBlocking,
+			isBlocked,
+			isMuted,
+			isRenoteMuted,
+			isNoteSubscribing,
+		};
 	}
 
 	@bindThis
@@ -300,24 +312,6 @@ export class UserEntityService implements OnModuleInit {
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
 
-		// migration
-		if (user.avatarId != null && user.avatarUrl === null) {
-			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			user.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
-			this.usersRepository.update(user.id, {
-				avatarUrl: user.avatarUrl,
-				avatarBlurhash: avatar.blurhash,
-			});
-		}
-		if (user.bannerId != null && user.bannerUrl === null) {
-			const banner = await this.driveFilesRepository.findOneByOrFail({ id: user.bannerId });
-			user.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
-			this.usersRepository.update(user.id, {
-				bannerUrl: user.bannerUrl,
-				bannerBlurhash: banner.blurhash,
-			});
-		}
-
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
@@ -342,9 +336,11 @@ export class UserEntityService implements OnModuleInit {
 
 		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
 		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
-		const unreadAnnouncements = isMe && opts.detail ? await this.announcementService.getUnreadAnnouncements(user) : null;
-
-		const falsy = opts.detail ? false : undefined;
+		const unreadAnnouncements = isMe && opts.detail ?
+			(await this.announcementService.getUnreadAnnouncements(user)).map((announcement) => ({
+				createdAt: this.idService.parse(announcement.id).date.toISOString(),
+				...announcement,
+			})) : null;
 
 		const packed = {
 			id: user.id,
@@ -353,8 +349,14 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
 			avatarBlurhash: user.avatarBlurhash,
-			isBot: user.isBot ?? falsy,
-			isCat: user.isCat ?? falsy,
+			avatarDecorations: user.avatarDecorations.length > 0 ? this.avatarDecorationService.getAll().then(decorations => user.avatarDecorations.filter(ud => decorations.some(d => d.id === ud.id)).map(ud => ({
+				id: ud.id,
+				angle: ud.angle || undefined,
+				flipH: ud.flipH || undefined,
+				url: decorations.find(d => d.id === ud.id)!.url,
+			}))) : [],
+			isBot: user.isBot,
+			isCat: user.isCat,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
@@ -380,14 +382,14 @@ export class UserEntityService implements OnModuleInit {
 					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
 						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
 					: null,
-				createdAt: user.createdAt.toISOString(),
+				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
 				bannerUrl: user.bannerUrl,
 				bannerBlurhash: user.bannerBlurhash,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
-				isSuspended: user.isSuspended ?? falsy,
+				isSuspended: user.isSuspended,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
@@ -462,6 +464,7 @@ export class UserEntityService implements OnModuleInit {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				mutedWords: profile!.mutedWords,
 				mutedInstances: profile!.mutedInstances,
+				mutingNotificationTypes: [], // 後方互換性のため
 				notificationRecieveConfig: profile!.notificationRecieveConfig,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 				achievements: profile!.achievements,
@@ -495,6 +498,7 @@ export class UserEntityService implements OnModuleInit {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 				isRenoteMuted: relation.isRenoteMuted,
+				withReplies: relation.following?.withReplies ?? false,
 				isNoteSubscribing: relation.isNoteSubscribing,
 				//純正Misskeyとの互換性を持たせるため
 				//純正通知: https://github.com/misskey-dev/misskey/commit/e3f151e2307e4c0d7b9cdfc7deba2ff028adce03

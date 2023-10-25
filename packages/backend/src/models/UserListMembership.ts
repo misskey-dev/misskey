@@ -8,16 +8,11 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
 
-@Entity('user_list_joining')
+@Entity('user_list_membership')
 @Index(['userId', 'userListId'], { unique: true })
-export class MiUserListJoining {
+export class MiUserListMembership {
 	@PrimaryColumn(id())
 	public id: string;
-
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the UserListJoining.',
-	})
-	public createdAt: Date;
 
 	@Index()
 	@Column({
@@ -44,4 +39,17 @@ export class MiUserListJoining {
 	})
 	@JoinColumn()
 	public userList: MiUserList | null;
+
+	// タイムラインにその人のリプライまで含めるかどうか
+	@Column('boolean', {
+		default: false,
+	})
+	public withReplies: boolean;
+
+	//#region Denormalized fields
+	@Column({
+		...id(),
+	})
+	public userListUserId: MiUser['id'];
+	//#endregion
 }

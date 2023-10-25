@@ -77,6 +77,11 @@ export class MiMeta {
 	public sensitiveWords: string[];
 
 	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
+	public silencedHosts: string[];
+
+	@Column('varchar', {
 		length: 1024,
 		nullable: true,
 	})
@@ -336,6 +341,18 @@ export class MiMeta {
 	public feedbackUrl: string | null;
 
 	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public impressumUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public privacyPolicyUrl: string | null;
+
+	@Column('varchar', {
 		length: 8192,
 		nullable: true,
 	})
@@ -471,4 +488,34 @@ export class MiMeta {
 		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
 	})
 	public preservedUsernames: string[];
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableFanoutTimeline: boolean;
+
+	@Column('integer', {
+		default: 300,
+	})
+	public perLocalUserUserTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 100,
+	})
+	public perRemoteUserUserTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 300,
+	})
+	public perUserHomeTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 300,
+	})
+	public perUserListTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 0,
+	})
+	public notesPerOneAd: number;
 }

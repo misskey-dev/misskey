@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/_.js';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -18,12 +18,13 @@ class UserListChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private listId: string;
-	public listUsers: MiUser['id'][] = [];
+	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
+	private withFiles: boolean;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		private userListMembershipsRepository: UserListMembershipsRepository,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -37,6 +38,7 @@ class UserListChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		this.listId = params.listId as string;
+		this.withFiles = params.withFiles ?? false;
 
 		// Check existence and owner
 		const listExist = await this.userListsRepository.exist({
@@ -58,40 +60,44 @@ class UserListChannel extends Channel {
 
 	@bindThis
 	private async updateListUsers() {
-		const users = await this.userListJoiningsRepository.find({
+		const memberships = await this.userListMembershipsRepository.find({
 			where: {
 				userListId: this.listId,
 			},
 			select: ['userId'],
 		});
 
-		this.listUsers = users.map(x => x.userId);
+		const membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
+		for (const membership of memberships) {
+			membershipsMap[membership.userId] = {
+				withReplies: membership.withReplies,
+			};
+		}
+		this.membershipsMap = membershipsMap;
 	}
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		if (!this.listUsers.includes(note.userId)) return;
+		const isMe = this.user!.id === note.userId;
 
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.noteEntityService.pack(note.id, this.user, {
-				detail: true,
-			});
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-			if (note.isHidden) {
-				return;
-			}
-		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
-					detail: true,
-				});
+		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
+
+		if (note.visibility === 'followers') {
+			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
+		} else if (note.visibility === 'specified') {
+			if (!note.visibleUserIds!.includes(this.user!.id)) return;
+		}
+
+		if (note.reply) {
+			const reply = note.reply;
+			if (this.membershipsMap[note.userId]?.withReplies) {
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+			} else {
+				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
 			}
 		}
 
@@ -101,6 +107,15 @@ class UserListChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (this.user && note.renoteId && !note.text) {
+			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+				note.renote.myReaction = myRenoteReaction;
+			}
+		}
+
+		this.connection.cacheNote(note);
 
 		this.send('note', note);
 	}
@@ -124,8 +139,8 @@ export class UserListChannelService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {
@@ -135,7 +150,7 @@ export class UserListChannelService {
 	public create(id: string, connection: Channel['connection']): UserListChannel {
 		return new UserListChannel(
 			this.userListsRepository,
-			this.userListJoiningsRepository,
+			this.userListMembershipsRepository,
 			this.noteEntityService,
 			id,
 			connection,

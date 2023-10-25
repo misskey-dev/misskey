@@ -84,8 +84,9 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		notify: { type: 'string', enum: ['normal', 'none'] },
+		withReplies: { type: 'boolean' },
 	},
-	required: ['userId', 'notify'],
+	required: ['userId'],
 } as const;
 
 @Injectable()
@@ -117,6 +118,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
+			// Find and update followingsRepository
+			const exist = await this.followingsRepository.findOneBy({
+				followerId: follower.id,
+				followeeId: target.id,
+			});
+
+			if (exist) {
+				await this.followingsRepository.update({
+					id: exist.id,
+				}, {
+					notify: ps.notify != null ? (ps.notify === 'none' ? null : ps.notify) : undefined,
+					withReplies: ps.withReplies ?? undefined,
+				});
+			}
+
 			// To subscribe
 			if (ps.notify === 'normal') {
 				// Check if already subscribing
@@ -141,7 +157,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				// Create
 				const noteNotification = await this.noteNotificationRepository.insert({
-					id: this.idService.genId(),
+					id: this.idService.gen(),
 					createdAt: new Date(),
 					userId: me.id,
 					targetUserId: target.id,

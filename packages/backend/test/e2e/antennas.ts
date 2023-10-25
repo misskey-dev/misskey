@@ -174,6 +174,7 @@ describe('アンテナ', () => {
 			users: [''],
 			withFile: false,
 			withReplies: false,
+			localOnly: false,
 		} as Antenna;
 		assert.deepStrictEqual(response, expected);
 	});

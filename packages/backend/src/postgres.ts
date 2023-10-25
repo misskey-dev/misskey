@@ -18,6 +18,7 @@ import { MiAnnouncement } from '@/models/Announcement.js';
 import { MiAnnouncementRead } from '@/models/AnnouncementRead.js';
 import { MiAntenna } from '@/models/Antenna.js';
 import { MiApp } from '@/models/App.js';
+import { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MiAuthSession } from '@/models/AuthSession.js';
 import { MiBlocking } from '@/models/Blocking.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
@@ -36,7 +37,6 @@ import { MiHashtag } from '@/models/Hashtag.js';
 import { MiInstance } from '@/models/Instance.js';
 import { MiMeta } from '@/models/Meta.js';
 import { MiModerationLog } from '@/models/ModerationLog.js';
-import { MiMutedNote } from '@/models/MutedNote.js';
 import { MiMuting } from '@/models/Muting.js';
 import { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { MiNote } from '@/models/Note.js';
@@ -63,7 +63,7 @@ import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
-import { MiUserListJoining } from '@/models/UserListJoining.js';
+import { MiUserListMembership } from '@/models/UserListMembership.js';
 import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { MiUserPending } from '@/models/UserPending.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
@@ -131,6 +131,7 @@ export const entities = [
 	MiMeta,
 	MiInstance,
 	MiApp,
+	MiAvatarDecoration,
 	MiAuthSession,
 	MiAccessToken,
 	MiUser,
@@ -139,7 +140,7 @@ export const entities = [
 	MiUserPublickey,
 	MiUserList,
 	MiUserListFavorite,
-	MiUserListJoining,
+	MiUserListMembership,
 	MiUserNotePining,
 	MiUserSecurityKey,
 	MiUsedUsername,
@@ -176,7 +177,6 @@ export const entities = [
 	MiPromoNote,
 	MiPromoRead,
 	MiRelay,
-	MiMutedNote,
 	MiChannel,
 	MiChannelFollowing,
 	MiChannelFavorite,

@@ -5,7 +5,7 @@
 
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { MiAbuseUserReport, MiAccessToken, MiAd, MiAnnouncement, MiAnnouncementRead, MiAntenna, MiApp, MiAuthSession, MiBlocking, MiChannel, MiChannelFavorite, MiChannelFollowing, MiClip, MiClipFavorite, MiClipNote, MiDriveFile, MiDriveFolder, MiEmoji, MiFlash, MiFlashLike, MiFollowRequest, MiFollowing, MiGalleryLike, MiGalleryPost, MiHashtag, MiInstance, MiMeta, MiModerationLog, MiMutedNote, MiMuting, MiNote, MiNoteFavorite, MiNoteReaction, MiNoteThreadMuting, MiNoteUnread, MiNoteNotification, MiPage, MiPageLike, MiPasswordResetRequest, MiPoll, MiPollVote, MiPromoNote, MiPromoRead, MiRegistrationTicket, MiRegistryItem, MiRelay, MiRenoteMuting, MiRetentionAggregation, MiRole, MiRoleAssignment, MiSignin, MiSwSubscription, MiUsedUsername, MiUser, MiUserIp, MiUserKeypair, MiUserList, MiUserListFavorite, MiUserListJoining, MiUserMemo, MiUserNotePining, MiUserPending, MiUserProfile, MiUserPublickey, MiUserSecurityKey, MiWebhook } from './_.js';
+import { MiAbuseUserReport, MiAccessToken, MiAd, MiAnnouncement, MiAnnouncementRead, MiAntenna, MiApp, MiAuthSession, MiAvatarDecoration, MiBlocking, MiChannel, MiChannelFavorite, MiChannelFollowing, MiClip, MiClipFavorite, MiClipNote, MiDriveFile, MiDriveFolder, MiEmoji, MiFlash, MiFlashLike, MiFollowRequest, MiFollowing, MiGalleryLike, MiGalleryPost, MiHashtag, MiInstance, MiMeta, MiModerationLog, MiMuting, MiNote, MiNoteFavorite, MiNoteNotification, MiNoteReaction, MiNoteThreadMuting, MiNoteUnread, MiPage, MiPageLike, MiPasswordResetRequest, MiPoll, MiPollVote, MiPromoNote, MiPromoRead, MiRegistrationTicket, MiRegistryItem, MiRelay, MiRenoteMuting, MiRetentionAggregation, MiRole, MiRoleAssignment, MiSignin, MiSwSubscription, MiUsedUsername, MiUser, MiUserIp, MiUserKeypair, MiUserList, MiUserListFavorite, MiUserListMembership, MiUserMemo, MiUserNotePining, MiUserPending, MiUserProfile, MiUserPublickey, MiUserSecurityKey, MiWebhook } from './_.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
@@ -36,6 +36,12 @@ const $announcementReadsRepository: Provider = {
 const $appsRepository: Provider = {
 	provide: DI.appsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiApp),
+	inject: [DI.db],
+};
+
+const $avatarDecorationsRepository: Provider = {
+	provide: DI.avatarDecorationsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiAvatarDecoration),
 	inject: [DI.db],
 };
 
@@ -123,9 +129,9 @@ const $userListFavoritesRepository: Provider = {
 	inject: [DI.db],
 };
 
-const $userListJoiningsRepository: Provider = {
-	provide: DI.userListJoiningsRepository,
-	useFactory: (db: DataSource) => db.getRepository(MiUserListJoining),
+const $userListMembershipsRepository: Provider = {
+	provide: DI.userListMembershipsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiUserListMembership),
 	inject: [DI.db],
 };
 
@@ -321,12 +327,6 @@ const $relaysRepository: Provider = {
 	inject: [DI.db],
 };
 
-const $mutedNotesRepository: Provider = {
-	provide: DI.mutedNotesRepository,
-	useFactory: (db: DataSource) => db.getRepository(MiMutedNote),
-	inject: [DI.db],
-};
-
 const $channelsRepository: Provider = {
 	provide: DI.channelsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiChannel),
@@ -414,6 +414,7 @@ const $userMemosRepository: Provider = {
 		$announcementsRepository,
 		$announcementReadsRepository,
 		$appsRepository,
+		$avatarDecorationsRepository,
 		$noteFavoritesRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
@@ -428,7 +429,7 @@ const $userMemosRepository: Provider = {
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListFavoritesRepository,
-		$userListJoiningsRepository,
+		$userListMembershipsRepository,
 		$userNotePiningsRepository,
 		$userIpsRepository,
 		$usedUsernamesRepository,
@@ -461,7 +462,6 @@ const $userMemosRepository: Provider = {
 		$promoNotesRepository,
 		$promoReadsRepository,
 		$relaysRepository,
-		$mutedNotesRepository,
 		$channelsRepository,
 		$channelFollowingsRepository,
 		$channelFavoritesRepository,
@@ -482,6 +482,7 @@ const $userMemosRepository: Provider = {
 		$announcementsRepository,
 		$announcementReadsRepository,
 		$appsRepository,
+		$avatarDecorationsRepository,
 		$noteFavoritesRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
@@ -496,7 +497,7 @@ const $userMemosRepository: Provider = {
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListFavoritesRepository,
-		$userListJoiningsRepository,
+		$userListMembershipsRepository,
 		$userNotePiningsRepository,
 		$userIpsRepository,
 		$usedUsernamesRepository,
@@ -529,7 +530,6 @@ const $userMemosRepository: Provider = {
 		$promoNotesRepository,
 		$promoReadsRepository,
 		$relaysRepository,
-		$mutedNotesRepository,
 		$channelsRepository,
 		$channelFollowingsRepository,
 		$channelFavoritesRepository,
