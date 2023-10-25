@@ -23,6 +23,7 @@
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
+- Fix: チャンネルの作成・更新時に失敗した場合何も表示されない問題を修正 #11983
 
 ### Server
 - Enhance: RedisへのTLのキャッシュをオフにできるように
