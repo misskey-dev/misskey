@@ -16,8 +16,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 2" #header><i class="ti ti-lock"></i> {{ i18n.ts._initialAccountSetting.privacySetting }}</template>
 	<template v-else-if="page === 3" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
 	<template v-else-if="page === 4" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
-	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
-	<template v-else-if="page >= 6" #header>{{ i18n.ts._initialTutorial.title }}</template>
+	<template v-else-if="page === 5 || page === 9" #header>{{ i18n.ts.done }}</template>
+	<template v-else-if="page === 6" #header><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</template>
+	<template v-else-if="page === 7" #header><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</template>
+	<template v-else-if="page === 8" #header><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
 	<div style="overflow-x: clip;">

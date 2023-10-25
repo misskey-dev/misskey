@@ -1184,6 +1184,7 @@ export interface Locale {
         "title": string;
         "wellDone": string;
         "_note": {
+            "title": string;
             "description": string;
             "date": string;
             "reply": string;
@@ -1192,12 +1193,14 @@ export interface Locale {
             "howToNote": string;
         };
         "_reaction": {
+            "title": string;
             "description": string;
             "letsTryReacting": string;
             "reactToContinue": string;
             "reactDone": string;
         };
         "_timeline": {
+            "title": string;
             "description1": string;
             "home": string;
             "local": string;
