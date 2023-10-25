@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type { MiNote, NotesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
@@ -15,7 +13,9 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'lists'],
@@ -76,11 +76,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private noteEntityService: NoteEntityService,
-		private queryService: QueryService,
 		private activeUsersChart: ActiveUsersChart,
 		private cacheService: CacheService,
 		private idService: IdService,
 		private funoutTimelineService: FunoutTimelineService,
+		private queryService: QueryService,
+
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -108,6 +109,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let noteIds = await this.funoutTimelineService.get(ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`, untilId, sinceId);
 			noteIds = noteIds.slice(0, ps.limit);
 
+			let redisTimeline: MiNote[] = [];
+
 			if (noteIds.length > 0) {
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -118,9 +121,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('renote.user', 'renoteUser')
 					.leftJoinAndSelect('note.channel', 'channel');
 
-				let timeline = await query.getMany();
+				redisTimeline = await query.getMany();
 
-				timeline = timeline.filter(note => {
+				redisTimeline = redisTimeline.filter(note => {
 					if (note.userId === me.id) {
 						return true;
 					}
@@ -136,16 +139,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					return true;
 				});
 
-				// TODO: フィルタした結果件数が足りなかった場合の対応
+				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+			}
 
-				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-
+			if (redisTimeline.length > 0) {
 				this.activeUsersChart.read(me);
-
-				return await this.noteEntityService.packMany(timeline, me);
+				return await this.noteEntityService.packMany(redisTimeline, me);
 			} else { // fallback to db
+				//#region Construct query
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-					.innerJoin(this.userListMembershipsRepository.metadata.targetName, 'userListMembership', 'userListMembership.userId = note.userId')
+					.innerJoin(this.userListMembershipsRepository.metadata.targetName, 'userListMemberships', 'userListMemberships.userId = note.userId')
 					.innerJoinAndSelect('note.user', 'user')
 					.leftJoinAndSelect('note.reply', 'reply')
 					.leftJoinAndSelect('note.renote', 'renote')
@@ -221,12 +224,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (ps.withFiles) {
 					query.andWhere('note.fileIds != \'{}\'');
 				}
+				//#endregion
 
 				const timeline = await query.limit(ps.limit).getMany();
 
-				process.nextTick(() => {
-					this.activeUsersChart.read(me);
-				});
+				this.activeUsersChart.read(me);
 
 				return await this.noteEntityService.packMany(timeline, me);
 			}
