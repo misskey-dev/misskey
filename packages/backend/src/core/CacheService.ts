@@ -197,6 +197,14 @@ export class CacheService implements OnApplicationShutdown {
 					this.userFollowingsCache.delete(body.followerId);
 					break;
 				}
+				case 'followChannel': {
+					this.userFollowingChannelsCache.refresh(body.userId)
+					break;
+				}
+				case 'unfollowChannel': {
+					this.userFollowingChannelsCache.delete(body.userId)
+					break;
+				}
 				default:
 					break;
 			}
