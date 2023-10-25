@@ -101,27 +101,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				let noteIds: string[];
 
-			if (ps.withFiles) {
-				noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
-			} else {
-				if (me) {
-					const [nonReplyNoteIds, replyNoteIds, localHomeNoteIds] = await this.funoutTimelineService.getMulti([
-						'localTimeline',
-						'localTimelineWithReplies',
-						`localHomeTimeline:${me.id}`,
-					], untilId, sinceId);
-
-					noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds, ...localHomeNoteIds]));
+				if (ps.withFiles) {
+					noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
 				} else {
-					const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
-						'localTimeline',
-						'localTimelineWithReplies',
-					], untilId, sinceId);
+					if (me) {
+						const [nonReplyNoteIds, replyNoteIds, localHomeNoteIds] = await this.funoutTimelineService.getMulti([
+							'localTimeline',
+							'localTimelineWithReplies',
+							`localHomeTimeline:${me.id}`,
+						], untilId, sinceId);
 
-					noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
+						noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds, ...localHomeNoteIds]));
+					} else {
+						const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
+							'localTimeline',
+							'localTimelineWithReplies',
+						], untilId, sinceId);
+
+						noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
+					}
+					noteIds.sort((a, b) => a > b ? -1 : 1);
 				}
-				noteIds.sort((a, b) => a > b ? -1 : 1);
-			}
 
 				noteIds = noteIds.slice(0, ps.limit);
 
@@ -173,6 +173,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						limit: ps.limit,
 						withFiles: ps.withFiles,
 						withReplies: ps.withReplies,
+						withBelowPublic: ps.withBelowPublic,
 					}, me);
 				}
 			} else {
@@ -182,6 +183,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					limit: ps.limit,
 					withFiles: ps.withFiles,
 					withReplies: ps.withReplies,
+					withBelowPublic: ps.withBelowPublic,
 				}, me);
 			}
 		});
@@ -193,6 +195,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		limit: number,
 		withFiles: boolean,
 		withReplies: boolean,
+		withBelowPublic: boolean
 	}, me: MiLocalUser | null) {
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
