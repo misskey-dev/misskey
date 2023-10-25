@@ -24,6 +24,7 @@
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Feat: AiScript関数`Mk:nyaize()`が追加されました
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
 
 ### Server
@@ -32,6 +33,7 @@
 - Fix: ローカルタイムラインに投稿者自身の投稿への返信が含まれない問題を修正
 - Fix: 自分のフォローしているユーザーの自分のフォローしていないユーザーの visibility: followers な投稿への返信がストリーミングで流れてくる問題を修正
 - Fix: RedisへのTLキャッシュが有効の場合にHTL/LTL/STLが空になることがある問題を修正
+- Fix: STLでフォローしていないチャンネルが取得される問題を修正
 
 ## 2023.10.2
 
