@@ -158,7 +158,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('renote.user', 'renoteUser')
 					.andWhere('userListMembership.userListId = :userListId', { userListId: list.id })
 					.andWhere('note.channelId IS NULL')
-					.andWhere('replyUser NOT IN (:...followeeIds)', { followeeIds: followeeIds });
+					.andWhere('note.reply.user NOT IN (:...followeeIds)', { followeeIds: followeeIds });
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);
