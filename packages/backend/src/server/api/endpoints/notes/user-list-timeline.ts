@@ -151,7 +151,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('note.renote', 'renote')
 					.leftJoinAndSelect('reply.user', 'replyUser')
 					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.andWhere('userListMembership.userListId = :userListId', { userListId: list.id });
+					.andWhere('userListMemberships.userListId = :userListId', { userListId: list.id })
+					.andWhere('note.channelId IS NULL') // チャンネルノートではない
+					.andWhere(new Brackets(qb => {
+						qb
+							.where('note.replyId IS NULL') // 返信ではない
+							.orWhere(new Brackets(qb => {
+								qb // 返信だけど投稿者自身への返信
+									.where('note.replyId IS NOT NULL')
+									.andWhere('note.replyUserId = note.userId');
+							}))
+							.orWhere(new Brackets(qb => {
+								qb // 返信だけど自分宛ての返信
+									.where('note.replyId IS NOT NULL')
+									.andWhere('note.replyUserId = :meId', { meId: me.id });
+							}))
+							.orWhere(new Brackets(qb => {
+								qb // 返信だけどwithRepliesがtrueの場合
+									.where('note.replyId IS NOT NULL')
+									.andWhere('userListMemberships.withReplies = true');
+							}));
+					}));
 
 				this.queryService.generateVisibilityQuery(query, me);
 				this.queryService.generateMutedUserQuery(query, me);
