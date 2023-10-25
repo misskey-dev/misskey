@@ -1180,6 +1180,7 @@ export interface Locale {
         "laterAreYouSure": string;
     };
     "_initialTutorial": {
+        "launchTutorial": string;
         "title": string;
         "wellDone": string;
         "_note": {
@@ -1193,6 +1194,7 @@ export interface Locale {
         "_reaction": {
             "description": string;
             "letsTryReacting": string;
+            "reactToContinue": string;
             "reactDone": string;
         };
         "_timeline": {

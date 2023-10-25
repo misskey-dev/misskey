@@ -122,8 +122,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSpacer>
 					<div :class="$style.pageFooter">
 						<div class="_buttonsCenter">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate style="" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton v-if="!onlyTutorial" rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>
 				</div>
@@ -131,12 +131,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 7">
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
-						<XTutorialNote phase="howToReact"/>
+						<div class="_gaps">
+							<XTutorialNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
+							<div v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</div>
+						</div>
 					</MkSpacer>
 					<div :class="$style.pageFooter">
 						<div class="_buttonsCenter">
 							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate style="" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton primary rounded gradate :disabled="!isReactionTutorialPushed" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>
 				</div>
@@ -149,7 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.pageFooter">
 						<div class="_buttonsCenter">
 							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate style="" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>
 				</div>
@@ -197,22 +200,29 @@ import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowB
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
+const props = defineProps<{
+	onlyTutorial?: boolean;
+}>();
+
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const page = ref(defaultStore.state.accountSetupWizard);
+// eslint-disable-next-line vue/no-setup-props-destructure
+const page = ref(props.onlyTutorial ? 6 : defaultStore.state.accountSetupWizard);
+
+const isReactionTutorialPushed = ref<boolean>(false);
 
 watch(page, () => {
-	if (page.value <= 5) {
+	if (page.value <= 5 && !props.onlyTutorial) {
 		defaultStore.set('accountSetupWizard', page.value);
 	}
 });
 
 async function close(skip: boolean) {
-	if (skip) {
+	if (skip && !props.onlyTutorial) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
 			text: i18n.ts._initialAccountSetting.skipAreYouSure,
@@ -220,8 +230,10 @@ async function close(skip: boolean) {
 		if (canceled) return;
 	}
 
-	dialog.value.close();
-	defaultStore.set('accountSetupWizard', -1);
+	dialog.value?.close();
+	if (!props.onlyTutorial) {
+		defaultStore.set('accountSetupWizard', -1);
+	}
 }
 
 function setupComplete() {

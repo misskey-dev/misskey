@@ -41,6 +41,10 @@ const props = defineProps<{
 	phase: 'aboutNote' | 'howToReact';
 }>();
 
+const emit = defineEmits<{
+	(ev: 'reacted'): void;
+}>();
+
 const exampleNote = reactive<Misskey.entities.Note>({
 	id: '0000000000',
 	createdAt: '2019-04-14T17:30:49.181Z',
@@ -77,6 +81,7 @@ const onceReacted = ref<boolean>(false);
 
 function addReaction(emoji) {
 	onceReacted.value = true;
+	emit('reacted');
 	exampleNote.reactions[emoji] = 1;
 	exampleNote.myReaction = emoji;
 }
