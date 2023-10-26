@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
 <!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
-<section v-if="!isChildren">
+<section v-if="!categoryFolderFlag">
 	<header class="_acrylic" @click="shown = !shown">
 		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-icons ti-fw"></i>:{{emojis.length}})
 	</header>
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         :key="`custom:${child.value}`"
         :initialShown="initialShown"
         :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
-        :isChildren="child.children.length!==0"
+        :categoryFolderFlag="child.children.length!==0"
         :customEmojiTree="child.children"
         @chosen="nestedChosen"
     >
@@ -68,7 +68,7 @@ import MkEmojiPickerSection from "@/components/MkEmojiPicker.section.vue";
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;
 	initialShown?: boolean;
-	isChildren?: boolean;
+	categoryFolderFlag?: boolean;
 	customEmojiTree?: CustomEmojiFolderTree[];
 }>();
 
