@@ -26,11 +26,14 @@ import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
+import { MiAvatarDecoration } from '@/models/_.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce,
+	IApAvatarDecoration, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
 export class ApRendererService {
@@ -54,6 +57,7 @@ export class ApRendererService {
 		private pollsRepository: PollsRepository,
 
 		private customEmojiService: CustomEmojiService,
+		private avatarDecorationService: AvatarDecorationService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
@@ -184,7 +188,19 @@ export class ApRendererService {
 			},
 		};
 	}
-
+	@bindThis
+	public renderAvatarDecoration(avatarDecoration: MiAvatarDecoration): IApAvatarDecoration {
+		return {
+			id: avatarDecoration.url,
+			type: 'AvatarDecoration',
+			name: avatarDecoration.name,
+			updated: avatarDecoration.updatedAt != null ? avatarDecoration.updatedAt.toISOString() : new Date().toISOString(),
+			icon: {
+				type: 'Image',
+				url: avatarDecoration.url,
+			},
+		};
+	}
 	// to anonymise reporters, the reporting actor must be a system user
 	@bindThis
 	public renderFlag(user: MiLocalUser, object: IObject | string, content: string): IFlag {
@@ -472,11 +488,17 @@ export class ApRendererService {
 		const emojis = await this.getEmojis(user.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
+		const AvatarDecorations = await this.getAvatarDecorations(user.avatarDecorations);
+		const apAvatarDecorations = AvatarDecorations.map(decoration => this.renderAvatarDecoration(decoration));
+
 		const hashtagTags = user.tags.map(tag => this.renderHashtag(tag));
+
+		AvatarDecorations.forEach((decoration, index) => user.avatarDecorations[index].id = decoration.name ); //デコレーションのidのところにnameを突っ込んでる(これ以外思いつかなかった)
 
 		const tag = [
 			...apemojis,
 			...hashtagTags,
+			...apAvatarDecorations,
 		];
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
@@ -503,6 +525,7 @@ export class ApRendererService {
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
+			AvatarDecorations: user.avatarDecorations,
 		};
 
 		if (user.movedToUri) {
@@ -719,5 +742,13 @@ export class ApRendererService {
 		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
 
 		return emojis;
+	}
+	@bindThis
+	private async getAvatarDecorations(decorations: { id: string; angle: number; flipH: boolean }[]): Promise<MiAvatarDecoration[]> {
+		if (decorations.length === 0) return [];
+		const allAvatarDecorations = await this.avatarDecorationService.getAll();
+		//const matchingDecorations = allAvatarDecorations.find(item1 => decorations.some(item2 => item1.id === item2.id )).map;
+		const avatarDecorations = allAvatarDecorations.filter(item1 => decorations.some(item2 => item1.id === item2.id));
+		return avatarDecorations ?? [];
 	}
 }

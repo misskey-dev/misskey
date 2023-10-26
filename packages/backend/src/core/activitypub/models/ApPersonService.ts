@@ -291,6 +291,15 @@ export class ApPersonService implements OnModuleInit {
 			});
 		//#endregion
 
+		//#region アバターデコレーション取得
+		const avatardecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], host)
+			.then(_decorations => _decorations.map(decorations => decorations.name))
+			.catch(err => {
+				this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
+				return [];
+			});
+		//#endregion
+
 		try {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
@@ -317,6 +326,7 @@ export class ApPersonService implements OnModuleInit {
 					isBot,
 					isCat: (person as any).isCat === true,
 					emojis,
+					avatarDecorations: avatardecorations,
 				})) as MiRemoteUser;
 
 				await transactionalEntityManager.save(new MiUserProfile({
@@ -419,12 +429,26 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Updating the Person: ${person.id}`);
 
+		const avatardecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], exist.host)
+			.catch(err => {
+				this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
+				return [];
+			});
+
+		avatardecorations.forEach((value, index) => {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			avatardecorations[index].flipH = person.AvatarDecorations[index].flipH;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			avatardecorations[index].angle = person.AvatarDecorations[index].angle;
+		});
+
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
 			return [];
 		});
-
 		const emojiNames = emojis.map(emoji => emoji.name);
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
@@ -454,9 +478,9 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
+			avatarDecorations: avatardecorations,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
-
 		const moving = ((): boolean => {
 			// 移行先がない→ある
 			if (

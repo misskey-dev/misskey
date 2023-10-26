@@ -7,12 +7,13 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository } from '@/models/_.js';
+import type { PollsRepository, EmojisRepository, AvatarDecorationsRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type { MiEmoji } from '@/models/Emoji.js';
+import type { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MetaService } from '@/core/MetaService.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
@@ -24,7 +25,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
-import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
+import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType, isAvatarDecoration } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
 import { ApDbResolverService } from '../ApDbResolverService.js';
@@ -37,7 +38,6 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
-
 @Injectable()
 export class ApNoteService {
 	private logger: Logger;
@@ -51,6 +51,9 @@ export class ApNoteService {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		@Inject(DI.avatarDecorationsRepository)
+		private avatarDecorationRepository: AvatarDecorationsRepository,
 
 		private idService: IdService,
 		private apMfmService: ApMfmService,
@@ -395,6 +398,49 @@ export class ApNoteService {
 				updatedAt: new Date(),
 				aliases: [],
 			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+		}));
+	}
+	@bindThis
+	public async extractAvatarDecorations(AvatarDecorations: IObject | IObject[], host: string): Promise<MiAvatarDecoration[]> {
+		// eslint-disable-next-line no-param-reassign
+		host = this.utilityService.toPuny(host);
+
+		const AvatarDecorationTags = toArray(AvatarDecorations).filter(isAvatarDecoration);
+		const existingAvatars = await this.avatarDecorationRepository.findBy({
+			host,
+			name: In(AvatarDecorationTags.map((avatar) => avatar.name)),
+		});
+		return await Promise.all(AvatarDecorationTags.map(async tag => {
+			const exists = existingAvatars.find(x => x.name === tag.name);
+			if (exists) {
+				if ((exists.updatedAt == null)
+					|| (new Date(tag.updated) > exists.updatedAt)
+					|| (tag.icon.url !== exists.url)
+				) {
+					await this.avatarDecorationRepository.update({
+						host,
+						name: tag.name,
+					}, {
+						url: tag.id,
+						updatedAt: new Date(),
+					});
+					const avatarDecoration = await this.avatarDecorationRepository.findOneBy({ host, name: tag.name });
+					if (avatarDecoration == null) throw new Error('avatardecoration update failed');
+					return avatarDecoration;
+				}
+				return exists;
+			}
+			this.logger.info(`register avatarDecoration host=${host}, name=${tag.name}`);
+
+			return await this.avatarDecorationRepository.insert({
+				id: this.idService.gen(),
+				host,
+				name: tag.name,
+				url: tag.id,
+				description: '',
+				roleIdsThatCanBeUsedThisDecoration: [],
+				updatedAt: new Date(),
+			}).then(x => this.avatarDecorationRepository.findOneByOrFail(x.identifiers[0]));
 		}));
 	}
 }

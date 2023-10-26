@@ -17,6 +17,10 @@ export class MiAvatarDecoration {
 	public updatedAt: Date | null;
 
 	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public host: string;
+	@Column('varchar', {
 		length: 1024,
 	})
 	public url: string;
