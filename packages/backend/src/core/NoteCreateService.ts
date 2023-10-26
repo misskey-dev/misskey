@@ -526,9 +526,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		});
 
-		if (await this.roleService.isModerator({ id: user.id, isRoot: false })) {
-			this.pushToTl(note, user);
-		}
+		this.pushToTl(note, user);
 
 		this.antennaService.addNoteToAntennas(note, user);
 
