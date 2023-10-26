@@ -16,6 +16,16 @@ export const meta = {
 	requireModerator: true,
 
 	errors: {
+		sameNameAvatarDecorationExists: {
+			message: 'Avatar Decoration that have same name already exists.',
+			code: 'SAME_NAME_AVATAR_DECORATION_EXISTS',
+			id: '745f81d4-edf0-4b0c-ae6a-0f7b4c114c4c',
+		},
+		noSuchAvatarDecoration: {
+			message: 'No such avatar decoration.',
+			code: 'NO_SUCH_AVATAR_DECORATION',
+			id: '8de45b2b-0c59-4181-8ee1-fd582d2b13c5',
+		},
 	},
 } as const;
 
@@ -30,7 +40,7 @@ export const paramDef = {
 			type: 'string',
 		} },
 	},
-	required: ['id'],
+	required: ['id', 'name'],
 } as const;
 
 @Injectable()
@@ -39,6 +49,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const avatarDecoration = await this.avatarDecorationService.getAvatarDecorationById(ps.id);
+
+			if (avatarDecoration != null) {
+				if (ps.name !== avatarDecoration.name) {
+					const isDuplicate = await this.avatarDecorationService.checkDuplicate(ps.name);
+					if (isDuplicate) throw new ApiError(meta.errors.sameNameAvatarDecorationExists);
+				}
+			} else {
+				throw new ApiError(meta.errors.noSuchAvatarDecoration);
+			}
+
 			await this.avatarDecorationService.update(ps.id, {
 				name: ps.name,
 				description: ps.description,

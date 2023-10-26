@@ -5,6 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { IsNull } from 'typeorm';
 import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -13,6 +14,7 @@ import { bindThis } from '@/decorators.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { MiEmoji } from '@/models/_.js';
 
 @Injectable()
 export class AvatarDecorationService implements OnApplicationShutdown {
@@ -71,7 +73,10 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 
 		return created;
 	}
-
+	@bindThis
+	public checkDuplicate(name: string): Promise<boolean> {
+		return this.avatarDecorationsRepository.exist({ where: { name } });
+	}
 	@bindThis
 	public async update(id: MiAvatarDecoration['id'], params: Partial<MiAvatarDecoration>, moderator?: MiUser): Promise<void> {
 		const avatarDecoration = await this.avatarDecorationsRepository.findOneByOrFail({ id });
@@ -120,6 +125,11 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
+	}
+
+	@bindThis
+	public getAvatarDecorationById(id: string): Promise<MiAvatarDecoration | null> {
+		return this.avatarDecorationsRepository.findOneBy({ id });
 	}
 
 	@bindThis
