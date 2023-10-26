@@ -38,6 +38,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import emojis from '@/server/api/endpoints/emojis.js';
+import { MiAvatarDecoration } from '@/models/_.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -292,12 +294,21 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		//#region アバターデコレーション取得
-		const avatardecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], host)
-			.then(_decorations => _decorations.map(decorations => decorations.name))
+		const _avatarDecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], host)
 			.catch(err => {
 				this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
 				return [];
 			});
+
+		const avatarDecorations: {id: string, angle: number, flipH: boolean}[] = [];
+
+		_avatarDecorations.forEach((value, index) => {
+			avatarDecorations.push({
+				id: value.id,
+				angle: person.AvatarDecorations ? person.AvatarDecorations[index].angle : 0,
+				flipH: person.AvatarDecorations ? person.AvatarDecorations[index].flipH : false,
+			});
+		});
 		//#endregion
 
 		try {
@@ -326,7 +337,7 @@ export class ApPersonService implements OnModuleInit {
 					isBot,
 					isCat: (person as any).isCat === true,
 					emojis,
-					avatarDecorations: avatardecorations,
+					avatarDecorations,
 				})) as MiRemoteUser;
 
 				await transactionalEntityManager.save(new MiUserProfile({
@@ -429,19 +440,20 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Updating the Person: ${person.id}`);
 
-		const avatardecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], exist.host)
+		const _avatarDecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], exist.host)
 			.catch(err => {
 				this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
 				return [];
 			});
 
-		avatardecorations.forEach((value, index) => {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			avatardecorations[index].flipH = person.AvatarDecorations[index].flipH;
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			avatardecorations[index].angle = person.AvatarDecorations[index].angle;
+		const avatarDecorations: {id: string, angle: number, flipH: boolean}[] = [];
+
+		_avatarDecorations.forEach((value, index) => {
+			avatarDecorations.push({
+				id: value.id,
+				angle: person.AvatarDecorations ? person.AvatarDecorations[index].angle : 0,
+				flipH: person.AvatarDecorations ? person.AvatarDecorations[index].flipH : false,
+			});
 		});
 
 		// カスタム絵文字取得
@@ -478,7 +490,7 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
-			avatarDecorations: avatardecorations,
+			avatarDecorations,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 		const moving = ((): boolean => {
