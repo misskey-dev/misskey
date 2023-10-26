@@ -179,9 +179,9 @@ export interface IActor extends IObject {
 		sharedInbox?: string;
 	};
 	AvatarDecorations?:{
-	angle: string;
+	angle: number;
 	flipH: boolean;
-	}
+	}[];
 	'vcard:bday'?: string;
 	'vcard:Address'?: string;
 }
