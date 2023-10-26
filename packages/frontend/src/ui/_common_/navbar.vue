@@ -127,16 +127,6 @@ if (darkMode.value) {
   iconUrl.value = iconLight;
 }
 
-watch(darkMode, () => {
-  if (darkMode.value) {
-    bannerUrl.value = bannerDark;
-    iconUrl.value = iconDark;
-  } else {
-    bannerUrl.value = bannerLight;
-    iconUrl.value = iconLight;
-  }
-})
-
 if (darkMode.value && gamingMode.value == true) {
 	gamingType.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {
@@ -146,9 +136,18 @@ if (darkMode.value && gamingMode.value == true) {
 }
 
 watch([darkMode,gamingMode], () => {
-  if (darkMode.value && gamingMode.value == true) {
+
+	if (darkMode.value) {
+		bannerUrl.value = bannerDark;
+		iconUrl.value = iconDark;
+	} else {
+		bannerUrl.value = bannerLight;
+		iconUrl.value = iconLight;
+	}
+
+  if (darkMode.value && gamingMode.value) {
 		gamingType.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
+  } else if (!darkMode.value && gamingMode.value) {
 		gamingType.value = 'light';
   } else {
 		gamingType.value = '';
