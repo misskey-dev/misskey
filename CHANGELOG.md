@@ -15,6 +15,30 @@
 ### Changes
 - AiScript: `Mk:apiExternal`の送信先は連合中のサーバーに限定されるようになりました。
 
+## 2023.11.0 (unreleased)
+
+### General
+- Feat: アイコンデコレーション機能
+- Enhance: すでにフォローしたすべての人の返信をTLに追加できるように
+
+### Client
+- Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
+	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
+	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Feat: AiScript関数`Mk:nyaize()`が追加されました
+- Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
+- Fix: ユーザーページの ノート > ファイル付き タブにリプライが表示されてしまう
+
+### Server
+- Enhance: RedisへのTLのキャッシュをオフにできるように
+- Fix: リストTLに自分のフォロワー限定投稿が含まれない問題を修正
+- Fix: ローカルタイムラインに投稿者自身の投稿への返信が含まれない問題を修正
+- Fix: 自分のフォローしているユーザーの自分のフォローしていないユーザーの visibility: followers な投稿への返信がストリーミングで流れてくる問題を修正
+- Fix: RedisへのTLキャッシュが有効の場合にHTL/LTL/STLが空になることがある問題を修正
+- Fix: STLでフォローしていないチャンネルが取得される問題を修正
+- Fix: `hashtags/trend`にてRedisからトレンドの情報が取得できない際にInternal Server Errorになる問題を修正
+- Fix: フォローしているチャンネルをフォロー解除した時（またはその逆）、タイムラインに反映される間隔を改善
+
 ## 2023.10.2
 ### General
 - Feat: アンテナでローカルの投稿のみ収集できるようになりました
