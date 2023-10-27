@@ -120,11 +120,11 @@ const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
 
 if (darkMode.value) {
-  bannerUrl.value = bannerDark;
-  iconUrl.value = iconDark;
+    bannerUrl.value = enablehanntenn.value ? bannerLight : bannerDark;
+    iconUrl.value = enablehanntenn.value ? iconLight : iconDark;
 } else {
-  bannerUrl.value = bannerLight;
-  iconUrl.value = iconLight;
+    bannerUrl.value = enablehanntenn.value ?  bannerDark : bannerLight;
+    iconUrl.value = enablehanntenn.value ?  iconDark : iconLight;
 }
 
 if (darkMode.value && gamingMode.value) {
@@ -138,11 +138,11 @@ if (darkMode.value && gamingMode.value) {
 watch([darkMode,gamingMode], () => {
 
 	if (darkMode.value) {
-		bannerUrl.value = enablehanntenn ? bannerLight : bannerDark;
-		iconUrl.value = enablehanntenn ? bannerLight : bannerDark;
+		bannerUrl.value = enablehanntenn.value ? bannerLight : bannerDark;
+		iconUrl.value = enablehanntenn.value ? iconLight : iconDark;
 	} else {
-		bannerUrl.value = enablehanntenn ?  bannerDark : bannerLight;
-		iconUrl.value = enablehanntenn ?  bannerDark : bannerLight;
+		bannerUrl.value = enablehanntenn.value ?  bannerDark : bannerLight;
+		iconUrl.value = enablehanntenn.value ?  iconDark : iconLight;
 	}
 
   if (darkMode.value && gamingMode.value) {
