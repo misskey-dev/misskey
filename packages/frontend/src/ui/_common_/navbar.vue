@@ -117,7 +117,7 @@ let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-
+const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
 
 if (darkMode.value) {
   bannerUrl.value = bannerDark;
@@ -127,9 +127,9 @@ if (darkMode.value) {
   iconUrl.value = iconLight;
 }
 
-if (darkMode.value && gamingMode.value == true) {
+if (darkMode.value && gamingMode.value) {
 	gamingType.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
+} else if (!darkMode.value && gamingMode.value) {
 	gamingType.value = 'light';
 } else {
 	gamingType.value = '';
@@ -138,11 +138,11 @@ if (darkMode.value && gamingMode.value == true) {
 watch([darkMode,gamingMode], () => {
 
 	if (darkMode.value) {
-		bannerUrl.value = bannerDark;
-		iconUrl.value = iconDark;
+		bannerUrl.value = enablehanntenn ? bannerLight : bannerDark;
+		iconUrl.value = enablehanntenn ? bannerLight : bannerDark;
 	} else {
-		bannerUrl.value = bannerLight;
-		iconUrl.value = iconLight;
+		bannerUrl.value = enablehanntenn ?  bannerDark : bannerLight;
+		iconUrl.value = enablehanntenn ?  bannerDark : bannerLight;
 	}
 
   if (darkMode.value && gamingMode.value) {
@@ -152,6 +152,7 @@ watch([darkMode,gamingMode], () => {
   } else {
 		gamingType.value = '';
   }
+
 })
 
 const menu = computed(() => defaultStore.state.menu);
