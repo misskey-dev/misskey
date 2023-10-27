@@ -35,10 +35,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
 				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
-				<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
-				<MkSwitch v-model="FeaturedOrNote">{{ i18n.ts.FeaturedOrNote}}<template #caption>{{ i18n.ts.FeaturedOrNoteInfo }} </template></MkSwitch>
-				<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
 			</MkFolder>
+        <MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
+        <MkSwitch v-model="FeaturedOrNote">{{ i18n.ts.FeaturedOrNote}}<template #caption>{{ i18n.ts.FeaturedOrNoteInfo }} </template></MkSwitch>
+        <MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
 		</div>
 	</FormSection>
 
