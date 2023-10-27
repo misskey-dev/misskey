@@ -45,7 +45,8 @@ export default function(props: MfmProps) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'account' ? props.author?.isCat : false : false;
 
-	if (props.text === '') return;
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (props.text == null || props.text === '') return;
 
 	const rootAst = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
