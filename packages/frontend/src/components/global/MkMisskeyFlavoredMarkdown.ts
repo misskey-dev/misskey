@@ -37,6 +37,7 @@ export default function(props: {
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
+	enableNyaize?: boolean | 'account';
 }) {
 	const isNote = props.isNote !== undefined ? props.isNote : true;
 
@@ -60,7 +61,7 @@ export default function(props: {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
-				if (!disableNyaize && props.author?.isCat) {
+				if (!disableNyaize && (props.enableNyaize === true || (props.enableNyaize === 'account' && props.author?.isCat))) {
 					text = nyaize(text);
 				}
 
