@@ -29,6 +29,7 @@ type Ad = TODO_2;
 // @public (undocumented)
 type AdminInstanceMetadata = DetailedInstanceMetadata & {
     blockedHosts: string[];
+    avatarDecorationAcceptHosts: string[];
     silencedHosts: string[];
     app192IconUrl: string | null;
     app512IconUrl: string | null;
@@ -3024,7 +3025,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:633:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/entities.ts:115:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
-// src/entities.ts:611:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:612:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
