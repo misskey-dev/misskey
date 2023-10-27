@@ -77,9 +77,11 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
-function uninstall(plugin) {
+async function uninstall(plugin) {
 	ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
-	os.success();
+	await os.apiWithDialog('i/revoke-token', {
+		token: plugin.token,
+	});
 	nextTick(() => {
 		unisonReload();
 	});
