@@ -37,7 +37,9 @@ export default function(props: {
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-	enableNyaize?: boolean | 'account';
+	disableNyaize: boolean | 'account';
+} = {
+	disableNyaize: false,
 }) {
 	const isNote = props.isNote !== undefined ? props.isNote : true;
 
