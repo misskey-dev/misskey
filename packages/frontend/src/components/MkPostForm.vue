@@ -137,27 +137,6 @@ import { claimAchievement } from '@/scripts/achievements.js';
 const modal = inject('modal');
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 
 const props = withDefaults(defineProps<{
   reply?: Misskey.entities.Note;
