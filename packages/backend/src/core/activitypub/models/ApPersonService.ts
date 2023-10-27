@@ -294,21 +294,24 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		//#region アバターデコレーション取得
-		const _avatarDecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], host)
-			.catch(err => {
-				this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
-				return [];
-			});
 
 		const avatarDecorations: {id: string, angle: number, flipH: boolean}[] = [];
+		if (this.utilityService.avatarDecorationAcceptHost((await this.metaService.fetch()).avatarDecorationAcceptHosts, host)) {
+			const _avatarDecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], host)
+				.catch(err => {
+					this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
+					return [];
+				});
 
-		_avatarDecorations.forEach((value, index) => {
-			avatarDecorations.push({
-				id: value.id,
-				angle: person.AvatarDecorations ? person.AvatarDecorations[index].angle : 0,
-				flipH: person.AvatarDecorations ? person.AvatarDecorations[index].flipH : false,
+			_avatarDecorations.forEach((value, index) => {
+				avatarDecorations.push({
+					id: value.id,
+					angle: person.AvatarDecorations ? person.AvatarDecorations[index].angle : 0,
+					flipH: person.AvatarDecorations ? person.AvatarDecorations[index].flipH : false,
+				});
 			});
-		});
+		}
+
 		//#endregion
 
 		try {
@@ -439,22 +442,22 @@ export class ApPersonService implements OnModuleInit {
 		const person = this.validateActor(object, uri);
 
 		this.logger.info(`Updating the Person: ${person.id}`);
-
-		const _avatarDecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], exist.host)
-			.catch(err => {
-				this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
-				return [];
-			});
-
 		const avatarDecorations: {id: string, angle: number, flipH: boolean}[] = [];
+		if (this.utilityService.avatarDecorationAcceptHost((await this.metaService.fetch()).avatarDecorationAcceptHosts, exist.host)) {
+			const _avatarDecorations = await this.apNoteService.extractAvatarDecorations(person.tag ?? [], exist.host)
+				.catch(err => {
+					this.logger.error('error occurred while fetching user avatar decorations', { stack: err });
+					return [];
+				});
 
-		_avatarDecorations.forEach((value, index) => {
-			avatarDecorations.push({
-				id: value.id,
-				angle: person.AvatarDecorations ? person.AvatarDecorations[index].angle : 0,
-				flipH: person.AvatarDecorations ? person.AvatarDecorations[index].flipH : false,
+			_avatarDecorations.forEach((value, index) => {
+				avatarDecorations.push({
+					id: value.id,
+					angle: person.AvatarDecorations ? person.AvatarDecorations[index].angle : 0,
+					flipH: person.AvatarDecorations ? person.AvatarDecorations[index].flipH : false,
+				});
 			});
-		});
+		}
 
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {

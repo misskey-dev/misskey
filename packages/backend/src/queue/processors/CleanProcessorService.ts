@@ -11,6 +11,9 @@ import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 
@@ -33,6 +36,9 @@ export class CleanProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,
+		private metaService: MetaService,
+		private utilityService: UtilityService,
+		private avatarDecorationService: AvatarDecorationService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean');
 	}
@@ -52,6 +58,14 @@ export class CleanProcessorService {
 			}, {
 				isActive: false,
 			});
+		}
+
+		const { avatarDecorationAcceptHosts } = await this.metaService.fetch();
+		const allAvatarDecorations = await this.avatarDecorationService.getAll();
+		for (const avatarDecoration of allAvatarDecorations) {
+			if (avatarDecoration.host !== null && !this.utilityService.avatarDecorationAcceptHost(avatarDecorationAcceptHosts, avatarDecoration.host)) {
+				await this.avatarDecorationService.delete(avatarDecoration.id);
+			}
 		}
 
 		const expiredRoleAssignments = await this.roleAssignmentsRepository.createQueryBuilder('assign')

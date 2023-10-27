@@ -42,6 +42,12 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public avatarDecorationAcceptHost(AcceptHost: string[] | undefined, host: string | null): boolean {
+		if (!AcceptHost || host == null) return false;
+		return AcceptHost.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
 		return this.toPuny(url.hostname);

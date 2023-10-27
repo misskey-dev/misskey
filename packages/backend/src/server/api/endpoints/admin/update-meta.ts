@@ -35,6 +35,20 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		silencedHosts: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'string',
+			},
+		},
+		avatarDecorationAcceptHosts: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'string',
+			},
+		},
 		sensitiveWords: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
@@ -126,13 +140,6 @@ export const paramDef = {
 		perUserHomeTimelineCacheMax: { type: 'integer' },
 		perUserListTimelineCacheMax: { type: 'integer' },
 		notesPerOneAd: { type: 'integer' },
-		silencedHosts: {
-			type: 'array',
-			nullable: true,
-			items: {
-				type: 'string',
-			},
-		},
 	},
 	required: [],
 } as const;
@@ -173,6 +180,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
 				});
 			}
+
+			if (Array.isArray(ps.avatarDecorationAcceptHosts)) {
+				let lastValue = '';
+				set.avatarDecorationAcceptHosts = ps.avatarDecorationAcceptHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== '' && h !== lv && !set.avatarDecorationAcceptHosts?.includes(h);
+				});
+			}
+
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
