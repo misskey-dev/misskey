@@ -24,6 +24,7 @@
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 - Feat: AiScript関数`Mk:nyaize()`が追加されました
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
+- Fix: 「検索」MFMにおいて一部の検索キーワードが正しく認識されない問題を修正
 
 ### Server
 - Enhance: RedisへのTLのキャッシュをオフにできるように
