@@ -23,6 +23,7 @@
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 - Feat: AiScript関数`Mk:nyaize()`が追加されました
+- Enhance: データセーバー有効時はアニメーション付きのアバター画像が停止するように
 - Enhance: プラグインを削除した際には、使用されていたアクセストークンも同時に削除されるようになりました
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
 - Fix: ユーザーページの ノート > ファイル付き タブにリプライが表示されてしまう
