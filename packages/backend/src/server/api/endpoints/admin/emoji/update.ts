@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} else {
 				const file = await this.driveFileEntityService.getFromUrl(emoji.originalUrl);
 				if (file === null) throw new ApiError(meta.errors.noSuchFile);
-				await this.customEmojiService.Request({
+				await this.customEmojiService.request({
 					driveFile: file,
 					name: ps.name,
 					category: ps.category ?? null,

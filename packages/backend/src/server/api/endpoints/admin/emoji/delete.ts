@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.customEmojiService.delete(ps.id, me);
 			}
 			if (RequestEmoji != null) {
-				await this.customEmojiService.RequestDelete(ps.id);
+				await this.customEmojiService.deleteRequest(ps.id);
 			}
 		});
 	}

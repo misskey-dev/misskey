@@ -60,7 +60,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async Request(data: {
+	public async request(data: {
 		driveFile: MiDriveFile;
 		name: string;
 		category: string | null;
@@ -196,7 +196,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}
 	}
 	@bindThis
-	public async RequestUpdate(id: MiEmoji['id'], data: {
+	public async updateRequest(id: MiEmoji['id'], data: {
 		driveFile?: MiDriveFile;
 		name?: string;
 		category?: string | null;
@@ -332,7 +332,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}
 	}
 	@bindThis
-	public async RequestDelete(id: MiEmojiRequest['id']) {
+	public async deleteRequest(id: MiEmojiRequest['id']) {
 		const emoji = await this.emojiRequestsRepository.findOneByOrFail({ id: id });
 
 		await this.emojiRequestsRepository.delete(emoji.id);

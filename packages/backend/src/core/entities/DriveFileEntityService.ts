@@ -135,10 +135,7 @@ export class DriveFileEntityService {
 	}
 	@bindThis
 	public async getFromUrl(url: string): Promise<MiDriveFile | null> {
-		const file = await this.driveFilesRepository.findOneBy({ url: url });
-		if (file === null ) return null;
-
-		return file;
+		return this.driveFilesRepository.findOneBy({ url: url });
 	}
 	@bindThis
 	public async calcDriveUsageOf(user: MiUser['id'] | { id: MiUser['id'] }): Promise<number> {

@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 
-			const emoji = await this.customEmojiService.Request({
+			const emoji = await this.customEmojiService.request({
 				driveFile,
 				name: ps.name,
 				category: ps.category ?? null,

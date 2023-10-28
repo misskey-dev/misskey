@@ -101,9 +101,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					localOnly: ps.localOnly ?? false,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 				}, me);
-				await this.customEmojiService.RequestDelete(ps.id);
+				await this.customEmojiService.deleteRequest(ps.id);
 			} else {
-				await this.customEmojiService.RequestUpdate(ps.id, {
+				await this.customEmojiService.updateRequest(ps.id, {
 					name: ps.name,
 					category: ps.category ?? null,
 					aliases: ps.aliases ?? [],
