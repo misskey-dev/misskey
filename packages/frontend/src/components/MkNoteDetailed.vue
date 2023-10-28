@@ -230,9 +230,11 @@ let note = $ref(deepClone(props.note));
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
-		let result = deepClone(note);
+		let result:Misskey.entities.Note | null = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
 			result = await interruptor.handler(result);
+
+			if (result === null) return isDeleted.value = true;
 		}
 		note = result;
 	});
