@@ -156,7 +156,9 @@ function save() {
 		params.channelId = props.channelId;
 		os.apiWithDialog('channels/update', params);
 	} else {
-		os.apiWithDialog('channels/create', params);
+		os.apiWithDialog('channels/create', params).then(created => {
+			router.push(`/channels/${created.id}`);
+		});
 	}
 }
 
