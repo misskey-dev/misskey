@@ -160,21 +160,25 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
   let category = "";
   let currentNode: CustomEmojiFolderTree = root;
 
-  for (const part of parts) {
-    if (part) {
-      category += `/${part}`;
-      category = category.replace(/^\//, '');
-      let existingNode = currentNode.children.find((node) => node.value === part);
+	for (let part of parts) {
+		if (part) {
+			category += `/${part}`;
+		} else {
+			part = i18n.ts.other
+			category += `/`;
+		}
 
-      if (!existingNode) {
-        const newNode: CustomEmojiFolderTree = { value: part, category, children: [] };
-        currentNode.children.push(newNode);
-        existingNode = newNode;
-      }
+		category = category.replace(/^\//, '');
+		let existingNode = currentNode.children.find((node) => node.value === part);
 
-      currentNode = existingNode;
-    }
-  }
+		if (!existingNode) {
+			const newNode: CustomEmojiFolderTree = { value: part, category, children: [] };
+			currentNode.children.push(newNode);
+			existingNode = newNode;
+		}
+
+		currentNode = existingNode;
+	}
 
   return currentNode;
 }
