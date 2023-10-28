@@ -1,5 +1,5 @@
 <template>
-<MkInput v-model="query" :debounce="true" type="search">
+<MkInput v-model="query" :debounce="true" type="search" autocapitalize="off">
 	<template #prefix><i class="ti ti-search"></i></template>
 	<template #label>{{ i18n.ts.search }}</template>
 </MkInput>

@@ -1,6 +1,6 @@
 <template>
 <FormSplit>
-	<MkInput v-model="queryRemote" :debounce="true" type="search">
+	<MkInput v-model="queryRemote" :debounce="true" type="search" autocapitalize="off">
 		<template #prefix><i class="ti ti-search"></i></template>
 		<template #label>{{ i18n.ts.search }}</template>
 	</MkInput>
@@ -8,12 +8,12 @@
 		<template #label>{{ i18n.ts.host }}</template>
 	</MkInput>
 </FormSplit>
-<MkPagination :pagination="remotePagination" :displayLimit="100">
+<MkPagination :pagination="remotePagination">
 	<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 	<template #default="{items}">
 		<div class="ldhfsamy">
 			<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
-				<img :src="emoji.url" class="img" :alt="emoji.name"/>
+				<img :src="`/emoji/${emoji.name}@${emoji.host}.webp`" class="img" :alt="emoji.name"/>
 				<div class="body">
 					<div class="name _monospace">{{ emoji.name }}</div>
 					<div class="info">{{ emoji.host }}</div>
