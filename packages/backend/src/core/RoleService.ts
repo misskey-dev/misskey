@@ -22,7 +22,6 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
-import { ca } from 'date-fns/locale';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
