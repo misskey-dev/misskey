@@ -44,7 +44,7 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );
-const bgCss = (gaming.value === '') ? bg.toRgbString() : "";
+const bgCss = (gamingType.value === '') ? bg.toRgbString() : "";
 //const bgCss = `background:${bg.toRgbString()}; ${result}` ;
 </script>
 

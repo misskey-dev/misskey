@@ -29,34 +29,6 @@ import {defaultStore} from "@/store.js";
 
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
-} else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
-} else {
-  gaming.value = '';
-}
-
-watch(darkMode, () => {
-  console.log(gaming)
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
-
-watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
 const props = withDefaults(defineProps<{
 	modelValue: number;
 	disabled?: boolean;
