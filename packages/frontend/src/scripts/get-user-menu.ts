@@ -113,7 +113,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 		return !confirm.canceled;
 	}
-
+	async function userInfoUpdate() {
+		os.apiWithDialog('federation/update-remote-user', {
+			userId: user.id,
+		});
+	}
 	async function invalidateFollow() {
 		if (!await getConfirmed(i18n.ts.breakFollowConfirm)) return;
 
@@ -329,7 +333,13 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			action: reportAbuse,
 		}]);
 	}
-
+	if (user.host !== null) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-refresh',
+			text: i18n.ts.updateRemoteUser,
+			action: userInfoUpdate,
+		}]);
+	}
 	if (defaultStore.state.devMode) {
 		menu = menu.concat([null, {
 			icon: 'ti ti-id',
