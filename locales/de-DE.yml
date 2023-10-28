@@ -1132,6 +1132,10 @@ mutualFollow: "Gegenseitig gefolgt"
 fileAttachedOnly: "Nur Notizen mit Dateien"
 showRepliesToOthersInTimeline: "Antworten in Chronik anzeigen"
 hideRepliesToOthersInTimeline: "Antworten nicht in Chronik anzeigen"
+showRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutzern in Chronik anzeigen"
+hideRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutzern nicht in Chronik anzeigen"
+confirmShowRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern in der Chronik anzeigen?"
+confirmHideRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern nicht in der Chronik anzeigen?"
 externalServices: "Externe Dienste"
 impressum: "Impressum"
 impressumUrl: "Impressums-URL"
@@ -1139,6 +1143,12 @@ impressumDescription: "In manchen Ländern, wie Deutschland und dessen Umgebung,
 privacyPolicy: "Datenschutzerklärung"
 privacyPolicyUrl: "Datenschutzerklärungs-URL"
 tosAndPrivacyPolicy: "Nutzungsbedingungen und Datenschutzerklärung"
+avatarDecorations: "Profilbilddekoration"
+attach: "Anbringen"
+detach: "Entfernen"
+angle: "Winkel"
+flip: "Umdrehen"
+showAvatarDecorations: "Profilbilddekoration anzeigen"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
@@ -1174,6 +1184,7 @@ _serverSettings:
   manifestJsonOverride: "Überschreiben von manifest.json"
   shortName: "Abkürzung"
   shortNameDescription: "Ein Kürzel für den Namen der Instanz, der angezeigt werden kann, falls der volle Instanzname lang ist."
+  fanoutTimelineDescription: "Ist diese Option aktiviert, kann eine erhebliche Verbesserung im Abrufen von Chroniken und eine Reduzierung der Datenbankbelastung erzielt werden, im Gegenzug zu einer Steigerung in der Speichernutzung von Redis. Bei geringem Serverspeicher oder Serverinstabilität kann diese Option deaktiviert werden."
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"
@@ -2146,6 +2157,9 @@ _moderationLogTypes:
   createAd: "Werbung erstellt"
   deleteAd: "Werbung gelöscht"
   updateAd: "Werbung aktualisiert"
+  createAvatarDecoration: "Profilbilddekoration erstellt"
+  updateAvatarDecoration: "Profilbilddekoration aktualisiert"
+  deleteAvatarDecoration: "Profilbilddekoration gelöscht"
 _fileViewer:
   title: "Dateiinformationen"
   type: "Dateityp"
@@ -2154,3 +2168,44 @@ _fileViewer:
   uploadedAt: "Hochgeladen am"
   attachedNotes: "Zugehörige Notizen"
   thisPageCanBeSeenFromTheAuthor: "Nur der Benutzer, der diese Datei hochgeladen hat, kann diese Seite sehen."
+_externalResourceInstaller:
+  title: "Von externer Seite installieren"
+  checkVendorBeforeInstall: "Überprüfe vor Installation die Vertrauenswürdigkeit des Vertreibers."
+  _plugin:
+    title: "Möchtest du dieses Plugin installieren?"
+    metaTitle: "Plugininformation"
+  _theme:
+    title: "Möchten du dieses Farbschema installieren?"
+    metaTitle: "Farbschemainfo"
+  _meta:
+    base: "Farbschemavorlage"
+  _vendorInfo:
+    title: "Vertreiber"
+    endpoint: "Referenzierter Endpunkt"
+    hashVerify: "Hash-Verifikation"
+  _errors:
+    _invalidParams:
+      title: "Ungültige Parameter"
+      description: "Es fehlen Informationen zum Laden der externen Ressource. Überprüfe die übergebene URL."
+    _resourceTypeNotSupported:
+      title: "Diese Ressource wird nicht unterstützt"
+      description: "Dieser Ressourcentyp wird nicht unterstützt. Bitte kontaktiere den Seitenbesitzer."
+    _failedToFetch:
+      title: "Fehler beim Abrufen der Daten"
+      fetchErrorDescription: "Während der Kommunikation mit der externen Seite ist ein Fehler aufgetreten. Kontaktiere den Seitenbesitzer, falls ein erneutes Probieren dieses Problem nicht löst."
+      parseErrorDescription: "Während dem Auslesen der externen Daten ist ein Fehler aufgetreten. Kontaktiere den Seitenbesitzer."
+    _hashUnmatched:
+      title: "Datenverifizierung fehlgeschlagen"
+      description: "Die Integritätsprüfung der geladenen Daten ist fehlgeschlagen. Aus Sicherheitsgründen kann die Installation nicht fortgesetzt werden. Kontaktiere den Seitenbesitzer."
+    _pluginParseFailed:
+      title: "AiScript-Fehler"
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des AiScript-Parsings ein Fehler auf. Kontaktiere den Autor des Plugins. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _pluginInstallFailed:
+      title: "Das Plugin konnte nicht installiert werden"
+      description: "Während der Installation des Plugin ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _themeParseFailed:
+      title: "Parsing des Farbschemas fehlgeschlagen"
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des Farbschema-Parsings ein Fehler auf. Kontaktiere den Autor des Farbschemas. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _themeInstallFailed:
+      title: "Das Farbschema konnte nicht installiert werden"
+      description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."

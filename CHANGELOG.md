@@ -23,14 +23,24 @@
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Enhance: データセーバー有効時はアニメーション付きのアバター画像が停止するように
+- Enhance: プラグインを削除した際には、使用されていたアクセストークンも同時に削除されるようになりました
+- Enhance: プラグインで`Plugin:register_note_view_interruptor`を用いてnoteの代わりにnullを返却することでノートを非表示にできるようになりました
+- Enhance: AiScript関数`Mk:nyaize()`が追加されました
 - Fix: 投稿フォームでのユーザー変更がプレビューに反映されない問題を修正
+- Fix: ユーザーページの ノート > ファイル付き タブにリプライが表示されてしまう
+- Fix: 「検索」MFMにおいて一部の検索キーワードが正しく認識されない問題を修正
+- Fix: 一部の言語でMisskey Webがクラッシュする問題を修正
 
 ### Server
 - Enhance: RedisへのTLのキャッシュをオフにできるように
+- Enhance: フォローしているチャンネルをフォロー解除した時（またはその逆）、タイムラインに反映される間隔を改善
 - Fix: リストTLに自分のフォロワー限定投稿が含まれない問題を修正
 - Fix: ローカルタイムラインに投稿者自身の投稿への返信が含まれない問題を修正
 - Fix: 自分のフォローしているユーザーの自分のフォローしていないユーザーの visibility: followers な投稿への返信がストリーミングで流れてくる問題を修正
 - Fix: RedisへのTLキャッシュが有効の場合にHTL/LTL/STLが空になることがある問題を修正
+- Fix: STLでフォローしていないチャンネルが取得される問題を修正
+- Fix: `hashtags/trend`にてRedisからトレンドの情報が取得できない際にInternal Server Errorになる問題を修正
 
 ## 2023.10.2
 

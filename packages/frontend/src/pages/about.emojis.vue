@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton v-if="$i && (!$i.isModerator && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
 
 		<div class="query" style="margin-top: 10px;">
-			<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
+			<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
 				<template #prefix><i class="ti ti-search"></i></template>
 			</MkInput>
 
