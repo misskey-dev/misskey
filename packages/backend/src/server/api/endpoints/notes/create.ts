@@ -214,14 +214,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			function isPureRenote(note: MiNote): boolean {
+				return !!(note.renoteId && !note.text && !note.fileIds && !note.hasPoll);
+			}
+
 			let renote: MiNote | null = null;
 			if (ps.renoteId != null) {
 				// Fetch renote to note
 				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
 
+				console.log("renote", renote);
 				if (renote == null) {
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+				} else if (isPureRenote(renote)) {
 					throw new ApiError(meta.errors.cannotReRenote);
 				}
 
@@ -254,7 +259,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (reply == null) {
 					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+				} else if (isPureRenote(reply)) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				}
 
