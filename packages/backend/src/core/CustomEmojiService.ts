@@ -196,7 +196,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		}
 	}
 	@bindThis
-	public async updateRequest(id: MiEmoji['id'], data: {
+	public async updateRequest(id: MiEmojiRequest['id'], data: {
 		driveFile?: MiDriveFile;
 		name?: string;
 		category?: string | null;
