@@ -1132,6 +1132,7 @@ mutualFollow: "お互いフォローしてんで"
 fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "タイムラインに他の人への返信とかも含めんで"
 hideRepliesToOthersInTimeline: "タイムラインに他の人への返信とかは見ーへんで"
+showRepliesToOthersInTimelineAll: ""
 externalServices: "他のサイトのサービス"
 impressum: "運営者の情報"
 impressumUrl: "運営者の情報URL"
@@ -1139,6 +1140,8 @@ impressumDescription: "ドイツなどのほんま1部の国と地域ではな�
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+avatarDecorations: "アイコンデコレーション"
+flip: "反転"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
@@ -2146,6 +2149,9 @@ _moderationLogTypes:
   createAd: "広告を作んで"
   deleteAd: "広告ほかす"
   updateAd: "広告を更新"
+  createAvatarDecoration: "アイコンデコレーションを作成"
+  updateAvatarDecoration: "アイコンデコレーションを更新"
+  deleteAvatarDecoration: "アイコンデコレーションを削除"
 _fileViewer:
   title: "ファイルの詳しい情報"
   type: "ファイルの種類"
@@ -2154,3 +2160,25 @@ _fileViewer:
   uploadedAt: "追加した日"
   attachedNotes: "ファイルがついてきてるノート"
   thisPageCanBeSeenFromTheAuthor: "このページはこのファイルをアップした人しか見れへんねん。"
+_externalResourceInstaller:
+  title: "ほかのサイトからインストール"
+  checkVendorBeforeInstall: "配ってるとこが信頼できるか確認した上でインストールしてな。"
+  _plugin:
+    title: "このプラグイン、インストールする？"
+    metaTitle: "プラグイン情報"
+  _theme:
+    title: "このテーマインストールする？"
+    metaTitle: "テーマ情報"
+  _errors:
+    _pluginParseFailed:
+      title: "AiScriptエラー起こしてもうたねん"
+      description: "データは取得できたものの、AiScript解析時にエラーがあったから読み込めへんかってん。すまんが、プラグインを作った人に問い合わせてくれへん？ごめんな。エラーの詳細はJavaScriptコンソール読んでな。"
+    _pluginInstallFailed:
+      title: "プラグインのインストール失敗してもた"
+      description: "プラグインのインストール中に問題発生してもた、もう1度試してな。エラーの詳細はJavaScriptのコンソール見てや。"
+    _themeParseFailed:
+      title: "テーマ解析エラー"
+      description: "データは取得できたものの、テーマファイル解析時にエラーがあったから読み込めへんかってん。すまんが、テーマ作った人に問い合わせてくれへん？ごめんな。エラーの詳細はJavaScriptコンソール読んでな。"
+    _themeInstallFailed:
+      title: "テーマインストールに失敗してもた"
+      description: "テーマのインストール中に問題発生してもた、もう1度試してな。エラーの詳細はJavaScriptのコンソール見てや。"

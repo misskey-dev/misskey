@@ -15,7 +15,7 @@ import { host } from '@/config';
 import { defaultStore } from '@/store';
 import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 import MkRuby from "@/components/global/MkRuby.vue";
-import { nyaize } from '@/scripts/nyaize.js';
+import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 
 const QUOTE_STYLE = `
 display: block;
@@ -25,54 +25,60 @@ color: var(--fg);
 border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
-
 const colorRegexp = /^([0-9a-f]{3,4}?|[0-9a-f]{6}?|[0-9a-f]{8}?)$/i;
 function checkColorHex(text: string) {
-	return colorRegexp.test(text);
+    return colorRegexp.test(text);
 }
 
 const gradientCounterRegExp = /^(color|step)(\d+)/;
 
 function toGradientText(args: Record<string, string>) {
-	const colors: { index: number; step?: string, color?: string }[] = [];
-	for (const k in args) {
-		const matches = k.match(gradientCounterRegExp);
-		if (matches == null) continue;
-		const mindex = parseInt(matches[2]);
-		let i = colors.findIndex(v => v.index === mindex);
-		if (i === -1) {
-			i = colors.length;
-			colors.push({ index: mindex });
-		}
-		colors[i][matches[1]] = args[k];
-	}
-	let deg = parseFloat(args.deg || '90');
-	let res = `linear-gradient(${deg}deg`;
-	for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
-		let color = colorProp.color;
-		if (!color || !checkColorHex(color)) color = 'f00';
-		let step = parseFloat(colorProp.step ?? '');
-		let stepText = isNaN(step) ? '' : ` ${step}%`;
-		res += `, #${color}${stepText}`;
-	}
-	return res + ')';
+    const colors: { index: number; step?: string, color?: string }[] = [];
+    for (const k in args) {
+        const matches = k.match(gradientCounterRegExp);
+        if (matches == null) continue;
+        const mindex = parseInt(matches[2]);
+        let i = colors.findIndex(v => v.index === mindex);
+        if (i === -1) {
+            i = colors.length;
+            colors.push({ index: mindex });
+        }
+        colors[i][matches[1]] = args[k];
+    }
+    let deg = parseFloat(args.deg || '90');
+    let res = `linear-gradient(${deg}deg`;
+    for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
+        let color = colorProp.color;
+        if (!color || !checkColorHex(color)) color = 'f00';
+        let step = parseFloat(colorProp.step ?? '');
+        let stepText = isNaN(step) ? '' : ` ${step}%`;
+        res += `, #${color}${stepText}`;
+    }
+    return res + ')';
 }
 
-export default function(props: {
+
+type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
-	i?: Misskey.entities.UserLite;
+	i?: Misskey.entities.UserLite | null;
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-}) {
-	const isNote = props.isNote !== undefined ? props.isNote : true;
+	nyaize: boolean | 'account';
+};
 
+// eslint-disable-next-line import/no-default-export
+export default function(props: MfmProps) {
+	const isNote = props.isNote ?? true;
+	const shouldNyaize = props.nyaize ? props.nyaize === 'account' ? props.author?.isCat : false : false;
+
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
-	const ast = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
+	const rootAst = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
 	const validTime = (t: string | null | undefined) => {
 		if (t == null || typeof t === 'boolean') return null;
@@ -85,13 +91,14 @@ export default function(props: {
 	 * Gen Vue Elements from MFM AST
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
+	 * @param disableNyaize Whether nyaize is disabled or not
 	 */
 	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
-				if (!disableNyaize && props.author?.isCat) {
-					text = nyaize(text);
+				if (!disableNyaize && shouldNyaize) {
+					text = doNyaize(text);
 				}
 
 				if (!props.plain) {
@@ -542,5 +549,5 @@ export default function(props: {
 	return h('span', {
 		// https://codeday.me/jp/qa/20190424/690106.html
 		style: props.nowrap ? 'white-space: pre; word-wrap: normal; overflow: hidden; text-overflow: ellipsis;' : 'white-space: pre-wrap;',
-	}, genEl(ast, props.rootScale ?? 1));
+	}, genEl(rootAst, props.rootScale ?? 1));
 }
