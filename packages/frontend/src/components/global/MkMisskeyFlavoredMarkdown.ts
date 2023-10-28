@@ -17,7 +17,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
-import { nyaize } from '@/scripts/nyaize.js';
+import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 
 const QUOTE_STYLE = `
 display: block;
@@ -28,21 +28,27 @@ border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
 
-export default function(props: {
+type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
-	i?: Misskey.entities.UserLite;
+	i?: Misskey.entities.UserLite | null;
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-}) {
-	const isNote = props.isNote !== undefined ? props.isNote : true;
+	nyaize: boolean | 'account';
+};
 
+// eslint-disable-next-line import/no-default-export
+export default function(props: MfmProps) {
+	const isNote = props.isNote ?? true;
+	const shouldNyaize = props.nyaize ? props.nyaize === 'account' ? props.author?.isCat : false : false;
+
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
-	const ast = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
+	const rootAst = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
 	const validTime = (t: string | null | undefined) => {
 		if (t == null) return null;
@@ -55,13 +61,14 @@ export default function(props: {
 	 * Gen Vue Elements from MFM AST
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
+	 * @param disableNyaize Whether nyaize is disabled or not
 	 */
 	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
-				if (!disableNyaize && props.author?.isCat) {
-					text = nyaize(text);
+				if (!disableNyaize && shouldNyaize) {
+					text = doNyaize(text);
 				}
 
 				if (!props.plain) {
@@ -377,5 +384,5 @@ export default function(props: {
 	return h('span', {
 		// https://codeday.me/jp/qa/20190424/690106.html
 		style: props.nowrap ? 'white-space: pre; word-wrap: normal; overflow: hidden; text-overflow: ellipsis;' : 'white-space: pre-wrap;',
-	}, genEl(ast, props.rootScale ?? 1));
+	}, genEl(rootAst, props.rootScale ?? 1));
 }
