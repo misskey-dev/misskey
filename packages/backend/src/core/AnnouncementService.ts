@@ -51,7 +51,6 @@ export class AnnouncementService {
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
 			{ userId: user.id },
 		);
-		q.andWhere('read.id IS NULL');
 
 		q
 			.where('announcement.isActive = true')
@@ -62,7 +61,8 @@ export class AnnouncementService {
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
 				qb.orWhere('announcement.id > :userId', { userId: user.id });
-			}));
+			}))
+			.andWhere('read.id IS NULL');
 
 		q.orderBy({
 			'announcement."displayOrder"': 'DESC',
