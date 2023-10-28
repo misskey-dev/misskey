@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         :customEmojiTree="child.children"
         @chosen="nestedChosen"
     >
-      {{ child.value }}
+			{{ child.value || i18n.ts.other }}
     </MkEmojiPickerSection>
   </div>
 </section>

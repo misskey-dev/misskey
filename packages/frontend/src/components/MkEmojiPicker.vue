@@ -76,12 +76,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => child.value === i18n.ts.other ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
         :categoryFolderFlag="child.children.length!==0"
         :customEmojiTree="child.children"
 				@chosen="chosen"
 			>
-				{{ child.value }}
+				{{ child.value || i18n.ts.other }}
 			</XSection>
 		</div>
 		<div v-once class="group">
@@ -156,23 +156,18 @@ const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 const customEmojiFolderRoot: CustomEmojiFolderTree = { value: "", category: "", children: [] };
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
-  const parts = input.split('/');
-  let category = "";
-  let currentNode: CustomEmojiFolderTree = root;
+	const parts = input.split('/');
+	let currentNode: CustomEmojiFolderTree = root;
 
 	for (let part of parts) {
-		if (part) {
-			category += `/${part}`;
-		} else {
-			part = i18n.ts.other
-			category += `/`;
+		if (!part) {
+			part = '';
 		}
 
-		category = category.replace(/^\//, '');
 		let existingNode = currentNode.children.find((node) => node.value === part);
 
 		if (!existingNode) {
-			const newNode: CustomEmojiFolderTree = { value: part, category, children: [] };
+			const newNode: CustomEmojiFolderTree = { value: part, category: input, children: [] };
 			currentNode.children.push(newNode);
 			existingNode = newNode;
 		}
@@ -180,7 +175,7 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
 		currentNode = existingNode;
 	}
 
-  return currentNode;
+	return currentNode;
 }
 
 customEmojiCategories.value.forEach(ec => {
@@ -189,7 +184,7 @@ customEmojiCategories.value.forEach(ec => {
   }
 });
 
-parseAndMergeCategories(i18n.ts.other, customEmojiFolderRoot);
+parseAndMergeCategories('', customEmojiFolderRoot);
 
 watch(q, () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
