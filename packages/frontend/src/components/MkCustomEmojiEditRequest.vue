@@ -20,7 +20,7 @@
 							{{ i18n.ts.edit }}
 						</MkButton>
 						<MkButton class="request" @click="unrequested(emoji)">
-							{{ i18n.ts.requestApproval }}
+							{{ i18n.ts.approve }}
 						</MkButton>
 						<MkButton danger class="delete" @click="deleteRequest(emoji)">
 							{{ i18n.ts.delete }}

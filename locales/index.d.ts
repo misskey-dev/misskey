@@ -1028,8 +1028,8 @@ export interface Locale {
     "notesSearchNotAvailable": string;
     "license": string;
     "requestPending": string;
-    "requestApproval": string;
-    "requestEmojis": string;
+    "approve": string;
+    "requestingEmojis": string;
     "emojiNameValidation": string;
     "unfavoriteConfirm": string;
     "myClips": string;

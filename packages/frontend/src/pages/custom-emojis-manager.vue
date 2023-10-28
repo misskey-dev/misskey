@@ -103,7 +103,7 @@ const headerActions = $computed(() => [{
 
 const headerTabs = $computed(() => [{
 	key: 'request',
-	title: i18n.ts.requestEmojis,
+	title: i18n.ts.requestingEmojis,
 }, {
 	key: 'local',
 	title: i18n.ts.local,
