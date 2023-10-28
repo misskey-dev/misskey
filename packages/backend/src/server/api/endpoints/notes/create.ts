@@ -215,7 +215,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			function isPureRenote(note: MiNote): boolean {
-				return !!(note.renoteId && !note.text && !note.fileIds && !note.hasPoll);
+				console.log("isPureRenote", note);
+				if (!note.renoteId) return false;
+
+				console.log("isPureRenote: no renoteId");
+				if (note.text) return false; // it's quoted with text
+				console.log("isPureRenote: not quoted with text");
+				if (note.fileIds.length !== 0) return false; // it's quoted with files
+				console.log("isPureRenote: not quoted with file");
+				if (note.hasPoll) return false; // it's quoted with poll
+				console.log("isPureRenote: not quoted with poll");
+				return true;
 			}
 
 			let renote: MiNote | null = null;
@@ -223,7 +233,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// Fetch renote to note
 				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
 
-				console.log("renote", renote);
 				if (renote == null) {
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
 				} else if (isPureRenote(renote)) {
