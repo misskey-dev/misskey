@@ -22,6 +22,7 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { ca } from 'date-fns/locale';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -32,6 +33,7 @@ export type RolePolicies = {
 	inviteLimitCycle: number;
 	inviteExpirationTime: number;
 	canManageCustomEmojis: boolean;
+	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
@@ -57,6 +59,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	inviteLimitCycle: 60 * 24 * 7,
 	inviteExpirationTime: 0,
 	canManageCustomEmojis: false,
+	canManageAvatarDecorations: false,
 	canSearchNotes: false,
 	canUseTranslator: true,
 	canHideAds: false,
@@ -306,6 +309,7 @@ export class RoleService implements OnApplicationShutdown {
 			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
 			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),

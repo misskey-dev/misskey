@@ -66,6 +66,11 @@ export function openInstanceMenu(ev: MouseEvent) {
 			type: 'link',
 			to: '/custom-emojis-manager',
 			text: i18n.ts.manageCustomEmojis,
+			icon: 'ti ti-sparkles',
+		} : undefined, ($i && ($i.isAdmin || $i.policies.canManageAvatarDecorations)) ? {
+			type: 'link',
+			to: '/avatar-decorations',
+			text: i18n.ts.manageAvatarDecorations,
 			icon: 'ti ti-icons',
 		} : undefined],
 	}, null, (instance.impressumUrl) ? {

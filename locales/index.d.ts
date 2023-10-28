@@ -982,6 +982,7 @@ export interface Locale {
     "unassign": string;
     "color": string;
     "manageCustomEmojis": string;
+    "manageAvatarDecorations": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
@@ -1571,6 +1572,7 @@ export interface Locale {
             "inviteLimitCycle": string;
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
+            "canManageAvatarDecorations": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;
