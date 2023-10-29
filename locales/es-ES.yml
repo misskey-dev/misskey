@@ -1139,6 +1139,7 @@ impressumDescription: "En algunos países, como Alemania, la inclusión del oper
 privacyPolicy: "Política de Privacidad"
 privacyPolicyUrl: "URL de la Política de Privacidad"
 tosAndPrivacyPolicy: "Condiciones de Uso y Política de Privacidad"
+flip: "Echar de un capirotazo"
 _announcement:
   forExistingUsers: "Solo para usuarios registrados"
   forExistingUsersDescription: "Este anuncio solo se mostrará a aquellos usuarios registrados en el momento de su publicación. Si se deshabilita esta opción, aquellos usuarios que se registren tras su publicación también lo verán."

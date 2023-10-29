@@ -1190,6 +1190,7 @@ export interface Locale {
         "manifestJsonOverride": string;
         "shortName": string;
         "shortNameDescription": string;
+        "fanoutTimelineDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
@@ -1706,6 +1707,7 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "projectMembers": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;
