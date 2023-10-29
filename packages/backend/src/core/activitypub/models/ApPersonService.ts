@@ -322,7 +322,7 @@ export class ApPersonService implements OnModuleInit {
 				let _description: string | null = null;
 
 				if (person._misskey_summary) {
-					_description = truncate(person._misskey_summary, summaryLength)
+					_description = truncate(person._misskey_summary, summaryLength);
 				} else if (person.summary) {
 					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
 				}
