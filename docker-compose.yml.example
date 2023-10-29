@@ -6,12 +6,12 @@ services:
     restart: always
     links:
       - db
-      - redis
+      - keydb
 #     - meilisearch
     depends_on:
       db:
         condition: service_healthy
-      redis:
+      keydb:
         condition: service_healthy
     ports:
       - "3000:3000"
@@ -22,15 +22,15 @@ services:
       - ./files:/misskey/files
       - ./.config:/misskey/.config:ro
 
-  redis:
+  keydb:
     restart: always
-    image: redis:7-alpine
+    image: eqalpha/keydb:latest
     networks:
       - internal_network
     volumes:
-      - ./redis:/data
+      - ./keydb:/data
     healthcheck:
-      test: "redis-cli ping"
+      test: "keydb-cli ping"
       interval: 5s
       retries: 20
 

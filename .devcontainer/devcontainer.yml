@@ -72,7 +72,7 @@ dbReplications: false
 #───┘ Redis configuration └─────────────────────────────────────
 
 redis:
-  host: redis
+  host: keydb
   port: 6379
   #family: 0  # 0=Both, 4=IPv4, 6=IPv6
   #pass: example-pass
@@ -80,7 +80,7 @@ redis:
   #db: 1
 
 #redisForPubsub:
-#  host: redis
+#  host: keydb
 #  port: 6379
 #  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
 #  #pass: example-pass
@@ -88,7 +88,7 @@ redis:
 #  #db: 1
 
 #redisForJobQueue:
-#  host: redis
+#  host: keydb
 #  port: 6379
 #  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
 #  #pass: example-pass
