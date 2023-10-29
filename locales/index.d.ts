@@ -310,6 +310,7 @@ export interface Locale {
     "createFolder": string;
     "renameFolder": string;
     "deleteFolder": string;
+    "folder": string;
     "addFile": string;
     "emptyDrive": string;
     "emptyFolder": string;
