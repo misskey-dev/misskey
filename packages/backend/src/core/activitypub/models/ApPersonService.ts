@@ -321,7 +321,7 @@ export class ApPersonService implements OnModuleInit {
 
 				await transactionalEntityManager.save(new MiUserProfile({
 					userId: user.id,
-					description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
+					description: person._misskey_summary ? truncate(person._misskey_summary, summaryLength) : person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 					url,
 					fields,
 					birthday: bday?.[0] ?? null,
