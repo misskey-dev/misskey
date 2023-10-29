@@ -29,6 +29,7 @@
 		"@vue/compiler-sfc": "3.3.7",
 		"astring": "1.8.6",
 		"autosize": "6.0.1",
+		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.0.5",
 		"broadcast-channel": "5.5.1",
 		"browser-image-resizer": "github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
 		"buraha": "0.0.1",
@@ -54,11 +55,11 @@
 		"mfm-js": "0.23.3",
 		"misskey-js": "workspace:*",
 		"photoswipe": "5.4.2",
-		"prismjs": "1.29.0",
 		"punycode": "2.3.0",
 		"querystring": "0.2.1",
 		"rollup": "4.1.4",
 		"sanitize-html": "2.11.0",
+		"shiki": "^0.14.5",
 		"sass": "1.69.5",
 		"strict-event-emitter-types": "2.0.0",
 		"textarea-caret": "3.1.0",
@@ -74,7 +75,6 @@
 		"vanilla-tilt": "1.8.1",
 		"vite": "4.5.0",
 		"vue": "3.3.7",
-		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "next"
 	},
 	"devDependencies": {

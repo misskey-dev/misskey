@@ -67,6 +67,11 @@ module.exports = {
 		'object-curly-spacing': ['error', 'always'],
 		'space-infix-ops': ['error'],
 		'space-before-blocks': ['error', 'always'],
+		'padding-line-between-statements': [
+			'error',
+			{ 'blankLine': 'always', 'prev': 'function', 'next': '*' },
+			{ 'blankLine': 'always', 'prev': '*', 'next': 'function' },
+		],
 		'@typescript-eslint/func-call-spacing': ['error', 'never'],
 		'@typescript-eslint/no-explicit-any': ['warn'],
 		'@typescript-eslint/no-unused-vars': ['warn'],
