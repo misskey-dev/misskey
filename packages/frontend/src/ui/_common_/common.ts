@@ -93,6 +93,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 			window.open('https://misskey-hub.net/help.html', '_blank');
 		},
 	}, {
+		text: i18n.ts.toServiceArt,
+		icon: 'ti ti-help-circle',
+		action: () => {
+			window.open('https://service.misskey.art', '_blank');
+		},
+	}, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
 		to: '/about-misskey',
