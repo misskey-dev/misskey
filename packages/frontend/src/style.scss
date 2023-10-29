@@ -400,10 +400,6 @@ hr {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace !important;
 }
 
-.prism-editor__textarea:focus {
-	outline: none;
-}
-
 ._zoom {
 	transition-duration: 0.5s, 0.5s;
 	transition-property: opacity, transform;
