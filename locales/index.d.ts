@@ -1707,6 +1707,7 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "projectMembers": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;
