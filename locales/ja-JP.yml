@@ -1654,13 +1654,14 @@ _registry:
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
-  contributors: "主なコントリビューター"
+  contributors: "コントリビューター"
   allContributors: "全てのコントリビューター"
   source: "ソースコード"
   translation: "Misskeyを翻訳"
   donate: "Misskeyに寄付"
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
   patrons: "支援者"
+  projectMembers: "プロジェクトメンバー"
 
 _displayOfSensitiveMedia:
   respect: "センシティブ設定されたメディアを隠す"

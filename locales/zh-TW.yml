@@ -1132,6 +1132,10 @@ mutualFollow: "互相追隨"
 fileAttachedOnly: "顯示包含附件的貼文"
 showRepliesToOthersInTimeline: "顯示給其他人的回覆"
 hideRepliesToOthersInTimeline: "在時間軸上隱藏給其他人的回覆"
+showRepliesToOthersInTimelineAll: "在時間軸包含追隨中所有人的回覆"
+hideRepliesToOthersInTimelineAll: "在時間軸不包含追隨中所有人的回覆"
+confirmShowRepliesAll: "進行此操作後無法復原。您真的希望時間軸「包含」您目前追隨的所有人的回覆嗎？"
+confirmHideRepliesAll: "進行此操作後無法復原。您真的希望時間軸「不包含」您目前追隨的所有人的回覆嗎？"
 externalServices: "外部服務"
 impressum: "營運者資訊"
 impressumUrl: "營運者資訊網址"
@@ -1139,6 +1143,12 @@ impressumDescription: "在德國與部份地區必須要明確顯示營運者資
 privacyPolicy: "隱私政策"
 privacyPolicyUrl: "隱私政策網址"
 tosAndPrivacyPolicy: "服務條款和隱私政策"
+avatarDecorations: "頭像裝飾"
+attach: "裝上"
+detach: "取下"
+angle: "角度"
+flip: "翻轉"
+showAvatarDecorations: "顯示頭像裝飾"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
@@ -1174,6 +1184,7 @@ _serverSettings:
   manifestJsonOverride: "覆寫 manifest.json"
   shortName: "簡稱"
   shortNameDescription: "如果伺服器的正式名稱很長，可用簡稱或通稱代替。"
+  fanoutTimelineDescription: "如果啟用的話，檢索各個時間軸的性能會顯著提昇，資料庫的負荷也會減少。不過，Redis 的記憶體使用量會增加。如果伺服器的記憶體容量比較少或者運行不穩定，可以停用。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
@@ -2146,6 +2157,9 @@ _moderationLogTypes:
   createAd: "建立廣告"
   deleteAd: "刪除廣告"
   updateAd: "更新廣告"
+  createAvatarDecoration: "建立頭像裝飾"
+  updateAvatarDecoration: "更新頭像裝飾"
+  deleteAvatarDecoration: "刪除頭像裝飾"
 _fileViewer:
   title: "檔案詳細資訊"
   type: "檔案類型 "
@@ -2154,3 +2168,44 @@ _fileViewer:
   uploadedAt: "加入日期"
   attachedNotes: "含有附件的貼文"
   thisPageCanBeSeenFromTheAuthor: "本頁面僅限上傳了這個檔案的使用者可以檢視。"
+_externalResourceInstaller:
+  title: "從外部網站安裝"
+  checkVendorBeforeInstall: "安裝前請確認提供者是可信賴的。"
+  _plugin:
+    title: "要安裝此外掛嘛？"
+    metaTitle: "外掛資訊"
+  _theme:
+    title: "要安裝此外觀主題嘛？"
+    metaTitle: "外觀主題資訊"
+  _meta:
+    base: "基本配色方案"
+  _vendorInfo:
+    title: "提供者資訊"
+    endpoint: "引用端點"
+    hashVerify: "確認檔案的完整性"
+  _errors:
+    _invalidParams:
+      title: "缺少參數"
+      description: "缺少從外部網站取得資料的必要資訊。請檢查 URL 是否正確。"
+    _resourceTypeNotSupported:
+      title: "不支援此外部資源。"
+      description: "不支援從此外部網站取得的資源類型。請聯絡網站管理員。"
+    _failedToFetch:
+      title: "無法取得資料"
+      fetchErrorDescription: "與外部站點的通訊失敗。如果重試後問題仍然存在，請聯絡網站管理員。"
+      parseErrorDescription: "無法讀取從外部站點取得的資料。請聯絡網站管理員。"
+    _hashUnmatched:
+      title: "無法取得正確資料"
+      description: "所提供資料的完整性驗證失敗。出於安全原因，安裝無法繼續。請聯絡網站管理員。"
+    _pluginParseFailed:
+      title: "AiScript 錯誤"
+      description: "已取得資料但解析 AiScript 時發生錯誤，導致無法載入。請聯絡外掛作者。請檢查 Javascript 控制台以取得錯誤詳細資訊。"
+    _pluginInstallFailed:
+      title: "外掛安裝失敗"
+      description: "安裝插件時出現問題。請再試一次。請參閱 Javascript 控制台以取得錯誤詳細資訊。"
+    _themeParseFailed:
+      title: "外觀主題解析錯誤"
+      description: "已取得資料但解析外觀主題時發生錯誤，導致無法載入。請聯絡主題作者。請檢查 Javascript 控制台以取得錯誤詳細資訊。"
+    _themeInstallFailed:
+      title: "無法安裝外觀主題"
+      description: "安裝外觀主題時出現問題。請再試一次。請參閱 Javascript 控制台以取得錯誤詳細資訊。"
