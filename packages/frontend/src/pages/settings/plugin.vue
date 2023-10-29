@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton inline @click="copy(plugin)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
 						</div>
 
-						<MkCode :code="plugin.src ?? ''"/>
+						<MkCode :code="plugin.src ?? ''" lang="is"/>
 					</div>
 				</MkFolder>
 			</div>

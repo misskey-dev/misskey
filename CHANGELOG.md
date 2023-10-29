@@ -24,6 +24,9 @@
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Enhance: コードのシンタックスハイライトエンジンをShikiに変更
+  - AiScriptのシンタックスハイライトに対応
+  - MFMでAiScriptをハイライトする場合、コードブロックの開始部分を ` ```is ` もしくは ` ```aiscript ` としてください
 - Enhance: データセーバー有効時はアニメーション付きのアバター画像が停止するように
 - Enhance: プラグインを削除した際には、使用されていたアクセストークンも同時に削除されるようになりました
 - Enhance: プラグインで`Plugin:register_note_view_interruptor`を用いてnoteの代わりにnullを返却することでノートを非表示にできるようになりました
