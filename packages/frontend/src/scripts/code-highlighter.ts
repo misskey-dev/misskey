@@ -3,11 +3,11 @@ import { setWasm, setCDN, Highlighter, getHighlighter as _getHighlighter } from 
 setWasm('/assets/shiki/dist/onig.wasm');
 setCDN('/assets/shiki/');
 
-let _highlighter: Highlighter;
+let _highlighter: Highlighter | null = null;
 
-export async function getHighlighter() {
+export async function getHighlighter(): Promise<Highlighter> {
 	if (!_highlighter) {
-		await initHighlighter();
+		return await initHighlighter();
 	}
 	return _highlighter;
 }
@@ -26,4 +26,6 @@ export async function initHighlighter() {
 	});
 
 	_highlighter = highlighter;
+
+	return highlighter;
 }

@@ -674,8 +674,8 @@ importers:
         specifier: 3.3.7
         version: 3.3.7
       aiscript-vscode:
-        specifier: github:aiscript-dev/aiscript-vscode#v0.0.4
-        version: github.com/aiscript-dev/aiscript-vscode/fb6534cc7984c28b02c511c07c2dc4b9ef1b71b3
+        specifier: github:aiscript-dev/aiscript-vscode#v0.0.5
+        version: github.com/aiscript-dev/aiscript-vscode/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e
       astring:
         specifier: 1.8.6
         version: 1.8.6
@@ -757,9 +757,6 @@ importers:
       photoswipe:
         specifier: 5.4.2
         version: 5.4.2
-      prismjs:
-        specifier: 1.29.0
-        version: 1.29.0
       punycode:
         specifier: 2.3.0
         version: 2.3.0
@@ -820,9 +817,6 @@ importers:
       vue:
         specifier: 3.3.7
         version: 3.3.7(typescript@5.2.2)
-      vue-prism-editor:
-        specifier: 2.0.0-alpha.2
-        version: 2.0.0-alpha.2(vue@3.3.7)
       vuedraggable:
         specifier: next
         version: 4.1.0(vue@3.3.7)
@@ -16240,6 +16234,7 @@ packages:
   /prismjs@1.29.0:
     resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
     engines: {node: '>=6'}
+    dev: true
 
   /private-ip@2.3.3:
     resolution: {integrity: sha512-5zyFfekIVUOTVbL92hc8LJOtE/gyGHeREHkJ2yTyByP8Q2YZVoBqLg3EfYLeF0oVvGqtaEX2t2Qovja0/gStXw==}
@@ -19301,15 +19296,6 @@ packages:
       vue: 3.3.7(typescript@5.2.2)
     dev: true
 
-  /vue-prism-editor@2.0.0-alpha.2(vue@3.3.7):
-    resolution: {integrity: sha512-Gu42ba9nosrE+gJpnAEuEkDMqG9zSUysIR8SdXUw8MQKDjBnnNR9lHC18uOr/ICz7yrA/5c7jHJr9lpElODC7w==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      vue: ^3.0.0
-    dependencies:
-      vue: 3.3.7(typescript@5.2.2)
-    dev: false
-
   /vue-template-compiler@2.7.14:
     resolution: {integrity: sha512-zyA5Y3ArvVG0NacJDkkzJuPQDF8RFeRlzV2vLeSnhSpieO6LK2OVbdLPi5MPPs09Ii+gMO8nY4S3iKQxBxDmWQ==}
     dependencies:
@@ -19771,10 +19757,10 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  github.com/aiscript-dev/aiscript-vscode/fb6534cc7984c28b02c511c07c2dc4b9ef1b71b3:
-    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/fb6534cc7984c28b02c511c07c2dc4b9ef1b71b3}
+  github.com/aiscript-dev/aiscript-vscode/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e:
+    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e}
     name: aiscript-vscode
-    version: 0.0.4
+    version: 0.0.5
     engines: {vscode: ^1.83.0}
     dev: false
 

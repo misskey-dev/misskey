@@ -5,30 +5,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-	<div class="codeBlockRoot" v-html="html"></div>
+<div :class="['codeBlockRoot', { 'codeEditor': codeEditor }]" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import { getHighlighter } from '@/scripts/code-highlighter.js';
 import { BUNDLED_LANGUAGES } from 'shiki';
-import type { Lang } from 'shiki';
+import type { Lang as ShikiLang } from 'shiki';
+import { getHighlighter } from '@/scripts/code-highlighter.js';
 
 const props = defineProps<{
 	code: string;
 	lang?: string;
+	codeEditor?: boolean;
 }>();
 
 const highlighter = await getHighlighter();
 
-const lang = ref<Lang | 'aiscript'>('js');
+const codeLang = ref<ShikiLang | 'aiscript'>('js');
 const html = computed(() => highlighter.codeToHtml(props.code, {
-	lang: lang.value,
+	lang: codeLang.value,
 	theme: 'dark-plus',
 }));
 
-async function fetchLanguage(to) {
-	const language = to as Lang;
+async function fetchLanguage(to: string): Promise<void> {
+	const language = to as ShikiLang;
 
 	// Check for the loaded languages, and load the language if it's not loaded yet.
 	if (!highlighter.getLoadedLanguages().includes(language)) {
@@ -39,18 +40,20 @@ async function fetchLanguage(to) {
 		});
 		if (bundles.length > 0) {
 			await highlighter.loadLanguage(language);
-			lang.value = language;
+			codeLang.value = language;
 		} else {
-			lang.value = 'js';
+			codeLang.value = 'js';
 		}
 	} else {
-		lang.value = language;
+		codeLang.value = language;
 	}
 }
 
-watch(() => props.lang, async (to) => {
-	if (lang.value === to) return;
-	await fetchLanguage(to);
+watch(() => props.lang, (to) => {
+	if (codeLang.value === to || !to) return;
+	return new Promise((resolve) => {
+		fetchLanguage(to).then(() => resolve);
+	});
 }, { immediate: true, });
 </script>
 
@@ -64,6 +67,28 @@ watch(() => props.lang, async (to) => {
 	& pre,
 	& code {
 		font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+	}
+}
+
+.codeBlockRoot.codeEditor {
+	min-width: 100%;
+	height: 100%;
+
+	& :deep(.shiki) {
+		padding: 12px;
+		margin: 0;
+		border-radius: 6px;
+		min-height: 130px;
+		pointer-events: none;
+		min-width: calc(100% - 24px);
+		height: 100%;
+		display: inline-block;
+		line-height: 1.5em;
+		font-size: 1em;
+		overflow: visible;
+		text-rendering: inherit;
+    text-transform: inherit;
+    white-space: pre;
 	}
 }
 </style>
