@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import {
 	generateAuthenticationOptions,
-	generateRegistrationOptions, verifyAuthenticationResponse,
+	generateRegistrationOptions,
+	verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 import { AttestationFormat, isoCBOR } from '@simplewebauthn/server/helpers';
@@ -60,7 +61,7 @@ export class WebAuthnService {
 			userId: userId,
 		});
 
-		const registrationOptions = generateRegistrationOptions({
+		const registrationOptions = await generateRegistrationOptions({
 			rpName: relyingParty.rpName,
 			rpID: relyingParty.rpId,
 			userID: userId,
@@ -150,7 +151,7 @@ export class WebAuthnService {
 			throw new IdentifiableError('f27fd449-9af4-4841-9249-1f989b9fa4a4', 'no keys found');
 		}
 
-		const authenticationOptions = generateAuthenticationOptions({
+		const authenticationOptions = await generateAuthenticationOptions({
 			allowCredentials: keys.map(key => (<PublicKeyCredentialDescriptorFuture>{
 				id: Buffer.from(key.id, 'base64url'),
 				type: 'public-key',
