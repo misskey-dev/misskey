@@ -237,7 +237,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (followingChannels.length > 0) {
 			const followingChannelIds = followingChannels.map(x => x.followeeId);
 
-			query.andWhere('note.channelId IN (:...followingChannelIds) OR note.channelId IS NULL', { followingChannelIds });
+			query.andWhere(new Brackets(qb => {
+				qb.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
+				qb.orWhere('note.channelId IS NULL');
+			}));
 		} else {
 			query.andWhere('note.channelId IS NULL');
 		}

@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
-					<MkCode :code="flash.script" :inline="false" class="_monospace"/>
+					<MkCode :code="flash.script" lang="is" :inline="false" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
