@@ -1067,6 +1067,7 @@ doYouAgree: "Согласны?"
 icon: "Аватар"
 replies: "Ответить"
 renotes: "Репост"
+flip: "Переворот"
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
   letsStartAccountSetup: "Давайте настроим вашу учётную запись."

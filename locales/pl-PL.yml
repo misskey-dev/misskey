@@ -873,6 +873,7 @@ youFollowing: "Śledzeni"
 icon: "Awatar"
 replies: "Odpowiedz"
 renotes: "Udostępnij"
+flip: "Odwróć"
 _role:
   priority: "Priorytet"
   _priority:

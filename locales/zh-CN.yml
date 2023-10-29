@@ -1131,6 +1131,7 @@ mutualFollow: "互相关注"
 fileAttachedOnly: "仅限媒体"
 showRepliesToOthersInTimeline: "在时间线上显示给其他人的回复"
 hideRepliesToOthersInTimeline: "在时间线上隐藏给其他人的回复"
+flip: "翻转"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"

@@ -59,6 +59,7 @@ function toggleSensitive(file) {
 		emit('changeSensitive', file, !file.isSensitive);
 	});
 }
+
 async function rename(file) {
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,

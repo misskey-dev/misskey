@@ -301,12 +301,14 @@ const emojiIndexLangs = ['en-US'];
 function downloadEmojiIndex(lang: string) {
 	async function main() {
 		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+
 		function download() {
 			switch (lang) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
 				default: throw new Error('unrecognized lang: ' + lang);
 			}
 		}
+
 		currentIndexes[lang] = await download();
 		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
@@ -343,6 +345,7 @@ function removePinnedList() {
 
 let smashCount = 0;
 let smashTimer: number | null = null;
+
 function testNotification(): void {
 	const notification: Misskey.entities.Notification = {
 		id: Math.random().toString(),
