@@ -1133,6 +1133,9 @@ fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "タイムラインに他の人への返信とかも含めんで"
 hideRepliesToOthersInTimeline: "タイムラインに他の人への返信とかは見ーへんで"
 showRepliesToOthersInTimelineAll: ""
+hideRepliesToOthersInTimelineAll: ""
+confirmShowRepliesAll: ""
+confirmHideRepliesAll: ""
 externalServices: "他のサイトのサービス"
 impressum: "運営者の情報"
 impressumUrl: "運営者の情報URL"
@@ -1141,7 +1144,11 @@ privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
+attach: ""
+detach: ""
+angle: ""
 flip: "反転"
+showAvatarDecorations: ""
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
@@ -1177,6 +1184,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.jsonのオーバーライド"
   shortName: "略称"
   shortNameDescription: "サーバーの名前が長い時に、代わりに表示することのできるあだ名。"
+  fanoutTimelineDescription: ""
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに引っ越す"
   moveFromSub: "別のアカウントへエイリアスを作る"
@@ -1596,6 +1604,7 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にもぎょうさんの人からサポートしてもろてんねん。ほんまおおきに🥰"
   patrons: "支援者"
+  projectMembers: ""
 _displayOfSensitiveMedia:
   respect: "きわどいのは見とうない"
   ignore: "きわどいのも見たい"
@@ -2169,7 +2178,21 @@ _externalResourceInstaller:
   _theme:
     title: "このテーマインストールする？"
     metaTitle: "テーマ情報"
+  _meta:
+    base: ""
+  _vendorInfo:
+    title: ""
+    endpoint: ""
+    hashVerify: ""
   _errors:
+    _invalidParams:
+      title: ""
+      description: ""
+    _resourceTypeNotSupported:
+      title: ""
+      description: ""
+    _failedToFetch:
+      title: ""
     _pluginParseFailed:
       title: "AiScriptエラー起こしてもうたねん"
       description: "データは取得できたものの、AiScript解析時にエラーがあったから読み込めへんかってん。すまんが、プラグインを作った人に問い合わせてくれへん？ごめんな。エラーの詳細はJavaScriptコンソール読んでな。"
