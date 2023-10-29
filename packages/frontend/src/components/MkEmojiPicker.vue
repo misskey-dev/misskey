@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:key="`custom:${child.value}`"
 				:initialShown="false"
 				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
-        :hasChildSection="child.children.length!==0"
+        :hasChildSection="child.children.length !== 0"
         :customEmojiTree="child.children"
 				@chosen="chosen"
 			>

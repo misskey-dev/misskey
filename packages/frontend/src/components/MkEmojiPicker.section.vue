@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
 <section v-if="!hasChildSection">
 	<header class="_acrylic" @click="shown = !shown">
-		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-icons ti-fw"></i>:{{emojis.length}})
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-icons ti-fw"></i>:{{ emojis.length }})
 	</header>
 	<div v-if="shown" class="body">
 		<button
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <!-- フォルダの中にはカスタム絵文字やフォルダがある -->
 <section v-else>
   <header class="_acrylic" @click="shown = !shown">
-    <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-folder ti-fw"></i>:{{customEmojiTree.length}} <i class="ti ti-icons ti-fw"></i>:{{emojis.length}})
+    <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-folder ti-fw"></i>:{{ customEmojiTree.length }} <i class="ti ti-icons ti-fw"></i>:{{ emojis.length }})
   </header>
   <div v-if="shown" class="body">
     <button
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         :key="`custom:${child.value}`"
         :initialShown="initialShown"
         :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
-        :hasChildSection="child.children.length!==0"
+        :hasChildSection="child.children.length !== 0"
         :customEmojiTree="child.children"
         @chosen="nestedChosen"
     >
@@ -61,9 +61,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
 import { CustomEmojiFolderTree, getEmojiName } from '@/scripts/emojilist.js';
-import { i18n } from "../i18n.js";
-import { customEmojis } from "@/custom-emojis.js";
-import MkEmojiPickerSection from "@/components/MkEmojiPicker.section.vue";
+import { i18n } from '../i18n.js';
+import { customEmojis } from '@/custom-emojis.js';
+import MkEmojiPickerSection from '@/components/MkEmojiPicker.section.vue';
 
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;
