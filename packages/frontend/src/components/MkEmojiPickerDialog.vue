@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModal
 	ref="modal"
@@ -29,7 +34,7 @@
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 withDefaults(defineProps<{
 	manualShowing?: boolean | null;

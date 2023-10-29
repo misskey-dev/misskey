@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -10,8 +15,9 @@ import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
-import { host } from '@/config';
-import { defaultStore } from '@/store';
+import { host } from '@/config.js';
+import { defaultStore } from '@/store.js';
+import { nyaize } from '@/scripts/nyaize.js';
 
 const QUOTE_STYLE = `
 display: block;
@@ -50,10 +56,13 @@ export default function(props: {
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
-				const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+				if (!disableNyaize && props.author?.isCat) {
+					text = nyaize(text);
+				}
 
 				if (!props.plain) {
 					const res: (VNode | string)[] = [];
@@ -170,8 +179,13 @@ export default function(props: {
 						}, genEl(token.children, scale));
 					}
 					case 'rainbow': {
+						if (!useAnim) {
+							return h('span', {
+								class: '_mfm_rainbow_fallback_',
+							}, genEl(token.children, scale));
+						}
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
+						style = `animation: mfm-rainbow ${speed} linear infinite;`;
 						break;
 					}
 					case 'sparkle': {
@@ -250,7 +264,7 @@ export default function(props: {
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-				}, genEl(token.children, scale))];
+				}, genEl(token.children, scale, true))];
 			}
 
 			case 'mention': {
@@ -289,11 +303,11 @@ export default function(props: {
 				if (!props.nowrap) {
 					return [h('div', {
 						style: QUOTE_STYLE,
-					}, genEl(token.children, scale))];
+					}, genEl(token.children, scale, true))];
 				} else {
 					return [h('span', {
 						style: QUOTE_STYLE,
-					}, genEl(token.children, scale))];
+					}, genEl(token.children, scale, true))];
 				}
 			}
 
@@ -348,7 +362,7 @@ export default function(props: {
 			}
 
 			case 'plain': {
-				return [h('span', genEl(token.children, scale))];
+				return [h('span', genEl(token.children, scale, true))];
 			}
 
 			default: {

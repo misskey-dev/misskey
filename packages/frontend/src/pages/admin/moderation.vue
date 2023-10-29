@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -18,6 +23,11 @@
 					<MkInput v-model="tosUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.tosUrl }}</template>
+					</MkInput>
+
+					<MkInput v-model="privacyPolicyUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
 					</MkInput>
 
 					<MkTextarea v-model="preservedUsernames">
@@ -52,10 +62,10 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 
@@ -64,6 +74,7 @@ let emailRequiredForSignup: boolean = $ref(false);
 let sensitiveWords: string = $ref('');
 let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
+let privacyPolicyUrl: string | null = $ref(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -72,6 +83,7 @@ async function init() {
 	sensitiveWords = meta.sensitiveWords.join('\n');
 	preservedUsernames = meta.preservedUsernames.join('\n');
 	tosUrl = meta.tosUrl;
+	privacyPolicyUrl = meta.privacyPolicyUrl;
 }
 
 function save() {
@@ -79,6 +91,7 @@ function save() {
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,
 		tosUrl,
+		privacyPolicyUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
 		preservedUsernames: preservedUsernames.split('\n'),
 	}).then(() => {

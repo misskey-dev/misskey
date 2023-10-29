@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IActivity } from '@/core/activitypub/type.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiWebhook, webhookEventTypes } from '@/models/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -232,10 +237,11 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
+	public createImportFollowingJob(user: ThinUser, fileId: MiDriveFile['id'], withReplies?: boolean) {
 		return this.dbQueue.add('importFollowing', {
 			user: { id: user.id },
 			fileId: fileId,
+			withReplies,
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -243,13 +249,13 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportFollowingToDbJob(user: ThinUser, targets: string[]) {
-		const jobs = targets.map(rel => this.generateToDbJobData('importFollowingToDb', { user, target: rel }));
+	public createImportFollowingToDbJob(user: ThinUser, targets: string[], withReplies?: boolean) {
+		const jobs = targets.map(rel => this.generateToDbJobData('importFollowingToDb', { user, target: rel, withReplies }));
 		return this.dbQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	public createImportMutingJob(user: ThinUser, fileId: DriveFile['id']) {
+	public createImportMutingJob(user: ThinUser, fileId: MiDriveFile['id']) {
 		return this.dbQueue.add('importMuting', {
 			user: { id: user.id },
 			fileId: fileId,
@@ -260,7 +266,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportBlockingJob(user: ThinUser, fileId: DriveFile['id']) {
+	public createImportBlockingJob(user: ThinUser, fileId: MiDriveFile['id']) {
 		return this.dbQueue.add('importBlocking', {
 			user: { id: user.id },
 			fileId: fileId,
@@ -293,7 +299,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
+	public createImportUserListsJob(user: ThinUser, fileId: MiDriveFile['id']) {
 		return this.dbQueue.add('importUserLists', {
 			user: { id: user.id },
 			fileId: fileId,
@@ -304,7 +310,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportCustomEmojisJob(user: ThinUser, fileId: DriveFile['id']) {
+	public createImportCustomEmojisJob(user: ThinUser, fileId: MiDriveFile['id']) {
 		return this.dbQueue.add('importCustomEmojis', {
 			user: { id: user.id },
 			fileId: fileId,
@@ -337,7 +343,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createFollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string, silent?: boolean }[]) {
+	public createFollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string, silent?: boolean, withReplies?: boolean }[]) {
 		const jobs = followings.map(rel => this.generateRelationshipJobData('follow', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}
@@ -379,6 +385,7 @@ export class QueueService {
 				to: { id: data.to.id },
 				silent: data.silent,
 				requestId: data.requestId,
+				withReplies: data.withReplies,
 			},
 			opts: {
 				removeOnComplete: true,
@@ -407,7 +414,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public webhookDeliver(webhook: Webhook, type: typeof webhookEventTypes[number], content: unknown) {
+	public webhookDeliver(webhook: MiWebhook, type: typeof webhookEventTypes[number], content: unknown) {
 		const data = {
 			type,
 			content,

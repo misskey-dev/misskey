@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="340" @closed="emit('closed')">
 	<div :class="$style.root">
@@ -20,7 +25,7 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist';
+import { getEmojiName } from '@/scripts/emojilist.js';
 
 defineProps<{
 	showing: boolean;

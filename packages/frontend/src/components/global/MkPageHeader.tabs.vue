@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="el" :class="$style.tabs" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
@@ -49,7 +54,7 @@ export type Tab = {
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];

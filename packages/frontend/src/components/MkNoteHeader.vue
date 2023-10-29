@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <header :class="$style.root">
 	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
@@ -10,7 +15,7 @@
 	</div>
 	<div :class="$style.info">
 		<MkA :to="notePage(note)">
-			<MkTime :time="note.createdAt"/>
+			<MkTime :time="note.createdAt" colored/>
 		</MkA>
 		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
@@ -25,14 +30,13 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
-import { i18n } from '@/i18n';
-import { notePage } from '@/filters/note';
-import { userPage } from '@/filters/user';
+import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { notePage } from '@/filters/note.js';
+import { userPage } from '@/filters/user.js';
 
 defineProps<{
-	note: misskey.entities.Note;
-	pinned?: boolean;
+	note: Misskey.entities.Note;
 }>();
 </script>
 

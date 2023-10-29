@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
@@ -13,7 +18,7 @@
 /* eslint-disable vue/no-mutating-props */
 import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue: any

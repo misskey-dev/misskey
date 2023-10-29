@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="el" :class="$style.root">
 	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
@@ -25,8 +30,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import tinycolor from 'tinycolor2';
-import { miLocalStorage } from '@/local-storage';
-import { defaultStore } from '@/store';
+import { miLocalStorage } from '@/local-storage.js';
+import { defaultStore } from '@/store.js';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
 

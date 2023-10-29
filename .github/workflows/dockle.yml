@@ -14,7 +14,7 @@ jobs:
     env:
       DOCKER_CONTENT_TRUST: 1
     steps:
-      - uses: actions/checkout@v3.2.0
+      - uses: actions/checkout@v4.1.1
       - run: |
           curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v0.4.10/dockle_0.4.10_Linux-64bit.deb"
           sudo dpkg -i dockle.deb

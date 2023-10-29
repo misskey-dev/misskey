@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <img v-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle"/>
 <span v-else-if="useOsNativeEmojis" :alt="props.emoji" @pointerenter="computeTitle">{{ props.emoji }}</span>
@@ -6,9 +11,9 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
-import { defaultStore } from '@/store';
-import { getEmojiName } from '@/scripts/emojilist';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
+import { defaultStore } from '@/store.js';
+import { getEmojiName } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	emoji: string;

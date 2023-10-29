@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<time :title="absolute">
+<time :title="absolute" :class="{ [$style.old1]: colored && (ago > 60 * 60 * 24 * 90), [$style.old2]: colored && (ago > 60 * 60 * 24 * 180) }">
 	<template v-if="invalid">{{ i18n.ts._ago.invalid }}</template>
 	<template v-else-if="mode === 'relative'">{{ relative }}</template>
 	<template v-else-if="mode === 'absolute'">{{ absolute }}</template>
@@ -10,13 +15,14 @@
 <script lang="ts" setup>
 import isChromatic from 'chromatic/isChromatic';
 import { onMounted, onUnmounted } from 'vue';
-import { i18n } from '@/i18n';
-import { dateTimeFormat } from '@/scripts/intl-const';
+import { i18n } from '@/i18n.js';
+import { dateTimeFormat } from '@/scripts/intl-const.js';
 
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;
 	origin?: Date | null;
 	mode?: 'relative' | 'absolute' | 'detail';
+	colored?: boolean;
 }>(), {
 	origin: isChromatic() ? new Date('2023-04-01T00:00:00Z') : null,
 	mode: 'relative',
@@ -70,3 +76,13 @@ if (!invalid && props.origin === null && (props.mode === 'relative' || props.mod
 	});
 }
 </script>
+
+<style lang="scss" module>
+.old1 {
+	color: var(--warn);
+}
+
+.old1.old2 {
+	color: var(--error);
+}
+</style>

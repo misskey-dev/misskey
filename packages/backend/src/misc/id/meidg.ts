@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 const CHARS = '0123456789abcdef';
 
 //  4bit Fixed hex value 'g'
@@ -24,8 +29,8 @@ function getRandom() {
 	return str;
 }
 
-export function genMeidg(date: Date): string {
-	return 'g' + getTime(date.getTime()) + getRandom();
+export function genMeidg(t: number): string {
+	return 'g' + getTime(t) + getRandom();
 }
 
 export function parseMeidg(id: string): { date: Date; } {
