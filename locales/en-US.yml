@@ -1604,6 +1604,7 @@ _aboutMisskey:
   donate: "Donate to Misskey"
   morePatrons: "We also appreciate the support of many other helpers not listed here. Thank you! 🥰"
   patrons: "Patrons"
+  projectMembers: "Project members"
 _displayOfSensitiveMedia:
   respect: "Hide media marked as sensitive"
   ignore: "Display media marked as sensitive"
