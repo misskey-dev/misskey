@@ -156,13 +156,19 @@ const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 const customEmojiFolderRoot: CustomEmojiFolderTree = { value: "", category: "", children: [] };
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
-	const parts = input.split('/').map(p => p.trim());
+	const parts = (input && input !== 'null' ? input : '').split('/');
 	let currentNode: CustomEmojiFolderTree = root;
 
 	for (const part of parts) {
-		let existingNode = currentNode.children.find((node) => node.value === part);
+		const path = currentNode.value ? `${currentNode.value}/${part.trim()}` : part.trim();
+
+		let existingNode = currentNode.children.find((node) => node.value === path);
 		if (!existingNode) {
-			const newNode: CustomEmojiFolderTree = { value: part, category: input, children: [] };
+			const newNode: CustomEmojiFolderTree = {
+				value: path,
+				category: currentNode.category ? `${currentNode.category}/${part}` : part,
+				children: [],
+			};
 			currentNode.children.push(newNode);
 			existingNode = newNode;
 		}
