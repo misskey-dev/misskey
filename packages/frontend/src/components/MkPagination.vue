@@ -87,6 +87,7 @@ function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
 	return new Map([...map, ...arrayToEntries(entities)]);
 }
+
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance.js';
