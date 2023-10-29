@@ -101,17 +101,6 @@ if (props.src === 'antenna') {
 		withFiles: props.onlyFiles ? true : undefined,
 	});
 	connection.on('note', prepend);
-} else if (props.src === 'media') {
-	endpoint = 'notes/hybrid-timeline';
-	query = {
-		withFiles: true,
-		withReplies: defaultStore.state.showTimelineReplies,
-	};
-	connection = stream.useChannel('hybridTimeline', {
-		withFiles: true,
-		withReplies: defaultStore.state.showTimelineReplies,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'social') {
 	endpoint = 'notes/hybrid-timeline';
 	query = {
