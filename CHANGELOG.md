@@ -17,11 +17,16 @@
 ### General
 - Feat: アイコンデコレーション機能
 - Enhance: すでにフォローしたすべての人の返信をTLに追加できるように
+- Enhance: ローカリゼーションの更新
+- Enhance: 依存関係の更新
 
 ### Client
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+- Enhance: コードのシンタックスハイライトエンジンをShikiに変更
+  - AiScriptのシンタックスハイライトに対応
+  - MFMでAiScriptをハイライトする場合、コードブロックの開始部分を ` ```is ` もしくは ` ```aiscript ` としてください
 - Enhance: データセーバー有効時はアニメーション付きのアバター画像が停止するように
 - Enhance: プラグインを削除した際には、使用されていたアクセストークンも同時に削除されるようになりました
 - Enhance: プラグインで`Plugin:register_note_view_interruptor`を用いてnoteの代わりにnullを返却することでノートを非表示にできるようになりました
@@ -30,6 +35,7 @@
 - Fix: ユーザーページの ノート > ファイル付き タブにリプライが表示されてしまう
 - Fix: 「検索」MFMにおいて一部の検索キーワードが正しく認識されない問題を修正
 - Fix: 一部の言語でMisskey Webがクラッシュする問題を修正
+- Fix: チャンネルの作成・更新時に失敗した場合何も表示されない問題を修正 #11983
 
 ### Server
 - Enhance: RedisへのTLのキャッシュをオフにできるように
@@ -40,6 +46,7 @@
 - Fix: RedisへのTLキャッシュが有効の場合にHTL/LTL/STLが空になることがある問題を修正
 - Fix: STLでフォローしていないチャンネルが取得される問題を修正
 - Fix: `hashtags/trend`にてRedisからトレンドの情報が取得できない際にInternal Server Errorになる問題を修正
+- Fix: HTLをリロードまたは遡行したとき、フォローしているチャンネルのノートが含まれない問題を修正 #11765
 - Fix: リノートをリノートできるのを修正
 
 ## 2023.10.2

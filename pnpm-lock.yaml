@@ -673,6 +673,9 @@ importers:
       '@vue/compiler-sfc':
         specifier: 3.3.7
         version: 3.3.7
+      aiscript-vscode:
+        specifier: github:aiscript-dev/aiscript-vscode#v0.0.5
+        version: github.com/aiscript-dev/aiscript-vscode/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e
       astring:
         specifier: 1.8.6
         version: 1.8.6
@@ -754,9 +757,6 @@ importers:
       photoswipe:
         specifier: 5.4.2
         version: 5.4.2
-      prismjs:
-        specifier: 1.29.0
-        version: 1.29.0
       punycode:
         specifier: 2.3.0
         version: 2.3.0
@@ -772,6 +772,9 @@ importers:
       sass:
         specifier: 1.69.5
         version: 1.69.5
+      shiki:
+        specifier: ^0.14.5
+        version: 0.14.5
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -814,9 +817,6 @@ importers:
       vue:
         specifier: 3.3.7
         version: 3.3.7(typescript@5.2.2)
-      vue-prism-editor:
-        specifier: 2.0.0-alpha.2
-        version: 2.0.0-alpha.2(vue@3.3.7)
       vuedraggable:
         specifier: next
         version: 4.1.0(vue@3.3.7)
@@ -871,10 +871,10 @@ importers:
         version: 7.5.1
       '@storybook/vue3':
         specifier: 7.5.1
-        version: 7.5.1(@vue/compiler-core@3.3.6)(vue@3.3.7)
+        version: 7.5.1(@vue/compiler-core@3.3.7)(vue@3.3.7)
       '@storybook/vue3-vite':
         specifier: 7.5.1
-        version: 7.5.1(@vue/compiler-core@3.3.6)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.7)
+        version: 7.5.1(@vue/compiler-core@3.3.7)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.7)
       '@testing-library/vue':
         specifier: 7.0.0
         version: 7.0.0(@vue/compiler-sfc@3.3.7)(vue@3.3.7)
@@ -6867,7 +6867,7 @@ packages:
       file-system-cache: 2.3.0
     dev: true
 
-  /@storybook/vue3-vite@7.5.1(@vue/compiler-core@3.3.6)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.7):
+  /@storybook/vue3-vite@7.5.1(@vue/compiler-core@3.3.7)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.7):
     resolution: {integrity: sha512-5bO5BactTbyOxxeRw8U6t3FqqfTvVLTefzg1NLDkKt2iAL6lGBSsPTKMgpy3dt+cxdiqEis67niQL68ZtW02Zw==}
     engines: {node: ^14.18 || >=16}
     peerDependencies:
@@ -6877,7 +6877,7 @@ packages:
     dependencies:
       '@storybook/builder-vite': 7.5.1(typescript@5.2.2)(vite@4.5.0)
       '@storybook/core-server': 7.5.1
-      '@storybook/vue3': 7.5.1(@vue/compiler-core@3.3.6)(vue@3.3.7)
+      '@storybook/vue3': 7.5.1(@vue/compiler-core@3.3.7)(vue@3.3.7)
       '@vitejs/plugin-vue': 4.4.0(vite@4.5.0)(vue@3.3.7)
       magic-string: 0.30.3
       react: 18.2.0
@@ -6896,7 +6896,7 @@ packages:
       - vue
     dev: true
 
-  /@storybook/vue3@7.5.1(@vue/compiler-core@3.3.6)(vue@3.3.7):
+  /@storybook/vue3@7.5.1(@vue/compiler-core@3.3.7)(vue@3.3.7):
     resolution: {integrity: sha512-9srw2rnSYaU45kkunXT8+bX3QMO2QPV6MCWRayKo7Pl+B0H/euHvxPSZb1X8mRpgLtYgVgSNJFoNbk/2Fn8z8g==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -6908,7 +6908,7 @@ packages:
       '@storybook/global': 5.0.0
       '@storybook/preview-api': 7.5.1
       '@storybook/types': 7.5.1
-      '@vue/compiler-core': 3.3.6
+      '@vue/compiler-core': 3.3.7
       lodash: 4.17.21
       ts-dedent: 2.2.0
       type-fest: 2.19.0
@@ -8367,15 +8367,6 @@ packages:
       postcss: 8.4.31
       source-map-js: 1.0.2
 
-  /@vue/compiler-ssr@3.3.6:
-    resolution: {integrity: sha512-QTIHAfDCHhjXlYGkUg5KH7YwYtdUM1vcFl/FxFDlD6d0nXAmnjizka3HITp8DGudzHndv2PjKVS44vqqy0vP4w==}
-    requiresBuild: true
-    dependencies:
-      '@vue/compiler-dom': 3.3.6
-      '@vue/shared': 3.3.6
-    dev: true
-    optional: true
-
   /@vue/compiler-ssr@3.3.7:
     resolution: {integrity: sha512-TxOfNVVeH3zgBc82kcUv+emNHo+vKnlRrkv8YvQU5+Y5LJGJwSNzcmLUoxD/dNzv0bhQ/F0s+InlgV0NrApJZg==}
     dependencies:
@@ -8428,17 +8419,6 @@ packages:
       '@vue/shared': 3.3.7
       csstype: 3.1.2
 
-  /@vue/server-renderer@3.3.6(vue@3.3.7):
-    resolution: {integrity: sha512-kgLoN43W4ERdZ6dpyy+gnk2ZHtcOaIr5Uc/WUP5DRwutgvluzu2pudsZGoD2b7AEJHByUVMa9k6Sho5lLRCykw==}
-    peerDependencies:
-      vue: 3.3.6
-    dependencies:
-      '@vue/compiler-ssr': 3.3.6
-      '@vue/shared': 3.3.6
-      vue: 3.3.7(typescript@5.2.2)
-    dev: true
-    optional: true
-
   /@vue/server-renderer@3.3.7(vue@3.3.7):
     resolution: {integrity: sha512-UlpKDInd1hIZiNuVVVvLgxpfnSouxKQOSE2bOfQpBuGwxRV/JqqTCyyjXUWiwtVMyeRaZhOYYqntxElk8FhBhw==}
     peerDependencies:
@@ -8466,8 +8446,8 @@ packages:
       js-beautify: 1.14.6
       vue: 3.3.7(typescript@5.2.2)
     optionalDependencies:
-      '@vue/compiler-dom': 3.3.6
-      '@vue/server-renderer': 3.3.6(vue@3.3.7)
+      '@vue/compiler-dom': 3.3.7
+      '@vue/server-renderer': 3.3.7(vue@3.3.7)
     dev: true
 
   /@webgpu/types@0.1.30:
@@ -8686,6 +8666,10 @@ packages:
   /ansi-regex@6.0.1:
     resolution: {integrity: sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA==}
     engines: {node: '>=12'}
+
+  /ansi-sequence-parser@1.1.1:
+    resolution: {integrity: sha512-vJXt3yiaUL4UU546s3rPXlsry/RnM730G1+HkpKE012AN0sx1eOrxSu95oKDIonskeLTijMgqWZ3uDEe3NFvyg==}
+    dev: false
 
   /ansi-styles@3.2.1:
     resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==}
@@ -13942,7 +13926,6 @@ packages:
 
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
-    dev: true
 
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -16251,6 +16234,7 @@ packages:
   /prismjs@1.29.0:
     resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
     engines: {node: '>=6'}
+    dev: true
 
   /private-ip@2.3.3:
     resolution: {integrity: sha512-5zyFfekIVUOTVbL92hc8LJOtE/gyGHeREHkJ2yTyByP8Q2YZVoBqLg3EfYLeF0oVvGqtaEX2t2Qovja0/gStXw==}
@@ -17479,6 +17463,15 @@ packages:
   /shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
+
+  /shiki@0.14.5:
+    resolution: {integrity: sha512-1gCAYOcmCFONmErGTrS1fjzJLA7MGZmKzrBNX7apqSwhyITJg2O102uFzXUeBxNnEkDA9vHIKLyeKq0V083vIw==}
+    dependencies:
+      ansi-sequence-parser: 1.1.1
+      jsonc-parser: 3.2.0
+      vscode-oniguruma: 1.7.0
+      vscode-textmate: 8.0.0
+    dev: false
 
   /side-channel@1.0.4:
     resolution: {integrity: sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw==}
@@ -19232,6 +19225,14 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
+  /vscode-oniguruma@1.7.0:
+    resolution: {integrity: sha512-L9WMGRfrjOhgHSdOYgCt/yRMsXzLDJSL7BPrOZt73gU0iWO4mpqzqQzOz5srxqTvMBaR0XZTSrVWo4j55Rc6cA==}
+    dev: false
+
+  /vscode-textmate@8.0.0:
+    resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
+    dev: false
+
   /vue-component-type-helpers@1.8.22:
     resolution: {integrity: sha512-LK3wJHs3vJxHG292C8cnsRusgyC5SEZDCzDCD01mdE/AoREFMl2tzLRuzwyuEsOIz13tqgBcnvysN3Lxsa14Fw==}
     dev: true
@@ -19294,15 +19295,6 @@ packages:
     dependencies:
       vue: 3.3.7(typescript@5.2.2)
     dev: true
-
-  /vue-prism-editor@2.0.0-alpha.2(vue@3.3.7):
-    resolution: {integrity: sha512-Gu42ba9nosrE+gJpnAEuEkDMqG9zSUysIR8SdXUw8MQKDjBnnNR9lHC18uOr/ICz7yrA/5c7jHJr9lpElODC7w==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      vue: ^3.0.0
-    dependencies:
-      vue: 3.3.7(typescript@5.2.2)
-    dev: false
 
   /vue-template-compiler@2.7.14:
     resolution: {integrity: sha512-zyA5Y3ArvVG0NacJDkkzJuPQDF8RFeRlzV2vLeSnhSpieO6LK2OVbdLPi5MPPs09Ii+gMO8nY4S3iKQxBxDmWQ==}
@@ -19763,6 +19755,13 @@ packages:
       archiver-utils: 4.0.1
       compress-commons: 5.0.1
       readable-stream: 3.6.0
+    dev: false
+
+  github.com/aiscript-dev/aiscript-vscode/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e:
+    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e}
+    name: aiscript-vscode
+    version: 0.0.5
+    engines: {vscode: ^1.83.0}
     dev: false
 
   github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
