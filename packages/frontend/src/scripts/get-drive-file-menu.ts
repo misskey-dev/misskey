@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
-import { i18n } from '@/i18n';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import * as os from '@/os';
-import { MenuItem } from '@/types/menu';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import * as os from '@/os.js';
+import { MenuItem } from '@/types/menu.js';
+import { defaultStore } from '@/store.js';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -22,7 +27,7 @@ function rename(file: Misskey.entities.DriveFile) {
 
 function describe(file: Misskey.entities.DriveFile) {
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
-		default: file.comment != null ? file.comment : '',
+		default: file.comment ?? '',
 		file: file,
 	}, {
 		done: caption => {
@@ -88,7 +93,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		icon: 'ti ti-crop',
 		action: () => os.cropImage(file, {
 			aspectRatio: NaN,
-			uploadFolder: folder ? folder.id : folder
+			uploadFolder: folder ? folder.id : folder,
 		}),
 	}] : [], null, {
 		text: i18n.ts.createNoteFromTheFile,
@@ -107,6 +112,11 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		text: i18n.ts.download,
 		icon: 'ti ti-download',
 		download: file.name,
+	}, null, {
+		type: 'link',
+		to: `/my/drive/file/${file.id}`,
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-file',
 	}, null, {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 const CHARS = '0123456789abcdef';
 
 // same as meid
@@ -24,8 +29,8 @@ function getRandom() {
 	return str;
 }
 
-export function genObjectId(date: Date): string {
-	return getTime(date.getTime()) + getRandom();
+export function genObjectId(t: number): string {
+	return getTime(t) + getRandom();
 }
 
 export function parseObjectId(id: string): { date: Date; } {

@@ -1,22 +1,25 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class FeedService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -29,11 +32,12 @@ export class FeedService {
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
 	@bindThis
-	public async packFeed(user: User) {
+	public async packFeed(user: MiUser) {
 		const author = {
 			link: `${this.config.url}/@${user.username}`,
 			name: user.name ?? user.username,
@@ -47,14 +51,14 @@ export class FeedService {
 				renoteId: IsNull(),
 				visibility: In(['public', 'home']),
 			},
-			order: { createdAt: -1 },
+			order: { id: -1 },
 			take: 20,
 		});
 
 		const feed = new Feed({
 			id: author.link,
 			title: `${author.name} (@${user.username}@${this.config.host})`,
-			updated: notes[0].createdAt,
+			updated: this.idService.parse(notes[0].id).date,
 			generator: 'Misskey',
 			description: `${user.notesCount} Notes, ${profile.ffVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.ffVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 			link: author.link,
@@ -76,10 +80,10 @@ export class FeedService {
 			feed.addItem({
 				title: `New note by ${author.name}`,
 				link: `${this.config.url}/notes/${note.id}`,
-				date: note.createdAt,
+				date: this.idService.parse(note.id).date,
 				description: note.cw ?? undefined,
 				content: note.text ?? undefined,
-				image: file ? this.driveFileEntityService.getPublicUrl(file) ?? undefined : undefined,
+				image: file ? this.driveFileEntityService.getPublicUrl(file) : undefined,
 			});
 		}
 

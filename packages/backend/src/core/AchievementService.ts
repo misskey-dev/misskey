@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { UserProfilesRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { NotificationService } from '@/core/NotificationService.js';
@@ -80,14 +85,12 @@ export const ACHIEVEMENT_TYPES = [
 	'setNameToSyuilo',
 	'cookieClicked',
 	'brainDiver',
+	'smashTestNotificationButton',
 ] as const;
 
 @Injectable()
 export class AchievementService {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
@@ -97,7 +100,7 @@ export class AchievementService {
 
 	@bindThis
 	public async create(
-		userId: User['id'],
+		userId: MiUser['id'],
 		type: typeof ACHIEVEMENT_TYPES[number],
 	): Promise<void> {
 		if (!ACHIEVEMENT_TYPES.includes(type)) return;

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
 <section>
@@ -22,7 +27,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
-import { getEmojiName } from '@/scripts/emojilist';
+import { getEmojiName } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;

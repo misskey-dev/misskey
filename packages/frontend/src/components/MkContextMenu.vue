@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	appear
@@ -16,9 +21,9 @@
 import { onMounted, onBeforeUnmount } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from './types/menu.vue';
-import contains from '@/scripts/contains';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
+import contains from '@/scripts/contains.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	items: MenuItem[];

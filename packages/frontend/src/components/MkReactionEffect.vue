@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
 	<span :class="[$style.text, { [$style.up]: up }]">
@@ -8,7 +13,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = withDefaults(defineProps<{

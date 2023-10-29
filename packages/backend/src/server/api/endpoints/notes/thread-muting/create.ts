@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/index.js';
+import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -37,9 +42,8 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -68,8 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.noteReadService.read(me.id, mutedNotes);
 
 			await this.noteThreadMutingsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				threadId: note.threadId ?? note.id,
 				userId: me.id,
 			});

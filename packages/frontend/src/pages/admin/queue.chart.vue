@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps">
 	<div :class="$style.status">
@@ -45,10 +50,10 @@
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted, ref } from 'vue';
 import XChart from './queue.chart.chart.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
-import { useStream } from '@/stream';
-import { i18n } from '@/i18n';
+import number from '@/filters/number.js';
+import * as os from '@/os.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const connection = markRaw(useStream().useChannel('queueStats'));

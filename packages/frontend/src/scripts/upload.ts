@@ -1,12 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { readAndCompressImage } from 'browser-image-resizer';
-import { getCompressionConfig } from './upload/compress-config';
-import { defaultStore } from '@/store';
-import { apiUrl } from '@/config';
-import { $i } from '@/account';
-import { alert } from '@/os';
-import { i18n } from '@/i18n';
+import { getCompressionConfig } from './upload/compress-config.js';
+import { defaultStore } from '@/store.js';
+import { apiUrl } from '@/config.js';
+import { $i } from '@/account.js';
+import { alert } from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 type Uploading = {
 	id: string;
