@@ -8,9 +8,9 @@ export function nyaize(text: string): string {
 		// ja-JP
 		.replaceAll('な', 'にゃ').replaceAll('ナ', 'ニャ').replaceAll('ﾅ', 'ﾆｬ')
 		// en-US
-		.replace(/(na|NA)(?=[^a-z])/g, (match) => match === 'NA' ? 'NYA' : 'nya')
-		.replace(/(morn)(ing)(?=[^a-z])/gi, (match, p1, p2) => p2 === 'ING' ? `${p1}YAN` : `${p1.toLowerCase()}yan`)
-		.replace(/(every)(one)(?=[^a-z])/gi, (match, p1, p2) => p2 === 'ONE' ? `${p1}NYAN` : `${p1.toLowerCase()}nyan`)
+		.replace(/na/gi, (match) => match === 'NA' ? 'NYA' : 'nya')
+		.replace(/morning/gi, (match) => match === 'MORNING' ? 'MORNYAN' : 'mornyan')
+		.replace(/everyone/gi, (match) => match === 'EVERYONE' ? 'EVERYNYAN' : 'everynyan')
 		// ko-KR
 		.replace(/[나-낳]/g, match => String.fromCharCode(
 			match.charCodeAt(0)! + '냐'.charCodeAt(0) - '나'.charCodeAt(0),
