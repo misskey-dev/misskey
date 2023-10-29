@@ -113,11 +113,13 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 		return !confirm.canceled;
 	}
+
 	async function userInfoUpdate() {
 		os.apiWithDialog('federation/update-remote-user', {
 			userId: user.id,
 		});
 	}
+	
 	async function invalidateFollow() {
 		if (!await getConfirmed(i18n.ts.breakFollowConfirm)) return;
 
