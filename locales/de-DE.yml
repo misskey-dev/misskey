@@ -1604,6 +1604,7 @@ _aboutMisskey:
   donate: "An Misskey spenden"
   morePatrons: "Wir schätzen ebenso die Unterstützung vieler anderer hier nicht gelisteter Personen sehr. Danke! 🥰"
   patrons: "UnterstützerInnen"
+  projectMembers: "Projektmitglieder"
 _displayOfSensitiveMedia:
   respect: "Sensible Medien verbergen"
   ignore: "Sensible Medien anzeigen"
