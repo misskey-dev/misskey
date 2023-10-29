@@ -1,8 +1,13 @@
 /*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
  * Language manager for SW
  */
 import { get, set } from 'idb-keyval';
-import { I18n, type Locale } from '@/scripts/i18n';
+import { I18n, type Locale } from '@/scripts/i18n.js';
 
 class SwLang {
 	public cacheName = `mk-cache-${_VERSION_}`;

@@ -1,12 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNote } from '@/models/Note.js';
 import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
 import { SearchService } from '@/core/SearchService.js';
@@ -19,9 +23,6 @@ export class DeleteAccountProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -52,7 +53,7 @@ export class DeleteAccountProcessorService {
 		}
 
 		{ // Delete notes
-			let cursor: Note['id'] | null = null;
+			let cursor: MiNote['id'] | null = null;
 
 			while (true) {
 				const notes = await this.notesRepository.find({
@@ -64,7 +65,7 @@ export class DeleteAccountProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as Note[];
+				}) as MiNote[];
 
 				if (notes.length === 0) {
 					break;
@@ -83,7 +84,7 @@ export class DeleteAccountProcessorService {
 		}
 
 		{ // Delete files
-			let cursor: DriveFile['id'] | null = null;
+			let cursor: MiDriveFile['id'] | null = null;
 
 			while (true) {
 				const files = await this.driveFilesRepository.find({
@@ -95,7 +96,7 @@ export class DeleteAccountProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as DriveFile[];
+				}) as MiDriveFile[];
 
 				if (files.length === 0) {
 					break;

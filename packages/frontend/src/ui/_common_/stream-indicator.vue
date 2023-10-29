@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-if="hasDisconnected && defaultStore.state.serverDisconnectedBehavior === 'quiet'" :class="$style.root" class="_panel _shadow" @click="resetDisconnected">
 	<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.disconnectedFromServer }}</div>
@@ -10,11 +15,11 @@
 
 <script lang="ts" setup>
 import { onUnmounted } from 'vue';
-import { useStream } from '@/stream';
-import { i18n } from '@/i18n';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 const zIndex = os.claimZIndex('high');
 

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div role="menu">
 	<div
@@ -30,13 +35,14 @@
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
-			<span v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" :class="$style.item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</MkSwitch>
-			</span>
-			<button v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
-				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
-				<span>{{ item.text }}</span>
-				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
+			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
+				<span :class="$style.switchText">{{ item.text }}</span>
+			</button>
+			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
+				<span style="pointer-events: none;">{{ item.text }}</span>
+				<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 			</button>
 			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
@@ -50,19 +56,24 @@
 		</span>
 	</div>
 	<div v-if="childMenu">
-		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned"/>
+		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned" @close="close(false)"/>
 	</div>
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { focusPrev, focusNext } from '@/scripts/focus';
-import MkSwitch from '@/components/MkSwitch.vue';
-import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+<script lang="ts">
+import { Ref, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { focusPrev, focusNext } from '@/scripts/focus.js';
+import MkSwitchButton from '@/components/MkSwitch.button.vue';
+import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { isTouchUsing } from '@/scripts/touch.js';
 
+const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
+</script>
+
+<script lang="ts" setup>
 const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{
@@ -76,6 +87,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'close', actioned?: boolean): void;
+	(ev: 'hide'): void;
 }>();
 
 let itemsEl = $shallowRef<HTMLDivElement>();
@@ -91,6 +103,8 @@ let keymap = $computed(() => ({
 }));
 
 let childShowingItem = $ref<MenuItem | null>();
+
+let preferClick = isTouchUsing || props.asDrawer;
 
 watch(() => props.items, () => {
 	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
@@ -111,7 +125,7 @@ watch(() => props.items, () => {
 	immediate: true,
 });
 
-let childMenu = ref<MenuItem[] | null>();
+const childMenu = ref<MenuItem[] | null>();
 let childTarget = $shallowRef<HTMLElement | null>();
 
 function closeChild() {
@@ -124,11 +138,11 @@ function childActioned() {
 	close(true);
 }
 
-function onGlobalMousedown(event: MouseEvent) {
+const onGlobalMousedown = (event: MouseEvent) => {
 	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
 	if (child && child.checkHit(event)) return;
 	closeChild();
-}
+};
 
 let childCloseTimer: null | number = null;
 function onItemMouseEnter(item) {
@@ -140,31 +154,30 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-let childrenCache = new WeakMap();
-async function showChildren(item: MenuItem, ev: MouseEvent) {
-	const children = ref([]);
-	if (childrenCache.has(item)) {
-		children.value = childrenCache.get(item);
-	} else {
-		if (typeof item.children === 'function') {
-			children.value = [{
-				type: 'pending',
-			}];
-			item.children().then(x => {
-				children.value = x;
-				childrenCache.set(item, x);
-			});
+async function showChildren(item: MenuParent, ev: MouseEvent) {
+	const children = await (async () => {
+		if (childrenCache.has(item)) {
+			return childrenCache.get(item)!;
 		} else {
-			children.value = item.children;
+			if (typeof item.children === 'function') {
+				return Promise.resolve(item.children());
+			} else {
+				return item.children;
+			}
 		}
-	}
+	})();
+
+	childrenCache.set(item, children);
 
 	if (props.asDrawer) {
-		os.popupMenu(children, ev.currentTarget ?? ev.target);
-		close();
+		os.popupMenu(children, ev.currentTarget ?? ev.target).finally(() => {
+			emit('close');
+		});
+		emit('hide');
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
-		childMenu = children;
+		// これでもリアクティビティは保たれる
+		childMenu.value = children;
 		childShowingItem = item;
 	}
 }
@@ -186,10 +199,15 @@ function focusDown() {
 	focusNext(document.activeElement);
 }
 
+function switchItem(item: MenuSwitch & { ref: any }) {
+	if (item.disabled) return;
+	item.ref = !item.ref;
+}
+
 onMounted(() => {
 	if (props.viaKeyboard) {
 		nextTick(() => {
-			focusNext(itemsEl.children[0], true, false);
+			if (itemsEl) focusNext(itemsEl.children[0], true, false);
 		});
 	}
 
@@ -337,6 +355,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.parent {
+		pointer-events: auto;
 		display: flex;
 		align-items: center;
 		cursor: default;
@@ -350,6 +369,37 @@ onBeforeUnmount(() => {
 			}
 		}
 	}
+}
+
+.switch {
+	position: relative;
+	display: flex;
+	transition: all 0.2s ease;
+	user-select: none;
+	cursor: pointer;
+}
+
+.switchDisabled {
+	cursor: not-allowed;
+}
+
+.switchButton {
+	margin-left: -2px;
+}
+
+.switchText {
+	margin-left: 8px;
+	margin-top: 2px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.switchInput {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	margin: 0;
 }
 
 .icon {

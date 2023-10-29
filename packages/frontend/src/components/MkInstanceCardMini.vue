@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended }]">
+<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended, blue: instance.isSilenced }]">
 	<img class="icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
 	<div class="body">
 		<span class="host">{{ instance.name ?? instance.host }}</span>
@@ -10,13 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import * as os from '@/os';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
+import * as os from '@/os.js';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
-	instance: misskey.entities.Instance;
+	instance: Misskey.entities.Instance;
 }>();
 
 let chartValues = $ref<number[] | null>(null);
@@ -83,6 +88,12 @@ function getInstanceIcon(instance): string {
 	> :global(.chart) {
 		height: 30px;
 	}
+
+  &:global(.blue) {
+    --c: rgba(0, 42, 255, 0.15);
+    background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
+    background-size: 16px 16px;
+  }
 
 	&:global(.yellow) {
 		--c: rgb(255 196 0 / 15%);

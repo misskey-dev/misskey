@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormSection first>
@@ -35,6 +40,9 @@
 			<MkFolder v-if="$i && !$i.movedTo">
 				<template #label>{{ i18n.ts.import }}</template>
 				<template #icon><i class="ti ti-upload"></i></template>
+				<MkSwitch v-model="withReplies">
+					{{ i18n.ts._exportOrImport.withReplies }}
+				</MkSwitch>
 				<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 			</MkFolder>
 		</div>
@@ -108,14 +116,16 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
+import { defaultStore } from "@/store.js";
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);
+const withReplies = ref(defaultStore.state.defaultWithReplies);
 
 const onExportSuccess = () => {
 	os.alert({
@@ -172,7 +182,10 @@ const exportAntennas = () => {
 
 const importFollowing = async (ev) => {
 	const file = await selectFile(ev.currentTarget ?? ev.target);
-	os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
+	os.api('i/import-following', {
+		fileId: file.id,
+		withReplies: withReplies.value,
+	}).then(onImportSuccess).catch(onError);
 };
 
 const importUserLists = async (ev) => {

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" :style="bg">
 	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
@@ -7,9 +12,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { instanceName } from '@/config';
-import { instance as Instance } from '@/instance';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
+import { instanceName } from '@/config.js';
+import { instance as Instance } from '@/instance.js';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	instance?: {
