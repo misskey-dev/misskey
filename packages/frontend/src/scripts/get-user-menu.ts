@@ -333,6 +333,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			action: reportAbuse,
 		}]);
 	}
+
 	if (user.host !== null) {
 		menu = menu.concat([null, {
 			icon: 'ti ti-refresh',
@@ -340,6 +341,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			action: userInfoUpdate,
 		}]);
 	}
+	
 	if (defaultStore.state.devMode) {
 		menu = menu.concat([null, {
 			icon: 'ti ti-id',
