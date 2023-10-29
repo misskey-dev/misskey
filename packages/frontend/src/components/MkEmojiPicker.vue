@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:key="`custom:${child.value}`"
 				:initialShown="false"
 				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
-        :categoryFolderFlag="child.children.length!==0"
+        :hasChildSection="child.children.length!==0"
         :customEmojiTree="child.children"
 				@chosen="chosen"
 			>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :categoryFolderFlag="false" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
