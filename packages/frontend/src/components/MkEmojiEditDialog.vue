@@ -153,6 +153,7 @@ async function addRole() {
 async function removeRole(role, ev) {
 	rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
 }
+
 async function done() {
 	const params = {
 		name,

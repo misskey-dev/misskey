@@ -74,6 +74,7 @@ let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = $ref(new Set());
 const requestEmojis = await os.apiGet('emoji-requests');
+
 function search() {
 	if ((q === '' || q == null) && selectedTags.size === 0) {
 		searchEmojis = null;
