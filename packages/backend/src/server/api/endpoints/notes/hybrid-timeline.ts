@@ -239,7 +239,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			query.andWhere(new Brackets(qb => {
 				qb.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
-				qb.andWhere('note.channelId IS NULL');
+				qb.orWhere('note.channelId IS NULL');
 			}));
 		} else {
 			query.andWhere('note.channelId IS NULL');
