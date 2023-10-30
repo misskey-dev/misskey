@@ -1,6 +1,6 @@
 import type { MiNote } from '@/models/Note.js';
 
-export function isPureRenote(note: MiNote): boolean {
+export function isPureRenote(note: MiNote): note is MiNote & { renoteId: NonNullable<MiNote['renoteId']> } {
 	if (!note.renoteId) return false;
 
 	if (note.text) return false; // it's quoted with text
