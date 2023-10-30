@@ -72,6 +72,13 @@ module.exports = {
 			{ 'blankLine': 'always', 'prev': 'function', 'next': '*' },
 			{ 'blankLine': 'always', 'prev': '*', 'next': 'function' },
 		],
+		'lines-between-class-members': ['error', {
+			enforce: [{
+				blankLine: 'always',
+				prev: 'method',
+				next: '*',
+			}]
+		}],
 		'@typescript-eslint/func-call-spacing': ['error', 'never'],
 		'@typescript-eslint/no-explicit-any': ['warn'],
 		'@typescript-eslint/no-unused-vars': ['warn'],
