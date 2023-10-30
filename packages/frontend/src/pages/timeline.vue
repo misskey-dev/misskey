@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, provide } from 'vue';
+import { computed, watch, provide } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -148,7 +148,7 @@ function closeTutorial(): void {
 	defaultStore.set('timelineTutorials', before);
 }
 
-const headerActions = $computed(() => [{
+const headerActions = $computed(() => [
 	...[deviceKind === 'desktop' ? {
 		icon: 'ti ti-refresh',
 		text: i18n.ts.reload,
