@@ -1072,6 +1072,8 @@ detach: "Enlever"
 angle: "Angle"
 flip: "Inverser"
 showAvatarDecorations: "Afficher les décorations d'avatar"
+refreshing: "Rafraîchissement..."
+pullDownToRefresh: "Tirer vers le bas pour rafraîchir"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
 _initialAccountSetting:
