@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkButton rounded full small @click="toggle"><b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b><span v-if="!modelValue" :class="$style.label">{{ label }}</span></MkButton>
+<MkButton rounded full :class="$style.button" @click="toggle"><b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b><span v-if="!modelValue" :class="$style.label">{{ label }}</span></MkButton>
 </template>
 
 <script lang="ts" setup>
@@ -37,6 +37,11 @@ function toggle() {
 </script>
 
 <style lang="scss" module>
+.button {
+	display: inline-block;
+	font-size: 0.7em;
+  padding: 4px 12px;
+}
 .label {
 	margin-left: 4px;
 
