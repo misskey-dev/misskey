@@ -93,6 +93,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		return emoji;
 	}
+
 	@bindThis
 	public async add(data: {
 		driveFile: MiDriveFile;
@@ -195,6 +196,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 		}
 	}
+
 	@bindThis
 	public async updateRequest(id: MiEmojiRequest['id'], data: {
 		driveFile?: MiDriveFile;
@@ -224,6 +226,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 	}
+
 	@bindThis
 	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
 		const emojis = await this.emojisRepository.findBy({
@@ -331,12 +334,14 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 		}
 	}
+
 	@bindThis
 	public async deleteRequest(id: MiEmojiRequest['id']) {
 		const emoji = await this.emojiRequestsRepository.findOneByOrFail({ id: id });
 
 		await this.emojiRequestsRepository.delete(emoji.id);
 	}
+
 	@bindThis
 	public async deleteBulk(ids: MiEmoji['id'][], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
@@ -457,6 +462,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	public checkDuplicate(name: string): Promise<boolean> {
 		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
 	}
+
 	@bindThis
 	public checkRequestDuplicate(name: string): Promise<boolean> {
 		return this.emojiRequestsRepository.exist({ where: { name } });
@@ -471,6 +477,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	public getEmojiRequestById(id: string): Promise<MiEmojiRequest | null> {
 		return this.emojiRequestsRepository.findOneBy({ id });
 	}
+
 	@bindThis
 	public dispose(): void {
 		this.cache.dispose();
