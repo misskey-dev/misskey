@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.11.0-beta.6-prismisskey.1",
+	"version": "2023.11.0.beta.6.prismisskey.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
