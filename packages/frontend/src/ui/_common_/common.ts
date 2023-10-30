@@ -71,7 +71,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 			type: 'link',
 			to: '/avatar-decorations',
 			text: i18n.ts.manageAvatarDecorations,
-			icon: 'ti ti-icons',
+			icon: 'ti ti-sparkles',
 		} : undefined],
 	}, null, (instance.impressumUrl) ? {
 		text: i18n.ts.impressum,
