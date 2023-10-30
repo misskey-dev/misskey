@@ -16,14 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 2" #header><i class="ti ti-lock"></i> {{ i18n.ts._initialAccountSetting.privacySetting }}</template>
 	<template v-else-if="page === 3" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
 	<template v-else-if="page === 4" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
-	<template v-else-if="page === 5 || page === 9" #header>{{ i18n.ts.done }}</template>
-	<template v-else-if="page === 6" #header><i class="ti ti-pencil"></i> {{ i18n.ts._initialTutorial._note.title }}</template>
-	<template v-else-if="page === 7" #header><i class="ti ti-mood-smile"></i> {{ i18n.ts._initialTutorial._reaction.title }}</template>
-	<template v-else-if="page === 8" #header><i class="ti ti-home"></i> {{ i18n.ts._initialTutorial._timeline.title }}</template>
+	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
 	<div style="overflow-x: clip;">
-		<div v-if="page <= 5" :class="$style.progressBar">
+		<div :class="$style.progressBar">
 			<div :class="$style.progressBarValue" :style="{ width: `${(page / 5) * 100}%` }"></div>
 		</div>
 		<Transition
@@ -115,80 +112,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
 							<div>{{ i18n.t('_initialAccountSetting.youCanContinueTutorial', { name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
-								<MkButton rounded primary gradate data-cy-user-setup-continue @click="() => { setupComplete(); page++; }">{{ i18n.ts._initialAccountSetting.startTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
+								<MkButton rounded primary gradate data-cy-user-setup-continue @click="launchTutorial()">{{ i18n.ts._initialAccountSetting.startTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
 							</div>
 							<div class="_buttonsCenter">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton rounded primary data-cy-user-setup-continue @click="close(false)">{{ i18n.ts.close }}</MkButton>
-							</div>
-						</div>
-					</MkSpacer>
-				</div>
-			</template>
-			<template v-else-if="page === 6">
-				<div style="height: 100cqh; overflow: auto;">
-					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-							<XTutorialNote phase="aboutNote"/>
-						</MkSpacer>
-						<div :class="$style.pageFooter">
-							<div class="_buttonsCenter">
-								<MkButton v-if="!onlyTutorial" rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
-							</div>
-						</div>
-					</div>
-				</div>
-			</template>
-			<template v-else-if="page === 7">
-				<div style="height: 100cqh; overflow: auto;">
-					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-							<div class="_gaps">
-								<XTutorialNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
-								<div v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</div>
-							</div>
-						</MkSpacer>
-						<div :class="$style.pageFooter">
-							<div class="_buttonsCenter">
-								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton primary rounded gradate :disabled="!isReactionTutorialPushed" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
-							</div>
-						</div>
-					</div>
-				</div>
-			</template>
-			<template v-else-if="page === 8">
-				<div style="height: 100cqh; overflow: auto;">
-					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
-							<XTutorialTimeline phase="howToReact"/>
-						</MkSpacer>
-						<div :class="$style.pageFooter">
-							<div class="_buttonsCenter">
-								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
-							</div>
-						</div>
-					</div>
-				</div>
-			</template>
-			<template v-else-if="page === 9">
-				<div :class="$style.centerPage">
-					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<div class="_gaps" style="text-align: center;">
-							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
-							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._done.title }}</div>
-							<I18n :src="i18n.ts._initialTutorial._done.description" tag="div" style="padding: 0 16px;">
-								<template #link>
-									<a href="https://misskey-hub.net/help.html" target="_blank" class="_link">{{ i18n.ts.help }}</a>
-								</template>
-							</I18n>
-							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
-							<div class="_buttonsCenter" style="margin-top: 16px;">
-								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton rounded primary gradate data-cy-user-setup-continue @click="close(false)">{{ i18n.ts.close }}</MkButton>
+								<MkButton rounded primary data-cy-user-setup-continue @click="setupComplete()">{{ i18n.ts.close }}</MkButton>
 							</div>
 						</div>
 					</MkSpacer>
@@ -200,14 +128,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, watch } from 'vue';
+import { ref, shallowRef, watch, nextTick, defineAsyncComponent } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
-import XTutorialNote from '@/components/MkUserSetupDialog.NoteTutorial.vue';
-import XTutorialTimeline from '@/components/MkUserSetupDialog.TimelineTutorial.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -216,10 +142,6 @@ import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowB
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
-const props = defineProps<{
-	onlyTutorial?: boolean;
-}>();
-
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
@@ -227,18 +149,14 @@ const emit = defineEmits<{
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-const page = ref(props.onlyTutorial ? 6 : defaultStore.state.accountSetupWizard);
-
-const isReactionTutorialPushed = ref<boolean>(false);
+const page = ref(defaultStore.state.accountSetupWizard);
 
 watch(page, () => {
-	if (page.value <= 5 && !props.onlyTutorial) {
-		defaultStore.set('accountSetupWizard', page.value);
-	}
+	defaultStore.set('accountSetupWizard', page.value);
 });
 
 async function close(skip: boolean) {
-	if (skip && !props.onlyTutorial) {
+	if (skip) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
 			text: i18n.ts._initialAccountSetting.skipAreYouSure,
@@ -247,13 +165,21 @@ async function close(skip: boolean) {
 	}
 
 	dialog.value?.close();
-	if (!props.onlyTutorial) {
-		defaultStore.set('accountSetupWizard', -1);
-	}
+	defaultStore.set('accountSetupWizard', -1);
 }
 
 function setupComplete() {
 	defaultStore.set('accountSetupWizard', -1);
+	dialog.value?.close();
+}
+
+function launchTutorial() {
+	setupComplete();
+	nextTick(() => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {
+			initialPage: 1,
+		}, {}, 'closed');
+	});
 }
 
 async function later(later: boolean) {
@@ -265,7 +191,7 @@ async function later(later: boolean) {
 		if (canceled) return;
 	}
 
-	dialog.value.close();
+	dialog.value?.close();
 	defaultStore.set('accountSetupWizard', 0);
 }
 </script>
