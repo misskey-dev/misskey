@@ -1149,6 +1149,10 @@ detach: "外す"
 angle: "角度"
 flip: "反転"
 showAvatarDecorations: "アイコンのデコレーションを表示"
+releaseToRefresh: "離してリロード"
+refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロード"
+disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
