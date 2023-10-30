@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
-					<MkInput v-model="announcement.imageUrl">
+					<MkInput v-model="announcement.imageUrl" type="url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<MkRadios v-model="announcement.icon">
