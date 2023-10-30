@@ -28,6 +28,7 @@ import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
+import {isPureRenote} from "@/misc/is-pure-renote.js";
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -88,7 +89,7 @@ export class ActivityPubServerService {
 	 */
 	@bindThis
 	private async packActivity(note: MiNote): Promise<any> {
-		if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
+		if (isPureRenote(note)) {
 			const renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
 			return this.apRendererService.renderAnnounce(renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`, note);
 		}
