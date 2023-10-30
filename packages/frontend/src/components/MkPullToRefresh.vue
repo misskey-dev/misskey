@@ -199,7 +199,6 @@ defineExpose({
 	width: 100%;
 	min-height: var(--frame-min-height, 0px);
 
-	box-shadow: inset 0px -7px 10px -10px rgba(0,0,0,.1);
 	mask-image: linear-gradient(90deg, #000 0%, #000 80%, transparent);
 	-webkit-mask-image: -webkit-linear-gradient(90deg, #000 0%, #000 80%, transparent);
 
