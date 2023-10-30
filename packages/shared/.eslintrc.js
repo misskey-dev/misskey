@@ -72,7 +72,8 @@ module.exports = {
 			{ 'blankLine': 'always', 'prev': 'function', 'next': '*' },
 			{ 'blankLine': 'always', 'prev': '*', 'next': 'function' },
 		],
-		'lines-between-class-members': ['error', {
+		"lines-between-class-members": "off",
+		'@typescript-eslint/lines-between-class-members': ['error', {
 			enforce: [{
 				blankLine: 'always',
 				prev: 'method',
