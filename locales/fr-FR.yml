@@ -970,6 +970,7 @@ assign: "Attribuer"
 unassign: "Retirer"
 color: "Couleur"
 manageCustomEmojis: "Gestion des émojis personnalisés"
+manageAvatarDecorations: "Gérer les décorations d'avatar"
 youCannotCreateAnymore: "Vous avez atteint la limite de création."
 cannotPerformTemporary: "Temporairement indisponible"
 invalidParamError: "Paramètres invalides"
@@ -1072,8 +1073,10 @@ detach: "Enlever"
 angle: "Angle"
 flip: "Inverser"
 showAvatarDecorations: "Afficher les décorations d'avatar"
+releaseToRefresh: "Relâcher pour rafraîchir"
 refreshing: "Rafraîchissement..."
 pullDownToRefresh: "Tirer vers le bas pour rafraîchir"
+disableStreamingTimeline: "Désactiver les mises à jour en temps réel de la ligne du temps"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
 _initialAccountSetting:
@@ -1232,6 +1235,7 @@ _role:
     high: "Haute"
   _options:
     canManageCustomEmojis: "Gestion des émojis personnalisés"
+    canManageAvatarDecorations: "Gestion des décorations d'avatar"
     wordMuteMax: "Nombre maximal de caractères dans le filtre de mots"
 _sensitiveMediaDetection:
   description: "L'apprentissage automatique peut être utilisé pour détecter automatiquement les médias sensibles à modérer. La sollicitation des serveurs augmente légèrement."
