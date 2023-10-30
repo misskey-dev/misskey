@@ -17,6 +17,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -212,15 +213,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (files.length !== fileIds.length) {
 					throw new ApiError(meta.errors.noSuchFile);
 				}
-			}
-
-			function isPureRenote(note: MiNote): boolean {
-				if (!note.renoteId) return false;
-
-				if (note.text) return false; // it's quoted with text
-				if (note.fileIds.length !== 0) return false; // it's quoted with files
-				if (note.hasPoll) return false; // it's quoted with poll
-				return true;
 			}
 
 			let renote: MiNote | null = null;
