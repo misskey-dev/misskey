@@ -4,13 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+<MkPullToRefresh ref="prComponent" @refresh="() => reloadTimeline(true)">
+	<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)" @status="prComponent.setDisabled($event)"/>
+</MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, onUnmounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
-import { useStream } from '@/stream.js';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import { useStream, reloadStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
@@ -39,6 +42,7 @@ const emit = defineEmits<{
 
 provide('inChannel', computed(() => props.src === 'channel'));
 
+const prComponent: InstanceType<typeof MkPullToRefresh> = $ref();
 const tlComponent: InstanceType<typeof MkNotes> = $ref();
 
 let tlNotesCount = 0;
@@ -65,29 +69,73 @@ let connection;
 let connection2;
 
 const stream = useStream();
+const connectChannel = () => {
+	if (props.src === 'antenna') {
+		connection = stream.useChannel('antenna', {
+			antennaId: props.antenna,
+		});
+	} else if (props.src === 'home') {
+		connection = stream.useChannel('homeTimeline', {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		});
+		connection2 = stream.useChannel('main');
+	} else if (props.src === 'local') {
+		connection = stream.useChannel('localTimeline', {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: props.onlyFiles ? true : undefined,
+		});
+	} else if (props.src === 'social') {
+		connection = stream.useChannel('hybridTimeline', {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: props.onlyFiles ? true : undefined,
+		});
+	} else if (props.src === 'global') {
+		connection = stream.useChannel('globalTimeline', {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		});
+	} else if (props.src === 'mentions') {
+		connection = stream.useChannel('main');
+		connection.on('mention', prepend);
+	} else if (props.src === 'directs') {
+		const onNote = note => {
+			if (note.visibility === 'specified') {
+				prepend(note);
+			}
+		};
+		connection = stream.useChannel('main');
+		connection.on('mention', onNote);
+	} else if (props.src === 'list') {
+		connection = stream.useChannel('userList', {
+			withFiles: props.onlyFiles ? true : undefined,
+			listId: props.list,
+		});
+	} else if (props.src === 'channel') {
+		connection = stream.useChannel('channel', {
+			channelId: props.channel,
+		});
+	} else if (props.src === 'role') {
+		connection = stream.useChannel('roleTimeline', {
+			roleId: props.role,
+		});
+	}
+	if (props.src !== 'directs' || props.src !== 'mentions') connection.on('note', prepend);
+};
 
 if (props.src === 'antenna') {
 	endpoint = 'antennas/notes';
 	query = {
 		antennaId: props.antenna,
 	};
-	connection = stream.useChannel('antenna', {
-		antennaId: props.antenna,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'home') {
 	endpoint = 'notes/timeline';
 	query = {
 		withRenotes: props.withRenotes,
 		withFiles: props.onlyFiles ? true : undefined,
 	};
-	connection = stream.useChannel('homeTimeline', {
-		withRenotes: props.withRenotes,
-		withFiles: props.onlyFiles ? true : undefined,
-	});
-	connection.on('note', prepend);
-
-	connection2 = stream.useChannel('main');
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
 	query = {
@@ -95,12 +143,6 @@ if (props.src === 'antenna') {
 		withReplies: props.withReplies,
 		withFiles: props.onlyFiles ? true : undefined,
 	};
-	connection = stream.useChannel('localTimeline', {
-		withRenotes: props.withRenotes,
-		withReplies: props.withReplies,
-		withFiles: props.onlyFiles ? true : undefined,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'social') {
 	endpoint = 'notes/hybrid-timeline';
 	query = {
@@ -108,68 +150,44 @@ if (props.src === 'antenna') {
 		withReplies: props.withReplies,
 		withFiles: props.onlyFiles ? true : undefined,
 	};
-	connection = stream.useChannel('hybridTimeline', {
-		withRenotes: props.withRenotes,
-		withReplies: props.withReplies,
-		withFiles: props.onlyFiles ? true : undefined,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
 	query = {
 		withRenotes: props.withRenotes,
 		withFiles: props.onlyFiles ? true : undefined,
 	};
-	connection = stream.useChannel('globalTimeline', {
-		withRenotes: props.withRenotes,
-		withFiles: props.onlyFiles ? true : undefined,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'mentions') {
 	endpoint = 'notes/mentions';
-	connection = stream.useChannel('main');
-	connection.on('mention', prepend);
 } else if (props.src === 'directs') {
 	endpoint = 'notes/mentions';
 	query = {
 		visibility: 'specified',
 	};
-	const onNote = note => {
-		if (note.visibility === 'specified') {
-			prepend(note);
-		}
-	};
-	connection = stream.useChannel('main');
-	connection.on('mention', onNote);
 } else if (props.src === 'list') {
 	endpoint = 'notes/user-list-timeline';
 	query = {
 		withFiles: props.onlyFiles ? true : undefined,
 		listId: props.list,
 	};
-	connection = stream.useChannel('userList', {
-		withFiles: props.onlyFiles ? true : undefined,
-		listId: props.list,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'channel') {
 	endpoint = 'channels/timeline';
 	query = {
 		channelId: props.channel,
 	};
-	connection = stream.useChannel('channel', {
-		channelId: props.channel,
-	});
-	connection.on('note', prepend);
 } else if (props.src === 'role') {
 	endpoint = 'roles/notes';
 	query = {
 		roleId: props.role,
 	};
-	connection = stream.useChannel('roleTimeline', {
-		roleId: props.role,
+}
+
+if (!defaultStore.state.disableStreamingTimeline) {
+	connectChannel();
+
+	onUnmounted(() => {
+		connection.dispose();
+		if (connection2) connection2.dispose();
 	});
-	connection.on('note', prepend);
 }
 
 const pagination = {
@@ -178,9 +196,19 @@ const pagination = {
 	params: query,
 };
 
-onUnmounted(() => {
-	connection.dispose();
-	if (connection2) connection2.dispose();
+const reloadTimeline = (fromPR = false) => {
+	tlNotesCount = 0;
+
+	tlComponent.pagingComponent?.reload().then(() => {
+		reloadStream();
+		if (fromPR) prComponent.refreshFinished();
+	});
+};
+
+//const pullRefresh = () => reloadTimeline(true);
+
+defineExpose({
+	reloadTimeline,
 });
 
 /* TODO
