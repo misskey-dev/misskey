@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkPullToRefresh ref="prComponent" @refresh="() => reloadTimeline(true)">
-		<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)" @status="prComponent.setDisabled($event)"/>
-	</MkPullToRefresh>
+<MkPullToRefresh ref="prComponent" @refresh="() => reloadTimeline(true)">
+	<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)" @status="prComponent.setDisabled($event)"/>
+</MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
@@ -208,7 +208,7 @@ const reloadTimeline = (fromPR = false) => {
 //const pullRefresh = () => reloadTimeline(true);
 
 defineExpose({
-	reloadTimeline
+	reloadTimeline,
 });
 
 /* TODO

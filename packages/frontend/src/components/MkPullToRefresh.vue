@@ -166,7 +166,8 @@ function setDisabled(value) {
 }
 
 onMounted(() => {
-	supportPointerDesktop = !!window.PointerEvent && deviceKind === 'desktop';
+	// マウス操作でpull to refreshするのは不便そう
+	//supportPointerDesktop = !!window.PointerEvent && deviceKind === 'desktop';
 
 	if (supportPointerDesktop) {
 		rootEl.addEventListener('pointerdown', moveStart);
