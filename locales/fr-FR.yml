@@ -781,7 +781,7 @@ addDescription: "Ajouter une description"
 userPagePinTip: "Vous pouvez afficher des notes ici en sélectionnant l'option « Épingler au profil » dans le menu de chaque note."
 notSpecifiedMentionWarning: "Vous avez mentionné des utilisateur·rice·s qui ne font pas partie de la liste des destinataires"
 info: "Informations"
-userInfo: "Informations sur l'utilisateur"
+userInfo: "Informations sur l'utilisateur·rice"
 unknown: "Inconnu"
 onlineStatus: "Statut"
 hideOnlineStatus: "Se rendre invisible"
@@ -1028,7 +1028,7 @@ youFollowing: "Abonné·e"
 preventAiLearning: "Refuser l'usage dans l'apprentissage automatique d'IA générative"
 preventAiLearningDescription: "Demander aux robots d'indexation de ne pas utiliser le contenu publié, tel que les notes et les images, dans l'apprentissage automatique d'IA générative. Cela est réalisé en incluant le drapeau « noai » dans la réponse HTML. Une prévention complète n'est toutefois pas possible, car il est au robot d'indexation de respecter cette demande."
 options: "Options"
-specifyUser: "Spécifier l'utilisateur"
+specifyUser: "Spécifier l'utilisateur·rice"
 failedToPreviewUrl: "Aperçu d'URL échoué"
 update: "Mettre à jour"
 later: "Plus tard"
@@ -1087,6 +1087,7 @@ _initialAccountSetting:
   skipAreYouSure: "Désirez-vous ignorer la configuration du profile ?"
 _serverSettings:
   iconUrl: "URL de l’icône"
+  fanoutTimelineDescription: "Si activée, la performance de la récupération de la chronologie augmentera considérablement et la charge sur la base de données sera réduite. En revanche, l'utilisation de la mémoire de Redis augmentera. Considérez désactiver cette option si le serveur est bas en mémoire ou instable."
 _accountMigration:
   moveFrom: "Migrer un autre compte vers le présent compte"
   moveFromSub: "Créer un alias vers un autre compte"
@@ -1153,7 +1154,7 @@ _achievements:
       description: "Rendre votre compte comme un chat"
       flavor: "Je n'ai pas encore de nom"
     _following1:
-      title: "Vous suivez votre premier utilisateur·rice"
+      title: "Vous suivez votre premier·ère utilisateur·rice"
     _following50:
       title: "Beaucoup d'amis"
     _followers10:
@@ -1272,6 +1273,8 @@ _ad:
   hide: "Cacher "
   adsSettings: "Réglages des publicités"
   notesPerOneAd: "Intervalle de diffusion de publicités lors de la mise à jour en temps réel (nombre de notes par publicité)"
+  setZeroToDisable: "Mettre cette valeur à 0 pour désactiver la diffusion de publicités lors de la mise à jour en temps réel"
+  adsTooClose: "L'expérience de l'utilisateur peut être gravement compromise par un intervalle de diffusion de publicités extrêmement court."
 _forgotPassword:
   enterEmail: "Entrez ici l'adresse e-mail que vous avez enregistrée pour votre compte. Un lien vous permettant de réinitialiser votre mot de passe sera envoyé à cette adresse."
   ifNoEmail: "Si vous n'avez pas enregistré d'adresse e-mail, merci de contacter l'administrateur·rice de votre instance."
@@ -1324,6 +1327,7 @@ _aboutMisskey:
   donate: "Soutenir Misskey"
   morePatrons: "Nous apprécions vraiment le soutien de nombreuses autres personnes non mentionnées ici. Merci à toutes et à tous ! 🥰"
   patrons: "Contributeurs"
+  projectMembers: "Membres du projet"
 _displayOfSensitiveMedia:
   force: "Masquer tous les médias"
 _instanceTicker:
@@ -1619,6 +1623,7 @@ _exportOrImport:
   userLists: "Listes"
   excludeMutingUsers: "Exclure les utilisateur·rice·s mis en sourdine"
   excludeInactiveUsers: "Exclure les utilisateur·rice·s inactifs"
+  withReplies: "Inclure les réponses des utilisateur·rice·s importé·e·s dans le fil"
 _charts:
   federation: "Fédération"
   apRequest: "Requêtes"
