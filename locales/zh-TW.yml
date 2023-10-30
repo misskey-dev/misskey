@@ -1149,6 +1149,10 @@ detach: "取下"
 angle: "角度"
 flip: "翻轉"
 showAvatarDecorations: "顯示頭像裝飾"
+releaseToRefresh: "放開以更新內容"
+refreshing: "載入更新中"
+pullDownToRefresh: "往下拉來更新內容"
+disableStreamingTimeline: "停用時間軸的即時更新"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
@@ -1604,6 +1608,7 @@ _aboutMisskey:
   donate: "贊助 Misskey"
   morePatrons: "還有許許多多幫助我們的其他人，非常感謝你們。 🥰"
   patrons: "贊助者"
+  projectMembers: "專案成員"
 _displayOfSensitiveMedia:
   respect: "隱藏敏感檔案"
   ignore: "顯示敏感檔案"
