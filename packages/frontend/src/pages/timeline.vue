@@ -44,6 +44,7 @@ import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { antennasCache, userListsCache } from '@/cache.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -140,8 +141,15 @@ function focus(): void {
     tlComponent.focus();
 }
 
-const headerActions = $computed(() => [{
-    icon: 'ti ti-dots',
+const headerActions = $computed(() => [
+    ...[deviceKind === 'desktop' ? {
+		icon: 'ti ti-refresh',
+		text: i18n.ts.reload,
+		handler: (ev) => {
+			console.log('called');
+			tlComponent.reloadTimeline();
+		},
+	} : {}], {icon: 'ti ti-dots',
     text: i18n.ts.options,
     handler: (ev) => {
         os.popupMenu([{

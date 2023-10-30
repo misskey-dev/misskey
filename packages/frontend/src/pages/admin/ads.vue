@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
 				</MkInput>
-				<MkInput v-model="ad.imageUrl">
+				<MkInput v-model="ad.imageUrl" type="url">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
 				<MkRadios v-model="ad.place">

@@ -173,6 +173,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
+				<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -295,6 +296,7 @@ const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTim
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
 const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
+const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -359,6 +361,7 @@ watch([
   enableonlyAndWithSave,
   FeaturedOrNote,
     showGlobalTimeline
+	disableStreamingTimeline,
 ], async () => {
 	await reloadAsk();
 });

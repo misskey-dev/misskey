@@ -18,6 +18,7 @@ import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import {noteVisibilities} from "@/types.js";
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -222,7 +223,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (renote == null) {
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+				} else if (isPureRenote(renote)) {
 					throw new ApiError(meta.errors.cannotReRenote);
 				}
 
@@ -255,7 +256,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (reply == null) {
 					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+				} else if (isPureRenote(reply)) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				}
 

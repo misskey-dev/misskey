@@ -1012,6 +1012,7 @@ export interface Locale {
     "color": string;
     "manageCustomEmojis": string;
     "requestCustomEmojis": string;
+    "manageAvatarDecorations": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
@@ -1186,6 +1187,10 @@ export interface Locale {
     "angle": string;
     "flip": string;
     "showAvatarDecorations": string;
+    "releaseToRefresh": string;
+    "refreshing": string;
+    "pullDownToRefresh": string;
+    "disableStreamingTimeline": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1607,6 +1612,7 @@ export interface Locale {
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
             "canRequestCustomEmojis": string;
+            "canManageAvatarDecorations": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;
