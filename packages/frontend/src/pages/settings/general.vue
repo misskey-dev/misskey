@@ -360,7 +360,7 @@ watch([
   showVisibilityColor,
   enableonlyAndWithSave,
   FeaturedOrNote,
-    showGlobalTimeline
+  showGlobalTimeline,
 	disableStreamingTimeline,
 ], async () => {
 	await reloadAsk();
