@@ -141,15 +141,9 @@ function focus(): void {
     tlComponent.focus();
 }
 
-const headerActions = $computed(() => [
-    ...[deviceKind === 'desktop' ? {
-		icon: 'ti ti-refresh',
-		text: i18n.ts.reload,
-		handler: (ev) => {
-			console.log('called');
-			tlComponent.reloadTimeline();
-		},
-	} : {}], {icon: 'ti ti-dots',
+const headerActions = $computed(() => {
+    const tmp = [
+		 {icon: 'ti ti-dots',
     text: i18n.ts.options,
     handler: (ev) => {
         os.popupMenu([{
@@ -168,7 +162,20 @@ const headerActions = $computed(() => [
             ref: $$(onlyFiles),
         }], ev.currentTarget ?? ev.target);
     },
-}]);
+},
+	];
+	if (deviceKind === 'desktop') {
+		tmp.unshift({
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			handler: (ev: Event) => {
+				console.log('called');
+				tlComponent.reloadTimeline();
+			},
+		});
+	}
+	return tmp;
+});
 
 const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
     key: 'list:' + l.id,
