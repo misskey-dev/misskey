@@ -42,8 +42,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.notificationService.createNotification(user.id, 'app', {
 				appAccessTokenId: token ? token.id : null,
 				customBody: ps.body,
-				customHeader: ps.header,
-				customIcon: ps.icon,
+				customHeader: ps.header ?? token?.name,
+				customIcon: ps.icon ?? token?.iconUrl,
 			});
 		});
 	}
