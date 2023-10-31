@@ -41,10 +41,10 @@ export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
-export const bannerDark='https://files.prismisskey.space/misskey/5182a391-5b9f-4ba9-90a5-a692aa59b938.png'
-export const bannerLight ='https://files.prismisskey.space/misskey/96e65f59-eab3-47d4-bb1e-d141100bd2fc.png'
-export const iconDark='https://files.prismisskey.space/misskey/f3b3c9f8-ff2a-474d-a858-64ffe9023e22.png'
-export const iconLight='https://files.prismisskey.space/misskey/c7e56b1d-4c4f-408f-bf73-3175f4eb26ca.png'
+export const bannerDark='https://files.prismisskey.space/misskey/e088c6d1-b07f-4312-8d41-fee2f64071e9.png'
+export const bannerLight ='https://files.prismisskey.space/misskey/85500d2f-41a9-48ff-a737-65d6fdf74604.png'
+export const iconDark='https://files.prismisskey.space/misskey/484efc68-de41-4786-b2b6-e5085c31c2c4.webp'
+export const iconLight='https://files.prismisskey.space/misskey/c3d722fe-379f-4c85-9414-90c232d53237.webp'
 
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
