@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._note.description }}</div>
 	<MkNote :class="$style.exampleNoteRoot" style="pointer-events: none;" :note="exampleNote" :mock="true"/>
 	<div class="_gaps_s">
-		<div><small><MkTime :time="exampleNote.createdAt" colored></MkTime></small> … <b>{{ i18n.ts._initialTutorial._note.date }}</b></div>
 		<div><i class="ti ti-arrow-back-up"></i> <b>{{ i18n.ts.reply }}</b> … {{ i18n.ts._initialTutorial._note.reply }}</div>
 		<div><i class="ti ti-repeat"></i> <b>{{ i18n.ts.renote }}</b> … {{ i18n.ts._initialTutorial._note.renote }}</div>
 		<div><i class="ti ti-plus"></i> <b>{{ i18n.ts.reaction }}</b> … {{ i18n.ts._initialTutorial._note.reaction }}</div>
+		<div><i class="ti ti-plus"></i> <b>{{ i18n.ts.menu }}</b> … {{ i18n.ts._initialTutorial._note.menu }}</div>
 	</div>
 </div>
 <div v-else-if="phase === 'howToReact'" class="_gaps">
@@ -28,7 +28,6 @@ import { ref, reactive } from 'vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/account.js';
-import MkTime from '@/components/global/MkTime.vue';
 import MkNote from '@/components/MkNote.vue';
 
 const props = defineProps<{
