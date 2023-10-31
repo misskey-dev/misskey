@@ -48,7 +48,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 		username: 'ai',
 		host: null,
 		avatarDecorations: [],
-		avatarUrl: './client-assets/tutorial/ai.webp',
+		avatarUrl: '/client-assets/tutorial/ai.webp',
 		avatarBlurhash: 'eiKmhHIByXxZ~qWXs:-pR*NbR*s:xuRjoL-oR*WCt6WWf6WVf6oeWB',
 		isBot: false,
 		isCat: true,
