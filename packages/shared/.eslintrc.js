@@ -73,6 +73,7 @@ module.exports = {
 			{ 'blankLine': 'always', 'prev': '*', 'next': 'function' },
 		],
 		"lines-between-class-members": "off",
+		/* typescript-eslint では enforce に対応してないっぽい
 		'@typescript-eslint/lines-between-class-members': ['error', {
 			enforce: [{
 				blankLine: 'always',
@@ -80,6 +81,7 @@ module.exports = {
 				next: '*',
 			}]
 		}],
+		*/
 		'@typescript-eslint/func-call-spacing': ['error', 'never'],
 		'@typescript-eslint/no-explicit-any': ['warn'],
 		'@typescript-eslint/no-unused-vars': ['warn'],
