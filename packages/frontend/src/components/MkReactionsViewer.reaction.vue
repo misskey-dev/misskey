@@ -34,6 +34,7 @@ const props = defineProps<{
 	count: number;
 	isInitial: boolean;
 	note: Misskey.entities.Note;
+	mock?: boolean;
 }>();
 
 const buttonEl = shallowRef<HTMLElement>();
@@ -51,7 +52,7 @@ async function toggleReaction() {
 			type: 'warning',
 			text: oldReaction !== props.reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
 		});
-		if (confirm.canceled) return;
+		if (confirm.canceled || props.mock) return;
 
 		os.api('notes/reactions/delete', {
 			noteId: props.note.id,
@@ -92,24 +93,26 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-useTooltip(buttonEl, async (showing) => {
-	const reactions = await os.apiGet('notes/reactions', {
-		noteId: props.note.id,
-		type: props.reaction,
-		limit: 11,
-		_cacheKey_: props.count,
-	});
+if (!props.mock) {
+	useTooltip(buttonEl, async (showing) => {
+		const reactions = await os.apiGet('notes/reactions', {
+			noteId: props.note.id,
+			type: props.reaction,
+			limit: 11,
+			_cacheKey_: props.count,
+		});
 
-	const users = reactions.map(x => x.user);
+		const users = reactions.map(x => x.user);
 
-	os.popup(XDetails, {
-		showing,
-		reaction: props.reaction,
-		users,
-		count: props.count,
-		targetElement: buttonEl.value,
-	}, {}, 'closed');
-}, 100);
+		os.popup(XDetails, {
+			showing,
+			reaction: props.reaction,
+			users,
+			count: props.count,
+			targetElement: buttonEl.value,
+		}, {}, 'closed');
+	}, 100);
+}
 </script>
 
 <style lang="scss" module>
