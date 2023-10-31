@@ -6,14 +6,13 @@
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { extractUrlFromMfm } from './extract-url-from-mfm.js';
+import { existsCollapsedFunction } from './exists-collapsed-function.js';
 
 export function shouldCollapsed(note: Misskey.entities.Note): boolean {
-	const urls = note.text ? extractUrlFromMfm(mfm.parse(note.text)) : null;
+	const nodes = mfm.parse(note.text);
+	const urls = note.text ? extractUrlFromMfm(nodes) : null;
 	const collapsed = note.cw == null && note.text != null && (
-		(note.text.includes('$[x2')) ||
-		(note.text.includes('$[x3')) ||
-		(note.text.includes('$[x4')) ||
-		(note.text.includes('$[scale')) ||
+		(existsCollapsedFunction(nodes)) ||
 		(note.text.split('\n').length > 9) ||
 		(note.text.length > 500) ||
 		(note.files.length >= 5) ||
