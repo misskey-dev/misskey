@@ -1188,6 +1188,11 @@ export interface Locale {
         "launchTutorial": string;
         "title": string;
         "wellDone": string;
+        "skipAreYouSure": string;
+        "_landing": {
+            "title": string;
+            "description": string;
+        };
         "_note": {
             "title": string;
             "description": string;
@@ -1202,6 +1207,7 @@ export interface Locale {
             "description": string;
             "letsTryReacting": string;
             "reactToContinue": string;
+            "reactNotification": string;
             "reactDone": string;
         };
         "_timeline": {
@@ -1212,6 +1218,41 @@ export interface Locale {
             "social": string;
             "global": string;
             "description2": string;
+            "description3": string;
+        };
+        "_postNote": {
+            "title": string;
+            "description1": string;
+            "_visibility": {
+                "description": string;
+                "public": string;
+                "home": string;
+                "followers": string;
+                "direct": string;
+                "doNotSendConfidencialOnDirect1": string;
+                "doNotSendConfidencialOnDirect2": string;
+                "localOnly": string;
+            };
+            "_cw": {
+                "title": string;
+                "description": string;
+                "_exampleNote": {
+                    "cw": string;
+                    "note": string;
+                };
+                "useCases": string;
+            };
+        };
+        "_howToMakeAttachmentsSensitive": {
+            "title": string;
+            "description": string;
+            "tryThisFile": string;
+            "_exampleNote": {
+                "note": string;
+            };
+            "method": string;
+            "sensitiveSucceeded": string;
+            "doItToContinue": string;
         };
         "_done": {
             "title": string;

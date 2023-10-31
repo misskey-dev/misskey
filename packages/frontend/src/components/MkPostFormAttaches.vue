@@ -31,6 +31,7 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 const props = defineProps<{
 	modelValue: any[];
 	detachMediaFn?: (id: string) => void;
+	mock?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -44,6 +45,8 @@ const emit = defineEmits<{
 let menuShowing = false;
 
 function detachMedia(id: string) {
+	if (props.mock) return;
+
 	if (props.detachMediaFn) {
 		props.detachMediaFn(id);
 	} else {
@@ -52,6 +55,11 @@ function detachMedia(id: string) {
 }
 
 function toggleSensitive(file) {
+	if (props.mock) {
+		emit('changeSensitive', file, !file.isSensitive);
+		return;
+	}
+
 	os.api('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
@@ -61,6 +69,8 @@ function toggleSensitive(file) {
 }
 
 async function rename(file) {
+	if (props.mock) return;
+
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
 		default: file.name,
@@ -77,6 +87,8 @@ async function rename(file) {
 }
 
 async function describe(file) {
+	if (props.mock) return;
+
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
@@ -94,6 +106,8 @@ async function describe(file) {
 }
 
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {
+	if (props.mock) return;
+
 	const newFile = await os.cropImage(file, { aspectRatio: NaN });
 	emit('replaceFile', file, newFile);
 }
