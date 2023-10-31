@@ -151,6 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
+				<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -253,6 +254,7 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
+const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -289,6 +291,7 @@ watch([
 	reactionsDisplaySize,
 	highlightSensitiveMedia,
 	keepScreenOn,
+	disableStreamingTimeline,
 ], async () => {
 	await reloadAsk();
 });
@@ -298,12 +301,14 @@ const emojiIndexLangs = ['en-US'];
 function downloadEmojiIndex(lang: string) {
 	async function main() {
 		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+
 		function download() {
 			switch (lang) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
 				default: throw new Error('unrecognized lang: ' + lang);
 			}
 		}
+
 		currentIndexes[lang] = await download();
 		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
@@ -340,6 +345,7 @@ function removePinnedList() {
 
 let smashCount = 0;
 let smashTimer: number | null = null;
+
 function testNotification(): void {
 	const notification: Misskey.entities.Notification = {
 		id: Math.random().toString(),

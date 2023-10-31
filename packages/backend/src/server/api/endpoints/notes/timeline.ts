@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiNote, NotesRepository } from '@/models/_.js';
+import type { MiNote, NotesRepository, ChannelFollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -57,6 +57,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		private noteEntityService: NoteEntityService,
 		private activeUsersChart: ActiveUsersChart,
@@ -160,22 +163,52 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
+		const followingChannels = await this.channelFollowingsRepository.find({
+			where: {
+				followerId: me.id,
+			},
+		});
 
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-			.andWhere('note.channelId IS NULL')
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
-		if (followees.length > 0) {
+		if (followees.length > 0 && followingChannels.length > 0) {
+			// ユーザー・チャンネルともにフォローあり
 			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
-
-			query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+			const followingChannelIds = followingChannels.map(x => x.followeeId);
+			query.andWhere(new Brackets(qb => {
+				qb
+					.where(new Brackets(qb2 => {
+						qb2
+							.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds })
+							.andWhere('note.channelId IS NULL');
+					}))
+					.orWhere('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
+			}));
+		} else if (followees.length > 0) {
+			// ユーザーフォローのみ（チャンネルフォローなし）
+			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
+			query
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+		} else if (followingChannels.length > 0) {
+			// チャンネルフォローのみ（ユーザーフォローなし）
+			const followingChannelIds = followingChannels.map(x => x.followeeId);
+			query.andWhere(new Brackets(qb => {
+				qb
+					.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds })
+					.orWhere('note.userId = :meId', { meId: me.id });
+			}));
 		} else {
-			query.andWhere('note.userId = :meId', { meId: me.id });
+			// フォローなし
+			query
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.userId = :meId', { meId: me.id });
 		}
 
 		query.andWhere(new Brackets(qb => {

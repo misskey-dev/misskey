@@ -166,6 +166,8 @@ defineExpose({
 
 <style lang="scss" module>
 .root {
+	overscroll-behavior: none;
+
 	min-height: 100%;
 	background: var(--bg);
 
