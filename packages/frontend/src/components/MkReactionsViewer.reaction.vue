@@ -37,6 +37,10 @@ const props = defineProps<{
 	mock?: boolean;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'reactionToggled', emoji: string, newCount: number): void;
+}>();
+
 const buttonEl = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
@@ -52,7 +56,12 @@ async function toggleReaction() {
 			type: 'warning',
 			text: oldReaction !== props.reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
 		});
-		if (confirm.canceled || props.mock) return;
+		if (confirm.canceled) return;
+
+		if (props.mock) {
+			emit('reactionToggled', props.reaction, (props.count - 1));
+			return;
+		}
 
 		os.api('notes/reactions/delete', {
 			noteId: props.note.id,
@@ -65,6 +74,11 @@ async function toggleReaction() {
 			}
 		});
 	} else {
+		if (props.mock) {
+			emit('reactionToggled', props.reaction, (props.count + 1));
+			return;
+		}
+
 		os.api('notes/reactions/create', {
 			noteId: props.note.id,
 			reaction: props.reaction,

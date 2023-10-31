@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:moveClass="defaultStore.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" :mock="mock"/>
+	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" :mock="mock" @reactionToggled="onMockToggleReaction"/>
 	<slot v-if="hasMoreReactions" name="more"/>
 </TransitionGroup>
 </template>
@@ -32,6 +32,10 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
+const emit = defineEmits<{
+	(ev: 'mockUpdateMyReaction', emoji: string, delta: number): void;
+}>();
+
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
 let reactions = $ref<[string, number][]>([]);
@@ -39,6 +43,15 @@ let hasMoreReactions = $ref(false);
 
 if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReaction)) {
 	reactions[props.note.myReaction] = props.note.reactions[props.note.myReaction];
+}
+
+function onMockToggleReaction(emoji: string, count: number) {
+	if (!props.mock) return;
+
+	const i = reactions.findIndex((item) => item[0] === emoji);
+	if (i < 0) return;
+
+	emit('mockUpdateMyReaction', emoji, (count - reactions[i][1]));
 }
 
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
