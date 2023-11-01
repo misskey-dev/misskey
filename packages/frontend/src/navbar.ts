@@ -19,6 +19,15 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-bell',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
+		indicateValue: computed(() => {
+			if (!$i || $i.unreadNotificationsCount === 0) return '';
+
+			if ($i.unreadNotificationsCount > 99) {
+				return '99+';
+			} else {
+				return $i.unreadNotificationsCount.toString();
+			}
+		}),
 		to: '/my/notifications',
 	},
 	drive: {
