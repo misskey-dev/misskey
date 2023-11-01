@@ -469,7 +469,7 @@ export class UserEntityService implements OnModuleInit {
 				unreadAnnouncements,
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
 				hasUnreadChannel: false, // 後方互換性のため
-				hasUnreadNotification: notificationsInfo?.hasUnread,
+				hasUnreadNotification: notificationsInfo?.hasUnread, // 後方互換性のため
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				unreadNotificationCount: notificationsInfo?.unreadCount,
 				mutedWords: profile!.mutedWords,
