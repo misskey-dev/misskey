@@ -73,6 +73,7 @@ os.api('admin/abuse-user-reports', {
 
 os.api('admin/show-users', {
 	state: 'approved',
+	origin: 'local',
 	limit: 1,
 }).then(approvals => {
 	if (approvals.length > 0) pendingUserApprovals.value = true;
