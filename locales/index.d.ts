@@ -1148,7 +1148,6 @@ export interface Locale {
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
     "avatarDecorations": string;
-    "showUnreadNotificationCount": string;
     "attach": string;
     "detach": string;
     "angle": string;

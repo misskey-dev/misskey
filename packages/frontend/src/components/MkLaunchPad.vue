@@ -11,13 +11,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
+					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
 					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
 				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate && item.indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter indicatorWithValue"><span>{{ item.indicateValue }}</span></span>
+					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
 					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</MkA>
 			</template>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import MkModal from '@/components/MkModal.vue';
-import { navbarItemDef } from '@/navbar';
+import { navbarItemDef } from '@/navbar.js';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 

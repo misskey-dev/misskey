@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="item" activeClass="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
 			<span v-if="navbarItemDef[item].indicated" class="indicator">
-				<span v-if="navbarItemDef[item].indicateValue && defaultStore.state.showUnreadNotificationCount" class="_indicateCounter itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
+				<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
 				<i v-else class="_indicatorCircle"></i>
 			</span>
 		</component>
