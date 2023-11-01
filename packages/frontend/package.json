@@ -10,7 +10,7 @@
 		"build-storybook": "pnpm build-storybook-pre && storybook build",
 		"chromatic": "chromatic",
 		"test": "vitest --run",
-		"test-and-coverage": "vitest --run --coverage",
+		"test-and-coverage": "vitest --run --coverage --globals",
 		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
