@@ -56,6 +56,7 @@ function copyUrl(file: Misskey.entities.DriveFile) {
 	copyToClipboard(file.url);
 	os.success();
 }
+
 /*
 function addApp() {
 	alert('not implemented yet');
