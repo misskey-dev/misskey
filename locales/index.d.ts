@@ -1196,10 +1196,10 @@ export interface Locale {
         "_note": {
             "title": string;
             "description": string;
-            "date": string;
             "reply": string;
             "renote": string;
             "reaction": string;
+            "menu": string;
             "howToNote": string;
         };
         "_reaction": {

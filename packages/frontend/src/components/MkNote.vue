@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<MkReactionsViewer :note="appearNote" :maxNumber="16">
+			<MkReactionsViewer :note="appearNote" :maxNumber="16" :mock="mock" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
 					<div :class="$style.reactionOmitted">{{ i18n.ts.more }}</div>
 				</template>
@@ -544,6 +544,14 @@ function readPromo() {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
+}
+
+function emitUpdReaction(emoji: string, delta: number) {
+	if (delta < 0) {
+		emit('removeReaction', emoji);
+	} else if (delta > 0) {
+		emit('reaction', emoji);
+	}
 }
 </script>
 

@@ -34,6 +34,11 @@ const props = defineProps<{
 	count: number;
 	isInitial: boolean;
 	note: Misskey.entities.Note;
+	mock?: boolean;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
 const buttonEl = shallowRef<HTMLElement>();
@@ -53,6 +58,11 @@ async function toggleReaction() {
 		});
 		if (confirm.canceled) return;
 
+		if (props.mock) {
+			emit('reactionToggled', props.reaction, (props.count - 1));
+			return;
+		}
+
 		os.api('notes/reactions/delete', {
 			noteId: props.note.id,
 		}).then(() => {
@@ -64,6 +74,11 @@ async function toggleReaction() {
 			}
 		});
 	} else {
+		if (props.mock) {
+			emit('reactionToggled', props.reaction, (props.count + 1));
+			return;
+		}
+
 		os.api('notes/reactions/create', {
 			noteId: props.note.id,
 			reaction: props.reaction,
@@ -92,24 +107,26 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-useTooltip(buttonEl, async (showing) => {
-	const reactions = await os.apiGet('notes/reactions', {
-		noteId: props.note.id,
-		type: props.reaction,
-		limit: 11,
-		_cacheKey_: props.count,
-	});
+if (!props.mock) {
+	useTooltip(buttonEl, async (showing) => {
+		const reactions = await os.apiGet('notes/reactions', {
+			noteId: props.note.id,
+			type: props.reaction,
+			limit: 11,
+			_cacheKey_: props.count,
+		});
 
-	const users = reactions.map(x => x.user);
+		const users = reactions.map(x => x.user);
 
-	os.popup(XDetails, {
-		showing,
-		reaction: props.reaction,
-		users,
-		count: props.count,
-		targetElement: buttonEl.value,
-	}, {}, 'closed');
-}, 100);
+		os.popup(XDetails, {
+			showing,
+			reaction: props.reaction,
+			users,
+			count: props.count,
+			targetElement: buttonEl.value,
+		}, {}, 'closed');
+	}, 100);
+}
 </script>
 
 <style lang="scss" module>
