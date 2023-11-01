@@ -1215,7 +1215,7 @@ _initialTutorial:
     description3: "その他にも、リストタイムラインやチャンネルタイムラインなどがあります。詳しくは{link}をご覧ください。"
   _postNote:
     title: "ノートの投稿設定"
-    description1: "Misskeyにノートを投稿する際には、細かい設定ができるようになっています。ノートの設定は、以下のような投稿フォームから行えます。"
+    description1: "Misskeyにノートを投稿する際には、様々なオプションの設定が可能です。投稿フォームはこのようになっています。"
     _visibility:
       description: "ノートを表示できる相手を制限できます。"
       public: "すべてのユーザーに公開。"
