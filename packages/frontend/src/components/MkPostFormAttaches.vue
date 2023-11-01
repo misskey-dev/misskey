@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
@@ -31,8 +31,9 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 const props = defineProps<{
 	modelValue: any[];
 	detachMediaFn?: (id: string) => void;
-	mock?: boolean;
 }>();
+
+const mock = inject<boolean>('mock', false);
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;

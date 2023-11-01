@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:moveClass="defaultStore.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" :mock="mock" @reactionToggled="onMockToggleReaction"/>
+	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
 	<slot v-if="hasMoreReactions" name="more"/>
 </TransitionGroup>
 </template>
@@ -26,10 +26,8 @@ import { defaultStore } from '@/store.js';
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
 	maxNumber?: number;
-	mock?: boolean;
 }>(), {
 	maxNumber: Infinity,
-	mock: false,
 });
 
 const emit = defineEmits<{

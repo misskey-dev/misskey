@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
@@ -43,8 +43,9 @@ import { userPage } from '@/filters/user.js';
 
 defineProps<{
 	note: Misskey.entities.Note;
-	mock?: boolean;
 }>();
+
+const mock = inject<boolean>('mock', false);
 </script>
 
 <style lang="scss" module>

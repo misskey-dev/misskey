@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -34,8 +34,9 @@ const props = defineProps<{
 	count: number;
 	isInitial: boolean;
 	note: Misskey.entities.Note;
-	mock?: boolean;
 }>();
+
+const mock = inject<boolean>('mock', false);
 
 const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
