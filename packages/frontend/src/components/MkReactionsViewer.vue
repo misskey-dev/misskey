@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { watch } from 'vue';
+import { inject, watch } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { defaultStore } from '@/store.js';
 
@@ -29,6 +29,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 	maxNumber: Infinity,
 });
+
+const mock = inject<boolean>('mock', false);
 
 const emit = defineEmits<{
 	(ev: 'mockUpdateMyReaction', emoji: string, delta: number): void;
@@ -44,7 +46,7 @@ if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReact
 }
 
 function onMockToggleReaction(emoji: string, count: number) {
-	if (!props.mock) return;
+	if (!mock) return;
 
 	const i = reactions.findIndex((item) => item[0] === emoji);
 	if (i < 0) return;

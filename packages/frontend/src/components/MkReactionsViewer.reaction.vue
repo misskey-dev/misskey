@@ -59,7 +59,7 @@ async function toggleReaction() {
 		});
 		if (confirm.canceled) return;
 
-		if (props.mock) {
+		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count - 1));
 			return;
 		}
@@ -75,7 +75,7 @@ async function toggleReaction() {
 			}
 		});
 	} else {
-		if (props.mock) {
+		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
 			return;
 		}
@@ -108,7 +108,7 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-if (!props.mock) {
+if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
 		const reactions = await os.apiGet('notes/reactions', {
 			noteId: props.note.id,

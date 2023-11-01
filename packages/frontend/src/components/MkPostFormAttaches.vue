@@ -46,7 +46,7 @@ const emit = defineEmits<{
 let menuShowing = false;
 
 function detachMedia(id: string) {
-	if (props.mock) return;
+	if (mock) return;
 
 	if (props.detachMediaFn) {
 		props.detachMediaFn(id);
@@ -56,7 +56,7 @@ function detachMedia(id: string) {
 }
 
 function toggleSensitive(file) {
-	if (props.mock) {
+	if (mock) {
 		emit('changeSensitive', file, !file.isSensitive);
 		return;
 	}
@@ -70,7 +70,7 @@ function toggleSensitive(file) {
 }
 
 async function rename(file) {
-	if (props.mock) return;
+	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
@@ -88,7 +88,7 @@ async function rename(file) {
 }
 
 async function describe(file) {
-	if (props.mock) return;
+	if (mock) return;
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
@@ -107,7 +107,7 @@ async function describe(file) {
 }
 
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {
-	if (props.mock) return;
+	if (mock) return;
 
 	const newFile = await os.cropImage(file, { aspectRatio: NaN });
 	emit('replaceFile', file, newFile);
