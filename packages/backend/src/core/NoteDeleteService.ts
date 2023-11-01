@@ -24,6 +24,7 @@ import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -77,8 +78,8 @@ export class NoteDeleteService {
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
 				let renote: MiNote | null = null;
 
-				// if deletd note is renote
-				if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
+				// if deleted note is renote
+				if (isPureRenote(note)) {
 					renote = await this.notesRepository.findOneBy({
 						id: note.renoteId,
 					});
