@@ -14,6 +14,7 @@ import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ChannelEntityService {
