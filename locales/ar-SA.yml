@@ -999,6 +999,7 @@ expired: "منتهية صلاحيته"
 icon: "الصورة الرمزية"
 replies: "رد"
 renotes: "أعد النشر"
+flip: "اقلب"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
   letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."

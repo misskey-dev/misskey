@@ -29,7 +29,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
 				>
 					<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
-					<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
+					<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator">
+						<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
+						<i v-else class="_indicatorCircle"></i>
+					</span>
 				</component>
 			</template>
 			<div :class="$style.divider"></div>
@@ -106,7 +109,7 @@ function more(ev: MouseEvent) {
 <style lang="scss" module>
 .root {
 	--nav-width: 250px;
-	--nav-icon-only-width: 72px;
+	--nav-icon-only-width: 80px;
 
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
@@ -312,6 +315,13 @@ function more(ev: MouseEvent) {
 		color: var(--navIndicator);
 		font-size: 8px;
 		animation: blink 1s infinite;
+
+		&:has(.itemIndicateValueIcon) {
+			animation: none;
+			left: auto;
+			right: 40px;
+			font-size: 10px;
+		}
 	}
 
 	.itemText {
@@ -475,6 +485,14 @@ function more(ev: MouseEvent) {
 		color: var(--navIndicator);
 		font-size: 8px;
 		animation: blink 1s infinite;
+
+		&:has(.itemIndicateValueIcon) {
+			animation: none;
+			top: 4px;
+			left: auto;
+			right: 4px;
+			font-size: 10px;
+		}
 	}
 }
 </style>
