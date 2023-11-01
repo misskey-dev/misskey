@@ -1200,7 +1200,6 @@ export interface Locale {
             "renote": string;
             "reaction": string;
             "menu": string;
-            "howToNote": string;
         };
         "_reaction": {
             "title": string;
