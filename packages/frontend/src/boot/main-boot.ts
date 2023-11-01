@@ -228,15 +228,15 @@ export async function mainBoot() {
 		main.on('readAllNotifications', () => {
 			updateAccount({
 				hasUnreadNotification: false,
-				unreadNotificationCount: 0,
+				unreadNotificationsCount: 0,
 			});
 		});
 
 		main.on('unreadNotification', () => {
-			const unreadNotificationCount = ($i?.unreadNotificationCount ?? 0) + 1;
+			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
 			updateAccount({
 				hasUnreadNotification: true,
-				unreadNotificationCount,
+				unreadNotificationsCount,
 			});
 		});
 

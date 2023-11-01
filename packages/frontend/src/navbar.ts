@@ -20,12 +20,12 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
 		indicateValue: computed(() => {
-			if (!$i || $i.unreadNotificationCount === 0) return '';
+			if (!$i || $i.unreadNotificationsCount === 0) return '';
 
-			if ($i.unreadNotificationCount > 99) {
+			if ($i.unreadNotificationsCount > 99) {
 				return '99+';
 			} else {
-				return $i.unreadNotificationCount.toString();
+				return $i.unreadNotificationsCount.toString();
 			}
 		}),
 		to: '/my/notifications',
