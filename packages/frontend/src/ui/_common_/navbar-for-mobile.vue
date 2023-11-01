@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button" :class="[$style.item, { [$style.active]: navbarItemDef[item].active }]" :activeClass="$style.active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 				<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
 				<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator">
-					<span v-if="navbarItemDef[item].indicateValue" :class="$style.itemIndicateValueIcon"><span>{{ navbarItemDef[item].indicateValue }}</span></span>
+					<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
 					<i v-else class="_indicatorCircle"></i>
 				</span>
 			</component>
@@ -260,24 +260,6 @@ function more() {
 		animation: none;
 		left: auto;
 		right: 20px;
-	}
-}
-
-.itemIndicateValueIcon {
-	display: inline-flex;
-	color: var(--fgOnAccent);
-	font-weight: 700;
-	background: var(--navIndicator);
-	height: 1.5em;
-	min-width: 1.5em;
-	align-items: center;
-	justify-content: center;
-	border-radius: 99rem;
-
-	& > span {
-		display: inline-block;
-		padding: 0 .25em;
-		line-height: 1.5em;
 	}
 }
 
