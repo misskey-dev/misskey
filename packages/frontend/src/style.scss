@@ -155,6 +155,19 @@ hr {
 	background: currentColor;
 }
 
+._indicateCounter {
+	display: inline-flex;
+	color: var(--fgOnAccent);
+	font-weight: 700;
+	background: var(--indicator);
+	height: 1.5em;
+	min-width: 1.5em;
+	align-items: center;
+	justify-content: center;
+	border-radius: 99rem;
+	padding: 0.3em 0.5em;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;

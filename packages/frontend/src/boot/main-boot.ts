@@ -226,11 +226,18 @@ export async function mainBoot() {
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccount({ hasUnreadNotification: false });
+			updateAccount({
+				hasUnreadNotification: false,
+				unreadNotificationsCount: 0,
+			});
 		});
 
 		main.on('unreadNotification', () => {
-			updateAccount({ hasUnreadNotification: true });
+			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
+			updateAccount({
+				hasUnreadNotification: true,
+				unreadNotificationsCount,
+			});
 		});
 
 		main.on('unreadMention', () => {
