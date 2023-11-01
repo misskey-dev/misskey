@@ -106,6 +106,7 @@ export type MeDetailed = UserDetailed & {
 	hasUnreadMessagingMessage: boolean;
 	hasUnreadNotification: boolean;
 	hasUnreadSpecifiedNotes: boolean;
+	unreadNotificationsCount: number;
 	hideOnlineStatus: boolean;
 	injectFeaturedNote: boolean;
 	integrations: Record<string, any>;

@@ -28,8 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
           <i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
             :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
           <span v-if="navbarItemDef[item].indicated"
-                :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
-              class="_indicatorCircle"></i></span>
+                :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
+					<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
+             v-else class="_indicatorCircle"></i></span>
         </component>
       </template>
       <div :class="$style.divider"></div>
@@ -459,6 +460,18 @@ function more() {
   &.gamingLight {
     color: black;
   }
+	position: absolute;
+	top: 0;
+	left: 20px;
+	color: var(--navIndicator);
+	font-size: 8px;
+	animation: blink 1s infinite;
+
+	&:has(.itemIndicateValueIcon) {
+		animation: none;
+		left: auto;
+		right: 20px;
+	}
 }
 
 .itemText {

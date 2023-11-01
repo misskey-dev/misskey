@@ -36,8 +36,10 @@ SPDX-License-Identifier: AGPL-3.0-only
           :class="$style.navButtonIcon" class="ti ti-home"></i></button>
       <button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i
           :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification"
-                                                                     :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
-          class="_indicatorCircle"></i></span></button>
+                                                                     :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
+				<span class="_indicateCounter" :
+          class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+			</span></button>
       <button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon"
                                                                                           class="ti ti-apps"></i>
       </button>
@@ -570,6 +572,17 @@ $widgets-hide-threshold: 1090px;
 }
 
 .navButtonIndicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: var(--indicator);
+	font-size: 16px;
+	animation: blink 1s infinite;
+
+	&:has(.itemIndicateValueIcon) {
+		animation: none;
+		font-size: 12px;
+	}
   position: absolute;
   top: 0;
   left: 0;
