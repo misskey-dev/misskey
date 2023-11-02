@@ -1154,6 +1154,7 @@ releaseToRefresh: "Release to refresh"
 refreshing: "Refreshing..."
 pullDownToRefresh: "Pull down to refresh"
 disableStreamingTimeline: "Disable real-time timeline updates"
+useGroupedNotifications: "Display grouped notifications"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
@@ -2061,6 +2062,9 @@ _notification:
   checkNotificationBehavior: "Check notification appearance"
   sendTestNotification: "Send test notification"
   notificationWillBeDisplayedLikeThis: "Notifications look like this"
+  reactedBySomeUsers: "{n} users reacted"
+  renotedBySomeUsers: "Renote from {n} users"
+  followedBySomeUsers: "Followed by {n} users"
   _types:
     all: "All"
     note: "New notes"
