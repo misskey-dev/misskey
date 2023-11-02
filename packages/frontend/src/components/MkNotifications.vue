@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #default="{ items: notifications }">
 		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true">
 			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
-			<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel notification"/>
+			<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel"/>
 		</MkDateSeparatedList>
 	</template>
 </MkPagination>
@@ -32,6 +32,7 @@ import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -39,7 +40,13 @@ const props = defineProps<{
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination: Paging = {
+const pagination: Paging = defaultStore.state.useGroupedNotifications ? {
+	endpoint: 'i/notifications-grouped' as const,
+	limit: 20,
+	params: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+} : {
 	endpoint: 'i/notifications' as const,
 	limit: 20,
 	params: computed(() => ({
