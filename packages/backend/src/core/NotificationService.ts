@@ -19,6 +19,7 @@ import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { UserListService } from '@/core/UserListService.js';
+import type { FilterUnionByProperty } from '@/types.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -73,10 +74,10 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async createNotification(
+	public async createNotification<T extends MiNotification['type']>(
 		notifieeId: MiUser['id'],
-		type: MiNotification['type'],
-		data: Omit<Partial<MiNotification>, 'notifierId'>,
+		type: T,
+		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
 		notifierId?: MiUser['id'] | null,
 	): Promise<MiNotification | null> {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
@@ -128,9 +129,11 @@ export class NotificationService implements OnApplicationShutdown {
 			id: this.idService.gen(),
 			createdAt: new Date(),
 			type: type,
-			notifierId: notifierId,
+			...(notifierId ? {
+				notifierId,
+			} : {}),
 			...data,
-		} as MiNotification;
+		} as any as FilterUnionByProperty<MiNotification, 'type', T>;
 
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
