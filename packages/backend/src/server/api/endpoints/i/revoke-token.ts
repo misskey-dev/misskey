@@ -18,8 +18,12 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		tokenId: { type: 'string', format: 'misskey:id' },
+		token: { type: 'string' },
 	},
-	required: ['tokenId'],
+	anyOf: [
+		{ required: ['tokenId'] },
+		{ required: ['token'] },
+	],
 } as const;
 
 @Injectable()
@@ -29,13 +33,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private accessTokensRepository: AccessTokensRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const tokenExist = await this.accessTokensRepository.exist({ where: { id: ps.tokenId } });
+			if (ps.tokenId) {
+				const tokenExist = await this.accessTokensRepository.exist({ where: { id: ps.tokenId } });
 
-			if (tokenExist) {
-				await this.accessTokensRepository.delete({
-					id: ps.tokenId,
-					userId: me.id,
-				});
+				if (tokenExist) {
+					await this.accessTokensRepository.delete({
+						id: ps.tokenId,
+						userId: me.id,
+					});
+				}
+			} else if (ps.token) {
+				const tokenExist = await this.accessTokensRepository.exist({ where: { token: ps.token } });
+
+				if (tokenExist) {
+					await this.accessTokensRepository.delete({
+						token: ps.token,
+						userId: me.id,
+					});
+				}
 			}
 		});
 	}
