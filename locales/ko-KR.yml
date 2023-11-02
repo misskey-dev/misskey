@@ -1123,6 +1123,7 @@ edited: "수정됨"
 notificationRecieveConfig: "알림 설정"
 mutualFollow: "맞팔로우"
 flip: "플립"
+useGroupedNotifications: "알림을 그룹화하고 표시"
 _announcement:
   forExistingUsers: "기존 유저에게만 알림"
   forExistingUsersDescription: "활성화하면 이 공지사항을 게시한 시점에서 이미 가입한 유저에게만 표시합니다. 비활성화하면 게시 후에 가입한 유저에게도 표시합니다."
@@ -2014,6 +2015,9 @@ _notification:
   checkNotificationBehavior: "알림 표시를 체크하기"
   sendTestNotification: "테스트 알림 보내기"
   notificationWillBeDisplayedLikeThis: "알림이 이렇게 표시됩니다"
+  reactedBySomeUsers: "{n}명이 반응했습니다"
+  renotedBySomeUsers: "{n}명이 리노트했습니다"
+  followedBySomeUsers: "{n}명에게 팔로우됨"
   _types:
     all: "전부"
     follow: "팔로잉"
