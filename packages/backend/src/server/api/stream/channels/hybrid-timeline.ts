@@ -67,7 +67,7 @@ class HybridTimelineChannel extends Channel {
 		if (note.visibility === 'followers') {
 			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
 		} else if (note.visibility === 'specified') {
-			if (!note.visibleUserIds!.includes(this.user!.id)) return;
+			if (!isMe && !note.visibleUserIds!.includes(this.user!.id)) return;
 		}
 
 		// Ignore notes from instances the user has muted

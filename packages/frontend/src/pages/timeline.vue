@@ -140,36 +140,42 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-const headerActions = $computed(() => [
-	...[deviceKind === 'desktop' ? {
-		icon: 'ti ti-refresh',
-		text: i18n.ts.reload,
-		handler: (ev) => {
-			console.log('called');
-			tlComponent.reloadTimeline();
+const headerActions = $computed(() => {
+	const tmp = [
+		{
+			icon: 'ti ti-dots',
+			text: i18n.ts.options,
+			handler: (ev) => {
+				os.popupMenu([{
+					type: 'switch',
+					text: i18n.ts.showRenotes,
+					icon: 'ti ti-repeat',
+					ref: $$(withRenotes),
+				}, src === 'local' || src === 'social' ? {
+					type: 'switch',
+					text: i18n.ts.showRepliesToOthersInTimeline,
+					ref: $$(withReplies),
+				} : undefined, {
+					type: 'switch',
+					text: i18n.ts.fileAttachedOnly,
+					icon: 'ti ti-photo',
+					ref: $$(onlyFiles),
+				}], ev.currentTarget ?? ev.target);
+			},
 		},
-	} : {}], {
-		icon: 'ti ti-dots',
-		text: i18n.ts.options,
-		handler: (ev) => {
-			os.popupMenu([{
-				type: 'switch',
-				text: i18n.ts.showRenotes,
-				icon: 'ti ti-repeat',
-				ref: $$(withRenotes),
-			}, src === 'local' || src === 'social' ? {
-				type: 'switch',
-				text: i18n.ts.showRepliesToOthersInTimeline,
-				ref: $$(withReplies),
-			} : undefined, {
-				type: 'switch',
-				text: i18n.ts.fileAttachedOnly,
-				icon: 'ti ti-photo',
-				ref: $$(onlyFiles),
-			}], ev.currentTarget ?? ev.target);
-		},
+	];
+	if (deviceKind === 'desktop') {
+		tmp.unshift({
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			handler: (ev: Event) => {
+				console.log('called');
+				tlComponent.reloadTimeline();
+			},
+		});
 	}
-]);
+	return tmp;
+});
 
 const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
 	key: 'list:' + l.id,

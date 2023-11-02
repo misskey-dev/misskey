@@ -47,7 +47,13 @@ let scrollEl: HTMLElement | null = null;
 
 let disabled = false;
 
-const emits = defineEmits<{
+const props = withDefaults(defineProps<{
+	refresher: () => Promise<void>;
+}>(), {
+	refresher: () => Promise.resolve(),
+});
+
+const emit = defineEmits<{
 	(ev: 'refresh'): void;
 }>();
 
@@ -120,7 +126,12 @@ function moveEnd() {
 		if (isPullEnd) {
 			isPullEnd = false;
 			isRefreshing = true;
-			fixOverContent().then(() => emits('refresh'));
+			fixOverContent().then(() => {
+				emit('refresh');
+				props.refresher().then(() => {
+					refreshFinished();
+				});
+			});
 		} else {
 			closeContent().then(() => isPullStart = false);
 		}
@@ -188,7 +199,6 @@ onUnmounted(() => {
 });
 
 defineExpose({
-	refreshFinished,
 	setDisabled,
 });
 </script>
