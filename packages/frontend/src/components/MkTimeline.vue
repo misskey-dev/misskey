@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh ref="prComponent" @refresh="() => reloadTimeline(true)">
+<MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
 	<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)" @status="prComponent.setDisabled($event)"/>
 </MkPullToRefresh>
 </template>
@@ -196,25 +196,18 @@ const pagination = {
 	params: query,
 };
 
-const reloadTimeline = (fromPR = false) => {
-	tlNotesCount = 0;
+function reloadTimeline() {
+	return new Promise<void>((res) => {
+		tlNotesCount = 0;
 
-	tlComponent.pagingComponent?.reload().then(() => {
-		reloadStream();
-		if (fromPR) prComponent.refreshFinished();
+		tlComponent.pagingComponent?.reload().then(() => {
+			reloadStream();
+			res();
+		});
 	});
-};
-
-//const pullRefresh = () => reloadTimeline(true);
+}
 
 defineExpose({
 	reloadTimeline,
 });
-
-/* TODO
-const timetravel = (date?: Date) => {
-	this.date = date;
-	this.$refs.tl.reload();
-};
-*/
 </script>
