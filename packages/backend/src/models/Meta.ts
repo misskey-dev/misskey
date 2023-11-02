@@ -176,6 +176,7 @@ export class MiMeta {
 
 	@Column('integer', {
 		default: 0,
+		comment: 'The expiration time of email verification (unit: minute)',
 	})
 	public emailVerificationExpiresIn: number;
 
