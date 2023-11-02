@@ -212,21 +212,6 @@ export class NotificationEntityService implements OnModuleInit {
 				note: noteIfNeed,
 				users,
 			});
-		} else if (notification.type === 'follow:grouped') {
-			const users = await Promise.all(notification.userIds.map(userId => {
-				const user = hint?.packedUsers != null
-					? hint.packedUsers.get(userId)
-					: this.userEntityService.pack(userId!, { id: meId }, {
-						detail: false,
-					});
-				return user;
-			}));
-			return await awaitAll({
-				id: notification.id,
-				createdAt: new Date(notification.createdAt).toISOString(),
-				type: notification.type,
-				users,
-			});
 		}
 
 		return await awaitAll({
@@ -276,7 +261,6 @@ export class NotificationEntityService implements OnModuleInit {
 			if ('notifierId' in notification) userIds.push(notification.notifierId);
 			if (notification.type === 'reaction:grouped') userIds.push(...notification.reactions.map(x => x.userId));
 			if (notification.type === 'renote:grouped') userIds.push(...notification.userIds);
-			if (notification.type === 'follow:grouped') userIds.push(...notification.userIds);
 		}
 		const users = userIds.length > 0 ? await this.usersRepository.find({
 			where: { id: In(userIds) },

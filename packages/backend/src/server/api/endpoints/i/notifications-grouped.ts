@@ -157,20 +157,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					prevGroupedNotification.id = notification.id;
 					continue;
 				}
-				if (prev.type === 'follow' && notification.type === 'follow') {
-					if (prevGroupedNotification.type !== 'follow:grouped') {
-						groupedNotifications.push({
-							type: 'follow:grouped',
-							id: '',
-							createdAt: notification.createdAt,
-							userIds: [],
-						});
-						prevGroupedNotification = groupedNotifications.at(-1)!;
-					}
-					(prevGroupedNotification as FilterUnionByProperty<MiGroupedNotification, 'type', 'follow:grouped'>).userIds.push(notification.notifierId!);
-					prevGroupedNotification.id = notification.id;
-					continue;
-				}
 
 				groupedNotifications.push(notification);
 			}

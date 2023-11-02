@@ -115,6 +115,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
+			<div v-else-if="notification.type === 'renote:grouped'">
+				<div v-for="user of notification.users" :class="$style.reactionsItem">
+					<MkAvatar :class="$style.reactionsItemAvatar" :user="user" link preview/>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -321,8 +326,9 @@ useTooltip(reactionRef, (showing) => {
 .reactionsItem {
 	display: inline-block;
 	position: relative;
-	width: 42px;
-	height: 42px;
+	width: 38px;
+	height: 38px;
+	margin-top: 8px;
 	margin-right: 8px;
 }
 

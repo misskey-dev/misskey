@@ -21,7 +21,7 @@ export const packedNotificationSchema = {
 		type: {
 			type: 'string',
 			optional: false, nullable: false,
-			enum: [...notificationTypes, 'reaction:grouped', 'renote:grouped', 'follow:grouped'],
+			enum: [...notificationTypes, 'reaction:grouped', 'renote:grouped'],
 		},
 		user: {
 			type: 'object',
