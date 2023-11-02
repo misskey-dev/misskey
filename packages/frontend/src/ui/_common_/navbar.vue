@@ -36,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
             <i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
               :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
             <span v-if="navbarItemDef[item].indicated"
-                  :class="[$style.itemIndicator,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">
-						<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
+                  :class="[$style.itemIndicator ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">
+						<span v-if="navbarItemDef[item].indicateValue && indicatorCounterToggle" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
                v-else class="_indicatorCircle"></i></span>
           </component>
         </template>
@@ -95,7 +95,7 @@ import {$i, openAccountMenu as openAccountMenu_} from '@/account';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';
 import {instance} from '@/instance';
-
+const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 function hexToRgb(hex) {
   hex = hex.replace(/^#/, '');
   const r = parseInt(hex.substring(0, 2), 16);

@@ -144,6 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
                 <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
                 <MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
+                <MkSwitch v-model="indicatorCounterToggle">{{ i18n.ts.notificationIndicator }}</MkSwitch>
             </div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -297,6 +298,7 @@ const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibili
 const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
+const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

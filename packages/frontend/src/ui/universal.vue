@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       <button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i
           :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification"
                                                                      :class="[$style.navButtonIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
-				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 && indicatorCounterToggle ? '99+' : $i.unreadNotificationsCount }}</span>
 			</span></button>
       <button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon"
                                                                                           class="ti ti-apps"></i>
@@ -126,7 +126,7 @@ import {useScrollPositionManager} from '@/nirax';
 
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
-
+const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 let gaming = ref()
 // gaming.valueに新しい値を代入する
 if (darkMode.value && gamingMode.value == true) {

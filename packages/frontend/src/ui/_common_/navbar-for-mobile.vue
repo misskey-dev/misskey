@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
             :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
           <span v-if="navbarItemDef[item].indicated"
                 :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
-					<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
+					<span v-if="navbarItemDef[item].indicateValue && indicatorCounterToggle" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
              v-else class="_indicatorCircle"></i></span>
         </component>
       </template>
@@ -82,7 +82,7 @@ import {$i, openAccountMenu as openAccountMenu_} from '@/account';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';
 import {instance} from '@/instance';
-
+const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
 function hexToRgb(hex) {

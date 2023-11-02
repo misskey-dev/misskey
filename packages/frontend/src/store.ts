@@ -276,6 +276,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
     default: 'dark',
 	},
+	indicatorCounterToggle: {
+		where: 'device',
+		default: 'true',
+	},
 	bannerUrl:{
 		where: 'device',
 		default: bannerDark

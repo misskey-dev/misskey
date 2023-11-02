@@ -69,9 +69,6 @@ onUnmounted(() => {
 	if (connection) connection.dispose();
 });
 
-onDeactivated(() => {
-	if (connection) connection.dispose();
-});
 </script>
 
 <style lang="scss" module>
