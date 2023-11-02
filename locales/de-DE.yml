@@ -1154,6 +1154,7 @@ releaseToRefresh: "Zum Aktualisieren loslassen"
 refreshing: "Wird aktualisiert..."
 pullDownToRefresh: "Zum Aktualisieren ziehen"
 disableStreamingTimeline: "Echtzeitaktualisierung der Chronik deaktivieren"
+useGroupedNotifications: "Benachrichtigungen gruppieren"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
@@ -2061,6 +2062,9 @@ _notification:
   checkNotificationBehavior: "Aussehen von Benachrichtigungen überprüfen"
   sendTestNotification: "Testbenachrichtigung senden"
   notificationWillBeDisplayedLikeThis: "Benachrichtigungen sehen so aus"
+  reactedBySomeUsers: "{n} Benutzer haben eine Reaktion geschickt"
+  renotedBySomeUsers: "Renote von {n} Benutzern"
+  followedBySomeUsers: "Von {n} Benutzern gefolgt"
   _types:
     all: "Alle"
     note: "Neue Notizen"
