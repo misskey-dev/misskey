@@ -38,6 +38,7 @@ export type MiNotification = {
 	createdAt: string;
 	notifierId: MiUser['id'];
 	noteId: MiNote['id'];
+	targetNoteId: MiNote['id'];
 } | {
 	type: 'quote';
 	id: string;

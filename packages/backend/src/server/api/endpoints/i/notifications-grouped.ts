@@ -142,15 +142,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					prevGroupedNotification.id = notification.id;
 					continue;
 				}
-				if (prev.type === 'renote' && notification.type === 'renote' && prev.noteId === notification.noteId) {
+				if (prev.type === 'renote' && notification.type === 'renote' && prev.targetNoteId === notification.targetNoteId) {
 					if (prevGroupedNotification.type !== 'renote:grouped') {
-						groupedNotifications.push({
+						groupedNotifications[groupedNotifications.length - 1] = {
 							type: 'renote:grouped',
 							id: '',
 							createdAt: notification.createdAt,
 							noteId: prev.noteId!,
 							userIds: [],
-						});
+						};
 						prevGroupedNotification = groupedNotifications.at(-1)!;
 					}
 					(prevGroupedNotification as FilterUnionByProperty<MiGroupedNotification, 'type', 'renote:grouped'>).userIds.push(notification.notifierId!);
