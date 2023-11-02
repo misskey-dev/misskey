@@ -56,6 +56,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #key>{{ i18n.ts._fileViewer.size }}</template>
 				<template #value>{{ bytes(file.size) }}</template>
 			</MkKeyValue>
+			<MkKeyValue :class="$style.fileMetaDataChildren" :copy="file.url">
+				<template #key>URL</template>
+				<template #value>{{ file.url }}</template>
+			</MkKeyValue>
 		</div>
 	</div>
 	<div v-else class="_fullinfo">
