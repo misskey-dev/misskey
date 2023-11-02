@@ -254,10 +254,25 @@ async function onSubmit(): Promise<void> {
 			'turnstile-response': turnstileResponse,
 		});
 		if (instance.emailRequiredForSignup) {
+			const text = [i18n.t('_signup.emailSent', { email })];
+
+			if (instance.emailVerificationExpiresIn) {
+				let time = '';
+				const hours = Math.floor(instance.emailVerificationExpiresIn / 60);
+				const minutes = instance.emailVerificationExpiresIn % 60;
+				if (hours > 0) {
+					time += hours + i18n.t('_time.hour');
+				}
+				if (minutes > 0) {
+					time += minutes + i18n.t('_time.minute');
+				}
+				text.push(i18n.t('_signup.expiresTime', { time }));
+			}
+
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
-				text: i18n.t('_signup.emailSent', { email }),
+				text: text.join('\n'),
 			});
 			emit('signupEmailPending');
 		} else {
