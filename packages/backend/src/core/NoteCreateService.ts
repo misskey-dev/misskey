@@ -224,6 +224,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
+		isGorilla: MiUser['isGorilla'];
 	}, data: Option, silent = false): Promise<MiNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)

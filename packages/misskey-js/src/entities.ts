@@ -34,6 +34,7 @@ export type UserLite = {
 		faviconUrl: Instance['faviconUrl'];
 		themeColor: Instance['themeColor'];
 	};
+	isGorilla?: boolean;
 	isCat?: boolean;
 	isBot?: boolean;
 };
@@ -58,6 +59,7 @@ export type UserDetailed = UserLite & {
 	isBlocking: boolean;
 	isBot: boolean;
 	isCat: boolean;
+	isGorilla: boolean;
 	isFollowed: boolean;
 	isFollowing: boolean;
 	isLocked: boolean;

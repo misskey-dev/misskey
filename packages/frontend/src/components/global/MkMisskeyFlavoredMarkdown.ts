@@ -16,6 +16,8 @@ import { defaultStore } from '@/store';
 import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 import MkRuby from "@/components/global/MkRuby.vue";
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
+import { uhoize as doUhoize } from '@/scripts/uhoize.js';
+import {ID, Instance} from "misskey-js/built/entities.js";
 
 const QUOTE_STYLE = `
 display: block;
@@ -62,12 +64,41 @@ type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
-	author?: Misskey.entities.UserLite;
+	author?: {
+		id: ID;
+		username: string;
+		host: string | null;
+		name: string | null;
+		onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
+		avatarUrl: string;
+		avatarBlurhash: string;
+		avatarDecorations: {
+			id: ID;
+			url: string;
+			angle?: number;
+			flipH?: boolean;
+		}[];
+		emojis: {
+			name: string;
+			url: string;
+		}[];
+		instance?: {
+			name: Instance['name'];
+			softwareName: Instance['softwareName'];
+			softwareVersion: Instance['softwareVersion'];
+			iconUrl: Instance['iconUrl'];
+			faviconUrl: Instance['faviconUrl'];
+			themeColor: Instance['themeColor'];
+		};
+		isGorilla?: boolean;
+		isCat?: boolean;
+		isBot?: boolean;};
 	i?: Misskey.entities.UserLite | null;
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
 	nyaize: boolean | 'account';
+	uhoize: boolean | 'account';
 	parsedNodes?: mfm.MfmNode[] | null;
 };
 
@@ -75,7 +106,8 @@ type MfmProps = {
 export default function(props: MfmProps) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'account' ? props.author?.isCat : false : false;
-
+	const shouldUhoize = props.nyaize ? props.nyaize === 'account' ? props.author?.isGorilla : false : false;
+	console.log(shouldUhoize, props.nyaize,props.author?.isGorilla)
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
@@ -93,15 +125,18 @@ export default function(props: MfmProps) {
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
 	 * @param disableNyaize Whether nyaize is disabled or not
+	 * @param disableUhoize
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false, disableUhoize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 				if (!disableNyaize && shouldNyaize) {
 					text = doNyaize(text);
 				}
-
+				if (!disableUhoize && shouldUhoize) {
+					text = doUhoize(text);
+				}
 				if (!props.plain) {
 					const res: (VNode | string)[] = [];
 					for (const t of text.split('\n')) {

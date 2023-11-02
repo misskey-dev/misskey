@@ -265,6 +265,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
+	'markedAsGorilla': {
+		img: '/fluent-emoji/1f98D.png',
+		bg: 'linear-gradient(0deg, rgba(55,0,0,1) 0%, rgba(107,5,5,1) 59%, rgba(158,6,6,1) 100%)',
+		frame: 'bronze',
+	},
 	'following1': {
 		img: '/fluent-emoji/2618.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',

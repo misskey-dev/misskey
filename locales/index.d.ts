@@ -175,7 +175,9 @@ export interface Locale {
     "flagAsBot": string;
     "flagAsBotDescription": string;
     "flagAsCat": string;
+    "flagAsGorilla": string;
     "flagAsCatDescription": string;
+    "flagAsGorillaDescription": string;
     "flagShowTimelineReplies": string;
     "showMediaTimeline": string;
     "showMediaTimelineInfo": string;
