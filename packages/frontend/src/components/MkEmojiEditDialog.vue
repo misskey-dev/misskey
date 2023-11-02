@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
-	<template v-else-if="requestNow" #header>{{ i18n.ts.requestCustomEmojis }}</template>
+	<template v-else-if="isRequest && !emoji" #header>{{ i18n.ts.requestCustomEmojis }}</template>
 	<template v-else #header>New emoji</template>
 
 	<div>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
-				<MkFolder v-if="!requestNow && !isRequestEdit">
+				<MkFolder v-if="!isRequest">
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
@@ -65,14 +65,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkSwitch v-model="isSensitive">isSensitive</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-				<MkSwitch v-if="!requestNow" v-model="isRequest" :disabled="requestNow">
-					{{ i18n.ts.requestPending }}
-				</MkSwitch>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
 			<div :class="$style.footerButtons">
-				<MkButton v-if="!requestNow" danger rounded style="margin: 0 auto;" @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton v-if="!isRequest" danger rounded style="margin: 0 auto;" @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 				<MkButton v-if="validation" primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 				<MkButton v-else rounded style="margin: 0 auto;"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 			</div>
@@ -99,8 +96,7 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
   emoji?: any,
-  requestNow: boolean,
-  isRequestEdit?: boolean,
+  isRequest: boolean,
 }>();
 
 let dialog = $ref(null);
@@ -114,14 +110,12 @@ let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref((props.emoji && props.emoji.r
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<Misskey.entities.DriveFile>();
 let chooseFile: DriveFile|null = $ref(null);
-let requestNow = $ref(props.requestNow);
-let isRequestEdit = $ref(props.isRequestEdit ?? false);
-let isRequest = $ref(!!(isRequestEdit || props.requestNow));
+let isRequest = $ref(props.isRequest ?? false);
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-const imgUrl = computed(() => file ? file.url : props.emoji && !isRequestEdit ? `/emoji/${props.emoji.name}.webp` : props.emoji && props.emoji.url ? props.emoji.url : null);
+const imgUrl = computed(() => file ? file.url : props.emoji && !isRequest ? `/emoji/${props.emoji.name}.webp` : props.emoji && props.emoji.url ? props.emoji.url : null);
 const validation = computed(() => {
 	return name.match(/^[a-zA-Z0-9_]+$/) && imgUrl.value != null;
 });
@@ -171,7 +165,7 @@ async function done() {
 	}
 
 	if (props.emoji) {
-		if (isRequestEdit) {
+		if (isRequest) {
 			await os.apiWithDialog('admin/emoji/update-request', {
 				id: props.emoji.id,
 				...params,

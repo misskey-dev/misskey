@@ -18,20 +18,20 @@
 <MkPagination ref="emojisPaginationComponent" :pagination="pagination" :displayLimit="100">
 	<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 	<template #default="{items}">
-		<div class="ldhfsamy">
+		<div :class="$style.root">
 			<div v-for="emoji in items" :key="emoji.id">
-				<button v-if="emoji.request" class="emoji _panel _button emoji-request" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+				<button v-if="emoji.request" class="_panel _button" :class="[{ selected: selectedEmojis.includes(emoji.id) },$style.emoji,$style.emojirequest]" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 					<img :src="emoji.url" class="img" :alt="emoji.name"/>
 					<div class="body">
 						<div class="name _monospace">{{ emoji.name }}</div>
 						<div class="info">{{ emoji.category }}</div>
 					</div>
 				</button>
-				<button v-else class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
-					<img :src="emoji.url" class="img" :alt="emoji.name"/>
-					<div class="body">
-						<div class="name _monospace">{{ emoji.name }}</div>
-						<div class="info">{{ emoji.category }}</div>
+				<button v-else class="_panel _button" :class="[{ selected: selectedEmojis.includes(emoji.id) },$style.emoji]" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+					<img :src="emoji.url" :class="$style.img" :alt="emoji.name"/>
+					<div :class="$style.body">
+						<div :class="$style.name" class="_monospace">{{ emoji.name }}</div>
+						<div :class="$style.info">{{ emoji.category }}</div>
 					</div>
 				</button>
 			</div>
@@ -82,7 +82,7 @@ const toggleSelect = (emoji) => {
 const edit = (emoji) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
 		emoji: emoji,
-		requestNow: false,
+		isRequest: false,
 	}, {
 		done: result => {
 			if (result.updated) {
@@ -171,53 +171,48 @@ const delBulk = async () => {
 };
 </script>
 
-<style lang="scss" scoped>
-.ldhfsamy {
+<style lang="scss" module>
+.root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 	grid-gap: var(--margin);
+}
+.emoji {
+  display: flex;
+  align-items: center;
+  padding: 11px;
+  text-align: left;
+  border: solid 1px var(--panel);
+  width: 100%;
 
-	div > .emoji {
-		display: flex;
-		align-items: center;
-		padding: 11px;
-		text-align: left;
-		border: solid 1px var(--panel);
-		width: 100%;
+  &:hover {
+    border-color: var(--inputBorderHover);
+  }
 
-		&:hover {
-			border-color: var(--inputBorderHover);
-		}
-
-		&.selected {
-			border-color: var(--accent);
-		}
-
-		> .img {
-			width: 42px;
-			height: 42px;
-		}
-
-		> .body {
-			padding: 0 0 0 8px;
-			white-space: nowrap;
-			overflow: hidden;
-
-			> .name {
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-
-			> .info {
-				opacity: 0.5;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-		}
-	}
+  &.selected {
+    border-color: var(--accent);
+  }
+}
+.img {
+  width: 42px;
+  height: 42px;
+}
+.body {
+  padding: 0 0 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.name {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-.emoji-request {
+.info {
+  opacity: 0.5;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.emojirequest {
 	--c: rgb(255 196 0 / 15%);;
 	background-image: linear-gradient(45deg,var(--c) 16.67%,transparent 16.67%,transparent 50%,var(--c) 50%,var(--c) 66.67%,transparent 66.67%,transparent 100%);
 	background-size: 16px 16px;

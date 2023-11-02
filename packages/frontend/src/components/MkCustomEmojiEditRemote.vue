@@ -11,12 +11,12 @@
 <MkPagination :pagination="remotePagination">
 	<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 	<template #default="{items}">
-		<div class="ldhfsamy">
-			<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
-				<img :src="`/emoji/${emoji.name}@${emoji.host}.webp`" class="img" :alt="emoji.name"/>
-				<div class="body">
-					<div class="name _monospace">{{ emoji.name }}</div>
-					<div class="info">{{ emoji.host }}</div>
+		<div :class="$style.root">
+			<div v-for="emoji in items" :key="emoji.id" :class="$style.emoji" class="_panel _button" @click="remoteMenu(emoji, $event)">
+				<img :src="`/emoji/${emoji.name}@${emoji.host}.webp`" :class="$style.img" :alt="emoji.name"/>
+				<div :class="$style.body">
+					<div :class="$style.name" class="_monospace">{{ emoji.name }}</div>
+					<div :class="$style.info">{{ emoji.host }}</div>
 				</div>
 			</div>
 		</div>
@@ -62,49 +62,45 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 };
 </script>
 
-<style lang="scss" scoped>
-.empty {
-	margin: var(--margin);
+<style lang="scss" module>
+
+.root {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-gap: 12px;
+  margin: var(--margin) 0;
 }
 
-.ldhfsamy {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-	grid-gap: 12px;
-	margin: var(--margin) 0;
+.emoji {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  text-align: left;
 
-	> .emoji {
-		display: flex;
-		align-items: center;
-		padding: 12px;
-		text-align: left;
+  &:hover {
+    color: var(--accent);
+  }
+}
 
-		&:hover {
-			color: var(--accent);
-		}
+.img {
+  width: 32px;
+  height: 32px;
+}
 
-		> .img {
-			width: 32px;
-			height: 32px;
-		}
+.body {
+  padding: 0 0 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
-		> .body {
-			padding: 0 0 0 8px;
-			white-space: nowrap;
-			overflow: hidden;
-
-			> .name {
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-
-			> .info {
-				opacity: 0.5;
-				font-size: 90%;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-		}
-	}
+.info {
+  opacity: 0.5;
+  font-size: 90%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

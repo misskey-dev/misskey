@@ -2,33 +2,31 @@
 <MkPagination ref="emojisRequestPaginationComponent" :pagination="paginationRequest">
 	<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 	<template #default="{items}">
-		<div class="ldhfsamy">
-			<template v-for="emoji in items" :key="emoji.id">
-				<div class="emoji _panel">
-					<div class="img">
-						<div class="imgLight"><img :src="emoji.url" :alt="emoji.name"/></div>
-						<div class="imgDark"><img :src="emoji.url" :alt="emoji.name"/></div>
-					</div>
-					<div class="info">
-						<div class="name">{{ i18n.ts.name }}: {{ emoji.name }}</div>
-						<div class="category">{{ i18n.ts.category }}:{{ emoji.category }}</div>
-						<div class="aliases">{{ i18n.ts.tags }}:{{ emoji.aliases.join(' ') }}</div>
-						<div class="license">{{ i18n.ts.license }}:{{ emoji.license }}</div>
-					</div>
-					<div class="edit-button">
-						<MkButton primary class="edit" @click="editRequest(emoji)">
-							{{ i18n.ts.edit }}
-						</MkButton>
-						<MkButton class="request" @click="unrequested(emoji)">
-							{{ i18n.ts.approve }}
-						</MkButton>
-						<MkButton danger class="delete" @click="deleteRequest(emoji)">
-							{{ i18n.ts.delete }}
-						</MkButton>
-					</div>
+		<template v-for="emoji in items" :key="emoji.id">
+			<div :class="$style.emoji" class="_panel">
+				<div :class="$style.img">
+					<div :class="$style.imgLight"><img :src="emoji.url" :alt="emoji.name"/></div>
+					<div :class="$style.imgDark"><img :src="emoji.url" :alt="emoji.name"/></div>
 				</div>
-			</template>
-		</div>
+				<div :class="$style.info">
+					<div :class="$style.name">{{ i18n.ts.name }}: {{ emoji.name }}</div>
+					<div :class="$style.category">{{ i18n.ts.category }}:{{ emoji.category }}</div>
+					<div :class="$style.aliases">{{ i18n.ts.tags }}:{{ emoji.aliases.join(' ') }}</div>
+					<div :class="$style.license">{{ i18n.ts.license }}:{{ emoji.license }}</div>
+				</div>
+				<div :class="$style.editbutton">
+					<MkButton primary :class="$style.edit" @click="editRequest(emoji)">
+						{{ i18n.ts.edit }}
+					</MkButton>
+					<MkButton :class="$style.request" @click="unrequested(emoji)">
+						{{ i18n.ts.approve }}
+					</MkButton>
+					<MkButton danger :class="$style.delete" @click="deleteRequest(emoji)">
+						{{ i18n.ts.delete }}
+					</MkButton>
+				</div>
+			</div>
+		</template>
 	</template>
 </MkPagination>
 </template>
@@ -52,12 +50,10 @@ const paginationRequest = {
 	})),
 };
 
-const editRequest = (emoji) => {
-	emoji.requestNow = true;
+function editRequest(emoji) {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
 		emoji: emoji,
-		requestNow: false,
-		isRequestEdit: true,
+		isRequest: true,
 	}, {
 		done: result => {
 			if (result.updated) {
@@ -72,7 +68,7 @@ const editRequest = (emoji) => {
 			}
 		},
 	}, 'closed');
-};
+}
 
 async function unrequested(emoji) {
 	const { canceled } = await os.confirm({
@@ -113,103 +109,90 @@ async function deleteRequest(emoji) {
 }
 </script>
 
-<style lang="scss" scoped>
-.empty {
-	margin: var(--margin);
+<style lang="scss" module>
+.emoji {
+  align-items: center;
+  padding: 11px;
+  text-align: left;
+  border: solid 1px var(--panel);
+  margin: 10px;
+}
+.img {
+  display: grid;
+  grid-row: 1;
+  grid-column: 1/ span 2;
+  grid-template-columns: 50% 50%;
+  place-content: center;
+  place-items: center;
+}
+.imgLight {
+  display: grid;
+  grid-column: 1;
+  background-color: #fff;
+  margin-bottom: 12px;
+  img {
+    max-height: 64px;
+    max-width: 100%;
+  }
+}
+.imgDark {
+  display: grid;
+  grid-column: 2;
+  background-color: #000;
+  margin-bottom: 12px;
+  img {
+    max-height: 64px;
+    max-width: 100%;
+  }
+}
+.info {
+  display: grid;
+  grid-row: 2;
+  grid-template-rows: 30px 30px 30px;
+}
+.name {
+  grid-row: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-.ldhfsamy {
-	> .emoji {
-		align-items: center;
-		padding: 11px;
-		text-align: left;
-		border: solid 1px var(--panel);
-		margin: 10px;
+.category {
+  grid-row: 2;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
-		> .img {
-			display: grid;
-			grid-row: 1;
-			grid-column: 1/ span 2;
-			grid-template-columns: 50% 50%;
-			place-content: center;
-			place-items: center;
+.aliases {
+  grid-row: 3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
-			> .imgLight {
-				display: grid;
-				grid-column: 1;
-				background-color: #fff;
-				margin-bottom: 12px;
-				> img {
-					max-height: 64px;
-					max-width: 100%;
-				}
-			}
+.license {
+  grid-row: 4;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.editbutton {
+  display: grid;
+  grid-template-rows: 42px;
+  margin-top: 6px;
+}
+.edit {
+  grid-row: 1;
+  width: 100%;
+  margin: 6px 0;
+}
 
-			> .imgDark {
-				display: grid;
-				grid-column: 2;
-				background-color: #000;
-				margin-bottom: 12px;
-				> img {
-					max-height: 64px;
-					max-width: 100%;
-				}
-			}
-		}
+.request {
+  grid-row: 2;
+  width: 100%;
+  margin: 6px 0;
+}
 
-		> .info {
-			display: grid;
-			grid-row: 2;
-			grid-template-rows: 30px 30px 30px;
-
-			> .name {
-				grid-row: 1;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-
-			> .category {
-				grid-row: 2;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-
-			> .aliases {
-				grid-row: 3;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-
-			> .license {
-				grid-row: 4;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-		}
-
-		> .edit-button {
-			display: grid;
-			grid-template-rows: 42px;
-			margin-top: 6px;
-
-			> .edit {
-				grid-row: 1;
-				width: 100%;
-				margin: 6px 0;
-			}
-
-			> .request {
-				grid-row: 2;
-				width: 100%;
-				margin: 6px 0;
-			}
-
-			> .delete {
-				grid-row: 3;
-				width: 100%;
-				margin: 6px 0;
-			}
-		}
-	}
+.delete {
+  grid-row: 3;
+  width: 100%;
+  margin: 6px 0;
 }
 </style>

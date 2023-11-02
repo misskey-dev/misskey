@@ -98,7 +98,7 @@ function search() {
 
 const edit = () => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
-		requestNow: true,
+		isRequest: true,
 	}, {
 		done: result => {
 			window.location.reload();

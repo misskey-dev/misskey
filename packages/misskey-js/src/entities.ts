@@ -319,7 +319,6 @@ export type CustomEmoji = {
 	url: string;
 	category: string;
 	aliases: string[];
-	Request: boolean;
 };
 
 export type LiteInstanceMetadata = {
