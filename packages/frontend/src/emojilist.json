@@ -1045,7 +1045,7 @@
 	["⌛", "hourglass", 6],
 	["📡", "satellite", 6],
 	["🔋", "battery", 6],
-	["🪫", "battery", 6],
+	["🪫", "low_battery", 6],
 	["🔌", "electric_plug", 6],
 	["💡", "bulb", 6],
 	["🔦", "flashlight", 6],
