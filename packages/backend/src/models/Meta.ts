@@ -174,6 +174,11 @@ export class MiMeta {
 	})
 	public emailRequiredForSignup: boolean;
 
+	@Column('integer', {
+		default: 0,
+	})
+	public emailVerificationExpiresIn: number;
+
 	@Column('boolean', {
 		default: false,
 	})

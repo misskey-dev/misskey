@@ -59,6 +59,7 @@ export const paramDef = {
 		cacheRemoteFiles: { type: 'boolean' },
 		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
+		emailVerificationExpiresIn: { type: 'integer', minimum: 0 },
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
 		hcaptchaSecretKey: { type: 'string', nullable: true },
@@ -247,6 +248,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.emailRequiredForSignup !== undefined) {
 				set.emailRequiredForSignup = ps.emailRequiredForSignup;
+			}
+
+			if (ps.emailVerificationExpiresIn !== undefined) {
+				set.emailVerificationExpiresIn = ps.emailVerificationExpiresIn;
 			}
 
 			if (ps.enableHcaptcha !== undefined) {
