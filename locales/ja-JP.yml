@@ -1154,6 +1154,7 @@ releaseToRefresh: "離してリロード"
 refreshing: "リロード中"
 pullDownToRefresh: "引っ張ってリロード"
 disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
+useGroupedNotifications: "通知をグルーピングして表示する"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2114,6 +2115,9 @@ _notification:
   checkNotificationBehavior: "通知の表示を確かめる"
   sendTestNotification: "テスト通知を送信する"
   notificationWillBeDisplayedLikeThis: "通知はこのように表示されます"
+  reactedBySomeUsers: "{n}人がリアクションしました"
+  renotedBySomeUsers: "{n}人がリノートしました"
+  followedBySomeUsers: "{n}人にフォローされました"
 
   _types:
     all: "すべて"

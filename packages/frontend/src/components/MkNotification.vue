@@ -39,7 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-else-if="notification.type === 'reaction'"
 				ref="reactionRef"
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
-				:customEmojis="notification.note.emojis"
 				:noStyle="true"
 				style="width: 100%; height: 100%;"
 			/>
@@ -52,11 +51,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.t('_notification.reactedBySomeUsers', { n: notification.reactions.length }) }}</span>
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
 		<div>
-			<MkA v-if="notification.type === 'reaction'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+			<MkA v-if="notification.type === 'reaction' || notification.type === 'reaction:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
@@ -102,6 +102,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
 				<Mfm :text="notification.body" :nowrap="false"/>
 			</span>
+
+			<div v-if="notification.type === 'reaction:grouped'">
+				<div v-for="reaction of notification.reactions" :class="$style.reactionsItem">
+					<MkAvatar :class="$style.reactionsItemAvatar" :user="reaction.user" link preview/>
+					<div :class="$style.reactionsItemReaction">
+						<MkReactionIcon
+							:reaction="reaction.reaction ? reaction.reaction.replace(/^:(\w+):$/, ':$1@.:') : reaction.reaction"
+							:noStyle="true"
+							style="width: 100%; height: 100%;"
+						/>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -303,6 +316,35 @@ useTooltip(reactionRef, (showing) => {
 }
 .followRequestCommandButton {
 	flex: 1;
+}
+
+.reactionsItem {
+	display: inline-block;
+	position: relative;
+	width: 42px;
+	height: 42px;
+	margin-right: 8px;
+}
+
+.reactionsItemAvatar {
+	width: 100%;
+	height: 100%;
+}
+
+.reactionsItemReaction {
+	position: absolute;
+	z-index: 1;
+	bottom: -2px;
+	right: -2px;
+	width: 20px;
+	height: 20px;
+	box-sizing: border-box;
+	border-radius: 100%;
+	background: var(--panel);
+	box-shadow: 0 0 0 3px var(--panel);
+	font-size: 11px;
+	text-align: center;
+	color: #fff;
 }
 
 @container (max-width: 600px) {
