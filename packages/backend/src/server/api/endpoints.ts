@@ -217,6 +217,7 @@ import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
 import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
+import * as ep___i_notificationsGrouped from './endpoints/i/notifications-grouped.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
@@ -572,6 +573,7 @@ const eps = [
 	['i/import-user-lists', ep___i_importUserLists],
 	['i/import-antennas', ep___i_importAntennas],
 	['i/notifications', ep___i_notifications],
+	['i/notifications-grouped', ep___i_notificationsGrouped],
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
 	['i/pin', ep___i_pin],
