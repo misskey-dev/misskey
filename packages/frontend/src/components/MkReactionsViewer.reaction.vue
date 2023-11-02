@@ -96,7 +96,7 @@ useTooltip(buttonEl, async (showing) => {
 	const reactions = await os.apiGet('notes/reactions', {
 		noteId: props.note.id,
 		type: props.reaction,
-		limit: 11,
+		limit: 10,
 		_cacheKey_: props.count,
 	});
 
