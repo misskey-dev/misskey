@@ -149,7 +149,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							id: '',
 							createdAt: notification.createdAt,
 							noteId: prev.noteId!,
-							userIds: [],
+							userIds: [prev.notifierId!],
 						};
 						prevGroupedNotification = groupedNotifications.at(-1)!;
 					}
