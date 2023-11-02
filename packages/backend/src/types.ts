@@ -249,3 +249,9 @@ export type Serialized<T> = {
 					? Serialized<T[K]>
 					: T[K];
 };
+
+export type FilterUnionByProperty<
+  Union,
+  Property extends string | number | symbol,
+  Condition
+> = Union extends Record<Property, Condition> ? Union : never;
