@@ -1155,6 +1155,7 @@ refreshing: "リロード中"
 pullDownToRefresh: "引っ張ってリロード"
 disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
 useGroupedNotifications: "通知をグルーピングして表示する"
+cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
