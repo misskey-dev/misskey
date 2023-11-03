@@ -1155,6 +1155,7 @@ refreshing: "載入更新中"
 pullDownToRefresh: "往下拉來更新內容"
 disableStreamingTimeline: "停用時間軸的即時更新"
 useGroupedNotifications: "分組顯示通知訊息"
+signupPendingError: "驗證您的電子郵件地址時出現問題。連結可能已過期。"
 cwNotationRequired: "如果開啟「隱藏內容」，則需要註解說明。"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
@@ -1177,8 +1178,38 @@ _initialAccountSetting:
   pushNotificationDescription: "啟用推送通知，就可以在設備上接收{name}的通知。"
   initialAccountSettingCompleted: "初始設定完成了！"
   haveFun: "盡情享受{name}吧！"
+  youCanContinueTutorial: "您可以繼續學習如何使用{name}(Misskey)，也可以就此打住，立即開始使用。"
+  startTutorial: "開始教學"
   skipAreYouSure: "要略過初始設定嗎？"
   laterAreYouSure: "稍後再重新進行初始設定嗎？"
+_initialTutorial:
+  launchTutorial: "觀看教學課程"
+  title: "新手教學"
+  wellDone: "做得好"
+  skipAreYouSure: "離開教學模式？"
+  _landing:
+    title: "歡迎使用本教學課程"
+    description: "在這裡您可以查看Misskey的基本使用方法和功能。"
+  _note:
+    title: "什麼事貼文？"
+    description: "在Misskey上發布的內容稱為「貼文」。貼文在時間軸上按時間順序排列，並即時更新。"
+    reply: "您可以回覆貼文，並像討論串一樣繼續對話。"
+    renote: "您可以將此貼文分享到自己的時間軸。您也可以添加文字和引用。"
+    reaction: "您可以添加反應。詳細資訊將在下一頁進行說明。"
+    menu: "可執行各種操作，如查看貼文詳細資訊和複製連結。"
+  _reaction:
+    title: "什麼是反應？"
+    description: "您可以在貼文中添加「反應」。您可以使用反應輕鬆隨意地表達「最愛/大心」所無法傳達的細微差別。"
+    letsTryReacting: "可以透過點擊貼文上的「+」按鈕來添加反應。請嘗試在此範例貼文添加反應！"
+    reactToContinue: "添加反應以繼續教學課程。"
+    reactNotification: "當有人對您的貼文做出反應時會接收到即時通知。"
+    reactDone: "按下「-」按鈕可以取消反應。"
+  _timeline:
+    title: "時間軸如何運作"
+    description1: "在Misskey中，根據使用方式提供了多個時間軸（伺服器可能會將部份時間軸停用）。"
+    home: "您可以查看您追隨的使用者的貼文。"
+    local: "您可以看到該伺服器上所有使用者的貼文。"
+    social: "來自首頁時間軸和本地時間軸的貼文都會顯示。"
 _serverRules:
   description: "設定在註冊頁面顯示的伺服器簡要規則。建議是服務條款的摘要。"
 _serverSettings:
