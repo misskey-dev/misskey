@@ -1081,6 +1081,7 @@ releaseToRefresh: "Relâcher pour rafraîchir"
 refreshing: "Rafraîchissement..."
 pullDownToRefresh: "Tirer vers le bas pour rafraîchir"
 disableStreamingTimeline: "Désactiver les mises à jour en temps réel de la ligne du temps"
+useGroupedNotifications: "Grouper les notifications"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
 _initialAccountSetting:
@@ -1738,6 +1739,9 @@ _notification:
   unreadAntennaNote: "Antenne {name}"
   emptyPushNotificationMessage: "Les notifications push ont été mises à jour"
   achievementEarned: "Accomplissement"
+  reactedBySomeUsers: "{n} utilisateur·rice·s ont réagi"
+  renotedBySomeUsers: "{n} utilisateur·rice·s ont renoté"
+  followedBySomeUsers: "{n} utilisateur·rice·s se sont abonné·e·s à vous"
   _types:
     all: "Toutes"
     follow: "Nouvel·le abonné·e"
