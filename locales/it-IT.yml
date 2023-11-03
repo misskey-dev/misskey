@@ -1210,7 +1210,42 @@ _initialTutorial:
     title: "Come funziona la Timeline"
     description1: "Misskey fornisce alcune Timeline (sequenze cronologiche di Note). Una di queste potrebbe essere stata disattivata dagli amministratori."
     home: "Puoi vedere le Note provenienti dai profili che segui (follow)."
-    local: "Puoi vedere tutte le Note pubbliche scritte dai profili di questa istanza."
+    local: "Puoi vedere tutte le Note pubblicate dai profili di questa istanza."
+    social: "Puoi vedere sia le Note della Timeline Home che quelle della Timeline Locale, insieme!"
+    global: "Puoi vedere le Note da pubblicate da tutte le altre istanze federate con la nostra."
+    description2: "Nella parte superiore dello schermo, puoi scegliere una Timeline o l'altra in qualsiasi momento."
+    description3: "Ci sono anche sequenze temporali di elenchi, sequenze temporali di canali, ecc. Per ulteriori dettagli, consultare il {link}.\nPuoi vedere anche Timeline delle liste di profili (se ne hai create), canali, ecc... Per i dettagli, visita {link}."
+  _postNote:
+    title: "La Nota e le sue impostazioni"
+    description1: "Quando scrivi una Nota su Misskey, hai a disposizione varie opzioni. Il modulo di invio è simile a questo."
+    _visibility:
+      description: "Puoi limitare chi può vedere la tua Nota."
+      public: "Visibile a tutti."
+      home: "Pubblicato solo sulla Timeline Home (personale). Visibile anche da profili remoti follower, visitatori del tuo profilo e tramite i Rinota dei follower."
+      followers: "Visibile solo ai profili tuoi follower (locali o remoti). Nessun altro oltre a te può \"Rinotare\"."
+      direct: "Visibile solo ai profili specificati, i quali riceveranno una notifica. Puoi usarlo come se fossero messaggi diretti."
+      doNotSendConfidencialOnDirect1: "Attenzione, quando si inviano informazioni confidenziali."
+      doNotSendConfidencialOnDirect2: "Poiché le Note non sono crittografate, l'amministratore del server di destinazione potrebbe leggere cosa è stato scritto, quindi se spedisci una Nota diretta a un profilo che risiede su un server non attendibile, evita di scrivere informazioni riservate."
+      localOnly: "Indipendentemente dalla visualizzazione sopra indicata, i profili su altri server non saranno in grado di visualizzare la Nota, se questa impostazione è attivata. Non non verrà comunicata ad altri server."
+    _cw:
+      title: "Nascondere il contenuto esplicito"
+      description: "Verrà visualizzato il testo scritto nel campo \"Annotazione preventiva\" al posto del testo principale della Nota. Premere il bottone \"Continua la lettura\" se si intende davvero leggere il testo."
+      _exampleNote:
+        cw: "Attenzione: contiene zuccheri"
+        note: "Ho appena mangiato una ciambella ricoperta di cioccolato 🍩😋"
+      useCases: "Utilizzalo per chiarire il contenuto della Nota, prima che sia letta. Come richiesto dal regolamento del server o per autoregolamentare spoiler e testi troppo espliciti."
+  _howToMakeAttachmentsSensitive:
+    title: "Come indicare che gli allegati sono espliciti?"
+    description: "Contrassegnare gli allegati come espliciti, va fatto quando è richiesto dal regolamento del server o quando gli allegati non devono essere immediatamente visibili."
+    tryThisFile: "Prova a rendere esplicite le immagini allegate a questo modulo!"
+    _exampleNote:
+      note: "Ho fatto un errore aprendo il coperchio del natto... (fagioli di soia fermentati, particolarmente appiccicosi)"
+    method: "Per indicare che un allegato è esplicito, tocca il file per aprirne il menu e scegliere la voce \"Segna come esplicito\"."
+    sensitiveSucceeded: "Quando alleghi file, assicurati di indicare se è materiale esplicito, in modo appropriato, in base al regolamento del tuo server."
+    doItToContinue: "Impostando l'immagine come esplicita, potrai procedere col tutorial."
+  _done:
+    title: "Il tutorial è finito! 🎉"
+    description: "Queste sono solamente alcune delle funzionalità principali di Misskey. Per ulteriori informazioni, {link}."
 _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
 _serverSettings:
