@@ -1659,7 +1659,7 @@ _channel:
   notesCount: "{n}投稿があります"
   nameAndDescription: "名前と説明"
   nameOnly: "名前のみ"
-  canRenoteSwitch: "チャンネル外へのリノートと引用リノートを許可する"
+  allowRenoteToExternal: "チャンネル外へのリノートと引用リノートを許可する"
 
 _menuDisplay:
   sideFull: "横"

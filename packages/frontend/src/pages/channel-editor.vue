@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 
 			<MkSwitch v-model="canRenote">
-				<template #label>{{ i18n.ts._channel.canRenoteSwitch }}</template>
+				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
 			</MkSwitch>
 
 			<div>
