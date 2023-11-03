@@ -16,8 +16,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -109,7 +109,7 @@ export const paramDef = {
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		cw: { type: 'string', nullable: true, maxLength: 100 },
+		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
 		noExtractMentions: { type: 'boolean', default: false },
