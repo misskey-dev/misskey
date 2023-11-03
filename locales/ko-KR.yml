@@ -1123,6 +1123,7 @@ edited: "수정됨"
 notificationRecieveConfig: "알림 설정"
 mutualFollow: "맞팔로우"
 flip: "플립"
+useGroupedNotifications: "알림을 그룹화하고 표시"
 _announcement:
   forExistingUsers: "기존 유저에게만 알림"
   forExistingUsersDescription: "활성화하면 이 공지사항을 게시한 시점에서 이미 가입한 유저에게만 표시합니다. 비활성화하면 게시 후에 가입한 유저에게도 표시합니다."
@@ -1144,7 +1145,6 @@ _initialAccountSetting:
   pushNotificationDescription: "푸시 알림을 활성화하면 {name}의 알림을 나의 기기에서 받아볼 수 있게 됩니다."
   initialAccountSettingCompleted: "초기 설정을 모두 마쳤습니다!"
   haveFun: "{name}와 함께 즐거운 시간 보내세요!"
-  ifYouNeedLearnMore: "{name}(Misskey)의 사용 방법에 대해 자세히 알아보려면 {link}를 참고해 주세요."
   skipAreYouSure: "초기 설정을 중단하시겠습니까?"
   laterAreYouSure: "초기 설정을 나중에 진행하시겠습니까?"
 _serverRules:
@@ -1699,16 +1699,6 @@ _time:
   minute: "분"
   hour: "시간"
   day: "일"
-_timelineTutorial:
-  title: "Misskey의 사용 방법"
-  step1_1: "이것은 '타임라인'입니다. {name}에 게시된 '노트'가 시간 순서대로 표시됩니다."
-  step1_2: "타임라인은 몇 가지 종류로 나뉩니다. 그 중에 '홈 타임라인'은 내가 팔로우한 사람의 노트가 표시되며, '로컬 타임라인'에는 {name} 의 모든 노트가 표시됩니다."
-  step2_1: "그럼 시험삼아 노트를 작성해 봅시다. 화면에 있는 연필 버튼을 눌러 보세요."
-  step2_2: "첫 노트이니까 자기소개, 혹은 가볍게 \"안녕 {name}\"라고 올려 보는 건 어떨까요?"
-  step3_1: "노트 작성을 끝내셨나요?"
-  step3_2: "당신의 노트가 타임라인에 표시되어 있다면 성공입니다."
-  step4_1: "노트에는 '리액션'을 붙일 수 있습니다."
-  step4_2: "리액션을 붙이려면, 노트의 \"+\" 버튼을 클릭하고 원하는 이모지를 선택합니다."
 _2fa:
   alreadyRegistered: "이미 설정이 완료되었습니다."
   registerTOTP: "인증 앱 설정 시작"
@@ -2014,6 +2004,9 @@ _notification:
   checkNotificationBehavior: "알림 표시를 체크하기"
   sendTestNotification: "테스트 알림 보내기"
   notificationWillBeDisplayedLikeThis: "알림이 이렇게 표시됩니다"
+  reactedBySomeUsers: "{n}명이 반응했습니다"
+  renotedBySomeUsers: "{n}명이 리노트했습니다"
+  followedBySomeUsers: "{n}명에게 팔로우됨"
   _types:
     all: "전부"
     follow: "팔로잉"

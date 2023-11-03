@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
@@ -33,6 +33,8 @@ const props = defineProps<{
 	detachMediaFn?: (id: string) => void;
 }>();
 
+const mock = inject<boolean>('mock', false);
+
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;
 	(ev: 'detach', id: string): void;
@@ -44,6 +46,8 @@ const emit = defineEmits<{
 let menuShowing = false;
 
 function detachMedia(id: string) {
+	if (mock) return;
+
 	if (props.detachMediaFn) {
 		props.detachMediaFn(id);
 	} else {
@@ -52,6 +56,11 @@ function detachMedia(id: string) {
 }
 
 function toggleSensitive(file) {
+	if (mock) {
+		emit('changeSensitive', file, !file.isSensitive);
+		return;
+	}
+
 	os.api('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
@@ -61,6 +70,8 @@ function toggleSensitive(file) {
 }
 
 async function rename(file) {
+	if (mock) return;
+
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
 		default: file.name,
@@ -77,6 +88,8 @@ async function rename(file) {
 }
 
 async function describe(file) {
+	if (mock) return;
+
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
@@ -94,6 +107,8 @@ async function describe(file) {
 }
 
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {
+	if (mock) return;
+
 	const newFile = await os.cropImage(file, { aspectRatio: NaN });
 	emit('replaceFile', file, newFile);
 }
