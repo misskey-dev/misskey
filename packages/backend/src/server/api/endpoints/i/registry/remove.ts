@@ -28,6 +28,7 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
 	required: ['key'],
 } as const;
@@ -39,11 +40,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private registryItemsRepository: RegistryItemsRepository,
 	) {
 		super(meta, paramDef, async (ps, me, accessToken) => {
-			const query = this.registryItemsRepository.createQueryBuilder('item')
-				.where(accessToken == null ? 'item.domain IS NULL' : 'item.domain = :domain', { domain: accessToken?.id })
-				.andWhere('item.userId = :userId', { userId: me.id })
-				.andWhere('item.key = :key', { key: ps.key })
-				.andWhere('item.scope = :scope', { scope: ps.scope });
+			const query = this.registryItemsRepository.createQueryBuilder('item');
+			if (accessToken) {
+				query.where('item.domain = :domain', { domain: accessToken.id });
+			} else {
+				if (ps.domain) {
+					query.where('item.domain = :domain', { domain: ps.domain });
+				} else {
+					query.where('item.domain IS NULL');
+				}
+			}
+			query.andWhere('item.userId = :userId', { userId: me.id });
+			query.andWhere('item.key = :key', { key: ps.key });
+			query.andWhere('item.scope = :scope', { scope: ps.scope });
 
 			const item = await query.getOne();
 
