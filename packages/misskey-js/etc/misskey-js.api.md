@@ -134,6 +134,20 @@ type Blocking = {
 // @public (undocumented)
 type Channel = {
     id: ID;
+    lastNotedAt: Date | null;
+    userId: User['id'] | null;
+    user: User | null;
+    name: string;
+    description: string | null;
+    bannerId: DriveFile['id'] | null;
+    banner: DriveFile | null;
+    pinnedNoteIds: string[];
+    color: string;
+    isArchived: boolean;
+    notesCount: number;
+    usersCount: number;
+    isSensitive: boolean;
+    allowRenoteToExternal: boolean;
 };
 
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
@@ -2683,6 +2697,8 @@ type Note = {
     fileIds: DriveFile['id'][];
     visibility: 'public' | 'home' | 'followers' | 'specified';
     visibleUserIds?: User['id'][];
+    channel?: Channel;
+    channelId?: Channel['id'];
     localOnly?: boolean;
     myReaction?: string;
     reactions: Record<string, number>;
@@ -3021,7 +3037,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:632:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/entities.ts:116:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
-// src/entities.ts:612:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:627:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
