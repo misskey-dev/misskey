@@ -254,7 +254,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				if (renote.channelId && renote.channelId !== ps.channelId) {
-					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外（各TL、別チャンネル）へのリノート可否をチェック
+					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
 					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
 					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
 					if (renoteChannel == null) {
