@@ -174,12 +174,6 @@ export class MiMeta {
 	})
 	public emailRequiredForSignup: boolean;
 
-	@Column('integer', {
-		default: 0,
-		comment: 'The expiration time of email verification (unit: minute)',
-	})
-	public emailVerificationExpiresIn: number;
-
 	@Column('boolean', {
 		default: false,
 	})

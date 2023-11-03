@@ -100,10 +100,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			emailVerificationExpiresIn: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			enableHcaptcha: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -312,7 +308,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				privacyPolicyUrl: instance.privacyPolicyUrl,
 				disableRegistration: instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
-				emailVerificationExpiresIn: instance.emailVerificationExpiresIn,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
 				enableRecaptcha: instance.enableRecaptcha,
