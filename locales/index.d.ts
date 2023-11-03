@@ -1258,6 +1258,7 @@ export interface Locale {
         "_done": {
             "title": string;
             "description": string;
+            "youCanSeeThisAgain": string;
         };
     };
     "_timelineDescription": {
