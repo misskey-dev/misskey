@@ -1133,6 +1133,9 @@ fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "タイムラインに他の人への返信とかも含めんで"
 hideRepliesToOthersInTimeline: "タイムラインに他の人への返信とかは見ーへんで"
 showRepliesToOthersInTimelineAll: ""
+hideRepliesToOthersInTimelineAll: ""
+confirmShowRepliesAll: ""
+confirmHideRepliesAll: ""
 externalServices: "他のサイトのサービス"
 impressum: "運営者の情報"
 impressumUrl: "運営者の情報URL"
@@ -1141,7 +1144,11 @@ privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
+attach: ""
+detach: ""
+angle: ""
 flip: "反転"
+showAvatarDecorations: ""
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
@@ -1163,7 +1170,6 @@ _initialAccountSetting:
   pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をあんたのデバイスで受け取れるで。"
   initialAccountSettingCompleted: "初期設定が終わったで。"
   haveFun: "{name}、楽しんでな～"
-  ifYouNeedLearnMore: "{name}(Misskey)の使い方とかをよー知りたいんやったら{link}をみてな。"
   skipAreYouSure: "初期設定飛ばすか？"
   laterAreYouSure: "初期設定あとでやり直すん？"
 _serverRules:
@@ -1177,6 +1183,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.jsonのオーバーライド"
   shortName: "略称"
   shortNameDescription: "サーバーの名前が長い時に、代わりに表示することのできるあだ名。"
+  fanoutTimelineDescription: ""
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに引っ越す"
   moveFromSub: "別のアカウントへエイリアスを作る"
@@ -1596,6 +1603,7 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にもぎょうさんの人からサポートしてもろてんねん。ほんまおおきに🥰"
   patrons: "支援者"
+  projectMembers: ""
 _displayOfSensitiveMedia:
   respect: "きわどいのは見とうない"
   ignore: "きわどいのも見たい"
@@ -1727,16 +1735,6 @@ _time:
   minute: "分"
   hour: "時間"
   day: "日"
-_timelineTutorial:
-  title: "Misskeyってなんや？"
-  step1_1: "これは「タイムライン」や。{name}に投稿された「ノート」が順番に表示されるで。"
-  step1_2: "タイムラインには何個か種類があってな、例えば「ホームタイムライン」だったらあんたのフォローしてる人のノート、「ローカルタイムライン」には{name}全部のノートが流れてくるで。"
-  step2_1: "試しに、何かノートを投稿してみ。画面の鉛筆マークのボタンでフォームが開くで。"
-  step2_2: "最初のノートは、自己紹介とか「{name}始めてみたんや」とかがええと思うで。"
-  step3_1: "投稿できた？"
-  step3_2: "あんたのノートがタイムラインに出てきたら成功や。"
-  step4_1: "ノートには、「ツッコミ」を付けれるで。"
-  step4_2: "ツッコむんやったら、ノートの「+」マークを押して、好きな絵文字を選ぶんやで。"
 _2fa:
   alreadyRegistered: "もう設定終わっとるわ。"
   registerTOTP: "認証アプリの設定はじめる"
@@ -2169,7 +2167,21 @@ _externalResourceInstaller:
   _theme:
     title: "このテーマインストールする？"
     metaTitle: "テーマ情報"
+  _meta:
+    base: ""
+  _vendorInfo:
+    title: ""
+    endpoint: ""
+    hashVerify: ""
   _errors:
+    _invalidParams:
+      title: ""
+      description: ""
+    _resourceTypeNotSupported:
+      title: ""
+      description: ""
+    _failedToFetch:
+      title: ""
     _pluginParseFailed:
       title: "AiScriptエラー起こしてもうたねん"
       description: "データは取得できたものの、AiScript解析時にエラーがあったから読み込めへんかってん。すまんが、プラグインを作った人に問い合わせてくれへん？ごめんな。エラーの詳細はJavaScriptコンソール読んでな。"

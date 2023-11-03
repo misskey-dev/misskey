@@ -20,7 +20,7 @@
 		"url": "git+https://github.com/misskey-dev/misskey.js.git"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.38.1",
+		"@microsoft/api-extractor": "7.38.2",
 		"@swc/jest": "0.2.29",
 		"@types/jest": "29.5.7",
 		"@types/node": "20.8.10",
