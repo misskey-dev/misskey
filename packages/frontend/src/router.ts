@@ -4,7 +4,7 @@
  */
 
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
-import { Router } from '@/nirax';
+import { Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -318,10 +318,10 @@ export const routes = [{
 	name: 'avatarDecorations',
 	component: page(() => import('./pages/avatar-decorations.vue')),
 }, {
-	path: '/registry/keys/system/:path(*)?',
+	path: '/registry/keys/:domain/:path(*)?',
 	component: page(() => import('./pages/registry.keys.vue')),
 }, {
-	path: '/registry/value/system/:path(*)?',
+	path: '/registry/value/:domain/:path(*)?',
 	component: page(() => import('./pages/registry.value.vue')),
 }, {
 	path: '/registry',
