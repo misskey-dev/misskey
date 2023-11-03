@@ -133,7 +133,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<a href="https://misskey-hub.net/help.html" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 								</template>
 							</I18n>
-							<div style="padding: 0 16px;">{{ i18n.ts._initialTutorial._done.youCanSeeThisAgain }}</div>
 							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
 								<MkButton v-if="initialPage !== 4" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
