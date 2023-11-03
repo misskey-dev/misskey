@@ -55,6 +55,7 @@
 - Fix: 個人カードのemojiがバッテリーになっている問題を修正
 - Fix: 標準テーマと同じIDを使用してインストールできてしまう問題を修正
 - Fix: 絵文字ピッカーでバッテリーの絵文字が複数表示される問題を修正 #12197
+- Fix: In deck layout, replies option is not saved after refresh
 
 ### Server
 - Feat: Registry APIがサードパーティから利用可能になりました
