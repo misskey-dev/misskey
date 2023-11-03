@@ -1155,6 +1155,7 @@ refreshing: "Refreshing..."
 pullDownToRefresh: "Pull down to refresh"
 disableStreamingTimeline: "Disable real-time timeline updates"
 useGroupedNotifications: "Display grouped notifications"
+cwNotationRequired: "If \"Hide content\" is enabled, a description must be provided."
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
