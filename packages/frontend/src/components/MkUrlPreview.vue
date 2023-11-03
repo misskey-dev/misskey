@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
 	>
 		<iframe
-			v-if="player.url?.startsWith('http://') || player.url?.startsWith('https://')"
+			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			scrolling="no"
 			:allow="player.allow.join(';')"
@@ -118,12 +118,11 @@ let description = $ref<string | null>(null);
 let thumbnail = $ref<string | null>(null);
 let icon = $ref<string | null>(null);
 let sitename = $ref<string | null>(null);
-let player = $ref<SummalyResult['player']>({
+let player = $ref({
 	url: null,
 	width: null,
 	height: null,
-	allow: [],
-});
+} as SummalyResult['player']);
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
