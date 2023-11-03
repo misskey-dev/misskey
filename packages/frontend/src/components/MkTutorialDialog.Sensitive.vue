@@ -30,6 +30,7 @@ import MkPostForm from '@/components/MkPostForm.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNote from '@/components/MkNote.vue';
+import { $i } from '@/account.js';
 
 const emit = defineEmits<{
 	(ev: 'succeeded'): void;
@@ -48,20 +49,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	id: '0000000000',
 	createdAt: '2019-04-14T17:30:49.181Z',
 	userId: '0000000001',
-	user: {
-		id: '0000000001',
-		name: 'しゅいろ',
-		username: 'syuilo',
-		host: null,
-		avatarDecorations: [],
-		avatarUrl: '/client-assets/tutorial/syuilo.webp',
-		avatarBlurhash: 'yFF5Kq0L00?a^*IBNG01^j-pV@D*o|xt58WB}@9at7s.Ip~AWB57%Laes:xaOEoLnis:ofIpoJr?NHtRV@oLoeNHNI%1M{kCWCjuxZ',
-		isBot: false,
-		isCat: true,
-		emojis: {},
-		onlineStatus: null,
-		badgeRoles: [],
-	},
+	user: $i!,
 	text: i18n.ts._initialTutorial._howToMakeAttachmentsSensitive._exampleNote.note,
 	cw: null,
 	visibility: 'public',
