@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
 	>
 		<iframe
-			v-if="player.url.startsWith('http://') || player.url?.startsWith('https://')"
+			v-if="player.url?.startsWith('http://') || player.url?.startsWith('https://')"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			scrolling="no"
 			:allow="player.allow.join(';')"
