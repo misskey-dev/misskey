@@ -1613,6 +1613,10 @@ export interface Locale {
                 "title": string;
                 "description": string;
             };
+            "_tutorialCompleted": {
+                "title": string;
+                "description": string;
+            };
         };
     };
     "_role": {
