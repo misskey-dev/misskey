@@ -1155,6 +1155,7 @@ refreshing: "Wird aktualisiert..."
 pullDownToRefresh: "Zum Aktualisieren ziehen"
 disableStreamingTimeline: "Echtzeitaktualisierung der Chronik deaktivieren"
 useGroupedNotifications: "Benachrichtigungen gruppieren"
+cwNotationRequired: "Ist \"Inhaltswarnung verwenden\" aktiviert, muss eine Beschreibung gegeben werden."
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
