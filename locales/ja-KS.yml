@@ -1170,7 +1170,6 @@ _initialAccountSetting:
   pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をあんたのデバイスで受け取れるで。"
   initialAccountSettingCompleted: "初期設定が終わったで。"
   haveFun: "{name}、楽しんでな～"
-  ifYouNeedLearnMore: "{name}(Misskey)の使い方とかをよー知りたいんやったら{link}をみてな。"
   skipAreYouSure: "初期設定飛ばすか？"
   laterAreYouSure: "初期設定あとでやり直すん？"
 _serverRules:
@@ -1736,16 +1735,6 @@ _time:
   minute: "分"
   hour: "時間"
   day: "日"
-_timelineTutorial:
-  title: "Misskeyってなんや？"
-  step1_1: "これは「タイムライン」や。{name}に投稿された「ノート」が順番に表示されるで。"
-  step1_2: "タイムラインには何個か種類があってな、例えば「ホームタイムライン」だったらあんたのフォローしてる人のノート、「ローカルタイムライン」には{name}全部のノートが流れてくるで。"
-  step2_1: "試しに、何かノートを投稿してみ。画面の鉛筆マークのボタンでフォームが開くで。"
-  step2_2: "最初のノートは、自己紹介とか「{name}始めてみたんや」とかがええと思うで。"
-  step3_1: "投稿できた？"
-  step3_2: "あんたのノートがタイムラインに出てきたら成功や。"
-  step4_1: "ノートには、「ツッコミ」を付けれるで。"
-  step4_2: "ツッコむんやったら、ノートの「+」マークを押して、好きな絵文字を選ぶんやで。"
 _2fa:
   alreadyRegistered: "もう設定終わっとるわ。"
   registerTOTP: "認証アプリの設定はじめる"
