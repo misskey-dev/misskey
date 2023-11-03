@@ -1166,6 +1166,8 @@ _announcement:
   tooManyActiveAnnouncementDescription: "有過多公告可能會影響使用者體驗。請考慮歸檔已結束的公告。"
   readConfirmTitle: "標記為已讀嗎？"
   readConfirmText: "閱讀「{title}」的內容並標記為已讀。"
+  shouldNotBeUsedToPresentPermanentInfo: "由於可能會破壞使用者體驗，尤其是對於新使用者而言，我們建議使用公告來發布流動資訊而不是庫存資訊。"
+  dialogAnnouncementUxWarn: "如果同時有 2 個以上對話方塊形式的公告存在，對於使用者體驗很可能會有不良的影響，因此建議謹慎使用。"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
@@ -1202,14 +1204,35 @@ _initialTutorial:
     description: "您可以在貼文中添加「反應」。您可以使用反應輕鬆隨意地表達「最愛/大心」所無法傳達的細微差別。"
     letsTryReacting: "可以透過點擊貼文上的「+」按鈕來添加反應。請嘗試在此範例貼文添加反應！"
     reactToContinue: "添加反應以繼續教學課程。"
-    reactNotification: "當有人對您的貼文做出反應時會接收到即時通知。"
+    reactNotification: "當有人對您的貼文做出反應時會即時接收到通知。"
     reactDone: "按下「-」按鈕可以取消反應。"
   _timeline:
     title: "時間軸如何運作"
-    description1: "在Misskey中，根據使用方式提供了多個時間軸（伺服器可能會將部份時間軸停用）。"
+    description1: "Misskey根據使用方式提供了多個時間軸（伺服器可能會將部份時間軸停用）。"
     home: "您可以查看您追隨的使用者的貼文。"
-    local: "您可以看到該伺服器上所有使用者的貼文。"
+    local: "您可以看到此伺服器上所有使用者的貼文。"
     social: "來自首頁時間軸和本地時間軸的貼文都會顯示。"
+    description2: "您可以隨時在螢幕上方切換對應的時間軸。"
+    description3: "除此之外還有清單時間軸、頻道時間軸等。請參閱{link}以了解更多詳情。"
+  _postNote:
+    title: "貼文的發布設定"
+    description1: "在Misskey上發布貼文時，可以設定各種選項。發布表單如下所示。"
+    _visibility:
+      description: "可以限制誰可以看到您的貼文。"
+      public: "所有人都可以看見。"
+      home: "僅在首頁時間軸上發布。其他使用者只在下列情況可看見該貼文：追隨者、觀看使用者的個人資料頁面，以及貼文被轉發時。"
+      followers: "僅追隨者可見。只有發文者本人可轉發，未追隨發文者的使用者無法看見。"
+      direct: "僅指定的使用者可見，對方也會收到通知。可代替直接訊息使用。"
+      doNotSendConfidencialOnDirect1: "發送機密訊息時請務必注意。"
+      doNotSendConfidencialOnDirect2: "目標伺服器的管理員可以看到發布的內容，因此如果您向不受信任的伺服器上的使用者發送直接訊息，必須小心處理機密訊息。"
+      localOnly: "不將貼文發布到聯邦上的其他伺服器。不論上述發布範圍，使用此設定後，其他伺服器上的使用者將無法直接查看此貼文。"
+    _cw:
+      title: "隱藏內容（CW）"
+      description: "將顯示「註釋」中寫入的內容而不是本文。按一下「查看更多」以顯示本文。"
+      _exampleNote:
+        cw: "美食恐怖主義注意"
+        note: "我吃了一個巧克力甜甜圈🍩😋"
+      useCases: "伺服器的使用條款可能會規範特定的貼文需要使用隱藏內容，除此之外也會用在隱藏劇情洩漏與敏感內容的貼文。"
 _serverRules:
   description: "設定在註冊頁面顯示的伺服器簡要規則。建議是服務條款的摘要。"
 _serverSettings:
