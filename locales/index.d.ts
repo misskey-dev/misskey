@@ -1161,6 +1161,7 @@ export interface Locale {
     "emailVerificationExpiresIn": string;
     "emailVerificationExpiresInDescription": string;
     "signupPendingError": string;
+    "cwNotationRequired": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

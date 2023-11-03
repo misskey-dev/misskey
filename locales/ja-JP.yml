@@ -1158,6 +1158,7 @@ useGroupedNotifications: "通知をグルーピングして表示する"
 emailVerificationExpiresIn: "メール認証の有効期限"
 emailVerificationExpiresInDescription: "指定した有効期限を超えた場合はアカウントのサインアップが無効になりますが、サインアップ時に使用した招待コードが再度使用できるようになるなどのメリットがあります。0で無効になります。"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
+cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

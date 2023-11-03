@@ -658,6 +658,14 @@ function deleteDraft() {
 }
 
 async function post(ev?: MouseEvent) {
+	if (useCw && (cw == null || cw.trim() === '')) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts.cwNotationRequired,
+		});
+		return;
+	}
+
 	if (ev) {
 		const el = ev.currentTarget ?? ev.target;
 		const rect = el.getBoundingClientRect();
