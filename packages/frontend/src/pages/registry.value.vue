@@ -97,6 +97,7 @@ async function save() {
 			scope,
 			key,
 			value: JSON5.parse(valueForEditor),
+			domain: props.domain === '@' ? null : props.domain,
 		});
 	});
 }
@@ -110,6 +111,7 @@ function del() {
 		os.apiWithDialog('i/registry/remove', {
 			scope,
 			key,
+			domain: props.domain === '@' ? null : props.domain,
 		});
 	});
 }

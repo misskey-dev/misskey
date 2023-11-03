@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<FormSection v-if="keys">
 				<template #label>{{ i18n.ts.keys }}</template>
-				<div class="_formLinks">
+				<div class="_gaps_s">
 					<FormLink v-for="key in keys" :to="`/registry/value/${props.domain}/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 				</div>
 			</FormSection>

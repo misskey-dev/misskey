@@ -22,6 +22,7 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
 	required: ['key', 'value'],
 } as const;
@@ -38,11 +39,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me, accessToken) => {
 			// TODO: 作成できるキーの数を制限する
 
-			const query = this.registryItemsRepository.createQueryBuilder('item')
-				.where(accessToken == null ? 'item.domain IS NULL' : 'item.domain = :domain', { domain: accessToken?.id })
-				.andWhere('item.userId = :userId', { userId: me.id })
-				.andWhere('item.key = :key', { key: ps.key })
-				.andWhere('item.scope = :scope', { scope: ps.scope });
+			const query = this.registryItemsRepository.createQueryBuilder('item');
+			if (accessToken) {
+				query.where('item.domain = :domain', { domain: accessToken.id });
+			} else {
+				if (ps.domain) {
+					query.where('item.domain = :domain', { domain: ps.domain });
+				} else {
+					query.where('item.domain IS NULL');
+				}
+			}
+			query.andWhere('item.userId = :userId', { userId: me.id });
+			query.andWhere('item.key = :key', { key: ps.key });
+			query.andWhere('item.scope = :scope', { scope: ps.scope });
 
 			const existingItem = await query.getOne();
 
@@ -56,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: this.idService.gen(),
 					updatedAt: new Date(),
 					userId: me.id,
-					domain: accessToken == null ? null : accessToken.id,
+					domain: accessToken ? accessToken.id : (ps.domain ?? null),
 					scope: ps.scope,
 					key: ps.key,
 					value: ps.value,
