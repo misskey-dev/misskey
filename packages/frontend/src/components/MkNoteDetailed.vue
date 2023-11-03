@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.tabs">
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quote' }]" @click="tab = 'quote'"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
 	</div>
 	<div>
@@ -154,11 +154,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-		<div v-else-if="tab === 'quote'" :class="$style.tab_quotes">
-			<div v-if="!quotesLoaded" style="padding: 16px">
-				<MkButton style="margin: 0 auto;" primary rounded @click="loadQuotes">{{ i18n.ts.showMore }}</MkButton>
-			</div>
-			<MkNoteSub v-for="note in quotes" :key="note.id" :note="note" :class="$style.quote" :detail="true"/>
+		<div v-if="tab === 'quotes'" :class="$style.tab_replies">
+			<MkPagination :pagination="quotesPagination">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'reactions'" :class="$style.tab_reactions">
 			<div :class="$style.reactionTabs">
@@ -301,6 +302,14 @@ const reactionsPagination = $computed(() => ({
 	params: {
 		noteId: appearNote.id,
 		type: reactionTabType,
+	},
+}));
+
+const quotesPagination = $computed(() => ({
+	endpoint: 'notes/quotes',
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
 	},
 }));
 
@@ -455,18 +464,6 @@ function loadReplies() {
 		limit: 30,
 	}).then(res => {
 		replies.value = res;
-	});
-}
-
-const quotesLoaded = ref(false);
-
-function loadQuotes() {
-	quotesLoaded.value = true;
-	os.api('notes/children', {
-		noteId: appearNote.id,
-		limit: 30,
-	}).then(res => {
-		quotes.value = res.filter(item => item.renoteId != null);
 	});
 }
 

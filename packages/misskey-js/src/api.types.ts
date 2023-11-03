@@ -518,6 +518,7 @@ export type Endpoints = {
 	'notes/mentions': { req: { following?: boolean; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/polls/recommendation': { req: TODO; res: TODO; };
 	'notes/polls/vote': { req: { noteId: Note['id']; choice: number; }; res: null; };
+	'notes/quotes': { req: { noteId: Note['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/reactions': { req: { noteId: Note['id']; type?: string | null; limit?: number; }; res: NoteReaction[]; };
 	'notes/reactions/create': { req: { noteId: Note['id']; reaction: string; }; res: null; };
 	'notes/reactions/delete': { req: { noteId: Note['id']; }; res: null; };

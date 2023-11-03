@@ -1825,6 +1825,15 @@ export type Endpoints = {
         };
         res: null;
     };
+		'notes/quotes': {
+		    req: {
+            noteId: Note['id'];
+            limit?: number;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+        };
+        res: Note[];	
+		}
     'notes/reactions': {
         req: {
             noteId: Note['id'];
