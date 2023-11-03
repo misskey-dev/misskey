@@ -1177,7 +1177,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Enabling push notifications will allow you to receive notifications from {name} directly on your device."
   initialAccountSettingCompleted: "Profile setup complete!"
   haveFun: "Enjoy {name}!"
-  ifYouNeedLearnMore: "If you'd like to learn more about how to use {name} (Misskey), please visit {link}."
   skipAreYouSure: "Really skip profile setup?"
   laterAreYouSure: "Really do profile setup later?"
 _serverRules:
@@ -1744,16 +1743,6 @@ _time:
   minute: "Minute(s)"
   hour: "Hour(s)"
   day: "Day(s)"
-_timelineTutorial:
-  title: "How to use Misskey"
-  step1_1: "This is the \"timeline\". All \"notes\" submitted on {name} will be chronologically displayed here."
-  step1_2: "There are a few different timelines. For example, the \"Home timeline\" will contain notes of users you follow, and the \"Local timeline\" will contain notes from all users of {name}."
-  step2_1: "Let's try posting a note next. You can do so by pressing the button with a pencil icon."
-  step2_2: "How about writing a self-introduction, or just \"Hello {name}!\" if you don't feel like it?"
-  step3_1: "Finished posting your first note?"
-  step3_2: "Your first note should now be displayed on your timeline."
-  step4_1: "You can also attach \"Reactions\" to notes."
-  step4_2: "To attach a reaction, press the \"+\" mark on a note and choose an emoji you'd like to react with."
 _2fa:
   alreadyRegistered: "You have already registered a 2-factor authentication device."
   registerTOTP: "Register authenticator app"
