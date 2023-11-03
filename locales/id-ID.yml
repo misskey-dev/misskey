@@ -1161,7 +1161,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Menyalakan notifikasi dorong akan membuatmu menerima notifikasi dari {name} secara langsung ke perangkatmu."
   initialAccountSettingCompleted: "Pengaturan profil selesai!"
   haveFun: "Selamat menikmati, {name}!"
-  ifYouNeedLearnMore: "Kalau kamu ingin mempelajari lebih lanjut bagaimana cara menggunakan {name} (Misskey), silahkan kunjungi {link}."
   skipAreYouSure: "Yakin melewati atur profil?"
   laterAreYouSure: "Yakin banget untuk atur profil nanti?"
 _serverRules:
@@ -1725,16 +1724,6 @@ _time:
   minute: "menit"
   hour: "jam"
   day: "hari"
-_timelineTutorial:
-  title: "Bagaimana cara menggunakan Misskey"
-  step1_1: "Ini adalah \"lini masa\". Semua \"catatan\" yang dikirimkan oleh {name} akan dimunculkan secara kronologis di sini."
-  step1_2: "Ada beberapa lini masa yang berbeda. Seperti contoh, \"Lini masa Beranda\" berisi catatan dari pengguna yang kamu ikuti, dan \"Lini masa lokal\" berisi catatan dari semua pengguna dari {name}."
-  step2_1: "Selanjutnya, mari kita coba memposting sebuah catatan. Kamu dapat melakukanya dengan menekan tombol dengan ikon pensil."
-  step2_2: "Bagaimana dengan menuliskan sedikit perkenalan diri, atau hanya \"Hello {name}\" kalau kamu lagi ngga feeling?"
-  step3_1: "Udah selesai memposting catatan pertamamu?"
-  step3_2: "Catatan pertamamu seharusnya sekarang sudah tampil di lini masa kamu."
-  step4_1: "Kamu dapat menyisipkan \"Reaksi\" ke dalam catatan."
-  step4_2: "Untuk menyisipkan reaksi, tekan tanda \"+\" dalam catatan dan pilih emoji yang kamu suka untuk mereaksi catatan tersebut."
 _2fa:
   alreadyRegistered: "Kamu telah mendaftarkan perangkat autentikasi 2-faktor."
   registerTOTP: "Daftarkan aplikasi autentikator"
