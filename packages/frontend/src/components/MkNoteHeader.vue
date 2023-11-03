@@ -14,12 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
 	</div>
 	<div :class="$style.info">
-      <div v-if="mock" :class="$style.name">
-          <MkUserName :user="note.user"/>
-      </div>
-      <MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-          <MkUserName :user="note.user"/>
-      </MkA>
+        <span v-if="note.updatedAt" style="margin-right: 0.5em;" :title="i18n.ts.edited"><i class="ti ti-pencil"></i></span>
+        <div v-if="mock">
+            <MkTime :time="note.createdAt" colored/>
+        </div>
+        <MkA v-else :to="notePage(note)">
+            <MkTime :time="note.createdAt" colored/>
+        </MkA>
 		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
