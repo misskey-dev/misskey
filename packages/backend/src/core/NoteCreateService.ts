@@ -100,17 +100,14 @@ class NotificationManager {
 	}
 
 	@bindThis
-	public async deliver() {
+	public async notify() {
 		for (const x of this.queue) {
-			// ミュート情報を取得
-			const mentioneeMutes = await this.mutingsRepository.findBy({
-				muterId: x.target,
-			});
-
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId);
-
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
+			if (x.reason === 'renote') {
+				this.notificationService.createNotification(x.target, 'renote', {
+					noteId: this.note.id,
+					targetNoteId: this.note.renoteId!,
+				}, this.notifier.id);
+			} else {
 				this.notificationService.createNotification(x.target, x.reason, {
 					noteId: this.note.id,
 				}, this.notifier.id);
@@ -642,7 +639,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
-			nm.deliver();
+			nm.notify();
 
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {
