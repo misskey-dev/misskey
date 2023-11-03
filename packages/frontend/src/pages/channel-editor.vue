@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.sensitive }}</template>
 			</MkSwitch>
 
-			<MkSwitch v-model="canRenote">
+			<MkSwitch v-model="allowRenoteToExternal">
 				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
 			</MkSwitch>
 
@@ -97,7 +97,7 @@ let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
 let color = $ref('#000');
 let isSensitive = $ref(false);
-let canRenote = $ref(true);
+let allowRenoteToExternal = $ref(true);
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
@@ -126,7 +126,7 @@ async function fetchChannel() {
 		id,
 	}));
 	color = channel.color;
-	canRenote = channel.canRenote;
+	allowRenoteToExternal = channel.allowRenoteToExternal;
 }
 
 fetchChannel();
@@ -156,7 +156,7 @@ function save() {
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 		color: color,
 		isSensitive: isSensitive,
-		canRenote: canRenote,
+		allowRenoteToExternal: allowRenoteToExternal,
 	};
 
 	if (props.channelId) {

@@ -260,7 +260,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					if (renoteChannel == null) {
 						// リノートしたいノートが書き込まれているチャンネルが無い
 						throw new ApiError(meta.errors.noSuchChannel);
-					} else if (!renoteChannel.canRenote) {
+					} else if (!renoteChannel.allowRenoteToExternal) {
 						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
 						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
 					}

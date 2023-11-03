@@ -97,5 +97,5 @@ export class MiChannel {
 	@Column('boolean', {
 		default: true,
 	})
-	public canRenote: boolean;
+	public allowRenoteToExternal: boolean;
 }

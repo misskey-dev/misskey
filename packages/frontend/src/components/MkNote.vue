@@ -329,48 +329,48 @@ function renote(viaKeyboard = false) {
 		}]);
 	}
 
-	if (!appearNote.channel || appearNote.channel?.canRenote) {
-    normalRenoteItems.push(...[{
-      text: i18n.ts.renote,
-      icon: 'ti ti-repeat',
-      action: () => {
-        const el = renoteButton.value as HTMLElement | null | undefined;
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const x = rect.left + (el.offsetWidth / 2);
-          const y = rect.top + (el.offsetHeight / 2);
-          os.popup(MkRippleEffect, {x, y}, {}, 'end');
-        }
+	if (!appearNote.channel || appearNote.channel?.allowRenoteToExternal) {
+		normalRenoteItems.push(...[{
+			text: i18n.ts.renote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
 
-        const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-        const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
-        let visibility = appearNote.visibility;
-        visibility = smallerVisibility(visibility, configuredVisibility);
-        if (appearNote.channel?.isSensitive) {
-          visibility = smallerVisibility(visibility, 'home');
-        }
+				let visibility = appearNote.visibility;
+				visibility = smallerVisibility(visibility, configuredVisibility);
+				if (appearNote.channel?.isSensitive) {
+					visibility = smallerVisibility(visibility, 'home');
+				}
 
-        if (!props.mock) {
-          os.api('notes/create', {
-            localOnly,
-            visibility,
-            renoteId: appearNote.id,
-          }).then(() => {
-            os.toast(i18n.ts.renoted);
-          });
-        }
-      },
-    }, (props.mock) ? undefined : {
-      text: i18n.ts.quote,
-      icon: 'ti ti-quote',
-      action: () => {
-        os.post({
-          renote: appearNote,
-        });
-      },
-    }]);
-  }
+				if (!props.mock) {
+					os.api('notes/create', {
+						localOnly,
+						visibility,
+						renoteId: appearNote.id,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, (props.mock) ? undefined : {
+			text: i18n.ts.quote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+				});
+			},
+		}]);
+	}
 
 	// nullを挟むことで区切り線を出せる
 	const renoteItems = [

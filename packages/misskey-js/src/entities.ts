@@ -529,7 +529,7 @@ export type Channel = {
 	notesCount: number;
 	usersCount: number;
 	isSensitive: boolean;
-	canRenote: boolean;
+	allowRenoteToExternal: boolean;
 };
 
 export type Following = {

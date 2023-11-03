@@ -50,7 +50,7 @@ export const paramDef = {
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		color: { type: 'string', minLength: 1, maxLength: 16 },
 		isSensitive: { type: 'boolean', nullable: true },
-		canRenote: { type: 'boolean', nullable: true },
+		allowRenoteToExternal: { type: 'boolean', nullable: true },
 	},
 	required: ['name'],
 } as const;
@@ -88,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				bannerId: banner ? banner.id : null,
 				isSensitive: ps.isSensitive ?? false,
 				...(ps.color !== undefined ? { color: ps.color } : {}),
-				canRenote: ps.canRenote ?? true,
+				allowRenoteToExternal: ps.allowRenoteToExternal ?? true,
 			} as MiChannel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.channelEntityService.pack(channel, me);
