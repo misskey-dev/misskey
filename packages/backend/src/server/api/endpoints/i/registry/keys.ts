@@ -10,8 +10,6 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
-
-	secure: true,
 } as const;
 
 export const paramDef = {
@@ -30,10 +28,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.registryItemsRepository)
 		private registryItemsRepository: RegistryItemsRepository,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, accessToken) => {
 			const query = this.registryItemsRepository.createQueryBuilder('item')
 				.select('item.key')
-				.where('item.domain IS NULL')
+				.where(accessToken == null ? 'item.domain IS NULL' : 'item.domain = :domain', { domain: accessToken?.id })
 				.andWhere('item.userId = :userId', { userId: me.id })
 				.andWhere('item.scope = :scope', { scope: ps.scope });
 

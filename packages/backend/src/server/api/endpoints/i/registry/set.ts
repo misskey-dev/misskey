@@ -12,8 +12,6 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
-
-	secure: true,
 } as const;
 
 export const paramDef = {
@@ -37,9 +35,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, accessToken) => {
+			// TODO: 作成できるキーの数を制限する
+
 			const query = this.registryItemsRepository.createQueryBuilder('item')
-				.where('item.domain IS NULL')
+				.where(accessToken == null ? 'item.domain IS NULL' : 'item.domain = :domain', { domain: accessToken?.id })
 				.andWhere('item.userId = :userId', { userId: me.id })
 				.andWhere('item.key = :key', { key: ps.key })
 				.andWhere('item.scope = :scope', { scope: ps.scope });
@@ -56,19 +56,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: this.idService.gen(),
 					updatedAt: new Date(),
 					userId: me.id,
-					domain: null,
+					domain: accessToken == null ? null : accessToken.id,
 					scope: ps.scope,
 					key: ps.key,
 					value: ps.value,
 				});
 			}
 
-			// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-			this.globalEventService.publishMainStream(me.id, 'registryUpdated', {
-				scope: ps.scope,
-				key: ps.key,
-				value: ps.value,
-			});
+			if (accessToken == null) {
+				// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
+				this.globalEventService.publishMainStream(me.id, 'registryUpdated', {
+					scope: ps.scope,
+					key: ps.key,
+					value: ps.value,
+				});
+			}
 		});
 	}
 }

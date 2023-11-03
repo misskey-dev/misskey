@@ -12,8 +12,6 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	requireCredential: true,
 
-	secure: true,
-
 	errors: {
 		noSuchKey: {
 			message: 'No such key.',
@@ -40,9 +38,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.registryItemsRepository)
 		private registryItemsRepository: RegistryItemsRepository,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, accessToken) => {
 			const query = this.registryItemsRepository.createQueryBuilder('item')
-				.where('item.domain IS NULL')
+				.where(accessToken == null ? 'item.domain IS NULL' : 'item.domain = :domain', { domain: accessToken?.id })
 				.andWhere('item.userId = :userId', { userId: me.id })
 				.andWhere('item.key = :key', { key: ps.key })
 				.andWhere('item.scope = :scope', { scope: ps.scope });
