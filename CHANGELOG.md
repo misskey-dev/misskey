@@ -34,6 +34,7 @@
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
 	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
 - Feat: 通知をグルーピングして表示するオプション(オプトアウト)
+- Feat: Misskeyの基本的なチュートリアルを実装
 - Feat: スワイプしてタイムラインを再読込できるように
 	- PCの場合は右上のボタンからでも再読込できます
 - Enhance: タイムラインの自動更新を無効にできるように
