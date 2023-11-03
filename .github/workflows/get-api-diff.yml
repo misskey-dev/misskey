@@ -44,7 +44,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.8.1
+      uses: actions/setup-node@v4.0.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -126,7 +126,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.8.1
+      uses: actions/setup-node@v4.0.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -171,3 +171,16 @@ jobs:
         path: api-head.json
     - name: Kill Misskey Job
       run: screen -S misskey -X quit
+
+  save-pr-number:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          echo "$PR_NUMBER" > ./pr_number
+      - uses: actions/upload-artifact@v3
+        with:
+          name: api-artifact
+          path: pr_number
