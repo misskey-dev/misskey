@@ -16,11 +16,7 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
-		} },
-	},
+	properties: {},
 	required: [],
 } as const;
 
@@ -32,16 +28,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.registryItemsRepository.createQueryBuilder('item')
+				.select('item.scope')
 				.where('item.domain IS NULL')
-				.andWhere('item.userId = :userId', { userId: me.id })
-				.andWhere('item.scope = :scope', { scope: ps.scope });
+				.andWhere('item.userId = :userId', { userId: me.id });
 
 			const items = await query.getMany();
 
-			const res = {} as Record<string, any>;
+			const res = [] as string[][];
 
 			for (const item of items) {
-				res[item.key] = item.value;
+				if (res.some(scope => scope.join('.') === item.scope.join('.'))) continue;
+				res.push(item.scope);
 			}
 
 			return res;

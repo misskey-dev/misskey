@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSplit>
 					<MkKeyValue>
 						<template #key>{{ i18n.ts._registry.domain }}</template>
-						<template #value>{{ props.domain === '@' ? i18n.ts.system : props.domain.toUpperCase() }}</template>
+						<template #value>{{ i18n.ts.system }}</template>
 					</MkKeyValue>
 					<MkKeyValue>
 						<template #key>{{ i18n.ts._registry.scope }}</template>
@@ -58,7 +58,6 @@ import FormInfo from '@/components/MkInfo.vue';
 
 const props = defineProps<{
 	path: string;
-	domain: string;
 }>();
 
 const scope = $computed(() => props.path.split('/').slice(0, -1));
@@ -71,7 +70,6 @@ function fetchValue() {
 	os.api('i/registry/get-detail', {
 		scope,
 		key,
-		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
 		value = res;
 		valueForEditor = JSON5.stringify(res.value, null, '\t');
@@ -97,7 +95,6 @@ async function save() {
 			scope,
 			key,
 			value: JSON5.parse(valueForEditor),
-			domain: props.domain === '@' ? null : props.domain,
 		});
 	});
 }
@@ -111,7 +108,6 @@ function del() {
 		os.apiWithDialog('i/registry/remove', {
 			scope,
 			key,
-			domain: props.domain === '@' ? null : props.domain,
 		});
 	});
 }

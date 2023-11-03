@@ -5,10 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { RegistryApiService } from '@/core/RegistryApiService.js';
+import type { RegistryItemsRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
+
+	secure: true,
 } as const;
 
 export const paramDef = {
@@ -17,18 +20,26 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
-		domain: { type: 'string', nullable: true },
 	},
-	required: ['scope'],
+	required: [],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private registryApiService: RegistryApiService,
+		@Inject(DI.registryItemsRepository)
+		private registryItemsRepository: RegistryItemsRepository,
 	) {
-		super(meta, paramDef, async (ps, me, accessToken) => {
-			return await this.registryApiService.getAllKeysOfScope(me.id, accessToken != null ? accessToken.id : (ps.domain ?? null), ps.scope);
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.registryItemsRepository.createQueryBuilder('item')
+				.select('item.key')
+				.where('item.domain IS NULL')
+				.andWhere('item.userId = :userId', { userId: me.id })
+				.andWhere('item.scope = :scope', { scope: ps.scope });
+
+			const items = await query.getMany();
+
+			return items.map(x => x.key);
 		});
 	}
 }
