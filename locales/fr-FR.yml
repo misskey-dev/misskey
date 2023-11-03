@@ -1088,7 +1088,6 @@ _initialAccountSetting:
   profileSetting: "Paramètres du profil"
   privacySetting: "Paramètres de confidentialité"
   initialAccountSettingCompleted: "Configuration du profil terminée avec succès !"
-  ifYouNeedLearnMore: "Si vous voulez en savoir plus comment utiliser {name}(Misskey), veuillez visiter {link}."
   skipAreYouSure: "Désirez-vous ignorer la configuration du profil ?"
 _serverSettings:
   iconUrl: "URL de l’icône"
@@ -1469,9 +1468,6 @@ _time:
   minute: "min"
   hour: "h"
   day: "j"
-_timelineTutorial:
-  title: "Comment utiliser Misskey"
-  step3_1: "Avez-vous publié votre première note ?"
 _2fa:
   alreadyRegistered: "Configuration déjà achevée."
   step1: "Tout d'abord, installez une application d'authentification, telle que {a} ou {b}, sur votre appareil."
