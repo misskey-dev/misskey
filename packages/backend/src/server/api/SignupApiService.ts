@@ -136,16 +136,16 @@ export class SignupApiService {
 				return;
 			}
 
-			// メアド認証が有効かつ有効期限が0以外に設定されている場合
-			if (instance.emailRequiredForSignup && instance.emailVerificationExpiresIn !== 0) {
+			// メアド認証が有効の場合
+			if (instance.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
 					reply.code(400);
 					return;
 				}
 
-				// 認証しておらず、まだ有効期限内ならエラー
-				if (ticket.usedAt && ticket.usedAt.getTime() + (instance.emailVerificationExpiresIn * 1000 * 60) > Date.now()) {
+				// 認証しておらず、メール送信から30分以内ならエラー
+				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
 					reply.code(400);
 					return;
 				}
@@ -235,10 +235,9 @@ export class SignupApiService {
 		const code = body['code'];
 
 		try {
-			const instance = await this.metaService.fetch(true);
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
-			if (instance.emailVerificationExpiresIn !== 0 && this.idService.parse(pendingUser.id).date.getTime() + (instance.emailVerificationExpiresIn * 1000 * 60) < Date.now()) {
+			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
 				throw new FastifyReplyError(400, 'EXPIRED');
 			}
 
