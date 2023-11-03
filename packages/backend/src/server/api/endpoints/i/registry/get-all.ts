@@ -5,8 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistryItemsRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -18,25 +17,18 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
-	required: [],
+	required: ['scope'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.registryItemsRepository)
-		private registryItemsRepository: RegistryItemsRepository,
+		private registryApiService: RegistryApiService,
 	) {
 		super(meta, paramDef, async (ps, me, accessToken) => {
-			const query = this.registryItemsRepository.createQueryBuilder('item');
-			if (accessToken) {
-				query.where('item.domain = :domain', { domain: accessToken.id });
-			}
-			query.andWhere('item.userId = :userId', { userId: me.id });
-			query.andWhere('item.scope = :scope', { scope: ps.scope });
-
-			const items = await query.getMany();
+			const items = await this.registryApiService.getAllItemsOfScope(me.id, accessToken != null ? accessToken.id : (ps.domain ?? null), ps.scope);
 
 			const res = {} as Record<string, any>;
 

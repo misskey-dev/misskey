@@ -5,10 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistryItemsRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -24,62 +21,16 @@ export const paramDef = {
 		} },
 		domain: { type: 'string', nullable: true },
 	},
-	required: ['key', 'value'],
+	required: ['key', 'value', 'scope'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.registryItemsRepository)
-		private registryItemsRepository: RegistryItemsRepository,
-
-		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private registryApiService: RegistryApiService,
 	) {
 		super(meta, paramDef, async (ps, me, accessToken) => {
-			// TODO: 作成できるキーの数を制限する
-
-			const query = this.registryItemsRepository.createQueryBuilder('item');
-			if (accessToken) {
-				query.where('item.domain = :domain', { domain: accessToken.id });
-			} else {
-				if (ps.domain) {
-					query.where('item.domain = :domain', { domain: ps.domain });
-				} else {
-					query.where('item.domain IS NULL');
-				}
-			}
-			query.andWhere('item.userId = :userId', { userId: me.id });
-			query.andWhere('item.key = :key', { key: ps.key });
-			query.andWhere('item.scope = :scope', { scope: ps.scope });
-
-			const existingItem = await query.getOne();
-
-			if (existingItem) {
-				await this.registryItemsRepository.update(existingItem.id, {
-					updatedAt: new Date(),
-					value: ps.value,
-				});
-			} else {
-				await this.registryItemsRepository.insert({
-					id: this.idService.gen(),
-					updatedAt: new Date(),
-					userId: me.id,
-					domain: accessToken ? accessToken.id : (ps.domain ?? null),
-					scope: ps.scope,
-					key: ps.key,
-					value: ps.value,
-				});
-			}
-
-			if (accessToken == null) {
-				// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-				this.globalEventService.publishMainStream(me.id, 'registryUpdated', {
-					scope: ps.scope,
-					key: ps.key,
-					value: ps.value,
-				});
-			}
+			await this.registryApiService.set(me.id, accessToken ? accessToken.id : (ps.domain ?? null), ps.scope, ps.key, ps.value);
 		});
 	}
 }
