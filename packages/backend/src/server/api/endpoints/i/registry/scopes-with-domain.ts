@@ -9,17 +9,13 @@ import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
+	secure: true,
 } as const;
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
-		} },
-		domain: { type: 'string', nullable: true },
-	},
-	required: ['scope'],
+	properties: {},
+	required: [],
 } as const;
 
 @Injectable()
@@ -27,8 +23,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private registryApiService: RegistryApiService,
 	) {
-		super(meta, paramDef, async (ps, me, accessToken) => {
-			return await this.registryApiService.getAllKeysOfScope(me.id, accessToken != null ? accessToken.id : (ps.domain ?? null), ps.scope);
+		super(meta, paramDef, async (ps, me) => {
+			return await this.registryApiService.getAllScopeAndDomains(me.id);
 		});
 	}
 }
