@@ -19,6 +19,7 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import {noteVisibilities} from "@/types.js";
 import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -100,6 +101,12 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
 		},
+
+		cannotRenoteOutsideOfChannel: {
+			message: 'Cannot renote outside of channel.',
+			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
+			id: '33510210-8452-094c-6227-4a6c05d99f00',
+		},
 	},
 } as const;
 
@@ -110,7 +117,7 @@ export const paramDef = {
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		cw: { type: 'string', nullable: true, maxLength: 100 },
+		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
 		noExtractMentions: { type: 'boolean', default: false },
@@ -246,6 +253,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else if (renote.visibility === 'specified') {
 					// specified / direct noteはreject
 					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+				}
+
+				if (renote.channelId && renote.channelId !== ps.channelId) {
+					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
+					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
+					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
+					if (renoteChannel == null) {
+						// リノートしたいノートが書き込まれているチャンネルが無い
+						throw new ApiError(meta.errors.noSuchChannel);
+					} else if (!renoteChannel.allowRenoteToExternal) {
+						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
+						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+					}
 				}
 			}
 			let visibility = ps.visibility;

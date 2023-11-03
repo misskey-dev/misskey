@@ -62,6 +62,12 @@ watch($$(withRenotes), v => {
 	});
 });
 
+watch($$(withReplies), v => {
+	updateColumn(props.column.id, {
+		withReplies: v,
+	});
+});
+
 watch($$(onlyFiles), v => {
 	updateColumn(props.column.id, {
 		onlyFiles: v,

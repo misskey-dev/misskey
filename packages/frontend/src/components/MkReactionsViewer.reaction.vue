@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref, shallowRef, watch} from 'vue';
+import {computed, inject, onMounted, ref, shallowRef, watch} from 'vue';
 import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -38,6 +38,12 @@ const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
+const mock = inject<boolean>('mock', false);
+
+const emit = defineEmits<{
+	(ev: 'reactionToggled', emoji: string, newCount: number): void;
+}>();
+
 const buttonEl = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
@@ -55,6 +61,11 @@ async function toggleReaction() {
 		});
 		if (confirm.canceled) return;
 
+		if (mock) {
+			emit('reactionToggled', props.reaction, (props.count - 1));
+			return;
+		}
+
 		os.api('notes/reactions/delete', {
 			noteId: props.note.id,
 		}).then(() => {
@@ -66,6 +77,11 @@ async function toggleReaction() {
 			}
 		});
 	} else {
+		if (mock) {
+			emit('reactionToggled', props.reaction, (props.count + 1));
+			return;
+		}
+
 		os.api('notes/reactions/create', {
 			noteId: props.note.id,
 			reaction: props.reaction,
@@ -94,24 +110,26 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-useTooltip(buttonEl, async (showing) => {
-	const reactions = await os.apiGet('notes/reactions', {
-		noteId: props.note.id,
-		type: props.reaction,
-		limit: 11,
-		_cacheKey_: props.count,
-	});
+if (!mock) {
+	useTooltip(buttonEl, async (showing) => {
+		const reactions = await os.apiGet('notes/reactions', {
+			noteId: props.note.id,
+			type: props.reaction,
+			limit: 10,
+			_cacheKey_: props.count,
+		});
 
-	const users = reactions.map(x => x.user);
+		const users = reactions.map(x => x.user);
 
-	os.popup(XDetails, {
-		showing,
-		reaction: props.reaction,
-		users,
-		count: props.count,
-		targetElement: buttonEl.value,
-	}, {}, 'closed');
-}, 100);
+		os.popup(XDetails, {
+			showing,
+			reaction: props.reaction,
+			users,
+			count: props.count,
+			targetElement: buttonEl.value,
+		}, {}, 'closed');
+	}, 100);
+}
 </script>
 
 <style lang="scss" module>
