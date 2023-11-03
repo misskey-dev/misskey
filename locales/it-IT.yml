@@ -1176,7 +1176,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Attivare le notifiche push ti permettera di ricevere informazioni sulla attività di {name} direttamente sul tuo dispositivo."
   initialAccountSettingCompleted: "Hai completato la configurazione iniziale!"
   haveFun: "Divertiti con {name}!"
-  ifYouNeedLearnMore: "Per saperne di più su come usare {name} (Misskey), visita la pagina {link}"
   skipAreYouSure: "Vuoi davvero saltare la configurazione iniziale?"
   laterAreYouSure: "Vuoi davvero rimandare la configurazione iniziale?"
 _serverRules:
@@ -1743,16 +1742,6 @@ _time:
   minute: "min"
   hour: "ore"
   day: "giorni"
-_timelineTutorial:
-  title: "Come usare Misskey"
-  step1_1: "Questa è la \"Timeline\". tutte le \"Note\" pubblicate su {name} vengono elencate in ordine cronologico."
-  step1_2: "Le Timeline sono diverse, ad esempio, la \"Home\" elenca le Note dei profili che segui. Quella \"Locale\" elenca quelle di tutti i profili attivi su {name}."
-  step2_1: "Prova a pubblicare una Nota. Semplicemente premendo il bottone con l'icona di una matita."
-  step2_2: "Potresti scrivere la tua presentazione, oppure semplicemente \"Ciao da {name}!\""
-  step3_1: "Hai pubblicato qualcosa?"
-  step3_2: "In tal caso, dovrebbe comparire subito nella tua \"Home\""
-  step4_1: "Puoi reagire con un emoji alle Note."
-  step4_2: "To attach a reaction, press the \"+\" mark on a note and choose an emoji you'd like to react with.\nPer reagire con una emoji, premi il bottone \"+\" (più) visibile vicino ad ogni Nota e scegli dall'elenco la emoji che rappresenta la tua reazione."
 _2fa:
   alreadyRegistered: "La configurazione è stata già completata."
   registerTOTP: "Registra un'app di autenticazione"
