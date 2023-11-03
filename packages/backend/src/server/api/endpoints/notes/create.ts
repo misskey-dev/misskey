@@ -16,8 +16,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
-import {noteVisibilities} from "@/types.js";
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { ApiError } from '../../error.js';
 
