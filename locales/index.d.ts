@@ -1158,8 +1158,6 @@ export interface Locale {
     "pullDownToRefresh": string;
     "disableStreamingTimeline": string;
     "useGroupedNotifications": string;
-    "emailVerificationExpiresIn": string;
-    "emailVerificationExpiresInDescription": string;
     "signupPendingError": string;
     "cwNotationRequired": string;
     "_announcement": {
@@ -1639,7 +1637,6 @@ export interface Locale {
         "almostThere": string;
         "emailAddressInfo": string;
         "emailSent": string;
-        "expiresTime": string;
     };
     "_accountDelete": {
         "accountDelete": string;

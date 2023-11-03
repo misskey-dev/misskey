@@ -18,12 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
 					</MkSwitch>
 
-					<MkInput v-if="emailRequiredForSignup" v-model="emailVerificationExpiresIn" type="number" :min="0">
-						<template #label>{{ i18n.ts.emailVerificationExpiresIn }}</template>
-						<template #suffix>{{ i18n.ts._time.minute }}</template>
-						<template #caption>{{ i18n.ts.emailVerificationExpiresInDescription }}</template>
-					</MkInput>
-
 					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
 					<MkInput v-model="tosUrl" type="url">
@@ -77,7 +71,6 @@ import FormLink from '@/components/form/link.vue';
 
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
-let emailVerificationExpiresIn: number = $ref(0);
 let sensitiveWords: string = $ref('');
 let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
@@ -87,7 +80,6 @@ async function init() {
 	const meta = await os.api('admin/meta');
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
-	emailVerificationExpiresIn = meta.emailVerificationExpiresIn;
 	sensitiveWords = meta.sensitiveWords.join('\n');
 	preservedUsernames = meta.preservedUsernames.join('\n');
 	tosUrl = meta.tosUrl;
@@ -98,7 +90,6 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,
-		emailVerificationExpiresIn,
 		tosUrl,
 		privacyPolicyUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
