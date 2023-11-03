@@ -1169,6 +1169,8 @@ export interface Locale {
         "tooManyActiveAnnouncementDescription": string;
         "readConfirmTitle": string;
         "readConfirmText": string;
+        "shouldNotBeUsedToPresentPermanentInfo": string;
+        "dialogAnnouncementUxWarn": string;
     };
     "_initialAccountSetting": {
         "accountCreated": string;
