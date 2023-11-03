@@ -38,6 +38,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -121,7 +122,13 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => [
+	...[deviceKind === 'desktop' ? {
+		icon: 'ti ti-refresh',
+		text: i18n.ts.reload,
+		handler: () => { tlComponent.reloadTimeline(); },
+	} : {}],
+]);
 
 const headerTabs = $computed(() => [{
 	key: 'home',

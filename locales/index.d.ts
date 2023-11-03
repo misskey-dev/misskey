@@ -1109,6 +1109,10 @@ export interface Locale {
     "pastAnnouncements": string;
     "youHaveUnreadAnnouncements": string;
     "externalServices": string;
+    "releaseToRefresh": string;
+    "refreshing": string;
+    "pullDownToRefresh": string;
+    "disableStreamingTimeline": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

@@ -1106,6 +1106,10 @@ currentAnnouncements: "現在のお知らせ"
 pastAnnouncements: "過去のお知らせ"
 youHaveUnreadAnnouncements: "未読のお知らせがあります。"
 externalServices: "外部サービス"
+releaseToRefresh: "離してリロード"
+refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロード"
+disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
