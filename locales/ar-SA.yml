@@ -1262,9 +1262,6 @@ _time:
   minute: "د"
   hour: "سا"
   day: "ي"
-_timelineTutorial:
-  title: "كيف تستخدم Misskey"
-  step3_1: "هل نشرت ملاحظتك الأولى؟"
 _2fa:
   alreadyRegistered: "سجلت سلفًا جهازًا للاستيثاق بعاملين."
   step1: "أولًا ثبّت تطبيق استيثاق على جهازك (مثل {a} و{b})."
