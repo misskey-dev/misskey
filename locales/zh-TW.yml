@@ -1177,7 +1177,6 @@ _initialAccountSetting:
   pushNotificationDescription: "啟用推送通知，就可以在設備上接收{name}的通知。"
   initialAccountSettingCompleted: "初始設定完成了！"
   haveFun: "盡情享受{name}吧！"
-  ifYouNeedLearnMore: "請瀏覽{link}以更瞭解{name}（Misskey）的使用方法。"
   skipAreYouSure: "要略過初始設定嗎？"
   laterAreYouSure: "稍後再重新進行初始設定嗎？"
 _serverRules:
@@ -1744,16 +1743,6 @@ _time:
   minute: "分鐘"
   hour: "小時"
   day: "日"
-_timelineTutorial:
-  title: "Misskey 的使用方法"
-  step1_1: "這個畫面是「時間軸」。發佈到{name}的「貼文」會按照時間順序顯示。"
-  step1_2: "時間軸有多種類型，例如「首頁時間軸」是您追蹤帳戶的貼文、「本地時間軸」是{name}內所有帳戶的貼文。"
-  step2_1: "不如現在就嘗試發文吧！按鉛筆圖示的按鈕開啟發文頁面。"
-  step2_2: "您可以在第一篇貼文裡寫自我介紹，或是「我來到 {name} 了」之類的話。"
-  step3_1: "貼文發出去了嗎？"
-  step3_2: "如果您的貼文出現在時間軸上，就代表發文成功。"
-  step4_1: "可以對貼文標記「反應」。"
-  step4_2: "點擊貼文的「+」圖示，即可選擇表情符號來反應。"
 _2fa:
   alreadyRegistered: "此裝置已被註冊過了"
   registerTOTP: "開始設定驗證應用程式"
