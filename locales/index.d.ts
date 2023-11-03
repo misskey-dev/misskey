@@ -1742,6 +1742,7 @@ export interface Locale {
         "notesCount": string;
         "nameAndDescription": string;
         "nameOnly": string;
+        "canRenoteSwitch": string;
     };
     "_menuDisplay": {
         "sideFull": string;

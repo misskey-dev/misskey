@@ -272,10 +272,11 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	let items = [] as MenuItem[];
+	const channelRenoteItems: MenuItem[] = [];
+	const normalRenoteItems: MenuItem[] = [];
 
 	if (appearNote.channel) {
-		items = items.concat([{
+		channelRenoteItems.push(...[{
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -303,20 +304,21 @@ function renote(viaKeyboard = false) {
 					channel: appearNote.channel,
 				});
 			},
-		}, null]);
+		}]);
 	}
 
-	items = items.concat([{
-		text: i18n.ts.renote,
-		icon: 'ti ti-repeat',
-		action: () => {
-			const el = renoteButton.value as HTMLElement | null | undefined;
-			if (el) {
-				const rect = el.getBoundingClientRect();
-				const x = rect.left + (el.offsetWidth / 2);
-				const y = rect.top + (el.offsetHeight / 2);
-				os.popup(MkRippleEffect, { x, y }, {}, 'end');
-			}
+	if (!appearNote.channel || appearNote.channel?.canRenote) {
+		normalRenoteItems.push(...[{
+			text: i18n.ts.renote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
 
 			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
@@ -327,25 +329,33 @@ function renote(viaKeyboard = false) {
 				visibility = smallerVisibility(visibility, 'home');
 			}
 
-			os.api('notes/create', {
-				localOnly,
-				visibility,
-				renoteId: appearNote.id,
-			}).then(() => {
-				os.toast(i18n.ts.renoted);
-			});
-		},
-	}, {
-		text: i18n.ts.quote,
-		icon: 'ti ti-quote',
-		action: () => {
-			os.post({
-				renote: appearNote,
-			});
-		},
-	}]);
+				os.api('notes/create', {
+					localOnly,
+					visibility,
+					renoteId: appearNote.id,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
+				});
+			},
+		}, {
+			text: i18n.ts.quote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+				});
+			},
+		}]);
+	}
 
-	os.popupMenu(items, renoteButton.value, {
+	// nullを挟むことで区切り線を出せる
+	const renoteItems = [
+		...channelRenoteItems,
+		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [null] : [],
+		...normalRenoteItems,
+	];
+
+	os.popupMenu(renoteItems, renoteButton.value, {
 		viaKeyboard,
 	});
 }

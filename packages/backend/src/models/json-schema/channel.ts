@@ -76,5 +76,9 @@ export const packedChannelSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canRenote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;

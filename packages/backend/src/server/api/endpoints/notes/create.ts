@@ -16,8 +16,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -98,6 +98,12 @@ export const meta = {
 			message: 'Some files are not found.',
 			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
+		},
+
+		cannotRenoteOutsideOfChannel: {
+			message: 'Cannot renote outside of channel.',
+			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
+			id: '33510210-8452-094c-6227-4a6c05d99f00',
 		},
 	},
 } as const;
@@ -245,6 +251,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else if (renote.visibility === 'specified') {
 					// specified / direct noteはreject
 					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+				}
+
+				if (renote.channelId && !ps.channelId) {
+					// チャンネル外へのリノート可否をチェック
+					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
+					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
+					if (renoteChannel == null) {
+						// リノートしたいノートが書き込まれているチャンネルが無い
+						throw new ApiError(meta.errors.noSuchChannel);
+					} else if (!renoteChannel.canRenote) {
+						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
+						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+					}
 				}
 			}
 
