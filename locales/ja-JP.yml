@@ -1155,6 +1155,7 @@ refreshing: "リロード中"
 pullDownToRefresh: "引っ張ってリロード"
 disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
 useGroupedNotifications: "通知をグルーピングして表示する"
+signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 
 _announcement:
@@ -1627,7 +1628,7 @@ _ffVisibility:
 _signup:
   almostThere: "ほとんど完了です"
   emailAddressInfo: "あなたが使っているメールアドレスを入力してください。メールアドレスが公開されることはありません。"
-  emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。"
+  emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。メールに記載されているリンクの有効期限は30分です。"
 
 _accountDelete:
   accountDelete: "アカウントの削除"
