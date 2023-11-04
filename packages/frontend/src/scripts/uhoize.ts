@@ -1,4 +1,4 @@
-function uhoize(str) {
+export function uhoize(str) {
 	const punctuation = ['。', '！', '？', '.', '!', '?'];
 	let lines = str.split('\n');
 	let voice = 'ウホ';
