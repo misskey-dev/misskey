@@ -106,16 +106,15 @@ const setPrograms = async () => {
     title: dic.confirmMessage,
     text: options[program_selected.value].label,
   }).then(({ canceled }) => {
-    if (canceled) return;
     program_selected.value = '';
-    const payload = {
+    if (canceled) return;
+    os.api('notes/create', {
       localOnly: true, // コマンドトゥートは連合に流す必要なし
       poll: null,
       text: JSON.stringify(commandToot),
       visibility: 'specified',
       visibleUserIds: [],
-    } as object;
-    os.api('notes/create', payload).then(() => os.toast(dic.successMessage));
+    }).then(() => os.toast(dic.successMessage));
   });
 }
 
