@@ -88,7 +88,8 @@ let connection2: Connection;
 let paginationQuery: Paging | null = null;
 
 const stream = useStream();
-const connectChannel = () => {
+
+function connectChannel() {
 	if (props.src === 'antenna') {
 		connection = stream.useChannel('antenna', {
 			antennaId: props.antenna,
@@ -142,14 +143,14 @@ const connectChannel = () => {
 		});
 	}
 	if (props.src !== 'directs' || props.src !== 'mentions') connection.on('note', prepend);
-};
+}
 
-const disconnectChannel = () => {
+function disconnectChannel() {
 	if (connection) connection.dispose();
 	if (connection2) connection2.dispose();
-};
+}
 
-const updatePaginationQuery = () => {
+function updatePaginationQuery() {
 	let endpoint: string | null;
 	let query: TimelineQueryType | null;
 
@@ -222,16 +223,17 @@ const updatePaginationQuery = () => {
 	} else {
 		paginationQuery = null;
 	}
-};
+}
 
-const refreshEndpointAndChannel = () => {
+function refreshEndpointAndChannel() {
+	console.log('refreshEndpointAndChannel');
 	if (!defaultStore.state.disableStreamingTimeline) {
 		disconnectChannel();
 		connectChannel();
 	}
 
 	updatePaginationQuery();
-};
+}
 
 onUnmounted(() => {
 	disconnectChannel();
