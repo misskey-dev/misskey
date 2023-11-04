@@ -399,7 +399,7 @@ $widgets-hide-threshold: 1090px;
   min-width: 0;
   overflow: auto;
   overflow-y: scroll;
-  overscroll-behavior: none;
+  overscroll-behavior: contain;
   background: var(--bg);
 }
 
@@ -582,12 +582,6 @@ $widgets-hide-threshold: 1090px;
 		animation: none;
 		font-size: 12px;
 	}
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: var(--indicator);
-  font-size: 16px;
-  animation: blink 1s infinite;
   &.gamingDark {
     color: white;
   }
