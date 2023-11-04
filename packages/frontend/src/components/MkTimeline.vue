@@ -226,7 +226,6 @@ function updatePaginationQuery() {
 }
 
 function refreshEndpointAndChannel() {
-	console.log('refreshEndpointAndChannel');
 	if (!defaultStore.state.disableStreamingTimeline) {
 		disconnectChannel();
 		connectChannel();
