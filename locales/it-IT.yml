@@ -1246,6 +1246,11 @@ _initialTutorial:
   _done:
     title: "Il tutorial è finito! 🎉"
     description: "Queste sono solamente alcune delle funzionalità principali di Misskey. Per ulteriori informazioni, {link}."
+_timelineDescription:
+  home: "Nella Timeline Home, la tua cronologia principale, puoi vedere le Note provenienti dai profili che segui (follow)."
+  local: "La Timeline Locale, è una cronologia di Note pubblicate da tutti i profili iscritti su questo server."
+  social: "La Timeline Sociale, unisce in ordine cronologico l'elenco di Note presenti nella Timeline Home e quella Locale."
+  global: "La Timeline Federata ti consente di vedere le Note pubblicate dai profili di tutti gli altri server federati a questo."
 _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
 _serverSettings:
@@ -1515,6 +1520,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "Prove eccessive"
       description: "Hai provato le notifiche consecutivamente in un periodo di tempo molto breve"
+    _tutorialCompleted:
+      title: "Attestato di partecipazione al corso per principianti di Misskey"
+      description: "Ha completato il tutorial"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"
@@ -1703,6 +1711,7 @@ _channel:
   notesCount: "{n} note"
   nameAndDescription: "Nome e descrizione"
   nameOnly: "Solo il nome"
+  allowRenoteToExternal: "Consenti i Rinota e le citazioni all'esterno del canale"
 _menuDisplay:
   sideFull: "Laterale"
   sideIcon: "Laterale (solo icone)"
