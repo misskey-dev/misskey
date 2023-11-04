@@ -1155,6 +1155,7 @@ refreshing: "Refreshing..."
 pullDownToRefresh: "Pull down to refresh"
 disableStreamingTimeline: "Disable real-time timeline updates"
 useGroupedNotifications: "Display grouped notifications"
+signupPendingError: "There was a problem verifying the email address. The link may have expired."
 cwNotationRequired: "If \"Hide content\" is enabled, a description must be provided."
 _announcement:
   forExistingUsers: "Existing users only"
@@ -1165,6 +1166,8 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Having too many active announcements may worsen the user experience. Please consider archiving announcements that have become obsolete."
   readConfirmTitle: "Mark as read?"
   readConfirmText: "This will mark the contents of \"{title}\" as read."
+  shouldNotBeUsedToPresentPermanentInfo: "As it may significantly impact the user experience for new users, it is recommended to use notifications in the flow information rather than stock information."
+  dialogAnnouncementUxWarn: "Having two or more dialog-style notifications simultaneously can significantly impact the user experience, so please use them carefully."
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."
@@ -1177,8 +1180,29 @@ _initialAccountSetting:
   pushNotificationDescription: "Enabling push notifications will allow you to receive notifications from {name} directly on your device."
   initialAccountSettingCompleted: "Profile setup complete!"
   haveFun: "Enjoy {name}!"
+  youCanContinueTutorial: "You can proceed to a tutorial on how to use {name} (Misskey) or you can exit the setup here and start using it immediately."
+  startTutorial: "Start Tutorial"
   skipAreYouSure: "Really skip profile setup?"
   laterAreYouSure: "Really do profile setup later?"
+_initialTutorial:
+  launchTutorial: "Start Tutorial"
+  title: "Tutorial"
+  wellDone: "Well done!"
+  skipAreYouSure: "Quit Tutorial?"
+  _landing:
+    title: "Welcome to the Tutorial"
+    description: "Here, you can learn the basics of using Misskey and its features."
+  _note:
+    title: "What is a Note?"
+    description: "Posts on Misskey are called 'Notes.' Notes are arranged chronologically on the timeline and are updated in real-time."
+    reply: "Click on this button to reply to a message. It's also possible to reply to replies, continuing the conversation like a thread."
+    renote: "You can share that note to your own timeline. You can also quote them with your comments."
+    reaction: "You can add reactions to the Note. More details will be explained on the next page."
+    menu: "You can view Note details, copy links, and perform various other actions."
+  _reaction:
+    title: "What are Reactions?"
+    description: "Notes can be reacted to with various emojis. Reactions allow you to express nuances that may not be conveyed with just a 'like.'"
+    letsTryReacting: "Reactions can be added by clicking the '+' button on the note. Try reacting to this sample note!"
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _serverSettings:
