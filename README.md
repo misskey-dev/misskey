@@ -1,6 +1,7 @@
 # ダイスキー
 
-[Misskey](https://github.com/misskey-dev/misskey/)の個人的なフォーク
+- https://misskey.delmulin.com/
+- [Misskey](https://github.com/misskey-dev/misskey/)の私的フォーク
 
 ## 変更点
 
