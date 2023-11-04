@@ -17,7 +17,7 @@
 - 「固定タグ」ウィジェット
   - [karasugawasu/misskey](https://github.com/karasugawasu/misskey)からの移植。
 - サーバーとの接続が失われたとき
-  - `何もしない`オプションの追加
+  - `なにもしない`オプションの追加
 - クラシックUIの廃止
 - 各種パラメータ調整
 
