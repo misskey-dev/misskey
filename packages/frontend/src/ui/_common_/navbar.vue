@@ -233,7 +233,6 @@ function more(ev: MouseEvent) {
 		text-align: left;
 		box-sizing: border-box;
 		margin-top: 16px;
-		overflow: clip;
 	}
 
 	.avatar {
@@ -412,7 +411,6 @@ function more(ev: MouseEvent) {
 		display: block;
 		text-align: center;
 		width: 100%;
-		overflow: clip;
 	}
 
 	.avatar {
