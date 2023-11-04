@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -143,15 +143,22 @@ const props = withDefaults(defineProps<{
 	fixed?: boolean;
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
+	mock?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
+	mock: false,
 });
+
+provide('mock', props.mock);
 
 const emit = defineEmits<{
 	(ev: 'posted'): void;
 	(ev: 'cancel'): void;
 	(ev: 'esc'): void;
+
+	// Mock用
+	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
 }>();
 
 const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);
@@ -239,7 +246,7 @@ const maxTextLength = $computed((): number => {
 });
 
 const canPost = $computed((): boolean => {
-	return !posting && !posted &&
+	return !props.mock && !posting && !posted &&
 		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
@@ -290,6 +297,10 @@ if (props.reply && props.reply.text != null) {
 
 		text += `${mention} `;
 	}
+}
+
+if ($i?.isSilenced && visibility === 'public') {
+	visibility = 'home';
 }
 
 if (props.channel) {
@@ -396,6 +407,8 @@ function focus() {
 }
 
 function chooseFileFrom(ev) {
+	if (props.mock) return;
+
 	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
 		for (const file of files_) {
 			files.push(file);
@@ -408,6 +421,9 @@ function detachFile(id) {
 }
 
 function updateFileSensitive(file, sensitive) {
+	if (props.mock) {
+		emit('fileChangeSensitive', file.id, sensitive);
+	}
 	files[files.findIndex(x => x.id === file.id)].isSensitive = sensitive;
 }
 
@@ -420,6 +436,8 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 }
 
 function upload(file: File, name?: string): void {
+	if (props.mock) return;
+
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
@@ -434,6 +452,7 @@ function setVisibility() {
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility,
+		isSilenced: $i?.isSilenced,
 		localOnly: localOnly,
 		src: visibilityButton,
 	}, {
@@ -545,6 +564,8 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
+	if (props.mock) return;
+
 	for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
@@ -629,7 +650,7 @@ function onDrop(ev): void {
 }
 
 function saveDraft() {
-	if (props.instant) return;
+	if (props.instant || props.mock) return;
 
 	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
@@ -658,6 +679,14 @@ function deleteDraft() {
 }
 
 async function post(ev?: MouseEvent) {
+	if (useCw && (cw == null || cw.trim() === '')) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts.cwNotationRequired,
+		});
+		return;
+	}
+
 	if (ev) {
 		const el = ev.currentTarget ?? ev.target;
 		const rect = el.getBoundingClientRect();
@@ -665,6 +694,8 @@ async function post(ev?: MouseEvent) {
 		const y = rect.top + (el.offsetHeight / 2);
 		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
+
+	if (props.mock) return;
 
 	const annoying =
 		text.includes('$[x2') ||
@@ -831,6 +862,8 @@ function showActions(ev) {
 let postAccount = $ref<Misskey.entities.UserDetailed | null>(null);
 
 function openAccountMenu(ev: MouseEvent) {
+	if (props.mock) return;
+
 	openAccountMenu_({
 		withExtraOperation: false,
 		includeCurrentAccount: true,
@@ -861,7 +894,7 @@ onMounted(() => {
 
 	nextTick(() => {
 		// 書きかけの投稿を復元
-		if (!props.instant && !props.mention && !props.specified) {
+		if (!props.instant && !props.mention && !props.specified && !props.mock) {
 			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;

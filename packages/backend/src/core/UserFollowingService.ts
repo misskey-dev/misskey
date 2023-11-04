@@ -509,7 +509,6 @@ export class UserFollowingService implements OnModuleInit {
 
 			// 通知を作成
 			this.notificationService.createNotification(followee.id, 'receiveFollowRequest', {
-				followRequestId: followRequest.id,
 			}, follower.id);
 		}
 

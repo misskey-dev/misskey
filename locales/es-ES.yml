@@ -1161,7 +1161,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Habilitar las notificaciones push te permitirá recibir notificaciones de {name} directamente en tu dispositivo."
   initialAccountSettingCompleted: "¡Configuración del perfil completada!"
   haveFun: "¡Disfruta de {name}!"
-  ifYouNeedLearnMore: "Si quieres aprender cómo usar {name} (Misskey), por favor, visita {link}."
   skipAreYouSure: "¿Realmente quieres saltarte la configuración del perfil?"
   laterAreYouSure: "¿Realmente quieres configurar tu perfil después?"
 _serverRules:
@@ -1725,16 +1724,6 @@ _time:
   minute: "Minutos"
   hour: "Horas"
   day: "Días"
-_timelineTutorial:
-  title: "Cómo usar Misskey"
-  step1_1: "Ésta es la \"línea de tiempo\". Todas las \"notas\" que sean publicadas en {name} serán mostradas cronológicamente aquí."
-  step1_2: "Hay varias líneas de tiempo. Por ejemplo, la línea temporal \"Inicio\" contiene las notas de otros usuarios que sigues, y la línea \"Local\" contandrá las notas de todos los usuarios de  {name}."
-  step2_1: "Ahora probemos publicar una nota. Puedes hacerlo presionando el botón que tiene un ícono de lápiz."
-  step2_2: "¿Qué tal si escribimos una introducción? o sólo un \"¡Hola {name}!\" ¿No te apetece?"
-  step3_1: "¿Terminaste de publicar tu primera nota?"
-  step3_2: "Tu primera nota ahora se mostrará en tu línea de tiempo."
-  step4_1: "También puedes añadir \"Reacciones\" a notas."
-  step4_2: "Para añadir una reacción selecciona el botón \"+\" en la nota y escoge el emoji que quieras para reaccionar."
 _2fa:
   alreadyRegistered: "Ya has completado la configuración."
   registerTOTP: "Registrar aplicación autenticadora"

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { defineAsyncComponent } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
@@ -102,7 +103,13 @@ export function openInstanceMenu(ev: MouseEvent) {
 		action: () => {
 			window.open('https://misskey-hub.net/help.html', '_blank');
 		},
-	}, {
+	}, ($i) ? {
+		text: i18n.ts._initialTutorial.launchTutorial,
+		icon: 'ti ti-presentation',
+		action: () => {
+			os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {}, 'closed');
+		},
+	} : undefined, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
 		to: '/about-misskey',

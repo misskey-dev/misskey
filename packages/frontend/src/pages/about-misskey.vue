@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
 				</div>
 				<FormSection>
-					<div class="_formLinks">
+					<div class="_gaps_s">
 						<FormLink to="https://github.com/misskey-dev/misskey" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
@@ -73,7 +73,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSection>
 				<FormSection>
 					<template #label>{{ i18n.ts._aboutMisskey.contributors }}</template>
+					<div :class="$style.contributors" style="margin-bottom: 8px;">
+						<a href="https://github.com/mei23" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/30769358?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@mei23</span>
+						</a>
+						<a href="https://github.com/rinsuki" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/6533808?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@rinsuki</span>
+						</a>
+						<a href="https://github.com/robflop" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/8159402?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@robflop</span>
+						</a>
+					</div>
 					<MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink>
+				</FormSection>
+				<FormSection>
+					<template #label>Special thanks</template>
+					<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));grid-gap:24px;align-items:center;">
+						<div>
+							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/xserver.png" alt="XServer"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img style="width: 100%;" src="https://misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
+						</div>
+					</div>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
@@ -87,23 +115,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
-				</FormSection>
-				<FormSection>
-					<template #label>Special thanks</template>
-					<div class="_gaps" style="text-align: center;">
-						<div>
-							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/xserver.png" alt="XServer"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="100" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
-						</div>
-					</div>
 				</FormSection>
 			</div>
 		</MkSpacer>

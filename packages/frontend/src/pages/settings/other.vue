@@ -76,6 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<FormSection>
 		<div class="_gaps_s">
+			<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
 			<MkButton danger @click="updateRepliesAll(true)"><i class="ti ti-messages"></i> {{ i18n.ts.showRepliesToOthersInTimelineAll }}</MkButton>
 			<MkButton danger @click="updateRepliesAll(false)"><i class="ti ti-messages-off"></i> {{ i18n.ts.hideRepliesToOthersInTimelineAll }}</MkButton>
 		</div>
@@ -102,6 +103,7 @@ import FormSection from '@/components/form/section.vue';
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
 const devMode = computed(defaultStore.makeGetterSetter('devMode'));
+const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {

@@ -37,7 +37,7 @@ export function useTooltip(
 		};
 
 		autoHidingTimer = window.setInterval(() => {
-			if (!document.body.contains(elRef.value)) {
+			if (elRef.value == null || !document.body.contains(elRef.value instanceof Element ? elRef.value : elRef.value.$el)) {
 				if (!isHovering) return;
 				isHovering = false;
 				window.clearTimeout(timeoutId);

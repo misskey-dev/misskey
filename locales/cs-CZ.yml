@@ -1109,7 +1109,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Povolení push oznámení vám umožní přijímat oznámení od {name} přímo ve vašem zařízení."
   initialAccountSettingCompleted: "Nastavení profilu dokončeno!"
   haveFun: "Užívejte {name}!"
-  ifYouNeedLearnMore: "Pokud se chcete dozvědět více o tom, jak používat {name} (Misskey), navštivte {link}."
   skipAreYouSure: "Opravdu chcete přeskočit nastavení profilu?"
   laterAreYouSure: "Opravdu chcete provést nastavení profilu později?"
 _serverRules:
@@ -1658,16 +1657,6 @@ _time:
   minute: "Minut"
   hour: "Hodin"
   day: "Dnů"
-_timelineTutorial:
-  title: "Jak používat Misskey"
-  step1_1: "Toto je \"časová osa\". Zde se chronologicky zobrazují všechny \"poznámky\" odeslané na {name}."
-  step1_2: "Existuje několik různých časových plánů. Například \"Domácí časová osa\" bude obsahovat poznámky uživatelů, které sledujete, a \"Místní časová osa\" bude obsahovat poznámky všech uživatelů {name}."
-  step2_1: "Zkusme zveřejnit poznámku. Můžete tak učinit stisknutím tlačítka s ikonou tužky."
-  step2_2: "Co takhle napsat sebepředstavení, nebo jen \"Ahoj {name}!\", pokud se vám nechce?"
-  step3_1: "Dokončil jsi svou první poznámku?"
-  step3_2: "Na časové ose by se nyní měla zobrazit vaše první poznámka."
-  step4_1: "K poznámkám můžete také připojit \"Reakce\"."
-  step4_2: "Chcete-li připojit reakci, stiskněte na poznámce znaménko \"+\" a vyberte emoji, kterým chcete reagovat."
 _2fa:
   alreadyRegistered: "Již jste zaregistrovali dvoufaktorové ověřovací zařízení."
   registerTOTP: "Registrovat aplikaci autentizátoru"
