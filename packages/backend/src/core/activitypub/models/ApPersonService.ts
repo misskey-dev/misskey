@@ -269,7 +269,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
-		const isBot = getApType(object) === 'Service';
+		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
