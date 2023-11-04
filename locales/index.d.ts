@@ -1715,6 +1715,7 @@ export interface Locale {
         "reload": string;
         "dialog": string;
         "quiet": string;
+        "nothing": string;
     };
     "_channel": {
         "create": string;

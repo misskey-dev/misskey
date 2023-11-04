@@ -1609,6 +1609,8 @@ _serverDisconnectedBehavior:
   reload: "Automatically reload"
   dialog: "Show warning dialog"
   quiet: "Show unobtrusive warning"
+  nothing: "Do nothing"
+
 _channel:
   create: "Create channel"
   edit: "Edit channel"
