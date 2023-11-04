@@ -32,8 +32,8 @@ const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;
 const FIRE_THRESHOLD = 230;
 const RELEASE_TRANSITION_DURATION = 200;
-const PULL_BRAKE_BASE = 2;
-const PULL_BRAKE_FACTOR = 200;
+const PULL_BRAKE_BASE = 1.5;
+const PULL_BRAKE_FACTOR = 170;
 
 let isPullStart = $ref(false);
 let isPullEnd = $ref(false);
