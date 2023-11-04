@@ -1157,6 +1157,7 @@ disableStreamingTimeline: "タイムラインのリアルタイム更新を無�
 useGroupedNotifications: "通知をグルーピングして表示する"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
+doReaction: "リアクションする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

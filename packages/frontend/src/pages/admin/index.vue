@@ -118,7 +118,7 @@ const menuDef = $computed(() => [{
 	}, {
 		icon: 'ti ti-sparkles',
 		text: i18n.ts.avatarDecorations,
-		to: '/avatar-decorations',
+		to: '/admin/avatar-decorations',
 		active: currentPage?.route.name === 'avatarDecorations',
 	}, {
 		icon: 'ti ti-whirl',
