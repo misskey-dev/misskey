@@ -59,6 +59,7 @@
 - Fix: 11以上されているリアクションにおいてツールチップで示されるリアクション数が本来よりも1多い問題を修正 #12174
 - Fix: サイレンス状態で公開範囲のパブリックを選択できてしまう問題を修正 #12224
 - Fix: In deck layout, replies option is not saved after refresh
+- Note: アップデート後、サウンドに関する設定が初期化されます
 
 ### Server
 - Feat: Registry APIがサードパーティから利用可能になりました
