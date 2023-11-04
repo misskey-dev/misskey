@@ -1157,6 +1157,7 @@ disableStreamingTimeline: "停用時間軸的即時更新"
 useGroupedNotifications: "分組顯示通知訊息"
 signupPendingError: "驗證您的電子郵件地址時出現問題。連結可能已過期。"
 cwNotationRequired: "如果開啟「隱藏內容」，則需要註解說明。"
+doReaction: "做出反應"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
@@ -1229,7 +1230,7 @@ _initialTutorial:
       localOnly: "不將貼文發布到聯邦上的其他伺服器。不論上述發布範圍，使用此設定後，其他伺服器上的使用者將無法直接查看此貼文。"
     _cw:
       title: "隱藏內容（CW）"
-      description: "將顯示「註釋」中寫入的內容而不是本文。按一下「查看更多」以顯示本文。"
+      description: "將顯示「註釋」中寫入的內容而不是本文。按一下「顯示內容」以顯示本文。"
       _exampleNote:
         cw: "美食恐怖主義注意"
         note: "我吃了一個巧克力甜甜圈🍩😋"
