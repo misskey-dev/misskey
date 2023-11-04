@@ -218,7 +218,7 @@ function save() {
 		claimAchievement('markedAsCat');
 	}
     if (profile.isGorilla) {
-        claimAchievement('markedAsCat');
+        claimAchievement('markedAsGorilla');
     }
 }
 
