@@ -53,19 +53,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'account'" :i="$i"/>
+					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'account'"/>
 					<MkCwButton v-model="showContent" :note="appearNote" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<Mfm v-if="appearNote.text" :parsedNodes="parsed" :text="appearNote.text" :author="appearNote.user" :nyaize="'account'" :i="$i" :emojiUrls="appearNote.emojis"/>
+						<Mfm
+							v-if="appearNote.text"
+							:parsedNodes="parsed"
+							:text="appearNote.text"
+							:author="appearNote.user"
+							:nyaize="'account'"
+							:emojiUrls="appearNote.emojis"
+							:enableEmojiMenu="true"
+							:enableEmojiMenuReaction="true"
+						/>
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else>
 								<b>{{ i18n.t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'account'" :i="$i" :emojiUrls="appearNote.emojis"/>
+								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'account'" :emojiUrls="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -241,6 +250,13 @@ const keymap = {
 	'm|o': () => menu(true),
 	's': () => showContent.value !== showContent.value,
 };
+
+provide('react', (reaction: string) => {
+	os.api('notes/reactions/create', {
+		noteId: appearNote.id,
+		reaction: reaction,
+	});
+});
 
 if (props.mock) {
 	watch(() => props.note, (to) => {

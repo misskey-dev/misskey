@@ -33,12 +33,13 @@ type MfmProps = {
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
-	i?: Misskey.entities.UserLite | null;
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
 	nyaize: boolean | 'account';
 	parsedNodes?: mfm.MfmNode[] | null;
+	enableEmojiMenu?: boolean;
+	enableEmojiMenuReaction?: boolean;
 };
 
 // eslint-disable-next-line import/no-default-export
@@ -328,6 +329,8 @@ export default function(props: MfmProps) {
 						normal: props.plain,
 						host: null,
 						useOriginalSize: scale >= 2.5,
+						menu: props.enableEmojiMenu,
+						menuReaction: props.enableEmojiMenuReaction,
 					})];
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
