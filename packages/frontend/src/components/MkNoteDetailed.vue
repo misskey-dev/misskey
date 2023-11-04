@@ -73,7 +73,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="appearNote.cw == null || showContent">
 				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 				<MkA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-				<Mfm v-if="appearNote.text" :parsedNodes="parsed" :text="appearNote.text" :author="appearNote.user" :nyaize="'account'" :emojiUrls="appearNote.emojis"/>
+				<Mfm
+					v-if="appearNote.text"
+					:parsedNodes="parsed"
+					:text="appearNote.text"
+					:author="appearNote.user"
+					:nyaize="'account'"
+					:emojiUrls="appearNote.emojis"
+					:enableEmojiMenu="true"
+					:enableEmojiMenuReaction="true"
+				/>
 				<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
 				<div v-if="translating || translation" :class="$style.translation">
 					<MkLoading v-if="translating" mini/>
@@ -184,7 +193,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -275,6 +284,13 @@ const keymap = {
 	'm|o': () => menu(true),
 	's': () => showContent.value !== showContent.value,
 };
+
+provide('react', (reaction: string) => {
+	os.api('notes/reactions/create', {
+		noteId: appearNote.id,
+		reaction: reaction,
+	});
+});
 
 let tab = $ref('replies');
 let reactionTabType = $ref(null);
