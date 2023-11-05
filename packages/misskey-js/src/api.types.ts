@@ -399,7 +399,6 @@ export type Endpoints = {
 	'i/registry/keys-with-type': { req: { scope?: string[]; }; res: Record<string, 'null' | 'array' | 'number' | 'string' | 'boolean' | 'object'>; };
 	'i/registry/keys': { req: { scope?: string[]; }; res: string[]; };
 	'i/registry/remove': { req: { key: string; scope?: string[]; }; res: null; };
-	'i/registry/scopes': { req: NoParams; res: string[][]; };
 	'i/registry/set': { req: { key: string; value: any; scope?: string[]; }; res: null; };
 	'i/revoke-token': { req: TODO; res: TODO; };
 	'i/signin-history': { req: { limit?: number; sinceId?: Signin['id']; untilId?: Signin['id']; }; res: Signin[]; };
@@ -639,4 +638,11 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
+
+	// fetching external data
+	'fetch-rss': { req: { url: string; }; res: TODO; };
+	'fetch-external-resources': {
+		req: { url: string; hash: string; };
+		res: { type: string; data: string; };
+	};
 };

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
 
 	<div class="query">
-		<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
+		<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 
