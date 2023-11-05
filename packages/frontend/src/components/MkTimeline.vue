@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeMount, onUnmounted, onBeforeUpdate, provide } from 'vue';
+import { computed, watch, onUnmounted, provide } from 'vue';
 import { Connection } from 'misskey-js/built/streaming.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
@@ -234,12 +234,15 @@ function refreshEndpointAndChannel() {
 	updatePaginationQuery();
 }
 
+// IDが切り替わったら切り替え先のTLを表示させたい
+watch(() => [props.list, props.antenna, props.channel, props.role], refreshEndpointAndChannel);
+
+// 初回表示用
+refreshEndpointAndChannel();
+
 onUnmounted(() => {
 	disconnectChannel();
 });
-
-onBeforeMount(refreshEndpointAndChannel);
-onBeforeUpdate(refreshEndpointAndChannel);
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
