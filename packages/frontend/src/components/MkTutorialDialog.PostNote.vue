@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._postNote.description1 }}</div>
-	<MkPostForm :class="$style.exampleRoot" :mock="true"/>
+	<MkPostForm :class="$style.exampleRoot" :mock="true" :autofocus="false"/>
 	<MkFormSection>
 		<template #label>{{ i18n.ts.visibility }}</template>
 		<div class="_gaps">

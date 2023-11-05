@@ -1157,6 +1157,7 @@ disableStreamingTimeline: "Disable real-time timeline updates"
 useGroupedNotifications: "Display grouped notifications"
 signupPendingError: "There was a problem verifying the email address. The link may have expired."
 cwNotationRequired: "If \"Hide content\" is enabled, a description must be provided."
+doReaction: "Add reaction"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
@@ -1203,6 +1204,54 @@ _initialTutorial:
     title: "What are Reactions?"
     description: "Notes can be reacted to with various emojis. Reactions allow you to express nuances that may not be conveyed with just a 'like.'"
     letsTryReacting: "Reactions can be added by clicking the '+' button on the note. Try reacting to this sample note!"
+    reactToContinue: "Add a reaction to proceed."
+    reactNotification: "You'll receive real-time notifications when someone reacts to your note."
+    reactDone: "You can undo a reaction by pressing the '-' button."
+  _timeline:
+    title: "The Concept of Timelines"
+    description1: "Misskey provides multiple timelines based on usage (some may not be available depending on the server's policies)."
+    home: "You can view notes from accounts you follow."
+    local: "You can view notes from all users on this server."
+    social: "Notes from the Home and Local timelines will be displayed."
+    global: "You can view notes from all connected servers."
+    description2: "You can switch between timelines at the top of the screen at any time."
+    description3: "Additionally, there are list timelines and channel timelines. For more details, please refer to {link}."
+  _postNote:
+    title: "Note Posting Settings"
+    description1: "When posting a note on Misskey, various options are available. The posting form looks like this."
+    _visibility:
+      description: "You can limit who can view your note."
+      public: "Your note will be visible for all users."
+      home: "Public only on the Home timeline. People visiting your profile, via followers, and through renotes can see it."
+      followers: "Visible to followers only. Only followers can see it and no one else, and it cannot be renoted by others."
+      direct: "Visible only to specified users, and the recipient will be notified. It can be used as an alternative to direct messaging."
+      doNotSendConfidencialOnDirect1: "Be careful when sending sensitive information!"
+      doNotSendConfidencialOnDirect2: "Administrators of the server can see what you write. Be careful with sensitive information when sending direct notes to users on untrusted servers."
+      localOnly: "Posting with this flag will not federate the note to other servers. Users on other servers will not be able to view these notes directly, regardless of the display settings above."
+    _cw:
+      title: "Content Warning"
+      description: "Instead of the body, the content written in 'comments' field will be displayed. Pressing \"read more\" will reveal the body."
+      _exampleNote:
+        cw: "This will surely make you hungry!"
+        note: "Just had a chocolate-glazed donut 🍩😋"
+      useCases: "This is used when following the server guidelines for necessary notes or for self-restriction of spoiler or sensitive text."
+  _howToMakeAttachmentsSensitive:
+    title: "How to Mark Attachments as Sensitive?"
+    description: "For attachments that are required by server guidelines or that should not be left intact, add a \"sensitive\" flag."
+    tryThisFile: "Try marking the image attached in this form as sensitive!"
+    _exampleNote:
+      note: "Oops, messed up opening the natto lid..."
+    method: "To mark an attachment as sensitive, click the file thumbnail, open the menu, and click \"Mark as Sensitive.\""
+    sensitiveSucceeded: "When attaching files, please set sensitivities in accordance with the server guidelines."
+    doItToContinue: "Mark the attachment file as sensitive to proceed."
+  _done:
+    title: "The tutorial is complete! 🎉"
+    description: "The functions introduced here are just a small part. For a more detailed understanding of using Misskey, please refer to {link}."
+_timelineDescription:
+  home: "In the Home timeline, you can see notes from accounts you follow."
+  local: "In the Local timeline, you can see notes from all users on this server."
+  social: "The Social timeline displays notes from both the Home and Local timelines."
+  global: "In the Global timeline, you can see notes from all connected servers."
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _serverSettings:
@@ -1472,6 +1521,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "Test overflow"
       description: "Trigger the notification test repeatedly within an extremely short time"
+    _tutorialCompleted:
+      title: "Misskey Elementary Course Diploma"
+      description: "Tutorial completed"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -1660,6 +1712,7 @@ _channel:
   notesCount: "{n} Notes"
   nameAndDescription: "Name and description"
   nameOnly: "Name only"
+  allowRenoteToExternal: "Allow renote and quote outside the channel"
 _menuDisplay:
   sideFull: "Side"
   sideIcon: "Side (Icons)"
