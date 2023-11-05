@@ -111,9 +111,9 @@ export class DeleteAccountProcessorService {
 				cursor = reactions.at(-1)?.id ?? null;
 
 				for (const reaction of reactions) {
-					const note = await this.notesRepository.findOneBy({ id: reaction.noteId }) as MiNote;
+					const note = await this.notesRepository.findOneBy({ id: reaction.noteId });
 
-					await this.reactionService.delete(user, note);
+					if (note) await this.reactionService.delete(user, note);
 				}
 			}
 
