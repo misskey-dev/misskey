@@ -1089,6 +1089,9 @@ _initialAccountSetting:
   privacySetting: "Paramètres de confidentialité"
   initialAccountSettingCompleted: "Configuration du profil terminée avec succès !"
   skipAreYouSure: "Désirez-vous ignorer la configuration du profil ?"
+_initialTutorial:
+  _note:
+    title: "Qu'est-ce qu'une note ?"
 _serverSettings:
   iconUrl: "URL de l’icône"
   fanoutTimelineDescription: "Si activée, la performance de la récupération de la chronologie augmentera considérablement et la charge sur la base de données sera réduite. En revanche, l'utilisation de la mémoire de Redis augmentera. Considérez désactiver cette option si le serveur est bas en mémoire ou instable."
