@@ -114,6 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				display: announcement.display,
 				isActive: announcement.isActive,
 				forExistingUsers: announcement.forExistingUsers,
+				silence: announcement.silence,
 				needConfirmationToRead: announcement.needConfirmationToRead,
 				userId: announcement.userId,
 				reads: reads.get(announcement)!,
