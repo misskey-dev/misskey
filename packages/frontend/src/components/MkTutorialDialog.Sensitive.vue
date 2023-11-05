@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkPostForm
 		:class="$style.exampleRoot"
 		:mock="true"
+		:autofocus="false"
 		:initialNote="exampleNote"
 		@fileChangeSensitive="doSucceeded"
 	></MkPostForm>

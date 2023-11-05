@@ -1157,6 +1157,7 @@ disableStreamingTimeline: "Disabilitare gli aggiornamenti della TL in tempo real
 useGroupedNotifications: "Mostra le notifiche raggruppate"
 signupPendingError: "Si è verificato un problema durante la verifica del tuo indirizzo email. Potrebbe essere scaduto il collegamento temporaneo."
 cwNotationRequired: "Devi indicare perché il contenuto è indicato come esplicito."
+doReaction: "Reagisci"
 _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
