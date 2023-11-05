@@ -23,7 +23,7 @@
 		"@rollup/plugin-typescript": "^11.1.2",
 		"@rollup/pluginutils": "5.0.2",
 		"@syuilo/aiscript": "0.15.0",
-		"@tabler/icons-webfont": "2.25.0",
+		"@tabler/icons-webfont": "2.30.0",
 		"@vitejs/plugin-vue": "4.2.3",
 		"@vue-macros/reactivity-transform": "0.3.15",
 		"@vue/compiler-sfc": "3.3.4",
