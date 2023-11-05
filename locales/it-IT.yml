@@ -1169,6 +1169,8 @@ _announcement:
   readConfirmText: "Hai già letto \"{title}˝?"
   shouldNotBeUsedToPresentPermanentInfo: "Ti consigliamo di utilizzare gli annunci per pubblicare informazioni tempestive e limitate nel tempo, anziché informazioni importanti a lungo andare nel tempo, poiché potrebbero risultare difficili da ritrovare e peggiorare la fruibilità del servizio, specialmente alle nuove persone iscritte."
   dialogAnnouncementUxWarn: "Ti consigliamo di usarli con cautela, poiché è molto probabile che avere più di un annuncio in stile \"finestra di dialogo\" peggiori sensibilmente la fruibilità del servizio, specialmente alle nuove persone iscritte."
+  silence: "Silenzia gli annunci"
+  silenceDescription: "Se attivi questa opzione, non riceverai notifiche sugli annunci, evitando di contrassegnarle come già lette."
 _initialAccountSetting:
   accountCreated: "Il tuo profilo è stato creato!"
   letsStartAccountSetup: "Per iniziare, impostiamo il tuo profilo."
