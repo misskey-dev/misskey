@@ -93,6 +93,7 @@ describe('ActivityPub', () => {
 	const metaInitial = {
 		cacheRemoteFiles: true,
 		cacheRemoteSensitiveFiles: true,
+		enableFanoutTimeline: true,
 		perUserHomeTimelineCacheMax: 100,
 		perLocalUserUserTimelineCacheMax: 100,
 		perRemoteUserUserTimelineCacheMax: 100,
