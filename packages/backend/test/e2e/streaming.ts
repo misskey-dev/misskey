@@ -159,6 +159,10 @@ describe('Streaming', () => {
 			});
 			*/
 
+			test('フォローしているユーザーのフォローしていないユーザーの visibility: followers な投稿への返信が流れない', async () => {
+				// TODO
+			});
+
 			test('フォローしていないユーザーの投稿は流れない', async () => {
 				const fired = await waitFire(
 					kyoko, 'homeTimeline',	// kyoko:home

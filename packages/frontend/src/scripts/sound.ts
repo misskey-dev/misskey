@@ -3,47 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { markRaw } from 'vue';
-import { Storage } from '@/pizzax.js';
-
-export const soundConfigStore = markRaw(new Storage('sound', {
-	sound_masterVolume: {
-		where: 'device',
-		default: 0.3,
-	},
-	sound_note: {
-		where: 'account',
-		default: { type: 'syuilo/n-aec', volume: 1 },
-	},
-	sound_noteMy: {
-		where: 'account',
-		default: { type: 'syuilo/n-cea-4va', volume: 1 },
-	},
-	sound_notification: {
-		where: 'account',
-		default: { type: 'syuilo/n-ea', volume: 1 },
-	},
-	sound_antenna: {
-		where: 'account',
-		default: { type: 'syuilo/triple', volume: 1 },
-	},
-	sound_channel: {
-		where: 'account',
-		default: { type: 'syuilo/square-pico', volume: 1 },
-	},
-}));
-
-await soundConfigStore.ready;
-
-//#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
-for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
-	const value = localStorage.getItem(`miux:${target}`);
-	if (value) {
-		soundConfigStore.set(target, JSON.parse(value) as typeof soundConfigStore.def[typeof target]['default']);
-		localStorage.removeItem(`miux:${target}`);
-	}
-}
-//#endregion
+import { defaultStore } from '@/store.js';
 
 const cache = new Map<string, HTMLAudioElement>();
 
@@ -112,13 +72,13 @@ export function getAudio(file: string, useCache = true): HTMLAudioElement {
 }
 
 export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioElement {
-	const masterVolume = soundConfigStore.state.sound_masterVolume;
+	const masterVolume = defaultStore.state.sound_masterVolume;
 	audio.volume = masterVolume - ((1 - volume) * masterVolume);
 	return audio;
 }
 
 export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
-	const sound = soundConfigStore.state[`sound_${type}`];
+	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null) return;
 	playFile(sound.type, sound.volume);

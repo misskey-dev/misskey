@@ -4,7 +4,7 @@
  */
 
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
-import { Router } from '@/nirax';
+import { Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -314,14 +314,22 @@ export const routes = [{
 	path: '/custom-emojis-manager',
 	component: page(() => import('./pages/custom-emojis-manager.vue')),
 }, {
-	path: '/registry/keys/system/:path(*)?',
+	path: '/avatar-decorations',
+	name: 'avatarDecorations',
+	component: page(() => import('./pages/avatar-decorations.vue')),
+}, {
+	path: '/registry/keys/:domain/:path(*)?',
 	component: page(() => import('./pages/registry.keys.vue')),
 }, {
-	path: '/registry/value/system/:path(*)?',
+	path: '/registry/value/:domain/:path(*)?',
 	component: page(() => import('./pages/registry.value.vue')),
 }, {
 	path: '/registry',
 	component: page(() => import('./pages/registry.vue')),
+}, {
+	path: '/install-extentions',
+	component: page(() => import('./pages/install-extentions.vue')),
+	loginRequired: true,
 }, {
 	path: '/admin/user/:userId',
 	component: iAmModerator ? page(() => import('./pages/admin-user.vue')) : page(() => import('./pages/not-found.vue')),
@@ -343,6 +351,10 @@ export const routes = [{
 		path: '/emojis',
 		name: 'emojis',
 		component: page(() => import('./pages/custom-emojis-manager.vue')),
+	}, {
+		path: '/avatar-decorations',
+		name: 'avatarDecorations',
+		component: page(() => import('./pages/avatar-decorations.vue')),
 	}, {
 		path: '/queue',
 		name: 'queue',
