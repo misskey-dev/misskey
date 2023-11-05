@@ -1170,6 +1170,8 @@ _announcement:
   readConfirmText: "「{title}」の内容を読み、既読にします。"
   shouldNotBeUsedToPresentPermanentInfo: "特に新規ユーザーのUXを損ねる可能性が高いため、ストック情報ではなくフロー情報の掲示にお知らせを使用することを推奨します。"
   dialogAnnouncementUxWarn: "ダイアログ形式のお知らせが同時に2つ以上ある場合、UXに悪影響を及ぼす可能性が非常に高いため、使用は慎重に行うことを推奨します。"
+  silence: "非通知"
+  silenceDescription: "オンにすると、このお知らせは通知されず、既読にする必要もなくなります。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
