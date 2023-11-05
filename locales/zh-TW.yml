@@ -1155,6 +1155,7 @@ refreshing: "載入更新中"
 pullDownToRefresh: "往下拉來更新內容"
 disableStreamingTimeline: "停用時間軸的即時更新"
 useGroupedNotifications: "分組顯示通知訊息"
+signupPendingError: "驗證您的電子郵件地址時出現問題。連結可能已過期。"
 cwNotationRequired: "如果開啟「隱藏內容」，則需要註解說明。"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
@@ -1165,6 +1166,8 @@ _announcement:
   tooManyActiveAnnouncementDescription: "有過多公告可能會影響使用者體驗。請考慮歸檔已結束的公告。"
   readConfirmTitle: "標記為已讀嗎？"
   readConfirmText: "閱讀「{title}」的內容並標記為已讀。"
+  shouldNotBeUsedToPresentPermanentInfo: "由於可能會破壞使用者體驗，尤其是對於新使用者而言，我們建議使用公告來發布有時效性的資訊而不是固定不變的資訊。"
+  dialogAnnouncementUxWarn: "如果同時有 2 個以上對話方塊形式的公告存在，對於使用者體驗很可能會有不良的影響，因此建議謹慎使用。"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
@@ -1177,8 +1180,77 @@ _initialAccountSetting:
   pushNotificationDescription: "啟用推送通知，就可以在設備上接收{name}的通知。"
   initialAccountSettingCompleted: "初始設定完成了！"
   haveFun: "盡情享受{name}吧！"
+  youCanContinueTutorial: "您可以繼續學習如何使用{name}(Misskey)，也可以就此打住，立即開始使用。"
+  startTutorial: "開始教學課程"
   skipAreYouSure: "要略過初始設定嗎？"
   laterAreYouSure: "稍後再重新進行初始設定嗎？"
+_initialTutorial:
+  launchTutorial: "觀看教學課程"
+  title: "新手教學"
+  wellDone: "做得好"
+  skipAreYouSure: "結束教學模式？"
+  _landing:
+    title: "歡迎使用本教學課程"
+    description: "在這裡您可以查看Misskey的基本使用方法和功能。"
+  _note:
+    title: "什麼是貼文？"
+    description: "在Misskey上發布的內容稱為「貼文」。貼文在時間軸上按時間順序排列，並即時更新。"
+    reply: "您可以回覆貼文，並像討論串一樣繼續對話。"
+    renote: "您可以將此貼文分享到自己的時間軸。您也可以在引用時添加文字。"
+    reaction: "您可以添加反應。詳細資訊將在下一頁進行說明。"
+    menu: "可執行各種操作，如查看貼文詳細資訊和複製連結。"
+  _reaction:
+    title: "什麼是反應？"
+    description: "您可以在貼文中添加「反應」。您可以使用反應輕鬆隨意地表達「最愛/大心」所無法傳達的細微差別。"
+    letsTryReacting: "可以透過點擊貼文上的「+」按鈕來添加反應。請嘗試在此範例貼文添加反應！"
+    reactToContinue: "添加反應以繼續教學課程。"
+    reactNotification: "當有人對您的貼文做出反應時會即時接收到通知。"
+    reactDone: "按下「-」按鈕可以取消反應。"
+  _timeline:
+    title: "時間軸如何運作"
+    description1: "Misskey根據使用方式提供了多個時間軸（伺服器可能會將部份時間軸停用）。"
+    home: "您可以查看您追隨的使用者的貼文。"
+    local: "您可以看到此伺服器上所有使用者的貼文。"
+    social: "來自首頁時間軸和本地時間軸的貼文都會顯示。"
+    global: "可以看到其他已連接伺服器的貼文。"
+    description2: "您可以隨時在螢幕上方切換對應的時間軸。"
+    description3: "除此之外還有清單時間軸、頻道時間軸等。請參閱{link}以了解更多詳情。"
+  _postNote:
+    title: "貼文的發布設定"
+    description1: "在Misskey上發布貼文時，可以設定各種選項。發布表單如下所示。"
+    _visibility:
+      description: "可以限制誰可以看到您的貼文。"
+      public: "所有人都可以看見。"
+      home: "僅在首頁時間軸上發布。其他使用者只在下列情況可看見該貼文：追隨者、觀看使用者的個人資料頁面，以及貼文被轉發時。"
+      followers: "僅追隨者可見。只有發文者本人可轉發，未追隨發文者的使用者無法看見。"
+      direct: "僅指定的使用者可見，對方也會收到通知。可代替直接訊息使用。"
+      doNotSendConfidencialOnDirect1: "發送機密訊息時請務必注意。"
+      doNotSendConfidencialOnDirect2: "目標伺服器的管理員可以看到發布的內容，因此如果您向不受信任的伺服器上的使用者發送直接訊息，必須小心處理機密訊息。"
+      localOnly: "不將貼文發布到聯邦上的其他伺服器。不論上述發布範圍，使用此設定後，其他伺服器上的使用者將無法直接查看此貼文。"
+    _cw:
+      title: "隱藏內容（CW）"
+      description: "將顯示「註釋」中寫入的內容而不是本文。按一下「查看更多」以顯示本文。"
+      _exampleNote:
+        cw: "美食恐怖主義注意"
+        note: "我吃了一個巧克力甜甜圈🍩😋"
+      useCases: "伺服器的服務條款可能會規範特定的貼文需要使用隱藏內容，除此之外也會用在隱藏劇情洩漏與敏感內容的貼文。"
+  _howToMakeAttachmentsSensitive:
+    title: "如何標記上傳附件為敏感內容？"
+    description: "如果伺服器服務條款有規範，又或者不希望上傳附件直接被看見，可以設置為「敏感內容」"
+    tryThisFile: "試試看！把附加在發文表單的圖像檔案標記為敏感內容。"
+    _exampleNote:
+      note: "打開納豆的包裝失敗了…"
+    method: "若要使上傳附件標記為敏感內容，請按一下該檔案以開啟選單，然後點擊「標記為敏感內容」。"
+    sensitiveSucceeded: "上傳附件時，請務必根據伺服器的服務條款適當設定敏感內容。"
+    doItToContinue: "把圖像標記為敏感內容以繼續教學課程。"
+  _done:
+    title: "教學課程已結束"
+    description: "這裡介紹的功能只是其中的一小部分。要了解更多有關如何使用Misskey的資訊，請瀏覽{link}。"
+_timelineDescription:
+  home: "在首頁時間線上，可以看到您追隨的使用者的貼文。"
+  local: "在本地時間軸上，可以看到此伺服器所有使用者的貼文。"
+  social: "在社交時間軸上，可以看到首頁與本地時間軸的貼文。"
+  global: "在公開時間軸上，可以看到其他已連接伺服器的貼文。\n"
 _serverRules:
   description: "設定在註冊頁面顯示的伺服器簡要規則。建議是服務條款的摘要。"
 _serverSettings:
@@ -1448,6 +1520,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "過度測試"
       description: "極短時間內連續測試通知"
+    _tutorialCompleted:
+      title: "Misskey新手講座 結業證書"
+      description: "已完成教學課程"
 _role:
   new: "建立角色"
   edit: "編輯角色"
@@ -1636,6 +1711,7 @@ _channel:
   notesCount: "有 {n} 篇貼文"
   nameAndDescription: "名稱與說明"
   nameOnly: "僅名稱"
+  allowRenoteToExternal: "允許在頻道外轉發和引用"
 _menuDisplay:
   sideFull: "橫向"
   sideIcon: "橫向（圖示）"
@@ -1865,7 +1941,7 @@ _widgets:
   clicker: "點擊器"
 _cw:
   hide: "隱藏"
-  show: "瀏覽更多"
+  show: "顯示內容"
   chars: "{count} 個字元"
   files: "{count} 個檔案"
 _poll:
