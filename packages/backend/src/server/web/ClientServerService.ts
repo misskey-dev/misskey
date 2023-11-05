@@ -267,8 +267,9 @@ export class ClientServerService {
 				decorateReply: false,
 			});
 		} else {
+			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:5173', // TODO: port configuration
+				upstream: 'http://localhost:' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});

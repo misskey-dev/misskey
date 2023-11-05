@@ -601,9 +601,6 @@ _time:
   minute: "Minutter"
   hour: "Timer"
   day: "Dager"
-_timelineTutorial:
-  title: "Hvordan bruke Misskey"
-  step2_2: "Hva med å skrive en selvpresentasjon, eller bare \"Hei {name}!\" hvis du ikke har lyst?"
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:

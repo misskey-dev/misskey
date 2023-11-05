@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
-			:class="$style.inputCore"
+			:class="[$style.inputCore, { _monospace: code }]"
 			:type="type"
 			:disabled="disabled"
 			:required="required"
@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:placeholder="placeholder"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
+			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
 			:step="step"
 			:list="id"
@@ -58,6 +59,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];
@@ -68,6 +70,7 @@ const props = defineProps<{
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
+	code?: boolean;
 }>();
 
 const emit = defineEmits<{

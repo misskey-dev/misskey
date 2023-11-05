@@ -18,10 +18,10 @@ interface Props {
 
 const contentSymbol = Symbol();
 const observer = new ResizeObserver((entries) => {
-  const results: {
-    container: HTMLSpanElement;
-    transform: string;
-  }[] = [];
+	const results: {
+		container: HTMLSpanElement;
+		transform: string;
+	}[] = [];
 	for (const entry of entries) {
 		const content = (entry.target[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
 		const props: Required<Props> = content[contentSymbol];

@@ -54,6 +54,7 @@ export class AnnouncementService {
 
 		q
 			.where('announcement.isActive = true')
+			.andWhere('announcement.silence = false')
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
 				qb.orWhere('announcement.userId IS NULL');
@@ -86,6 +87,7 @@ export class AnnouncementService {
 			icon: values.icon,
 			display: values.display,
 			forExistingUsers: values.forExistingUsers,
+			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			closeDuration: values.closeDuration,
 			displayOrder: values.displayOrder,
@@ -193,6 +195,7 @@ export class AnnouncementService {
 			display: values.display,
 			icon: values.icon,
 			forExistingUsers: values.forExistingUsers,
+			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			closeDuration: values.closeDuration,
 			displayOrder: values.displayOrder,
@@ -374,6 +377,7 @@ export class AnnouncementService {
 			needConfirmationToRead: announcement.needConfirmationToRead,
 			closeDuration: announcement.closeDuration,
 			displayOrder: announcement.displayOrder,
+			silence: announcement.silence,
 			forYou: announcement.userId === me?.id,
 			isRead: announcement.isRead ?? undefined,
 		}));

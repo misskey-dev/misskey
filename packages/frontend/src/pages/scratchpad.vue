@@ -4,46 +4,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800">
-	<div :class="$style.root">
-		<div :class="$style.editor" class="_panel">
-			<PrismEditor v-model="code" class="_monospace" :class="$style.code" :highlight="highlighter" :lineNumbers="false"/>
-			<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
-		</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader/></template>
 
-		<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
-			<template #header>UI</template>
-			<div :class="$style.ui">
-				<MkAsUi :component="root" :components="components" size="small"/>
+	<MkSpacer :contentMax="800">
+		<div :class="$style.root">
+			<div class="_gaps_s">
+				<div :class="$style.editor" class="_panel">
+					<MkCodeEditor v-model="code" lang="aiscript"/>
+				</div>
+				<MkButton primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
 			</div>
-		</MkContainer>
 
-		<MkContainer :foldable="true" class="">
-			<template #header>{{ i18n.ts.output }}</template>
-			<div :class="$style.logs">
-				<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+			<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
+				<template #header>UI</template>
+				<div :class="$style.ui">
+					<MkAsUi :component="root" :components="components" size="small"/>
+				</div>
+			</MkContainer>
+
+			<MkContainer :foldable="true" class="">
+				<template #header>{{ i18n.ts.output }}</template>
+				<div :class="$style.logs">
+					<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+				</div>
+			</MkContainer>
+
+			<div class="">
+				{{ i18n.ts.scratchpadDescription }}
 			</div>
-		</MkContainer>
-
-		<div class="">
-			{{ i18n.ts.scratchpadDescription }}
 		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
-import 'prismjs';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism-okaidia.css';
-import { PrismEditor } from 'vue-prism-editor';
-import 'vue-prism-editor/dist/prismeditor.min.css';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
@@ -150,10 +150,6 @@ async function run() {
 			text: err.toString(),
 		});
 	}
-}
-
-function highlighter(code) {
-	return highlight(code, languages.js, 'javascript');
 }
 
 onDeactivated(() => {

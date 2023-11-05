@@ -81,6 +81,12 @@ export class MiAnnouncement {
 	public forExistingUsers: boolean;
 
 	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public silence: boolean;
+
+	@Index()
 	@Column({
 		...id(),
 		nullable: true,
