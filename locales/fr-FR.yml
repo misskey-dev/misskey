@@ -1091,7 +1091,14 @@ _initialAccountSetting:
   skipAreYouSure: "Désirez-vous ignorer la configuration du profil ?"
 _initialTutorial:
   _note:
-    title: "Qu'est-ce qu'une note ?"
+    title: "Qu'est-ce que les notes ?"
+    description: "Les messages sur Misskey sont appelés des « notes » . Les notes sont classées par ordre chronologique sur le fil et sont mises à jour en temps réel."
+    reply: "Vous pouvez répondre aux messages. Vous pouvez également répondre aux réponses et poursuivre la conversation comme un fil de discussion."
+    renote: "Vous pouvez partager cette note sur votre propre fil. Vous pouvez aussi ajouter du texte en citant."
+    reaction: "Vous pouvez ajouter des réactions. Les détails sont expliqués à la page suivante."
+    menu: "Vous pouvez afficher les détails de la note, copier le lien et effectuer d'autres actions."
+  _reaction:
+    title: "Qu'est-ce que les réactions ?"
 _serverSettings:
   iconUrl: "URL de l’icône"
   fanoutTimelineDescription: "Si activée, la performance de la récupération de la chronologie augmentera considérablement et la charge sur la base de données sera réduite. En revanche, l'utilisation de la mémoire de Redis augmentera. Considérez désactiver cette option si le serveur est bas en mémoire ou instable."
