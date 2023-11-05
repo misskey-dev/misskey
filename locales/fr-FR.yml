@@ -1122,6 +1122,10 @@ _initialTutorial:
     reactToContinue: "Ajoutez une réaction pour procéder."
     reactNotification: "Vous recevez des notifications en temps réel lorsque quelqu'un réagit à votre note."
     reactDone: "Vous pouvez annuler la réaction en cliquant sur le bouton « - » ."
+  _timeline:
+    title: "Fonctionnement des fils"
+    description1: "Misskey offre plusieurs fils selon l'usage (certains peuvent être désactivés par le serveur)."
+    home: "Vous pouvez voir les notes des utilisateurs auxquels vous êtes abonné·e."
   _postNote:
     _cw:
       title: "Masquer le contenu (CW)"
