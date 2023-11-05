@@ -1121,6 +1121,7 @@ _initialTutorial:
     letsTryReacting: "Des réactions peuvent être ajoutées en cliquant sur le bouton « + » de la note. Essayez d'ajouter une réaction à cet exemple de note !"
     reactToContinue: "Ajoutez une réaction pour procéder."
     reactNotification: "Vous recevez des notifications en temps réel lorsque quelqu'un réagit à votre note."
+    reactDone: "Vous pouvez annuler la réaction en cliquant sur le bouton « - » ."
   _postNote:
     _cw:
       title: "Masquer le contenu (CW)"
