@@ -138,6 +138,15 @@ export class MiUser {
 	})
 	public bannerBlurhash: string | null;
 
+	@Column('jsonb', {
+		default: [],
+	})
+	public avatarDecorations: {
+		id: string;
+		angle: number;
+		flipH: boolean;
+	}[];
+
 	@Index()
 	@Column('varchar', {
 		length: 128, array: true, default: '{}',
