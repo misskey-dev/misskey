@@ -1089,7 +1089,8 @@ cwNotationRequired: "Si « Masquer le contenu » est activé, une description do
 doReaction: "Réagir"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
-  shouldNotBeUsedToPresentPermanentInfo: "Puisque cela pourrait nuire à l'expérience utilisateur pour les nouveaux utilisateurs, il est recommandé d'utiliser les annonces pour afficher des informations temporaires plutôt que des informations persistantes."
+  shouldNotBeUsedToPresentPermanentInfo: "Puisque cela pourrait nuire considérablement à l'expérience utilisateur pour les nouveaux utilisateurs, il est recommandé d'utiliser les annonces pour afficher des informations temporaires plutôt que des informations persistantes."
+  dialogAnnouncementUxWarn: "Avoir deux ou plus annonces de style dialogue en même temps pourrait nuire considérablement à l'expérience utilisateur. Veuillez les utiliser avec caution."
   silence: "Ne pas me notifier"
   silenceDescription: "Si activée, vous ne recevrez pas de notifications sur les annonces et n'aurez pas besoin de les marquer comme lues."
 _initialAccountSetting:
@@ -1119,6 +1120,7 @@ _initialTutorial:
     description: "Vous pouvez ajouter des « réactions » aux notes. Les réactions vous permettent d'exprimer à l'aise des nuances qui ne peuvent pas être exprimées par des mentions j'aime."
     letsTryReacting: "Des réactions peuvent être ajoutées en cliquant sur le bouton « + » de la note. Essayez d'ajouter une réaction à cet exemple de note !"
     reactToContinue: "Ajoutez une réaction pour procéder."
+    reactNotification: "Vous recevez des notifications en temps réel lorsque quelqu'un réagit à votre note."
   _postNote:
     _cw:
       title: "Masquer le contenu (CW)"
@@ -1322,7 +1324,7 @@ _ad:
   adsSettings: "Paramètres des publicités"
   notesPerOneAd: "Intervalle de diffusion de publicités lors de la mise à jour en temps réel (nombre de notes par publicité)"
   setZeroToDisable: "Mettre cette valeur à 0 pour désactiver la diffusion de publicités lors de la mise à jour en temps réel"
-  adsTooClose: "L'expérience de l'utilisateur peut être gravement compromise par un intervalle de diffusion de publicités extrêmement court."
+  adsTooClose: "L'expérience utilisateur peut être gravement compromise par un intervalle de diffusion de publicités extrêmement court."
 _forgotPassword:
   enterEmail: "Entrez ici l'adresse e-mail que vous avez enregistrée pour votre compte. Un lien vous permettant de réinitialiser votre mot de passe sera envoyé à cette adresse."
   ifNoEmail: "Si vous n'avez pas enregistré d'adresse e-mail, merci de contacter l'administrateur·rice de votre instance."
