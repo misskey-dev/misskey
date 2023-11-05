@@ -354,6 +354,8 @@ export default function(props: MfmProps) {
 				return [h(MkEmoji, {
 					key: Math.random(),
 					emoji: token.props.emoji,
+					menu: props.enableEmojiMenu,
+					menuReaction: props.enableEmojiMenuReaction,
 				})];
 			}
 
