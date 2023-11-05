@@ -1022,6 +1022,7 @@ pleaseAgreeAllToContinue: "Pour continuer, veuillez accepter tous les champs ci-
 continue: "Continuer"
 preservedUsernames: "Noms d'utilisateur·rice réservés"
 archive: "Archive"
+thisChannelArchived: "Ce canal a été archivé."
 displayOfNote: "Affichage de la note"
 initialAccountSetting: "Configuration initiale du profil"
 youFollowing: "Abonné·e"
@@ -1033,6 +1034,7 @@ failedToPreviewUrl: "Aperçu d'URL échoué"
 update: "Mettre à jour"
 later: "Plus tard"
 goToMisskey: "Retour vers Misskey"
+installed: "Installé"
 expirationDate: "Date d’expiration"
 waitingForMailAuth: "En attente de la vérification de l'adresse courriel"
 usedAt: "Utilisé le"
@@ -1083,16 +1085,22 @@ pullDownToRefresh: "Tirer vers le bas pour rafraîchir"
 disableStreamingTimeline: "Désactiver les mises à jour en temps réel de la ligne du temps"
 useGroupedNotifications: "Grouper les notifications"
 signupPendingError: "Un problème est survenu lors de la vérification de votre adresse e-mail. Le lien a peut-être expiré."
+cwNotationRequired: "Si « Masquer le contenu » est activé, une description doit être fournie."
 doReaction: "Réagir"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
+  shouldNotBeUsedToPresentPermanentInfo: "Puisque cela pourrait nuire à l'expérience utilisateur pour les nouveaux utilisateurs, il est recommandé d'utiliser les annonces pour afficher des informations temporaires plutôt que des informations persistantes."
+  silence: "Ne pas me notifier"
+  silenceDescription: "Si activée, vous ne recevrez pas de notifications sur les annonces et n'aurez pas besoin de les marquer comme lues."
 _initialAccountSetting:
   profileSetting: "Paramètres du profil"
   privacySetting: "Paramètres de confidentialité"
   initialAccountSettingCompleted: "Configuration du profil terminée avec succès !"
+  youCanContinueTutorial: "Vous pouvez procéder au tutoriel sur l'utilisation de {nom}(Misskey) ou vous arrêter ici et commencer à l'utiliser immédiatement."
   startTutorial: "Démarrer le tutoriel"
   skipAreYouSure: "Désirez-vous ignorer la configuration du profil ?"
 _initialTutorial:
+  launchTutorial: "Visionner le tutoriel"
   title: "Tutoriel"
   wellDone: "Bien joué !"
   skipAreYouSure: "Quitter le tutoriel ?"
@@ -1110,6 +1118,12 @@ _initialTutorial:
     title: "Qu'est-ce que les réactions ?"
     description: "Vous pouvez ajouter des « réactions » aux notes. Les réactions vous permettent d'exprimer à l'aise des nuances qui ne peuvent pas être exprimées par des mentions j'aime."
     letsTryReacting: "Des réactions peuvent être ajoutées en cliquant sur le bouton « + » de la note. Essayez d'ajouter une réaction à cet exemple de note !"
+    reactToContinue: "Ajoutez une réaction pour procéder."
+  _postNote:
+    _cw:
+      title: "Masquer le contenu (CW)"
+      _exampleNote:
+        cw: "Attention : cela vous donnera faim !"
 _serverSettings:
   iconUrl: "URL de l’icône"
   fanoutTimelineDescription: "Si activée, la performance de la récupération de la chronologie augmentera considérablement et la charge sur la base de données sera réduite. En revanche, l'utilisation de la mémoire de Redis augmentera. Considérez désactiver cette option si le serveur est bas en mémoire ou instable."
@@ -1223,7 +1237,7 @@ _achievements:
     _viewInstanceChart:
       title: "Analyste"
     _outputHelloWorldOnScratchpad:
-      title: "Bonjour tout le monde !"
+      title: "Hello, world!"
     _open3windows:
       title: "Multi-fenêtres"
     _driveFolderCircularReference:
@@ -1245,6 +1259,8 @@ _achievements:
       flavor: "Attendez une minute, vous êtes sur le mauvais site web ?"
     _brainDiver:
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _tutorialCompleted:
+      description: "Compléter le tutoriel"
 _role:
   new: "Nouveau rôle"
   edit: "Modifier le rôle"
@@ -1382,6 +1398,7 @@ _channel:
   notesCount: "{n} Notes"
   nameAndDescription: "Nom et description"
   nameOnly: "Nom seulement"
+  allowRenoteToExternal: "Permettre la renote et la citation hors du canal"
 _menuDisplay:
   sideFull: "Latéral"
   sideIcon: "Latéral (icônes)"
@@ -1800,7 +1817,7 @@ _deck:
     tl: "Fil"
     antenna: "Antennes"
     list: "Listes"
-    channel: "Canaux"
+    channel: "Canal"
     mentions: "Mentions"
     direct: "Direct"
 _webhookSettings:
