@@ -48,6 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
 					</MkSwitch>
+					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
+						{{ i18n.ts._announcement.silence }}
+					</MkSwitch>
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
 					</MkSwitch>
@@ -97,6 +100,7 @@ function add() {
 		icon: 'info',
 		display: 'normal',
 		forExistingUsers: false,
+		silence: false,
 		needConfirmationToRead: false,
 	});
 }

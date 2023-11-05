@@ -53,6 +53,19 @@ const clean = (text) => text.replace(new RegExp(String.fromCodePoint(0x08), 'g')
 
 const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(new URL(`${c}.yml`, import.meta.url), 'utf-8'))) || {}, a), {});
 
+// 空文字列が入ることがあり、フォールバックが動作しなくなるのでプロパティごと消す
+const removeEmpty = (obj) => {
+	for (const [k, v] of Object.entries(obj)) {
+		if (v === '') {
+			delete obj[k];
+		} else if (typeof v === 'object') {
+			removeEmpty(v);
+		}
+	}
+	return obj;
+};
+removeEmpty(locales);
+
 export default Object.entries(locales)
 	.reduce((a, [k ,v]) => (a[k] = (() => {
 		const [lang] = k.split('-');
@@ -63,7 +76,7 @@ export default Object.entries(locales)
 			default: return merge(
 				locales['ja-JP'],
 				locales['en-US'],
-				locales[`${lang}-${primaries[lang]}`] || {},
+				locales[`${lang}-${primaries[lang]}`] ?? {},
 				v
 			);
 		}
