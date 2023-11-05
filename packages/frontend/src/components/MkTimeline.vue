@@ -135,6 +135,7 @@ if (props.src === 'antenna') {
 	query = {
 		withRenotes: props.withRenotes,
 		withFiles: props.onlyFiles ? true : undefined,
+		allowPartial: true,
 	};
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
@@ -142,6 +143,7 @@ if (props.src === 'antenna') {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
 		withFiles: props.onlyFiles ? true : undefined,
+		allowPartial: true,
 	};
 } else if (props.src === 'social') {
 	endpoint = 'notes/hybrid-timeline';
@@ -149,6 +151,7 @@ if (props.src === 'antenna') {
 		withRenotes: props.withRenotes,
 		withReplies: props.withReplies,
 		withFiles: props.onlyFiles ? true : undefined,
+		allowPartial: true,
 	};
 } else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
@@ -168,6 +171,7 @@ if (props.src === 'antenna') {
 	query = {
 		withFiles: props.onlyFiles ? true : undefined,
 		listId: props.list,
+		allowPartial: true,
 	};
 } else if (props.src === 'channel') {
 	endpoint = 'channels/timeline';
