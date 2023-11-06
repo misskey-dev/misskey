@@ -18,15 +18,18 @@ RUN corepack enable
 
 WORKDIR /misskey
 
-COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
+COPY --link pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
+	pnpm fetch
+
+COPY --link ["pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --frozen-lockfile --aggregate-output
+RUN pnpm i --frozen-lockfile --aggregate-output --offline
 
 COPY --link . ./
 
@@ -48,12 +51,15 @@ RUN corepack enable
 
 WORKDIR /misskey
 
-COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
+COPY --link pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
+	pnpm fetch
+
+COPY --link ["pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --frozen-lockfile --aggregate-output
+RUN pnpm i --frozen-lockfile --aggregate-output --offline
 
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 
