@@ -1159,7 +1159,7 @@ signupPendingError: "メールアドレスの確認中に問題が発生しま�
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 doReaction: "リアクションする"
 urlPreviewDenyList: "サムネイルの表示を制限するURL"
-urlPreviewDenyListDescription: "前方一致で判定されます。一致した場合、サムネイルがぼかされて表示されます。"
+urlPreviewDenyListDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルがぼかされて表示されます。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
