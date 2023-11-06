@@ -1137,6 +1137,8 @@ _initialTutorial:
       _exampleNote:
         cw: "Attention : cela vous donnera faim !"
         note: "J'ai mangé un beignet enrobé de chocolat 🍩😋"
+  _done:
+    title: "Le tutoriel est terminé ! 🎉"
 _serverSettings:
   iconUrl: "URL de l’icône"
   fanoutTimelineDescription: "Si activée, la performance de la récupération de la chronologie augmentera considérablement et la charge sur la base de données sera réduite. En revanche, l'utilisation de la mémoire de Redis augmentera. Considérez désactiver cette option si le serveur est bas en mémoire ou instable."
@@ -1273,7 +1275,7 @@ _achievements:
     _brainDiver:
       flavor: "Misskey-Misskey La-Tu-Ma"
     _tutorialCompleted:
-      description: "Compléter le tutoriel"
+      description: "Terminer le tutoriel"
 _role:
   new: "Nouveau rôle"
   edit: "Modifier le rôle"
