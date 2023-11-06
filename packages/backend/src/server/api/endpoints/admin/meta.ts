@@ -315,6 +315,14 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			urlPreviewDenyList: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 		},
 	},
 } as const;
@@ -428,7 +436,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
+<<<<<<< HEAD
 				notesPerOneAd: instance.notesPerOneAd,
+=======
+				urlPreviewDenyList: instance.urlPreviewDenyList,
+>>>>>>> 24fb765b7 (URLプレビューのサムネイルを隠す機能を追加)
 			};
 		});
 	}

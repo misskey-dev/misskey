@@ -94,6 +94,13 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
+			for (const url of meta.urlPreviewDenyList) {
+				if (summary.url.startsWith(url)) {
+					summary.sensitive = true;
+					break;
+				}
+			}
+
 			// Cache 7days
 			reply.header('Cache-Control', 'max-age=604800, immutable');
 

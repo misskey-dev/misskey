@@ -1161,6 +1161,8 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "urlPreviewDenyList": string;
+    "urlPreviewDenyListDescription": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

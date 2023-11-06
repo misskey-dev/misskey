@@ -133,6 +133,9 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		urlPreviewDenyList: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
 	},
 	required: [],
 } as const;
@@ -165,6 +168,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
+
 			if (Array.isArray(ps.silencedHosts)) {
 				let lastValue = '';
 				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
@@ -173,6 +177,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
 				});
 			}
+
+			if (Array.isArray(ps.urlPreviewDenyList)) {
+				set.urlPreviewDenyList = ps.urlPreviewDenyList.filter(Boolean);
+			}
+
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
