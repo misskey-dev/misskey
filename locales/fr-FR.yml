@@ -1132,6 +1132,10 @@ _initialTutorial:
     description2: "Vous pouvez passer d'un fil à l'autre en haut de l'écran à tout moment."
     description3: "De plus, il y a les fils des listes et des canaux. Pour plus de détails, consultez {link}."
   _postNote:
+    title: "Paramètres de la publication de note"
+    description1: "Lorsque vous publiez des notes sur Misskey, diverses options sont disponibles. Voici le formulaire de publication."
+    _visibility:
+      description: "Vous pouvez choisir qui peut voir vos notes."
     _cw:
       title: "Masquer le contenu (CW)"
       _exampleNote:
