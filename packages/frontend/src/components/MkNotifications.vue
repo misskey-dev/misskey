@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onActivated, onUnmounted, onDeactivated, computed, shallowRef } from 'vue';
+import { onUnmounted, onActivated, onMounted, computed, shallowRef } from 'vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import XNotification from '@/components/MkNotification.vue';
@@ -79,15 +79,9 @@ onMounted(() => {
 
 onActivated(() => {
 	pagingComponent.value?.reload();
-	connection = useStream().useChannel('main');
-	connection.on('notification', onNotification);
 });
 
 onUnmounted(() => {
-	if (connection) connection.dispose();
-});
-
-onDeactivated(() => {
 	if (connection) connection.dispose();
 });
 </script>
