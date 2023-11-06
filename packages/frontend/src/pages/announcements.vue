@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
 					<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
 					<div :class="$style.header">
-						<span v-if="$i && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
+						<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
 						<span style="margin-right: 0.5em;">
 							<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
 							<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
 						</div>
 					</div>
-					<div v-if="tab !== 'past' && $i && !announcement.isRead" :class="$style.footer">
+					<div v-if="tab !== 'past' && $i && !announcement.silence && !announcement.isRead" :class="$style.footer">
 						<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 					</div>
 				</section>
