@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onActivated, onMounted, computed, shallowRef } from 'vue';
+import { onMounted, onActivated, onUnmounted, onDeactivated, computed, shallowRef } from 'vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import XNotification from '@/components/MkNotification.vue';
@@ -84,6 +84,10 @@ onActivated(() => {
 });
 
 onUnmounted(() => {
+	if (connection) connection.dispose();
+});
+
+onDeactivated(() => {
 	if (connection) connection.dispose();
 });
 </script>
