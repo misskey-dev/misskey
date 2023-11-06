@@ -1126,11 +1126,17 @@ _initialTutorial:
     title: "Fonctionnement des fils"
     description1: "Misskey offre plusieurs fils selon l'usage (certains peuvent être désactivés par le serveur)."
     home: "Vous pouvez voir les notes des utilisateurs auxquels vous êtes abonné·e."
+    local: "Vous pouvez voir les notes de tous les utilisateurs sur ce serveur."
+    social: "Les notes des fils principal et local sont affichées."
+    global: "Vous pouvez voir les notes de tous les serveurs connectés."
+    description2: "Vous pouvez passer d'un fil à l'autre en haut de l'écran à tout moment."
+    description3: "De plus, il y a les fils des listes et des canaux. Pour plus de détails, consultez {link}."
   _postNote:
     _cw:
       title: "Masquer le contenu (CW)"
       _exampleNote:
         cw: "Attention : cela vous donnera faim !"
+        note: "J'ai mangé un beignet enrobé de chocolat 🍩😋"
 _serverSettings:
   iconUrl: "URL de l’icône"
   fanoutTimelineDescription: "Si activée, la performance de la récupération de la chronologie augmentera considérablement et la charge sur la base de données sera réduite. En revanche, l'utilisation de la mémoire de Redis augmentera. Considérez désactiver cette option si le serveur est bas en mémoire ou instable."
