@@ -355,6 +355,7 @@ export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 export type AdminInstanceMetadata = DetailedInstanceMetadata & {
 	// TODO: There are more fields.
 	blockedHosts: string[];
+	urlPreviewDenyList: string[];
 };
 
 export type ServerInfo = {

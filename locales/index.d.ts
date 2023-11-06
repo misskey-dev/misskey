@@ -1113,6 +1113,8 @@ export interface Locale {
     "refreshing": string;
     "pullDownToRefresh": string;
     "disableStreamingTimeline": string;
+    "urlPreviewDenyList": string;
+    "urlPreviewDenyListDescription": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

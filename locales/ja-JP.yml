@@ -1110,6 +1110,8 @@ releaseToRefresh: "離してリロード"
 refreshing: "リロード中"
 pullDownToRefresh: "引っ張ってリロード"
 disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
+urlPreviewDenyList: "サムネイルの表示を制限するURL"
+urlPreviewDenyListDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルがぼかされて表示されます。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

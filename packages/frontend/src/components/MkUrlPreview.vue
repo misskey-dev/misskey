@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail" :class="$style.thumbnail" :style="`background-image: url('${thumbnail}')`">
+		<div v-if="thumbnail" :class="[$style.thumbnail, { [$style.thumbnailBlur]: sensitive }]" :style="`background-image: url('${thumbnail}')`">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
@@ -118,6 +118,7 @@ let description = $ref<string | null>(null);
 let thumbnail = $ref<string | null>(null);
 let icon = $ref<string | null>(null);
 let sitename = $ref<string | null>(null);
+let sensitive = $ref<boolean | undefined>(undefined);
 let player = $ref({
 	url: null,
 	width: null,
@@ -170,6 +171,7 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		icon = info.icon;
 		sitename = info.sitename;
 		player = info.player;
+		sensitive = info.sensitive;
 	});
 
 function adjustTweetHeight(message: any) {
@@ -317,6 +319,10 @@ onUnmounted(() => {
 	gap: 6px;
 	flex-wrap: wrap;
 	margin-top: 6px;
+}
+
+.thumbnailBlur {
+		filter: blur(8px);
 }
 
 @container (max-width: 400px) {

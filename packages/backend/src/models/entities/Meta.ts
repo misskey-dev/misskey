@@ -468,4 +468,9 @@ export class MiMeta {
 		default: 300,
 	})
 	public perUserListTimelineCacheMax: number;
+
+	@Column('varchar', {
+		length: 3072, array: true, default: '{}',
+	})
+	public urlPreviewDenyList: string[];
 }

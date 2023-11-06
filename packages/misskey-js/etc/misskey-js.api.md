@@ -20,6 +20,7 @@ type Ad = TODO_2;
 // @public (undocumented)
 type AdminInstanceMetadata = DetailedInstanceMetadata & {
     blockedHosts: string[];
+    urlPreviewDenyList: string[];
 };
 
 // @public (undocumented)

@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { summaly } from 'summaly';
+import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -93,6 +94,23 @@ export class UrlPreviewService {
 
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
+
+			const includeDenyList = meta.urlPreviewDenyList.some(filter => {
+				// represents RegExp
+				const regexp = /^\/(.+)\/(.*)$/.exec(filter);
+				// This should never happen due to input sanitisation.
+				if (!regexp) {
+					const words = filter.split(' ');
+					return words.every(keyword => summary.url.includes(keyword));
+				}
+				try {
+					return new RE2(regexp[1], regexp[2]).test(summary.url);
+				} catch (err) {
+					// This should never happen due to input sanitisation.
+					return false;
+				}
+			});
+			if (includeDenyList) summary.sensitive = true;
 
 			// Cache 7days
 			reply.header('Cache-Control', 'max-age=604800, immutable');

@@ -34,6 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.sensitiveWords }}</template>
 						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
 					</MkTextarea>
+
+					<MkTextarea v-model="urlPreviewDenyList">
+						<template #label>{{ i18n.ts.urlPreviewDenyList }}</template>
+						<template #caption>{{ i18n.ts.urlPreviewDenyListDescription }}</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -69,6 +74,7 @@ let emailRequiredForSignup: boolean = $ref(false);
 let sensitiveWords: string = $ref('');
 let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
+let urlPreviewDenyList: string = $ref('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -77,6 +83,7 @@ async function init() {
 	sensitiveWords = meta.sensitiveWords.join('\n');
 	preservedUsernames = meta.preservedUsernames.join('\n');
 	tosUrl = meta.tosUrl;
+	urlPreviewDenyList = meta.urlPreviewDenyList.join('\n');
 }
 
 function save() {
@@ -86,6 +93,7 @@ function save() {
 		tosUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
 		preservedUsernames: preservedUsernames.split('\n'),
+		urlPreviewDenyList: urlPreviewDenyList.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

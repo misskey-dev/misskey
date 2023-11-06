@@ -110,6 +110,9 @@ export const paramDef = {
 		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
 		perUserHomeTimelineCacheMax: { type: 'integer' },
 		perUserListTimelineCacheMax: { type: 'integer' },
+		urlPreviewDenyList: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
 	},
 	required: [],
 } as const;
@@ -145,6 +148,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.urlPreviewDenyList)) {
+				set.urlPreviewDenyList = ps.urlPreviewDenyList.filter(Boolean);
 			}
 
 			if (ps.themeColor !== undefined) {
