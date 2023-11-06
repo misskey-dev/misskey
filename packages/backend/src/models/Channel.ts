@@ -15,12 +15,6 @@ export class MiChannel {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Channel.',
-	})
-	public createdAt: Date;
-
-	@Index()
-	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public lastNotedAt: Date | null;
@@ -99,4 +93,9 @@ export class MiChannel {
 		default: false,
 	})
 	public isSensitive: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public allowRenoteToExternal: boolean;
 }

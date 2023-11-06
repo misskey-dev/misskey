@@ -8,17 +8,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl" v-hotkey.global="keymap">
-			<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
+			<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
+				{{ i18n.ts._timelineDescription[src] }}
+			</MkInfo>
 			<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlComponent"
-					:key="src + withRenotes + onlyFiles"
+					:key="src + withRenotes + withReplies + onlyFiles"
 					:src="src.split(':')[0]"
 					:list="src.split(':')[1]"
 					:withRenotes="withRenotes"
+					:withReplies="withReplies"
 					:onlyFiles="onlyFiles"
 					:sound="true"
 					@queue="queueUpdated"
@@ -30,9 +33,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, provide } from 'vue';
+import { computed, watch, provide } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
@@ -42,11 +46,10 @@ import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { antennasCache, userListsCache } from '@/cache';
+import { antennasCache, userListsCache } from '@/cache.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 provide('shouldOmitHeaderTitle', true);
-
-const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
@@ -61,9 +64,14 @@ let queue = $ref(0);
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 const withRenotes = $ref(true);
+const withReplies = $ref($i ? defaultStore.state.tlWithReplies : false);
 const onlyFiles = $ref(false);
 
 watch($$(src), () => queue = 0);
+
+watch($$(withReplies), (x) => {
+	if ($i) defaultStore.set('tlWithReplies', x);
+});
 
 function queueUpdated(q: number): void {
 	queue = q;
@@ -133,23 +141,49 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-const headerActions = $computed(() => [{
-	icon: 'ti ti-dots',
-	text: i18n.ts.options,
-	handler: (ev) => {
-		os.popupMenu([{
-			type: 'switch',
-			text: i18n.ts.showRenotes,
-			icon: 'ti ti-repeat',
-			ref: $$(withRenotes),
-		}, {
-			type: 'switch',
-			text: i18n.ts.fileAttachedOnly,
-			icon: 'ti ti-photo',
-			ref: $$(onlyFiles),
-		}], ev.currentTarget ?? ev.target);
-	},
-}]);
+function closeTutorial(): void {
+	if (!['home', 'local', 'social', 'global'].includes(src)) return;
+	const before = defaultStore.state.timelineTutorials;
+	before[src] = true;
+	defaultStore.set('timelineTutorials', before);
+}
+
+const headerActions = $computed(() => {
+	const tmp = [
+		{
+			icon: 'ti ti-dots',
+			text: i18n.ts.options,
+			handler: (ev) => {
+				os.popupMenu([{
+					type: 'switch',
+					text: i18n.ts.showRenotes,
+					icon: 'ti ti-repeat',
+					ref: $$(withRenotes),
+				}, src === 'local' || src === 'social' ? {
+					type: 'switch',
+					text: i18n.ts.showRepliesToOthersInTimeline,
+					ref: $$(withReplies),
+				} : undefined, {
+					type: 'switch',
+					text: i18n.ts.fileAttachedOnly,
+					icon: 'ti ti-photo',
+					ref: $$(onlyFiles),
+				}], ev.currentTarget ?? ev.target);
+			},
+		},
+	];
+	if (deviceKind === 'desktop') {
+		tmp.unshift({
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			handler: (ev: Event) => {
+				console.log('called');
+				tlComponent.reloadTimeline();
+			},
+		});
+	}
+	return tmp;
+});
 
 const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
 	key: 'list:' + l.id,
