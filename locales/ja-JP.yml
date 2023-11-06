@@ -195,6 +195,7 @@ perHour: "1時間ごと"
 perDay: "1日ごと"
 stopActivityDelivery: "アクティビティの配送を停止"
 blockThisInstance: "このサーバーをブロック"
+silenceThisInstance: "サーバーをサイレンス"
 operations: "操作"
 software: "ソフトウェア"
 version: "バージョン"
@@ -213,7 +214,9 @@ clearQueueConfirmText: "未配達の投稿は配送されなくなります。�
 clearCachedFiles: "キャッシュをクリア"
 clearCachedFilesConfirm: "キャッシュされたリモートファイルをすべて削除しますか？"
 blockedInstances: "ブロックしたサーバー"
-blockedInstancesDescription: "ブロックしたいサーバーのホストを改行で区切って設定します。ブロックされたサーバーは、このサーバーとやり取りできなくなります。サブドメインもブロックされます。"
+blockedInstancesDescription: "ブロックしたいサーバーのホストを改行で区切って設定します。ブロックされたサーバーは、このインスタンスとやり取りできなくなります。"
+silencedInstances: "サイレンスしたサーバー"
+silencedInstancesDescription: "サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになり、フォロワーでないローカルアカウントにはメンションできなくなります。ブロックしたインスタンスには影響しません。"
 muteAndBlock: "ミュートとブロック"
 mutedUsers: "ミュートしたユーザー"
 blockedUsers: "ブロックしたユーザー"
@@ -531,6 +534,7 @@ serverLogs: "サーバーログ"
 deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
 showFixedPostFormInChannel: "タイムライン上部に投稿フォームを表示する(チャンネル)"
+withRepliesByDefaultForNewlyFollowed: "フォローする際、デフォルトで返信をTLに含むようにする"
 newNoteRecived: "新しいノートがあります"
 sounds: "サウンド"
 sound: "サウンド"
@@ -589,7 +593,7 @@ poll: "アンケート"
 useCw: "内容を隠す"
 enablePlayer: "プレイヤーを開く"
 disablePlayer: "プレイヤーを閉じる"
-expandTweet: "ツイートを展開する"
+expandTweet: "ポストを展開する"
 themeEditor: "テーマエディター"
 description: "説明"
 describeFile: "キャプションを付ける"
@@ -794,7 +798,7 @@ active: "アクティブ"
 offline: "オフライン"
 notRecommended: "非推奨"
 botProtection: "Botプロテクション"
-instanceBlocking: "サーバーブロック"
+instanceBlocking: "サーバーブロック・サイレンス"
 selectAccount: "アカウントを選択"
 switchAccount: "アカウントを切り替え"
 enabled: "有効"
@@ -975,6 +979,7 @@ assign: "アサイン"
 unassign: "アサインを解除"
 color: "色"
 manageCustomEmojis: "カスタム絵文字の管理"
+manageAvatarDecorations: "アバターデコレーションの管理"
 youCannotCreateAnymore: "これ以上作成することはできません。"
 cannotPerformTemporary: "一時的に利用できません"
 cannotPerformTemporaryDescription: "操作回数が制限を超過するため一時的に利用できません。しばらく時間を置いてから再度お試しください。"
@@ -1128,6 +1133,10 @@ mutualFollow: "相互フォロー"
 fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "TLに他の人への返信を含める"
 hideRepliesToOthersInTimeline: "TLに他の人への返信を含めない"
+showRepliesToOthersInTimelineAll: "TLに現在フォロー中の人全員の返信を含めるようにする"
+hideRepliesToOthersInTimelineAll: "TLに現在フォロー中の人全員の返信を含めないようにする"
+confirmShowRepliesAll: "この操作は元に戻せません。本当にTLに現在フォロー中の人全員の返信を含めるようにしますか？"
+confirmHideRepliesAll: "この操作は元に戻せません。本当にTLに現在フォロー中の人全員の返信を含めないようにしますか？"
 externalServices: "外部サービス"
 impressum: "運営者情報"
 impressumUrl: "運営者情報URL"
@@ -1135,6 +1144,20 @@ impressumDescription: "ドイツなどの一部の国と地域では表示が義
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+avatarDecorations: "アイコンデコレーション"
+attach: "付ける"
+detach: "外す"
+angle: "角度"
+flip: "反転"
+showAvatarDecorations: "アイコンのデコレーションを表示"
+releaseToRefresh: "離してリロード"
+refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロード"
+disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
+useGroupedNotifications: "通知をグルーピングして表示する"
+signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
+cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
+doReaction: "リアクションする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1145,10 +1168,14 @@ _announcement:
   tooManyActiveAnnouncementDescription: "アクティブなお知らせが多いため、UXが低下する可能性があります。終了したお知らせはアーカイブすることを検討してください。"
   readConfirmTitle: "既読にしますか？"
   readConfirmText: "「{title}」の内容を読み、既読にします。"
+  shouldNotBeUsedToPresentPermanentInfo: "特に新規ユーザーのUXを損ねる可能性が高いため、ストック情報ではなくフロー情報の掲示にお知らせを使用することを推奨します。"
+  dialogAnnouncementUxWarn: "ダイアログ形式のお知らせが同時に2つ以上ある場合、UXに悪影響を及ぼす可能性が非常に高いため、使用は慎重に行うことを推奨します。"
+  silence: "非通知"
+  silenceDescription: "オンにすると、このお知らせは通知されず、既読にする必要もなくなります。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
-  letsStartAccountSetup: "アカウントの初期設定を行いましょう。"
+  letsStartAccountSetup: "さっそくアカウントの初期設定を行いましょう。"
   letsFillYourProfile: "まずはあなたのプロフィールを設定しましょう。"
   profileSetting: "プロフィール設定"
   privacySetting: "プライバシー設定"
@@ -1158,9 +1185,79 @@ _initialAccountSetting:
   pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をお使いのデバイスで受け取ることができます。"
   initialAccountSettingCompleted: "初期設定が完了しました！"
   haveFun: "{name}をお楽しみください！"
-  ifYouNeedLearnMore: "{name}(Misskey)の使い方などを詳しく知るには{link}をご覧ください。"
+  youCanContinueTutorial: "このまま{name}(Misskey)の使い方についてのチュートリアルに進むこともできますが、ここで中断してすぐに使い始めることもできます。"
+  startTutorial: "チュートリアルを開始"
   skipAreYouSure: "初期設定をスキップしますか？"
   laterAreYouSure: "初期設定をあとでやり直しますか？"
+
+_initialTutorial:
+  launchTutorial: "チュートリアルを見る"
+  title: "チュートリアル"
+  wellDone: "よくできました"
+  skipAreYouSure: "チュートリアルを終了しますか？"
+  _landing:
+    title: "チュートリアルへようこそ"
+    description: "ここでは、Misskeyの基本的な使い方や機能を確認できます。"
+  _note:
+    title: "ノートって何？"
+    description: "Misskeyでの投稿は「ノート」と呼びます。ノートはタイムラインに時系列で並んでいて、リアルタイムで更新されていきます。"
+    reply: "返信することができます。返信に対しての返信も可能で、スレッドのように会話を続けることもできます。"
+    renote: "そのノートを自分のタイムラインに流して共有することができます。テキストを追加して引用することも可能です。"
+    reaction: "リアクションをつけることができます。詳しくは次のページで解説します。"
+    menu: "ノートの詳細を表示したり、リンクをコピーしたりなどの様々な操作が行えます。"
+  _reaction:
+    title: "リアクションって何？"
+    description: "ノートには「リアクション」をつけることができます。「いいね」では伝わらないニュアンスも、リアクションで簡単・気軽に表現できます。"
+    letsTryReacting: "リアクションは、ノートの「＋」ボタンをクリックするとつけられます。試しにこのサンプルのノートにリアクションをつけてみてください！"
+    reactToContinue: "リアクションをつけると先に進めるようになります。"
+    reactNotification: "あなたのノートが誰かにリアクションされると、リアルタイムで通知を受け取ります。"
+    reactDone: "「ー」ボタンを押すとリアクションを取り消すことができます。"
+  _timeline:
+    title: "タイムラインのしくみ"
+    description1: "Misskeyには、使い方に応じて複数のタイムラインが用意されています（サーバーによってはいずれかが無効になっていることがあります）。"
+    home: "あなたがフォローしているアカウントの投稿を見られます。"
+    local: "このサーバーにいるユーザー全員の投稿を見られます。"
+    social: "ホームタイムラインとローカルタイムラインの投稿が両方表示されます。"
+    global: "接続している他のすべてのサーバーからの投稿を見られます。"
+    description2: "それぞれのタイムラインは、画面上部でいつでも切り替えられます。"
+    description3: "その他にも、リストタイムラインやチャンネルタイムラインなどがあります。詳しくは{link}をご覧ください。"
+  _postNote:
+    title: "ノートの投稿設定"
+    description1: "Misskeyにノートを投稿する際には、様々なオプションの設定が可能です。投稿フォームはこのようになっています。"
+    _visibility:
+      description: "ノートを表示できる相手を制限できます。"
+      public: "すべてのユーザーに公開。"
+      home: "ホームタイムラインのみに公開。フォロワー・プロフィールを見に来た人・リノートから、他のユーザーも見ることができます。"
+      followers: "フォロワーにのみ公開。本人以外がリノートすることはできず、またフォロワー以外は閲覧できません。"
+      direct: "指定したユーザーにのみ公開され、また相手に通知が入ります。ダイレクトメッセージのかわりにお使いいただけます。"
+      doNotSendConfidencialOnDirect1: "機密情報は送信する際は注意してください。"
+      doNotSendConfidencialOnDirect2: "送信先のサーバーの管理者は投稿内容を見ることが可能なので、信頼できないサーバーのユーザーにダイレクト投稿を送信する場合は、機密情報の扱いに注意が必要です。"
+      localOnly: "他のサーバーに投稿を連合しません。上記の公開範囲に関わらず、他のサーバーのユーザーは、この設定がついたノートを直接閲覧することができなくなります。"
+    _cw:
+      title: "内容を隠す（CW）"
+      description: "本文のかわりに「注釈」に書いた内容が表示されます。「もっと見る」を押すと本文が表示されます。"
+      _exampleNote:
+        cw: "飯テロ注意"
+        note: "チョコのかかったドーナツを食べました🍩😋"
+      useCases: "サーバーのガイドラインにより必要とされるノートに指定したり、ネタバレ投稿やセンシティブな文章を自主規制したりするときに使います。"
+  _howToMakeAttachmentsSensitive:
+    title: "添付ファイルをセンシティブにするには？"
+    description: "サーバーのガイドラインにより必要とされる際や、そのまま見れる状態にしておくべきではない添付ファイルには、「センシティブ」設定を付けます。"
+    tryThisFile: "試しに、このフォームに添付された画像をセンシティブにしてみてください！"
+    _exampleNote:
+      note: "納豆のフタ開けるのミスったわね…"
+    method: "添付ファイルをセンシティブにする際は、そのファイルをクリックしてメニューを開き、「センシティブとして設定」をクリックします。"
+    sensitiveSucceeded: "ファイルを添付する際は、サーバーのガイドラインに従ってセンシティブを適切に設定してください。"
+    doItToContinue: "画像をセンシティブに設定すると先に進めるようになります。"
+  _done:
+    title: "チュートリアルは終了です🎉"
+    description: "ここで紹介した機能はほんの一部にすぎません。Misskeyの使い方をより詳しく知るには、{link}をご覧ください。"
+
+_timelineDescription:
+  home: "ホームタイムラインでは、あなたがフォローしているアカウントの投稿を見られます。"
+  local: "ローカルタイムラインでは、このサーバーにいるユーザー全員の投稿を見られます。"
+  social: "ソーシャルタイムラインには、ホームタイムラインとローカルタイムラインの投稿が両方表示されます。"
+  global: "グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
@@ -1174,6 +1271,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.jsonのオーバーライド"
   shortName: "略称"
   shortNameDescription: "サーバーの正式名称が長い場合に、代わりに表示することのできる略称や通称。"
+  fanoutTimelineDescription: "有効にすると、各種タイムラインを取得する際のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。サーバーのメモリ容量が少ない場合、または動作が不安定な場合は無効にすることができます。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
@@ -1433,6 +1531,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "テスト過剰"
       description: "通知のテストをごく短時間のうちに連続して行った"
+    _tutorialCompleted:
+      title: "Misskey初心者講座 修了証"
+      description: "チュートリアルを完了した"
 
 _role:
   new: "ロールの作成"
@@ -1477,6 +1578,7 @@ _role:
     inviteLimitCycle: "招待コードの発行間隔"
     inviteExpirationTime: "招待コードの有効期限"
     canManageCustomEmojis: "カスタム絵文字の管理"
+    canManageAvatarDecorations: "アバターデコレーションの管理"
     driveCapacity: "ドライブ容量"
     alwaysMarkNsfw: "ファイルにNSFWを常に付与"
     pinMax: "ノートのピン留めの最大数"
@@ -1531,7 +1633,7 @@ _ffVisibility:
 _signup:
   almostThere: "ほとんど完了です"
   emailAddressInfo: "あなたが使っているメールアドレスを入力してください。メールアドレスが公開されることはありません。"
-  emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。"
+  emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。メールに記載されているリンクの有効期限は30分です。"
 
 _accountDelete:
   accountDelete: "アカウントの削除"
@@ -1602,13 +1704,14 @@ _registry:
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
-  contributors: "主なコントリビューター"
+  contributors: "コントリビューター"
   allContributors: "全てのコントリビューター"
   source: "ソースコード"
   translation: "Misskeyを翻訳"
   donate: "Misskeyに寄付"
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
   patrons: "支援者"
+  projectMembers: "プロジェクトメンバー"
 
 _displayOfSensitiveMedia:
   respect: "センシティブ設定されたメディアを隠す"
@@ -1637,6 +1740,7 @@ _channel:
   notesCount: "{n}投稿があります"
   nameAndDescription: "名前と説明"
   nameOnly: "名前のみ"
+  allowRenoteToExternal: "チャンネル外へのリノートと引用リノートを許可する"
 
 _menuDisplay:
   sideFull: "横"
@@ -1752,17 +1856,6 @@ _time:
   minute: "分"
   hour: "時間"
   day: "日"
-
-_timelineTutorial:
-  title: "Misskeyの使い方"
-  step1_1: "この画面は「タイムライン」です。{name}に投稿された「ノート」が時系列で表示されます。"
-  step1_2: "タイムラインにはいくつか種類があり、例えば「ホームタイムライン」にはあなたがフォローしている人のノートが流れ、「ローカルタイムライン」には{name}全体のノートが流れます。"
-  step2_1: "試しに、何かノートを投稿してみましょう。画面上にある鉛筆マークのボタンを押すとフォームが開きます。"
-  step2_2: "初めてのノートの内容は、あなたの自己紹介や「{name}始めました」などがおすすめです。"
-  step3_1: "投稿できましたか？"
-  step3_2: "あなたのノートがタイムラインに表示されていれば成功です。"
-  step4_1: "ノートには、「リアクション」を付けることができます。"
-  step4_2: "リアクションを付けるには、ノートの「+」マークをクリックして、好きな絵文字を選択します。"
 
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
@@ -1966,6 +2059,7 @@ _exportOrImport:
   userLists: "リスト"
   excludeMutingUsers: "ミュートしているユーザーを除外"
   excludeInactiveUsers: "使われていないアカウントを除外"
+  withReplies: "インポートした人による返信をTLに含むようにする"
 
 _charts:
   federation: "連合"
@@ -2091,6 +2185,9 @@ _notification:
   checkNotificationBehavior: "通知の表示を確かめる"
   sendTestNotification: "テスト通知を送信する"
   notificationWillBeDisplayedLikeThis: "通知はこのように表示されます"
+  reactedBySomeUsers: "{n}人がリアクションしました"
+  renotedBySomeUsers: "{n}人がリノートしました"
+  followedBySomeUsers: "{n}人にフォローされました"
 
   _types:
     all: "すべて"
@@ -2203,6 +2300,9 @@ _moderationLogTypes:
   createAd: "広告を作成"
   deleteAd: "広告を削除"
   updateAd: "広告を更新"
+  createAvatarDecoration: "アイコンデコレーションを作成"
+  updateAvatarDecoration: "アイコンデコレーションを更新"
+  deleteAvatarDecoration: "アイコンデコレーションを削除"
 
 _fileViewer:
   title: "ファイルの詳細"
@@ -2212,3 +2312,45 @@ _fileViewer:
   uploadedAt: "追加日"
   attachedNotes: "添付されているノート"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
+
+_externalResourceInstaller:
+  title: "外部サイトからインストール"
+  checkVendorBeforeInstall: "配布元が信頼できるかを確認した上でインストールしてください。"
+  _plugin:
+    title: "このプラグインをインストールしますか？"
+    metaTitle: "プラグイン情報"
+  _theme:
+    title: "このテーマをインストールしますか？"
+    metaTitle: "テーマ情報"
+  _meta:
+    base: "基本のカラースキーム"
+  _vendorInfo:
+    title: "配布元情報"
+    endpoint: "参照したエンドポイント"
+    hashVerify: "ファイル整合性の確認"
+  _errors:
+    _invalidParams:
+      title: "パラメータが不足しています"
+      description: "外部サイトからデータを取得するために必要な情報が不足しています。URLをお確かめください。"
+    _resourceTypeNotSupported:
+      title: "この外部リソースには対応していません"
+      description: "この外部サイトから取得したリソースの種別には対応していません。サイト管理者にお問い合わせください。"
+    _failedToFetch:
+      title: "データの取得に失敗しました"
+      fetchErrorDescription: "外部サイトとの通信に失敗しました。もう一度試しても改善しない場合、サイト管理者にお問い合わせください。"
+      parseErrorDescription: "外部サイトから取得したデータが読み取れませんでした。サイト管理者にお問い合わせください。"
+    _hashUnmatched:
+      title: "正しいデータが取得できませんでした"
+      description: "提供されたデータの整合性の確認に失敗しました。セキュリティ上、インストールは続行できません。サイト管理者にお問い合わせください。"
+    _pluginParseFailed:
+      title: "AiScript エラー"
+      description: "データは取得できたものの、AiScriptの解析時にエラーがあったため読み込めませんでした。プラグインの作者にお問い合わせください。エラーの詳細はJavascriptコンソールをご確認ください。"
+    _pluginInstallFailed:
+      title: "プラグインのインストールに失敗しました"
+      description: "プラグインのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+    _themeParseFailed:
+      title: "テーマ解析エラー"
+      description: "データは取得できたものの、テーマファイルの解析時にエラーがあったため読み込めませんでした。テーマの作者にお問い合わせください。エラーの詳細はJavascriptコンソールをご確認ください。"
+    _themeInstallFailed:
+      title: "テーマのインストールに失敗しました"
+      description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"

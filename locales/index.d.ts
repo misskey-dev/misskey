@@ -198,6 +198,7 @@ export interface Locale {
     "perDay": string;
     "stopActivityDelivery": string;
     "blockThisInstance": string;
+    "silenceThisInstance": string;
     "operations": string;
     "software": string;
     "version": string;
@@ -217,6 +218,8 @@ export interface Locale {
     "clearCachedFilesConfirm": string;
     "blockedInstances": string;
     "blockedInstancesDescription": string;
+    "silencedInstances": string;
+    "silencedInstancesDescription": string;
     "muteAndBlock": string;
     "mutedUsers": string;
     "blockedUsers": string;
@@ -534,6 +537,7 @@ export interface Locale {
     "deleteAll": string;
     "showFixedPostForm": string;
     "showFixedPostFormInChannel": string;
+    "withRepliesByDefaultForNewlyFollowed": string;
     "newNoteRecived": string;
     "sounds": string;
     "sound": string;
@@ -978,6 +982,7 @@ export interface Locale {
     "unassign": string;
     "color": string;
     "manageCustomEmojis": string;
+    "manageAvatarDecorations": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
@@ -1131,6 +1136,10 @@ export interface Locale {
     "fileAttachedOnly": string;
     "showRepliesToOthersInTimeline": string;
     "hideRepliesToOthersInTimeline": string;
+    "showRepliesToOthersInTimelineAll": string;
+    "hideRepliesToOthersInTimelineAll": string;
+    "confirmShowRepliesAll": string;
+    "confirmHideRepliesAll": string;
     "externalServices": string;
     "impressum": string;
     "impressumUrl": string;
@@ -1138,6 +1147,20 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+    "avatarDecorations": string;
+    "attach": string;
+    "detach": string;
+    "angle": string;
+    "flip": string;
+    "showAvatarDecorations": string;
+    "releaseToRefresh": string;
+    "refreshing": string;
+    "pullDownToRefresh": string;
+    "disableStreamingTimeline": string;
+    "useGroupedNotifications": string;
+    "signupPendingError": string;
+    "cwNotationRequired": string;
+    "doReaction": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1147,6 +1170,10 @@ export interface Locale {
         "tooManyActiveAnnouncementDescription": string;
         "readConfirmTitle": string;
         "readConfirmText": string;
+        "shouldNotBeUsedToPresentPermanentInfo": string;
+        "dialogAnnouncementUxWarn": string;
+        "silence": string;
+        "silenceDescription": string;
     };
     "_initialAccountSetting": {
         "accountCreated": string;
@@ -1160,9 +1187,90 @@ export interface Locale {
         "pushNotificationDescription": string;
         "initialAccountSettingCompleted": string;
         "haveFun": string;
-        "ifYouNeedLearnMore": string;
+        "youCanContinueTutorial": string;
+        "startTutorial": string;
         "skipAreYouSure": string;
         "laterAreYouSure": string;
+    };
+    "_initialTutorial": {
+        "launchTutorial": string;
+        "title": string;
+        "wellDone": string;
+        "skipAreYouSure": string;
+        "_landing": {
+            "title": string;
+            "description": string;
+        };
+        "_note": {
+            "title": string;
+            "description": string;
+            "reply": string;
+            "renote": string;
+            "reaction": string;
+            "menu": string;
+        };
+        "_reaction": {
+            "title": string;
+            "description": string;
+            "letsTryReacting": string;
+            "reactToContinue": string;
+            "reactNotification": string;
+            "reactDone": string;
+        };
+        "_timeline": {
+            "title": string;
+            "description1": string;
+            "home": string;
+            "local": string;
+            "social": string;
+            "global": string;
+            "description2": string;
+            "description3": string;
+        };
+        "_postNote": {
+            "title": string;
+            "description1": string;
+            "_visibility": {
+                "description": string;
+                "public": string;
+                "home": string;
+                "followers": string;
+                "direct": string;
+                "doNotSendConfidencialOnDirect1": string;
+                "doNotSendConfidencialOnDirect2": string;
+                "localOnly": string;
+            };
+            "_cw": {
+                "title": string;
+                "description": string;
+                "_exampleNote": {
+                    "cw": string;
+                    "note": string;
+                };
+                "useCases": string;
+            };
+        };
+        "_howToMakeAttachmentsSensitive": {
+            "title": string;
+            "description": string;
+            "tryThisFile": string;
+            "_exampleNote": {
+                "note": string;
+            };
+            "method": string;
+            "sensitiveSucceeded": string;
+            "doItToContinue": string;
+        };
+        "_done": {
+            "title": string;
+            "description": string;
+        };
+    };
+    "_timelineDescription": {
+        "home": string;
+        "local": string;
+        "social": string;
+        "global": string;
     };
     "_serverRules": {
         "description": string;
@@ -1176,6 +1284,7 @@ export interface Locale {
         "manifestJsonOverride": string;
         "shortName": string;
         "shortNameDescription": string;
+        "fanoutTimelineDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
@@ -1510,6 +1619,10 @@ export interface Locale {
                 "title": string;
                 "description": string;
             };
+            "_tutorialCompleted": {
+                "title": string;
+                "description": string;
+            };
         };
     };
     "_role": {
@@ -1556,6 +1669,7 @@ export interface Locale {
             "inviteLimitCycle": string;
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
+            "canManageAvatarDecorations": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;
@@ -1692,6 +1806,7 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "projectMembers": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;
@@ -1720,6 +1835,7 @@ export interface Locale {
         "notesCount": string;
         "nameAndDescription": string;
         "nameOnly": string;
+        "allowRenoteToExternal": string;
     };
     "_menuDisplay": {
         "sideFull": string;
@@ -1835,17 +1951,6 @@ export interface Locale {
         "minute": string;
         "hour": string;
         "day": string;
-    };
-    "_timelineTutorial": {
-        "title": string;
-        "step1_1": string;
-        "step1_2": string;
-        "step2_1": string;
-        "step2_2": string;
-        "step3_1": string;
-        "step3_2": string;
-        "step4_1": string;
-        "step4_2": string;
     };
     "_2fa": {
         "alreadyRegistered": string;
@@ -2051,6 +2156,7 @@ export interface Locale {
         "userLists": string;
         "excludeMutingUsers": string;
         "excludeInactiveUsers": string;
+        "withReplies": string;
     };
     "_charts": {
         "federation": string;
@@ -2177,6 +2283,9 @@ export interface Locale {
         "checkNotificationBehavior": string;
         "sendTestNotification": string;
         "notificationWillBeDisplayedLikeThis": string;
+        "reactedBySomeUsers": string;
+        "renotedBySomeUsers": string;
+        "followedBySomeUsers": string;
         "_types": {
             "all": string;
             "note": string;
@@ -2290,6 +2399,9 @@ export interface Locale {
         "createAd": string;
         "deleteAd": string;
         "updateAd": string;
+        "createAvatarDecoration": string;
+        "updateAvatarDecoration": string;
+        "deleteAvatarDecoration": string;
     };
     "_fileViewer": {
         "title": string;
@@ -2299,6 +2411,61 @@ export interface Locale {
         "uploadedAt": string;
         "attachedNotes": string;
         "thisPageCanBeSeenFromTheAuthor": string;
+    };
+    "_externalResourceInstaller": {
+        "title": string;
+        "checkVendorBeforeInstall": string;
+        "_plugin": {
+            "title": string;
+            "metaTitle": string;
+        };
+        "_theme": {
+            "title": string;
+            "metaTitle": string;
+        };
+        "_meta": {
+            "base": string;
+        };
+        "_vendorInfo": {
+            "title": string;
+            "endpoint": string;
+            "hashVerify": string;
+        };
+        "_errors": {
+            "_invalidParams": {
+                "title": string;
+                "description": string;
+            };
+            "_resourceTypeNotSupported": {
+                "title": string;
+                "description": string;
+            };
+            "_failedToFetch": {
+                "title": string;
+                "fetchErrorDescription": string;
+                "parseErrorDescription": string;
+            };
+            "_hashUnmatched": {
+                "title": string;
+                "description": string;
+            };
+            "_pluginParseFailed": {
+                "title": string;
+                "description": string;
+            };
+            "_pluginInstallFailed": {
+                "title": string;
+                "description": string;
+            };
+            "_themeParseFailed": {
+                "title": string;
+                "description": string;
+            };
+            "_themeInstallFailed": {
+                "title": string;
+                "description": string;
+            };
+        };
     };
 }
 declare const locales: {

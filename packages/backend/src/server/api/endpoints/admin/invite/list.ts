@@ -56,8 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			switch (ps.sort) {
-				case '+createdAt': query.orderBy('ticket.createdAt', 'DESC'); break;
-				case '-createdAt': query.orderBy('ticket.createdAt', 'ASC'); break;
+				case '+createdAt': query.orderBy('ticket.id', 'DESC'); break;
+				case '-createdAt': query.orderBy('ticket.id', 'ASC'); break;
 				case '+usedAt': query.orderBy('ticket.usedAt', 'DESC', 'NULLS LAST'); break;
 				case '-usedAt': query.orderBy('ticket.usedAt', 'ASC', 'NULLS FIRST'); break;
 				default: query.orderBy('ticket.id', 'DESC'); break;

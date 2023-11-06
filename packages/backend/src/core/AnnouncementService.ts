@@ -47,13 +47,14 @@ export class AnnouncementService {
 
 		const q = this.announcementsRepository.createQueryBuilder('announcement')
 			.where('announcement.isActive = true')
+			.andWhere('announcement.silence = false')
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
 				qb.orWhere('announcement.userId IS NULL');
 			}))
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
-				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
+				qb.orWhere('announcement.id > :userId', { userId: user.id });
 			}))
 			.andWhere(`announcement.id NOT IN (${ readsQuery.getQuery() })`);
 
@@ -65,8 +66,7 @@ export class AnnouncementService {
 	@bindThis
 	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			updatedAt: null,
 			title: values.title,
 			text: values.text,
@@ -74,6 +74,7 @@ export class AnnouncementService {
 			icon: values.icon,
 			display: values.display,
 			forExistingUsers: values.forExistingUsers,
+			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			userId: values.userId,
 		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
@@ -125,6 +126,7 @@ export class AnnouncementService {
 			display: values.display,
 			icon: values.icon,
 			forExistingUsers: values.forExistingUsers,
+			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			isActive: values.isActive,
 		});
@@ -179,8 +181,7 @@ export class AnnouncementService {
 	public async read(user: MiUser, announcementId: MiAnnouncement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				announcementId: announcementId,
 				userId: user.id,
 			});
@@ -204,7 +205,7 @@ export class AnnouncementService {
 		const reads = me ? (options?.reads ?? await this.getReads(me.id)) : [];
 		return announcements.map(announcement => ({
 			id: announcement.id,
-			createdAt: announcement.createdAt.toISOString(),
+			createdAt: this.idService.parse(announcement.id).date.toISOString(),
 			updatedAt: announcement.updatedAt?.toISOString() ?? null,
 			text: announcement.text,
 			title: announcement.title,
@@ -212,6 +213,7 @@ export class AnnouncementService {
 			icon: announcement.icon,
 			display: announcement.display,
 			needConfirmationToRead: announcement.needConfirmationToRead,
+			silence: announcement.silence,
 			forYou: announcement.userId === me?.id,
 			isRead: reads.some(read => read.announcementId === announcement.id),
 		}));

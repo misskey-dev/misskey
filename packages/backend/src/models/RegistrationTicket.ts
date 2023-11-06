@@ -23,9 +23,6 @@ export class MiRegistrationTicket {
 	})
 	public expiresAt: Date | null;
 
-	@Column('timestamp with time zone')
-	public createdAt: Date;
-
 	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})

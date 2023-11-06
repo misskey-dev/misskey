@@ -160,6 +160,7 @@ async function ok() {
 function cancel() {
 	done(true);
 }
+
 /*
 function onBgClick() {
 	if (props.cancelableByBgClick) cancel();

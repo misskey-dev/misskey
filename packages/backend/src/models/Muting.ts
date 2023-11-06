@@ -15,12 +15,6 @@ export class MiMuting {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Muting.',
-	})
-	public createdAt: Date;
-
-	@Index()
-	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public expiresAt: Date | null;

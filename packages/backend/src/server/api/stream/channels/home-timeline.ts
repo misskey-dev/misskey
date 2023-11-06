@@ -39,46 +39,35 @@ class HomeTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		const isMe = this.user!.id === note.userId;
+
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
 		} else {
 			// その投稿のユーザーをフォローしていなかったら弾く
-			if ((this.user!.id !== note.userId) && !Object.hasOwn(this.following, note.userId)) return;
+			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
 		}
 
 		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
+		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances))) return;
 
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.noteEntityService.pack(note.id, this.user!, {
-				detail: true,
-			});
-
-			if (note.isHidden) {
-				return;
-			}
-		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
-					detail: true,
-				});
-			}
+		if (note.visibility === 'followers') {
+			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
+		} else if (note.visibility === 'specified') {
+			if (!isMe && !note.visibleUserIds!.includes(this.user!.id)) return;
 		}
 
-		// 関係ない返信は除外
-		if (note.reply && !this.following[note.userId]?.withReplies) {
+		if (note.reply) {
 			const reply = note.reply;
-			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
+			if (this.following[note.userId]?.withReplies) {
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+			} else {
+				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
+			}
 		}
 
 		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
@@ -89,6 +78,13 @@ class HomeTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
 		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (this.user && note.renoteId && !note.text) {
+			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+				note.renote.myReaction = myRenoteReaction;
+			}
+		}
 
 		this.connection.cacheNote(note);
 
