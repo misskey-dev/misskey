@@ -1145,9 +1145,15 @@ _initialTutorial:
       localOnly: "Désactiver la fédération de la note à d'autres instances. Les utilisateurs d'autres instances ne pourront pas voir directement la note quelle que soit l'étendue de la publication mentionnée ci-dessus."
     _cw:
       title: "Masquer le contenu (CW)"
+      description: "Au lieu du corps du texte, le contenu du champ « commentaires » s'affichera. Appuyez sur « afficher le contenu » pour voir le corps du texte."
       _exampleNote:
         cw: "Attention : cela vous donnera faim !"
         note: "J'ai mangé un beignet enrobé de chocolat 🍩😋"
+      useCases: "Utilisé pour désigner certaines notes selon les règles du serveur ou pour cacher des spoilers ou des textes sensibles."
+  _howToMakeAttachmentsSensitive:
+    title: "Comment marquer un fichier joint comme sensible ?"
+    description: "Attachez un drapeau « sensible » aux fichiers joints selon les règles du serveur ou si vous ne voulez pas que le fichier soit vu directement."
+    tryThisFile: "Essayez de marquer l'image jointe à ce formulaire de publication comme sensible !"
   _done:
     title: "Le tutoriel est terminé ! 🎉"
 _serverSettings:
@@ -1630,7 +1636,7 @@ _widgets:
     chooseList: "Sélectionner une liste"
 _cw:
   hide: "Masquer"
-  show: "Afficher plus …"
+  show: "Afficher le contenu"
   chars: "{count} caractères"
   files: "{count} fichiers"
 _poll:
