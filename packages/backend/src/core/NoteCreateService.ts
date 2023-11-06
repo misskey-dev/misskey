@@ -912,11 +912,20 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
+			// デフォルトタグ
+			if (note.visibility === 'public' && note.tags.includes('delmulin')) {
+				this.funoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
+				this.funoutTimelineService.push('localTimeline', note.id, 1000, r);
+				if (note.fileIds.length > 0) {
+					this.funoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+				}
+			}
+
 			// 自分自身以外への返信
 			if (note.replyId && note.replyUserId !== note.userId) {
 				this.funoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
 
-				if (note.visibility === 'public' && note.tags.includes('delmulin')) {
+				if (note.visibility === 'public' && note.userHost == null) {
 					this.funoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 				}
 			} else {
@@ -925,7 +934,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					this.funoutTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax / 2 : meta.perRemoteUserUserTimelineCacheMax / 2, r);
 				}
 
-				if (note.visibility === 'public' && note.tags.includes('delmulin')) {
+				if (note.visibility === 'public' && note.userHost == null) {
 					this.funoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
 						this.funoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
