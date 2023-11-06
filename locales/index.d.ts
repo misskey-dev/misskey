@@ -593,6 +593,7 @@ export interface Locale {
     "enableInfiniteScroll": string;
     "visibility": string;
     "poll": string;
+    "schedule": string;
     "useCw": string;
     "enablePlayer": string;
     "disablePlayer": string;

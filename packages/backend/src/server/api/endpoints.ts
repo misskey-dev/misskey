@@ -263,6 +263,7 @@ import * as ep___notes_children from './endpoints/notes/children.js';
 import * as ep___notes_clips from './endpoints/notes/clips.js';
 import * as ep___notes_conversation from './endpoints/notes/conversation.js';
 import * as ep___notes_create from './endpoints/notes/create.js';
+import * as ep___notes_schedule_create from './endpoints/notes/create-schedule.js';
 import * as ep___notes_delete from './endpoints/notes/delete.js';
 import * as ep___notes_favorites_create from './endpoints/notes/favorites/create.js';
 import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete.js';
@@ -619,6 +620,7 @@ const eps = [
 	['notes/clips', ep___notes_clips],
 	['notes/conversation', ep___notes_conversation],
 	['notes/create', ep___notes_create],
+	['notes/create-schedule', ep___notes_schedule_create],
 	['notes/delete', ep___notes_delete],
 	['notes/favorites/create', ep___notes_favorites_create],
 	['notes/favorites/delete', ep___notes_favorites_delete],

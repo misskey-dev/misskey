@@ -73,6 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+	<MkScheduleEditor v-if="schedule" v-model="schedule" @destroyed="schedule = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
@@ -80,6 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="i18n.ts.schedule" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: schedule }]" @click="toggleSchedule"><i class="ti ti-calendar-event"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
@@ -124,6 +126,7 @@ import { deepClone } from '@/scripts/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import MkScheduleEditor from '@/components/MkScheduleEditor.vue';
 
 const modal = inject('modal');
 
@@ -176,6 +179,9 @@ let poll = $ref<{
 	expiresAt: string | null;
 	expiredAfter: string | null;
 } | null>(null);
+let schedule = $ref<{
+  expiresAt: string | null;
+}| null>(null);
 let useCw = $ref(false);
 let showPreview = $ref(defaultStore.state.showPreview);
 watch($$(showPreview), () => defaultStore.set('showPreview', showPreview));
@@ -391,6 +397,16 @@ function togglePoll() {
 			multiple: false,
 			expiresAt: null,
 			expiredAfter: null,
+		};
+	}
+}
+
+function toggleSchedule() {
+	if (schedule) {
+		schedule = null;
+	} else {
+		schedule = {
+			expiresAt: null,
 		};
 	}
 }
@@ -734,6 +750,7 @@ async function post(ev?: MouseEvent) {
 		replyId: props.reply ? props.reply.id : undefined,
 		renoteId: props.renote ? props.renote.id : quoteId ? quoteId : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
+		schedule: schedule,
 		poll: poll,
 		cw: useCw ? cw ?? '' : null,
 		localOnly: localOnly,
@@ -762,7 +779,7 @@ async function post(ev?: MouseEvent) {
 	}
 
 	posting = true;
-	os.api('notes/create', postData, token).then(() => {
+	os.api(postData.schedule ? 'notes/create-schedule' : 'notes/create', postData, token).then(() => {
 		if (props.freezeAfterPosted) {
 			posted = true;
 		} else {
