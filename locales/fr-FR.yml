@@ -1142,6 +1142,7 @@ _initialTutorial:
       direct: "Uniquement visible aux utilisateurs de votre choix. Les récipients seront notifiés. Cette option peut être utilisée comme alternative aux messages directs."
       doNotSendConfidencialOnDirect1: "Faites attention quand vous envoyez vos informations sensibles !"
       doNotSendConfidencialOnDirect2: "Les administrateurs de l'instance destinataire peuvent voir toutes les notes publiées. Soyez prudent·e avec vos informations sensibles quand vous envoyez des notes directes aux utilisateurs dont vous ne vous fiez pas aux instances."
+      localOnly: "Désactiver la fédération de la note à d'autres instances. Les utilisateurs d'autres instances ne pourront pas voir directement la note quelle que soit l'étendue de la publication mentionnée ci-dessus."
     _cw:
       title: "Masquer le contenu (CW)"
       _exampleNote:
