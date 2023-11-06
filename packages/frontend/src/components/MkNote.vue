@@ -304,7 +304,7 @@ function renote(viaKeyboard = false) {
 	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
-	}).then(focus);
+	});
 }
 
 function reply(viaKeyboard = false): void {
