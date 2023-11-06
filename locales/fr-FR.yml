@@ -1154,6 +1154,7 @@ _initialTutorial:
     title: "Comment marquer un fichier joint comme sensible ?"
     description: "Attachez un drapeau « sensible » aux fichiers joints selon les règles du serveur ou si vous ne voulez pas que le fichier soit vu directement."
     tryThisFile: "Essayez de marquer l'image jointe à ce formulaire de publication comme sensible !"
+    sensitiveSucceeded: "Quand vous joignez des fichiers, veuillez indiquer la sensibilité selon les règles du serveur."
   _done:
     title: "Le tutoriel est terminé ! 🎉"
 _serverSettings:
