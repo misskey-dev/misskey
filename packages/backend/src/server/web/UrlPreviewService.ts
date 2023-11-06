@@ -5,12 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { SummalyResult } from '@misskey-dev/summaly';
+import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import { MiMeta } from '@/models/Meta.js';
@@ -29,6 +31,7 @@ export class UrlPreviewService {
 		private meta: MiMeta,
 
 		private httpRequestService: HttpRequestService,
+		private utilityService: UtilityService,
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
@@ -95,8 +98,11 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
-			// Cache 1day
-			reply.header('Cache-Control', 'max-age=86400, immutable');
+			const includeDenyList = this.utilityService.isKeyWordIncluded(summary.url, this.meta.urlPreviewSensitiveList);
+			if (includeDenyList) summary.sensitive = true;
+
+			// Cache 7days
+			reply.header('Cache-Control', 'max-age=604800, immutable');
 
 			return summary;
 		} catch (err) {
