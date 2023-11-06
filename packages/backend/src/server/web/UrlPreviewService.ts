@@ -97,7 +97,7 @@ export class UrlPreviewService {
 
 			const includeDenyList = meta.urlPreviewDenyList.some(filter => {
 				// represents RegExp
-				const regexp = filter.match(/^\/(.+)\/(.*)$/);
+				const regexp = /^\/(.+)\/(.*)$/.exec(filter);
 				// This should never happen due to input sanitisation.
 				if (!regexp) {
 					const words = filter.split(' ');
