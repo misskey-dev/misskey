@@ -26,13 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkLoading from '@/components/global/MkLoading.vue';
 import { onMounted, onUnmounted } from 'vue';
 import { i18n } from '@/i18n.js';
+import { getScrollContainer } from '@/scripts/scroll.js';
 
 const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;
 const FIRE_THRESHOLD = 230;
 const RELEASE_TRANSITION_DURATION = 200;
-const PULL_BRAKE_BASE = 2;
-const PULL_BRAKE_FACTOR = 200;
+const PULL_BRAKE_BASE = 1.5;
+const PULL_BRAKE_FACTOR = 170;
 
 let isPullStart = $ref(false);
 let isPullEnd = $ref(false);
@@ -54,18 +55,6 @@ const props = withDefaults(defineProps<{
 });
 
 const emits = defineEmits<(ev: "refresh") => void>();
-
-function getScrollableParentElement(node) {
-	if (node == null) {
-		return null;
-	}
-
-	if (node.scrollHeight > node.clientHeight) {
-		return node;
-	} else {
-		return getScrollableParentElement(node.parentNode);
-	}
-}
 
 function getScreenY(event) {
 	if (supportPointerDesktop) {
@@ -136,12 +125,9 @@ function moveEnd() {
 	}
 }
 
-function moving(event) {
+function moving(event: TouchEvent | PointerEvent) {
 	if (!isPullStart || isRefreshing || disabled) return;
 
-	if (!scrollEl) {
-		scrollEl = getScrollableParentElement(rootEl);
-	}
 	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance)) {
 		pullDistance = 0;
 		isPullEnd = false;
@@ -156,6 +142,10 @@ function moving(event) {
 
 	const moveHeight = moveScreenY - startScreenY!;
 	pullDistance = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
+
+	if (pullDistance > 0) {
+		if (event.cancelable) event.preventDefault();
+	}
 
 	isPullEnd = pullDistance >= FIRE_THRESHOLD;
 }
@@ -176,24 +166,48 @@ function setDisabled(value) {
 	disabled = value;
 }
 
-onMounted(() => {
-	// マウス操作でpull to refreshするのは不便そう
-	//supportPointerDesktop = !!window.PointerEvent && deviceKind === 'desktop';
+function onScrollContainerScroll() {
+	const scrollPos = scrollEl!.scrollTop;
 
-	if (supportPointerDesktop) {
-		rootEl.addEventListener('pointerdown', moveStart);
-		// ポインターの場合、ポップアップ系の動作をするとdownだけ発火されてupが発火されないため
-		window.addEventListener('pointerup', moveEnd);
-		rootEl.addEventListener('pointermove', moving, { passive: true });
+	// When at the top of the page, disable vertical overscroll so passive touch listeners can take over.
+	if (scrollPos === 0) {
+		scrollEl!.style.touchAction = 'pan-x pan-down pinch-zoom';
+		registerEventListenersForReadyToPull();
 	} else {
-		rootEl.addEventListener('touchstart', moveStart);
-		rootEl.addEventListener('touchend', moveEnd);
-		rootEl.addEventListener('touchmove', moving, { passive: true });
+		scrollEl!.style.touchAction = 'auto';
+		unregisterEventListenersForReadyToPull();
 	}
+}
+
+function registerEventListenersForReadyToPull() {
+	if (rootEl == null) return;
+	rootEl.addEventListener('touchstart', moveStart, { passive: true });
+	rootEl.addEventListener('touchmove', moving, { passive: false }); // passive: falseにしないとpreventDefaultが使えない
+}
+
+function unregisterEventListenersForReadyToPull() {
+	if (rootEl == null) return;
+	rootEl.removeEventListener('touchstart', moveStart);
+	rootEl.removeEventListener('touchmove', moving);
+}
+
+onMounted(() => {
+	if (rootEl == null) return;
+
+	scrollEl = getScrollContainer(rootEl);
+	if (scrollEl == null) return;
+
+	scrollEl.addEventListener('scroll', onScrollContainerScroll, { passive: true });
+
+	rootEl.addEventListener('touchend', moveEnd, { passive: true });
+
+	registerEventListenersForReadyToPull();
 });
 
 onUnmounted(() => {
-	if (supportPointerDesktop) window.removeEventListener('pointerup', moveEnd);
+	if (scrollEl) scrollEl.removeEventListener('scroll', onScrollContainerScroll);
+
+	unregisterEventListenersForReadyToPull();
 });
 
 defineExpose({
