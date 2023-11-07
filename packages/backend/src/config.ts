@@ -124,6 +124,9 @@ export type Config = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	} | undefined;
+	mulukhiya: {
+		defaultTag?: string;
+	} | undefined;
 	proxy: string | undefined;
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
@@ -261,6 +264,7 @@ export function loadConfig(): Config {
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 300,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
+		mulukhiya: config.mulukhiya,
 	};
 }
 

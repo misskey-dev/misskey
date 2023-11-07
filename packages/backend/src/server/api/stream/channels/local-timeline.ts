@@ -10,12 +10,13 @@ import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
+import { loadConfig } from '@/config.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
-	private q: string[][] = [['delmulin']];
+	private q: string[][];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -29,6 +30,9 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
+		const config = loadConfig();
+		this.q = [[String(config.mulukhiya.defaultTag)]];
+
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
 	}

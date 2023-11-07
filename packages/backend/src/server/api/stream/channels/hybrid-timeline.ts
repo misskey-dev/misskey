@@ -14,6 +14,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
+import { loadConfig } from '@/config.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
@@ -22,7 +23,7 @@ class HybridTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
-	private q: string[][] = [['delmulin']];
+	private q: string[][];
 
 	constructor(
 		private metaService: MetaService,
@@ -40,6 +41,9 @@ class HybridTimelineChannel extends Channel {
 	public async init(params: any): Promise<void> {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.ltlAvailable) return;
+
+		const config = loadConfig();
+		this.q = [[String(config.mulukhiya.defaultTag)]];
 
 		this.withRenotes = params.withRenotes ?? true;
 		this.withReplies = params.withReplies ?? false;

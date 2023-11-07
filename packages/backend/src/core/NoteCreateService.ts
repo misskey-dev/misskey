@@ -56,6 +56,7 @@ import { SearchService } from '@/core/SearchService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { loadConfig } from '@/config.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -913,7 +914,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// デフォルトタグ
-			if (note.visibility === 'public' && note.tags.includes('delmulin')) {
+			const config = loadConfig();
+			if (note.visibility === 'public' && note.tags.includes(String(config.mulukhiya.defaultTag))) {
 				this.funoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 				this.funoutTimelineService.push('localTimeline', note.id, 1000, r);
 				if (note.fileIds.length > 0) {
