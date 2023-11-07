@@ -409,6 +409,7 @@ aboutMisskey: "О Misskey"
 administrator: "Администратор"
 token: "Токен"
 2fa: "2-х факторная аутентификация"
+setupOf2fa: "Настроить двухфакторную аутентификацию"
 totp: "Приложение-аутентификатор"
 totpDescription: "Описание приложения-аутентификатора"
 moderator: "Модератор"
@@ -652,6 +653,7 @@ behavior: "Поведение"
 sample: "Пример"
 abuseReports: "Жалобы"
 reportAbuse: "Жалоба"
+reportAbuseRenote: "Пожаловаться на репост"
 reportAbuseOf: "Пожаловаться на пользователя {name}"
 fillAbuseReportDescription: "Опишите, пожалуйста, причину жалобы подробнее. Если речь о конкретной заметке, будьте добры приложить ссылку на неё."
 abuseReported: "Жалоба отправлена. Большое спасибо за информацию."
@@ -1077,6 +1079,9 @@ _initialAccountSetting:
   privacySetting: "Настройки конфиденциальности"
   initialAccountSettingCompleted: "Первоначальная настройка успешно завершена!"
   skipAreYouSure: "Пропустить настройку?"
+_initialTutorial:
+  _note:
+    description: "Посты в Misskey называются 'Заметками.' Заметки отсортированы в хронологическом порядке в ленте и обновляются в режиме реального времени."
 _serverSettings:
   iconUrl: "Адрес на иконку роли"
 _achievements:
