@@ -84,6 +84,10 @@ onActivated(() => {
 onUnmounted(() => {
 	if (connection) connection.dispose();
 });
+
+defineExpose({
+	reload,
+});
 </script>
 
 <style lang="scss" module>

@@ -57,6 +57,7 @@ const props = withDefaults(defineProps<{
 	isStacked?: boolean;
 	naked?: boolean;
 	menu?: MenuItem[];
+	refresher?: () => Promise<void>;
 }>(), {
 	isStacked: false,
 	naked: false,
@@ -176,6 +177,18 @@ function getMenu() {
 			removeColumn(props.column.id);
 		},
 	}];
+
+	if (props.refresher) {
+		items = [{
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			action: () => {
+				if (props.refresher) {
+					props.refresher();
+				}
+			},
+		}, ...items];
+	}
 
 	if (props.menu) {
 		items.unshift(null);

@@ -4,10 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :column="column" :isStacked="isStacked">
+<XColumn :column="column" :isStacked="isStacked" :refresher="() => reloadTimeline()">
 	<template #header><i class="ti ti-mail" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
-	<MkNotes :pagination="pagination"/>
+	<MkNotes ref="tlComponent" :pagination="pagination"/>
 </XColumn>
 </template>
 
@@ -16,6 +16,7 @@ import { } from 'vue';
 import XColumn from './column.vue';
 import { Column } from './deck-store';
 import MkNotes from '@/components/MkNotes.vue';
+import { reloadStream } from '@/stream.js';
 
 defineProps<{
 	column: Column;
@@ -29,4 +30,15 @@ const pagination = {
 		visibility: 'specified',
 	},
 };
+
+const tlComponent: InstanceType<typeof MkNotes> = $ref();
+
+function reloadTimeline() {
+	return new Promise<void>((res) => {
+		tlComponent.pagingComponent?.reload().then(() => {
+			reloadStream();
+			res();
+		});
+	});
+}
 </script>
