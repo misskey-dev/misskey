@@ -323,6 +323,18 @@ export type Endpoints = {
         };
         res: null;
     };
+    'admin/delete-user-avatar': {
+        req: {
+            userId: User['id'];
+        };
+        res: null;
+    };
+    'admin/delete-user-banner': {
+        req: {
+            userId: User['id'];
+        };
+        res: null;
+    };
     'admin/delete-logs': {
         req: NoParams;
         res: null;
@@ -2844,8 +2856,8 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // Warnings were encountered during analysis:
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:633:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:20:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:635:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

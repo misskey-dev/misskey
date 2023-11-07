@@ -23,6 +23,8 @@ import * as ep___admin_abuseReportResolver_update from './endpoints/admin/abuse-
 import * as ep___admin_abuseReportResolver_delete from './endpoints/admin/abuse-report-resolver/delete.js';
 import * as ep___admin_abuseReportResolver_list from './endpoints/admin/abuse-report-resolver/list.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
+import * as ep___admin_deleteUserAvatar from './endpoints/admin/delete-user-avatar.js';
+import * as ep___admin_deleteUserBanner from './endpoints/admin/delete-user-banner.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
@@ -370,6 +372,8 @@ const eps = [
 	['admin/abuse-report-resolver/delete', ep___admin_abuseReportResolver_delete],
 	['admin/abuse-report-resolver/update', ep___admin_abuseReportResolver_update],
 	['admin/delete-all-files-of-a-user', ep___admin_deleteAllFilesOfAUser],
+	['admin/delete-user-avatar', ep___admin_deleteUserAvatar],
+	['admin/delete-user-banner', ep___admin_deleteUserBanner],
 	['admin/drive/clean-remote-files', ep___admin_drive_cleanRemoteFiles],
 	['admin/drive/cleanup', ep___admin_drive_cleanup],
 	['admin/drive/files', ep___admin_drive_files],
