@@ -1944,7 +1944,7 @@ _widgets:
   clicker: "Cliccaggio"
 _cw:
   hide: "Nascondere"
-  show: "Attenzione: continua la lettura"
+  show: "Continua la lettura..."
   chars: "{count} caratteri"
   files: "{count} file"
 _poll:
