@@ -1158,6 +1158,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "アクティブなお知らせが多いため、UXが低下する可能性があります。終了したお知らせはアーカイブすることを検討した方がええよ。"
   readConfirmTitle: "既読にしてええんやな?"
   readConfirmText: "「{title}」の内容を読み、既読にします。"
+  shouldNotBeUsedToPresentPermanentInfo: "新規ユーザーのUXを損ねやすいから、お知らせはストック情報やのうてフロー情報の掲示に使った方がええで。"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
