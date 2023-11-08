@@ -323,6 +323,7 @@ onUnmounted(() => {
 
 .thumbnailBlur {
 		filter: blur(8px);
+		clip-path: inset(0);
 }
 
 @container (max-width: 400px) {
