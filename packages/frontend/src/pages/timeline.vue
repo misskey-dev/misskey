@@ -122,13 +122,14 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-const headerActions = $computed(() => [
-	...[deviceKind === 'desktop' ? {
+const headerActions = $computed(() => deviceKind === 'desktop'
+	? [{
 		icon: 'ti ti-refresh',
 		text: i18n.ts.reload,
 		handler: () => { tlComponent.reloadTimeline(); },
-	} : {}],
-]);
+	}]
+	: []
+);
 
 const headerTabs = $computed(() => [{
 	key: 'home',
