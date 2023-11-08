@@ -615,17 +615,11 @@ defineExpose({
 				position: sticky;
 				top: 0;
 				left: 0;
-				height: 32px;
-				line-height: 32px;
+				line-height: 28px;
 				z-index: 1;
 				padding: 0 8px;
 				font-size: 12px;
 				cursor: pointer;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				direction: rtl;
-				text-align: left;
 
 				&:hover {
 					color: var(--accent);
