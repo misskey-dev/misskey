@@ -109,28 +109,7 @@ export type EndedPollNotificationJobData = {
 };
 
 export type ScheduleNotePostJobData = {
-	note: {
-		name?: string | null;
-		text?: string | null;
-		reply?: MiNote | null;
-		renote?: MiNote | null;
-		files?: MiDriveFile[] | null;
-		poll?: IPoll | null;
-		schedule?: MiNoteSchedule | null;
-		localOnly?: boolean | null;
-		reactionAcceptance?: MiNote['reactionAcceptance'];
-		cw?: string | null;
-		visibility?: string;
-		visibleUsers?: MinimumUser[] | null;
-		channel?: MiChannel | null;
-		apMentions?: MinimumUser[] | null;
-		apHashtags?: string[] | null;
-		apEmojis?: string[] | null;
-		uri?: string | null;
-		url?: string | null;
-		app?: MiApp | null;
-	};
-	user: MiUser & {host: null, uri: null};
+    scheduleNoteId: MiNote['id'];
 }
 
 type MinimumUser = {

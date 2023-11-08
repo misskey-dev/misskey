@@ -7,7 +7,14 @@ import ms from 'ms';
 import { DataSource, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUser } from '@/models/User.js';
-import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
+import type {
+	UsersRepository,
+	NotesRepository,
+	BlockingsRepository,
+	DriveFilesRepository,
+	ChannelsRepository,
+	NoteScheduleRepository,
+} from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiChannel } from '@/models/Channel.js';
@@ -18,6 +25,8 @@ import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { QueueService } from '@/core/QueueService.js';
+import { MiNoteSchedule } from '@/models/_.js';
+import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -194,6 +203,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.noteScheduleRepository)
+		private noteScheduleRepository: NoteScheduleRepository,
+
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
@@ -203,9 +215,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
-		private noteEntityService: NoteEntityService,
 		private queueService: QueueService,
-		private noteCreateService: NoteCreateService,
+    private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: MiUser[] = [];
@@ -328,8 +339,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 			}
-
-			const note = {
+			type NoteType = {
+				createdAt?: Date | undefined;
+				apEmojis: any[] | undefined;
+				visibility: any;
+				apMentions: any[] | undefined;
+				visibleUsers: MiUser[];
+				channel: null | MiChannel;
+				poll: {
+					multiple: any;
+					choices: any;
+					expiresAt: Date | null;
+				} | undefined;
+				renote: null | MiNote;
+				localOnly: any;
+				cw: any;
+				apHashtags: any[] | undefined;
+				reactionAcceptance: any;
+				files: MiDriveFile[];
+				text: any;
+				reply: null | MiNote;
+			};
+			const note:NoteType = {
 				files: files,
 				poll: ps.poll ? {
 					choices: ps.poll.choices,
@@ -351,10 +382,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			};
 
 			if (ps.schedule && ps.schedule.expiresAt) {
+				me.token = null;
+				const noteId = this.idService.gen(new Date().getTime());
+				await this.noteScheduleRepository.insert({
+					id: noteId,
+					note: note,
+					userId: me.id,
+				});
+
 				const delay = new Date(ps.schedule.expiresAt).getTime() - Date.now();
 				await this.queueService.ScheduleNotePostQueue.add(String(delay), {
-					note: note,
-					user: me,
+					scheduleNoteId: noteId,
 				}, {
 					delay,
 					removeOnComplete: true,
