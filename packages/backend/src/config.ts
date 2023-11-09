@@ -56,6 +56,9 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
+	mulukhiya: {
+		defaultTag: string;
+	};
 
 	proxy?: string;
 	proxySmtp?: string;
@@ -125,8 +128,8 @@ export type Config = {
 		scope?: 'local' | 'global' | string[];
 	} | undefined;
 	mulukhiya: {
-		defaultTag?: string;
-	} | undefined;
+		defaultTag: string;
+	};
 	proxy: string | undefined;
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
