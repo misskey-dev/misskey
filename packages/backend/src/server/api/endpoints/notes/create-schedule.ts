@@ -197,9 +197,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.db)
-		private db: DataSource,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -388,6 +385,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: noteId,
 					note: note,
 					userId: me.id,
+					expiresAt: new Date(ps.schedule.expiresAt),
 				});
 
 				const delay = new Date(ps.schedule.expiresAt).getTime() - Date.now();

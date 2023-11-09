@@ -19,8 +19,12 @@ export class MiNoteSchedule {
 	@Column('jsonb')
 	public note:{createdAt?: Date | undefined ; apEmojis: any[] | undefined; visibility: any; apMentions: any[] | undefined; visibleUsers: MiUser[]; channel: null | MiChannel; poll: { multiple: any; choices: any; expiresAt: Date | null } | undefined; renote: null | MiNote; localOnly: any; cw: any; apHashtags: any[] | undefined; reactionAcceptance: any; files: MiDriveFile[]; text: any; reply: null | MiNote };
 
+	@Index()
 	@Column('varchar', {
 		length: 260,
 	})
 	public userId: MiUser['id'];
+
+	@Column('timestamp with time zone')
+	public expiresAt: Date;
 }

@@ -431,7 +431,13 @@ export async function selectUser(opts: { includeSelf?: boolean } = {}) {
 		}, 'closed');
 	});
 }
-
+export async function listSchedulePost() {
+	return new Promise((resolve, reject) => {
+		popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {
+		}, {
+		}, 'closed');
+	});
+}
 export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-show="!isDeleted" :class="$style.root" :tabindex="!isDeleted ? '-1' : undefined">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
@@ -16,22 +16,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="note.cw == null || showContent">
 				<MkSubNoteContent :class="$style.text" :note="note"/>
 			</div>
+			<div v-if="note.isSchedule" style="margin-top: 10px;">
+				<MkButton :class="$style.button" inline @click="editScheduleNote(note.id)">{{ i18n.ts.edit }}</MkButton>
+				<MkButton :class="$style.button" inline danger @click="deleteScheduleNote()">{{ i18n.ts.delete }}</MkButton>
+			</div>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import * as Misskey from 'misskey-js';
+import { ref } from 'vue';
+import { i18n } from '../i18n.js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { $i } from '@/account.js';
-
+import MkButton from '@/components/MkButton.vue';
+import * as os from '@/os.js';
+const isDeleted = ref(false);
 const props = defineProps<{
-	note: Misskey.entities.Note;
+  note: Misskey.entities.Note & {isSchedule? : boolean};
 }>();
+
+async function deleteScheduleNote() {
+	await os.apiWithDialog('notes/delete-schedule', { noteId: props.note.id })
+		.then(() => {
+			isDeleted.value = true;
+		});
+}
+
+function editScheduleNote(id) {
+
+}
 
 const showContent = $ref(false);
 </script>
@@ -42,8 +59,12 @@ const showContent = $ref(false);
 	margin: 0;
 	padding: 0;
 	font-size: 0.95em;
+  border-bottom: solid 0.5px var(--divider);
 }
-
+.button{
+  margin-right: var(--margin);
+  margin-bottom: var(--margin);
+}
 .avatar {
 	flex-shrink: 0;
 	display: block;

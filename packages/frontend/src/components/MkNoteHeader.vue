@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="mock">
 			<MkTime :time="note.createdAt" colored/>
 		</div>
+		<MkTime v-else-if="note.isSchedule" mode="absolute" :time="note.createdAt" colored/>
 		<MkA v-else :to="notePage(note)">
 			<MkTime :time="note.createdAt" colored/>
 		</MkA>
@@ -42,7 +43,8 @@ import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 
 defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {isSchedule? : boolean};
+  scheduled?: boolean;
 }>();
 
 const mock = inject<boolean>('mock', false);
