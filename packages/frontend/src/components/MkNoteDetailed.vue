@@ -350,7 +350,7 @@ function renote(viaKeyboard = false) {
 	const { menu } = getRenoteMenu({ note: note, renoteButton });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
-	}).then(focus);
+	});
 }
 
 function reply(viaKeyboard = false): void {
