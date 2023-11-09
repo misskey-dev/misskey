@@ -512,7 +512,6 @@ export type Endpoints = {
 		};
 	}; res: { createdNote: Note }; };
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
-	'notes/schedule/create': { req: Partial<Note> & { schedule: { expiresAt: number; } }; res: { createdNote: Note }; };
 	'notes/schedule/delete': { req: { scheduledNoteId: Note['id']; }; res: null; };
 	'notes/schedule/list': { req: TODO; res: {
 		id: Note['id'];
