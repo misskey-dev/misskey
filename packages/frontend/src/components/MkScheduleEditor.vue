@@ -5,12 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div style="padding: 8px 16px">
-	<section>
+	<section class="_gaps_s">
 		<MkInput v-model="atDate" small type="date" class="input">
-			<template #label>{{ i18n.ts._poll.deadlineDate }}</template>
+			<template #label>{{ i18n.ts._schedulePost.postDate }}</template>
 		</MkInput>
 		<MkInput v-model="atTime" small type="time" class="input">
-			<template #label>{{ i18n.ts._poll.deadlineTime }}</template>
+			<template #label>{{ i18n.ts._schedulePost.postTime }}</template>
+			<template #caption>{{ i18n.ts._schedulePost.localTime }}</template>
 		</MkInput>
 	</section>
 </div>
@@ -53,6 +54,6 @@ function get() {
 }
 
 watch([atDate, atTime], () => emit('update:modelValue', get()), {
-	deep: true,
+	immediate: true,
 });
 </script>

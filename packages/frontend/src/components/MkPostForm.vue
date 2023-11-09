@@ -19,8 +19,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<button v-tooltip="i18n.ts.schedulePost" class="_button" :class="[$style.headerRightItem, { [$style.headerRightButtonActive]: schedule }]" @click="toggleSchedule"><i class="ti ti-calendar-time"></i></button>
-			<button v-tooltip="i18n.ts.schedulePostList" class="_button" :class="[$style.headerRightItem]" @click="listSchedulePost"><i class="ti ti-calendar-event"></i></button>
 			<template v-if="!(channel != null && fixed)">
 				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
@@ -38,17 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
-			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
-				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
-				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
-				<span v-else><i class="ti ti-icons"></i></span>
-			</button>
+			<button v-tooltip="i18n.ts.otherSettings" class="_button" :class="[$style.headerRightItem]" @click="openOtherSettingsMenu"><i class="ti ti-dots"></i></button>
 			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : schedule ? 'ti ti-clock-hour-4' : 'ti ti-send'"></i>
 				</div>
 			</button>
 		</div>
@@ -242,7 +236,9 @@ const submitText = $computed((): string => {
 		? i18n.ts.quote
 		: props.reply
 			? i18n.ts.reply
-			: i18n.ts.note;
+			: schedule
+				? i18n.ts._schedulePost.addSchedule
+				: i18n.ts.note;
 });
 
 const textLength = $computed((): number => {
@@ -753,7 +749,7 @@ async function post(ev?: MouseEvent) {
 		replyId: props.reply ? props.reply.id : undefined,
 		renoteId: props.renote ? props.renote.id : quoteId ? quoteId : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
-		schedule: schedule,
+		schedule,
 		poll: poll,
 		cw: useCw ? cw ?? '' : null,
 		localOnly: localOnly,
@@ -776,6 +772,10 @@ async function post(ev?: MouseEvent) {
 				console.error(err);
 			}
 		}
+	}
+
+	if (postData.schedule?.expiresAt && typeof postData.schedule.expiresAt === 'string') {
+		postData.schedule.expiresAt = parseInt(postData.schedule.expiresAt);
 	}
 
 	let token = undefined;
@@ -900,6 +900,45 @@ function openAccountMenu(ev: MouseEvent) {
 			}
 		},
 	}, ev);
+}
+
+function openOtherSettingsMenu(ev: MouseEvent) {
+	let reactionAcceptanceIcon: string;
+	switch (reactionAcceptance) {
+		case 'likeOnly':
+			reactionAcceptanceIcon = 'ti ti-heart';
+			break;
+		case 'likeOnlyForRemote':
+			reactionAcceptanceIcon = 'ti ti-heart-plus';
+			break;
+		default:
+			reactionAcceptanceIcon = 'ti ti-icons';
+			break;
+	}
+
+	os.popupMenu([{
+		type: 'button',
+		text: i18n.ts.reactionAcceptance,
+		icon: reactionAcceptanceIcon,
+		action: toggleReactionAcceptance,
+	}, {
+		type: 'button',
+		text: i18n.ts.schedulePost,
+		icon: 'ti ti-calendar-time',
+		indicate: (schedule != null),
+		action: toggleSchedule,
+	}, null, {
+		type: 'button',
+		text: i18n.ts._schedulePost.list,
+		icon: 'ti ti-calendar-event',
+		action: () => {
+			// 投稿フォームが二重に出ないようにとじておく
+			emit('cancel');
+			listSchedulePost();
+		},
+	}], ev.currentTarget ?? ev.target, {
+		align: 'right',
+	});
 }
 
 onMounted(() => {

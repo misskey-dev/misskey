@@ -595,7 +595,6 @@ export interface Locale {
     "poll": string;
     "schedulePost": string;
     "useCw": string;
-    "schedulePostList": string;
     "enablePlayer": string;
     "disablePlayer": string;
     "expandTweet": string;
@@ -2468,6 +2467,13 @@ export interface Locale {
                 "description": string;
             };
         };
+    };
+    "_schedulePost": {
+        "list": string;
+        "postDate": string;
+        "postTime": string;
+        "localTime": string;
+        "addSchedule": string;
     };
 }
 declare const locales: {

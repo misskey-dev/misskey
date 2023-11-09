@@ -592,7 +592,6 @@ visibility: "公開範囲"
 poll: "アンケート"
 schedulePost: "予約投稿"
 useCw: "内容を隠す"
-schedulePostList: "予約投稿一覧"
 enablePlayer: "プレイヤーを開く"
 disablePlayer: "プレイヤーを閉じる"
 expandTweet: "ポストを展開する"
@@ -2356,3 +2355,10 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "テーマのインストールに失敗しました"
       description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+
+_schedulePost:
+  list: "予約投稿一覧"
+  postDate: "日付"
+  postTime: "時刻"
+  localTime: "端末に設定されているタイムゾーンの時刻で投稿されます。"
+  addSchedule: "予約設定"
