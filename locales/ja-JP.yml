@@ -2362,3 +2362,4 @@ _schedulePost:
   postTime: "時刻"
   localTime: "端末に設定されているタイムゾーンの時刻で投稿されます。"
   addSchedule: "予約設定"
+  willBePostedAtX: "このノートは{date}に投稿されます。"

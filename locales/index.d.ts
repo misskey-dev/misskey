@@ -2474,6 +2474,7 @@ export interface Locale {
         "postTime": string;
         "localTime": string;
         "addSchedule": string;
+        "willBePostedAtX": string;
     };
 }
 declare const locales: {
