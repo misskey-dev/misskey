@@ -11,6 +11,7 @@ Nadesskeyは基本的に通常のMisskeyへ機能をマージすることを目�
 	ONにすると、ファイルのアップロード時にファイル名がランダムな文字列になります。
   - Thanks [隠れ家](https://github.com/hideki0403/misskey.yukineko.me/blob/master-kakurega/DIFFERENCE.md)
 ### 改変箇所
+- CWの開閉ボタンのサイズを小さくしました
 - リストTLに関してもRedisによるキャッシュが無い際にDBへフォールバックを行い過去のノートが参照可能です
 - [隠れ家](https://github.com/hideki0403/misskey.yukineko.me/blob/master-kakurega/DIFFERENCE.md)をベースにした通知機能
   - フォローしていないユーザの通知も受け取ることが可能です
