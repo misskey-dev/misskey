@@ -872,7 +872,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				this.funoutTimelineService.push(`homeTimeline:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax, r);
 				if (note.userHost == null) {
-					this.funoutTimelineService.push(`localHomeTimeline:${following.followerId}`, note.id, meta.perRemoteUserUserTimelineCacheMax, r);
+					this.funoutTimelineService.push(`localHomeTimeline:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax, r);
 				}
 				if (note.fileIds.length > 0) {
 					this.funoutTimelineService.push(`homeTimelineWithFiles:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax / 2, r);
@@ -899,6 +899,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			if (note.visibility !== 'specified' || !note.visibleUserIds.some(v => v === user.id)) { // 自分自身のHTL
 				this.funoutTimelineService.push(`homeTimeline:${user.id}`, note.id, meta.perUserHomeTimelineCacheMax, r);
+				this.funoutTimelineService.push(`localHomeTimeline:${user.id}`, note.id, meta.perUserHomeTimelineCacheMax, r);
 				if (note.fileIds.length > 0) {
 					this.funoutTimelineService.push(`homeTimelineWithFiles:${user.id}`, note.id, meta.perUserHomeTimelineCacheMax / 2, r);
 				}
