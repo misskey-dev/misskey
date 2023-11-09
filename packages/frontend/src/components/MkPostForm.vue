@@ -563,6 +563,7 @@ function removeVisibleUser(user) {
 
 function clear() {
 	text = '';
+	schedule = null;
 	files = [];
 	poll = null;
 	quoteId = null;
@@ -802,7 +803,7 @@ async function post(ev?: MouseEvent) {
 			if (notesCount === 1) {
 				claimAchievement('notes1');
 			}
-
+			poll = null;
 			const text = postData.text ?? '';
 			const lowerCase = text.toLowerCase();
 			if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('misskey')) {

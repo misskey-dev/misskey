@@ -20,7 +20,31 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'Note',
+			properties: {
+				id: { type: 'string', optional: false, nullable: false },
+				note: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						id: { type: 'string', optional: false, nullable: false },
+						text: { type: 'string', optional: false, nullable: false },
+						files: { type: 'array', optional: false, nullable: false, items: { type: 'any' } },
+						localOnly: { type: 'boolean', optional: false, nullable: false },
+						visibility: { type: 'string', optional: false, nullable: false },
+						visibleUsers: { type: 'array', optional: false, nullable: false, items: { type: 'any' } },
+						reactionAcceptance: { type: 'string', optional: false, nullable: false },
+						user: {
+							type: 'object',
+							optional: false, nullable: false,
+							ref: 'User',
+						},
+						createdAt: { type: 'string', optional: false, nullable: false },
+						isSchedule: { type: 'boolean', optional: false, nullable: false },
+					},
+				},
+				userId: { type: 'string', optional: false, nullable: false },
+				expiresAt: { type: 'string', optional: false, nullable: false },
+			},
 		},
 	},
 	limit: {
@@ -33,10 +57,6 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-	},
-	required: [],
 } as const;
 
 @Injectable()
@@ -49,13 +69,36 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const scheduleNotes = await this.noteScheduleRepository.findBy({ userId: me.id });
 			const user = await this.userEntityService.pack(me, me);
-			scheduleNotes.forEach((item: any) => {
-				item.note.user = user;
-				item.note.createdAt = new Date(item.expiresAt);
-				item.note.isSchedule = true;
-				item.note.id = item.id;
+			const scheduleNotesPack: {
+				id: string;
+				note: {
+					id: string;
+					text: string;
+					files: any[];
+					localOnly: boolean;
+					visibility: string;
+					visibleUsers: any[];
+					reactionAcceptance: string;
+					user: any;
+					createdAt: string;
+					isSchedule: boolean;
+				};
+				userId: string;
+				expiresAt: string;
+			}[] = scheduleNotes.map((item: any) => {
+				return {
+					...item,
+					note: {
+						...item.note,
+						user: user,
+						createdAt: new Date(item.expiresAt),
+						isSchedule: true,
+						id: item.id,
+					},
+				};
 			});
-			return scheduleNotes;
+
+			return scheduleNotesPack;
 		});
 	}
 }
