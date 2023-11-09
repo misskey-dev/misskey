@@ -40,7 +40,9 @@ const props = defineProps<{
 }>();
 
 async function deleteScheduleNote() {
-	await os.apiWithDialog('notes/schedule/delete', { noteId: props.note.id })
+	if (!props.note.isSchedule) return;
+	// スケジュールつきノートの場合は、ノートIDのフィールドに予約投稿ID(scheduledNoteId)が入るので注意！！！！
+	await os.apiWithDialog('notes/schedule/delete', { scheduledNoteId: props.note.id })
 		.then(() => {
 			isDeleted.value = true;
 		});

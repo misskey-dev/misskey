@@ -93,6 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						user: user,
 						createdAt: new Date(item.expiresAt),
 						isSchedule: true,
+						// ↓TODO: NoteのIDに予約投稿IDを入れたくない（本来別ものなため）
 						id: item.id,
 					},
 				};

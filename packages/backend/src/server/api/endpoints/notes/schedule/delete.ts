@@ -6,6 +6,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { ScheduledNotesRepository } from '@/models/_.js';
+import { QueueService } from '@/core/QueueService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -31,9 +32,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		noteId: { type: 'string', format: 'misskey:id' },
+		scheduledNoteId: { type: 'string', format: 'misskey:id' },
 	},
-	required: ['noteId'],
+	required: ['scheduledNoteId'],
 } as const;
 
 @Injectable()
@@ -41,9 +42,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.scheduledNotesRepository)
 		private scheduledNotesRepository: ScheduledNotesRepository,
+
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.scheduledNotesRepository.delete({ id: ps.noteId });
+			await this.scheduledNotesRepository.delete({ id: ps.scheduledNoteId });
+			if (ps.scheduledNoteId) {
+				await this.queueService.ScheduleNotePostQueue.remove(ps.scheduledNoteId);
+			}
 		});
 	}
 }

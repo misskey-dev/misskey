@@ -1748,6 +1748,9 @@ export type Endpoints = {
                 expiresAt?: null | number;
                 expiredAfter?: null | number;
             };
+            schedule?: null | {
+                expiresAt?: null | number;
+            };
         };
         res: {
             createdNote: Note;
@@ -1771,13 +1774,18 @@ export type Endpoints = {
     };
     'notes/schedule/delete': {
         req: {
-            noteId: Note['id'];
+            scheduledNoteId: Note['id'];
         };
         res: null;
     };
     'notes/schedule/list': {
         req: TODO;
-        res: Note[];
+        res: {
+            id: Note['id'];
+            userId: User['id'];
+            expiresAt: number;
+            note: Note;
+        }[];
     };
     'notes/favorites/create': {
         req: {
@@ -3055,7 +3063,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:635:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:643:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/entities.ts:116:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
 // src/entities.ts:627:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts

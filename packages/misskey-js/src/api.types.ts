@@ -507,11 +507,19 @@ export type Endpoints = {
 			expiresAt?: null | number;
 			expiredAfter?: null | number;
 		};
+		schedule?: null | {
+			expiresAt?: null | number;
+		};
 	}; res: { createdNote: Note }; };
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/schedule/create': { req: Partial<Note> & { schedule: { expiresAt: number; } }; res: { createdNote: Note }; };
-	'notes/schedule/delete': { req: { noteId: Note['id']; }; res: null; };
-	'notes/schedule/list': { req: TODO; res: Note[]; };
+	'notes/schedule/delete': { req: { scheduledNoteId: Note['id']; }; res: null; };
+	'notes/schedule/list': { req: TODO; res: {
+		id: Note['id'];
+		userId: User['id'];
+		expiresAt: number;
+		note: Note;
+	}[]; };
 	'notes/favorites/create': { req: { noteId: Note['id']; }; res: null; };
 	'notes/favorites/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/featured': { req: TODO; res: Note[]; };

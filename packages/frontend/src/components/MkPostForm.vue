@@ -751,7 +751,7 @@ async function post(ev?: MouseEvent) {
 		renoteId: props.renote ? props.renote.id : quoteId ? quoteId : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
 		schedule,
-		poll: poll,
+		poll,
 		cw: useCw ? cw ?? '' : null,
 		localOnly: localOnly,
 		visibility: visibility,
@@ -783,11 +783,11 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.id === postAccount.id)?.token;
+		token = storedAccounts.find(x => x.id === postAccount?.id)?.token;
 	}
 
 	posting = true;
-	os.api(postData.schedule ? 'notes/schedule/create' : 'notes/create', postData, token).then(() => {
+	os.api('notes/create', postData, token).then(() => {
 		if (props.freezeAfterPosted) {
 			posted = true;
 		} else {

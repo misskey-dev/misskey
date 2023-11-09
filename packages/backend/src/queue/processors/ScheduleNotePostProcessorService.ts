@@ -32,9 +32,9 @@ export class ScheduleNotePostProcessorService {
 
     @bindThis
 	public async process(job: Bull.Job<ScheduleNotePostJobData>): Promise<void> {
-		this.scheduledNotesRepository.findOneBy({ id: job.data.scheduleNoteId }).then(async (data) => {
+		this.scheduledNotesRepository.findOneBy({ id: job.data.scheduledNoteId }).then(async (data) => {
 			if (!data) {
-				this.logger.warn(`Schedule note ${job.data.scheduleNoteId} not found`);
+				this.logger.warn(`Schedule note ${job.data.scheduledNoteId} not found`);
 			} else {
 				data.note.createdAt = new Date();
 				const me = await this.usersRepository.findOneByOrFail({ id: data.userId });
