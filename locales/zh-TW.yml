@@ -1274,7 +1274,7 @@ _accountMigration:
   moveTo: "將這個帳戶遷移至新的帳戶"
   moveToLabel: "要遷移到的帳戶："
   moveCannotBeUndone: "一旦遷移帳戶，就無法取消。"
-  moveAccountDescription: "遷移至新帳戶。\n　・此帳戶的追隨者將自動追隨新帳戶；\n　・此帳戶的所有追隨者將被取消追隨；\n　・此帳戶不能再發文。\n\n雖然會自動遷移您追隨者，但必須手動遷移您追隨的帳戶。請在遷移前匯出此帳戶的「追隨中」名單，並在遷移後自行匯入。\n列表名單、靜音名單及封鎖名單也必須如此處理。\n\n（此說明適用於本伺服器，以及運行 Misskey v13.12.0 或更新版本的其他伺服器；如 Mastodon 等使用 ActivityPub 協定的其他軟體或有不同的處理方式。）"
+  moveAccountDescription: "遷移至新帳戶。\n　・此帳戶的追隨者將自動追隨新帳戶；\n　・此帳戶的所有追隨者將被取消追隨；\n　・此帳戶不能再發文。\n\n雖然會自動遷移您的追隨者，但必須手動遷移您追隨的帳戶。請在遷移前匯出此帳戶的「追隨中」名單，並在遷移後自行匯入。\n列表名單、靜音名單及封鎖名單也必須如此處理。\n\n（此說明適用於本伺服器，以及運行 Misskey v13.12.0 或更新版本的其他伺服器；如 Mastodon 等使用 ActivityPub 協定的其他軟體或有不同的處理方式。）"
   moveAccountHowTo: "要遷移帳戶，首先要在目標帳戶中為此帳戶建立一個別名。\n 建立別名後，像這樣輸入目標帳戶：@username@server.example.com"
   startMigration: "遷移"
   migrationConfirm: "確定要將這個帳戶遷移至 {account} 嗎？一旦遷移就無法撤銷，也就無法以原來的狀態使用這個帳戶。\n另外，請確認在要遷移到的帳戶已經建立了一個別名。"
@@ -1725,7 +1725,7 @@ _wordMute:
   muteWordsDescription: "空格代表「以及」（AND），換行代表「或者」（OR）。"
   muteWordsDescription2: "用斜線包圍關鍵字代表正規表達式。"
 _instanceMute:
-  instanceMuteDescription: "包括對被靜音實例上的使用者的回覆，被設定的實例上所有貼文及轉發都會被靜音。"
+  instanceMuteDescription: "包括對被靜音伺服器上的使用者的回覆，被設定的伺服器上所有貼文及轉發都會被靜音。"
   instanceMuteDescription2: "設定時以換行進行分隔"
   title: "將隱藏被設定的實例貼文。"
   heading: "將實例靜音"
