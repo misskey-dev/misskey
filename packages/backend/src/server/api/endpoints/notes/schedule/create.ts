@@ -7,6 +7,9 @@ import ms from 'ms';
 import { DataSource, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiChannel } from '@/models/Channel.js';
 import type {
 	UsersRepository,
 	NotesRepository,
@@ -15,17 +18,13 @@ import type {
 	ChannelsRepository,
 	NoteScheduleRepository,
 } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
-import type { MiChannel } from '@/models/Channel.js';
+import type { MiNoteCreateOption } from '@/types.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { QueueService } from '@/core/QueueService.js';
-import { MiNoteSchedule } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../../error.js';
 
@@ -84,6 +83,12 @@ export const meta = {
 			message: 'Schedule is already expired.',
 			code: 'CANNOT_CREATE_ALREADY_EXPIRED_SCHEDULE',
 			id: '8a9bfb90-fc7e-4878-a3e8-d97faaf5fb07',
+		},
+
+		specifyScheduleDate: {
+			message: 'Please specify schedule date.',
+			code: 'PLEASE_SPECIFY_SCHEDULE_DATE',
+			id: 'c93a6ad6-f7e2-4156-a0c2-3d03529e5e0f',
 		},
 
 		noSuchChannel: {
@@ -212,6 +217,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
+		private noteEntityService: NoteEntityService,
 		private queueService: QueueService,
     private idService: IdService,
 	) {
@@ -336,38 +342,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 			}
-			type NoteType = {
-				createdAt?: Date | undefined;
-				apEmojis: any[] | undefined;
-				visibility: any;
-				apMentions: any[] | undefined;
-				visibleUsers: MiUser[];
-				channel: null | MiChannel;
-				poll: {
-					multiple: any;
-					choices: any;
-					expiresAt: Date | null;
-				} | undefined;
-				renote: null | MiNote;
-				localOnly: any;
-				cw: any;
-				apHashtags: any[] | undefined;
-				reactionAcceptance: any;
-				files: MiDriveFile[];
-				text: any;
-				reply: null | MiNote;
-			};
-			const note:NoteType = {
-				files: files,
+			const note: MiNoteCreateOption = {
+				files,
 				poll: ps.poll ? {
 					choices: ps.poll.choices,
 					multiple: ps.poll.multiple ?? false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				} : undefined,
-				text: ps.text ?? undefined,
+				text: ps.text ?? null,
 				reply,
 				renote,
-				cw: ps.cw,
+				cw: ps.cw ?? null,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
@@ -380,9 +365,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.schedule && ps.schedule.expiresAt) {
 				me.token = null;
-				const noteId = this.idService.gen(new Date().getTime());
+				const scheduleNoteId = this.idService.gen(new Date().getTime());
 				await this.noteScheduleRepository.insert({
-					id: noteId,
+					id: scheduleNoteId,
 					note: note,
 					userId: me.id,
 					expiresAt: new Date(ps.schedule.expiresAt),
@@ -390,14 +375,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				const delay = new Date(ps.schedule.expiresAt).getTime() - Date.now();
 				await this.queueService.ScheduleNotePostQueue.add(String(delay), {
-					scheduleNoteId: noteId,
+					scheduleNoteId,
 				}, {
 					delay,
 					removeOnComplete: true,
 				});
-			}
 
-			return '';
+				return {
+					scheduleNoteId,
+					scheduledNote: note,
+				};
+			} else {
+				throw new ApiError(meta.errors.specifyScheduleDate);
+			}
 		});
 	}
 }
