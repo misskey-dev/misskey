@@ -5,7 +5,7 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NoteScheduleRepository } from '@/models/_.js';
+import type { ScheduledNotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -39,11 +39,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.noteScheduleRepository)
-		private noteScheduleRepository: NoteScheduleRepository,
+		@Inject(DI.scheduledNotesRepository)
+		private scheduledNotesRepository: ScheduledNotesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.noteScheduleRepository.delete({ id: ps.noteId });
+			await this.scheduledNotesRepository.delete({ id: ps.noteId });
 		});
 	}
 }

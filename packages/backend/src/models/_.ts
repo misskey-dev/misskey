@@ -68,7 +68,7 @@ import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
-import { MiNoteSchedule } from './NoteSchedule.js';
+import { MiScheduledNote } from './ScheduledNote.js';
 import type { Repository } from 'typeorm';
 
 export {
@@ -105,7 +105,7 @@ export {
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiNoteUnread,
-	MiNoteSchedule,
+	MiScheduledNote,
 	MiPage,
 	MiPageLike,
 	MiPasswordResetRequest,
@@ -173,7 +173,7 @@ export type NoteFavoritesRepository = Repository<MiNoteFavorite>;
 export type NoteReactionsRepository = Repository<MiNoteReaction>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<MiNoteUnread>;
-export type NoteScheduleRepository = Repository<MiNoteSchedule>;
+export type ScheduledNotesRepository = Repository<MiScheduledNote>;
 export type PagesRepository = Repository<MiPage>;
 export type PageLikesRepository = Repository<MiPageLike>;
 export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest>;

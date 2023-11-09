@@ -10,7 +10,7 @@ import type { MiLocalUser, MiUser } from '@/models/User.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { IPoll } from '@/models/Poll.js';
-import { MiNoteSchedule } from '@/models/NoteSchedule.js';
+import { MiScheduledNote } from '@/models/ScheduledNote.js';
 import { MiChannel } from '@/models/Channel.js';
 import { MiApp } from '@/models/App.js';
 import type httpSignature from '@peertube/http-signature';

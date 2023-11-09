@@ -9,7 +9,7 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
 @Entity('note_schedule')
-export class MiNoteSchedule {
+export class MiScheduledNote {
 	@PrimaryColumn(id())
 	public id: string;
 

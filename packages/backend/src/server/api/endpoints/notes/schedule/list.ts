@@ -7,7 +7,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import type { NoteScheduleRepository } from '@/models/_.js';
+import type { ScheduledNotesRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
@@ -62,12 +62,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.noteScheduleRepository)
-		private noteScheduleRepository: NoteScheduleRepository,
+		@Inject(DI.scheduledNotesRepository)
+		private scheduledNotesRepository: ScheduledNotesRepository,
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const scheduleNotes = await this.noteScheduleRepository.findBy({ userId: me.id });
+			const scheduleNotes = await this.scheduledNotesRepository.findBy({ userId: me.id });
 			const user = await this.userEntityService.pack(me, me);
 			const scheduleNotesPack: {
 				id: string;

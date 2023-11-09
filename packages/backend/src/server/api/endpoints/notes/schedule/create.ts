@@ -16,7 +16,7 @@ import type {
 	BlockingsRepository,
 	DriveFilesRepository,
 	ChannelsRepository,
-	NoteScheduleRepository,
+	ScheduledNotesRepository,
 } from '@/models/_.js';
 import type { MiNoteCreateOption } from '@/types.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -205,8 +205,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.noteScheduleRepository)
-		private noteScheduleRepository: NoteScheduleRepository,
+		@Inject(DI.scheduledNotesRepository)
+		private scheduledNotesRepository: ScheduledNotesRepository,
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
@@ -366,7 +366,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.schedule && ps.schedule.expiresAt) {
 				me.token = null;
 				const scheduleNoteId = this.idService.gen(new Date().getTime());
-				await this.noteScheduleRepository.insert({
+				await this.scheduledNotesRepository.insert({
 					id: scheduleNoteId,
 					note: note,
 					userId: me.id,

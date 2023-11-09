@@ -9,7 +9,7 @@ import type { MiChannel } from '@/models/Channel.js';
 import type { MiApp } from '@/models/App.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { MiNoteSchedule } from '@/models/NoteSchedule.js';
+import type { MiScheduledNote } from '@/models/ScheduledNote.js';
 
 /**
  * note - 通知オンにしているユーザーが投稿した
@@ -262,7 +262,7 @@ export type MiNoteCreateOption = {
 	renote?: MiNote | null;
 	files?: MiDriveFile[] | null;
 	poll?: IPoll | null;
-	schedule?: MiNoteSchedule | null;
+	schedule?: MiScheduledNote | null;
 	localOnly?: boolean | null;
 	reactionAcceptance?: MiNote['reactionAcceptance'];
 	cw?: string | null;
