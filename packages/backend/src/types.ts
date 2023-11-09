@@ -277,7 +277,6 @@ export type MiNoteCreateOption = {
 	app?: MiApp | null;
 };
 
-
 export type Serialized<T> = {
 	[K in keyof T]:
 		T[K] extends Date
