@@ -27,7 +27,7 @@ export class ScheduleNotePostProcessorService {
         private noteCreateService: NoteCreateService,
         private queueLoggerService: QueueLoggerService,
 	) {
-		this.logger = this.queueLoggerService.logger.createSubLogger('ended-poll-notification');
+		this.logger = this.queueLoggerService.logger.createSubLogger('schedule-note-post');
 	}
 
     @bindThis
