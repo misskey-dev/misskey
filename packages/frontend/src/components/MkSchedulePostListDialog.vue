@@ -41,7 +41,7 @@ const cancel = () => {
 };
 
 onMounted(async () => {
-	notes.value = await os.api('notes/list-schedule');
+	notes.value = await os.api('notes/schedule/list');
 });
 
 </script>

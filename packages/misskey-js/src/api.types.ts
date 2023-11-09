@@ -509,6 +509,9 @@ export type Endpoints = {
 		};
 	}; res: { createdNote: Note }; };
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
+	'notes/schedule/create': { req: Partial<Note> & { schedule: { expiresAt: number; } }; res: { createdNote: Note }; };
+	'notes/schedule/delete': { req: { noteId: Note['id']; }; res: null; };
+	'notes/schedule/list': { req: TODO; res: Note[]; };
 	'notes/favorites/create': { req: { noteId: Note['id']; }; res: null; };
 	'notes/favorites/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/featured': { req: TODO; res: Note[]; };

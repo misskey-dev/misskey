@@ -40,7 +40,7 @@ const props = defineProps<{
 }>();
 
 async function deleteScheduleNote() {
-	await os.apiWithDialog('notes/delete-schedule', { noteId: props.note.id })
+	await os.apiWithDialog('notes/schedule/delete', { noteId: props.note.id })
 		.then(() => {
 			isDeleted.value = true;
 		});

@@ -786,7 +786,7 @@ async function post(ev?: MouseEvent) {
 	}
 
 	posting = true;
-	os.api(postData.schedule ? 'notes/create-schedule' : 'notes/create', postData, token).then(() => {
+	os.api(postData.schedule ? 'notes/schedule/create' : 'notes/create', postData, token).then(() => {
 		if (props.freezeAfterPosted) {
 			posted = true;
 		} else {
