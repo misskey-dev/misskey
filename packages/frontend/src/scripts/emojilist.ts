@@ -43,3 +43,8 @@ export function getEmojiName(char: string): string | null {
 		return emojilist[idx].name;
 	}
 }
+
+export interface CustomEmojiFolderTree {
+	category: string;
+	children: CustomEmojiFolderTree[];
+}

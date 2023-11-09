@@ -37,6 +37,7 @@ coverage
 !/.config/docker_example.env
 docker-compose.yml
 !/.devcontainer/docker-compose.yml
+!/packages/backend/test/docker-compose.yml
 
 # misskey
 /build
@@ -51,6 +52,7 @@ run.bat
 api-docs.json
 *.log
 /redis
+/keydb
 *.code-workspace
 .DS_Store
 /files

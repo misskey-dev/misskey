@@ -21,9 +21,10 @@ import type { TestingModule } from '@nestjs/testing';
 function mockRedis() {
 	const hash = {};
 	const set = jest.fn((key, value) => {
-		const ret = hash[key];
+		// このテストで呼び出すSETにはNXオプションが付いてる
+		if (hash[key]) return null;
 		hash[key] = value;
-		return ret;
+		return 'OK';
 	});
 	return set;
 }

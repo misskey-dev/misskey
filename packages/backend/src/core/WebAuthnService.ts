@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import {
 	generateAuthenticationOptions,
-	generateRegistrationOptions, verifyAuthenticationResponse,
+	generateRegistrationOptions,
+	verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 import { AttestationFormat, isoCBOR } from '@simplewebauthn/server/helpers';

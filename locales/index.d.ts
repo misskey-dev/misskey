@@ -315,6 +315,7 @@ export interface Locale {
     "createFolder": string;
     "renameFolder": string;
     "deleteFolder": string;
+    "folder": string;
     "addFile": string;
     "emptyDrive": string;
     "emptyFolder": string;
@@ -568,6 +569,10 @@ export interface Locale {
     "script": string;
     "disablePagesScript": string;
     "updateRemoteUser": string;
+    "deleteUserAvatar": string;
+    "deleteUserAvatarConfirm": string;
+    "deleteUserBanner": string;
+    "deleteUserBannerConfirm": string;
     "deleteAllFiles": string;
     "deleteAllFilesConfirm": string;
     "removeAllFollowing": string;
@@ -1164,6 +1169,8 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "urlPreviewDenyList": string;
+    "urlPreviewDenyListDescription": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

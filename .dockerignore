@@ -11,6 +11,7 @@ docker-compose.yml
 node_modules/
 packages/*/node_modules
 redis/
+keydb/
 files/
 misskey-assets/
 fluent-emojis/

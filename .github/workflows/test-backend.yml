@@ -13,18 +13,18 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:15
         ports:
           - 54312:5432
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
-      redis:
-        image: redis:7
+      keydb:
+        image: eqalpha/keydb:latest
         ports:
           - 56312:6379
 

@@ -73,18 +73,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
 			<XSection
-				v-for="category in customEmojiCategories"
-				:key="`custom:${category}`"
+				v-for="child in customEmojiFolderRoot.children"
+				:key="`custom:${child.category}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).filter(filterAvailable).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => child.category === '' ? (e.category === 'null' || !e.category) : e.category === child.category).filter(filterAvailable).map(e => `:${e.name}:`))"
+        :hasChildSection="child.children.length !== 0"
+        :customEmojiTree="child.children"
 				@chosen="chosen"
 			>
-				{{ category || i18n.ts.other }}
+				{{ child.category || i18n.ts.other }}
 			</XSection>
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -100,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist.js';
+import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName, CustomEmojiFolderTree } from '@/scripts/emojilist.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
@@ -143,6 +145,39 @@ const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
+
+const customEmojiFolderRoot: CustomEmojiFolderTree = { category: "", children: [] };
+
+function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
+	const parts = (input && input !== 'null' ? input : '').split(' / ');
+	let currentNode: CustomEmojiFolderTree = root;
+
+	for (const part of parts) {
+		const path = currentNode.category ? `${currentNode.category} / ${part}` : part;
+
+		let existingNode = currentNode.children.find((node) => node.category === path);
+		if (!existingNode) {
+			const newNode: CustomEmojiFolderTree = {
+				category: path,
+				children: [],
+			};
+			currentNode.children.push(newNode);
+			existingNode = newNode;
+		}
+
+		currentNode = existingNode;
+	}
+
+	return currentNode;
+}
+
+customEmojiCategories.value.forEach(ec => {
+  if (ec !== null) {
+    parseAndMergeCategories(ec, customEmojiFolderRoot);
+  }
+});
+
+parseAndMergeCategories('', customEmojiFolderRoot);
 
 watch(q, () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
@@ -573,8 +608,7 @@ defineExpose({
 				position: sticky;
 				top: 0;
 				left: 0;
-				height: 32px;
-				line-height: 32px;
+				line-height: 28px;
 				z-index: 1;
 				padding: 0 8px;
 				font-size: 12px;
