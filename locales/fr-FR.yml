@@ -1156,6 +1156,7 @@ _initialTutorial:
     tryThisFile: "Essayez de marquer l'image jointe à ce formulaire de publication comme sensible !"
     _exampleNote:
       note: "Oups, j'ai échoué à ouvrir le couvercle du natto..."
+    method: "Pour marquer un fichier joint comme sensible, cliquez sur la vignette du fichier, ouvrez le menu et cliquez sur « marquer comme sensible » ."
     sensitiveSucceeded: "Quand vous joignez des fichiers, veuillez indiquer la sensibilité selon les règles du serveur."
   _done:
     title: "Le tutoriel est terminé ! 🎉"
