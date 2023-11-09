@@ -49,7 +49,6 @@ async function buildBackendScript() {
   let clientEntry;
   try {
     clientEntry = JSON.parse(await fs.readFile('./built/_vite_/manifest.json', 'utf-8'))['src/_boot_.ts'].file;
-    console.log(clientEntry);
   } catch {
     clientEntry = 'src/_boot_.ts';
   }
