@@ -165,6 +165,7 @@ import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
 import * as ep___following_update from './endpoints/following/update.js';
+import * as ep___following_update_all from './endpoints/following/update-all.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
 import * as ep___following_requests_accept from './endpoints/following/requests/accept.js';
 import * as ep___following_requests_cancel from './endpoints/following/requests/cancel.js';
@@ -216,6 +217,7 @@ import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
 import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
+import * as ep___i_notificationsGrouped from './endpoints/i/notifications-grouped.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
@@ -228,7 +230,7 @@ import * as ep___i_registry_get from './endpoints/i/registry/get.js';
 import * as ep___i_registry_keysWithType from './endpoints/i/registry/keys-with-type.js';
 import * as ep___i_registry_keys from './endpoints/i/registry/keys.js';
 import * as ep___i_registry_remove from './endpoints/i/registry/remove.js';
-import * as ep___i_registry_scopes from './endpoints/i/registry/scopes.js';
+import * as ep___i_registry_scopesWithDomain from './endpoints/i/registry/scopes-with-domain.js';
 import * as ep___i_registry_set from './endpoints/i/registry/set.js';
 import * as ep___i_revokeToken from './endpoints/i/revoke-token.js';
 import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
@@ -359,6 +361,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
+import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -523,6 +526,7 @@ const $federation_stats: Provider = { provide: 'ep:federation/stats', useClass: 
 const $following_create: Provider = { provide: 'ep:following/create', useClass: ep___following_create.default };
 const $following_delete: Provider = { provide: 'ep:following/delete', useClass: ep___following_delete.default };
 const $following_update: Provider = { provide: 'ep:following/update', useClass: ep___following_update.default };
+const $following_update_all: Provider = { provide: 'ep:following/update-all', useClass: ep___following_update_all.default };
 const $following_invalidate: Provider = { provide: 'ep:following/invalidate', useClass: ep___following_invalidate.default };
 const $following_requests_accept: Provider = { provide: 'ep:following/requests/accept', useClass: ep___following_requests_accept.default };
 const $following_requests_cancel: Provider = { provide: 'ep:following/requests/cancel', useClass: ep___following_requests_cancel.default };
@@ -574,6 +578,7 @@ const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep_
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
 const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
+const $i_notificationsGrouped: Provider = { provide: 'ep:i/notifications-grouped', useClass: ep___i_notificationsGrouped.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
 const $i_pin: Provider = { provide: 'ep:i/pin', useClass: ep___i_pin.default };
@@ -586,7 +591,7 @@ const $i_registry_get: Provider = { provide: 'ep:i/registry/get', useClass: ep__
 const $i_registry_keysWithType: Provider = { provide: 'ep:i/registry/keys-with-type', useClass: ep___i_registry_keysWithType.default };
 const $i_registry_keys: Provider = { provide: 'ep:i/registry/keys', useClass: ep___i_registry_keys.default };
 const $i_registry_remove: Provider = { provide: 'ep:i/registry/remove', useClass: ep___i_registry_remove.default };
-const $i_registry_scopes: Provider = { provide: 'ep:i/registry/scopes', useClass: ep___i_registry_scopes.default };
+const $i_registry_scopesWithDomain: Provider = { provide: 'ep:i/registry/scopes-with-domain', useClass: ep___i_registry_scopesWithDomain.default };
 const $i_registry_set: Provider = { provide: 'ep:i/registry/set', useClass: ep___i_registry_set.default };
 const $i_revokeToken: Provider = { provide: 'ep:i/revoke-token', useClass: ep___i_revokeToken.default };
 const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: ep___i_signinHistory.default };
@@ -717,6 +722,7 @@ const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_s
 const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
+const $fetchExternalResources: Provider = { provide: 'ep:fetch-external-resources', useClass: ep___fetchExternalResources.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
 @Module({
@@ -885,6 +891,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$following_create,
 		$following_delete,
 		$following_update,
+		$following_update_all,
 		$following_invalidate,
 		$following_requests_accept,
 		$following_requests_cancel,
@@ -936,6 +943,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importUserLists,
 		$i_importAntennas,
 		$i_notifications,
+		$i_notificationsGrouped,
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
@@ -948,7 +956,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
-		$i_registry_scopes,
+		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
 		$i_signinHistory,
@@ -1079,6 +1087,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
+		$fetchExternalResources,
 		$retention,
 	],
 	exports: [
@@ -1241,6 +1250,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$following_create,
 		$following_delete,
 		$following_update,
+		$following_update_all,
 		$following_invalidate,
 		$following_requests_accept,
 		$following_requests_cancel,
@@ -1292,6 +1302,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importUserLists,
 		$i_importAntennas,
 		$i_notifications,
+		$i_notificationsGrouped,
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
@@ -1304,7 +1315,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
-		$i_registry_scopes,
+		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
 		$i_signinHistory,
@@ -1432,6 +1443,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
+		$fetchExternalResources,
 		$retention,
 	],
 })

@@ -45,7 +45,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 10,
+		max: 20,
 	},
 
 	errors: {
@@ -447,9 +447,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		const myLink = `${this.config.url}/@${user.username}`;
 
-		const includesMyLink = Array.from(doc.getElementsByTagName('a')).some(a => a.href === myLink);
+		const aEls = Array.from(doc.getElementsByTagName('a'));
+		const linkEls = Array.from(doc.getElementsByTagName('link'));
 
-		if (includesMyLink) {
+		const includesMyLink = aEls.some(a => a.href === myLink);
+		const includesRelMeLinks = [...aEls, ...linkEls].some(link => link.rel === 'me' && link.href === myLink);
+
+		if (includesMyLink || includesRelMeLinks) {
 			await this.userProfilesRepository.createQueryBuilder('profile').update()
 				.where('userId = :userId', { userId: user.id })
 				.set({

@@ -125,6 +125,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				noteIds = noteIds.slice(0, ps.limit);
 
+				let redisTimeline: MiNote[] = [];
+
 				if (noteIds.length > 0) {
 					const query = this.notesRepository.createQueryBuilder('note')
 						.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -135,37 +137,37 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.leftJoinAndSelect('renote.user', 'renoteUser')
 						.leftJoinAndSelect('note.channel', 'channel');
 
-					let timeline = await query.getMany();
+					redisTimeline = await query.getMany();
 
-					timeline = timeline.filter(note => {
-						if (me && (note.userId === me.id)) {
-							return true;
-						}
-						if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
-						if (!ps.withBelowPublic && note.visibility !== 'public') return false;
-						if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-						if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-						if (note.renoteId) {
-							if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-								if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-								if (ps.withRenotes === false) return false;
+						redisTimeline = redisTimeline.filter(note => {
+							if (me && (note.userId === me.id)) {
+								return true;
 							}
-						}
+							if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
+							if (!ps.withBelowPublic && note.visibility !== 'public') return false;
+						if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+							if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+							if (note.renoteId) {
+								if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+									if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
+									if (ps.withRenotes === false) return false;
+								}
+							}
 
 						return true;
 					});
 
-					// TODO: フィルタした結果件数が足りなかった場合の対応
+					redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+				}
 
-					timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-
+				if (redisTimeline.length > 0) {
 					process.nextTick(() => {
 						if (me) {
 							this.activeUsersChart.read(me);
 						}
 					});
 
-					return await this.noteEntityService.packMany(timeline, me);
+					return await this.noteEntityService.packMany(redisTimeline, me);
 				} else { // fallback to db
 					return await this.getFromDb({
 						untilId,
@@ -195,10 +197,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		limit: number,
 		withFiles: boolean,
 		withReplies: boolean,
-		withBelowPublic: boolean
+		withBelowPublic: boolean,
 	}, me: MiLocalUser | null) {
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
+			.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')

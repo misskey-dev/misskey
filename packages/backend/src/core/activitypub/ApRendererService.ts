@@ -495,6 +495,7 @@ export class ApRendererService {
 			preferredUsername: user.username,
 			name: user.name,
 			summary: profile.description ? this.mfmService.toHtml(mfm.parse(profile.description)) : null,
+			_misskey_summary: profile.description,
 			icon: avatar ? this.renderImage(avatar) : null,
 			image: banner ? this.renderImage(banner) : null,
 			tag,
@@ -644,6 +645,7 @@ export class ApRendererService {
 					'_misskey_quote': 'misskey:_misskey_quote',
 					'_misskey_reaction': 'misskey:_misskey_reaction',
 					'_misskey_votes': 'misskey:_misskey_votes',
+					'_misskey_summary': 'misskey:_misskey_summary',
 					'isCat': 'misskey:isCat',
 					// vcard
 					vcard: 'http://www.w3.org/2006/vcard/ns#',

@@ -56,6 +56,7 @@ function copyUrl(file: Misskey.entities.DriveFile) {
 	copyToClipboard(file.url);
 	os.success();
 }
+
 /*
 function addApp() {
 	alert('not implemented yet');
@@ -77,6 +78,11 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 	const isImage = file.type.startsWith('image/');
 	let menu;
 	menu = [{
+		type: 'link',
+		to: `/my/drive/file/${file.id}`,
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-info-circle',
+	}, null, {
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(file),
@@ -112,11 +118,6 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		text: i18n.ts.download,
 		icon: 'ti ti-download',
 		download: file.name,
-	}, null, {
-		type: 'link',
-		to: `/my/drive/file/${file.id}`,
-		text: i18n.ts._fileViewer.title,
-		icon: 'ti ti-file',
 	}, null, {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
