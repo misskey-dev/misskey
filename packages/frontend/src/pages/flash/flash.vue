@@ -145,7 +145,10 @@ async function run() {
 
 	aiscript = new Interpreter({
 		...createAiScriptEnv({
-			storageKey: 'flash:' + flash.id,
+			scriptData: {
+				type: 'flash',
+				id: flash.id,
+			},
 		}),
 		...registerAsUiLib(components, (_root) => {
 			root.value = _root.value;

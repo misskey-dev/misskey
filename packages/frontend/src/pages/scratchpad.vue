@@ -79,8 +79,10 @@ async function run() {
 	logs.value = [];
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
-			storageKey: 'widget',
 			token: $i?.token,
+			scriptData: {
+				type: 'widget',
+			},
 		}),
 		...registerAsUiLib(components, (_root) => {
 			root.value = _root.value;

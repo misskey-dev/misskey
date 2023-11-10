@@ -57,8 +57,10 @@ const components: Ref<AsUiComponent>[] = $ref([]);
 async function run() {
 	const aiscript = new Interpreter({
 		...createAiScriptEnv({
-			storageKey: 'widget',
 			token: $i?.token,
+			scriptData: {
+				type: 'widget',
+			},
 		}),
 		...registerAsUiLib(components, (_root) => {
 			root.value = _root.value;

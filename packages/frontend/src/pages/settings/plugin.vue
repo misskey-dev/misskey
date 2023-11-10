@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_m" style="padding: 20px;">
 				<div class="_gaps_s">
-					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
+					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span v-if="plugin.fromAccount" :class="$style.fromAccount">{{ '同期' }}</span><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 					<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 				</div>
 
@@ -74,11 +74,21 @@ import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { getPluginList } from '@/plugin.js';
 
-const plugins = ref(ColdDeviceStorage.get('plugins'));
+let plugins = Object.values(await getPluginList());
+plugins.push(...ColdDeviceStorage.get('plugins'));
+plugins = ref(plugins);
 
 async function uninstall(plugin) {
-	ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
+	if (plugin.fromAccount) {
+		let plugins = await getPluginList();
+		delete plugins[plugin.id];
+		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', plugin.id] });
+		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+	} else {
+		ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
+	}
 	await os.apiWithDialog('i/revoke-token', {
 		token: plugin.token,
 	});
@@ -102,9 +112,15 @@ async function config(plugin) {
 	const { canceled, result } = await os.form(plugin.name, config);
 	if (canceled) return;
 
-	const coldPlugins = ColdDeviceStorage.get('plugins');
-	coldPlugins.find(p => p.id === plugin.id)!.configData = result;
-	ColdDeviceStorage.set('plugins', coldPlugins);
+	if (plugin.fromAccount) {
+		let plugins = await getPluginList();
+		plugins[plugin.id].configData = result;
+		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+	} else {
+		const coldPlugins = ColdDeviceStorage.get('plugins');
+		coldPlugins.find(p => p.id === plugin.id)!.configData = result;
+		ColdDeviceStorage.set('plugins', coldPlugins);
+	}
 
 	nextTick(() => {
 		location.reload();
@@ -130,3 +146,15 @@ definePageMetadata({
 	icon: 'ti ti-plug',
 });
 </script>
+
+<style lang="scss" module>
+	.fromAccount {
+		margin-left: 0.7em;
+		font-size: 65%;
+		padding: 2px 3px;
+		color: var(--accent);
+		border: solid 1px var(--accent);
+		border-radius: 4px;
+		vertical-align: top;
+	}
+</style>

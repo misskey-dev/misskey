@@ -6,12 +6,12 @@
 import { utils, values } from '@syuilo/aiscript';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
+import { ScriptData, loadScriptStorage, saveScriptStorage } from './storage.js';
 
-export function createAiScriptEnv(opts) {
+export function createAiScriptEnv(opts: { token: string; scriptData: ScriptData; }) {
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
@@ -60,14 +60,23 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
-		'Mk:save': values.FN_NATIVE(([key, value]) => {
+		'Mk:save': values.FN_NATIVE(async ([key, value, toAccount]) => {
 			utils.assertString(key);
-			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));
-			return values.NULL;
+			const saveToAccount = toAccount ? toAccount.value : false;
+			return saveScriptStorage(saveToAccount, opts.scriptData, key.value, utils.valToJs(value)).then(() => {
+				return values.NULL;
+			}, err => {
+				return values.ERROR('request_failed', utils.jsToVal(err));
+			});
 		}),
-		'Mk:load': values.FN_NATIVE(([key]) => {
+		'Mk:load': values.FN_NATIVE(async ([key, toAccount]) => {
 			utils.assertString(key);
-			return utils.jsToVal(JSON.parse(miLocalStorage.getItem(`aiscript:${opts.storageKey}:${key.value}`)));
+			const loadToAccount = toAccount ? toAccount.value : false;
+			return loadScriptStorage(loadToAccount, opts.scriptData, key.value).then(res => {
+				return utils.jsToVal(res);
+			}, err => {
+				return values.ERROR('request_failed', utils.jsToVal(err));
+			});
 		}),
 		'Mk:url': values.FN_NATIVE(() => {
 			return values.STR(window.location.href);
