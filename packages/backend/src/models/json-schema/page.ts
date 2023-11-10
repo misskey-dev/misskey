@@ -35,10 +35,18 @@ export const packedPageSchema = {
 		content: {
 			type: 'array',
 			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+			},
 		},
 		variables: {
 			type: 'array',
 			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+			},
 		},
 		title: {
 			type: 'string',

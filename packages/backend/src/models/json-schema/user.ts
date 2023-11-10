@@ -124,7 +124,7 @@ export const packedUserLiteSchema = {
 						nullable: false, optional: false,
 					},
 					iconUrl: {
-						type: 'number',
+						type: 'string',
 						nullable: true, optional: false,
 					},
 					displayOrder: {
@@ -153,18 +153,15 @@ export const packedUserDetailedNotMeOnlySchema = {
 		movedTo: {
 			type: 'string',
 			format: 'uri',
-			nullable: true,
-			optional: false,
+			nullable: true, optional: false,
 		},
 		alsoKnownAs: {
 			type: 'array',
-			nullable: true,
-			optional: false,
+			nullable: true, optional: false,
 			items: {
 				type: 'string',
 				format: 'id',
-				nullable: false,
-				optional: false,
+				nullable: false, optional: false,
 			},
 		},
 		createdAt: {
@@ -359,11 +356,11 @@ export const packedUserDetailedNotMeOnlySchema = {
 		},
 		memo: {
 			type: 'string',
-			nullable: false, optional: true,
+			nullable: true, optional: false,
 		},
 		moderationNote: {
 			type: 'string',
-			nullable: true, optional: true,
+			nullable: false, optional: true,
 		},
 		//#region relations
 		isFollowing: {
@@ -433,27 +430,27 @@ export const packedMeDetailedOnlySchema = {
 		},
 		injectFeaturedNote: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		receiveAnnouncementEmail: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		alwaysMarkNsfw: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		autoSensitive: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		carefulBot: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		autoAcceptFollowed: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		noCrawle: {
 			type: 'boolean',
@@ -538,7 +535,7 @@ export const packedMeDetailedOnlySchema = {
 		},
 		emailNotificationTypes: {
 			type: 'array',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 			items: {
 				type: 'string',
 				nullable: false, optional: false,
