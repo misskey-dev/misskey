@@ -16,6 +16,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -98,6 +99,12 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
 		},
+
+		cannotRenoteOutsideOfChannel: {
+			message: 'Cannot renote outside of channel.',
+			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
+			id: '33510210-8452-094c-6227-4a6c05d99f00',
+		},
 	},
 } as const;
 
@@ -108,7 +115,7 @@ export const paramDef = {
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		cw: { type: 'string', nullable: true, maxLength: 100 },
+		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
 		noExtractMentions: { type: 'boolean', default: false },
@@ -221,7 +228,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (renote == null) {
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+				} else if (isPureRenote(renote)) {
 					throw new ApiError(meta.errors.cannotReRenote);
 				}
 
@@ -245,6 +252,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// specified / direct noteはreject
 					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
 				}
+
+				if (renote.channelId && renote.channelId !== ps.channelId) {
+					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
+					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
+					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
+					if (renoteChannel == null) {
+						// リノートしたいノートが書き込まれているチャンネルが無い
+						throw new ApiError(meta.errors.noSuchChannel);
+					} else if (!renoteChannel.allowRenoteToExternal) {
+						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
+						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+					}
+				}
 			}
 
 			let reply: MiNote | null = null;
@@ -254,7 +274,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (reply == null) {
 					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+				} else if (isPureRenote(reply)) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				}
 

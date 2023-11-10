@@ -1011,6 +1011,7 @@ icon: "Avatar"
 replies: "Responder"
 renotes: "Repostar"
 keepScreenOn: "Manter a tela do dispositivo sempre ligada"
+flip: "Inversão"
 _initialAccountSetting:
   followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _serverSettings:
@@ -1322,8 +1323,6 @@ _sfx:
   notification: "Notificações"
 _ago:
   invalid: "Não há nada aqui"
-_timelineTutorial:
-  step1_2: "Existem vários tipos de linhas do tempo, por exemplo, na 'Linha do Tempo Principal', você verá as notas das pessoas que está seguindo, e na 'Linha do Tempo Local', verá todas as notas de {name}."
 _2fa:
   securityKeyInfo: "Além da autenticação por impressão digital ou PIN, você também pode configurar a autenticação por chaves de segurança de hardware compatível com FIDO2 para proteger ainda mais a sua conta."
   removeKeyConfirm: "Deseja excluir {name}?"
