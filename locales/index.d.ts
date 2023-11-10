@@ -1161,6 +1161,12 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "pluginSyncSettings": string;
+    "pluginSyncSettingsInfo": string;
+    "duplicateSyncedPlugin": string;
+    "overrideSourceCodeOnly": string;
+    "syncSetting": string;
+    "syncing": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

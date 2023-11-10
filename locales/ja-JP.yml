@@ -1158,6 +1158,12 @@ useGroupedNotifications: "通知をグルーピングして表示する"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 doReaction: "リアクションする"
+pluginSyncSettings: "プラグインの同期設定"
+pluginSyncSettingsInfo: "このプラグインをローカルのみにインストールするか他端末と同期するかを選択できます。"
+duplicateSyncedPlugin: "このプラグインは同期されているプラグインと重複しています。"
+overrideSourceCodeOnly: "コードのみを上書きする"
+syncSetting: "同期設定"
+syncing: "他端末と同期"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

@@ -15,22 +15,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="$emit('closed')"
 	@ok="ok()"
 >
-	<template #header>{{ 'プラグインの共有設定' }}</template>
+	<template #header>{{ i18n.ts.pluginSyncSettings }}</template>
 
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m">
 			<div>
-				<MkInfo>{{ 'このプラグインをローカルのみにインストールするか他端末と同期するかを選択できます。' }}</MkInfo>
+				<MkInfo>{{ i18n.ts.pluginSyncSettingsInfo }}</MkInfo>
 			</div>
 			<div v-if="isExistsFromAccount && localOrAccount === 'account'">
-				<MkInfo warn>{{ 'このプラグインは同期されているプラグインと重複しています。' }}</MkInfo>
-				<MkSwitch v-model="pluginOnlyOverride" :class="$style.switch">{{ 'コードのみを上書きする' }}</MkSwitch>
+				<MkInfo warn>{{ i18n.ts.duplicateSyncedPlugin }}</MkInfo>
+				<MkSwitch v-model="pluginOnlyOverride" :class="$style.switch">{{ i18n.ts.overrideSourceCodeOnly }}</MkSwitch>
 			</div>
 			<div>
 				<MkSelect v-model="localOrAccount">
-					<template #label>{{ '共有設定' }}</template>
-					<option value="local">{{ 'ローカルのみ' }}</option>
-					<option value="account">{{ '他端末で同期' }}</option>
+					<template #label>{{ i18n.ts.syncSetting }}</template>
+					<option value="local">{{ i18n.ts.localOnly }}</option>
+					<option value="account">{{ i18n.ts.syncing }}</option>
 				</MkSelect>
 			</div>
 		</div>
@@ -40,7 +40,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Misskey from 'misskey-js';
 import MkSwitch from './MkSwitch.vue';
 import MkSelect from './MkSelect.vue';
 import MkInfo from './MkInfo.vue';
