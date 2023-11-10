@@ -230,6 +230,7 @@ import * as ep___i_registry_get from './endpoints/i/registry/get.js';
 import * as ep___i_registry_keysWithType from './endpoints/i/registry/keys-with-type.js';
 import * as ep___i_registry_keys from './endpoints/i/registry/keys.js';
 import * as ep___i_registry_remove from './endpoints/i/registry/remove.js';
+import * as ep___i_registry_removeAllKeysInScope from './endpoints/i/registry/remove-all-keys-in-scope.js';
 import * as ep___i_registry_scopesWithDomain from './endpoints/i/registry/scopes-with-domain.js';
 import * as ep___i_registry_set from './endpoints/i/registry/set.js';
 import * as ep___i_revokeToken from './endpoints/i/revoke-token.js';
@@ -588,6 +589,7 @@ const $i_registry_get: Provider = { provide: 'ep:i/registry/get', useClass: ep__
 const $i_registry_keysWithType: Provider = { provide: 'ep:i/registry/keys-with-type', useClass: ep___i_registry_keysWithType.default };
 const $i_registry_keys: Provider = { provide: 'ep:i/registry/keys', useClass: ep___i_registry_keys.default };
 const $i_registry_remove: Provider = { provide: 'ep:i/registry/remove', useClass: ep___i_registry_remove.default };
+const $i_registry_removeAllKeysInScope: Provider = { provide: 'ep:i/registry/remove-all-keys-in-scope', useClass: ep___i_registry_removeAllKeysInScope.default };
 const $i_registry_scopesWithDomain: Provider = { provide: 'ep:i/registry/scopes-with-domain', useClass: ep___i_registry_scopesWithDomain.default };
 const $i_registry_set: Provider = { provide: 'ep:i/registry/set', useClass: ep___i_registry_set.default };
 const $i_revokeToken: Provider = { provide: 'ep:i/revoke-token', useClass: ep___i_revokeToken.default };
@@ -950,6 +952,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
+		$i_registry_removeAllKeysInScope,
 		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
@@ -1306,6 +1309,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
+		$i_registry_removeAllKeysInScope,
 		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
