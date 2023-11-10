@@ -317,7 +317,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
-				items: {
+				properties: {
 					id: {
 						type: 'string',
 						nullable: false, optional: false,
@@ -547,9 +547,9 @@ export const packedMeDetailedOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
-				items: {
+				properties: {
 					name: {
-						type: 'object',
+						type: 'string',
 						nullable: false, optional: false,
 					},
 					unlockedAt: {
@@ -566,7 +566,7 @@ export const packedMeDetailedOnlySchema = {
 		policies: {
 			type: 'object',
 			nullable: false, optional: false,
-			items: {
+			properties: {
 				gtlAvailable: {
 					type: 'boolean',
 					nullable: false, optional: false,
