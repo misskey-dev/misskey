@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :class="$style.avatar" :user="u"/>
 				<MkUserName :user="u" :nowrap="true"/>
 			</div>
-			<div v-if="users.length > 10" :class="$style.more">+{{ count - 10 }}</div>
+			<div v-if="count > 10" :class="$style.more">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>

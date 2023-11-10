@@ -161,7 +161,7 @@ youCanCleanRemoteFilesCache: "按檔案管理的🗑️按鈕，可將快取全�
 cacheRemoteSensitiveFiles: "快取遠端的敏感檔案"
 cacheRemoteSensitiveFilesDescription: "若停用這個設定，則不會快取遠端的敏感檔案，而是直接連結。"
 flagAsBot: "此使用者是機器人"
-flagAsBotDescription: "如果本帳戶是由程式控制，請啟用此選項。啟用後，會作為標示幫助其他開發者防止機器人之間產生無限互動的行為，並會調整Misskey內部系統將本帳戶識別為機器人"
+flagAsBotDescription: "如果本帳戶是由程式控制，請啟用此選項。啟用後，會作為標示幫助其他開發者防止機器人之間產生無限互動的行為，並會調整 Misskey 內部系統將本帳戶識別為機器人。"
 flagAsCat: "此帳戶是一隻貓，喵～～～！！！"
 flagAsCatDescription: "如果想將本帳戶標示為一隻貓，請開啟此標示"
 flagShowTimelineReplies: "在時間軸上顯示貼文的回覆"
@@ -979,6 +979,7 @@ assign: "指派"
 unassign: "取消指派"
 color: "顏色"
 manageCustomEmojis: "管理自訂表情符號"
+manageAvatarDecorations: "管理頭像裝飾"
 youCannotCreateAnymore: "您無法再建立更多了。"
 cannotPerformTemporary: "暫時無法進行"
 cannotPerformTemporaryDescription: "由於超過操作次數限制，因此暫時無法進行。請稍後再嘗試。"
@@ -1030,7 +1031,7 @@ retryAllQueuesConfirmText: "伺服器的負荷可能會暫時增加。"
 enableChartsForRemoteUser: "生成遠端使用者的圖表"
 enableChartsForFederatedInstances: "生成遠端伺服器的圖表"
 showClipButtonInNoteFooter: "新增摘錄至貼文"
-reactionsDisplaySize: "表情回應的顯示尺寸"
+reactionsDisplaySize: "反應的顯示尺寸"
 noteIdOrUrl: "貼文ID或URL"
 video: "影片"
 videos: "影片"
@@ -1125,13 +1126,17 @@ unnotifyNotes: "關閉貼文通知"
 authentication: "驗證"
 authenticationRequiredToContinue: "請於繼續前完成驗證"
 dateAndTime: "日期與時間"
-showRenotes: "顯示轉發貼文"
+showRenotes: "顯示其他人的轉發貼文"
 edited: "已編輯"
 notificationRecieveConfig: "接受通知的設定"
 mutualFollow: "互相追隨"
 fileAttachedOnly: "顯示包含附件的貼文"
 showRepliesToOthersInTimeline: "顯示給其他人的回覆"
 hideRepliesToOthersInTimeline: "在時間軸上隱藏給其他人的回覆"
+showRepliesToOthersInTimelineAll: "在時間軸包含追隨中所有人的回覆"
+hideRepliesToOthersInTimelineAll: "在時間軸不包含追隨中所有人的回覆"
+confirmShowRepliesAll: "進行此操作後無法復原。您真的希望時間軸「包含」您目前追隨的所有人的回覆嗎？"
+confirmHideRepliesAll: "進行此操作後無法復原。您真的希望時間軸「不包含」您目前追隨的所有人的回覆嗎？"
 externalServices: "外部服務"
 impressum: "營運者資訊"
 impressumUrl: "營運者資訊網址"
@@ -1139,6 +1144,20 @@ impressumDescription: "在德國與部份地區必須要明確顯示營運者資
 privacyPolicy: "隱私政策"
 privacyPolicyUrl: "隱私政策網址"
 tosAndPrivacyPolicy: "服務條款和隱私政策"
+avatarDecorations: "頭像裝飾"
+attach: "裝上"
+detach: "取下"
+angle: "角度"
+flip: "翻轉"
+showAvatarDecorations: "顯示頭像裝飾"
+releaseToRefresh: "放開以更新內容"
+refreshing: "載入更新中"
+pullDownToRefresh: "往下拉來更新內容"
+disableStreamingTimeline: "停用時間軸的即時更新"
+useGroupedNotifications: "分組顯示通知訊息"
+signupPendingError: "驗證您的電子郵件地址時出現問題。連結可能已過期。"
+cwNotationRequired: "如果開啟「隱藏內容」，則需要註解說明。"
+doReaction: "做出反應"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
@@ -1148,6 +1167,8 @@ _announcement:
   tooManyActiveAnnouncementDescription: "有過多公告可能會影響使用者體驗。請考慮歸檔已結束的公告。"
   readConfirmTitle: "標記為已讀嗎？"
   readConfirmText: "閱讀「{title}」的內容並標記為已讀。"
+  shouldNotBeUsedToPresentPermanentInfo: "由於可能會破壞使用者體驗，尤其是對於新使用者而言，我們建議使用公告來發布有時效性的資訊而不是固定不變的資訊。"
+  dialogAnnouncementUxWarn: "如果同時有 2 個以上對話方塊形式的公告存在，對於使用者體驗很可能會有不良的影響，因此建議謹慎使用。"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
@@ -1160,9 +1181,77 @@ _initialAccountSetting:
   pushNotificationDescription: "啟用推送通知，就可以在設備上接收{name}的通知。"
   initialAccountSettingCompleted: "初始設定完成了！"
   haveFun: "盡情享受{name}吧！"
-  ifYouNeedLearnMore: "請瀏覽{link}以更瞭解{name}（Misskey）的使用方法。"
+  youCanContinueTutorial: "您可以繼續學習如何使用{name}(Misskey)，也可以就此打住，立即開始使用。"
+  startTutorial: "開始教學課程"
   skipAreYouSure: "要略過初始設定嗎？"
   laterAreYouSure: "稍後再重新進行初始設定嗎？"
+_initialTutorial:
+  launchTutorial: "觀看教學課程"
+  title: "新手教學"
+  wellDone: "做得好"
+  skipAreYouSure: "結束教學模式？"
+  _landing:
+    title: "歡迎使用本教學課程"
+    description: "在這裡您可以查看Misskey的基本使用方法和功能。"
+  _note:
+    title: "什麼是貼文？"
+    description: "在Misskey上發布的內容稱為「貼文」。貼文在時間軸上按時間順序排列，並即時更新。"
+    reply: "您可以回覆貼文，並像討論串一樣繼續對話。"
+    renote: "您可以將此貼文分享到自己的時間軸。您也可以在引用時添加文字。"
+    reaction: "您可以添加反應。詳細資訊將在下一頁進行說明。"
+    menu: "可執行各種操作，如查看貼文詳細資訊和複製連結。"
+  _reaction:
+    title: "什麼是反應？"
+    description: "您可以在貼文中添加「反應」。您可以使用反應輕鬆隨意地表達「最愛/大心」所無法傳達的細微差別。"
+    letsTryReacting: "可以透過點擊貼文上的「+」按鈕來添加反應。請嘗試在此範例貼文添加反應！"
+    reactToContinue: "添加反應以繼續教學課程。"
+    reactNotification: "當有人對您的貼文做出反應時會即時接收到通知。"
+    reactDone: "按下「-」按鈕可以取消反應。"
+  _timeline:
+    title: "時間軸如何運作"
+    description1: "Misskey根據使用方式提供了多個時間軸（伺服器可能會將部份時間軸停用）。"
+    home: "您可以查看您追隨的使用者的貼文。"
+    local: "您可以看到此伺服器上所有使用者的貼文。"
+    social: "來自首頁時間軸和本地時間軸的貼文都會顯示。"
+    global: "可以看到其他已連接伺服器的貼文。"
+    description2: "您可以隨時在螢幕上方切換對應的時間軸。"
+    description3: "除此之外還有清單時間軸、頻道時間軸等。請參閱{link}以了解更多詳情。"
+  _postNote:
+    title: "貼文的發布設定"
+    description1: "在Misskey上發布貼文時，可以設定各種選項。發布表單如下所示。"
+    _visibility:
+      description: "可以限制誰可以看到您的貼文。"
+      public: "所有人都可以看見。"
+      home: "僅在首頁時間軸上發布。其他使用者只在下列情況可看見該貼文：追隨者、觀看使用者的個人資料頁面，以及貼文被轉發時。"
+      followers: "僅追隨者可見。只有發文者本人可轉發，未追隨發文者的使用者無法看見。"
+      direct: "僅指定的使用者可見，對方也會收到通知。可代替直接訊息使用。"
+      doNotSendConfidencialOnDirect1: "發送機密訊息時請務必注意。"
+      doNotSendConfidencialOnDirect2: "目標伺服器的管理員可以看到發布的內容，因此如果您向不受信任的伺服器上的使用者發送直接訊息，必須小心處理機密訊息。"
+      localOnly: "不將貼文發布到聯邦上的其他伺服器。不論上述發布範圍，使用此設定後，其他伺服器上的使用者將無法直接查看此貼文。"
+    _cw:
+      title: "隱藏內容（CW）"
+      description: "將顯示「註釋」中寫入的內容而不是本文。按一下「顯示內容」以顯示本文。"
+      _exampleNote:
+        cw: "美食恐怖主義注意"
+        note: "我吃了一個巧克力甜甜圈🍩😋"
+      useCases: "伺服器的服務條款可能會規範特定的貼文需要使用隱藏內容，除此之外也會用在隱藏劇情洩漏與敏感內容的貼文。"
+  _howToMakeAttachmentsSensitive:
+    title: "如何標記上傳附件為敏感內容？"
+    description: "如果伺服器服務條款有規範，又或者不希望上傳附件直接被看見，可以設置為「敏感內容」"
+    tryThisFile: "試試看！把附加在發文表單的圖像檔案標記為敏感內容。"
+    _exampleNote:
+      note: "打開納豆的包裝失敗了…"
+    method: "若要使上傳附件標記為敏感內容，請按一下該檔案以開啟選單，然後點擊「標記為敏感內容」。"
+    sensitiveSucceeded: "上傳附件時，請務必根據伺服器的服務條款適當設定敏感內容。"
+    doItToContinue: "把圖像標記為敏感內容以繼續教學課程。"
+  _done:
+    title: "教學課程已結束"
+    description: "這裡介紹的功能只是其中的一小部分。要了解更多有關如何使用Misskey的資訊，請瀏覽{link}。"
+_timelineDescription:
+  home: "在首頁時間線上，可以看到您追隨的使用者的貼文。"
+  local: "在本地時間軸上，可以看到此伺服器所有使用者的貼文。"
+  social: "在社交時間軸上，可以看到首頁與本地時間軸的貼文。"
+  global: "在公開時間軸上，可以看到其他已連接伺服器的貼文。\n"
 _serverRules:
   description: "設定在註冊頁面顯示的伺服器簡要規則。建議是服務條款的摘要。"
 _serverSettings:
@@ -1174,6 +1263,7 @@ _serverSettings:
   manifestJsonOverride: "覆寫 manifest.json"
   shortName: "簡稱"
   shortNameDescription: "如果伺服器的正式名稱很長，可用簡稱或通稱代替。"
+  fanoutTimelineDescription: "如果啟用的話，檢索各個時間軸的性能會顯著提昇，資料庫的負荷也會減少。不過，Redis 的記憶體使用量會增加。如果伺服器的記憶體容量比較少或者運行不穩定，可以停用。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
@@ -1431,6 +1521,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "過度測試"
       description: "極短時間內連續測試通知"
+    _tutorialCompleted:
+      title: "Misskey新手講座 結業證書"
+      description: "已完成教學課程"
 _role:
   new: "建立角色"
   edit: "編輯角色"
@@ -1474,6 +1567,7 @@ _role:
     inviteLimitCycle: "邀請碼的發放間隔"
     inviteExpirationTime: "邀請碼的有效日期"
     canManageCustomEmojis: "管理自訂表情符號"
+    canManageAvatarDecorations: "管理頭像裝飾"
     driveCapacity: "雲端硬碟容量"
     alwaysMarkNsfw: "總是將檔案標記為NSFW"
     pinMax: "置頂貼文的最大數量"
@@ -1593,6 +1687,7 @@ _aboutMisskey:
   donate: "贊助 Misskey"
   morePatrons: "還有許許多多幫助我們的其他人，非常感謝你們。 🥰"
   patrons: "贊助者"
+  projectMembers: "專案成員"
 _displayOfSensitiveMedia:
   respect: "隱藏敏感檔案"
   ignore: "顯示敏感檔案"
@@ -1617,6 +1712,7 @@ _channel:
   notesCount: "有 {n} 篇貼文"
   nameAndDescription: "名稱與說明"
   nameOnly: "僅名稱"
+  allowRenoteToExternal: "允許在頻道外轉發和引用"
 _menuDisplay:
   sideFull: "橫向"
   sideIcon: "橫向（圖示）"
@@ -1724,16 +1820,6 @@ _time:
   minute: "分鐘"
   hour: "小時"
   day: "日"
-_timelineTutorial:
-  title: "Misskey 的使用方法"
-  step1_1: "這個畫面是「時間軸」。發佈到{name}的「貼文」會按照時間順序顯示。"
-  step1_2: "時間軸有多種類型，例如「首頁時間軸」是您追蹤帳戶的貼文、「本地時間軸」是{name}內所有帳戶的貼文。"
-  step2_1: "不如現在就嘗試發文吧！按鉛筆圖示的按鈕開啟發文頁面。"
-  step2_2: "您可以在第一篇貼文裡寫自我介紹，或是「我來到 {name} 了」之類的話。"
-  step3_1: "貼文發出去了嗎？"
-  step3_2: "如果您的貼文出現在時間軸上，就代表發文成功。"
-  step4_1: "可以對貼文標記「反應」。"
-  step4_2: "點擊貼文的「+」圖示，即可選擇表情符號來反應。"
 _2fa:
   alreadyRegistered: "此裝置已被註冊過了"
   registerTOTP: "開始設定驗證應用程式"
@@ -1856,7 +1942,7 @@ _widgets:
   clicker: "點擊器"
 _cw:
   hide: "隱藏"
-  show: "瀏覽更多"
+  show: "顯示內容"
   chars: "{count} 個字元"
   files: "{count} 個檔案"
 _poll:
@@ -2043,6 +2129,9 @@ _notification:
   checkNotificationBehavior: "確認通知的顯示行為"
   sendTestNotification: "發送測試通知"
   notificationWillBeDisplayedLikeThis: "通知會以這樣的方式顯示"
+  reactedBySomeUsers: "{n}人做出了反應"
+  renotedBySomeUsers: "{n}人做了轉發"
+  followedBySomeUsers: "被{n}人追隨了"
   _types:
     all: "全部 "
     note: "使用者的最新貼文"
@@ -2146,6 +2235,9 @@ _moderationLogTypes:
   createAd: "建立廣告"
   deleteAd: "刪除廣告"
   updateAd: "更新廣告"
+  createAvatarDecoration: "建立頭像裝飾"
+  updateAvatarDecoration: "更新頭像裝飾"
+  deleteAvatarDecoration: "刪除頭像裝飾"
 _fileViewer:
   title: "檔案詳細資訊"
   type: "檔案類型 "
@@ -2154,3 +2246,44 @@ _fileViewer:
   uploadedAt: "加入日期"
   attachedNotes: "含有附件的貼文"
   thisPageCanBeSeenFromTheAuthor: "本頁面僅限上傳了這個檔案的使用者可以檢視。"
+_externalResourceInstaller:
+  title: "從外部網站安裝"
+  checkVendorBeforeInstall: "安裝前請確認提供者是可信賴的。"
+  _plugin:
+    title: "要安裝此外掛嘛？"
+    metaTitle: "外掛資訊"
+  _theme:
+    title: "要安裝此外觀主題嘛？"
+    metaTitle: "外觀主題資訊"
+  _meta:
+    base: "基本配色方案"
+  _vendorInfo:
+    title: "提供者資訊"
+    endpoint: "引用端點"
+    hashVerify: "確認檔案的完整性"
+  _errors:
+    _invalidParams:
+      title: "缺少參數"
+      description: "缺少從外部網站取得資料的必要資訊。請檢查 URL 是否正確。"
+    _resourceTypeNotSupported:
+      title: "不支援此外部資源。"
+      description: "不支援從此外部網站取得的資源類型。請聯絡網站管理員。"
+    _failedToFetch:
+      title: "無法取得資料"
+      fetchErrorDescription: "與外部站點的通訊失敗。如果重試後問題仍然存在，請聯絡網站管理員。"
+      parseErrorDescription: "無法讀取從外部站點取得的資料。請聯絡網站管理員。"
+    _hashUnmatched:
+      title: "無法取得正確資料"
+      description: "所提供資料的完整性驗證失敗。出於安全原因，安裝無法繼續。請聯絡網站管理員。"
+    _pluginParseFailed:
+      title: "AiScript 錯誤"
+      description: "已取得資料但解析 AiScript 時發生錯誤，導致無法載入。請聯絡外掛作者。請檢查 Javascript 控制台以取得錯誤詳細資訊。"
+    _pluginInstallFailed:
+      title: "外掛安裝失敗"
+      description: "安裝插件時出現問題。請再試一次。請參閱 Javascript 控制台以取得錯誤詳細資訊。"
+    _themeParseFailed:
+      title: "外觀主題解析錯誤"
+      description: "已取得資料但解析外觀主題時發生錯誤，導致無法載入。請聯絡主題作者。請檢查 Javascript 控制台以取得錯誤詳細資訊。"
+    _themeInstallFailed:
+      title: "無法安裝外觀主題"
+      description: "安裝外觀主題時出現問題。請再試一次。請參閱 Javascript 控制台以取得錯誤詳細資訊。"
