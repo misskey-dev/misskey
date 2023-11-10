@@ -179,6 +179,11 @@ function getMenu() {
 		},
 	}];
 
+	if (props.menu) {
+		items.unshift(null);
+		items = props.menu.concat(items);
+	}
+
 	if (props.refresher) {
 		items = [{
 			icon: 'ti ti-refresh',
@@ -189,11 +194,6 @@ function getMenu() {
 				}
 			},
 		}, ...items];
-	}
-
-	if (props.menu) {
-		items.unshift(null);
-		items = props.menu.concat(items);
 	}
 
 	return items;
