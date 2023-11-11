@@ -489,6 +489,14 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		unreadAnnouncements: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'object',
+				ref: 'Announcement',
+			},
+		},
 		hasUnreadAntenna: {
 			type: 'boolean',
 			nullable: false, optional: false,
