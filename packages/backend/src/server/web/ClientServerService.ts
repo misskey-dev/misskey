@@ -40,7 +40,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
-import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -416,55 +416,51 @@ export class ClientServerService {
 		// URL preview endpoint
 		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
-		const getFeed = async (acct: string) => {
-			const { username, host } = Acct.parse(acct);
+		const feedHandler = (
+			feedType: 'atom' | 'rss' | 'json',
+			options?: {
+				withReplies?: boolean;
+				withFiles?: boolean;
+			},
+		) => async (
+			request: FastifyRequest<{ Params: { user: string; } }>,
+			reply: FastifyReply,
+		) => {
+			const { username, host } = Acct.parse(request.params.user);
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: username.toLowerCase(),
 				host: host ?? IsNull(),
 				isSuspended: false,
 			});
 
-			return user && await this.feedService.packFeed(user);
+			const feed = user && await this.feedService.packFeed(user, options);
+
+			if (feed) {
+				reply.header('Content-Type', `application/${feedType}+xml; charset=utf-8`);
+
+				if (feedType === 'atom') return feed.atom1();
+				else if (feedType === 'rss') return feed.rss2();
+				else return feed.json1();
+			} else {
+				reply.code(404);
+				return;
+			}
 		};
 
 		// Atom
-		fastify.get<{ Params: { user: string; } }>('/@:user.atom', async (request, reply) => {
-			const feed = await getFeed(request.params.user);
-
-			if (feed) {
-				reply.header('Content-Type', 'application/atom+xml; charset=utf-8');
-				return feed.atom1();
-			} else {
-				reply.code(404);
-				return;
-			}
-		});
+		fastify.get<{ Params: { user: string; } }>('/@:user.atom', feedHandler('atom'));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.atom', feedHandler('atom', { withReplies: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.atom', feedHandler('atom', { withFiles: true }));
 
 		// RSS
-		fastify.get<{ Params: { user: string; } }>('/@:user.rss', async (request, reply) => {
-			const feed = await getFeed(request.params.user);
-
-			if (feed) {
-				reply.header('Content-Type', 'application/rss+xml; charset=utf-8');
-				return feed.rss2();
-			} else {
-				reply.code(404);
-				return;
-			}
-		});
+		fastify.get<{ Params: { user: string; } }>('/@:user.rss', feedHandler('rss'));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.rss', feedHandler('rss', { withReplies: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.rss', feedHandler('rss', { withFiles: true }));
 
 		// JSON
-		fastify.get<{ Params: { user: string; } }>('/@:user.json', async (request, reply) => {
-			const feed = await getFeed(request.params.user);
-
-			if (feed) {
-				reply.header('Content-Type', 'application/json; charset=utf-8');
-				return feed.json1();
-			} else {
-				reply.code(404);
-				return;
-			}
-		});
+		fastify.get<{ Params: { user: string; } }>('/@:user.json', feedHandler('json'));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.json', feedHandler('json', { withReplies: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.json', feedHandler('json', { withFiles: true }));
 
 		//#region SSR (for crawlers)
 		// User

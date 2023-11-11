@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { Equal, In, IsNull, Not } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, NotesRepository, UserProfilesRepository } from '@/models/_.js';
@@ -37,7 +37,18 @@ export class FeedService {
 	}
 
 	@bindThis
-	public async packFeed(user: MiUser) {
+	public async packFeed(
+		user: MiUser,
+		options?: {
+			withReplies?: boolean;
+			withFiles?: boolean;
+		},
+	) {
+		const opts = Object.assign({
+			withReplies: false,
+			withFiles: false,
+		}, options);
+
 		const author = {
 			link: `${this.config.url}/@${user.username}`,
 			name: user.name ?? user.username,
@@ -50,6 +61,12 @@ export class FeedService {
 				userId: user.id,
 				renoteId: IsNull(),
 				visibility: In(['public', 'home']),
+				...(opts.withReplies ? {} : {
+					replyId: IsNull(),
+				}),
+				...(opts.withFiles ? {
+					fileIds: Not(Equal('{}')),
+				} : {}),
 			},
 			order: { id: -1 },
 			take: 20,
