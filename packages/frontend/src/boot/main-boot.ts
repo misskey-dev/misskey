@@ -282,7 +282,7 @@ export async function mainBoot() {
 
 		// プラグインに変更が入ったら自動でリロードする
 		stream.useChannel('main').on('registryUpdated', ({ scope, key }: { scope: string[], key: string, value: any }) => {
-			if (scope[0] === 'client' && key === 'plugins') {
+			if (scope.length === 1 && scope[0] === 'client' && key === 'plugins') {
 				unisonReload();
 			}
 		});
