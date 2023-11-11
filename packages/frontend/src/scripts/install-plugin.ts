@@ -53,7 +53,7 @@ async function savePluginToAccount(pluginOnlyOverride: boolean, { hash, meta, sr
 	src: string;
 	token: string;
 }) {
-	let plugins = await getPluginList();
+	const plugins = await getPluginList();
 	// pluginOnlyOverrideがtrueになっているということはすでに重複していることが確定している
 	const configData = pluginOnlyOverride ? plugins[hash].configData : {};
 	const pluginToken = pluginOnlyOverride ? plugins[hash].token : token;
@@ -169,15 +169,13 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 	});
 
 	if (isLocal) {
-
 		savePlugin({
 			id: uuid(),
 			meta: realMeta,
 			token,
 			src: code,
 		});
-	}
-	else {
+	} else {
 		await savePluginToAccount(pluginOnlyOverride, {
 			hash: pluginHash,
 			meta: realMeta,

@@ -58,7 +58,7 @@ export async function mainBoot() {
 		}
 	});
 
-	let plugins = ColdDeviceStorage.get('plugins').filter(p => p.active);
+	const plugins = ColdDeviceStorage.get('plugins').filter(p => p.active);
 	const accountPlugins = Object.values(await getPluginList()).filter(p => p.active);
 	plugins.push(...accountPlugins);
 
