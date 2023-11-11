@@ -44,13 +44,13 @@ export const packedClipSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		isFavorited: {
-			type: 'boolean',
-			optional: true, nullable: false,
-		},
 		favoritedCount: {
 			type: 'number',
 			optional: false, nullable: false,
+		},
+		isFavorited: {
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 	},
 } as const;
