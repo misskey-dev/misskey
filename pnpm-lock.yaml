@@ -674,8 +674,8 @@ importers:
         specifier: 3.3.7
         version: 3.3.7
       aiscript-vscode:
-        specifier: github:aiscript-dev/aiscript-vscode#v0.0.5
-        version: github.com/aiscript-dev/aiscript-vscode/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e
+        specifier: github:aiscript-dev/aiscript-vscode#v0.0.6
+        version: github.com/aiscript-dev/aiscript-vscode/b5a8aa0ad927831a0b867d1c183460a14e6c48cd
       astring:
         specifier: 1.8.6
         version: 1.8.6
@@ -6931,7 +6931,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@swc/core': ^1.2.66
-      chokidar: 3.5.3
+      chokidar: ^3.5.1
     peerDependenciesMeta:
       chokidar:
         optional: true
@@ -19784,10 +19784,10 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  github.com/aiscript-dev/aiscript-vscode/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e:
-    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/a8fa5bb41885391cdb6a6e3165eaa6e4868da86e}
+  github.com/aiscript-dev/aiscript-vscode/b5a8aa0ad927831a0b867d1c183460a14e6c48cd:
+    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/b5a8aa0ad927831a0b867d1c183460a14e6c48cd}
     name: aiscript-vscode
-    version: 0.0.5
+    version: 0.0.6
     engines: {vscode: ^1.83.0}
     dev: false
 

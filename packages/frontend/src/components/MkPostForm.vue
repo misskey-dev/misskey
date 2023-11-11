@@ -750,7 +750,11 @@ async function post(ev?: MouseEvent) {
 	// plugin
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
-			postData = await interruptor.handler(deepClone(postData));
+			try {
+				postData = await interruptor.handler(deepClone(postData));
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	}
 
