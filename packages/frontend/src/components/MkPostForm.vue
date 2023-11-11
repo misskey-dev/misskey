@@ -1072,6 +1072,7 @@ defineExpose({
 
 .preview {
 	padding: 16px 20px 0 20px;
+	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
 }
