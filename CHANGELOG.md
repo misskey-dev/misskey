@@ -15,7 +15,7 @@
 ## 2023.x.x (unreleased)
 
 ### General
-- Enhance: json-schemaを出来る限り最新化 #12311
+- Enhance: json-schema(OpenAPIの戻り値として使用されるスキーマ定義)を出来る限り最新化 #12311
 
 ### Client
 - Fix: アイコンデコレーションが複数の場所で見切れている問題を修正
