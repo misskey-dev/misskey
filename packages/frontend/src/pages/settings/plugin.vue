@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_buttons">
 					<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+					<MkButton v-if="!plugin.fromAccount" inline @click="moveToAccount(plugin)"><i class="ti ti-link"></i> {{ i18n.ts.movePluginToAccount }}</MkButton>
 					<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 				</div>
 
@@ -75,6 +76,8 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { getPluginList } from '@/plugin.js';
+import { toHash } from '@/scripts/xxhash.js';
+import { savePluginToAccount } from '@/scripts/install-plugin.js';
 
 let plugins = Object.values(await getPluginList());
 plugins.push(...ColdDeviceStorage.get('plugins'));
@@ -87,7 +90,8 @@ async function uninstall(plugin) {
 		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', plugin.id] });
 		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 	} else {
-		ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
+		const coldPlugins = ColdDeviceStorage.get('plugins');
+		ColdDeviceStorage.set('plugins', coldPlugins.filter(x => x.id !== plugin.id));
 	}
 	await os.apiWithDialog('i/revoke-token', {
 		token: plugin.token,
@@ -95,6 +99,37 @@ async function uninstall(plugin) {
 	nextTick(() => {
 		unisonReload();
 	});
+}
+
+async function moveToAccount(plugin) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.movePluginToAccountConfirm,
+	});
+
+	if (canceled) return;
+
+	const hash = await toHash(plugin.name, plugin.author);
+	const plugins = await getPluginList();
+	if (Object.keys(plugins).some(v => v === hash)) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.overridePluginConfirm,
+		});
+
+		if (canceled) return;
+
+		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', hash] });
+	}
+
+	const coldPlugins = ColdDeviceStorage.get('plugins');
+	ColdDeviceStorage.set('plugins', coldPlugins.filter(x => x.id !== plugin.id));
+
+	plugin.id = hash;
+	plugin.fromAccount = true;
+	plugins[hash] = plugin;
+
+	await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 }
 
 function copy(plugin) {

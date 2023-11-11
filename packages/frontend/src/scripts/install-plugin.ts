@@ -6,13 +6,13 @@
 import { defineAsyncComponent } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { v4 as uuid } from 'uuid';
-import xxhash from 'xxhash-wasm';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Plugin } from '@/store.js';
 import { ColdDeviceStorage } from '@/store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { getPluginList } from '@/plugin.js';
+import { toHash } from './xxhash.js';
 
 export type AiScriptPluginMeta = {
 	name: string;
@@ -24,11 +24,6 @@ export type AiScriptPluginMeta = {
 };
 
 const parser = new Parser();
-
-async function toHash(name: string, author: string) {
-	const { h32ToString } = await xxhash();
-	return h32ToString(author + name);
-}
 
 export function savePlugin({ id, meta, src, token }: {
 	id: string;

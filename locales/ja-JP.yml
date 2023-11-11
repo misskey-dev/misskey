@@ -1164,6 +1164,9 @@ duplicateSyncedPlugin: "このプラグインは同期されているプラグ�
 overrideSourceCodeOnly: "コードのみを上書きする"
 syncSetting: "同期設定"
 syncing: "他端末と同期"
+movePluginToAccount: "アカウントに移行"
+movePluginToAccountConfirm: "プラグインをアカウントに移行して他端末と同期しますか？プラグインとプラグイン設定以外は引き継がれません。"
+overridePluginConfirm: "すでにプラグインがアカウントに存在します。上書きしますか？アカウントにあるプラグインデータは削除されます。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
