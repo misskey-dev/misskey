@@ -24,13 +24,13 @@ export class ScheduleNotePostProcessorService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-        private noteCreateService: NoteCreateService,
-        private queueLoggerService: QueueLoggerService,
+		private noteCreateService: NoteCreateService,
+		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('schedule-note-post');
 	}
 
-    @bindThis
+	@bindThis
 	public async process(job: Bull.Job<ScheduleNotePostJobData>): Promise<void> {
 		this.scheduledNotesRepository.findOneBy({ id: job.data.scheduledNoteId }).then(async (data) => {
 			if (!data) {
