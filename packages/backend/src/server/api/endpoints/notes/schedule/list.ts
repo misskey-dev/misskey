@@ -15,6 +15,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canScheduleNote',
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

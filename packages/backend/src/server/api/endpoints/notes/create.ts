@@ -18,6 +18,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { ApiError } from '../../error.js';
@@ -132,6 +133,12 @@ export const meta = {
 			code: 'NO_SUCH_SCHEDULE',
 			id: '44dee229-8da1-4a61-856d-e3a4bbc12032',
 		},
+		rolePermissionDenied: {
+			message: 'You are not assigned to a required role.',
+			code: 'ROLE_PERMISSION_DENIED',
+			kind: 'permission',
+			id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
+		},
 	},
 } as const;
 
@@ -234,6 +241,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
 
+		private roleService: RoleService,
 		private queueService: QueueService,
     private idService: IdService,
 	) {
@@ -375,6 +383,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			};
 
 			if (ps.schedule) {
+				const canCreateScheduledNote = (await this.roleService.getUserPolicies(me.id)).canScheduleNote;
+				if (!canCreateScheduledNote) {
+					throw new ApiError(meta.errors.rolePermissionDenied);
+				}
+
 				if (!ps.schedule.expiresAt) {
 					throw new ApiError(meta.errors.specifyScheduleDate);
 				}

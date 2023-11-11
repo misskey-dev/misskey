@@ -929,13 +929,13 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 		text: i18n.ts.reactionAcceptance,
 		icon: reactionAcceptanceIcon,
 		action: toggleReactionAcceptance,
-	}, {
+	}, ($i.policies?.canScheduleNote) ? {
 		type: 'button',
 		text: i18n.ts.schedulePost,
 		icon: 'ti ti-calendar-time',
 		indicate: (schedule != null),
 		action: toggleSchedule,
-	}, null, {
+	} : undefined, ...(($i.policies?.canScheduleNote) ? [ null, {
 		type: 'button',
 		text: i18n.ts._schedulePost.list,
 		icon: 'ti ti-calendar-event',
@@ -944,7 +944,7 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 			emit('cancel');
 			listSchedulePost();
 		},
-	}], ev.currentTarget ?? ev.target, {
+	}] : [])], ev.currentTarget ?? ev.target, {
 		align: 'right',
 	});
 }
