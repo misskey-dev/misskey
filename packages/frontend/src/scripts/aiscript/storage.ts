@@ -14,7 +14,11 @@ export async function loadScriptStorage(toAccount: boolean, scriptData: ScriptDa
 			value = await api('i/registry/get', { scope: ['client', 'aiscript', scriptData.type, scriptData.id!], key: key });
 		}
 	} else {
-		value = miLocalStorage.getItem(`aiscript:${scriptData.type}:${key}`);
+		if (scriptData.type === 'widget') {
+			value = miLocalStorage.getItem(`aiscript:${scriptData.type}:${key}`);
+		} else {
+			value = miLocalStorage.getItem(`aiscript:${scriptData.type}:${scriptData.id!}:${key}`);
+		}
 	}
 
 	if (value === null) return null;
@@ -30,6 +34,10 @@ export async function saveScriptStorage(toAccount: boolean, scriptData: ScriptDa
 			await api('i/registry/set', { scope: ['client', 'aiscript', scriptData.type, scriptData.id!], key: key, value: jsonValue });
 		}
 	} else {
-		miLocalStorage.setItem(`aiscript:${scriptData.type}:${key}`, jsonValue);
+		if (scriptData.type === 'widget') {
+			miLocalStorage.setItem(`aiscript:${scriptData.type}:${key}`, jsonValue);
+		} else {
+			miLocalStorage.setItem(`aiscript:${scriptData.type}:${scriptData.id!}:${key}`, jsonValue);
+		}
 	}
 }
