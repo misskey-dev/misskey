@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, provide, onUnmounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import { useStream, reloadStream } from '@/stream.js';
+import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
@@ -201,7 +201,6 @@ function reloadTimeline() {
 		tlNotesCount = 0;
 
 		tlComponent.pagingComponent?.reload().then(() => {
-			reloadStream();
 			res();
 		});
 	});
