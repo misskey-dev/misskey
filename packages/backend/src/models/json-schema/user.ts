@@ -494,6 +494,7 @@ export const packedMeDetailedOnlySchema = {
 			nullable: false, optional: false,
 			items: {
 				type: 'object',
+				nullable: false, optional: false,
 				ref: 'Announcement',
 			},
 		},
