@@ -40,7 +40,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
-import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -416,51 +416,20 @@ export class ClientServerService {
 		// URL preview endpoint
 		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
-		const feedHandler = (
-			feedType: 'atom' | 'rss' | 'json',
-			options?: {
-				withReplies?: boolean;
-				withFiles?: boolean;
-			},
-		) => async (
-			request: FastifyRequest<{ Params: { user: string; } }>,
-			reply: FastifyReply,
-		) => {
-			const { username, host } = Acct.parse(request.params.user);
-			const user = await this.usersRepository.findOneBy({
-				usernameLower: username.toLowerCase(),
-				host: host ?? IsNull(),
-				isSuspended: false,
-			});
-
-			const feed = user && await this.feedService.packFeed(user, options);
-
-			if (feed) {
-				reply.header('Content-Type', `application/${feedType}+xml; charset=utf-8`);
-
-				if (feedType === 'atom') return feed.atom1();
-				else if (feedType === 'rss') return feed.rss2();
-				else return feed.json1();
-			} else {
-				reply.code(404);
-				return;
-			}
-		};
-
 		// Atom
-		fastify.get<{ Params: { user: string; } }>('/@:user.atom', feedHandler('atom'));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.atom', feedHandler('atom', { withReplies: true }));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.atom', feedHandler('atom', { withFiles: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.atom', this.feedService.handle('atom'));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.atom', this.feedService.handle('atom', { withReplies: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.atom', this.feedService.handle('atom', { withFiles: true }));
 
 		// RSS
-		fastify.get<{ Params: { user: string; } }>('/@:user.rss', feedHandler('rss'));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.rss', feedHandler('rss', { withReplies: true }));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.rss', feedHandler('rss', { withFiles: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.rss', this.feedService.handle('rss'));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.rss', this.feedService.handle('rss', { withReplies: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.rss', this.feedService.handle('rss', { withFiles: true }));
 
 		// JSON
-		fastify.get<{ Params: { user: string; } }>('/@:user.json', feedHandler('json'));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.json', feedHandler('json', { withReplies: true }));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.json', feedHandler('json', { withFiles: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.json', this.feedService.handle('json'));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.json', this.feedService.handle('json', { withReplies: true }));
+		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.json', this.feedService.handle('json', { withFiles: true }));
 
 		//#region SSR (for crawlers)
 		// User
