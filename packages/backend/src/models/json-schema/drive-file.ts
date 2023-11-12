@@ -94,7 +94,7 @@ export const packedDriveFileSchema = {
 		},
 		folder: {
 			type: 'object',
-			optional: false, nullable: true,
+			optional: true, nullable: true,
 			ref: 'DriveFolder',
 		},
 		userId: {
@@ -105,7 +105,7 @@ export const packedDriveFileSchema = {
 		},
 		user: {
 			type: 'object',
-			optional: false, nullable: true,
+			optional: true, nullable: true,
 			ref: 'UserLite',
 		},
 	},

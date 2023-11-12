@@ -37,7 +37,7 @@ export const packedDriveFolderSchema = {
 		},
 		parent: {
 			type: 'object',
-			optional: true, nullable: false,
+			optional: true, nullable: true,
 			ref: 'DriveFolder',
 		},
 	},
