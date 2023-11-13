@@ -29,7 +29,7 @@
 		"@vue/compiler-sfc": "3.3.7",
 		"astring": "1.8.6",
 		"autosize": "6.0.1",
-		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.0.5",
+		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.0.6",
 		"broadcast-channel": "6.0.0",
 		"browser-image-resizer": "github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
 		"buraha": "0.0.1",
