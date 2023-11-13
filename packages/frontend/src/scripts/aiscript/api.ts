@@ -60,18 +60,30 @@ export function createAiScriptEnv(opts: { token: string; scriptData: ScriptData;
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
-		'Mk:save': values.FN_NATIVE(async ([key, value, toAccount]) => {
+		'Mk:save': values.FN_NATIVE(async ([key, value, option]) => {
 			utils.assertString(key);
-			const saveToAccount = toAccount ? toAccount.value : false;
+			if (option) {
+				utils.assertObject(option);
+				if (option.value.toAccount) {
+					utils.assertBoolean(option.value.toAccount);
+				}
+			}
+			const saveToAccount = option && option.value.toAccount ? option.value.toAccount.value : false;
 			return saveScriptStorage(saveToAccount, opts.scriptData, key.value, utils.valToJs(value)).then(() => {
 				return values.NULL;
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
-		'Mk:load': values.FN_NATIVE(async ([key, toAccount]) => {
+		'Mk:load': values.FN_NATIVE(async ([key, option]) => {
 			utils.assertString(key);
-			const loadToAccount = toAccount ? toAccount.value : false;
+			if (option) {
+				utils.assertObject(option);
+				if (option.value.toAccount) {
+					utils.assertBoolean(option.value.toAccount);
+				}
+			}
+			const loadToAccount = option && option.value.toAccount ? option.value.toAccount.value : false;
 			return loadScriptStorage(loadToAccount, opts.scriptData, key.value).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
