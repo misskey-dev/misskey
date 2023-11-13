@@ -1152,6 +1152,12 @@ flip: "反転"
 showAvatarDecorations: ""
 releaseToRefresh: "離してリロード"
 refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロードするで"
+disableStreamingTimeline: "タイムラインのリアルタイム更新をやめるで"
+useGroupedNotifications: "通知をグルーピングしてだすで"
+signupPendingError: "メールアドレスの確認中に問題が起こってえらいこっちゃ。リンクの有効期限が切れてるかもやで"
+cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要やで。"
+doReaction: "ツッコミすんで"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
@@ -1162,6 +1168,9 @@ _announcement:
   readConfirmTitle: "既読にしてええんやな?"
   readConfirmText: "「{title}」の内容を読み、既読にします。"
   shouldNotBeUsedToPresentPermanentInfo: "新規ユーザーのUXを損ねやすいから、お知らせはストック情報やのうてフロー情報の掲示に使った方がええで。"
+  dialogAnnouncementUxWarn: "ダイアログ形式のお知らせが同時に2つ以上ある場合、UXに悪影響を及ぼす可能性が高くなるから、使用は慎重にすんのがおすすめやで。"
+  silence: "通知せんで"
+  silenceDescription: "オンにすると、このお知らせは通知されないで、既読にする必要もなくなるで。"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
@@ -1174,8 +1183,24 @@ _initialAccountSetting:
   pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をあんたのデバイスで受け取れるで。"
   initialAccountSettingCompleted: "初期設定が終わったで。"
   haveFun: "{name}、楽しんでな～"
+  youCanContinueTutorial: "このまま{name}(Misskey)の使い方のチュートリアルに進めるけど、ここで中断してすぐに使い始めることもできるで。"
+  startTutorial: "チュートリアルを開始するで"
   skipAreYouSure: "初期設定飛ばすか？"
   laterAreYouSure: "初期設定あとでやり直すん？"
+_initialTutorial:
+  launchTutorial: "チュートリアルを見るで"
+  title: "チュートリアルやで"
+  wellDone: "やるやん"
+  skipAreYouSure: "チュートリアルをやめるか？"
+  _landing:
+    title: "チュートリアルによう来たな"
+    description: "ここでは、Misskeyの基本的な使い方や機能を確認できるで。"
+  _note:
+    title: "ノートってなんや？"
+    description: "Misskeyでの投稿は「ノート」って呼ばれてるで。ノートはタイムラインに時系列で並んでいて、リアルタイムで更新されてるで。"
+    reply: "返信することもできるで。返信に対しての返信も可能で、スレッドのように会話を続けることもできるで。"
+    renote: "そのノートを自分のタイムラインに流して共有することもできるで。テキストを追加して引用することもできるで。"
+    reaction: "ツッコミをつけることもできるで。細かいことは次のページで解説するで。"
 _serverRules:
   description: "新規登録前に見せる、サーバーの簡潔なルールを設定すんで。内容は使うための決め事の要約とすることを推奨するわ。"
 _serverSettings:
