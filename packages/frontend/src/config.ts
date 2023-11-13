@@ -5,15 +5,15 @@
 
 import { miLocalStorage } from '@/local-storage.js';
 
-const instanceAddress = new URL(document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || location.href);
-const currentAddress = new URL(location.href);
+const instanceBase = new URL(document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || location.href);
+const apiBase = new URL(location.href); // This may differ from instance URL
 const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
 
-export const host = address.host;
-export const hostname = address.hostname;
-export const url = address.origin;
-export const apiUrl = url + '/api';
-export const wsUrl = url.replace('http://', 'ws://').replace('https://', 'wss://') + '/streaming';
+export const host = instanceBase.host;
+export const hostname = instanceBase.hostname;
+export const url = instanceBase.origin;
+export const apiUrl = apiBase.origin + '/api';
+export const wsUrl = apiBase.origin.replace('http://', 'ws://').replace('https://', 'wss://') + '/streaming';
 export const lang = miLocalStorage.getItem('lang') ?? 'en-US';
 export const langs = _LANGS_;
 const preParseLocale = miLocalStorage.getItem('locale');
