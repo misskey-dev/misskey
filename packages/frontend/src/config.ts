@@ -5,7 +5,8 @@
 
 import { miLocalStorage } from '@/local-storage.js';
 
-const address = new URL(document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || location.href);
+const instanceAddress = new URL(document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || location.href);
+const currentAddress = new URL(location.href);
 const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
 
 export const host = address.host;
