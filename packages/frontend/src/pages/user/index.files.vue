@@ -62,6 +62,7 @@ onMounted(() => {
 		withFiles: true,
 		excludeNsfw: defaultStore.state.nsfw !== 'ignore',
 		limit: 15,
+		allowPartial: true,
 	}).then(notes => {
 		for (const note of notes) {
 			for (const file of note.files) {
