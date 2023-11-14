@@ -11,6 +11,7 @@ import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
+import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
@@ -28,7 +29,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
@@ -512,9 +513,28 @@ export class ActivityPubServerService {
 			},
 		});
 
+		const almostDefaultJsonParser: FastifyBodyParser<Buffer> = function (request, rawBody, done) {
+			if (rawBody.length === 0) {
+				const err = new Error('Body cannot be empty!') as any;
+				err.statusCode = 400;
+				return done(err);
+			}
+
+			try {
+				const json = secureJson.parse(rawBody.toString('utf8'), null, {
+					protoAction: 'ignore',
+					constructorAction: 'ignore',
+				});
+				done(null, json);
+			} catch (err: any) {
+				err.statusCode = 400;
+				return done(err);
+			}
+		};
+
 		fastify.register(fastifyAccepts);
-		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
-		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
+		fastify.addContentTypeParser('application/activity+json', { parseAs: 'buffer' }, almostDefaultJsonParser);
+		fastify.addContentTypeParser('application/ld+json', { parseAs: 'buffer' }, almostDefaultJsonParser);
 
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Access-Control-Allow-Headers', 'Accept');
