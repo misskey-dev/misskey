@@ -10,6 +10,7 @@ import { DI } from '@/di-symbols.js';
 import type { ScheduledNotesRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueryService } from '@/core/QueryService.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -73,6 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.scheduledNotesRepository)
 		private scheduledNotesRepository: ScheduledNotesRepository,
 
+		private idService: IdService,
 		private userEntityService: UserEntityService,
 		private queryService: QueryService,
 	) {
@@ -107,7 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						createdAt: new Date(item.scheduledAt),
 						isSchedule: true,
 						// ↓TODO: NoteのIDに予約投稿IDを入れたくない（本来別ものなため）
-						id: item.id,
+						id: this.idService.gen(item.scheduledAt.getTime()),
 					},
 				};
 			});
