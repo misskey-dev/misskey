@@ -26,19 +26,19 @@ import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
   modelValue: {
-    expiresAt: string;
+		scheduledAt: string;
   };
 }>();
 const emit = defineEmits<{
   (ev: 'update:modelValue', v: {
-    expiresAt: string;
+		scheduledAt: string;
   }): void;
 }>();
 
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
-if ( props.modelValue && props.modelValue.expiresAt) {
-	atDate.value = atTime.value = props.modelValue.expiresAt;
+if ( props.modelValue && props.modelValue.scheduledAt) {
+	atDate.value = atTime.value = props.modelValue.scheduledAt;
 }
 
 function get() {
@@ -48,7 +48,7 @@ function get() {
 
 	return {
 		...(
-			props.modelValue ? { expiresAt: calcAt() } : {}
+			props.modelValue ? { scheduledAt: calcAt() } : {}
 		),
 	};
 }

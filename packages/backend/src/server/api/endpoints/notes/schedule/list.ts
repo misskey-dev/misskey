@@ -45,7 +45,7 @@ export const meta = {
 					},
 				},
 				userId: { type: 'string', optional: false, nullable: false },
-				expiresAt: { type: 'string', optional: false, nullable: false },
+				scheduledAt: { type: 'string', optional: false, nullable: false },
 			},
 		},
 	},
@@ -97,14 +97,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					isSchedule: boolean;
 				};
 				userId: string;
-				expiresAt: string;
+				scheduledAt: string;
 			}[] = scheduleNotes.map((item: any) => {
 				return {
 					...item,
 					note: {
 						...item.note,
 						user: user,
-						createdAt: new Date(item.expiresAt),
+						createdAt: new Date(item.scheduledAt),
 						isSchedule: true,
 						// ↓TODO: NoteのIDに予約投稿IDを入れたくない（本来別ものなため）
 						id: item.id,

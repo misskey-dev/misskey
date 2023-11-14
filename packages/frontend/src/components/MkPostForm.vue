@@ -177,7 +177,7 @@ let poll = $ref<{
 	expiredAfter: string | null;
 } | null>(null);
 let schedule = $ref<{
-  expiresAt: string | null;
+	scheduledAt: string | null;
 }| null>(null);
 let useCw = $ref(false);
 let showPreview = $ref(defaultStore.state.showPreview);
@@ -405,7 +405,7 @@ function toggleSchedule() {
 		schedule = null;
 	} else {
 		schedule = {
-			expiresAt: null,
+			scheduledAt: null,
 		};
 	}
 }
@@ -775,8 +775,8 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
-	if (postData.schedule?.expiresAt && typeof postData.schedule.expiresAt === 'string') {
-		postData.schedule.expiresAt = parseInt(postData.schedule.expiresAt);
+	if (postData.schedule?.scheduledAt && typeof postData.schedule.scheduledAt === 'string') {
+		postData.schedule.scheduledAt = parseInt(postData.schedule.scheduledAt);
 	}
 
 	let token = undefined;
@@ -935,7 +935,7 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 		icon: 'ti ti-calendar-time',
 		indicate: (schedule != null),
 		action: toggleSchedule,
-	} : undefined, ...(($i.policies?.canScheduleNote) ? [ null, {
+	} : undefined, ...(($i.policies?.canScheduleNote) ? [null, {
 		type: 'button',
 		text: i18n.ts._schedulePost.list,
 		icon: 'ti ti-calendar-event',

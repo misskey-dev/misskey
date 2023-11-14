@@ -202,7 +202,7 @@ export const paramDef = {
 			type: 'object',
 			nullable: true,
 			properties: {
-				expiresAt: { type: 'integer', nullable: false },
+				scheduledAt: { type: 'integer', nullable: false },
 			},
 		},
 	},
@@ -388,7 +388,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.rolePermissionDenied);
 				}
 
-				if (!ps.schedule.expiresAt) {
+				if (!ps.schedule.scheduledAt) {
 					throw new ApiError(meta.errors.specifyScheduleDate);
 				}
 
@@ -398,10 +398,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: scheduledNoteId,
 					note: note,
 					userId: me.id,
-					expiresAt: new Date(ps.schedule.expiresAt),
+					scheduledAt: new Date(ps.schedule.scheduledAt),
 				});
 
-				const delay = new Date(ps.schedule.expiresAt).getTime() - Date.now();
+				const delay = new Date(ps.schedule.scheduledAt).getTime() - Date.now();
 				await this.queueService.ScheduleNotePostQueue.add(String(delay), {
 					scheduledNoteId,
 				}, {

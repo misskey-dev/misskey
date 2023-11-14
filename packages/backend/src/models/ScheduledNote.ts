@@ -23,5 +23,5 @@ export class MiScheduledNote {
 	public userId: MiUser['id'];
 
 	@Column('timestamp with time zone')
-	public expiresAt: Date;
+	public scheduledAt: Date;
 }
