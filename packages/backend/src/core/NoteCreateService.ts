@@ -575,7 +575,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// Pack the note
-			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
+			// DMかつリプライ先がある場合、配信先ユーザがリプライ先ノートの閲覧権限を持たない場合はマスクする必要があるので、個別で条件を判定する
+			const noteObj = (note.visibility === 'specified' && note.replyId !== null)
+				? await this.noteEntityService.pack(note, user, { skipHide: false, withReactionAndUserPairCache: true })
+				: await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 
 			this.globalEventService.publishNotesStream(noteObj);
 
