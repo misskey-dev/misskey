@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -182,6 +182,9 @@ importers:
       fastify:
         specifier: 4.24.3
         version: 4.24.3
+      fastify-raw-body:
+        specifier: ^4.2.2
+        version: 4.2.2
       feed:
         specifier: 4.2.2
         version: 4.2.2
@@ -7001,7 +7004,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@swc/core': ^1.2.66
-      chokidar: 3.5.3
+      chokidar: ^3.5.1
     peerDependenciesMeta:
       chokidar:
         optional: true
@@ -11725,6 +11728,15 @@ packages:
 
   /fastify-plugin@4.5.0:
     resolution: {integrity: sha512-79ak0JxddO0utAXAQ5ccKhvs6vX2MGyHHMMsmZkBANrq3hXc1CHzvNPHOcvTsVMEPl5I+NT+RO4YKMGehOfSIg==}
+    dev: false
+
+  /fastify-raw-body@4.2.2:
+    resolution: {integrity: sha512-6l4fXtxNn7WOQiylu5fv9/JfUTvWCg1ED4gF44hqnVesgttOXEUMnNkdV8ZxwufCstRyUYaYSBIN4VuRHDbJkw==}
+    engines: {node: '>= 10'}
+    dependencies:
+      fastify-plugin: 4.5.0
+      raw-body: 2.5.2
+      secure-json-parse: 2.7.0
     dev: false
 
   /fastify@4.24.3:

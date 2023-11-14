@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
@@ -108,7 +109,58 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		// TODO: request.bodyのバリデーション？
+		if (signature.params.headers.indexOf('host') === -1
+			|| request.headers.host !== this.config.host) {
+			// Host not specified or not match.
+			reply.code(401);
+			return;
+		}
+
+		if (signature.params.headers.indexOf('digest') === -1) {
+			// Digest not found.
+			reply.code(401);
+		} else {
+			const digest = request.headers.digest;
+
+			if (typeof digest !== 'string') {
+				// Huh?
+				reply.code(401);
+				return;
+			}
+
+			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
+			const match = digest.match(re);
+
+			if (match == null) {
+				// Invalid digest
+				reply.code(401);
+				return;
+			}
+
+			const algo = match[1];
+			const digestValue = match[2];
+
+			if (algo !== 'SHA-256') {
+				// Unsupported digest algorithm
+				reply.code(401);
+				return;
+			}
+
+			if (request.rawBody == null) {
+				// Bad request
+				reply.code(400);
+				return;
+			}
+
+			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
+
+			if (hash !== digestValue) {
+				// Invalid digest
+				reply.code(401);
+				return;
+			}
+		}
+
 		this.queueService.inbox(request.body as IActivity, signature);
 
 		reply.code(202);
@@ -474,8 +526,8 @@ export class ActivityPubServerService {
 
 		//#region Routing
 		// inbox (limit: 64kb)
-		fastify.post('/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
-		fastify.post('/users/:user/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/users/:user/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
 
 		// note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
