@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import Fastify, { FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
+import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
@@ -85,6 +86,13 @@ export class ServerService implements OnApplicationShutdown {
 				done();
 			});
 		}
+
+		// Register raw-body parser for ActivityPub HTTP signature validation.
+		fastify.register(fastifyRawBody, {
+			global: false,
+			encoding: 'utf-8',
+			runFirst: true,
+		});
 
 		// Register non-serving static server so that the child services can use reply.sendFile.
 		// `root` here is just a placeholder and each call must use its own `rootPath`.
