@@ -775,10 +775,6 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
-	if (postData.schedule?.scheduledAt && typeof postData.schedule.scheduledAt === 'string') {
-		postData.schedule.scheduledAt = parseInt(postData.schedule.scheduledAt);
-	}
-
 	let token = undefined;
 
 	if (postAccount) {

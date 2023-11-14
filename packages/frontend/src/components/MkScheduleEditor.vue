@@ -43,12 +43,12 @@ if ( props.modelValue && props.modelValue.scheduledAt) {
 
 function get() {
 	const calcAt = () => {
-		return new Date(`${atDate.value} ${atTime.value}`).getTime();
+		return new Date(`${atDate.value}T${atTime.value}`).toISOString();
 	};
 
 	return {
 		...(
-			props.modelValue ? { scheduledAt: calcAt() } : {}
+			props.modelValue ? { scheduledAt: calcAt() } : ''
 		),
 	};
 }
