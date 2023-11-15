@@ -91,8 +91,6 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
-import MkLoading from '@/components/global/MkLoading.vue';
-import MkError from '@/components/global/MkError.vue';
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
