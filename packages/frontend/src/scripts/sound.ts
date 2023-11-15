@@ -92,7 +92,7 @@ export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notifica
 
 export async function playFile(file: string, volume: number) {
 	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (masterVolume === 0 || volume === 0) {
+	if (isMute() || masterVolume === 0 || volume === 0) {
 		return;
 	}
 
@@ -103,4 +103,19 @@ export async function playFile(file: string, volume: number) {
 	soundSource.buffer = await getAudio(file);
 	soundSource.connect(gainNode).connect(ctx.destination);
 	soundSource.start();
+}
+
+export function isMute(): boolean {
+	if (defaultStore.state.sound_notUseSound) {
+		// サウンドを出力しない
+		return true;
+	}
+
+	// noinspection RedundantIfStatementJS
+	if (defaultStore.state.sound_useSoundOnlyWhenActive && document.visibilityState === 'hidden') {
+		// ブラウザがアクティブな時のみサウンドを出力する
+		return true;
+	}
+
+	return false;
 }
