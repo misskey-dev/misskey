@@ -21,7 +21,7 @@ import { computed, watch, onUnmounted, provide } from 'vue';
 import { Connection } from 'misskey-js/built/streaming.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import { reloadStream, useStream } from '@/stream.js';
+import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
@@ -249,7 +249,6 @@ function reloadTimeline() {
 		tlNotesCount = 0;
 
 		tlComponent.pagingComponent?.reload().then(() => {
-			reloadStream();
 			res();
 		});
 	});

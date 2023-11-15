@@ -8,7 +8,7 @@ import { common } from './common.js';
 import { version, ui, lang, updateLocale } from '@/config.js';
 import { i18n, updateI18n } from '@/i18n.js';
 import { confirm, alert, post, popup, toast } from '@/os.js';
-import { useStream, isReloading } from '@/stream.js';
+import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
@@ -39,7 +39,6 @@ export async function mainBoot() {
 
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
-		if (isReloading) return;
 		if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
 			location.reload();
 		} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
