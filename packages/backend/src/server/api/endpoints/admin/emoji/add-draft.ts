@@ -6,6 +6,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '../../../error.js';
 import { MetaService } from '@/core/MetaService.js';
+import {DriveService} from "@/core/DriveService.js";
 export const meta = {
 	tags: ['admin'],
 
@@ -53,11 +54,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private metaService: MetaService,
 		private customEmojiService: CustomEmojiService,
 		private moderationLogService: ModerationLogService,
+		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			let driveFile;
+			let tmp = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			if (tmp == null) throw new ApiError(meta.errors.noSuchFile);
 
-			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
+			try {
+				driveFile = await this.driveService.uploadFromUrl({ url: tmp.url , user: null, force: true });
+			} catch (e) {
+				throw new ApiError();
+			}
 
 			const emoji = await this.customEmojiService.add({
 				driveFile,
@@ -72,40 +80,44 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 			});
 			const {ApiBase,EmojiBotToken,DiscordWebhookUrl} = (await this.metaService.fetch())
-			const data_disc = {"username": "絵文字追加通知ちゃん",
-				'content':
-					'絵文字名 : :'+ ps.name +':\n' +
-					'カテゴリ : ' + ps.category + '\n'+
-					'ライセンス : '+ ps.license + '\n'+
-					'タグ : '+ps.aliases+ '\n'+
-					'追加したユーザー : ' + '@'+me.username + '\n'
+
+			if (EmojiBotToken){
+				const data_Miss = {
+					'i': EmojiBotToken,
+					'text':
+						'絵文字名 : :' + ps.name + ':\n' +
+						'カテゴリ : ' + ps.category + '\n' +
+						'ライセンス : ' + ps.license + '\n' +
+						'タグ : ' + ps.aliases + '\n' +
+						'追加したユーザー : ' + '@' + me.username + '\n'
+				};
+				await fetch(ApiBase+'/notes/create', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body:JSON.stringify( data_Miss)
+				})
 			}
 
-			const data_Miss = {
-				'i': EmojiBotToken,
-				'text':
-					'絵文字名 : :' + ps.name + ':\n' +
-					'カテゴリ : ' + ps.category + '\n' +
-					'ライセンス : ' + ps.license + '\n' +
-					'タグ : ' + ps.aliases + '\n' +
-					'追加したユーザー : ' + '@' + me.username + '\n'
-			};
+			if (DiscordWebhookUrl){
+				const data_disc = {"username": "絵文字追加通知ちゃん",
+					'content':
+						'絵文字名 : :'+ ps.name +':\n' +
+						'カテゴリ : ' + ps.category + '\n'+
+						'ライセンス : '+ ps.license + '\n'+
+						'タグ : '+ps.aliases+ '\n'+
+						'追加したユーザー : ' + '@'+me.username + '\n'
+				}
+				await fetch(DiscordWebhookUrl, {
+					'method':'post',
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(data_disc),
+				})
+			}
 
-			await fetch(ApiBase+'/notes/create', {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body:JSON.stringify( data_Miss)
-			})
-
-			await fetch(DiscordWebhookUrl, {
-				'method':'post',
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data_disc),
-			})
 
 			return {
 				id: emoji.id,
