@@ -58,7 +58,6 @@ const modal = $shallowRef<InstanceType<typeof MkModal>>();
 const picker = $shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
-	console.log(`chosen : ${props.choseAndClose}`);
 	emit('done', emoji);
 	if (props.choseAndClose) {
 		modal?.close();
