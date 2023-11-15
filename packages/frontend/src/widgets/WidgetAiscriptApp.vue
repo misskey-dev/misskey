@@ -58,7 +58,7 @@ async function run() {
 	const aiscript = new Interpreter({
 		...createAiScriptEnv({
 			token: $i?.token,
-			scriptData: {
+			storageMetadata: {
 				type: 'widget',
 			},
 		}),

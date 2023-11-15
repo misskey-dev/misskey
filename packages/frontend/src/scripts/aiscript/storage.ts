@@ -3,21 +3,21 @@ import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/account.js';
 
 type ScriptType = 'widget' | 'plugins' | 'flash';
-export type ScriptData = { type: ScriptType; id?: string; fromAccount?: boolean };
+export type StorageMetadata = { type: ScriptType; id?: string; fromAccount?: boolean };
 
-export async function loadScriptStorage(toAccount: boolean, scriptData: ScriptData, key: string) {
+export async function loadScriptStorage(toAccount: boolean, storageMetadata: StorageMetadata, key: string) {
 	let value: string | null;
-	if ($i && toAccount && (scriptData.type !== 'plugins' || (scriptData.type === 'plugins' && scriptData.fromAccount))) {
-		if (scriptData.type === 'widget') {
-			value = await api('i/registry/get', { scope: ['client', 'aiscript', scriptData.type], key: key });
+	if ($i && toAccount && (storageMetadata.type !== 'plugins' || (storageMetadata.type === 'plugins' && storageMetadata.fromAccount))) {
+		if (storageMetadata.type === 'widget') {
+			value = await api('i/registry/get', { scope: ['client', 'aiscript', storageMetadata.type], key: key });
 		} else {
-			value = await api('i/registry/get', { scope: ['client', 'aiscript', scriptData.type, scriptData.id!], key: key });
+			value = await api('i/registry/get', { scope: ['client', 'aiscript', storageMetadata.type, storageMetadata.id!], key: key });
 		}
 	} else {
-		if (scriptData.type === 'widget') {
-			value = miLocalStorage.getItem(`aiscript:${scriptData.type}:${key}`);
+		if (storageMetadata.type === 'widget') {
+			value = miLocalStorage.getItem(`aiscript:${storageMetadata.type}:${key}`);
 		} else {
-			value = miLocalStorage.getItem(`aiscript:${scriptData.type}:${scriptData.id!}:${key}`);
+			value = miLocalStorage.getItem(`aiscript:${storageMetadata.type}:${storageMetadata.id!}:${key}`);
 		}
 	}
 
@@ -25,19 +25,19 @@ export async function loadScriptStorage(toAccount: boolean, scriptData: ScriptDa
 	return JSON.parse(value);
 }
 
-export async function saveScriptStorage(toAccount: boolean, scriptData: ScriptData, key: string, value: any) {
+export async function saveScriptStorage(toAccount: boolean, storageMetadata: StorageMetadata, key: string, value: any) {
 	const jsonValue = JSON.stringify(value);
-	if ($i && toAccount && (scriptData.type !== 'plugins' || (scriptData.type === 'plugins' && scriptData.fromAccount))) {
-		if (scriptData.type === 'widget') {
-			await api('i/registry/set', { scope: ['client', 'aiscript', scriptData.type], key: key, value: jsonValue });
+	if ($i && toAccount && (storageMetadata.type !== 'plugins' || (storageMetadata.type === 'plugins' && storageMetadata.fromAccount))) {
+		if (storageMetadata.type === 'widget') {
+			await api('i/registry/set', { scope: ['client', 'aiscript', storageMetadata.type], key: key, value: jsonValue });
 		} else {
-			await api('i/registry/set', { scope: ['client', 'aiscript', scriptData.type, scriptData.id!], key: key, value: jsonValue });
+			await api('i/registry/set', { scope: ['client', 'aiscript', storageMetadata.type, storageMetadata.id!], key: key, value: jsonValue });
 		}
 	} else {
-		if (scriptData.type === 'widget') {
-			miLocalStorage.setItem(`aiscript:${scriptData.type}:${key}`, jsonValue);
+		if (storageMetadata.type === 'widget') {
+			miLocalStorage.setItem(`aiscript:${storageMetadata.type}:${key}`, jsonValue);
 		} else {
-			miLocalStorage.setItem(`aiscript:${scriptData.type}:${scriptData.id!}:${key}`, jsonValue);
+			miLocalStorage.setItem(`aiscript:${storageMetadata.type}:${storageMetadata.id!}:${key}`, jsonValue);
 		}
 	}
 }

@@ -69,7 +69,7 @@ function createPluginEnv(opts: { plugin: Plugin; }): Record<string, values.Value
 	}
 
 	return {
-		...createAiScriptEnv({ token: opts.plugin.token, scriptData: { type: 'plugins', id: opts.plugin.id, fromAccount: opts.plugin.fromAccount } }),
+		...createAiScriptEnv({ token: opts.plugin.token, storageMetadata: { type: 'plugins', id: opts.plugin.id, fromAccount: opts.plugin.fromAccount } }),
 		//#region Deprecated
 		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);

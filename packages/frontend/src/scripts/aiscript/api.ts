@@ -9,9 +9,9 @@ import { $i } from '@/account.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
-import { ScriptData, loadScriptStorage, saveScriptStorage } from './storage.js';
+import { StorageMetadata, loadScriptStorage, saveScriptStorage } from './storage.js';
 
-export function createAiScriptEnv(opts: { token: string; scriptData: ScriptData; }) {
+export function createAiScriptEnv(opts: { token: string; storageMetadata: StorageMetadata; }) {
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
@@ -69,7 +69,7 @@ export function createAiScriptEnv(opts: { token: string; scriptData: ScriptData;
 				}
 			}
 			const saveToAccount = option && option.value.toAccount ? option.value.toAccount.value : false;
-			return saveScriptStorage(saveToAccount, opts.scriptData, key.value, utils.valToJs(value)).then(() => {
+			return saveScriptStorage(saveToAccount, opts.storageMetadata, key.value, utils.valToJs(value)).then(() => {
 				return values.NULL;
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
@@ -84,7 +84,7 @@ export function createAiScriptEnv(opts: { token: string; scriptData: ScriptData;
 				}
 			}
 			const loadToAccount = option && option.value.toAccount ? option.value.toAccount.value : false;
-			return loadScriptStorage(loadToAccount, opts.scriptData, key.value).then(res => {
+			return loadScriptStorage(loadToAccount, opts.storageMetadata, key.value).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));

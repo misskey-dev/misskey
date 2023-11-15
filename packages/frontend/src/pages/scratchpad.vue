@@ -80,7 +80,7 @@ async function run() {
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
 			token: $i?.token,
-			scriptData: {
+			storageMetadata: {
 				type: 'widget',
 			},
 		}),

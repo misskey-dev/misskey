@@ -67,7 +67,7 @@ const run = async () => {
 	logs.value = [];
 	const aiscript = new Interpreter(createAiScriptEnv({
 		token: $i?.token,
-		scriptData: {
+		storageMetadata: {
 			type: 'widget',
 		},
 	}), {

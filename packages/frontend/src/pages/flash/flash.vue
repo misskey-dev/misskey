@@ -145,7 +145,7 @@ async function run() {
 
 	aiscript = new Interpreter({
 		...createAiScriptEnv({
-			scriptData: {
+			storageMetadata: {
 				type: 'flash',
 				id: flash.id,
 			},
