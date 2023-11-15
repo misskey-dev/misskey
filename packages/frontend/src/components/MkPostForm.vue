@@ -124,7 +124,7 @@ import { deepClone } from '@/scripts/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { emojiPicker } from '@/scripts/emoji-picker.js';
 
 const modal = inject('modal');
 
@@ -846,15 +846,14 @@ function insertMention() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	reactionPicker.show(
+	emojiPicker.show(
 		ev.currentTarget ?? ev.target,
-		reaction => {
-			insertTextAtCursor(textareaEl, reaction);
+		emoji => {
+			insertTextAtCursor(textareaEl, emoji);
 		},
 		() => {
 			focus();
 		},
-		false,
 	);
 }
 

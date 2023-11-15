@@ -6,10 +6,16 @@
 import { defineAsyncComponent, Ref, ref } from 'vue';
 import { popup } from '@/os.js';
 
-class ReactionPicker {
+/**
+ * 絵文字ピッカーを表示する。
+ * 類似の機能として{@link ReactionPicker}が存在しているが、この機能とは動きが異なる。
+ * 投稿フォームなどで絵文字を選択する時など、絵文字ピックアップ後でもダイアログが消えずに残り、
+ * 一度表示したダイアログを連続で使用できることが望ましいシーンでの利用が想定される。
+ */
+class EmojiPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
-	private onChosen?: (reaction: string) => void;
+	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
 
 	constructor() {
@@ -21,21 +27,26 @@ class ReactionPicker {
 			src: this.src,
 			asReactionPicker: true,
 			manualShowing: this.manualShowing,
+			choseAndClose: false,
 		}, {
-			done: reaction => {
-				this.onChosen!(reaction);
+			done: emoji => {
+				if (this.onChosen) this.onChosen(emoji);
 			},
 			close: () => {
 				this.manualShowing.value = false;
 			},
 			closed: () => {
 				this.src.value = null;
-				this.onClosed!();
+				if (this.onClosed) this.onClosed();
 			},
 		});
 	}
 
-	public show(src: HTMLElement, onChosen: ReactionPicker['onChosen'], onClosed: ReactionPicker['onClosed']) {
+	public show(
+		src: HTMLElement,
+		onChosen: EmojiPicker['onChosen'],
+		onClosed: EmojiPicker['onClosed'],
+	) {
 		this.src.value = src;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;
@@ -43,4 +54,4 @@ class ReactionPicker {
 	}
 }
 
-export const reactionPicker = new ReactionPicker();
+export const emojiPicker = new EmojiPicker();
