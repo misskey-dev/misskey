@@ -59,7 +59,7 @@ export const paramDef = {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 		withReplies: { type: 'boolean', default: false },
-		allowPartial: { type: 'boolean', default: false },
+		allowPartial: { type: 'boolean', default: true },
 	},
 	required: [],
 } as const;

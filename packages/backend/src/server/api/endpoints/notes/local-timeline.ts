@@ -54,7 +54,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
-		allowPartial: { type: 'boolean', default: false },
+		allowPartial: { type: 'boolean', default: true },
 	},
 	required: [],
 } as const;

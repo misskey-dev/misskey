@@ -54,7 +54,7 @@ export const paramDef = {
 		untilDate: { type: 'integer' },
 		withFiles: { type: 'boolean', default: false },
 		excludeNsfw: { type: 'boolean', default: false },
-		allowPartial: { type: 'boolean', default: false },
+		allowPartial: { type: 'boolean', default: true },
 	},
 	required: ['userId'],
 } as const;

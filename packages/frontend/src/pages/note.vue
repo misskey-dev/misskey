@@ -73,7 +73,6 @@ const prevPagination = {
 	params: computed(() => note ? ({
 		userId: note.userId,
 		untilId: note.id,
-		allowPartial: true,
 	}) : null),
 };
 
@@ -84,7 +83,6 @@ const nextPagination = {
 	params: computed(() => note ? ({
 		userId: note.userId,
 		sinceId: note.id,
-		allowPartial: true,
 	}) : null),
 };
 

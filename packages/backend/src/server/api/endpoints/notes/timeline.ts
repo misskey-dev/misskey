@@ -48,7 +48,7 @@ export const paramDef = {
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
-		allowPartial: { type: 'boolean', default: false },
+		allowPartial: { type: 'boolean', default: true },
 	},
 	required: [],
 } as const;

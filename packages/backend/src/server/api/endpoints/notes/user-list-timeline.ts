@@ -60,7 +60,7 @@ export const paramDef = {
 			default: false,
 			description: 'Only show notes that have attached files.',
 		},
-		allowPartial: { type: 'boolean', default: false },
+		allowPartial: { type: 'boolean', default: true },
 	},
 	required: ['listId'],
 } as const;

@@ -40,7 +40,6 @@ const pagination = {
 		withReplies: include.value === 'all',
 		withChannelNotes: include.value === 'all',
 		withFiles: include.value === 'files',
-		allowPartial: true,
 	})),
 };
 </script>
