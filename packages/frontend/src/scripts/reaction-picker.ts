@@ -9,6 +9,7 @@ import { popup } from '@/os.js';
 class ReactionPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
+	private choseAndClose = ref(true);
 	private onChosen?: (reaction: string) => void;
 	private onClosed?: () => void;
 
@@ -21,6 +22,7 @@ class ReactionPicker {
 			src: this.src,
 			asReactionPicker: true,
 			manualShowing: this.manualShowing,
+			choseAndClose: this.choseAndClose,
 		}, {
 			done: reaction => {
 				this.onChosen!(reaction);
@@ -35,9 +37,15 @@ class ReactionPicker {
 		});
 	}
 
-	public show(src: HTMLElement, onChosen: ReactionPicker['onChosen'], onClosed: ReactionPicker['onClosed']) {
+	public show(
+		src: HTMLElement,
+		onChosen: ReactionPicker['onChosen'],
+		onClosed: ReactionPicker['onClosed'],
+		choseAndClose = true,
+	) {
 		this.src.value = src;
 		this.manualShowing.value = true;
+		this.choseAndClose.value = choseAndClose;
 		this.onChosen = onChosen;
 		this.onClosed = onClosed;
 	}
