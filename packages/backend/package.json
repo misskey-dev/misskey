@@ -151,6 +151,7 @@
 		"rss-parser": "3.13.0",
 		"rxjs": "7.8.1",
 		"sanitize-html": "2.11.0",
+		"secure-json-parse": "^2.4.0",
 		"sharp": "0.32.6",
 		"sharp-read-bmp": "github:misskey-dev/sharp-read-bmp",
 		"slacc": "0.0.10",

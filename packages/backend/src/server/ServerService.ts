@@ -88,9 +88,9 @@ export class ServerService implements OnApplicationShutdown {
 		}
 
 		// Register raw-body parser for ActivityPub HTTP signature validation.
-		fastify.register(fastifyRawBody, {
+		await fastify.register(fastifyRawBody, {
 			global: false,
-			encoding: 'utf-8',
+			encoding: null,
 			runFirst: true,
 		});
 

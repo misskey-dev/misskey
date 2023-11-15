@@ -338,6 +338,9 @@ importers:
       sanitize-html:
         specifier: 2.11.0
         version: 2.11.0
+      secure-json-parse:
+        specifier: ^2.4.0
+        version: 2.7.0
       sharp:
         specifier: 0.32.6
         version: 0.32.6
