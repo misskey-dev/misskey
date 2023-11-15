@@ -5,12 +5,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
-	<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)" @status="prComponent.setDisabled($event)"/>
+	<MkNotes
+		v-if="paginationQuery"
+		ref="tlComponent"
+		:pagination="paginationQuery"
+		:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
+		@queue="emit('queue', $event)"
+		@status="prComponent.setDisabled($event)"
+	/>
 </MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, onUnmounted } from 'vue';
+import { computed, watch, onUnmounted, provide } from 'vue';
+import { Connection } from 'misskey-js/built/streaming.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
@@ -18,6 +26,7 @@ import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
+import { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
 	src: string;
@@ -42,6 +51,17 @@ const emit = defineEmits<{
 
 provide('inChannel', computed(() => props.src === 'channel'));
 
+type TimelineQueryType = {
+  antennaId?: string,
+  withRenotes?: boolean,
+  withReplies?: boolean,
+  withFiles?: boolean,
+  visibility?: string,
+  listId?: string,
+  channelId?: string,
+  roleId?: string
+}
+
 const prComponent: InstanceType<typeof MkPullToRefresh> = $ref();
 const tlComponent: InstanceType<typeof MkNotes> = $ref();
 
@@ -63,13 +83,13 @@ const prepend = note => {
 	}
 };
 
-let endpoint;
-let query;
-let connection;
-let connection2;
+let connection: Connection;
+let connection2: Connection;
+let paginationQuery: Paging | null = null;
 
 const stream = useStream();
-const connectChannel = () => {
+
+function connectChannel() {
 	if (props.src === 'antenna') {
 		connection = stream.useChannel('antenna', {
 			antennaId: props.antenna,
@@ -123,78 +143,106 @@ const connectChannel = () => {
 		});
 	}
 	if (props.src !== 'directs' || props.src !== 'mentions') connection.on('note', prepend);
-};
-
-if (props.src === 'antenna') {
-	endpoint = 'antennas/notes';
-	query = {
-		antennaId: props.antenna,
-	};
-} else if (props.src === 'home') {
-	endpoint = 'notes/timeline';
-	query = {
-		withRenotes: props.withRenotes,
-		withFiles: props.onlyFiles ? true : undefined,
-	};
-} else if (props.src === 'local') {
-	endpoint = 'notes/local-timeline';
-	query = {
-		withRenotes: props.withRenotes,
-		withReplies: props.withReplies,
-		withFiles: props.onlyFiles ? true : undefined,
-	};
-} else if (props.src === 'social') {
-	endpoint = 'notes/hybrid-timeline';
-	query = {
-		withRenotes: props.withRenotes,
-		withReplies: props.withReplies,
-		withFiles: props.onlyFiles ? true : undefined,
-	};
-} else if (props.src === 'global') {
-	endpoint = 'notes/global-timeline';
-	query = {
-		withRenotes: props.withRenotes,
-		withFiles: props.onlyFiles ? true : undefined,
-	};
-} else if (props.src === 'mentions') {
-	endpoint = 'notes/mentions';
-} else if (props.src === 'directs') {
-	endpoint = 'notes/mentions';
-	query = {
-		visibility: 'specified',
-	};
-} else if (props.src === 'list') {
-	endpoint = 'notes/user-list-timeline';
-	query = {
-		withFiles: props.onlyFiles ? true : undefined,
-		listId: props.list,
-	};
-} else if (props.src === 'channel') {
-	endpoint = 'channels/timeline';
-	query = {
-		channelId: props.channel,
-	};
-} else if (props.src === 'role') {
-	endpoint = 'roles/notes';
-	query = {
-		roleId: props.role,
-	};
 }
 
-if (!defaultStore.state.disableStreamingTimeline) {
-	connectChannel();
-
-	onUnmounted(() => {
-		connection.dispose();
-		if (connection2) connection2.dispose();
-	});
+function disconnectChannel() {
+	if (connection) connection.dispose();
+	if (connection2) connection2.dispose();
 }
 
-const pagination = {
-	endpoint: endpoint,
-	limit: 10,
-	params: query,
-};
+function updatePaginationQuery() {
+	let endpoint: string | null;
+	let query: TimelineQueryType | null;
+
+	if (props.src === 'antenna') {
+		endpoint = 'antennas/notes';
+		query = {
+			antennaId: props.antenna,
+		};
+	} else if (props.src === 'home') {
+		endpoint = 'notes/timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'local') {
+		endpoint = 'notes/local-timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'social') {
+		endpoint = 'notes/hybrid-timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'global') {
+		endpoint = 'notes/global-timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'mentions') {
+		endpoint = 'notes/mentions';
+		query = null;
+	} else if (props.src === 'directs') {
+		endpoint = 'notes/mentions';
+		query = {
+			visibility: 'specified',
+		};
+	} else if (props.src === 'list') {
+		endpoint = 'notes/user-list-timeline';
+		query = {
+			withFiles: props.onlyFiles ? true : undefined,
+			listId: props.list,
+		};
+	} else if (props.src === 'channel') {
+		endpoint = 'channels/timeline';
+		query = {
+			channelId: props.channel,
+		};
+	} else if (props.src === 'role') {
+		endpoint = 'roles/notes';
+		query = {
+			roleId: props.role,
+		};
+	} else {
+		endpoint = null;
+		query = null;
+	}
+
+	if (endpoint && query) {
+		paginationQuery = {
+			endpoint: endpoint,
+			limit: 10,
+			params: query,
+		};
+	} else {
+		paginationQuery = null;
+	}
+}
+
+function refreshEndpointAndChannel() {
+	if (!defaultStore.state.disableStreamingTimeline) {
+		disconnectChannel();
+		connectChannel();
+	}
+
+	updatePaginationQuery();
+}
+
+// IDが切り替わったら切り替え先のTLを表示させたい
+watch(() => [props.list, props.antenna, props.channel, props.role], refreshEndpointAndChannel);
+
+// 初回表示用
+refreshEndpointAndChannel();
+
+onUnmounted(() => {
+	disconnectChannel();
+});
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
