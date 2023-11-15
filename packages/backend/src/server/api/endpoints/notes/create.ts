@@ -70,6 +70,12 @@ export const meta = {
 			id: '749ee0f6-d3da-459a-bf02-282e2da4292c',
 		},
 
+		cannotReplyToInvisibleNote: {
+			message: 'You cannot reply to an invisible Note.',
+			code: 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE',
+			id: 'b98980fa-3780-406c-a935-b6d0eeee10d1',
+		},
+
 		cannotReplyToPureRenote: {
 			message: 'You can not reply to a pure Renote.',
 			code: 'CANNOT_REPLY_TO_A_PURE_RENOTE',
@@ -276,6 +282,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.noSuchReplyTarget);
 				} else if (isPureRenote(reply)) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
+				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
+					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 				}
 
 				// Check blocking
