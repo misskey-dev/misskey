@@ -49,9 +49,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: 0,
 	},
-	timelineTutorial: {
+	timelineTutorials: {
 		where: 'account',
-		default: 0,
+		default: {
+			home: false,
+			local: false,
+			social: false,
+			global: false,
+		},
 	},
 	keepCw: {
 		where: 'account',
@@ -376,6 +381,31 @@ export const defaultStore = markRaw(new Storage('base', {
 	useGroupedNotifications: {
 		where: 'device',
 		default: true,
+	},
+
+	sound_masterVolume: {
+		where: 'device',
+		default: 0.3,
+	},
+	sound_note: {
+		where: 'device',
+		default: { type: 'syuilo/n-aec', volume: 1 },
+	},
+	sound_noteMy: {
+		where: 'device',
+		default: { type: 'syuilo/n-cea-4va', volume: 1 },
+	},
+	sound_notification: {
+		where: 'device',
+		default: { type: 'syuilo/n-ea', volume: 1 },
+	},
+	sound_antenna: {
+		where: 'device',
+		default: { type: 'syuilo/triple', volume: 1 },
+	},
+	sound_channel: {
+		where: 'device',
+		default: { type: 'syuilo/square-pico', volume: 1 },
 	},
 }));
 

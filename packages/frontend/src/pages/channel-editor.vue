@@ -24,6 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.sensitive }}</template>
 			</MkSwitch>
 
+			<MkSwitch v-model="allowRenoteToExternal">
+				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
+			</MkSwitch>
+
 			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
@@ -76,7 +80,7 @@ import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from "@/components/MkSwitch.vue";
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -93,6 +97,7 @@ let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
 let color = $ref('#000');
 let isSensitive = $ref(false);
+let allowRenoteToExternal = $ref(true);
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
@@ -121,6 +126,7 @@ async function fetchChannel() {
 		id,
 	}));
 	color = channel.color;
+	allowRenoteToExternal = channel.allowRenoteToExternal;
 }
 
 fetchChannel();
@@ -150,6 +156,7 @@ function save() {
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 		color: color,
 		isSensitive: isSensitive,
+		allowRenoteToExternal: allowRenoteToExternal,
 	};
 
 	if (props.channelId) {
