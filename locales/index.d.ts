@@ -1285,6 +1285,8 @@ export interface Locale {
         "shortName": string;
         "shortNameDescription": string;
         "fanoutTimelineDescription": string;
+        "fanoutTimelineDbFallback": string;
+        "fanoutTimelineDbFallbackDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;

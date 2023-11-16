@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div>
 			<div>
-				<Mfm :text="text.trim()" :author="user" :nyaize="'account'" :i="user"/>
+				<Mfm :text="text.trim()" :author="user" :nyaize="'respect'" :i="user"/>
 			</div>
 		</div>
 	</div>
