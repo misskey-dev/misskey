@@ -180,8 +180,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimeline.push(...timeline);
 			}
 
+			// fallback to db
 			if (redisTimeline.length === 0) {
-				// fallback to db
+				if (!serverSettings.enableFanoutTimelineDbFallback) return [];
+
 				return await this.getFromDb({
 					untilId,
 					sinceId,
