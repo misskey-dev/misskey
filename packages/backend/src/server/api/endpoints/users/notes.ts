@@ -106,47 +106,51 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ps.withChannelNotes ? this.funoutTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
 			]);
 
-			let noteIds = Array.from(new Set([
+			const noteIds = Array.from(new Set([
 				...noteIdsRes,
 				...repliesNoteIdsRes,
 				...channelNoteIdsRes,
 			]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
-			noteIds = noteIds.slice(0, ps.limit);
 
-			let redisTimeline: MiNote[] = [];
+			const redisTimeline: MiNote[] = [];
+			const targetLength = ps.allowPartial ? 1 : ps.limit;
 
 			if (noteIds.length > 0) {
 				const isFollowing = me && Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId);
 
-				const query = this.notesRepository.createQueryBuilder('note')
-					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
+				while (noteIds.length !== 0 && redisTimeline.length < targetLength) {
+					const targetNoteIds = noteIds.splice(0, ps.limit - redisTimeline.length);
+					const query = this.notesRepository.createQueryBuilder('note')
+						.where('note.id IN (:...noteIds)', { noteIds: targetNoteIds })
+						.innerJoinAndSelect('note.user', 'user')
+						.leftJoinAndSelect('note.reply', 'reply')
+						.leftJoinAndSelect('note.renote', 'renote')
+						.leftJoinAndSelect('reply.user', 'replyUser')
+						.leftJoinAndSelect('renote.user', 'renoteUser')
+						.leftJoinAndSelect('note.channel', 'channel');
 
-				redisTimeline = await query.getMany();
+					let timeline = await query.getMany();
 
-				redisTimeline = redisTimeline.filter(note => {
-					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+					timeline = timeline.filter(note => {
+						if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (ps.withRenotes === false) return false;
+						if (note.renoteId) {
+							if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+								if (ps.withRenotes === false) return false;
+							}
 						}
-					}
 
-					if (note.channel?.isSensitive && !isSelf) return false;
-					if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
-					if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
+						if (note.channel?.isSensitive && !isSelf) return false;
+						if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
+						if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
 
-					return true;
-				});
+						return true;
+					});
 
-				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+					timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+					redisTimeline.push(...timeline);
+				}
 			}
 
 			if (redisTimeline.length === 0) {
@@ -164,24 +168,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}, me, isSelf);
 			}
 
-			const packedNotes = await this.noteEntityService.packMany(redisTimeline, me);
-
-			if (!ps.allowPartial && redisTimeline.length < ps.limit) {
-				const notes = await this.getFromDb({
-					untilId: redisTimeline[redisTimeline.length - 1].id,
-					sinceId,
-					userId: ps.userId,
-					withReplies: ps.withReplies,
-					withRenotes: ps.withRenotes,
-					withChannelNotes: ps.withChannelNotes,
-					limit: ps.limit,
-					withFiles: ps.withFiles,
-					excludeNsfw: ps.excludeNsfw,
-				}, me, isSelf);
-				packedNotes.push(...notes);
-			}
-
-			return packedNotes;
+			return await this.noteEntityService.packMany(redisTimeline, me);
 		});
 	}
 

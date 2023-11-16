@@ -102,14 +102,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let noteIds = await this.funoutTimelineService.get(ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`, untilId, sinceId);
-			noteIds = noteIds.slice(0, ps.limit);
+			const noteIds = await this.funoutTimelineService.get(ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`, untilId, sinceId);
+			const redisTimeline: MiNote[] = [];
+			const targetLength = ps.allowPartial ? 1 : ps.limit;
 
-			let redisTimeline: MiNote[] = [];
-
-			if (noteIds.length > 0) {
+			while (noteIds.length !== 0 && redisTimeline.length < targetLength) {
+				const targetNoteIds = noteIds.splice(0, ps.limit - redisTimeline.length);
 				const query = this.notesRepository.createQueryBuilder('note')
-					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.where('note.id IN (:...noteIds)', { noteIds: targetNoteIds })
 					.innerJoinAndSelect('note.user', 'user')
 					.leftJoinAndSelect('note.reply', 'reply')
 					.leftJoinAndSelect('note.renote', 'renote')
@@ -117,9 +117,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('renote.user', 'renoteUser')
 					.leftJoinAndSelect('note.channel', 'channel');
 
-				redisTimeline = await query.getMany();
+				let timeline = await query.getMany();
 
-				redisTimeline = redisTimeline.filter(note => {
+				timeline = timeline.filter(note => {
 					if (note.userId === me.id) {
 						return true;
 					}
@@ -138,7 +138,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					return true;
 				});
 
-				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
+				redisTimeline.push(...timeline);
 			}
 
 			if (redisTimeline.length === 0) {
@@ -155,27 +156,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}, me);
 			}
 
-			const packedNotes = await this.noteEntityService.packMany(redisTimeline, me);
+			process.nextTick(() => {
+				this.activeUsersChart.read(me);
+			});
 
-			if (!ps.allowPartial && redisTimeline.length < ps.limit) {
-				const notes = await this.getFromDb({
-					untilId: redisTimeline[redisTimeline.length - 1].id,
-					sinceId,
-					limit: ps.limit - redisTimeline.length,
-					includeMyRenotes: ps.includeMyRenotes,
-					includeRenotedMyNotes: ps.includeRenotedMyNotes,
-					includeLocalRenotes: ps.includeLocalRenotes,
-					withFiles: ps.withFiles,
-					withRenotes: ps.withRenotes,
-				}, me);
-				packedNotes.push(...notes);
-			} else {
-				process.nextTick(() => {
-					this.activeUsersChart.read(me);
-				});
-			}
-
-			return packedNotes;
+			return await this.noteEntityService.packMany(redisTimeline, me);
 		});
 	}
 
