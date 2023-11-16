@@ -4,7 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiNote, NotesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import { Brackets } from 'typeorm';
+import type { MiNote, MiUserList, NotesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -14,9 +15,9 @@ import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
-import { ApiError } from '../../error.js';
-import { Brackets } from 'typeorm';
 import { MiLocalUser } from '@/models/User.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes', 'lists'],
@@ -83,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private funoutTimelineService: FunoutTimelineService,
 		private queryService: QueryService,
-
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -96,6 +97,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (list == null) {
 				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			const serverSettings = await this.metaService.fetch();
+
+			if (!serverSettings.enableFanoutTimeline) {
+				return await this.getFromDb(list, {
+					untilId,
+					sinceId,
+					limit: ps.limit,
+					includeMyRenotes: ps.includeMyRenotes,
+					includeRenotedMyNotes: ps.includeRenotedMyNotes,
+					includeLocalRenotes: ps.includeLocalRenotes,
+					withFiles: ps.withFiles,
+					withRenotes: ps.withRenotes,
+				}, me);
 			}
 
 			const [
@@ -146,7 +162,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (redisTimeline.length === 0) {
 				// fallback to db
-				return await this.getFromDb({
+				return await this.getFromDb(list, {
 					untilId,
 					sinceId,
 					limit: ps.limit,
@@ -155,13 +171,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					includeLocalRenotes: ps.includeLocalRenotes,
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
-				}, me, list.id);
+				}, me);
 			}
 
 			const packedNotes = await this.noteEntityService.packMany(redisTimeline, me);
 
 			if (!ps.allowPartial && redisTimeline.length < ps.limit) {
-				const notes = await this.getFromDb({
+				const notes = await this.getFromDb(list, {
 					untilId: redisTimeline[redisTimeline.length - 1].id,
 					sinceId,
 					limit: ps.limit - redisTimeline.length,
@@ -170,7 +186,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					includeLocalRenotes: ps.includeLocalRenotes,
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
-				}, me, list.id);
+				}, me);
 				packedNotes.push(...notes);
 			} else {
 				process.nextTick(() => {
@@ -182,7 +198,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		});
 	}
 
-	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser, userListId: string) {
+	private async getFromDb(list: MiUserList, ps: {
+		untilId: string | null,
+		sinceId: string | null,
+		limit: number,
+		includeMyRenotes: boolean,
+		includeRenotedMyNotes: boolean,
+		includeLocalRenotes: boolean,
+		withFiles: boolean,
+		withRenotes: boolean,
+	}, me: MiLocalUser) {
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 			.innerJoin(this.userListMembershipsRepository.metadata.targetName, 'userListMemberships', 'userListMemberships.userId = note.userId')
@@ -191,7 +216,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser')
-			.andWhere('userListMemberships.userListId = :userListId', { userListId })
+			.andWhere('userListMemberships.userListId = :userListId', { userListId: list.id })
 			.andWhere('note.channelId IS NULL') // チャンネルノートではない
 			.andWhere(new Brackets(qb => {
 				qb
