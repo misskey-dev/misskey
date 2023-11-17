@@ -1662,7 +1662,7 @@ _preferencesBackups:
   list: "Elenco di impostazioni salvate in precedenza"
   saveNew: "Nuovo salvataggio"
   loadFile: "Carica da file"
-  apply: "Applicabile a questo dispositivo"
+  apply: "Applica a questo dispositivo"
   save: "Sovrascrivi il backup"
   inputName: "Inserire il nome del backup."
   cannotSave: "Impossibile salvare."
