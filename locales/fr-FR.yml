@@ -1558,6 +1558,14 @@ _ago:
   monthsAgo: "Il y a {n} mois"
   yearsAgo: "Il y a {n} ans"
   invalid: "Il n'y a rien à voir ici"
+_timeIn:
+  seconds: "Dans {n}s"
+  minutes: "Dans {n}min"
+  hours: "Dans {n}h"
+  days: "Dans {n}j"
+  weeks: "Dans {n} sem."
+  months: "Dans {n} mois"
+  years: "Dans {n}a"
 _time:
   second: "s"
   minute: "min"
