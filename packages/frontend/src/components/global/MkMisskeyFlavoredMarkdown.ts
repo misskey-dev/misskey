@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -14,7 +19,6 @@ import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { defaultStore } from '@/store';
 import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
-import MkRuby from "@/components/global/MkRuby.vue";
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 import { uhoize as doUhoize } from '@/scripts/uhoize.js';
 import {ID, Instance} from "misskey-js/built/entities.js";
@@ -27,38 +31,6 @@ color: var(--fg);
 border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
-const colorRegexp = /^([0-9a-f]{3,4}?|[0-9a-f]{6}?|[0-9a-f]{8}?)$/i;
-function checkColorHex(text: string) {
-    return colorRegexp.test(text);
-}
-
-const gradientCounterRegExp = /^(color|step)(\d+)/;
-
-function toGradientText(args: Record<string, string>) {
-    const colors: { index: number; step?: string, color?: string }[] = [];
-    for (const k in args) {
-        const matches = k.match(gradientCounterRegExp);
-        if (matches == null) continue;
-        const mindex = parseInt(matches[2]);
-        let i = colors.findIndex(v => v.index === mindex);
-        if (i === -1) {
-            i = colors.length;
-            colors.push({ index: mindex });
-        }
-        colors[i][matches[1]] = args[k];
-    }
-    let deg = parseFloat(args.deg || '90');
-    let res = `linear-gradient(${deg}deg`;
-    for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
-        let color = colorProp.color;
-        if (!color || !checkColorHex(color)) color = 'f00';
-        let step = parseFloat(colorProp.step ?? '');
-        let stepText = isNaN(step) ? '' : ` ${step}%`;
-        res += `, #${color}${stepText}`;
-    }
-    return res + ')';
-}
-
 
 type MfmProps = {
 	text: string;
@@ -304,116 +276,27 @@ export default function(props: MfmProps) {
 						scale = scale * Math.max(x, y);
 						break;
 					}
-					case 'skew': {
-						if (!defaultStore.state.advancedMfm) {
-							style = '';
-							break;
-						}
-						const x = parseFloat(token.props.args.x ?? '0');
-						const y = parseFloat(token.props.args.y ?? '0');
-						style = `transform: skew(${x}deg, ${y}deg);`;
-						break;
-					}
-					case 'fgg': {
-						if (!defaultStore.state.advancedMfm) break;
-						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`
-						break;
-					}
 					case 'fg': {
 						let color = token.props.args.color;
-						if (!checkColorHex(color)) color = 'f00';
+						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
 						style = `color: #${color};`;
-						break;
-					}
-					case 'bgg': {
-						if (!defaultStore.state.advancedMfm) break;
-						style = `background-image: ${toGradientText(token.props.args)};`
 						break;
 					}
 					case 'bg': {
 						let color = token.props.args.color;
-						if (!checkColorHex(color)) color = 'f00';
+						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
 						style = `background-color: #${color};`;
 						break;
 					}
-					case 'clip': {
-						if (!defaultStore.state.advancedMfm) break;
-
-						let path = '';
-						if (token.props.args.circle) {
-							const percent = parseFloat(token.props.args.circle ?? '');
-							const percentText = isNaN(percent) ? '' : `${percent}%`;
-							path = `circle(${percentText})`;
-						}
-						else {
-							const top = parseFloat(token.props.args.t ?? '0');
-							const bottom = parseFloat(token.props.args.b ?? '0');
-							const left = parseFloat(token.props.args.l ?? '0');
-							const right = parseFloat(token.props.args.r ?? '0');
-							path = `inset(${top}% ${right}% ${bottom}% ${left}%)`;
-						}
-						style = `clip-path: ${path};`;
-						break;
-					}
-					case 'move': {
-						const speed = validTime(token.props.args.speed) ?? '1s';
-						const fromX = parseFloat(token.props.args.fromx ?? '0');
-						const fromY = parseFloat(token.props.args.fromy ?? '0');
-						const toX = parseFloat(token.props.args.tox ?? '0');
-						const toY = parseFloat(token.props.args.toy ?? '0');
-						const ease =
-							token.props.args.ease ? 'ease' :
-							token.props.args.easein ? 'ease-in' :
-							token.props.args.easeout ? 'ease-out' :
-							token.props.args.easeinout ? 'ease-in-out' :
-							'linear';
-						const delay = validTime(token.props.args.delay) ?? '0s';
-						const direction =
-							token.props.args.rev && token.props.args.once ? 'reverse' :
-							token.props.args.rev ? 'alternate-reverse' :
-							token.props.args.once ? 'normal' :
-							'alternate';
-						style = useAnim ? `--move-fromX: ${fromX}em; --move-fromY: ${fromY}em; --move-toX: ${toX}em; --move-toY: ${toY}em; animation: ${speed} ${ease} ${delay} infinite ${direction} mfm-move;` : '';
-						break;
-					}
 					case 'ruby': {
-	    				if (token.children.length === 1 ){
-							const base = token.children[0].props.text.split(/[ 　]+/);
-							if (base.length !== 2 ){
-								style = null;
-								break;
-							}
-							return h(MkRuby,{
-								base:base[0],
-								text:base[1]
-							});
-						}else if(token.children.length === 2){
-							let txt,base;
-							console.log(token.children)
-							if (token.children[1].type === 'emojiCode'){
-								txt = token.children[1].props.name
-							}else if(token.children[1].type === 'unicodeEmoji'){
-								txt = token.children[1].props.emoji
-							}else {
-								txt = token.children[1].props.text
-							}
-
-							if (token.children[0].type === 'emojiCode'){
-								base = token.children[0].props.name
-							}else if(token.children[0].type === 'unicodeEmoji'){
-								base = token.children[0].props.emoji
-							}else {
-								base = token.children[0].props.text
-							}
-
-							return h(MkRuby,{
-								base:base,
-								basetype:token.children[0].type,
-								text:txt,
-							});
-						}else{
-							style = null;
-							break;
+						if (token.children.length === 1) {
+							const child = token.children[0];
+							const text = child.type === 'text' ? child.props.text : '';
+							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
+						} else {
+							const rt = token.children.at(-1)!;
+							const text = rt.type === 'text' ? rt.props.text : '';
+							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
 					}
 					case 'mix': {
@@ -484,6 +367,7 @@ export default function(props: MfmProps) {
 					username: token.props.username,
 				})];
 			}
+
 			case 'hashtag': {
 				return [h(MkA, {
 					key: Math.random(),

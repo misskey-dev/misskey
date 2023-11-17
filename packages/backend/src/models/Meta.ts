@@ -509,6 +509,11 @@ export class MiMeta {
 	})
 	public enableFanoutTimeline: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public enableFanoutTimelineDbFallback: boolean;
+
 	@Column('integer', {
 		default: 300,
 	})
