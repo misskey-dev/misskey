@@ -136,7 +136,20 @@ export class SignupApiService {
 				return;
 			}
 
-			if (ticket.usedAt) {
+			// メアド認証が有効の場合
+			if (instance.emailRequiredForSignup) {
+				// メアド認証済みならエラー
+				if (ticket.usedBy) {
+					reply.code(400);
+					return;
+				}
+
+				// 認証しておらず、メール送信から30分以内ならエラー
+				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
+					reply.code(400);
+					return;
+				}
+			} else if (ticket.usedAt) {
 				reply.code(400);
 				return;
 			}
@@ -223,6 +236,10 @@ export class SignupApiService {
 
 		try {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
+
+			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
+				throw new FastifyReplyError(400, 'EXPIRED');
+			}
 
 			const { account, secret } = await this.signupService.signup({
 				username: pendingUser.username,

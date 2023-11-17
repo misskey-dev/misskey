@@ -10,6 +10,7 @@ import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
 import * as ep___admin_accounts_delete from './endpoints/admin/accounts/delete.js';
+import * as ep___admin_accounts_findByEmail from './endpoints/admin/accounts/find-by-email.js';
 import * as ep___admin_ad_create from './endpoints/admin/ad/create.js';
 import * as ep___admin_ad_delete from './endpoints/admin/ad/delete.js';
 import * as ep___admin_ad_list from './endpoints/admin/ad/list.js';
@@ -217,6 +218,7 @@ import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
 import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
+import * as ep___i_notificationsGrouped from './endpoints/i/notifications-grouped.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
@@ -229,7 +231,7 @@ import * as ep___i_registry_get from './endpoints/i/registry/get.js';
 import * as ep___i_registry_keysWithType from './endpoints/i/registry/keys-with-type.js';
 import * as ep___i_registry_keys from './endpoints/i/registry/keys.js';
 import * as ep___i_registry_remove from './endpoints/i/registry/remove.js';
-import * as ep___i_registry_scopes from './endpoints/i/registry/scopes.js';
+import * as ep___i_registry_scopesWithDomain from './endpoints/i/registry/scopes-with-domain.js';
 import * as ep___i_registry_set from './endpoints/i/registry/set.js';
 import * as ep___i_revokeToken from './endpoints/i/revoke-token.js';
 import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
@@ -367,6 +369,7 @@ const $admin_meta: Provider = { provide: 'ep:admin/meta', useClass: ep___admin_m
 const $admin_abuseUserReports: Provider = { provide: 'ep:admin/abuse-user-reports', useClass: ep___admin_abuseUserReports.default };
 const $admin_accounts_create: Provider = { provide: 'ep:admin/accounts/create', useClass: ep___admin_accounts_create.default };
 const $admin_accounts_delete: Provider = { provide: 'ep:admin/accounts/delete', useClass: ep___admin_accounts_delete.default };
+const $admin_accounts_findByEmail: Provider = { provide: 'ep:admin/accounts/find-by-email', useClass: ep___admin_accounts_findByEmail.default };
 const $admin_ad_create: Provider = { provide: 'ep:admin/ad/create', useClass: ep___admin_ad_create.default };
 const $admin_ad_delete: Provider = { provide: 'ep:admin/ad/delete', useClass: ep___admin_ad_delete.default };
 const $admin_ad_list: Provider = { provide: 'ep:admin/ad/list', useClass: ep___admin_ad_list.default };
@@ -574,6 +577,7 @@ const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep_
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
 const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
+const $i_notificationsGrouped: Provider = { provide: 'ep:i/notifications-grouped', useClass: ep___i_notificationsGrouped.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
 const $i_pin: Provider = { provide: 'ep:i/pin', useClass: ep___i_pin.default };
@@ -586,7 +590,7 @@ const $i_registry_get: Provider = { provide: 'ep:i/registry/get', useClass: ep__
 const $i_registry_keysWithType: Provider = { provide: 'ep:i/registry/keys-with-type', useClass: ep___i_registry_keysWithType.default };
 const $i_registry_keys: Provider = { provide: 'ep:i/registry/keys', useClass: ep___i_registry_keys.default };
 const $i_registry_remove: Provider = { provide: 'ep:i/registry/remove', useClass: ep___i_registry_remove.default };
-const $i_registry_scopes: Provider = { provide: 'ep:i/registry/scopes', useClass: ep___i_registry_scopes.default };
+const $i_registry_scopesWithDomain: Provider = { provide: 'ep:i/registry/scopes-with-domain', useClass: ep___i_registry_scopesWithDomain.default };
 const $i_registry_set: Provider = { provide: 'ep:i/registry/set', useClass: ep___i_registry_set.default };
 const $i_revokeToken: Provider = { provide: 'ep:i/revoke-token', useClass: ep___i_revokeToken.default };
 const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: ep___i_signinHistory.default };
@@ -728,6 +732,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_abuseUserReports,
 		$admin_accounts_create,
 		$admin_accounts_delete,
+		$admin_accounts_findByEmail,
 		$admin_ad_create,
 		$admin_ad_delete,
 		$admin_ad_list,
@@ -935,6 +940,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importUserLists,
 		$i_importAntennas,
 		$i_notifications,
+		$i_notificationsGrouped,
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
@@ -947,7 +953,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
-		$i_registry_scopes,
+		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
 		$i_signinHistory,
@@ -1083,6 +1089,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_abuseUserReports,
 		$admin_accounts_create,
 		$admin_accounts_delete,
+		$admin_accounts_findByEmail,
 		$admin_ad_create,
 		$admin_ad_delete,
 		$admin_ad_list,
@@ -1290,6 +1297,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importUserLists,
 		$i_importAntennas,
 		$i_notifications,
+		$i_notificationsGrouped,
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
@@ -1302,7 +1310,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_registry_keysWithType,
 		$i_registry_keys,
 		$i_registry_remove,
-		$i_registry_scopes,
+		$i_registry_scopesWithDomain,
 		$i_registry_set,
 		$i_revokeToken,
 		$i_signinHistory,
