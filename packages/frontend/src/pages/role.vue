@@ -63,7 +63,7 @@ watch(() => props.role, () => {
 	}).then(res => {
 		role = res;
 		document.title = `${role?.name} | ${instanceName}`;
-		visiable = res.isExplorable && res.isPublic;
+		visible = res.isExplorable && res.isPublic;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
 			error = i18n.ts.noRole;
