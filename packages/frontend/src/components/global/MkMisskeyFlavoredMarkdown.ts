@@ -7,6 +7,7 @@ import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
+import MkTime from '@/components/global/MkTime.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
@@ -248,6 +249,19 @@ export default function(props: MfmProps) {
 							const text = rt.type === 'text' ? rt.props.text : '';
 							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
+					}
+					case 'unixtime': {
+						const child = token.children[0];
+						const unixtime = parseInt(child.type === 'text' ? child.props.text : '');
+						return h('span', {
+							style: 'display: inline-block; font-size: 90%; border: solid 1px var(--divider); border-radius: 999px; padding: 4px 10px 4px 6px;',
+						}, [
+							h('i', {
+								class: 'ti ti-clock',
+								style: 'margin-right: 0.25em;',
+							}),
+							h(MkTime, { time: unixtime * 1000, mode: 'detail' }),
+						]);
 					}
 				}
 				if (style == null) {
