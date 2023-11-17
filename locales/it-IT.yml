@@ -1266,6 +1266,8 @@ _serverSettings:
   shortName: "Abbreviazione"
   shortNameDescription: "Un'abbreviazione o un nome comune che può essere visualizzato al posto del nome ufficiale lungo del server."
   fanoutTimelineDescription: "Attivando questa funzionalità migliori notevolmente la capacità delle Timeline di collezionare Note, riducendo il carico sul database. Tuttavia, aumenterà l'impiego di memoria RAM per Redis. Disattiva se il tuo server ha poca RAM o la funzionalità è irregolare."
+  fanoutTimelineDbFallback: "Elaborazione dati alternativa"
+  fanoutTimelineDbFallbackDescription: "Attivando l'elaborazione alternativa, verrà interrogato ulteriormente il database se la timeline non è nella cache. \nDisattivando, si può ridurre ulteriormente il carico del server, evitando l'elaborazione alternativa, ma limitando l'intervallo recuperabile delle timeline."
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"
@@ -1817,6 +1819,14 @@ _ago:
   monthsAgo: "{n} mesi fa"
   yearsAgo: "{n} anni fa"
   invalid: "Niente da visualizzare"
+_timeIn:
+  seconds: "Dopo {n} secondi"
+  minutes: "Dopo {n} minuti"
+  hours: "Dopo {n} ore"
+  days: "Dopo {n} giorni"
+  weeks: "Dopo {n} settimane"
+  months: "Dopo {n} mesi"
+  years: "Dopo {n} anni"
 _time:
   second: "s"
   minute: "min"
