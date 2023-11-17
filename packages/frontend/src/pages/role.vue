@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<{
 let tab = $ref(props.initialTab);
 let role = $ref();
 let error = $ref();
-let visiable = $ref(false);
+let visible = $ref(false);
 
 watch(() => props.role, () => {
 	os.api('roles/show', {
