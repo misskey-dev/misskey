@@ -1266,6 +1266,8 @@ _serverSettings:
   shortName: "약칭"
   shortNameDescription: "서버의 정식 명칭이 긴 경우에, 대신에 표시할 수 있는 약칭이나 통칭."
   fanoutTimelineDescription: "활성화하면 각종 타임라인을 가져올 때의 성능을 대폭 향상하며, 데이터베이스의 부하를 줄일 수 있습니다. 단, Redis의 메모리 사용량이 증가합니다. 서버의 메모리 용량이 작거나, 서비스가 불안정해지는 경우 비활성화할 수 있습니다."
+  fanoutTimelineDbFallback: "데이터베이스를 예비로 사용하기"
+  fanoutTimelineDbFallbackDescription: "활성화하면 타임라인의 캐시되어 있지 않은 부분에 대해 DB에 질의하여 정보를 가져옵니다. 비활성화하면 이를 실행하지 않음으로써 서버의 부하를 줄일 수 있지만, 타임라인에서 가져올 수 있는 게시물 범위가 한정됩니다."
 _accountMigration:
   moveFrom: "다른 계정에서 이 계정으로 이사"
   moveFromSub: "다른 계정에 대한 별칭을 생성"
@@ -1817,6 +1819,14 @@ _ago:
   monthsAgo: "{n}개월 전"
   yearsAgo: "{n}년 전"
   invalid: "없음"
+_timeIn:
+  seconds: "{n}초 후"
+  minutes: "{n}분 후"
+  hours: "{n}시간 후"
+  days: "{n}일 후"
+  weeks: "{n}주 후"
+  months: "{n}개월 후"
+  years: "{n}년 후"
 _time:
   second: "초"
   minute: "분"
