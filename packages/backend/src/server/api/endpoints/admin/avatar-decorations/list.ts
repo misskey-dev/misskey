@@ -45,6 +45,10 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				localOnly: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
 				description: {
 					type: 'string',
 					optional: false, nullable: false,
@@ -91,6 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				createdAt: this.idService.parse(avatarDecoration.id).date.toISOString(),
 				updatedAt: avatarDecoration.updatedAt?.toISOString() ?? null,
 				name: avatarDecoration.name,
+				localOnly: avatarDecoration.localOnly,
 				description: avatarDecoration.description,
 				url: avatarDecoration.url,
 				roleIdsThatCanBeUsedThisDecoration: avatarDecoration.roleIdsThatCanBeUsedThisDecoration,

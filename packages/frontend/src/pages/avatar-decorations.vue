@@ -22,6 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="avatarDecoration.url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkSwitch v-model="avatarDecoration.localOnly">
+						<template #label>{{ i18n.ts.localOnly }}</template>
+					</MkSwitch>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(avatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 						<MkButton v-if="avatarDecoration.id != null" class="button" inline danger @click="del(avatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -56,6 +59,7 @@ import MkFolder from '@/components/MkFolder.vue';
 let avatarDecorations: any[] = $ref([]);
 let tab = $ref('avatarDecorations');
 let acceptHosts: string = $ref('');
+
 function add() {
 	avatarDecorations.unshift({
 		_id: Math.random().toString(36),

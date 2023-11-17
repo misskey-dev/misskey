@@ -189,7 +189,8 @@ export class ApRendererService {
 		};
 	}
 	@bindThis
-	public renderAvatarDecoration(avatarDecoration: MiAvatarDecoration): IApAvatarDecoration {
+	public renderAvatarDecoration(avatarDecoration: MiAvatarDecoration): IApAvatarDecoration | null {
+		if (avatarDecoration.localOnly) return null;
 		return {
 			id: avatarDecoration.url,
 			type: 'AvatarDecoration',
