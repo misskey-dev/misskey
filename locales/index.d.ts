@@ -983,6 +983,7 @@ export interface Locale {
     "color": string;
     "manageCustomEmojis": string;
     "manageAvatarDecorations": string;
+    "manageUseChannel": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
