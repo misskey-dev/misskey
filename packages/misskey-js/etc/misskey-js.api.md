@@ -345,6 +345,18 @@ export type Endpoints = {
         };
         res: null;
     };
+    'admin/delete-user-avatar': {
+        req: {
+            userId: User['id'];
+        };
+        res: null;
+    };
+    'admin/delete-user-banner': {
+        req: {
+            userId: User['id'];
+        };
+        res: null;
+    };
     'admin/delete-logs': {
         req: NoParams;
         res: null;
