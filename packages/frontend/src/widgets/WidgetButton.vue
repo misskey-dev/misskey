@@ -53,8 +53,10 @@ const parser = new Parser();
 
 const run = async () => {
 	const aiscript = new Interpreter(createAiScriptEnv({
-		storageKey: 'widget',
 		token: $i?.token,
+		storageMetadata: {
+			type: 'widget',
+		},
 	}), {
 		in: (q) => {
 			return new Promise(ok => {

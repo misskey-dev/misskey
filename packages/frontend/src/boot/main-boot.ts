@@ -19,6 +19,8 @@ import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js
 import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
+import { getPluginList } from '@/plugin.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -56,7 +58,11 @@ export async function mainBoot() {
 		}
 	});
 
-	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
+	const plugins = ColdDeviceStorage.get('plugins').filter(p => p.active);
+	const accountPlugins = Object.values(await getPluginList()).filter(p => p.active);
+	plugins.push(...accountPlugins);
+
+	for (const plugin of plugins) {
 		import('@/plugin.js').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
 			await new Promise(r => setTimeout(r, 0));
@@ -272,6 +278,13 @@ export async function mainBoot() {
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
 		main.on('myTokenRegenerated', () => {
 			signout();
+		});
+
+		// プラグインに変更が入ったら自動でリロードする
+		stream.useChannel('main').on('registryUpdated', ({ scope, key }: { scope: string[], key: string, value: any }) => {
+			if (scope.length === 1 && scope[0] === 'client' && key === 'plugins') {
+				unisonReload();
+			}
 		});
 	}
 

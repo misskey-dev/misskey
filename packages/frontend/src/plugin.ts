@@ -5,11 +5,23 @@
 
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { inputText } from '@/os.js';
+import { inputText, api } from '@/os.js';
 import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
+import { $i } from './account.js';
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
+
+export async function getPluginList(): Promise<Record<string, Plugin>> {
+	if ($i == null) return {};
+
+	try {
+		return await api('i/registry/get', { scope: ['client'], key: 'plugins' });
+	} catch (err) {
+		if (err.code === 'NO_SUCH_KEY') return {};
+		throw err;
+	}
+}
 
 export async function install(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
@@ -17,7 +29,6 @@ export async function install(plugin: Plugin): Promise<void> {
 
 	const aiscript = new Interpreter(createPluginEnv({
 		plugin: plugin,
-		storageKey: 'plugins:' + plugin.id,
 	}), {
 		in: (q): Promise<string> => {
 			return new Promise(ok => {
@@ -51,14 +62,14 @@ export async function install(plugin: Plugin): Promise<void> {
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 }
 
-function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
+function createPluginEnv(opts: { plugin: Plugin; }): Record<string, values.Value> {
 	const config = new Map<string, values.Value>();
 	for (const [k, v] of Object.entries(opts.plugin.config ?? {})) {
 		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
 	return {
-		...createAiScriptEnv({ ...opts, token: opts.plugin.token }),
+		...createAiScriptEnv({ token: opts.plugin.token, storageMetadata: { type: 'plugins', id: opts.plugin.id, fromAccount: opts.plugin.fromAccount } }),
 		//#region Deprecated
 		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);

@@ -6,12 +6,12 @@
 import { utils, values } from '@syuilo/aiscript';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
+import { StorageMetadata, loadScriptStorage, saveScriptStorage } from './storage.js';
 
-export function createAiScriptEnv(opts) {
+export function createAiScriptEnv(opts: { token: string; storageMetadata: StorageMetadata; }) {
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
@@ -60,14 +60,35 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
-		'Mk:save': values.FN_NATIVE(([key, value]) => {
+		'Mk:save': values.FN_NATIVE(async ([key, value, option]) => {
 			utils.assertString(key);
-			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));
-			return values.NULL;
+			if (option) {
+				utils.assertObject(option);
+				if (option.value.has('toAccount')) {
+					utils.assertBoolean(option.value.get('toAccount'));
+				}
+			}
+			const saveToAccount = option && option.value.has('toAccount') ? option.value.get('toAccount').value : false;
+			return saveScriptStorage(saveToAccount, opts.storageMetadata, key.value, utils.valToJs(value)).then(() => {
+				return values.NULL;
+			}, err => {
+				return values.ERROR('request_failed', utils.jsToVal(err));
+			});
 		}),
-		'Mk:load': values.FN_NATIVE(([key]) => {
+		'Mk:load': values.FN_NATIVE(async ([key, option]) => {
 			utils.assertString(key);
-			return utils.jsToVal(JSON.parse(miLocalStorage.getItem(`aiscript:${opts.storageKey}:${key.value}`)));
+			if (option) {
+				utils.assertObject(option);
+				if (option.value.has('toAccount')) {
+					utils.assertBoolean(option.value.get('toAccount'));
+				}
+			}
+			const loadToAccount = option && option.value.has('toAccount') ? option.value.get('toAccount').value : false;
+			return loadScriptStorage(loadToAccount, opts.storageMetadata, key.value).then(res => {
+				return utils.jsToVal(res);
+			}, err => {
+				return values.ERROR('request_failed', utils.jsToVal(err));
+			});
 		}),
 		'Mk:url': values.FN_NATIVE(() => {
 			return values.STR(window.location.href);

@@ -59,8 +59,8 @@
 		"querystring": "0.2.1",
 		"rollup": "4.4.1",
 		"sanitize-html": "2.11.0",
-		"shiki": "^0.14.5",
 		"sass": "1.69.5",
+		"shiki": "^0.14.5",
 		"strict-event-emitter-types": "2.0.0",
 		"textarea-caret": "3.1.0",
 		"three": "0.158.0",
@@ -75,7 +75,8 @@
 		"vanilla-tilt": "1.8.1",
 		"vite": "4.5.0",
 		"vue": "3.3.8",
-		"vuedraggable": "next"
+		"vuedraggable": "next",
+		"xxhash-wasm": "1.0.2"
 	},
 	"devDependencies": {
 		"@storybook/addon-actions": "7.5.3",

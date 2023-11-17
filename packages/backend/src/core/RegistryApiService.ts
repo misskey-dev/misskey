@@ -131,7 +131,7 @@ export class RegistryApiService {
 	}
 
 	@bindThis
-	public async remove(userId: MiUser['id'], domain: string | null, scope: string[], key: string) {
+	public async remove(userId: MiUser['id'], domain: string | null, scope: string[], key?: string) {
 		const query = this.registryItemsRepository.createQueryBuilder().delete();
 		if (domain) {
 			query.where('domain = :domain', { domain: domain });
@@ -139,7 +139,9 @@ export class RegistryApiService {
 			query.where('domain IS NULL');
 		}
 		query.andWhere('userId = :userId', { userId: userId });
-		query.andWhere('key = :key', { key: key });
+		if (key) {
+			query.andWhere('key = :key', { key: key });
+		}
 		query.andWhere('scope = :scope', { scope: scope });
 
 		await query.execute();

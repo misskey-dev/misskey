@@ -11,6 +11,8 @@ import type { Plugin } from '@/store.js';
 import { ColdDeviceStorage } from '@/store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { getPluginList } from '@/plugin.js';
+import { toHash } from './xxhash.js';
 
 export type AiScriptPluginMeta = {
 	name: string;
@@ -19,6 +21,7 @@ export type AiScriptPluginMeta = {
 	description?: string;
 	permissions?: string[];
 	config?: Record<string, any>;
+	id?: string;
 };
 
 const parser = new Parser();
@@ -36,7 +39,35 @@ export function savePlugin({ id, meta, src, token }: {
 		configData: {},
 		token: token,
 		src: src,
+		fromAccount: false,
 	} as Plugin));
+}
+
+async function savePluginToAccount(pluginOnlyOverride: boolean, { id, meta, src, token }: {
+	id: string;
+	meta: AiScriptPluginMeta;
+	src: string;
+	token: string;
+}) {
+	const plugins = await getPluginList();
+	// pluginOnlyOverrideがtrueになっているということはすでに重複していることが確定している
+	const configData = pluginOnlyOverride ? plugins[id].configData : {};
+	const pluginToken = pluginOnlyOverride ? plugins[id].token : token;
+	plugins[id] = {
+		...meta,
+		id,
+		active: true,
+		configData,
+		token: pluginToken,
+		src: src,
+		fromAccount: true,
+	} as Plugin;
+
+	if (!pluginOnlyOverride) {
+		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', id] });
+	}
+
+	await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 }
 
 export function isSupportedAiScriptVersion(version: string): boolean {
@@ -76,9 +107,13 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		throw new Error('Metadata not found');
 	}
 
-	const { name, version, author, description, permissions, config } = metadata;
+	const { name, version, author, description, permissions, config, id } = metadata;
 	if (name == null || version == null || author == null) {
 		throw new Error('Required property not found');
+	}
+
+	if (id != null && !/^[a-zA-Z0-9_]+$/.test(id)) {
+		throw new Error('Invalid id format.');
 	}
 
 	return {
@@ -88,6 +123,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		description,
 		permissions,
 		config,
+		id,
 	};
 }
 
@@ -101,7 +137,21 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		realMeta = meta;
 	}
 
-	const token = realMeta.permissions == null || realMeta.permissions.length === 0 ? null : await new Promise((res, rej) => {
+	const plugins = Object.keys(await getPluginList());
+	const pluginHash = await toHash(realMeta.name, realMeta.author);
+
+	const { isLocal, pluginOnlyOverride } = await new Promise((res, rej) => {
+		const pluginCheckId = realMeta.id ?? pluginHash;
+		os.popup(defineAsyncComponent(() => import('@/components/MkPluginSelectSaveWindow.vue')), {
+			isExistsFromAccount: plugins.some(v => v === pluginCheckId)
+		}, {
+			done: result => {
+				res(result);
+			},
+		}, 'closed');
+	});
+
+	const token = realMeta.permissions == null || realMeta.permissions.length === 0 || pluginOnlyOverride ? null : await new Promise((res, rej) => {
 		os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
@@ -120,10 +170,19 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		}, 'closed');
 	});
 
-	savePlugin({
-		id: uuid(),
-		meta: realMeta,
-		token,
-		src: code,
-	});
+	if (isLocal) {
+		savePlugin({
+			id: realMeta.id ?? uuid(),
+			meta: realMeta,
+			token,
+			src: code,
+		});
+	} else {
+		await savePluginToAccount(pluginOnlyOverride, {
+			id: realMeta.id ?? pluginHash,
+			meta: realMeta,
+			token,
+			src: code,
+		});
+	}
 }

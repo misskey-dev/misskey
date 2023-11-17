@@ -231,6 +231,7 @@ import * as ep___i_registry_get from './endpoints/i/registry/get.js';
 import * as ep___i_registry_keysWithType from './endpoints/i/registry/keys-with-type.js';
 import * as ep___i_registry_keys from './endpoints/i/registry/keys.js';
 import * as ep___i_registry_remove from './endpoints/i/registry/remove.js';
+import * as ep___i_registry_removeAllKeysInScope from './endpoints/i/registry/remove-all-keys-in-scope.js';
 import * as ep___i_registry_scopesWithDomain from './endpoints/i/registry/scopes-with-domain.js';
 import * as ep___i_registry_set from './endpoints/i/registry/set.js';
 import * as ep___i_revokeToken from './endpoints/i/revoke-token.js';
@@ -588,6 +589,7 @@ const eps = [
 	['i/registry/keys-with-type', ep___i_registry_keysWithType],
 	['i/registry/keys', ep___i_registry_keys],
 	['i/registry/remove', ep___i_registry_remove],
+	['i/registry/remove-all-keys-in-scope', ep___i_registry_removeAllKeysInScope],
 	['i/registry/scopes-with-domain', ep___i_registry_scopesWithDomain],
 	['i/registry/set', ep___i_registry_set],
 	['i/revoke-token', ep___i_revokeToken],

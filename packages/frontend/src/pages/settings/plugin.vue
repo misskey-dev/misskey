@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_m" style="padding: 20px;">
 				<div class="_gaps_s">
-					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
+					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span v-if="plugin.fromAccount" :class="$style.fromAccount">{{ '同期' }}</span><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 					<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 				</div>
 
@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_buttons">
 					<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+					<MkButton v-if="!plugin.fromAccount" inline @click="moveToAccount(plugin)"><i class="ti ti-link"></i> {{ i18n.ts.movePluginToAccount }}</MkButton>
 					<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 				</div>
 
@@ -74,17 +75,61 @@ import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { getPluginList } from '@/plugin.js';
+import { toHash } from '@/scripts/xxhash.js';
+import { savePluginToAccount } from '@/scripts/install-plugin.js';
 
-const plugins = ref(ColdDeviceStorage.get('plugins'));
+let plugins = Object.values(await getPluginList());
+plugins.push(...ColdDeviceStorage.get('plugins'));
+plugins = ref(plugins);
 
 async function uninstall(plugin) {
-	ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
+	if (plugin.fromAccount) {
+		let plugins = await getPluginList();
+		delete plugins[plugin.id];
+		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', plugin.id] });
+		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+	} else {
+		const coldPlugins = ColdDeviceStorage.get('plugins');
+		ColdDeviceStorage.set('plugins', coldPlugins.filter(x => x.id !== plugin.id));
+	}
 	await os.apiWithDialog('i/revoke-token', {
 		token: plugin.token,
 	});
 	nextTick(() => {
 		unisonReload();
 	});
+}
+
+async function moveToAccount(plugin) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.movePluginToAccountConfirm,
+	});
+
+	if (canceled) return;
+
+	const hash = await toHash(plugin.name, plugin.author);
+	const plugins = await getPluginList();
+	if (Object.keys(plugins).some(v => v === hash)) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.overridePluginConfirm,
+		});
+
+		if (canceled) return;
+
+		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', hash] });
+	}
+
+	const coldPlugins = ColdDeviceStorage.get('plugins');
+	ColdDeviceStorage.set('plugins', coldPlugins.filter(x => x.id !== plugin.id));
+
+	plugin.id = hash;
+	plugin.fromAccount = true;
+	plugins[hash] = plugin;
+
+	await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 }
 
 function copy(plugin) {
@@ -102,9 +147,15 @@ async function config(plugin) {
 	const { canceled, result } = await os.form(plugin.name, config);
 	if (canceled) return;
 
-	const coldPlugins = ColdDeviceStorage.get('plugins');
-	coldPlugins.find(p => p.id === plugin.id)!.configData = result;
-	ColdDeviceStorage.set('plugins', coldPlugins);
+	if (plugin.fromAccount) {
+		let plugins = await getPluginList();
+		plugins[plugin.id].configData = result;
+		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+	} else {
+		const coldPlugins = ColdDeviceStorage.get('plugins');
+		coldPlugins.find(p => p.id === plugin.id)!.configData = result;
+		ColdDeviceStorage.set('plugins', coldPlugins);
+	}
 
 	nextTick(() => {
 		location.reload();
@@ -130,3 +181,15 @@ definePageMetadata({
 	icon: 'ti ti-plug',
 });
 </script>
+
+<style lang="scss" module>
+	.fromAccount {
+		margin-left: 0.7em;
+		font-size: 65%;
+		padding: 2px 3px;
+		color: var(--accent);
+		border: solid 1px var(--accent);
+		border-radius: 4px;
+		vertical-align: top;
+	}
+</style>
