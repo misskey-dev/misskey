@@ -52,7 +52,7 @@ class LocalTimelineChannel extends Channel {
 
 		if (note.user.host !== null) return;
 		if (note.visibility !== 'public') return;
-		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
+		if (note.channelId != null) return;
 
 		// ファイルを含まない投稿は除外
 		if (this.withFiles && (note.files === undefined || note.files.length === 0)) return;

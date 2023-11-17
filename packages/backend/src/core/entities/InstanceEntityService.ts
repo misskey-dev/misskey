@@ -47,6 +47,7 @@ export class InstanceEntityService {
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
+			latestRequestReceivedAt: instance.latestRequestReceivedAt ? instance.latestRequestReceivedAt.toISOString() : null,
 		};
 	}
 
