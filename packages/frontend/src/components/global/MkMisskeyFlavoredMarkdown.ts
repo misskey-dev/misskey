@@ -239,10 +239,15 @@ export default function(props: MfmProps) {
 						break;
 					}
 					case 'ruby': {
-						const child = token.children[0];
-						const text = child.type === 'text' ? child.props.text : '';
-						return h('ruby', {
-						}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
+						if (token.children.length === 1) {
+							const child = token.children[0];
+							const text = child.type === 'text' ? child.props.text : '';
+							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
+						} else {
+							const rt = token.children.at(-1)!;
+							const text = rt.type === 'text' ? rt.props.text : '';
+							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
+						}
 					}
 				}
 				if (style == null) {
