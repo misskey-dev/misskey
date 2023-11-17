@@ -64,11 +64,11 @@ export function createAiScriptEnv(opts: { token: string; storageMetadata: Storag
 			utils.assertString(key);
 			if (option) {
 				utils.assertObject(option);
-				if (option.value.toAccount) {
-					utils.assertBoolean(option.value.toAccount);
+				if (option.value.has('toAccount')) {
+					utils.assertBoolean(option.value.get('toAccount'));
 				}
 			}
-			const saveToAccount = option && option.value.toAccount ? option.value.toAccount.value : false;
+			const saveToAccount = option && option.value.has('toAccount') ? option.value.get('toAccount').value : false;
 			return saveScriptStorage(saveToAccount, opts.storageMetadata, key.value, utils.valToJs(value)).then(() => {
 				return values.NULL;
 			}, err => {
@@ -79,11 +79,11 @@ export function createAiScriptEnv(opts: { token: string; storageMetadata: Storag
 			utils.assertString(key);
 			if (option) {
 				utils.assertObject(option);
-				if (option.value.toAccount) {
-					utils.assertBoolean(option.value.toAccount);
+				if (option.value.has('toAccount')) {
+					utils.assertBoolean(option.value.get('toAccount'));
 				}
 			}
-			const loadToAccount = option && option.value.toAccount ? option.value.toAccount.value : false;
+			const loadToAccount = option && option.value.has('toAccount') ? option.value.get('toAccount').value : false;
 			return loadScriptStorage(loadToAccount, opts.storageMetadata, key.value).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
