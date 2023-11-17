@@ -1,0 +1,47 @@
+name: CD for Misskey(na2na)
+
+on:
+  push:
+    branches:
+      - misskey-na2na
+  workflow_dispatch:
+
+env:
+  DOCKER_TAG_API_URI: https://registry.hub.docker.com/v2/repositories/na2na/misskey-na2na/tags
+
+jobs:
+  Prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      tag_exists: ${{ steps.check_docker_hub.outputs.tag_exists }}
+      MISSKEY_VERSION: ${{ steps.check_docker_hub.outputs.MISSKEY_VERSION }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4.1.1
+      - name: Get current version
+        id: get_version
+        run: |
+          echo "MISSKEY_VERSION=$(cat package.json | jq -r '.version')" >> $GITHUB_ENV
+      - name: Check Docker Hub
+        id: check_docker_hub
+        run: |
+          DOCKER_HUB_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/na2na/misskey-na2na/tags | jq -r '.results[] | .name')
+          if [ $(echo $DOCKER_HUB_TAGS | grep -c $MISSKEY_VERSION) -eq 1 ]; then
+            echo "Tag $MISSKEY_VERSION already exists on Docker Hub."
+          else
+            echo "Tag $MISSKEY_VERSION does not exist on Docker Hub."
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+            echo "MISSKEY_VERSION=$MISSKEY_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+  Build-and-Push-to-Docker-Hub:
+    needs:
+      - Prepare
+    if: ${{ needs.Prepare.outputs.tag_exists == 'false' }}
+    with:
+      MISSKEY_VERSION: ${{ needs.Prepare.outputs.MISSKEY_VERSION }}
+      IMAGE_REPOSITORY: na2na
+      IMAGE_NAME: misskey-na2na
+    uses: ./.github/workflows/image-push-for-misskey-na2na-release.yml
+    secrets: inherit

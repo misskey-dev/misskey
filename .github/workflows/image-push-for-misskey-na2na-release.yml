@@ -1,0 +1,53 @@
+name: Publish Docker Image(misskey-na2na)
+
+on:
+  workflow_call:
+    inputs:
+      MISSKEY_VERSION:
+        required: true
+        type: string
+      IMAGE_REPOSITORY:
+        required: true
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+    secrets: {}
+
+jobs:
+  Build-and-Push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare for build
+        id: prepare-for-build
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Cache Docker Build Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: docker-build-cache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            docker-build-cache-${{ github.ref }}
+            docker-build-cache-
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker Image
+        run: |
+          docker buildx bake \
+              -f 'infra/web/image-bake.hcl' \
+              --builder="${{ steps.buildx.outputs.name }}" \
+              --set='web.tags=${{ inputs.IMAGE_REPOSITORY }}/${{ inputs.IMAGE_NAME }}:${{ inputs.MISSKEY_VERSION }}' \
+              --set='web.tags=${{ inputs.IMAGE_REPOSITORY }}/${{ inputs.IMAGE_NAME }}:${{ steps.prepare-for-build.outputs.sha_short }}' \
+              --set='web.tags=${{ inputs.IMAGE_REPOSITORY }}/${{ inputs.IMAGE_NAME }}:release' \
+              --push
