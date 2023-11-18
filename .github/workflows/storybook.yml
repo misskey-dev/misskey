@@ -107,7 +107,7 @@ jobs:
             body: 'Chromatic detects changes. Please [review the changes on Chromatic](https://www.chromatic.com/builds?appId=6428f7d7b962f0b79f97d6e4).'
           })
     - name: Notify that Chromatic will skip testing
-      uses: actions/github-script@v7.0.0
+      uses: actions/github-script@v7.0.1
       if: github.event_name == 'pull_request' && steps.chromatic_pull_request.outputs.skip == 'true'
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
