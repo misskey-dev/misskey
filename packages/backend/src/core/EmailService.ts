@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URLSearchParams } from 'node:url';
 import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
+import { SubOutputFormat } from 'deep-email-validator/dist/output/output.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -13,9 +15,7 @@ import type Logger from '@/logger.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import {URLSearchParams} from "node:url";
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import {SubOutputFormat} from "deep-email-validator/dist/output/output.js";
 
 @Injectable()
 export class EmailService {
@@ -167,7 +167,7 @@ export class EmailService {
 		const verifymailApi = meta.enableVerifymailApi && meta.verifymailAuthKey != null;
 		let validated;
 
-		if (meta.enableActiveEmailValidation) {
+		if (meta.enableActiveEmailValidation && meta.verifymailAuthKey) {
 			if (verifymailApi) {
 				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
 			} else {
