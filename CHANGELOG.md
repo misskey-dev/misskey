@@ -5,7 +5,7 @@
 -
 
 ### Client
--
+- Fix: MFMでルビの中のテキストがnyaizeされない問題を修正
 
 ### Server
 -
