@@ -87,7 +87,6 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'reactionPickerWidth',
 	'reactionPickerHeight',
 	'reactionPickerUseDrawerForMobile',
-	'recentlyUsedEmojis',
 	'defaultSideView',
 	'menuDisplay',
 	'reportError',
