@@ -18,7 +18,7 @@
 - Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
 
 ### Client
--
+- Enhance: 絵文字のオートコンプリート機能強化 #12364
 
 ### Server
 -
