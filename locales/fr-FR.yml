@@ -1728,7 +1728,7 @@ _profile:
   metadataDescription: "Vous pouvez afficher jusqu'à quatre informations supplémentaires dans votre profil."
   metadataLabel: "Étiquette"
   metadataContent: "Contenu"
-  changeAvatar: "Changer l'image de profil"
+  changeAvatar: "Changer l'avatar"
   changeBanner: "Changer de bannière"
 _exportOrImport:
   allNotes: "Toutes les notes"
