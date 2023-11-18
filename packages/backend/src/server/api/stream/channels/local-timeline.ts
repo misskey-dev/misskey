@@ -16,6 +16,9 @@ class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
+	private withRenotes: boolean;
+	private withReplies: boolean;
+	private withFiles: boolean;
 	private q: string[][];
 
 	constructor(
@@ -42,6 +45,20 @@ class LocalTimelineChannel extends Channel {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
 		if (!matched) return;
+
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
+		if (note.visibility !== 'public') return;
+		if (note.channelId != null) return;
+
+		// 関係ない返信は除外
+		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
+			const reply = note.reply;
+			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
+		}
+
+		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
