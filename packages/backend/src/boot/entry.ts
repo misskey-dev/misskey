@@ -98,7 +98,7 @@ if (cluster.isPrimary || envOption.disableClustering) {
 	}
 }
 
-if (cluster.isWorker || envOption.disableClustering) {
+if (cluster.isWorker) {
 	await workerMain();
 }
 
