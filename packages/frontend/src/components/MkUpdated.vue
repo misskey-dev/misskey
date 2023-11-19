@@ -27,7 +27,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
-	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+	window.open('https://go.misskey.io/changelog', '_blank', 'noopener');
 };
 
 onMounted(() => {
