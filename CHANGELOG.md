@@ -18,7 +18,7 @@
 - Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
 
 ### Client
--
+- Fix: ウィジェットのジョブキューにて音声の発音方法変更に追従できていなかったのを修正 #12367
 
 ### Server
 -
