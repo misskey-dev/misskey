@@ -345,13 +345,13 @@ export type Endpoints = {
         };
         res: null;
     };
-    'admin/delete-user-avatar': {
+    'admin/unset-user-avatar': {
         req: {
             userId: User['id'];
         };
         res: null;
     };
-    'admin/delete-user-banner': {
+    'admin/unset-user-banner': {
         req: {
             userId: User['id'];
         };
