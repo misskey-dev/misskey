@@ -52,20 +52,16 @@ export function getConfig(): UserConfig {
 					changeOrigin: true,
 					target: 'http://127.0.0.1:3000/',
 				},
-
-				'/assets': {
-					target: 'http://127.0.0.1:3000/',
-				},
-				'/twemoji': {
-					target: 'http://127.0.0.1:3000/',
-				},
-				'/sw.js': {
-					target: 'http://127.0.0.1:3000/',
-				},
+				'/assets': 'http://127.0.0.1:3000/',
+				'/twemoji': 'http://127.0.0.1:3000/',
+				'/fluent-emoji': 'http://127.0.0.1:3000/',
+				'/sw.js': 'http://127.0.0.1:3000/',
 				'/streaming': {
 					target: 'ws://127.0.0.1:3000/',
 					ws: true,
 				},
+				"favicon.ico": 'http://127.0.0.1:3000/',
+				"client-assets": "http://127.0.0.1:3000/"
 
 			}
 		},

@@ -187,6 +187,12 @@ export async function common(createVue: () => App<Element>) {
 			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
 			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 			defaultStore.set('themeInitial', false);
+		} else {
+			if (defaultStore.state.darkMode) {
+				applyTheme(darkTheme.value);
+			} else {
+				applyTheme(lightTheme.value);
+			}
 		}
 	});
 
