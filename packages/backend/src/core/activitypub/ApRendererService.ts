@@ -9,24 +9,25 @@ import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import type { IMentionedRemoteUsers, MiNote } from '@/models/entities/Note.js';
-import type { MiBlocking } from '@/models/entities/Blocking.js';
-import type { MiRelay } from '@/models/entities/Relay.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
-import type { MiEmoji } from '@/models/entities/Emoji.js';
-import type { MiPoll } from '@/models/entities/Poll.js';
-import type { MiPollVote } from '@/models/entities/PollVote.js';
+import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
+import type { MiBlocking } from '@/models/Blocking.js';
+import type { MiRelay } from '@/models/Relay.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiPollVote } from '@/models/PollVote.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { MiUserKeypair } from '@/models/entities/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
+import type { MiUserKeypair } from '@/models/UserKeypair.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { IdService } from '@/core/IdService.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
@@ -49,9 +50,6 @@ export class ApRendererService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
@@ -62,6 +60,7 @@ export class ApRendererService {
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
+		private idService: IdService,
 	) {
 	}
 
@@ -108,7 +107,7 @@ export class ApRendererService {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(note.userId),
 			type: 'Announce',
-			published: note.createdAt.toISOString(),
+			published: this.idService.parse(note.id).date.toISOString(),
 			to,
 			cc,
 			object,
@@ -140,7 +139,7 @@ export class ApRendererService {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(note.userId),
 			type: 'Create',
-			published: note.createdAt.toISOString(),
+			published: this.idService.parse(note.id).date.toISOString(),
 			object,
 		};
 
@@ -440,7 +439,7 @@ export class ApRendererService {
 			},
 			_misskey_quote: quote,
 			quoteUrl: quote,
-			published: note.createdAt.toISOString(),
+			published: this.idService.parse(note.id).date.toISOString(),
 			to,
 			cc,
 			inReplyTo,
@@ -465,7 +464,7 @@ export class ApRendererService {
 		const attachment = profile.fields.map(field => ({
 			type: 'PropertyValue',
 			name: field.name,
-			value: /^https?:/.test(field.value)
+			value: (field.value.startsWith('http://') || field.value.startsWith('https://'))
 				? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
 				: field.value,
 		}));

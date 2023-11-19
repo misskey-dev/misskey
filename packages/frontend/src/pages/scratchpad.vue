@@ -4,55 +4,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800">
-	<div :class="$style.root">
-		<div :class="$style.editor" class="_panel">
-			<PrismEditor v-model="code" class="_code code" :highlight="highlighter" :lineNumbers="false"/>
-			<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
-		</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader/></template>
 
-		<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
-			<template #header>UI</template>
-			<div :class="$style.ui">
-				<MkAsUi :component="root" :components="components" size="small"/>
+	<MkSpacer :contentMax="800">
+		<div :class="$style.root">
+			<div class="_gaps_s">
+				<div :class="$style.editor" class="_panel">
+					<MkCodeEditor v-model="code" lang="aiscript"/>
+				</div>
+				<MkButton primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
 			</div>
-		</MkContainer>
 
-		<MkContainer :foldable="true" class="">
-			<template #header>{{ i18n.ts.output }}</template>
-			<div :class="$style.logs">
-				<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+			<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
+				<template #header>UI</template>
+				<div :class="$style.ui">
+					<MkAsUi :component="root" :components="components" size="small"/>
+				</div>
+			</MkContainer>
+
+			<MkContainer :foldable="true" class="">
+				<template #header>{{ i18n.ts.output }}</template>
+				<div :class="$style.logs">
+					<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+				</div>
+			</MkContainer>
+
+			<div class="">
+				{{ i18n.ts.scratchpadDescription }}
 			</div>
-		</MkContainer>
-
-		<div class="">
-			{{ i18n.ts.scratchpadDescription }}
 		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
-import 'prismjs';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism-okaidia.css';
-import { PrismEditor } from 'vue-prism-editor';
-import 'vue-prism-editor/dist/prismeditor.min.css';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
+import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
-import { miLocalStorage } from '@/local-storage';
-import { claimAchievement } from '@/scripts/achievements';
+import { miLocalStorage } from '@/local-storage.js';
+import { claimAchievement } from '@/scripts/achievements.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
@@ -109,6 +109,13 @@ async function run() {
 				print: true,
 			});
 		},
+		err: (err) => {
+			os.alert({
+				type: 'error',
+				title: 'AiScript Error',
+				text: err.toString(),
+			});
+		},
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
@@ -124,26 +131,25 @@ async function run() {
 	let ast;
 	try {
 		ast = parser.parse(code.value);
-	} catch (error) {
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :(',
+			title: 'Syntax Error',
+			text: err.toString(),
 		});
 		return;
 	}
 	try {
 		await aiscript.exec(ast);
 	} catch (err: any) {
+		// AiScript runtime errors should be processed by error callback function
+		// so errors caught here are AiScript's internal errors.
 		os.alert({
 			type: 'error',
-			title: 'AiScript Error',
-			text: err.message,
+			title: 'Internal Error',
+			text: err.toString(),
 		});
 	}
-}
-
-function highlighter(code) {
-	return highlight(code, languages.js, 'javascript');
 }
 
 onDeactivated(() => {
@@ -173,6 +179,14 @@ definePageMetadata({
 
 .editor {
 	position: relative;
+}
+
+.code {
+	background: #2d2d2d;
+	color: #ccc;
+	font-size: 14px;
+	line-height: 1.5;
+	padding: 5px;
 }
 
 .ui {

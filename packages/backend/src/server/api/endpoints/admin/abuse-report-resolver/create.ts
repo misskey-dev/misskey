@@ -9,7 +9,7 @@ import RE2 from 're2';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
-import type { AbuseReportResolversRepository } from '@/models/index.js';
+import type { AbuseReportResolversRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 
 export const meta = {
@@ -124,7 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				ps.expiresAt === '1year' ? function () { expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + 1); } : function () { expirationDate = null; })();
 
 			return await this.abuseReportResolverRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(now.getTime()),
 				createdAt: now,
 				updatedAt: now,
 				name: ps.name,

@@ -6,10 +6,8 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ZipReader } from 'slacc';
-import { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { EmojisRepository, DriveFilesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { createTempDir } from '@/misc/create-temp.js';
@@ -26,15 +24,6 @@ export class ImportCustomEmojisProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 

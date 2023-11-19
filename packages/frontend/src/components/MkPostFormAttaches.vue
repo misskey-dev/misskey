@@ -20,11 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
+import { defineAsyncComponent, inject } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -33,17 +33,21 @@ const props = defineProps<{
 	detachMediaFn?: (id: string) => void;
 }>();
 
+const mock = inject<boolean>('mock', false);
+
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;
 	(ev: 'detach', id: string): void;
-	(ev: 'changeSensitive', file: misskey.entities.DriveFile, isSensitive: boolean): void;
-	(ev: 'changeName', file: misskey.entities.DriveFile, newName: string): void;
-	(ev: 'replaceFile', file: misskey.entities.DriveFile, newFile: misskey.entities.DriveFile): void;
+	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
+	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
+	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
 }>();
 
 let menuShowing = false;
 
 function detachMedia(id: string) {
+	if (mock) return;
+
 	if (props.detachMediaFn) {
 		props.detachMediaFn(id);
 	} else {
@@ -52,6 +56,11 @@ function detachMedia(id: string) {
 }
 
 function toggleSensitive(file) {
+	if (mock) {
+		emit('changeSensitive', file, !file.isSensitive);
+		return;
+	}
+
 	os.api('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
@@ -59,7 +68,10 @@ function toggleSensitive(file) {
 		emit('changeSensitive', file, !file.isSensitive);
 	});
 }
+
 async function rename(file) {
+	if (mock) return;
+
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
 		default: file.name,
@@ -76,6 +88,8 @@ async function rename(file) {
 }
 
 async function describe(file) {
+	if (mock) return;
+
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
@@ -92,12 +106,14 @@ async function describe(file) {
 	}, 'closed');
 }
 
-async function crop(file: misskey.entities.DriveFile): Promise<void> {
+async function crop(file: Misskey.entities.DriveFile): Promise<void> {
+	if (mock) return;
+
 	const newFile = await os.cropImage(file, { aspectRatio: NaN });
 	emit('replaceFile', file, newFile);
 }
 
-function showFileMenu(file: misskey.entities.DriveFile, ev: MouseEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');

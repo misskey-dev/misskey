@@ -8,16 +8,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, MiAccessToken } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { UsersRepository, MiAccessToken } from '@/models/_.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { MiLocalUser } from '@/models/entities/User.js';
+import { MiLocalUser } from '@/models/User.js';
+import { UserService } from '@/core/UserService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import MainStreamConnection from './stream/index.js';
+import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type * as http from 'node:http';
 
@@ -28,9 +28,6 @@ export class StreamingApiServerService {
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
@@ -42,6 +39,8 @@ export class StreamingApiServerService {
 		private authenticateService: AuthenticateService,
 		private channelsService: ChannelsService,
 		private notificationService: NotificationService,
+		private usersService: UserService,
+		private channelFollowingService: ChannelFollowingService,
 	) {
 	}
 
@@ -96,6 +95,7 @@ export class StreamingApiServerService {
 				this.noteReadService,
 				this.notificationService,
 				this.cacheService,
+				this.channelFollowingService,
 				user, app,
 			);
 
@@ -135,14 +135,10 @@ export class StreamingApiServerService {
 			this.#connections.set(connection, Date.now());
 
 			const userUpdateIntervalId = user ? setInterval(() => {
-				this.usersRepository.update(user.id, {
-					lastActiveDate: new Date(),
-				});
+				this.usersService.updateLastActiveDate(user);
 			}, 1000 * 60 * 5) : null;
 			if (user) {
-				this.usersRepository.update(user.id, {
-					lastActiveDate: new Date(),
-				});
+				this.usersService.updateLastActiveDate(user);
 			}
 
 			connection.once('close', () => {

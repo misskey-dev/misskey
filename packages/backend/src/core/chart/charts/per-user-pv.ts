@@ -5,7 +5,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -17,9 +17,8 @@ import type { KVs } from '../core.js';
 /**
  * ユーザーごとのプロフィール被閲覧数に関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class PerUserPvChart extends Chart<typeof schema> {
+export default class PerUserPvChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

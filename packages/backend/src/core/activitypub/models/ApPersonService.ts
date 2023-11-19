@@ -8,28 +8,28 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
-import { MiUser } from '@/models/entities/User.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import { MiUser } from '@/models/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/Note.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MfmService } from '@/core/MfmService.js';
 import { toArray } from '@/misc/prelude/array.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { MiUserProfile } from '@/models/entities/UserProfile.js';
-import { MiUserPublickey } from '@/models/entities/UserPublickey.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
+import { MiUserPublickey } from '@/models/UserPublickey.js';
 import type UsersChart from '@/core/chart/charts/users.js';
 import type InstanceChart from '@/core/chart/charts/instance.js';
 import type { HashtagService } from '@/core/HashtagService.js';
-import { MiUserNotePining } from '@/models/entities/UserNotePining.js';
+import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -284,7 +284,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
-		const isBot = getApType(object) === 'Service';
+		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -301,7 +301,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
 			.then(_emojis => _emojis.map(emoji => emoji.name))
 			.catch(err => {
-				this.logger.error('error occured while fetching user emojis', { stack: err });
+				this.logger.error('error occurred while fetching user emojis', { stack: err });
 				return [];
 			});
 		//#endregion
@@ -310,10 +310,9 @@ export class ApPersonService implements OnModuleInit {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new MiUser({
-					id: this.idService.genId(),
+					id: this.idService.gen(),
 					avatarId: null,
 					bannerId: null,
-					createdAt: new Date(),
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
 					isLocked: person.manuallyApprovesFollowers,
@@ -403,7 +402,7 @@ export class ApPersonService implements OnModuleInit {
 			// Register to the cache
 			this.cacheService.uriPersonCache.set(user.uri, user);
 		} catch (err) {
-			this.logger.error('error occured while fetching user avatar/banner', { stack: err });
+			this.logger.error('error occurred while fetching user avatar/banner', { stack: err });
 		}
 		//#endregion
 
@@ -472,7 +471,7 @@ export class ApPersonService implements OnModuleInit {
 			emojis: emojiNames,
 			name: truncate(person.name, nameLength),
 			tags,
-			isBot: getApType(object) === 'Service',
+			isBot: getApType(object) === 'Service' || getApType(object) === 'Application',
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
@@ -638,8 +637,7 @@ export class ApPersonService implements OnModuleInit {
 			for (const note of featuredNotes.filter((note): note is MiNote => note != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(MiUserNotePining, {
-					id: this.idService.genId(new Date(Date.now() + td)),
-					createdAt: new Date(),
+					id: this.idService.gen(Date.now() + td),
 					userId: user.id,
 					noteId: note.id,
 				});

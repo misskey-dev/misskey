@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div v-if="tab === 'all'">
-			<XNotifications class="notifications" :includeTypes="includeTypes"/>
+			<XNotifications class="notifications" :excludeTypes="excludeTypes"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
 			<MkNotes :pagination="mentionsPagination"/>
@@ -24,13 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { notificationTypes } from '@/const';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { notificationTypes } from '@/const.js';
 
 let tab = $ref('all');
 let includeTypes = $ref<string[] | null>(null);
+const excludeTypes = $computed(() => includeTypes ? notificationTypes.filter(t => !includeTypes.includes(t)) : null);
 
 const mentionsPagination = {
 	endpoint: 'notes/mentions' as const,

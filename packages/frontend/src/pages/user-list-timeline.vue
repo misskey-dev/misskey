@@ -26,11 +26,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { scroll } from '@/scripts/scroll';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import { scroll } from '@/scripts/scroll.js';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 
 const router = useRouter();
 
@@ -61,20 +61,7 @@ function settings() {
 	router.push(`/my/lists/${props.listId}`);
 }
 
-async function timetravel() {
-	const { canceled, result: date } = await os.inputDate({
-		title: i18n.ts.date,
-	});
-	if (canceled) return;
-
-	tlEl.timetravel(date);
-}
-
 const headerActions = $computed(() => list ? [{
-	icon: 'ti ti-calendar-time',
-	text: i18n.ts.jumpToSpecifiedDate,
-	handler: timetravel,
-}, {
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,

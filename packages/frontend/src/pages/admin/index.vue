@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { instance } from '@/instance';
-import * as os from '@/os';
-import { lookupUser } from '@/scripts/lookup-user';
-import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -116,6 +116,11 @@ const menuDef = $computed(() => [{
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',
 	}, {
+		icon: 'ti ti-sparkles',
+		text: i18n.ts.avatarDecorations,
+		to: '/admin/avatar-decorations',
+		active: currentPage?.route.name === 'avatarDecorations',
+	}, {
 		icon: 'ti ti-whirl',
 		text: i18n.ts.federation,
 		to: '/admin/federation',
@@ -145,6 +150,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
 		active: currentPage?.route.name === 'abuses',
+	}, {
+		icon: 'ti ti-list-search',
+		text: i18n.ts.moderationLogs,
+		to: '/admin/modlog',
+		active: currentPage?.route.name === 'modlog',
 	}],
 }, {
 	title: i18n.ts.settings,
@@ -254,7 +264,7 @@ provideMetadataReceiver((info) => {
 	}
 });
 
-const invite = () => {
+function invite() {
 	os.api('admin/invite/create').then(x => {
 		os.alert({
 			type: 'info',
@@ -266,14 +276,20 @@ const invite = () => {
 			text: err,
 		});
 	});
-};
+}
 
-const lookup = (ev) => {
+function lookup(ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.user,
 		icon: 'ti ti-user',
 		action: () => {
 			lookupUser();
+		},
+	}, {
+		text: `${i18n.ts.user} (${i18n.ts.email})`,
+		icon: 'ti ti-user',
+		action: () => {
+			lookupUserByEmail();
 		},
 	}, {
 		text: i18n.ts.note,
@@ -294,7 +310,7 @@ const lookup = (ev) => {
 			alert('TODO');
 		},
 	}], ev.currentTarget ?? ev.target);
-};
+}
 
 const headerActions = $computed(() => []);
 

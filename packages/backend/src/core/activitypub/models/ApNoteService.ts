@@ -7,15 +7,15 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository } from '@/models/index.js';
+import type { PollsRepository, EmojisRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { MiRemoteUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import type { MiEmoji } from '@/models/entities/Emoji.js';
+import type { MiEmoji } from '@/models/Emoji.js';
 import { MetaService } from '@/core/MetaService.js';
 import { AppLockService } from '@/core/AppLockService.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
@@ -131,13 +131,13 @@ export class ApNoteService {
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
 		if (note.id && !checkHttps(note.id)) {
-			throw new Error('unexpected shcema of note.id: ' + note.id);
+			throw new Error('unexpected schema of note.id: ' + note.id);
 		}
 
 		const url = getOneApHrefNullable(note.url);
 
 		if (url && !checkHttps(url)) {
-			throw new Error('unexpected shcema of note url: ' + url);
+			throw new Error('unexpected schema of note url: ' + url);
 		}
 
 		this.logger.info(`Creating the Note: ${note.id}`);
@@ -200,7 +200,7 @@ export class ApNoteService {
 		// 引用
 		let quote: MiNote | undefined | null = null;
 
-		if (note._misskey_quote || note.quoteUrl) {
+		if (note._misskey_quote ?? note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<
 				| { status: 'ok'; res: MiNote }
 				| { status: 'permerror' | 'temperror' }
@@ -271,24 +271,36 @@ export class ApNoteService {
 
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
 
-		return await this.noteCreateService.create(actor, {
-			createdAt: note.published ? new Date(note.published) : null,
-			files,
-			reply,
-			renote: quote,
-			name: note.name,
-			cw,
-			text,
-			localOnly: false,
-			visibility,
-			visibleUsers,
-			apMentions,
-			apHashtags,
-			apEmojis,
-			poll,
-			uri: note.id,
-			url: url,
-		}, silent);
+		try {
+			return await this.noteCreateService.create(actor, {
+				createdAt: note.published ? new Date(note.published) : null,
+				files,
+				reply,
+				renote: quote,
+				name: note.name,
+				cw,
+				text,
+				localOnly: false,
+				visibility,
+				visibleUsers,
+				apMentions,
+				apHashtags,
+				apEmojis,
+				poll,
+				uri: note.id,
+				url: url,
+			}, silent);
+		} catch (err: any) {
+			if (err.name !== 'duplicated') {
+				throw err;
+			}
+			this.logger.info('The note is already inserted while creating itself, reading again');
+			const duplicate = await this.fetchNote(value);
+			if (!duplicate) {
+				throw new Error('The note creation failed with duplication error even when there is no duplication');
+			}
+			return duplicate;
+		}
 	}
 
 	/**
@@ -374,7 +386,7 @@ export class ApNoteService {
 			this.logger.info(`register emoji host=${host}, name=${name}`);
 
 			return await this.emojisRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				host,
 				name,
 				uri: tag.id,

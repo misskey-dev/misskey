@@ -4,11 +4,11 @@
  */
 
 import { get } from 'idb-keyval';
-import * as Acct from 'misskey-js/built/acct';
-import type { PushNotificationDataMap } from '@/types';
-import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
-import { swLang } from '@/scripts/lang';
-import * as swos from '@/scripts/operations';
+import * as Misskey from 'misskey-js';
+import type { PushNotificationDataMap } from '@/types.js';
+import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
+import { swLang } from '@/scripts/lang.js';
+import * as swos from '@/scripts/operations.js';
 
 globalThis.addEventListener('install', () => {
 	// ev.waitUntil(globalThis.skipWaiting());
@@ -99,7 +99,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						if ('userId' in data.body) await swos.api('following/create', loginId, { userId: data.body.userId });
 						break;
 					case 'showUser':
-						if ('user' in data.body) client = await swos.openUser(Acct.toString(data.body.user), loginId);
+						if ('user' in data.body) client = await swos.openUser(Misskey.acct.toString(data.body.user), loginId);
 						break;
 					case 'reply':
 						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
@@ -136,7 +136,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 								if ('note' in data.body) {
 									client = await swos.openNote(data.body.note.id, loginId);
 								} else if ('user' in data.body) {
-									client = await swos.openUser(Acct.toString(data.body.user), loginId);
+									client = await swos.openUser(Misskey.acct.toString(data.body.user), loginId);
 								}
 								break;
 						}

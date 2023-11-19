@@ -6,8 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, DriveFilesRepository, UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { UsersRepository, DriveFilesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -25,9 +24,6 @@ export class ImportUserListsProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -37,8 +33,8 @@ export class ImportUserListsProcessorService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -84,8 +80,7 @@ export class ImportUserListsProcessorService {
 
 				if (list == null) {
 					list = await this.userListsRepository.insert({
-						id: this.idService.genId(),
-						createdAt: new Date(),
+						id: this.idService.gen(),
 						userId: user.id,
 						name: listName,
 					}).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
@@ -103,9 +98,9 @@ export class ImportUserListsProcessorService {
 					target = await this.remoteUserResolveService.resolveUser(username, host);
 				}
 
-				if (await this.userListJoiningsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
+				if (await this.userListMembershipsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
-				this.userListService.push(target, list!, user);
+				this.userListService.addMember(target, list!, user);
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

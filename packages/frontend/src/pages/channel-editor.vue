@@ -20,6 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.color }}</template>
 			</MkColorInput>
 
+			<MkSwitch v-model="isSensitive">
+				<template #label>{{ i18n.ts.sensitive }}</template>
+			</MkSwitch>
+
+			<MkSwitch v-model="allowRenoteToExternal">
+				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
+			</MkSwitch>
+
 			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
@@ -66,12 +74,13 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import { selectFile } from '@/scripts/select-file.js';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -87,6 +96,8 @@ let description = $ref(null);
 let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
 let color = $ref('#000');
+let isSensitive = $ref(false);
+let allowRenoteToExternal = $ref(true);
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
@@ -110,10 +121,12 @@ async function fetchChannel() {
 	description = channel.description;
 	bannerId = channel.bannerId;
 	bannerUrl = channel.bannerUrl;
+	isSensitive = channel.isSensitive;
 	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
 		id,
 	}));
 	color = channel.color;
+	allowRenoteToExternal = channel.allowRenoteToExternal;
 }
 
 fetchChannel();
@@ -142,16 +155,15 @@ function save() {
 		bannerId: bannerId,
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 		color: color,
+		isSensitive: isSensitive,
+		allowRenoteToExternal: allowRenoteToExternal,
 	};
 
 	if (props.channelId) {
 		params.channelId = props.channelId;
-		os.api('channels/update', params).then(() => {
-			os.success();
-		});
+		os.apiWithDialog('channels/update', params);
 	} else {
-		os.api('channels/create', params).then(created => {
-			os.success();
+		os.apiWithDialog('channels/create', params).then(created => {
 			router.push(`/channels/${created.id}`);
 		});
 	}

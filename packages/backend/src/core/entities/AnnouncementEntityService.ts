@@ -5,13 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type {
-	AnnouncementReadsRepository,
-	AnnouncementsRepository,
-} from '@/models/index.js';
+import type { AnnouncementsRepository, AnnouncementReadsRepository, MiAnnouncement, MiUser } from "@/models/_.js";
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
-import { MiAnnouncement, MiUser } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class AnnouncementEntityService {
@@ -21,6 +18,8 @@ export class AnnouncementEntityService {
 
 		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: AnnouncementReadsRepository,
+
+		private idService: IdService,
 	) {
 	}
 
@@ -36,15 +35,17 @@ export class AnnouncementEntityService {
 			}) as MiAnnouncement & { isRead?: boolean | null };
 
 		if (me && announcement.isRead === undefined) {
-			announcement.isRead = await this.announcementReadsRepository.countBy({
-				announcementId: announcement.id,
-				userId: me.id,
-			}).then(count => count > 0);
+			announcement.isRead = await this.announcementReadsRepository
+				.countBy({
+					announcementId: announcement.id,
+					userId: me.id,
+				})
+				.then((count: number) => count > 0);
 		}
 
 		return {
 			id: announcement.id,
-			createdAt: announcement.createdAt.toISOString(),
+			createdAt: this.idService.parse(announcement.id).date.toISOString(),
 			updatedAt: announcement.updatedAt?.toISOString() ?? null,
 			title: announcement.title,
 			text: announcement.text,
@@ -55,6 +56,7 @@ export class AnnouncementEntityService {
 			needConfirmationToRead: announcement.needConfirmationToRead,
 			closeDuration: announcement.closeDuration,
 			displayOrder: announcement.displayOrder,
+			silence: announcement.silence,
 			isRead: announcement.isRead !== null ? announcement.isRead : undefined,
 		};
 	}

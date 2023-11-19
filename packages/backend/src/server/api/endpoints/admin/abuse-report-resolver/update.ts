@@ -8,7 +8,7 @@ import ms from 'ms';
 import RE2 from 're2';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import type { AbuseReportResolversRepository, MiAbuseReportResolver } from '@/models/index.js';
+import type { AbuseReportResolversRepository, MiAbuseReportResolver } from '@/models/_.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

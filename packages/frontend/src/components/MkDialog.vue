@@ -71,7 +71,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 type Input = {
 	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local' | 'textarea';
@@ -170,6 +170,7 @@ async function ok() {
 function cancel() {
 	done(true);
 }
+
 /*
 function onBgClick() {
 	if (props.cancelableByBgClick) cancel();

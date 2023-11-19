@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -32,50 +32,61 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
+		untilId: { type: 'string', format: 'misskey:id' },
 		channelId: { type: 'string', nullable: true, format: 'misskey:id' },
 	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	private globalNotesRankingCache: string[] = [];
+	private globalNotesRankingCacheLastFetchedAt = 0;
+
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private queryService: QueryService,
+		private featuredService: FeaturedService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
+			let noteIds: string[];
+			if (ps.channelId) {
+				noteIds = await this.featuredService.getInChannelNotesRanking(ps.channelId, 50);
+			} else {
+				if (this.globalNotesRankingCacheLastFetchedAt !== 0 && (Date.now() - this.globalNotesRankingCacheLastFetchedAt < 1000 * 60 * 30)) {
+					noteIds = this.globalNotesRankingCache;
+				} else {
+					noteIds = await this.featuredService.getGlobalNotesRanking(100);
+					this.globalNotesRankingCache = noteIds;
+					this.globalNotesRankingCacheLastFetchedAt = Date.now();
+				}
+			}
+
+			if (noteIds.length === 0) {
+				return [];
+			}
+
+			noteIds.sort((a, b) => a > b ? -1 : 1);
+			if (ps.untilId) {
+				noteIds = noteIds.filter(id => id < ps.untilId!);
+			}
+			noteIds = noteIds.slice(0, ps.limit);
 
 			const query = this.notesRepository.createQueryBuilder('note')
-				.addSelect('note.score')
-				.where('note.userHost IS NULL')
-				.andWhere('note.score > 0')
-				.andWhere('note.createdAt > :date', { date: new Date(Date.now() - day) })
-				.andWhere('note.visibility = \'public\'')
+				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser');
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('note.channel', 'channel');
 
-			if (ps.channelId) query.andWhere('note.channelId = :channelId', { channelId: ps.channelId });
+			const notes = await query.getMany();
+			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 
-			if (me) this.queryService.generateMutedUserQuery(query, me);
-			if (me) this.queryService.generateBlockedUserQuery(query, me);
-
-			let notes = await query
-				.orderBy('note.score', 'DESC')
-				.limit(100)
-				.getMany();
-
-			notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-			notes = notes.slice(ps.offset, ps.offset + ps.limit);
+			// TODO: ミュート等考慮
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

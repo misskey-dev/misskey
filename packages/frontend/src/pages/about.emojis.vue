@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
 
 	<div class="query">
-		<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
+		<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 
@@ -42,9 +42,9 @@ import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');

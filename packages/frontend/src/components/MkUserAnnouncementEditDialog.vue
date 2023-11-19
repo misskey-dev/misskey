@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:height="600"
 	:withOkButton="false"
 	:okButtonDisabled="false"
-	@close="dialog?.close()"
+	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
@@ -49,7 +49,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="displayOrder" type="number">
 					<template #label>{{ i18n.ts.displayOrder }}</template>
 				</MkInput>
-				<p v-if="readCount">{{ i18n.t('nUsersRead', { n: readCount }) }}</p>
+				<MkSwitch v-model="silence">
+					{{ i18n.ts._announcement.silence }}
+					<template #caption>{{ i18n.ts._announcement.silenceDescription }}</template>
+				</MkSwitch>
+				<p v-if="reads">{{ i18n.t('nUsersRead', { n: reads }) }}</p>
 				<MkUserCardMini v-if="props.user.id" :user="props.user"></MkUserCardMini>
 				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
@@ -62,22 +66,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const props = defineProps<{
-	user: misskey.entities.UserLite,
+	user: Misskey.entities.User,
 	announcement?: any,
 }>();
 
+let dialog = $ref(null);
 let title: string = $ref(props.announcement ? props.announcement.title : '');
 let text: string = $ref(props.announcement ? props.announcement.text : '');
 let icon: string = $ref(props.announcement ? props.announcement.icon : 'info');
@@ -85,14 +90,14 @@ let display: string = $ref(props.announcement ? props.announcement.display : 'di
 let needConfirmationToRead: boolean = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 let closeDuration: number = $ref(props.announcement ? props.announcement.closeDuration : 0);
 let displayOrder: number = $ref(props.announcement ? props.announcement.displayOrder : 0);
-let readCount: number = $ref(props.announcement ? props.announcement.readCount : 0);
+let silence: boolean = $ref(props.announcement ? props.announcement.silence : false);
+let reads: number = $ref(props.announcement ? props.announcement.reads : 0);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
 	(ev: 'closed'): void
 }>();
 
-const dialog = $shallowRef<typeof MkModalWindow | null>(null);
 const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
 
 function insertEmoji(ev: MouseEvent): void {
@@ -109,7 +114,8 @@ async function done(): Promise<void> {
 		needConfirmationToRead: needConfirmationToRead,
 		closeDuration: closeDuration,
 		displayOrder: displayOrder,
-		readCount: readCount,
+		silence: silence,
+		reads: reads,
 		userId: props.user.id,
 	};
 
@@ -126,7 +132,7 @@ async function done(): Promise<void> {
 			},
 		});
 
-		dialog?.close();
+		dialog.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -134,7 +140,7 @@ async function done(): Promise<void> {
 			created: created,
 		});
 
-		dialog?.close();
+		dialog.close();
 	}
 }
 
@@ -151,7 +157,7 @@ async function del(): Promise<void> {
 		emit('done', {
 			deleted: true,
 		});
-		dialog?.close();
+		dialog.close();
 	});
 }
 </script>

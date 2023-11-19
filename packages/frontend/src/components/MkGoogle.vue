@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	q: string;
@@ -21,7 +21,9 @@ const props = defineProps<{
 const query = ref(props.q);
 
 const search = () => {
-	window.open(`https://www.google.com/search?q=${query.value}`, '_blank');
+	const sp = new URLSearchParams();
+	sp.append('q', query.value);
+	window.open(`https://www.google.com/search?${sp.toString()}`, '_blank');
 };
 </script>
 

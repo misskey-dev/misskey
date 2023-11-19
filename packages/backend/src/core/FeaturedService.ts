@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiNote, MiUser } from '@/models/index.js';
+import type { MiNote, MiUser } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
@@ -52,7 +52,7 @@ export class FeaturedService {
 			`${name}:${currentWindow}`, 0, threshold, 'WITHSCORES');
 		redisPipeline.zrevrange(
 			`${name}:${previousWindow}`, 0, threshold, 'WITHSCORES');
-		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => r[1] as string[]) : [[], []]);
+		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => (r[1] ?? []) as string[]) : [[], []]);
 
 		const ranking = new Map<string, number>();
 		for (let i = 0; i < currentRankingResult.length; i += 2) {

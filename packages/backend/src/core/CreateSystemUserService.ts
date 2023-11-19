@@ -8,11 +8,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull, DataSource } from 'typeorm';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
-import { MiUser } from '@/models/entities/User.js';
-import { MiUserProfile } from '@/models/entities/UserProfile.js';
+import { MiUser } from '@/models/User.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
-import { MiUserKeypair } from '@/models/entities/UserKeypair.js';
-import { MiUsedUsername } from '@/models/entities/UsedUsername.js';
+import { MiUserKeypair } from '@/models/UserKeypair.js';
+import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { DI } from '@/di-symbols.js';
 import generateNativeUserToken from '@/misc/generate-native-user-token.js';
 import { bindThis } from '@/decorators.js';
@@ -52,8 +52,7 @@ export class CreateSystemUserService {
 			if (exist) throw new Error('the user is already exists');
 
 			account = await transactionalEntityManager.insert(MiUser, {
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				username: username,
 				usernameLower: username.toLowerCase(),
 				host: null,

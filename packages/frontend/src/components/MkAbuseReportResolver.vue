@@ -8,18 +8,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInput v-model="value.name" :readonly="!props.editable">
 		<template #label>{{ i18n.ts.name }}</template>
 	</MkInput>
-	<div>
-		<div :class="$style.label">{{ i18n.ts._abuse._resolver.targetUserPattern }}</div>
-		<PrismEditor v-model="value.targetUserPattern" placeholder="^(LocalUser|RemoteUser@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
-	</div>
-	<div>
-		<div :class="$style.label">{{ i18n.ts._abuse._resolver.reporterPattern }}</div>
-		<PrismEditor v-model="value.reporterPattern" placeholder="^(LocalUser|.*@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
-	</div>
-	<div>
-		<div :class="$style.label">{{ i18n.ts._abuse._resolver.reportContentPattern }}</div>
-		<PrismEditor v-model="value.reportContentPattern" placeholder=".*" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
-	</div>
+	<MkInput v-model="value.targetUserPattern" placeholder="^(LocalUser|RemoteUser@RemoteHost)$" :readonly="!props.editable" :code="true">
+		<template #label>{{ i18n.ts._abuse._resolver.targetUserPattern }}</template>
+	</MkInput>
+	<MkInput v-model="value.reporterPattern" placeholder="^(LocalUser|.*@RemoteHost)$" :readonly="!props.editable" :code="true">
+		<template #label>{{ i18n.ts._abuse._resolver.reporterPattern }}</template>
+	</MkInput>
+	<MkInput v-model="value.reportContentPattern" placeholder=".*" :readonly="!props.editable" :code="true">
+		<template #label>{{ i18n.ts._abuse._resolver.reportContentPattern }}</template>
+	</MkInput>
 	<MkSelect v-model="value.expiresAt" :disabled="!props.editable">
 		<template #label>{{ i18n.ts._abuse._resolver.expiresAt }}<span v-if="expirationDate" style="float: right;"><MkDate :time="expirationDate" mode="absolute">{{ expirationDate }}</MkDate></span></template>
 		<option value="1hour">{{ i18n.ts._abuse._resolver['1hour'] }}</option>
@@ -41,16 +38,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import { PrismEditor } from 'vue-prism-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n';
-import 'vue-prism-editor/dist/prismeditor.min.css';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-regex';
-import 'prismjs/themes/prism-okaidia.css';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue?: {
@@ -112,10 +103,6 @@ const value = computed({
 	},
 });
 
-function highlighter(code) {
-	return highlight(code, languages.regex);
-}
-
 function renderExpirationDate(empty = false) {
 	if (value.value.expirationDate && !empty) {
 		expirationDate = new Date(value.value.expirationDate);
@@ -133,28 +120,10 @@ watch(() => props.editable, () => {
 });
 
 </script>
-<style lang="scss">
-.dslkjkwejflew .prism-editor__textarea {
-	padding-left: 10px !important;
-	padding-bottom: 10px !important;
-}
-
-.dslkjkwejflew .prism-editor__editor {
-	padding-left: 10px !important;
-	padding-bottom: 10px !important;
-}
-</style>
 <style lang="scss" module>
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
 	user-select: none;
-}
-.highlight {
-	padding: 0;
-	position: relative;
-	padding-top: 6px;
-	padding-bottom: 6px;
-	border-radius: 4px;
 }
 </style>

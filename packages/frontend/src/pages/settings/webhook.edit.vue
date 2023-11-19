@@ -47,10 +47,10 @@ import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -108,6 +108,7 @@ async function del(): Promise<void> {
 
 	router.push('/settings/webhook');
 }
+
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);

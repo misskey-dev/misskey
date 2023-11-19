@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { concat, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
 import { getApIds } from './type.js';

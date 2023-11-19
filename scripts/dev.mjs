@@ -11,6 +11,8 @@ import { execa } from 'execa';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
+const vitePort = process.env.VITE_PORT ? ["--strictPort", "--port", process.env.VITE_PORT] : ["--strictPort"];
+
 await execa('pnpm', ['clean'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
@@ -23,7 +25,13 @@ await execa('pnpm', ['build-pre'], {
 	stderr: process.stderr,
 });
 
-execa('pnpm', ['exec', 'gulp', 'watch'], {
+await execa('pnpm', ['build-assets'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['build-assets', '--watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
@@ -35,7 +43,7 @@ execa('pnpm', ['--filter', 'backend', 'watch'], {
 	stderr: process.stderr,
 });
 
-execa('pnpm', ['--filter', 'frontend', 'watch'], {
+execa('pnpm', ['--filter', 'frontend', 'watch', ...vitePort], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
@@ -49,7 +57,7 @@ execa('pnpm', ['--filter', 'sw', 'watch'], {
 
 const start = async () => {
 	try {
-		const stat = fs.statSync(_dirname + '/../packages/backend/built/boot/index.js');
+		const stat = fs.statSync(_dirname + '/../packages/backend/built/boot/entry.js');
 		if (!stat) throw new Error('not exist yet');
 		if (stat.size === 0) throw new Error('not built yet');
 

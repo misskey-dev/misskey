@@ -24,13 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { url as base } from '@/config';
-import { i18n } from '@/i18n';
-import { useInterval } from '@/scripts/use-interval';
-import { infoImageUrl } from '@/instance';
+import { url as base } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import { infoImageUrl } from '@/instance.js';
 
 const name = 'rss';
 

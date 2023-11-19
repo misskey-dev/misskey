@@ -4,27 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div ref="rootEl">
-		<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${pullDistance / (PULL_BRAKE_BASE + (pullDistance / PULL_BRAKE_FACTOR))}px;`">
-			<div :class="$style.frameContent">
-				<MkLoading v-if="isRefreshing" :class="$style.loader" :em="true"/>
-				<i v-else class="ti ti-arrow-bar-to-down" :class="[$style.icon, { [$style.refresh]: isPullEnd }]"></i>
-				<div :class="$style.text">
-					<template v-if="isPullEnd">{{ i18n.ts.releaseToRefresh }}</template>
-					<template v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</template>
-					<template v-else>{{ i18n.ts.pullDownToRefresh }}</template>
-				</div>
+<div ref="rootEl">
+	<div v-if="isPullStart" :class="$style.frame" :style="`--frame-min-height: ${pullDistance / (PULL_BRAKE_BASE + (pullDistance / PULL_BRAKE_FACTOR))}px;`">
+		<div :class="$style.frameContent">
+			<MkLoading v-if="isRefreshing" :class="$style.loader" :em="true"/>
+			<i v-else class="ti ti-arrow-bar-to-down" :class="[$style.icon, { [$style.refresh]: isPullEnd }]"></i>
+			<div :class="$style.text">
+				<template v-if="isPullEnd">{{ i18n.ts.releaseToRefresh }}</template>
+				<template v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</template>
+				<template v-else>{{ i18n.ts.pullDownToRefresh }}</template>
 			</div>
 		</div>
-		<div :class="{ [$style.slotClip]: isPullStart }">
-			<slot/>
-		</div>
 	</div>
+	<div :class="{ [$style.slotClip]: isPullStart }">
+		<slot/>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
 import MkLoading from '@/components/global/MkLoading.vue';
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
+import { deviceKind } from '@/scripts/device-kind.js';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
@@ -57,7 +58,9 @@ const props = withDefaults(defineProps<{
 	refresher: () => Promise.resolve(),
 });
 
-const emits = defineEmits<(ev: "refresh") => void>();
+const emit = defineEmits<{
+	(ev: 'refresh'): void;
+}>();
 
 function getScreenY(event) {
 	if (supportPointerDesktop) {
@@ -127,7 +130,7 @@ function moveEnd() {
 			isPullEnd = false;
 			isRefreshing = true;
 			fixOverContent().then(() => {
-				emits('refresh');
+				emit('refresh');
 				props.refresher().then(() => {
 					refreshFinished();
 				});

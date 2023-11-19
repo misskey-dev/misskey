@@ -29,16 +29,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
-					<div v-for="user in users" :key="user.id" :class="$style.userItem">
-						<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
-							<MkUserCardMini :user="user"/>
-						</MkA>
-						<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
-					</div>
-					<MkButton v-if="!fetching && queueUserIds.length !== 0" v-appear="enableInfiniteScroll ? fetchMoreUsers : null" :class="$style.more" :style="{ cursor: 'pointer' }" primary rounded @click="fetchMoreUsers">
-						{{ i18n.ts.loadMore }}
-					</MkButton>
-					<MkLoading v-if="fetching" class="loading"/>
+
+					<MkPagination ref="paginationEl" :pagination="membershipsPagination">
+						<template #default="{ items }">
+							<div class="_gaps_s">
+								<div v-for="item in items" :key="item.id">
+									<div :class="$style.userItem">
+										<MkA :class="$style.userItemBody" :to="`${userPage(item.user)}`">
+											<MkUserCardMini :user="item.user"/>
+										</MkA>
+										<button class="_button" :class="$style.menu" @click="showMembershipMenu(item, $event)"><i class="ti ti-dots"></i></button>
+										<button class="_button" :class="$style.remove" @click="removeUser(item, $event)"><i class="ti ti-x"></i></button>
+									</div>
+								</div>
+							</div>
+						</template>
+					</MkPagination>
 				</div>
 			</MkFolder>
 		</div>
@@ -48,20 +54,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { userPage } from '@/filters/user';
+import * as os from '@/os.js';
+import { mainRouter } from '@/router.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { userPage } from '@/filters/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
-import { userListsCache } from '@/cache';
-import { UserList, UserLite } from 'misskey-js/built/entities';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
+import { userListsCache } from '@/cache.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
+
 const {
 	enableInfiniteScroll,
 } = defaultStore.reactiveState;
@@ -70,40 +78,25 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-const FETCH_USERS_LIMIT = 20;
-
-let list = $ref<UserList | null>(null);
-let users = $ref<UserLite[]>([]);
-let queueUserIds = $ref<string[]>([]);
-let fetching = $ref(true);
+const paginationEl = ref<InstanceType<typeof MkPagination>>();
+let list = $ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
+const membershipsPagination = {
+	endpoint: 'users/lists/get-memberships' as const,
+	limit: 30,
+	params: computed(() => ({
+		listId: props.listId,
+	})),
+};
 
 function fetchList() {
-	fetching = true;
 	os.api('users/lists/show', {
 		listId: props.listId,
 	}).then(_list => {
 		list = _list;
 		name.value = list.name;
 		isPublic.value = list.isPublic;
-		queueUserIds = list.userIds;
-
-		return fetchMoreUsers();
-	});
-}
-
-function fetchMoreUsers() {
-	if (!list) return;
-	if (fetching && users.length !== 0) return; // fetchingがtrueならやめるが、usersが空なら続行
-	fetching = true;
-	os.api('users/show', {
-		userIds: queueUserIds.slice(0, FETCH_USERS_LIMIT),
-	}).then(_users => {
-		users = users.concat(_users);
-		queueUserIds = queueUserIds.slice(FETCH_USERS_LIMIT);
-	}).finally(() => {
-		fetching = false;
 	});
 }
 
@@ -114,12 +107,12 @@ function addUser() {
 			listId: list.id,
 			userId: user.id,
 		}).then(() => {
-			users.push(user);
+			paginationEl.value.reload();
 		});
 	});
 }
 
-async function removeUser(user, ev) {
+async function removeUser(item, ev) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		icon: 'ti ti-x',
@@ -128,9 +121,28 @@ async function removeUser(user, ev) {
 			if (!list) return;
 			os.api('users/lists/pull', {
 				listId: list.id,
-				userId: user.id,
+				userId: item.userId,
 			}).then(() => {
-				users = users.filter(x => x.id !== user.id);
+				paginationEl.value.removeItem(item.id);
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
+async function showMembershipMenu(item, ev) {
+	os.popupMenu([{
+		text: item.withReplies ? i18n.ts.hideRepliesToOthersInTimeline : i18n.ts.showRepliesToOthersInTimeline,
+		icon: item.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
+		action: async () => {
+			os.api('users/lists/update-membership', {
+				listId: list.id,
+				userId: item.userId,
+				withReplies: !item.withReplies,
+			}).then(() => {
+				paginationEl.value.updateItem(item.id, (old) => ({
+					...old,
+					withReplies: !item.withReplies,
+				}));
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -197,6 +209,12 @@ definePageMetadata(computed(() => list ? {
 }
 
 .remove {
+	width: 32px;
+	height: 32px;
+	align-self: center;
+}
+
+.menu {
 	width: 32px;
 	height: 32px;
 	align-self: center;

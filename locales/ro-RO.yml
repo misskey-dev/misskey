@@ -328,7 +328,6 @@ invite: "Invită"
 driveCapacityPerLocalAccount: "Capacitatea Drive-ului per utilizator local"
 driveCapacityPerRemoteAccount: "Capacitatea Drive-ului per utilizator extern"
 inMb: "În megabytes"
-iconUrl: "URL-ul iconiței"
 bannerUrl: "URL-ul imaginii de banner"
 backgroundImageUrl: "URL-ul imaginii de fundal"
 basicInfo: "Informații de bază"
@@ -630,6 +629,9 @@ sent: "Trimite"
 searchByGoogle: "Caută"
 file: "Fișiere"
 show: "Arată"
+icon: "Avatar"
+replies: "Răspunde"
+renotes: "Re-notează"
 _role:
   _priority:
     middle: "Mediu"
@@ -645,7 +647,6 @@ _theme:
 _sfx:
   note: "Note"
   notification: "Notificări"
-  chat: "Chat"
 _ago:
   invalid: "Nu e nimic de văzut aici"
 _widgets:
@@ -702,3 +703,6 @@ _deck:
     mentions: "Mențiuni"
 _webhookSettings:
   name: "Nume"
+_moderationLogTypes:
+  suspend: "Suspendă"
+  resetPassword: "Resetează parola"

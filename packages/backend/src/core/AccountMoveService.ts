@@ -9,8 +9,8 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMuting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -31,9 +31,6 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 @Injectable()
 export class AccountMoveService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -46,8 +43,8 @@ export class AccountMoveService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -184,13 +181,13 @@ export class AccountMoveService {
 			{ muteeId: dst.id, expiresAt: IsNull() },
 		).then(mutings => mutings.map(muting => muting.muterId));
 
-		const newMutings: Map<string, { muterId: string; muteeId: string; createdAt: Date; expiresAt: Date | null; }> = new Map();
+		const newMutings: Map<string, { muterId: string; muteeId: string; expiresAt: Date | null; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
 			let id: string;
 			do {
-				id = this.idService.genId();
+				id = this.idService.gen();
 			} while (newMutings.has(id));
 			return id;
 		};
@@ -198,7 +195,6 @@ export class AccountMoveService {
 			if (existingMutingsMuterUserIds.includes(muting.muterId)) continue; // skip if already muted indefinitely
 			newMutings.set(genId(), {
 				...muting,
-				createdAt: new Date(),
 				muteeId: dst.id,
 			});
 		}
@@ -219,41 +215,40 @@ export class AccountMoveService {
 	@bindThis
 	public async updateLists(src: ThinUser, dst: MiUser): Promise<void> {
 		// Return if there is no list to be updated.
-		const oldJoinings = await this.userListJoiningsRepository.find({
+		const oldMemberships = await this.userListMembershipsRepository.find({
 			where: {
 				userId: src.id,
 			},
 		});
-		if (oldJoinings.length === 0) return;
+		if (oldMemberships.length === 0) return;
 
-		const existingUserListIds = await this.userListJoiningsRepository.find({
+		const existingUserListIds = await this.userListMembershipsRepository.find({
 			where: {
 				userId: dst.id,
 			},
-		}).then(joinings => joinings.map(joining => joining.userListId));
+		}).then(memberships => memberships.map(membership => membership.userListId));
 
-		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; userListUserId: string; }> = new Map();
+		const newMemberships: Map<string, { userId: string; userListId: string; userListUserId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
 			let id: string;
 			do {
-				id = this.idService.genId();
-			} while (newJoinings.has(id));
+				id = this.idService.gen();
+			} while (newMemberships.has(id));
 			return id;
 		};
-		for (const joining of oldJoinings) {
-			if (existingUserListIds.includes(joining.userListId)) continue; // skip if dst exists in this user's list
-			newJoinings.set(genId(), {
-				createdAt: new Date(),
+		for (const membership of oldMemberships) {
+			if (existingUserListIds.includes(membership.userListId)) continue; // skip if dst exists in this user's list
+			newMemberships.set(genId(), {
 				userId: dst.id,
-				userListId: joining.userListId,
-				userListUserId: joining.userListUserId,
+				userListId: membership.userListId,
+				userListUserId: membership.userListUserId,
 			});
 		}
 
-		const arrayToInsert = Array.from(newJoinings.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
-		await this.userListJoiningsRepository.insert(arrayToInsert);
+		const arrayToInsert = Array.from(newMemberships.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
+		await this.userListMembershipsRepository.insert(arrayToInsert);
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
 		if (this.userEntityService.isRemoteUser(dst)) {

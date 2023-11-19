@@ -327,7 +327,10 @@ export type Endpoints = {
 	'federation/users': { req: { host: string; limit?: number; sinceId?: User['id']; untilId?: User['id']; }; res: UserDetailed[]; };
 
 	// following
-	'following/create': { req: { userId: User['id'] }; res: User; };
+	'following/create': { req: {
+		userId: User['id'],
+		withReplies?: boolean,
+	}; res: User; };
 	'following/delete': { req: { userId: User['id'] }; res: User; };
 	'following/requests/accept': { req: { userId: User['id'] }; res: null; };
 	'following/requests/cancel': { req: { userId: User['id'] }; res: User; };
@@ -377,7 +380,6 @@ export type Endpoints = {
 	'i/favorites': { req: { limit?: number; sinceId?: NoteFavorite['id']; untilId?: NoteFavorite['id']; }; res: NoteFavorite[]; };
 	'i/gallery/likes': { req: TODO; res: TODO; };
 	'i/gallery/posts': { req: TODO; res: TODO; };
-	'i/get-word-muted-notes-count': { req: TODO; res: TODO; };
 	'i/import-following': { req: TODO; res: TODO; };
 	'i/import-user-lists': { req: TODO; res: TODO; };
 	'i/move': { req: TODO; res: TODO; };
@@ -403,7 +405,6 @@ export type Endpoints = {
 	'i/registry/keys-with-type': { req: { scope?: string[]; }; res: Record<string, 'null' | 'array' | 'number' | 'string' | 'boolean' | 'object'>; };
 	'i/registry/keys': { req: { scope?: string[]; }; res: string[]; };
 	'i/registry/remove': { req: { key: string; scope?: string[]; }; res: null; };
-	'i/registry/scopes': { req: NoParams; res: string[][]; };
 	'i/registry/set': { req: { key: string; value: any; scope?: string[]; }; res: null; };
 	'i/revoke-token': { req: TODO; res: TODO; };
 	'i/signin-history': { req: { limit?: number; sinceId?: Signin['id']; untilId?: Signin['id']; }; res: Signin[]; };
@@ -436,7 +437,7 @@ export type Endpoints = {
 		receiveAnnouncementEmail?: boolean;
 		alwaysMarkNsfw?: boolean;
 		mutedWords?: string[][];
-		mutingNotificationTypes?: Notification['type'][];
+		notificationRecieveConfig?: any;
 		emailNotificationTypes?: string[];
 		alsoKnownAs?: string[];
 	}; res: MeDetailed; };
@@ -540,6 +541,7 @@ export type Endpoints = {
 
 	// notifications
 	'notifications/create': { req: { body: string; header?: string | null; icon?: string | null; }; res: null; };
+	'notifications/test-notification': { req: NoParams; res: null; };
 	'notifications/mark-all-as-read': { req: NoParams; res: null; };
 
 	// page-push
@@ -627,6 +629,7 @@ export type Endpoints = {
 	'users/lists/update': { req: { listId: UserList['id']; name: string; }; res: UserList; };
 	'users/notes': { req: { userId: User['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'users/pages': { req: TODO; res: TODO; };
+	'users/flashs': { req: TODO; res: TODO; };
 	'users/recommendation': { req: TODO; res: TODO; };
 	'users/relation': { req: TODO; res: TODO; };
 	'users/report-abuse': { req: TODO; res: TODO; };
@@ -641,4 +644,11 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
+
+	// fetching external data
+	'fetch-rss': { req: { url: string; }; res: TODO; };
+	'fetch-external-resources': {
+		req: { url: string; hash: string; };
+		res: { type: string; data: string; };
+	};
 };

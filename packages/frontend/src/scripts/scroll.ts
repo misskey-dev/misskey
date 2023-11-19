@@ -30,7 +30,7 @@ export function getScrollPosition(el: HTMLElement | null): number {
 
 export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false) {
 	// とりあえず評価してみる
-	if (isTopVisible(el)) {
+	if (el.isConnected && isTopVisible(el)) {
 		cb();
 		if (once) return null;
 	}
@@ -46,6 +46,7 @@ export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, o
 	};
 
 	function removeListener() { container.removeEventListener('scroll', onScroll); }
+
 	container.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }
@@ -54,7 +55,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
-	if (isBottomVisible(el, tolerance, container)) {
+	if (el.isConnected && isBottomVisible(el, tolerance, container)) {
 		cb();
 		if (once) return null;
 	}
@@ -71,6 +72,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	function removeListener() {
 		containerOrWindow.removeEventListener('scroll', onScroll);
 	}
+
 	containerOrWindow.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }

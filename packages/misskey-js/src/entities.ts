@@ -1,3 +1,5 @@
+import { ModerationLogPayloads, notificationTypes } from './consts.js';
+
 export type ID = string;
 export type DateString = string;
 
@@ -10,10 +12,16 @@ export type UserLite = {
 	id: ID;
 	username: string;
 	host: string | null;
-	name: string;
+	name: string | null;
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 	avatarUrl: string;
 	avatarBlurhash: string;
+	avatarDecorations: {
+		id: ID;
+		url: string;
+		angle?: number;
+		flipH?: boolean;
+	}[];
 	emojis: {
 		name: string;
 		url: string;
@@ -26,6 +34,8 @@ export type UserLite = {
 		faviconUrl: Instance['faviconUrl'];
 		themeColor: Instance['themeColor'];
 	};
+	isCat?: boolean;
+	isBot?: boolean;
 };
 
 export type UserDetailed = UserLite & {
@@ -38,6 +48,7 @@ export type UserDetailed = UserLite & {
 	description: string | null;
 	ffVisibility: 'public' | 'followers' | 'private';
 	fields: {name: string; value: string}[];
+	verifiedLinks: string[];
 	followersCount: number;
 	followingCount: number;
 	hasPendingFollowRequestFromYou: boolean;
@@ -71,6 +82,7 @@ export type UserDetailed = UserLite & {
 	updatedAt: DateString | null;
 	uri: string | null;
 	url: string | null;
+	notify: 'normal' | 'none';
 };
 
 export type UserGroup = TODO;
@@ -96,6 +108,7 @@ export type MeDetailed = UserDetailed & {
 	hasUnreadMessagingMessage: boolean;
 	hasUnreadNotification: boolean;
 	hasUnreadSpecifiedNotes: boolean;
+	unreadNotificationsCount: number;
 	twoFactorBackupCodes: 'full' | 'partial' | 'none';
 	hideOnlineStatus: boolean;
 	injectFeaturedNote: boolean;
@@ -103,10 +116,27 @@ export type MeDetailed = UserDetailed & {
 	isDeleted: boolean;
 	isExplorable: boolean;
 	mutedWords: string[][];
-	mutingNotificationTypes: string[];
+	notificationRecieveConfig: {
+		[notificationType in typeof notificationTypes[number]]?: {
+			type: 'all';
+		} | {
+			type: 'never';
+		} | {
+			type: 'following';
+		} | {
+			type: 'follower';
+		} | {
+			type: 'mutualFollow';
+		} | {
+			type: 'list';
+			userListId: string;
+		};
+	};
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
+	usePasswordLessLogin: boolean;
 	unreadAnnouncements: Announcement[];
+	twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
 	[other: string]: any;
 };
 
@@ -171,11 +201,14 @@ export type Note = {
 	fileIds: DriveFile['id'][];
 	visibility: 'public' | 'home' | 'followers' | 'specified';
 	visibleUserIds?: User['id'][];
+	channel?: Channel;
+	channelId?: Channel['id'];
 	localOnly?: boolean;
 	myReaction?: string;
 	reactions: Record<string, number>;
 	renoteCount: number;
 	repliesCount: number;
+	clippedCount?: number;
 	poll?: {
 		expiresAt: DateString | null;
 		multiple: boolean;
@@ -232,7 +265,12 @@ export type Notification = {
 	userId: User['id'];
 	note: Note;
 } | {
-	type: 'pollVote';
+	type: 'note';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'pollEnded';
 	user: User;
 	userId: User['id'];
 	note: Note;
@@ -254,10 +292,15 @@ export type Notification = {
 	user: User;
 	userId: User['id'];
 } | {
+	type: 'achievementEarned';
+	achievement: string;
+} | {
 	type: 'app';
 	header?: string | null;
 	body: string;
 	icon?: string | null;
+} | {
+	type: 'test';
 });
 
 export type MessagingMessage = {
@@ -292,12 +335,15 @@ export type LiteInstanceMetadata = {
 	maintainerEmail: string | null;
 	version: string;
 	name: string | null;
+	shortName: string | null;
 	uri: string;
 	description: string | null;
 	langs: string[];
 	tosUrl: string | null;
 	repositoryUrl: string;
 	feedbackUrl: string;
+	impressumUrl: string | null;
+	privacyPolicyUrl: string | null;
 	disableRegistration: boolean;
 	disableLocalTimeline: boolean;
 	disableGlobalTimeline: boolean;
@@ -336,6 +382,7 @@ export type LiteInstanceMetadata = {
 		url: string;
 		imageUrl: string;
 	}[];
+	notesPerOneAd: number;
 	translatorAvailable: boolean;
 	serverRules: string[];
 };
@@ -355,6 +402,10 @@ export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 export type AdminInstanceMetadata = DetailedInstanceMetadata & {
 	// TODO: There are more fields.
 	blockedHosts: string[];
+	silencedHosts: string[];
+	app192IconUrl: string | null;
+	app512IconUrl: string | null;
+	manifestJsonOverride: string;
 	urlPreviewDenyList: string[];
 };
 
@@ -425,6 +476,7 @@ export type Announcement = {
 	needConfirmationToRead: boolean;
 	closeDuration: number;
 	displayOrder: number;
+	silence: boolean;
 	forYou: boolean;
 	isRead?: boolean;
 };
@@ -440,6 +492,7 @@ export type Antenna = {
 	userGroupId: ID | null; // TODO
 	users: string[]; // TODO
 	caseSensitive: boolean;
+	localOnly: boolean;
 	notify: boolean;
 	withReplies: boolean;
 	withFile: boolean;
@@ -473,7 +526,20 @@ export type FollowRequest = {
 
 export type Channel = {
 	id: ID;
-	// TODO
+	lastNotedAt: Date | null;
+	userId: User['id'] | null;
+	user: User | null;
+	name: string;
+	description: string | null;
+	bannerId: DriveFile['id'] | null;
+	banner: DriveFile | null;
+	pinnedNoteIds: string[];
+	color: string;
+	isArchived: boolean;
+	notesCount: number;
+	usersCount: number;
+	isSensitive: boolean;
+	allowRenoteToExternal: boolean;
 };
 
 export type Following = {
@@ -514,6 +580,7 @@ export type Instance = {
 	lastCommunicatedAt: DateString;
 	isNotResponding: boolean;
 	isSuspended: boolean;
+	isSilenced: boolean;
 	isBlocked: boolean;
 	softwareName: string | null;
 	softwareVersion: string | null;
@@ -559,3 +626,115 @@ export type UserSorting =
 	| '+updatedAt'
 	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
+
+export type ModerationLog = {
+	id: ID;
+	createdAt: DateString;
+	userId: User['id'];
+	user: UserDetailed | null;
+} & ({
+	type: 'updateServerSettings';
+	info: ModerationLogPayloads['updateServerSettings'];
+} | {
+	type: 'suspend';
+	info: ModerationLogPayloads['suspend'];
+} | {
+	type: 'unsuspend';
+	info: ModerationLogPayloads['unsuspend'];
+} | {
+	type: 'updateUserNote';
+	info: ModerationLogPayloads['updateUserNote'];
+} | {
+	type: 'addCustomEmoji';
+	info: ModerationLogPayloads['addCustomEmoji'];
+} | {
+	type: 'updateCustomEmoji';
+	info: ModerationLogPayloads['updateCustomEmoji'];
+} | {
+	type: 'deleteCustomEmoji';
+	info: ModerationLogPayloads['deleteCustomEmoji'];
+} | {
+	type: 'assignRole';
+	info: ModerationLogPayloads['assignRole'];
+} | {
+	type: 'unassignRole';
+	info: ModerationLogPayloads['unassignRole'];
+} | {
+	type: 'createRole';
+	info: ModerationLogPayloads['createRole'];
+} | {
+	type: 'updateRole';
+	info: ModerationLogPayloads['updateRole'];
+} | {
+	type: 'deleteRole';
+	info: ModerationLogPayloads['deleteRole'];
+} | {
+	type: 'clearQueue';
+	info: ModerationLogPayloads['clearQueue'];
+} | {
+	type: 'promoteQueue';
+	info: ModerationLogPayloads['promoteQueue'];
+} | {
+	type: 'deleteDriveFile';
+	info: ModerationLogPayloads['deleteDriveFile'];
+} | {
+	type: 'deleteNote';
+	info: ModerationLogPayloads['deleteNote'];
+} | {
+	type: 'createGlobalAnnouncement';
+	info: ModerationLogPayloads['createGlobalAnnouncement'];
+} | {
+	type: 'createUserAnnouncement';
+	info: ModerationLogPayloads['createUserAnnouncement'];
+} | {
+	type: 'updateGlobalAnnouncement';
+	info: ModerationLogPayloads['updateGlobalAnnouncement'];
+} | {
+	type: 'updateUserAnnouncement';
+	info: ModerationLogPayloads['updateUserAnnouncement'];
+} | {
+	type: 'deleteGlobalAnnouncement';
+	info: ModerationLogPayloads['deleteGlobalAnnouncement'];
+} | {
+	type: 'deleteUserAnnouncement';
+	info: ModerationLogPayloads['deleteUserAnnouncement'];
+} | {
+	type: 'resetPassword';
+	info: ModerationLogPayloads['resetPassword'];
+} | {
+	type: 'suspendRemoteInstance';
+	info: ModerationLogPayloads['suspendRemoteInstance'];
+} | {
+	type: 'unsuspendRemoteInstance';
+	info: ModerationLogPayloads['unsuspendRemoteInstance'];
+} | {
+	type: 'markSensitiveDriveFile';
+	info: ModerationLogPayloads['markSensitiveDriveFile'];
+} | {
+	type: 'unmarkSensitiveDriveFile';
+	info: ModerationLogPayloads['unmarkSensitiveDriveFile'];
+} | {
+	type: 'createInvitation';
+	info: ModerationLogPayloads['createInvitation'];
+} | {
+	type: 'createAd';
+	info: ModerationLogPayloads['createAd'];
+} | {
+	type: 'updateAd';
+	info: ModerationLogPayloads['updateAd'];
+} | {
+	type: 'deleteAd';
+	info: ModerationLogPayloads['deleteAd'];
+} | {
+	type: 'createAvatarDecoration';
+	info: ModerationLogPayloads['createAvatarDecoration'];
+} | {
+	type: 'updateAvatarDecoration';
+	info: ModerationLogPayloads['updateAvatarDecoration'];
+} | {
+	type: 'deleteAvatarDecoration';
+	info: ModerationLogPayloads['deleteAvatarDecoration'];
+} | {
+	type: 'resolveAbuseReport';
+	info: ModerationLogPayloads['resolveAbuseReport'];
+});

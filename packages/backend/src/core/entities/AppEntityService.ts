@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, AppsRepository } from '@/models/index.js';
+import type { AccessTokensRepository, AppsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiApp } from '@/models/entities/App.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiApp } from '@/models/App.js';
+import type { MiUser } from '@/models/User.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -32,11 +32,11 @@ export class AppEntityService {
 			includeProfileImageIds?: boolean
 		},
 	): Promise<Packed<'App'>> {
-		const opts = Object.assign({
+		const opts = {
 			detail: false,
 			includeSecret: false,
-			includeProfileImageIds: false,
-		}, options);
+			includeProfileImageIds: false, ...options
+		};
 
 		const app = typeof src === 'object' ? src : await this.appsRepository.findOneByOrFail({ id: src });
 

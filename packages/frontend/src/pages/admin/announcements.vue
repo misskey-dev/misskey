@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
-					<MkInput v-model="announcement.imageUrl">
+					<MkInput v-model="announcement.imageUrl" type="url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<MkRadios v-model="announcement.icon">
@@ -59,6 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
 					</MkRadios>
+					<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
 					</MkSwitch>
@@ -72,7 +73,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.displayOrder" type="number">
 						<template #label>{{ i18n.ts.displayOrder }}</template>
 					</MkInput>
-					<p v-if="announcement.readCount">{{ i18n.t('nUsersRead', { n: announcement.readCount }) }}</p>
+					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
+						{{ i18n.ts._announcement.silence }}
+					</MkSwitch>
+					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<MkUserCardMini v-if="announcement.userId" :user="announcement.user" @click="editUser(announcement)"></MkUserCardMini>
 					<MkButton v-else class="button" inline primary @click="editUser(announcement)">{{ i18n.ts.specifyUser }}</MkButton>
 					<div class="buttons _buttons">
@@ -82,7 +86,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</MkFolder>
-			<MkButton v-if="hasMore" :class="$style.more" :disabled="!hasMore" primary rounded @click="fetch()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton v-if="hasMore" :class="$style.more" :disabled="!hasMore" primary rounded @click="fetch()">
+				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
+			</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -92,15 +98,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XHeader from './_header_.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkFolder from '@/components/MkFolder.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
@@ -127,7 +134,7 @@ function insertEmoji(ev: MouseEvent): void {
 	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl);
 }
 
-function add(): void {
+function add() {
 	announcements.unshift({
 		_id: Math.random().toString(36),
 		id: null,
@@ -140,10 +147,11 @@ function add(): void {
 		needConfirmationToRead: false,
 		closeDuration: 0,
 		displayOrder: 0,
+		silence: false,
 	});
 }
 
-function del(announcement): void {
+function del(announcement) {
 	os.confirm({
 		type: 'warning',
 		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
@@ -154,7 +162,7 @@ function del(announcement): void {
 	});
 }
 
-async function archive(announcement): Promise<void> {
+async function archive(announcement) {
 	await os.apiWithDialog('admin/announcements/update', {
 		...announcement,
 		isActive: false,

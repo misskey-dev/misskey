@@ -8,16 +8,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { MiPoll } from '@/models/entities/Poll.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { Packed } from '@/misc/json-schema.js';
+import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
@@ -27,9 +27,6 @@ export class ExportNotesProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -41,8 +38,8 @@ export class ExportNotesProcessorService {
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
-
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-notes');
 	}
@@ -107,7 +104,7 @@ export class ExportNotesProcessorService {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 					}
 					const files = await this.driveFileEntityService.packManyByIds(note.fileIds, user);
-					const content = JSON.stringify(serialize(note, poll, files));
+					const content = JSON.stringify(this.serialize(note, poll, files));
 					const isFirst = exportedNotesCount === 0;
 					await write(isFirst ? content : ',\n' + content);
 					exportedNotesCount++;
@@ -133,22 +130,22 @@ export class ExportNotesProcessorService {
 			cleanup();
 		}
 	}
-}
 
-function serialize(note: MiNote, poll: MiPoll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
-	return {
-		id: note.id,
-		text: note.text,
-		createdAt: note.createdAt,
-		fileIds: note.fileIds,
-		files: files,
-		replyId: note.replyId,
-		renoteId: note.renoteId,
-		poll: poll,
-		cw: note.cw,
-		visibility: note.visibility,
-		visibleUserIds: note.visibleUserIds,
-		localOnly: note.localOnly,
-		reactionAcceptance: note.reactionAcceptance,
-	};
+	private serialize(note: MiNote, poll: MiPoll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
+		return {
+			id: note.id,
+			text: note.text,
+			createdAt: this.idService.parse(note.id).date.toISOString(),
+			fileIds: note.fileIds,
+			files: files,
+			replyId: note.replyId,
+			renoteId: note.renoteId,
+			poll: poll,
+			cw: note.cw,
+			visibility: note.visibility,
+			visibleUserIds: note.visibleUserIds,
+			localOnly: note.localOnly,
+			reactionAcceptance: note.reactionAcceptance,
+		};
+	}
 }

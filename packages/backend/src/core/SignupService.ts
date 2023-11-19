@@ -8,13 +8,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
-import { MiUser } from '@/models/entities/User.js';
-import { MiUserProfile } from '@/models/entities/UserProfile.js';
+import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
+import { MiUser } from '@/models/User.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
-import { MiUserKeypair } from '@/models/entities/UserKeypair.js';
-import { MiUsedUsername } from '@/models/entities/UsedUsername.js';
+import { MiUserKeypair } from '@/models/UserKeypair.js';
+import { MiUsedUsername } from '@/models/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -27,9 +26,6 @@ export class SignupService {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
-
-		@Inject(DI.config)
-		private config: Config,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -124,8 +120,7 @@ export class SignupService {
 			if (exist) throw new Error(' the username is already used');
 
 			account = await transactionalEntityManager.save(new MiUser({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				username: username,
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),

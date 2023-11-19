@@ -9,30 +9,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="600" :marginMin="16">
 		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
-		<FormSection v-if="scopes">
-			<template #label>{{ i18n.ts.system }}</template>
-			<div class="_formLinks">
-				<FormLink v-for="scope in scopes" :to="`/registry/keys/system/${scope.join('/')}`" class="_monospace">{{ scope.join('/') }}</FormLink>
-			</div>
-		</FormSection>
+		<div v-if="scopesWithDomain" class="_gaps_m">
+			<FormSection v-for="domain in scopesWithDomain" :key="domain.domain">
+				<template #label>{{ domain.domain ? domain.domain.toUpperCase() : i18n.ts.system }}</template>
+				<div class="_gaps_s">
+					<FormLink v-for="scope in domain.scopes" :to="`/registry/keys/${domain.domain ?? '@'}/${scope.join('/')}`" class="_monospace">{{ scope.length === 0 ? '(root)' : scope.join('/') }}</FormLink>
+				</div>
+			</FormSection>
+		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import JSON5 from 'json5';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 
-let scopes = $ref(null);
+let scopesWithDomain = $ref(null);
 
 function fetchScopes() {
-	os.api('i/registry/scopes').then(res => {
-		scopes = res.slice().sort((a, b) => a.join('/').localeCompare(b.join('/')));
+	os.api('i/registry/scopes-with-domain').then(res => {
+		scopesWithDomain = res;
 	});
 }
 

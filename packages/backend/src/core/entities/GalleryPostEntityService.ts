@@ -5,12 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
+import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiGalleryPost } from '@/models/entities/GalleryPost.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiGalleryPost } from '@/models/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -25,6 +26,7 @@ export class GalleryPostEntityService {
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -38,7 +40,7 @@ export class GalleryPostEntityService {
 
 		return await awaitAll({
 			id: post.id,
-			createdAt: post.createdAt.toISOString(),
+			createdAt: this.idService.parse(post.id).date.toISOString(),
 			updatedAt: post.updatedAt.toISOString(),
 			userId: post.userId,
 			user: this.userEntityService.pack(post.user ?? post.userId, me),
@@ -56,7 +58,7 @@ export class GalleryPostEntityService {
 
 	@bindThis
 	public async packMany(
-		posts: (MiGalleryPost['id'] | MiGalleryPost)[],
+		posts: MiGalleryPost[],
 		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'GalleryPost'>[]> {
 		return (await Promise.allSettled(posts.map(x => this.pack(x, me))))

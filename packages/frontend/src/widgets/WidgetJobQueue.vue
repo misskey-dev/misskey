@@ -52,12 +52,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, reactive } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { useStream } from '@/stream';
-import number from '@/filters/number';
-import * as sound from '@/scripts/sound';
-import { deepClone } from '@/scripts/clone';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { useStream } from '@/stream.js';
+import number from '@/filters/number.js';
+import * as sound from '@/scripts/sound.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const name = 'jobQueue';
 

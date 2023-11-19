@@ -101,12 +101,12 @@ import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
-import * as os from '@/os';
-import { useStream } from '@/stream';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { uploadFile, uploads } from '@/scripts/upload';
-import { claimAchievement } from '@/scripts/achievements';
+import * as os from '@/os.js';
+import { useStream } from '@/stream.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { uploadFile, uploads } from '@/scripts/upload.js';
+import { claimAchievement } from '@/scripts/achievements.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -505,6 +505,7 @@ function appendFile(file: Misskey.entities.DriveFile) {
 function appendFolder(folderToAppend: Misskey.entities.DriveFolder) {
 	addFolder(folderToAppend);
 }
+
 /*
 function prependFile(file: Misskey.entities.DriveFile) {
 	addFile(file, true);

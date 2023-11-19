@@ -45,6 +45,7 @@ pin: "Vastmaken aan profielpagina"
 unpin: "Losmaken van profielpagina"
 copyContent: "Kopiëren inhoud"
 copyLink: "Kopiëren link"
+copyLinkRenote: ""
 delete: "Verwijderen"
 deleteAndEdit: "Verwijderen en bewerken"
 deleteAndEditConfirm: "Weet je zeker dat je deze notitie wilt verwijderen en dan bewerken? Je verliest alle reacties, herdelingen en antwoorden erop."
@@ -338,7 +339,6 @@ invite: "Uitnodigen"
 driveCapacityPerLocalAccount: "Opslagruimte per lokale gebruiker"
 driveCapacityPerRemoteAccount: "Opslagruimte per externe gebruiker"
 inMb: "in megabytes"
-iconUrl: "Pictogram URL"
 bannerUrl: "Banner URL"
 backgroundImageUrl: "URL afbeelding"
 basicInfo: "Basisinformatie"
@@ -426,6 +426,9 @@ pushNotificationAlreadySubscribed: "Pushberichtrn al ingeschakeld"
 windowMaximize: "Maximaliseren"
 windowRestore: "Herstellen"
 loggedInAsBot: "Momenteel als bot ingelogd"
+icon: "Avatar"
+replies: "Antwoord"
+renotes: "Herdelen"
 _email:
   _follow:
     title: "volgde jou"
@@ -436,7 +439,6 @@ _theme:
 _sfx:
   note: "Notities"
   notification: "Meldingen"
-  chat: "Chat"
 _2fa:
   renewTOTPCancel: "Nee, bedankt"
 _widgets:
@@ -492,3 +494,6 @@ _deck:
     mentions: "Vermeldingen"
 _webhookSettings:
   name: "Naam"
+_moderationLogTypes:
+  suspend: "Opschorten"
+  resetPassword: "Wachtwoord terugzetten"

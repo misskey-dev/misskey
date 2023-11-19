@@ -32,22 +32,20 @@ import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { soundConfigStore } from '@/scripts/sound';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { defaultStore } from '@/store.js';
 
-const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVolume'));
+const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
 
-const soundsKeys = ['note', 'noteMy', 'notification', 'chat', 'chatBg', 'antenna', 'channel'] as const;
+const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel'] as const;
 
 const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
-	note: soundConfigStore.reactiveState.sound_note,
-	noteMy: soundConfigStore.reactiveState.sound_noteMy,
-	notification: soundConfigStore.reactiveState.sound_notification,
-	chat: soundConfigStore.reactiveState.sound_chat,
-	chatBg: soundConfigStore.reactiveState.sound_chatBg,
-	antenna: soundConfigStore.reactiveState.sound_antenna,
-	channel: soundConfigStore.reactiveState.sound_channel,
+	note: defaultStore.reactiveState.sound_note,
+	noteMy: defaultStore.reactiveState.sound_noteMy,
+	notification: defaultStore.reactiveState.sound_notification,
+	antenna: defaultStore.reactiveState.sound_antenna,
+	channel: defaultStore.reactiveState.sound_channel,
 });
 
 async function updated(type: keyof typeof sounds.value, sound) {
@@ -56,14 +54,14 @@ async function updated(type: keyof typeof sounds.value, sound) {
 		volume: sound.volume,
 	};
 
-	soundConfigStore.set(`sound_${type}`, v);
+	defaultStore.set(`sound_${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
-		const v = soundConfigStore.def[`sound_${sound}`].default;
-		soundConfigStore.set(`sound_${sound}`, v);
+		const v = defaultStore.def[`sound_${sound}`].default;
+		defaultStore.set(`sound_${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }

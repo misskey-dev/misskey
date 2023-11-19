@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { api, post } from '@/os';
-import { $i, login } from '@/account';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { mainRouter } from '@/router';
-import { deepClone } from '@/scripts/clone';
+import { api, post } from '@/os.js';
+import { $i, login } from '@/account.js';
+import { getAccountFromId } from '@/scripts/get-account-from-id.js';
+import { mainRouter } from '@/router.js';
+import { deepClone } from '@/scripts/clone.js';
 
 export function swInject() {
 	navigator.serviceWorker.addEventListener('message', async ev => {

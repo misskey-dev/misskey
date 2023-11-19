@@ -32,17 +32,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onActivated } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkAvatars from '@/components/MkAvatars.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { userListsCache } from '@/cache';
-import { infoImageUrl } from '@/instance';
-import { $i } from '@/account';
+import { infoImageUrl } from '@/instance.js';
+import { $i } from '@/account.js';
 
 const items = $computed(() => userListsCache.value.value ?? []);
 
 function fetch() {
-	userListsCache.fetch(() => os.api('users/lists/list'));
+	userListsCache.fetch();
 }
 
 fetch();

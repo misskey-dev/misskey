@@ -28,9 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
-import { login } from '@/account';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { login } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 let submitting = $ref(false);
 
@@ -51,7 +51,8 @@ function submit() {
 
 		os.alert({
 			type: 'error',
-			text: i18n.ts.somethingHappened,
+			title: i18n.ts.somethingHappened,
+			text: i18n.ts.signupPendingError,
 		});
 	});
 }

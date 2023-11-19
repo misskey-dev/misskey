@@ -12,23 +12,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:moveClass="defaultStore.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note"/>
+	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
 	<slot v-if="hasMoreReactions" name="more"/>
 </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
-import { watch } from 'vue';
+import * as Misskey from 'misskey-js';
+import { inject, watch } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	maxNumber?: number;
 }>(), {
 	maxNumber: Infinity,
 });
+
+const mock = inject<boolean>('mock', false);
+
+const emit = defineEmits<{
+	(ev: 'mockUpdateMyReaction', emoji: string, delta: number): void;
+}>();
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
@@ -37,6 +43,15 @@ let hasMoreReactions = $ref(false);
 
 if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReaction)) {
 	reactions[props.note.myReaction] = props.note.reactions[props.note.myReaction];
+}
+
+function onMockToggleReaction(emoji: string, count: number) {
+	if (!mock) return;
+
+	const i = reactions.findIndex((item) => item[0] === emoji);
+	if (i < 0) return;
+
+	emit('mockUpdateMyReaction', emoji, (count - reactions[i][1]));
 }
 
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {

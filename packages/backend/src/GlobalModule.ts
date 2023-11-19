@@ -78,6 +78,7 @@ const $redisForTimelines: Provider = {
 	},
 	inject: [DI.config],
 };
+
 @Global()
 @Module({
 	imports: [RepositoryModule],

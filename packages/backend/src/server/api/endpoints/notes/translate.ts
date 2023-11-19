@@ -4,21 +4,19 @@
  */
 
 import { URLSearchParams } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: false,
+	requireCredential: true,
 
 	res: {
 		type: 'object',
@@ -26,6 +24,11 @@ export const meta = {
 	},
 
 	errors: {
+		unavailable: {
+			message: 'Translate of notes unavailable.',
+			code: 'UNAVAILABLE',
+			id: '50a70314-2d8a-431b-b433-efa5cc56444c',
+		},
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
@@ -43,28 +46,27 @@ export const paramDef = {
 	required: ['noteId', 'targetLang'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
 		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const policies = await this.roleService.getUserPolicies(me.id);
+			if (!policies.canUseTranslator) {
+				throw new ApiError(meta.errors.unavailable);
+			}
+
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
 
-			if (!(await this.noteEntityService.isVisibleForMe(note, me ? me.id : null))) {
+			if (!(await this.noteEntityService.isVisibleForMe(note, me.id))) {
 				return 204; // TODO: 良い感じのエラー返す
 			}
 

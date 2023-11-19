@@ -26,15 +26,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef } from 'vue';
-import * as misskey from 'misskey-js';
-import * as os from '@/os';
+import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import { $i, updateAccount } from '@/account';
+import { i18n } from '@/i18n.js';
+import { $i, updateAccount } from '@/account.js';
 
 const props = withDefaults(defineProps<{
-	announcement: misskey.entities.Announcement;
+	announcement: Misskey.entities.Announcement;
 }>(), {
 });
 
@@ -54,19 +54,15 @@ async function gotIt(): Promise<void> {
 		if (confirm.canceled) return;
 	}
 
-	await os.api('i/read-announcement', { announcementId: props.announcement.id });
-	if ($i) {
-		updateAccount({
-			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== props.announcement.id),
-		});
-	}
-	modal.value?.close();
+	modal.value.close();
+	os.api('i/read-announcement', { announcementId: props.announcement.id });
+	updateAccount({
+		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
+	});
 }
 
-function onBgClick(): void {
-	if (sec.value > 0) return;
-
-	rootEl.value?.animate([{
+function onBgClick() {
+	rootEl.value.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {
@@ -81,7 +77,7 @@ function onBgClick(): void {
 }
 
 onMounted(() => {
-	if (sec.value > 0 ) {
+	if (sec.value > 0) {
 		const waitTimer = setInterval(() => {
 			if (sec.value === 0) {
 				clearInterval(waitTimer);

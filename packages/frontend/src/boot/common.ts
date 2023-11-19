@@ -5,26 +5,26 @@
 
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
 import { compareVersions } from 'compare-versions';
-import widgets from '@/widgets';
-import directives from '@/directives';
-import components from '@/components';
-import { version, ui, lang, updateLocale } from '@/config';
-import { applyTheme } from '@/scripts/theme';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { i18n, updateI18n } from '@/i18n';
-import { confirm, alert, post, popup, toast } from '@/os';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { fetchInstance, instance } from '@/instance';
-import { deviceKind } from '@/scripts/device-kind';
-import { reloadChannel } from '@/scripts/unison-reload';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { getUrlWithoutLoginId } from '@/scripts/login-id';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { deckStore } from '@/ui/deck/deck-store';
-import { miLocalStorage } from '@/local-storage';
-import { fetchCustomEmojis } from '@/custom-emojis';
-import { mainRouter } from '@/router';
+import widgets from '@/widgets/index.js';
+import directives from '@/directives/index.js';
+import components from '@/components/index.js';
+import { version, ui, lang, updateLocale } from '@/config.js';
+import { applyTheme } from '@/scripts/theme.js';
+import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
+import { i18n, updateI18n } from '@/i18n.js';
+import { confirm, alert, post, popup, toast } from '@/os.js';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { fetchInstance, instance } from '@/instance.js';
+import { deviceKind } from '@/scripts/device-kind.js';
+import { reloadChannel } from '@/scripts/unison-reload.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
+import { getAccountFromId } from '@/scripts/get-account-from-id.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { fetchCustomEmojis } from '@/custom-emojis.js';
+import { mainRouter } from '@/router.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -175,7 +175,7 @@ export async function common(createVue: () => App<Element>) {
 		defaultStore.set('darkMode', isDeviceDarkmode());
 	}
 
-	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
 		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
 			defaultStore.set('darkMode', mql.matches);
 		}
@@ -201,6 +201,18 @@ export async function common(createVue: () => App<Element>) {
 			document.documentElement.style.setProperty('--blur', 'none');
 		}
 	}, { immediate: true });
+
+	if (defaultStore.state.keepScreenOn) {
+		if ('wakeLock' in navigator) {
+			navigator.wakeLock.request('screen');
+
+			document.addEventListener('visibilitychange', async () => {
+				if (document.visibilityState === 'visible') {
+					navigator.wakeLock.request('screen');
+				}
+			});
+		}
+	}
 
 	//#region Fetch user
 	if ($i && $i.token) {

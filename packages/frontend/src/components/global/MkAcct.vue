@@ -15,14 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode/';
-import MkCondensedLine from './MkCondensedLine.vue';
-import { host as hostRaw } from '@/config';
-import { defaultStore } from '@/store';
+import { host as hostRaw } from '@/config.js';
+import { defaultStore } from '@/store.js';
 
 defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 	detail?: boolean;
 }>();
 

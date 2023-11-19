@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -19,18 +18,13 @@ import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';
+const nodeinfo_homepage = 'https://misskey-hub.net';
 
 @Injectable()
 export class NodeinfoServerService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
 
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
@@ -42,10 +36,10 @@ export class NodeinfoServerService {
 
 	@bindThis
 	public getLinks() {
-		return [/* (awaiting release) {
-			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
-			href: config.url + nodeinfo2_1path
-		}, */{
+		return [{
+				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
+				href: this.config.url + nodeinfo2_1path
+			}, {
 				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
 				href: this.config.url + nodeinfo2_0path,
 			}];
@@ -53,7 +47,7 @@ export class NodeinfoServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		const nodeinfo2 = async () => {
+		const nodeinfo2 = async (version: number) => {
 			const now = Date.now();
 
 			const notesChart = await this.notesChart.getChart('hour', 1, null);
@@ -80,10 +74,12 @@ export class NodeinfoServerService {
 
 			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-			return {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const document: any = {
 				software: {
 					name: 'misskey',
 					version: this.config.version,
+					homepage: nodeinfo_homepage,
 					repository: meta.repositoryUrl,
 				},
 				protocols: ['activitypub'],
@@ -106,6 +102,8 @@ export class NodeinfoServerService {
 					},
 					langs: meta.langs,
 					tosUrl: meta.termsOfServiceUrl,
+					privacyPolicyUrl: meta.privacyPolicyUrl,
+					impressumUrl: meta.impressumUrl,
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
 					disableRegistration: meta.disableRegistration,
@@ -121,23 +119,44 @@ export class NodeinfoServerService {
 					themeColor: meta.themeColor ?? '#86b300',
 				},
 			};
+			if (version >= 21) {
+				document.software.repository = meta.repositoryUrl;
+				document.software.homepage = meta.repositoryUrl;
+			}
+			return document;
 		};
 
 		const cache = new MemorySingleCache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
 
 		fastify.get(nodeinfo2_1path, async (request, reply) => {
-			const base = await cache.fetch(() => nodeinfo2());
+			const base = await cache.fetch(() => nodeinfo2(21));
 
-			reply.header('Cache-Control', 'public, max-age=600');
+			reply
+				.type(
+					'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
+				)
+				.header('Cache-Control', 'public, max-age=600')
+				.header('Access-Control-Allow-Headers', 'Accept')
+				.header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+				.header('Access-Control-Allow-Origin', '*')
+				.header('Access-Control-Expose-Headers', 'Vary');
 			return { version: '2.1', ...base };
 		});
 
 		fastify.get(nodeinfo2_0path, async (request, reply) => {
-			const base = await cache.fetch(() => nodeinfo2());
+			const base = await cache.fetch(() => nodeinfo2(20));
 
 			delete (base as any).software.repository;
 
-			reply.header('Cache-Control', 'public, max-age=600');
+			reply
+				.type(
+					'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.0#"',
+				)
+				.header('Cache-Control', 'public, max-age=600')
+				.header('Access-Control-Allow-Headers', 'Accept')
+				.header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+				.header('Access-Control-Allow-Origin', '*')
+				.header('Access-Control-Expose-Headers', 'Vary');
 			return { version: '2.0', ...base };
 		});
 

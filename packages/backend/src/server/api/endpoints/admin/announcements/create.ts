@@ -53,7 +53,7 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
-			forExistingUsers: {
+			forYou: {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
@@ -69,9 +69,13 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
-			userId: {
-				type: 'string',
-				optional: false, nullable: true,
+			silence: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			isRead: {
+				type: 'boolean',
+				optional: true, nullable: false,
 			},
 		},
 	},
@@ -89,20 +93,19 @@ export const paramDef = {
 		needConfirmationToRead: { type: 'boolean', default: false },
 		closeDuration: { type: 'number', default: 0 },
 		displayOrder: { type: 'number', default: 0 },
+		silence: { type: 'boolean', default: false },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const { raw, packed } = await this.announcementService.create({
-				createdAt: new Date(),
 				updatedAt: null,
 				title: ps.title,
 				text: ps.text,
@@ -113,24 +116,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				needConfirmationToRead: ps.needConfirmationToRead,
 				closeDuration: ps.closeDuration,
 				displayOrder: ps.displayOrder,
+				silence: ps.silence,
 				userId: ps.userId,
-			});
+			}, me);
 
-			return {
-				id: packed.id,
-				createdAt: packed.createdAt,
-				updatedAt: packed.updatedAt,
-				title: packed.title,
-				text: packed.text,
-				imageUrl: packed.imageUrl,
-				icon: packed.icon,
-				display: packed.display,
-				forExistingUsers: raw.forExistingUsers,
-				needConfirmationToRead: packed.needConfirmationToRead,
-				closeDuration: packed.closeDuration,
-				displayOrder: packed.displayOrder,
-				userId: raw.userId,
-			};
+			return packed;
 		});
 	}
 }

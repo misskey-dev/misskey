@@ -8,40 +8,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ i18n.ts['2fa'] }}</template>
 
 	<div v-if="$i" class="_gaps_s">
-		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodes === 'partial'" warn class="info">
-			{{ i18n.ts._2fa.twoFactorBackupSecretWarning }}
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'partial'" warn>
+			{{ i18n.ts._2fa.backupCodeUsedWarning }}
 		</MkInfo>
-		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodes === 'none'" warn class="info">
-			{{ i18n.ts._2fa.twoFactorBackupSecretExhausted }}
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'none'" warn>
+			{{ i18n.ts._2fa.backupCodesExhaustedWarning }}
 		</MkInfo>
 
-		<MkFolder>
+		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-shield-lock"></i></template>
 			<template #label>{{ i18n.ts.totp }}</template>
 			<template #caption>{{ i18n.ts.totpDescription }}</template>
+			<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--success)"></i></template>
+
 			<div v-if="$i.twoFactorEnabled" class="_gaps_s">
 				<div v-text="i18n.ts._2fa.alreadyRegistered"/>
 				<template v-if="$i.securityKeysList.length > 0">
 					<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 				</template>
-				<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+				<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
 			</div>
 
-			<MkButton v-else-if="!twoFactorData && !$i.twoFactorEnabled" @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
+			<MkButton v-else-if="!$i.twoFactorEnabled" primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
 		</MkFolder>
 
 		<MkFolder>
 			<template #icon><i class="ti ti-key"></i></template>
 			<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
 			<div class="_gaps_s">
-				<MkInfo>{{ i18n.ts._2fa.securityKeyInfo }}</MkInfo>
+				<MkInfo>
+					{{ i18n.ts._2fa.securityKeyInfo }}
+				</MkInfo>
 
-				<MkInfo v-if="!WebAuthnSupported()" warn>
+				<MkInfo v-if="!webAuthnSupported()" warn>
 					{{ i18n.ts._2fa.securityKeyNotSupported }}
 				</MkInfo>
 
-				<MkInfo v-else-if="WebAuthnSupported() && !$i.twoFactorEnabled" warn>
+				<MkInfo v-else-if="webAuthnSupported() && !$i.twoFactorEnabled" warn>
 					{{ i18n.ts._2fa.registerTOTPBeforeKey }}
 				</MkInfo>
 
@@ -68,16 +72,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
-import { supported as WebAuthnSupported, create as WebAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import { ref, defineAsyncComponent } from 'vue';
+import { supported as webAuthnSupported, create as webAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
 // メモ: 各エンドポイントはmeUpdatedを発行するため、refreshAccountは不要
 
@@ -88,64 +92,32 @@ withDefaults(defineProps<{
 });
 
 const usePasswordLessLogin = $computed(() => $i?.usePasswordLessLogin ?? false);
-let twoFactorData = $ref<{ qr: string; url: string; secret: string; label: string; issuer: string } | null>(null);
 
 async function registerTOTP(): Promise<void> {
-	const password = await os.inputText({
-		title: i18n.ts._2fa.registerTOTP,
-		text: i18n.ts._2fa.passwordToTOTP,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
-	twoFactorData = <{ qr: string; url: string; secret: string; label: string; issuer: string }>
-	await os.apiWithDialog('i/2fa/register', {
-		password: password.result,
+	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
-	const qrdialog = await new Promise<boolean>(res => {
-		os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
-			twoFactorData,
-		}, {
-			'ok': () => res(true),
-			'cancel': () => res(false),
-		}, 'closed');
-	});
-	if (!qrdialog) return;
-
-	const token = await os.inputNumber({
-		title: i18n.ts._2fa.step3Title,
-		text: i18n.ts._2fa.step3,
-		autocomplete: 'one-time-code',
-	});
-	if (token.canceled) return;
-
-	const { backupCodes } = <{ backupCodes: string[] }>
-	await os.apiWithDialog('i/2fa/done', {
-		token: token.result.toString(),
-	});
-
-	await os.alert({
-		type: 'success',
-		text: i18n.t('_2fa.step4', { codes: backupCodes.map((code, index) => `${String(index + 1).padStart(2, '0')}. ${code}`).join('\n') }),
-	});
+	os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
+		twoFactorData,
+	}, {}, 'closed');
 }
 
-function unregisterTOTP(): void {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.apiWithDialog('i/2fa/unregister', {
-			password: password,
-		}).catch(error => {
-			os.alert({
-				type: 'error',
-				text: error,
-			});
+async function unregisterTOTP(): Promise<void> {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	os.apiWithDialog('i/2fa/unregister', {
+		password: auth.result.password,
+		token: auth.result.token,
+	}).catch(error => {
+		os.alert({
+			type: 'error',
+			text: error,
 		});
 	});
 }
@@ -171,15 +143,12 @@ async function unregisterKey(key): Promise<void> {
 	});
 	if (confirm.canceled) return;
 
-	const password = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	await os.apiWithDialog('i/2fa/remove-key', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 		credentialId: key.id,
 	})
 		.then(() => os.success())
@@ -205,17 +174,14 @@ async function renameKey(key): Promise<void> {
 	});
 }
 
-async function addSecurityKey(): Promise<void> {
-	const password = await os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (password.canceled) return;
+async function addSecurityKey() {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
 
 	const registrationOptions = parseCreationOptionsFromJSON({
 		publicKey: await os.apiWithDialog('i/2fa/register-key', {
-			password: password.result,
+			password: auth.result.password,
+			token: auth.result.token,
 		}),
 	});
 
@@ -229,15 +195,19 @@ async function addSecurityKey(): Promise<void> {
 	if (name.canceled) return;
 
 	const credential = await os.promiseDialog(
-		WebAuthnCreate(registrationOptions),
+		webAuthnCreate(registrationOptions),
 		null,
 		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
 		i18n.ts._2fa.tapSecurityKey,
 	);
 	if (!credential) return;
 
+	const auth2 = await os.authenticateDialog();
+	if (auth2.canceled) return;
+
 	await os.apiWithDialog('i/2fa/key-done', {
-		password: password.result,
+		password: auth.result.password,
+		token: auth.result.token,
 		name: name.result,
 		credential: credential.toJSON(),
 	});

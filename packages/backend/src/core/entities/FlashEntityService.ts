@@ -5,12 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FlashLikesRepository, FlashsRepository } from '@/models/index.js';
+import type { FlashsRepository, FlashLikesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiFlash } from '@/models/entities/Flash.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiFlash } from '@/models/Flash.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -23,6 +24,7 @@ export class FlashEntityService {
 		private flashLikesRepository: FlashLikesRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -36,7 +38,7 @@ export class FlashEntityService {
 
 		return await awaitAll({
 			id: flash.id,
-			createdAt: flash.createdAt.toISOString(),
+			createdAt: this.idService.parse(flash.id).date.toISOString(),
 			updatedAt: flash.updatedAt.toISOString(),
 			userId: flash.userId,
 			user: this.userEntityService.pack(flash.user ?? flash.userId, me), // { detail: true } すると無限ループするので注意
@@ -50,7 +52,7 @@ export class FlashEntityService {
 
 	@bindThis
 	public async packMany(
-		flashs: (MiFlash['id'] | MiFlash)[],
+		flashs: MiFlash[],
 		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Flash'>[]> {
 		return (await Promise.allSettled(flashs.map(x => this.pack(x, me))))

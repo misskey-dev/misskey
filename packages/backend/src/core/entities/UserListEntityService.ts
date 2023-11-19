@@ -5,10 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
+import type { MiUser, MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
+import type { MiUserList } from '@/models/UserList.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -17,10 +18,11 @@ export class UserListEntityService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -30,17 +32,41 @@ export class UserListEntityService {
 	): Promise<Packed<'UserList'>> {
 		const userList = typeof src === 'object' ? src : await this.userListsRepository.findOneByOrFail({ id: src });
 
-		const users = await this.userListJoiningsRepository.findBy({
+		const users = await this.userListMembershipsRepository.findBy({
 			userListId: userList.id,
 		});
 
 		return {
 			id: userList.id,
-			createdAt: userList.createdAt.toISOString(),
+			createdAt: this.idService.parse(userList.id).date.toISOString(),
 			name: userList.name,
 			userIds: users.map(x => x.userId),
 			isPublic: userList.isPublic,
 		};
+	}
+
+	@bindThis
+	public async packMemberships(
+		src: MiUserListMembership,
+		me: { id: MiUser['id'] } | null | undefined,
+	): Promise<Packed<'UserListMembership'>> {
+		return {
+			id: src.id,
+			createdAt: this.idService.parse(src.id).date.toISOString(),
+			userId: src.userId,
+			user: await this.userEntityService.pack(src.userId, me),
+			withReplies: src.withReplies,
+		};
+	}
+
+	@bindThis
+	public async packMembershipsMany(
+		memberships: MiUserListMembership[],
+		me: { id: MiUser['id'] } | null | undefined,
+	): Promise<Packed<'UserListMembership'>[]> {
+		return (await Promise.allSettled(memberships.map(u => this.packMemberships(u, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'UserListMembership'>>).value);
 	}
 }
 

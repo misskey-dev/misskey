@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
-			:class="$style.inputCore"
+			:class="[$style.inputCore, { _monospace: code }]"
 			:type="type"
 			:disabled="disabled"
 			:required="required"
@@ -20,9 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:placeholder="placeholder"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
+			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
 			:step="step"
 			:list="id"
+			:min="min"
+			:max="max"
 			@focus="onFocus"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
@@ -43,8 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
+import { useInterval } from '@/scripts/use-interval.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue: string | number | null;
@@ -56,14 +59,18 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];
+	min?: number;
+	max?: number;
 	inline?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
+	code?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -160,6 +167,10 @@ onMounted(() => {
 			focus();
 		}
 	});
+});
+
+defineExpose({
+	focus,
 });
 </script>
 

@@ -37,6 +37,34 @@ export const packedUserLiteSchema = {
 			type: 'string',
 			nullable: true, optional: false,
 		},
+		avatarDecorations: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'object',
+				nullable: false, optional: false,
+				properties: {
+					id: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'id',
+					},
+					url: {
+						type: 'string',
+						format: 'url',
+						nullable: false, optional: false,
+					},
+					angle: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
+					flipH: {
+						type: 'boolean',
+						nullable: false, optional: true,
+					},
+				},
+			},
+		},
 		isAdmin: {
 			type: 'boolean',
 			nullable: false, optional: true,
@@ -173,6 +201,15 @@ export const packedUserDetailedNotMeOnlySchema = {
 				},
 			},
 		},
+		verifiedLinks: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'string',
+				nullable: false, optional: false,
+				format: 'url',
+			},
+		},
 		followersCount: {
 			type: 'number',
 			nullable: false, optional: false,
@@ -268,6 +305,14 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'string',
 			nullable: false, optional: true,
 		},
+		notify: {
+			type: 'string',
+			nullable: false, optional: true,
+		},
+		withReplies: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
 		//#endregion
 	},
 } as const;
@@ -325,7 +370,7 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		twoFactorBackupCodes: {
+		twoFactorBackupCodesStock: {
 			type: 'string',
 			enum: ['full', 'partial', 'none'],
 			nullable: false, optional: false,
@@ -358,6 +403,10 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		unreadNotificationsCount: {
+			type: 'number',
+			nullable: false, optional: false,
+		},
 		mutedWords: {
 			type: 'array',
 			nullable: false, optional: false,
@@ -378,13 +427,9 @@ export const packedMeDetailedOnlySchema = {
 				nullable: false, optional: false,
 			},
 		},
-		mutingNotificationTypes: {
-			type: 'array',
-			nullable: true, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-			},
+		notificationRecieveConfig: {
+			type: 'object',
+			nullable: false, optional: false,
 		},
 		emailNotificationTypes: {
 			type: 'array',

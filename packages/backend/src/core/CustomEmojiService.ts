@@ -4,21 +4,21 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { DataSource, In, IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiEmoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, MiRole } from '@/models/index.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import type { Config } from '@/config.js';
 import { query } from '@/misc/prelude/url.js';
-import type { Serialized } from '@/server/api/stream/types.js';
+import type { Serialized } from '@/types.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
@@ -31,18 +31,13 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
+		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
 		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
@@ -53,7 +48,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
-				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
 				return new Map(JSON.parse(value).map((x: Serialized<MiEmoji>) => [x.name, {
 					...x,
 					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
@@ -74,9 +68,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		localOnly: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 		roleIdsThatCanNotBeUsedThisEmojiAsReaction: MiRole['id'][];
-	}): Promise<MiEmoji> {
+	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,
@@ -98,6 +92,13 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
+
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'addCustomEmoji', {
+					emojiId: emoji.id,
+					emoji: emoji,
+				});
+			}
 		}
 
 		return emoji;
@@ -114,7 +115,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		localOnly?: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 		roleIdsThatCanNotBeUsedThisEmojiAsReaction?: MiRole['id'][];
-	}): Promise<void> {
+	}, moderator?: MiUser): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
 		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
@@ -136,11 +137,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		const updated = await this.emojiEntityService.packDetailed(emoji.id);
+		const packed = await this.emojiEntityService.packDetailed(emoji.id);
 
 		if (emoji.name === data.name) {
 			this.globalEventService.publishBroadcastStream('emojiUpdated', {
-				emojis: [updated],
+				emojis: [packed],
 			});
 		} else {
 			this.globalEventService.publishBroadcastStream('emojiDeleted', {
@@ -148,7 +149,16 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: updated,
+				emoji: packed,
+			});
+		}
+
+		if (moderator) {
+			const updated = await this.emojisRepository.findOneByOrFail({ id: id });
+			this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+				emojiId: emoji.id,
+				before: emoji,
+				after: updated,
 			});
 		}
 	}
@@ -242,7 +252,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async delete(id: MiEmoji['id']) {
+	public async delete(id: MiEmoji['id'], moderator?: MiUser) {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 
 		await this.emojisRepository.delete(emoji.id);
@@ -252,16 +262,30 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		this.globalEventService.publishBroadcastStream('emojiDeleted', {
 			emojis: [await this.emojiEntityService.packDetailed(emoji)],
 		});
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+				emojiId: emoji.id,
+				emoji: emoji,
+			});
+		}
 	}
 
 	@bindThis
-	public async deleteBulk(ids: MiEmoji['id'][]) {
+	public async deleteBulk(ids: MiEmoji['id'][], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
 
 		for (const emoji of emojis) {
 			await this.emojisRepository.delete(emoji.id);
+
+			if (moderator) {
+				this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+					emojiId: emoji.id,
+					emoji: emoji,
+				});
+			}
 		}
 
 		this.localEmojisCache.refresh();
@@ -311,7 +335,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		const queryOrNull = async () => (await this.emojisRepository.findOneBy({
 			name,
-			host: host ?? IsNull(),
+			host,
 		})) ?? null;
 
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
@@ -357,6 +381,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		for (const emoji of _emojis) {
 			this.cache.set(`${emoji.name} ${emoji.host}`, emoji);
 		}
+	}
+
+	/**
+	 * ローカル内の絵文字に重複がないかチェックします
+	 * @param name 絵文字名
+	 */
+	@bindThis
+	public checkDuplicate(name: string): Promise<boolean> {
+		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
+	}
+
+	@bindThis
+	public getEmojiById(id: string): Promise<MiEmoji | null> {
+		return this.emojisRepository.findOneBy({ id });
 	}
 
 	@bindThis

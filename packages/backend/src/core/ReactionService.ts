@@ -4,13 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
+import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
@@ -29,6 +30,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 
 const FALLBACK = '❤';
+const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -67,6 +69,9 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 @Injectable()
 export class ReactionService {
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -147,12 +152,12 @@ export class ReactionService {
 					reaction = FALLBACK;
 				}
 			} else {
-				reaction = this.normalize(reaction ?? null);
+				reaction = this.normalize(reaction);
 			}
 		}
 
 		const record: MiNoteReaction = {
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			createdAt: new Date(),
 			noteId: note.id,
 			userId: user.id,
@@ -187,7 +192,9 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
-				... (!user.isBot ? { score: () => '"score" + 1' } : {}),
+				...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
+					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
+				} : {}),
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
@@ -242,10 +249,9 @@ export class ReactionService {
 		// リアクションされたユーザーがローカルユーザーなら通知を作成
 		if (note.userHost === null) {
 			this.notificationService.createNotification(note.userId, 'reaction', {
-				notifierId: user.id,
 				noteId: note.id,
 				reaction: reaction,
-			});
+			}, user.id);
 		}
 
 		//#region 配信
@@ -295,11 +301,10 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
+				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
-
-		if (!user.isBot) this.notesRepository.decrement({ id: note.id }, 'score', 1);
 
 		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,

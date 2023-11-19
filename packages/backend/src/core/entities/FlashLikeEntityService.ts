@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FlashLikesRepository } from '@/models/index.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiFlashLike } from '@/models/entities/FlashLike.js';
+import type { FlashLikesRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiFlashLike } from '@/models/FlashLike.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { FlashEntityService } from './FlashEntityService.js';
@@ -38,7 +38,7 @@ export class FlashLikeEntityService {
 	@bindThis
 	public async packMany(
 		likes: (MiFlashLike['id'] | MiFlashLike)[],
-		me: { id: MiUser['id'] } | null | undefined,
+		me: { id: MiUser['id'] },
 	) : Promise<Packed<'FlashLike'>[]> {
 		return (await Promise.allSettled(likes.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

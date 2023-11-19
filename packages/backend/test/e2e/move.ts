@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { loadConfig } from '@/config.js';
-import { MiUser, UsersRepository } from '@/models/index.js';
+import { MiUser, UsersRepository } from '@/models/_.js';
 import { jobQueue } from '@/boot/common.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { uploadFile, signup, startServer, initTestDb, api, sleep, successfulApiCall } from '../utils.js';
@@ -188,6 +188,7 @@ describe('Account Move', () => {
 				excludeKeywords: [],
 				users: [],
 				caseSensitive: false,
+				localOnly: false,
 				withReplies: false,
 				withFile: false,
 				notify: false,
@@ -431,6 +432,7 @@ describe('Account Move', () => {
 				excludeKeywords: [],
 				users: [eve.id],
 				caseSensitive: false,
+				localOnly: false,
 				withReplies: false,
 				withFile: false,
 				notify: false,

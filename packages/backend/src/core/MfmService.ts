@@ -10,7 +10,7 @@ import { Window } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
-import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
+import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import * as TreeAdapter from '../../node_modules/parse5/dist/tree-adapters/default.js';
 import type * as mfm from 'mfm-js';
@@ -276,9 +276,18 @@ export class MfmService {
 			},
 
 			fn: (node) => {
-				const el = doc.createElement('i');
-				appendChildren(node.children, el);
-				return el;
+				if (node.props.name === 'unixtime') {
+					const text = node.children[0]!.type === 'text' ? node.children[0].props.text : '';
+					const date = new Date(parseInt(text, 10) * 1000);
+					const el = doc.createElement('time');
+					el.setAttribute('datetime', date.toISOString());
+					el.textContent = date.toISOString();
+					return el;
+				} else {
+					const el = doc.createElement('i');
+					appendChildren(node.children, el);
+					return el;
+				}
 			},
 
 			blockCode: (node) => {

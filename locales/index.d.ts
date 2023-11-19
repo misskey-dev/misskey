@@ -48,6 +48,7 @@ export interface Locale {
     "unpin": string;
     "copyContent": string;
     "copyLink": string;
+    "copyLinkRenote": string;
     "delete": string;
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
@@ -159,6 +160,7 @@ export interface Locale {
     "settingGuide": string;
     "cacheRemoteFiles": string;
     "cacheRemoteFilesDescription": string;
+    "youCanCleanRemoteFilesCache": string;
     "cacheRemoteSensitiveFiles": string;
     "cacheRemoteSensitiveFilesDescription": string;
     "flagAsBot": string;
@@ -196,6 +198,7 @@ export interface Locale {
     "perDay": string;
     "stopActivityDelivery": string;
     "blockThisInstance": string;
+    "silenceThisInstance": string;
     "operations": string;
     "software": string;
     "version": string;
@@ -215,6 +218,8 @@ export interface Locale {
     "clearCachedFilesConfirm": string;
     "blockedInstances": string;
     "blockedInstancesDescription": string;
+    "silencedInstances": string;
+    "silencedInstancesDescription": string;
     "muteAndBlock": string;
     "mutedUsers": string;
     "blockedUsers": string;
@@ -359,7 +364,6 @@ export interface Locale {
     "driveCapacityPerLocalAccount": string;
     "driveCapacityPerRemoteAccount": string;
     "inMb": string;
-    "iconUrl": string;
     "bannerUrl": string;
     "backgroundImageUrl": string;
     "basicInfo": string;
@@ -415,11 +419,14 @@ export interface Locale {
     "administrator": string;
     "token": string;
     "2fa": string;
+    "setupOf2fa": string;
     "totp": string;
     "totpDescription": string;
-    "useSecurityKey": string;
     "moderator": string;
     "moderation": string;
+    "moderationNote": string;
+    "addModerationNote": string;
+    "moderationLogs": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;
@@ -532,6 +539,7 @@ export interface Locale {
     "deleteAll": string;
     "showFixedPostForm": string;
     "showFixedPostFormInChannel": string;
+    "withRepliesByDefaultForNewlyFollowed": string;
     "newNoteRecived": string;
     "sounds": string;
     "sound": string;
@@ -663,6 +671,7 @@ export interface Locale {
     "sample": string;
     "abuseReports": string;
     "reportAbuse": string;
+    "reportAbuseRenote": string;
     "reportAbuseOf": string;
     "fillAbuseReportDescription": string;
     "abuseReported": string;
@@ -690,6 +699,7 @@ export interface Locale {
     "unclip": string;
     "confirmToUnclipAlreadyClippedNote": string;
     "public": string;
+    "private": string;
     "i18nInfo": string;
     "manageAccessTokens": string;
     "accountInfo": string;
@@ -714,6 +724,7 @@ export interface Locale {
     "alwaysMarkSensitive": string;
     "loadRawImages": string;
     "disableShowingAnimatedImages": string;
+    "highlightSensitiveMedia": string;
     "verificationEmailSent": string;
     "notSet": string;
     "emailVerified": string;
@@ -977,6 +988,7 @@ export interface Locale {
     "unassign": string;
     "color": string;
     "manageCustomEmojis": string;
+    "manageAvatarDecorations": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
@@ -1028,7 +1040,7 @@ export interface Locale {
     "enableChartsForRemoteUser": string;
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
-    "largeNoteReactions": string;
+    "reactionsDisplaySize": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
@@ -1112,11 +1124,51 @@ export interface Locale {
     "currentAnnouncements": string;
     "pastAnnouncements": string;
     "youHaveUnreadAnnouncements": string;
+    "useSecurityKey": string;
+    "replies": string;
+    "renotes": string;
+    "loadReplies": string;
+    "loadConversation": string;
+    "pinnedList": string;
+    "keepScreenOn": string;
+    "verifiedLink": string;
+    "notifyNotes": string;
+    "unnotifyNotes": string;
+    "authentication": string;
+    "authenticationRequiredToContinue": string;
+    "dateAndTime": string;
+    "showRenotes": string;
+    "edited": string;
+    "notificationRecieveConfig": string;
+    "mutualFollow": string;
+    "fileAttachedOnly": string;
+    "showRepliesToOthersInTimeline": string;
+    "hideRepliesToOthersInTimeline": string;
+    "showRepliesToOthersInTimelineAll": string;
+    "hideRepliesToOthersInTimelineAll": string;
+    "confirmShowRepliesAll": string;
+    "confirmHideRepliesAll": string;
     "externalServices": string;
+    "impressum": string;
+    "impressumUrl": string;
+    "impressumDescription": string;
+    "privacyPolicy": string;
+    "privacyPolicyUrl": string;
+    "tosAndPrivacyPolicy": string;
+    "avatarDecorations": string;
+    "attach": string;
+    "detach": string;
+    "angle": string;
+    "flip": string;
+    "showAvatarDecorations": string;
     "releaseToRefresh": string;
     "refreshing": string;
     "pullDownToRefresh": string;
     "disableStreamingTimeline": string;
+    "useGroupedNotifications": string;
+    "signupPendingError": string;
+    "cwNotationRequired": string;
+    "doReaction": string;
     "urlPreviewDenyList": string;
     "urlPreviewDenyListDescription": string;
     "_announcement": {
@@ -1128,6 +1180,10 @@ export interface Locale {
         "tooManyActiveAnnouncementDescription": string;
         "readConfirmTitle": string;
         "readConfirmText": string;
+        "shouldNotBeUsedToPresentPermanentInfo": string;
+        "dialogAnnouncementUxWarn": string;
+        "silence": string;
+        "silenceDescription": string;
     };
     "_initialAccountSetting": {
         "accountCreated": string;
@@ -1141,12 +1197,106 @@ export interface Locale {
         "pushNotificationDescription": string;
         "initialAccountSettingCompleted": string;
         "haveFun": string;
-        "ifYouNeedLearnMore": string;
+        "youCanContinueTutorial": string;
+        "startTutorial": string;
         "skipAreYouSure": string;
         "laterAreYouSure": string;
     };
+    "_initialTutorial": {
+        "launchTutorial": string;
+        "title": string;
+        "wellDone": string;
+        "skipAreYouSure": string;
+        "_landing": {
+            "title": string;
+            "description": string;
+        };
+        "_note": {
+            "title": string;
+            "description": string;
+            "reply": string;
+            "renote": string;
+            "reaction": string;
+            "menu": string;
+        };
+        "_reaction": {
+            "title": string;
+            "description": string;
+            "letsTryReacting": string;
+            "reactToContinue": string;
+            "reactNotification": string;
+            "reactDone": string;
+        };
+        "_timeline": {
+            "title": string;
+            "description1": string;
+            "home": string;
+            "local": string;
+            "social": string;
+            "global": string;
+            "description2": string;
+            "description3": string;
+        };
+        "_postNote": {
+            "title": string;
+            "description1": string;
+            "_visibility": {
+                "description": string;
+                "public": string;
+                "home": string;
+                "followers": string;
+                "direct": string;
+                "doNotSendConfidencialOnDirect1": string;
+                "doNotSendConfidencialOnDirect2": string;
+                "localOnly": string;
+            };
+            "_cw": {
+                "title": string;
+                "description": string;
+                "_exampleNote": {
+                    "cw": string;
+                    "note": string;
+                };
+                "useCases": string;
+            };
+        };
+        "_howToMakeAttachmentsSensitive": {
+            "title": string;
+            "description": string;
+            "tryThisFile": string;
+            "_exampleNote": {
+                "note": string;
+            };
+            "method": string;
+            "sensitiveSucceeded": string;
+            "doItToContinue": string;
+        };
+        "_done": {
+            "title": string;
+            "description": string;
+        };
+    };
+    "_timelineDescription": {
+        "home": string;
+        "local": string;
+        "social": string;
+        "global": string;
+    };
     "_serverRules": {
         "description": string;
+    };
+    "_serverSettings": {
+        "iconUrl": string;
+        "appIconDescription": string;
+        "appIconUsageExample": string;
+        "appIconStyleRecommendation": string;
+        "appIconResolutionMustBe": string;
+        "manifestJsonOverride": string;
+        "shortName": string;
+        "shortNameDescription": string;
+        "fanoutTimelineDescription": string;
+        "fanoutTimelineDbFallback": string;
+        "fanoutTimelineDbFallbackDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
@@ -1477,6 +1627,14 @@ export interface Locale {
                 "description": string;
                 "flavor": string;
             };
+            "_smashTestNotificationButton": {
+                "title": string;
+                "description": string;
+            };
+            "_tutorialCompleted": {
+                "title": string;
+                "description": string;
+            };
         };
     };
     "_role": {
@@ -1526,6 +1684,7 @@ export interface Locale {
             "inviteLimitCycle": string;
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
+            "canManageAvatarDecorations": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;
@@ -1540,6 +1699,7 @@ export interface Locale {
             "descriptionOfRateLimitFactor": string;
             "canHideAds": string;
             "canSearchNotes": string;
+            "canUseTranslator": string;
         };
         "_condition": {
             "isLocal": string;
@@ -1596,6 +1756,10 @@ export interface Locale {
         "reduceFrequencyOfThisAd": string;
         "hide": string;
         "timezoneinfo": string;
+        "adsSettings": string;
+        "notesPerOneAd": string;
+        "setZeroToDisable": string;
+        "adsTooClose": string;
     };
     "_forgotPassword": {
         "enterEmail": string;
@@ -1620,6 +1784,7 @@ export interface Locale {
         "install": string;
         "installWarn": string;
         "manage": string;
+        "viewSource": string;
     };
     "_preferencesBackups": {
         "list": string;
@@ -1656,6 +1821,7 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "projectMembers": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;
@@ -1684,6 +1850,7 @@ export interface Locale {
         "notesCount": string;
         "nameAndDescription": string;
         "nameOnly": string;
+        "allowRenoteToExternal": string;
     };
     "_menuDisplay": {
         "sideFull": string;
@@ -1695,11 +1862,6 @@ export interface Locale {
         "muteWords": string;
         "muteWordsDescription": string;
         "muteWordsDescription2": string;
-        "softDescription": string;
-        "hardDescription": string;
-        "soft": string;
-        "hard": string;
-        "mutedNotes": string;
     };
     "_instanceMute": {
         "instanceMuteDescription": string;
@@ -1765,9 +1927,6 @@ export interface Locale {
             "infoFg": string;
             "infoWarnBg": string;
             "infoWarnFg": string;
-            "cwBg": string;
-            "cwFg": string;
-            "cwHoverBg": string;
             "toastBg": string;
             "toastFg": string;
             "buttonBg": string;
@@ -1787,8 +1946,6 @@ export interface Locale {
         "note": string;
         "noteMy": string;
         "notification": string;
-        "chat": string;
-        "chatBg": string;
         "antenna": string;
         "channel": string;
     };
@@ -1804,36 +1961,32 @@ export interface Locale {
         "yearsAgo": string;
         "invalid": string;
     };
+    "_timeIn": {
+        "seconds": string;
+        "minutes": string;
+        "hours": string;
+        "days": string;
+        "weeks": string;
+        "months": string;
+        "years": string;
+    };
     "_time": {
         "second": string;
         "minute": string;
         "hour": string;
         "day": string;
     };
-    "_timelineTutorial": {
-        "title": string;
-        "step1_1": string;
-        "step1_2": string;
-        "step2_1": string;
-        "step2_2": string;
-        "step3_1": string;
-        "step3_2": string;
-        "step4_1": string;
-        "step4_2": string;
-    };
     "_2fa": {
         "alreadyRegistered": string;
         "registerTOTP": string;
-        "passwordToTOTP": string;
         "step1": string;
         "step2": string;
         "step2Click": string;
-        "step2Url": string;
+        "step2Uri": string;
         "step3Title": string;
         "step3": string;
+        "setupCompleted": string;
         "step4": string;
-        "twoFactorBackupSecretWarning": string;
-        "twoFactorBackupSecretExhausted": string;
         "securityKeyNotSupported": string;
         "registerTOTPBeforeKey": string;
         "securityKeyInfo": string;
@@ -1847,6 +2000,11 @@ export interface Locale {
         "renewTOTPConfirm": string;
         "renewTOTPOk": string;
         "renewTOTPCancel": string;
+        "checkBackupCodesBeforeCloseThisWizard": string;
+        "backupCodes": string;
+        "backupCodesDescription": string;
+        "backupCodeUsedWarning": string;
+        "backupCodesExhaustedWarning": string;
     };
     "_permissions": {
         "read:account": string;
@@ -1881,6 +2039,10 @@ export interface Locale {
         "write:gallery": string;
         "read:gallery-likes": string;
         "write:gallery-likes": string;
+        "read:flash": string;
+        "write:flash": string;
+        "read:flash-likes": string;
+        "write:flash-likes": string;
     };
     "_auth": {
         "shareAccessTitle": string;
@@ -1898,6 +2060,7 @@ export interface Locale {
         "homeTimeline": string;
         "users": string;
         "userList": string;
+        "userBlacklist": string;
     };
     "_weekday": {
         "sunday": string;
@@ -2007,6 +2170,7 @@ export interface Locale {
         "metadataContent": string;
         "changeAvatar": string;
         "changeBanner": string;
+        "verifiedLinkDescription": string;
     };
     "_exportOrImport": {
         "allNotes": string;
@@ -2017,6 +2181,7 @@ export interface Locale {
         "userLists": string;
         "excludeMutingUsers": string;
         "excludeInactiveUsers": string;
+        "withReplies": string;
     };
     "_charts": {
         "federation": string;
@@ -2136,11 +2301,20 @@ export interface Locale {
         "youReceivedFollowRequest": string;
         "yourFollowRequestAccepted": string;
         "pollEnded": string;
+        "newNote": string;
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
+        "testNotification": string;
+        "checkNotificationBehavior": string;
+        "sendTestNotification": string;
+        "notificationWillBeDisplayedLikeThis": string;
+        "reactedBySomeUsers": string;
+        "renotedBySomeUsers": string;
+        "followedBySomeUsers": string;
         "_types": {
             "all": string;
+            "note": string;
             "follow": string;
             "mention": string;
             "reply": string;
@@ -2177,6 +2351,8 @@ export interface Locale {
         "introduction2": string;
         "widgetsIntroduction": string;
         "useSimpleUiForNonRootPages": string;
+        "usedAsMinWidthWhenFlexible": string;
+        "flexible": string;
         "_columns": {
             "main": string;
             "widgets": string;
@@ -2236,6 +2412,105 @@ export interface Locale {
         };
         "list": string;
         "resolver": string;
+    };
+    "_moderationLogTypes": {
+        "createRole": string;
+        "deleteRole": string;
+        "updateRole": string;
+        "assignRole": string;
+        "unassignRole": string;
+        "suspend": string;
+        "unsuspend": string;
+        "addCustomEmoji": string;
+        "updateCustomEmoji": string;
+        "deleteCustomEmoji": string;
+        "updateServerSettings": string;
+        "updateUserNote": string;
+        "deleteDriveFile": string;
+        "deleteNote": string;
+        "createGlobalAnnouncement": string;
+        "createUserAnnouncement": string;
+        "updateGlobalAnnouncement": string;
+        "updateUserAnnouncement": string;
+        "deleteGlobalAnnouncement": string;
+        "deleteUserAnnouncement": string;
+        "resetPassword": string;
+        "suspendRemoteInstance": string;
+        "unsuspendRemoteInstance": string;
+        "markSensitiveDriveFile": string;
+        "unmarkSensitiveDriveFile": string;
+        "resolveAbuseReport": string;
+        "createInvitation": string;
+        "createAd": string;
+        "deleteAd": string;
+        "updateAd": string;
+        "createAvatarDecoration": string;
+        "updateAvatarDecoration": string;
+        "deleteAvatarDecoration": string;
+    };
+    "_fileViewer": {
+        "title": string;
+        "type": string;
+        "size": string;
+        "url": string;
+        "uploadedAt": string;
+        "attachedNotes": string;
+        "thisPageCanBeSeenFromTheAuthor": string;
+    };
+    "_externalResourceInstaller": {
+        "title": string;
+        "checkVendorBeforeInstall": string;
+        "_plugin": {
+            "title": string;
+            "metaTitle": string;
+        };
+        "_theme": {
+            "title": string;
+            "metaTitle": string;
+        };
+        "_meta": {
+            "base": string;
+        };
+        "_vendorInfo": {
+            "title": string;
+            "endpoint": string;
+            "hashVerify": string;
+        };
+        "_errors": {
+            "_invalidParams": {
+                "title": string;
+                "description": string;
+            };
+            "_resourceTypeNotSupported": {
+                "title": string;
+                "description": string;
+            };
+            "_failedToFetch": {
+                "title": string;
+                "fetchErrorDescription": string;
+                "parseErrorDescription": string;
+            };
+            "_hashUnmatched": {
+                "title": string;
+                "description": string;
+            };
+            "_pluginParseFailed": {
+                "title": string;
+                "description": string;
+            };
+            "_pluginInstallFailed": {
+                "title": string;
+                "description": string;
+            };
+            "_themeParseFailed": {
+                "title": string;
+                "description": string;
+            };
+            "_themeInstallFailed": {
+                "title": string;
+                "description": string;
+            };
+        };
     };
 }
 declare const locales: {
