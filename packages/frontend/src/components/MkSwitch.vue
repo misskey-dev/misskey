@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@keydown.enter="toggle"
 	>
 	<XButton :checked="checked" :disabled="disabled" @toggle="toggle"/>
-	<span :class="[$style.body,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">
+	<span :class="$style.body,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}">
 		<!-- TODO: 無名slotの方は廃止 -->
 		<span :class="$style.label">
 			<span @click="toggle">
@@ -106,22 +106,6 @@ const toggle = () => {
 	display: block;
 	transition: inherit;
 	color: var(--fg);
-  &.gamingDark {
-    background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
-    background-size: 1800% 1800%;
-    -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
-    -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
-    animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite;
-
-  }
-  &.gamingLight{
-    background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
-    background-size: 1800% 1800% !important;
-    -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-    animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
-
-  }
 }
 
 .label {
