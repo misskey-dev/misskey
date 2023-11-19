@@ -6,16 +6,18 @@
 	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
 	<meta
 		http-equiv="Content-Security-Policy"
-		content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+		content="default-src 'self';
+		  script-src 'self';
+		  style-src 'self' 'unsafe-inline';
+		  img-src 'self' data: www.google.com xn--931a.moe localhost:3000"
 	/>
-	<style>
-	</style>
+
+	<link rel="stylesheet" href="/assets/tabler-icons/tabler-icons.min.css?v2.37.0">
+	<link rel="stylesheet" href="./style.scss" />
 </head>
 
 <body>
 <div id="app"></div>
 <script type="module" src="./_boot_.ts"></script>
-<link rel="stylesheet" href="/assets/tabler-icons/tabler-icons.min.css?v2.37.0">
-<link rel="stylesheet" href="./style.scss" />
 </body>
 </html>
