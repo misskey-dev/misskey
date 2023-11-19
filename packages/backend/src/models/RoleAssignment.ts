@@ -15,6 +15,13 @@ export class MiRoleAssignment {
 	public id: string;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the RoleAssignment.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
 	@Column({
 		...id(),
 		comment: 'The user ID.',

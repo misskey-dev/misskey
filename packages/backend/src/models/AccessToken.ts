@@ -13,6 +13,13 @@ export class MiAccessToken {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the AccessToken.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})

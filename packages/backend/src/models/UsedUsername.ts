@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Column } from 'typeorm';
+import { PrimaryColumn, Entity, Column, Index } from 'typeorm';
 
 @Entity('used_username')
 export class MiUsedUsername {
@@ -12,7 +12,11 @@ export class MiUsedUsername {
 	})
 	public username: string;
 
-	@Column('timestamp with time zone')
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the UsedUsername.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
 	public createdAt: Date;
 
 	constructor(data: Partial<MiUsedUsername>) {

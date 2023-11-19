@@ -13,6 +13,13 @@ export class MiRegistryItem {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the RegistryItem.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
 	@Column('timestamp with time zone', {
 		comment: 'The updated date of the RegistryItem.',
 	})

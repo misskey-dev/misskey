@@ -15,6 +15,13 @@ export class MiUser {
 
 	@Index()
 	@Column('timestamp with time zone', {
+		comment: 'The created date of the User.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
 		nullable: true,
 		comment: 'The updated date of the User.',
 	})

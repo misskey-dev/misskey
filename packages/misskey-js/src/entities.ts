@@ -476,6 +476,7 @@ export type Announcement = {
 	needConfirmationToRead: boolean;
 	closeDuration: number;
 	displayOrder: number;
+	silence: boolean;
 	forYou: boolean;
 	isRead?: boolean;
 };

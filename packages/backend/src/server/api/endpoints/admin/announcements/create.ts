@@ -69,6 +69,10 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			silence: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			isRead: {
 				type: 'boolean',
 				optional: true, nullable: false,
@@ -86,10 +90,10 @@ export const paramDef = {
 		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'], default: 'info' },
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
 		forExistingUsers: { type: 'boolean', default: false },
-		silence: { type: 'boolean', default: false },
 		needConfirmationToRead: { type: 'boolean', default: false },
 		closeDuration: { type: 'number', default: 0 },
 		displayOrder: { type: 'number', default: 0 },
+		silence: { type: 'boolean', default: false },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
@@ -109,10 +113,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				icon: ps.icon,
 				display: ps.display,
 				forExistingUsers: ps.forExistingUsers,
-				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				closeDuration: ps.closeDuration,
 				displayOrder: ps.displayOrder,
+				silence: ps.silence,
 				userId: ps.userId,
 			}, me);
 

@@ -13,7 +13,8 @@ export class MiAbuseReportResolver {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of AbuseReportResolver',
+		comment: 'The created date of the AbuseReportResolver.',
+		default: () => 'CURRENT_TIMESTAMP',
 	})
 	public createdAt: Date;
 

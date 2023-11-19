@@ -16,6 +16,13 @@ export class MiPage {
 
 	@Index()
 	@Column('timestamp with time zone', {
+		comment: 'The created date of the Page.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
 		comment: 'The updated date of the Page.',
 	})
 	public updatedAt: Date;

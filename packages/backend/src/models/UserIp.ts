@@ -13,7 +13,10 @@ export class MiUserIp {
 	@PrimaryGeneratedColumn()
 	public id: string;
 
+	@Index()
 	@Column('timestamp with time zone', {
+		comment: 'The created date of the UserIp.',
+		default: () => 'CURRENT_TIMESTAMP',
 	})
 	public createdAt: Date;
 

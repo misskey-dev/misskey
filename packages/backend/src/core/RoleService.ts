@@ -131,6 +131,7 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						cached.push({
 							...body,
+							createdAt: new Date(body.createdAt),
 							updatedAt: new Date(body.updatedAt),
 							lastUsedAt: new Date(body.lastUsedAt),
 						});
@@ -144,6 +145,7 @@ export class RoleService implements OnApplicationShutdown {
 						if (i > -1) {
 							cached[i] = {
 								...body,
+								createdAt: new Date(body.createdAt),
 								updatedAt: new Date(body.updatedAt),
 								lastUsedAt: new Date(body.lastUsedAt),
 							};
@@ -163,6 +165,7 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						cached.push({
 							...body,
+							createdAt: new Date(body.createdAt),
 							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
 						});
 					}

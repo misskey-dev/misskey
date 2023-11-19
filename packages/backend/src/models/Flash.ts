@@ -14,6 +14,13 @@ export class MiFlash {
 
 	@Index()
 	@Column('timestamp with time zone', {
+		comment: 'The created date of the Flash.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
 		comment: 'The updated date of the Flash.',
 	})
 	public updatedAt: Date;

@@ -63,9 +63,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
 					</MkSwitch>
-					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
-						{{ i18n.ts._announcement.silence }}
-					</MkSwitch>
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
 					</MkSwitch>
@@ -76,6 +73,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.displayOrder" type="number">
 						<template #label>{{ i18n.ts.displayOrder }}</template>
 					</MkInput>
+					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
+						{{ i18n.ts._announcement.silence }}
+					</MkSwitch>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<MkUserCardMini v-if="announcement.userId" :user="announcement.user" @click="editUser(announcement)"></MkUserCardMini>
 					<MkButton v-else class="button" inline primary @click="editUser(announcement)">{{ i18n.ts.specifyUser }}</MkButton>
@@ -144,10 +144,10 @@ function add() {
 		icon: 'info',
 		display: 'normal',
 		forExistingUsers: false,
-		silence: false,
 		needConfirmationToRead: false,
 		closeDuration: 0,
 		displayOrder: 0,
+		silence: false,
 	});
 }
 

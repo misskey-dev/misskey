@@ -15,6 +15,13 @@ export class MiFollowing {
 	public id: string;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the Following.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
 	@Column({
 		...id(),
 		comment: 'The followee user ID.',

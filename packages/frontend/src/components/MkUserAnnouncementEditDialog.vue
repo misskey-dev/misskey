@@ -49,7 +49,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="displayOrder" type="number">
 					<template #label>{{ i18n.ts.displayOrder }}</template>
 				</MkInput>
-				<p v-if="readCount">{{ i18n.t('nUsersRead', { n: readCount }) }}</p>
+				<MkSwitch v-model="silence">
+					{{ i18n.ts._announcement.silence }}
+					<template #caption>{{ i18n.ts._announcement.silenceDescription }}</template>
+				</MkSwitch>
+				<p v-if="reads">{{ i18n.t('nUsersRead', { n: reads }) }}</p>
 				<MkUserCardMini v-if="props.user.id" :user="props.user"></MkUserCardMini>
 				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
@@ -62,7 +66,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -87,7 +90,8 @@ let display: string = $ref(props.announcement ? props.announcement.display : 'di
 let needConfirmationToRead: boolean = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 let closeDuration: number = $ref(props.announcement ? props.announcement.closeDuration : 0);
 let displayOrder: number = $ref(props.announcement ? props.announcement.displayOrder : 0);
-let readCount: number = $ref(props.announcement ? props.announcement.readCount : 0);
+let silence: boolean = $ref(props.announcement ? props.announcement.silence : false);
+let reads: number = $ref(props.announcement ? props.announcement.reads : 0);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
@@ -110,7 +114,8 @@ async function done(): Promise<void> {
 		needConfirmationToRead: needConfirmationToRead,
 		closeDuration: closeDuration,
 		displayOrder: displayOrder,
-		readCount: readCount,
+		silence: silence,
+		reads: reads,
 		userId: props.user.id,
 	};
 

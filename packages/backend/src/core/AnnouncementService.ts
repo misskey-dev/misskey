@@ -12,9 +12,10 @@ import { MiAnnouncementRead } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
 export class AnnouncementService {
@@ -30,6 +31,7 @@ export class AnnouncementService {
 
 		private idService: IdService,
 		private userEntityService: UserEntityService,
+		private announcementEntityService: AnnouncementEntityService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -45,7 +47,7 @@ export class AnnouncementService {
 	@bindThis
 	public async getUnreadAnnouncements(user: MiUser): Promise<Packed<'Announcement'>[]> {
 		const q = this.announcementsRepository.createQueryBuilder('announcement');
-		q.leftJoin(
+		q.leftJoinAndSelect(
 			MiAnnouncementRead,
 			'read',
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
@@ -53,7 +55,8 @@ export class AnnouncementService {
 		);
 
 		q
-			.where('announcement.isActive = true')
+			.where('read.id IS NULL')
+			.andWhere('announcement.isActive = true')
 			.andWhere('announcement.silence = false')
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
@@ -62,15 +65,14 @@ export class AnnouncementService {
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.forExistingUsers = false');
 				qb.orWhere('announcement.id > :userId', { userId: user.id });
-			}))
-			.andWhere('read.id IS NULL');
+			}));
 
 		q.orderBy({
 			'announcement."displayOrder"': 'DESC',
 			'announcement.id': 'DESC',
 		});
 
-		return this.packMany(
+		return this.announcementEntityService.packMany(
 			await q.getMany(),
 			user,
 		);
@@ -94,7 +96,7 @@ export class AnnouncementService {
 			userId: values.userId,
 		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
 
-		const packed = (await this.packMany([announcement], null))[0];
+		const packed = (await this.announcementEntityService.packMany([announcement], null))[0];
 
 		if (values.userId) {
 			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
@@ -136,7 +138,7 @@ export class AnnouncementService {
 		limit: number,
 		offset: number,
 		moderator: MiUser,
-	): Promise<(MiAnnouncement & { userInfo: Packed<'UserLite'> | null, readCount: number })[]> {
+	): Promise<(MiAnnouncement & { userInfo: Packed<'UserLite'> | null, reads: number })[]> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
 		if (userId) {
 			query.andWhere('announcement."userId" = :userId', { userId: userId });
@@ -173,7 +175,7 @@ export class AnnouncementService {
 		return announcements.map(announcement => ({
 			...announcement,
 			userInfo: packedUsers.find(u => u.id === announcement.userId) ?? null,
-			readCount: reads.get(announcement) ?? 0,
+			reads: reads.get(announcement) ?? 0,
 		}));
 	}
 
@@ -188,6 +190,7 @@ export class AnnouncementService {
 
 		await this.announcementsRepository.update(announcement.id, {
 			updatedAt: new Date(),
+			isActive: values.isActive,
 			title: values.title,
 			text: values.text,
 			/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
@@ -195,11 +198,10 @@ export class AnnouncementService {
 			display: values.display,
 			icon: values.icon,
 			forExistingUsers: values.forExistingUsers,
-			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			closeDuration: values.closeDuration,
 			displayOrder: values.displayOrder,
-			isActive: values.isActive,
+			silence: values.silence,
 			userId: values.userId,
 		});
 
@@ -305,7 +307,7 @@ export class AnnouncementService {
 			'announcement.id': 'DESC',
 		});
 
-		return this.packMany(
+		return this.announcementEntityService.packMany(
 			await query
 				.limit(limit)
 				.offset(offset)
@@ -315,32 +317,29 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async countUnreadAnnouncements(me: MiUser): Promise<number> {
-		const query = this.announcementsRepository.createQueryBuilder('announcement');
-		query.leftJoinAndSelect(
+	public async countUnreadAnnouncements(user: MiUser): Promise<number> {
+		const q = this.announcementsRepository.createQueryBuilder('announcement');
+		q.leftJoinAndSelect(
 			MiAnnouncementRead,
 			'read',
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
-			{ userId: me.id },
+			{ userId: user.id },
 		);
-		query.andWhere('read.id IS NULL');
-		query.andWhere('announcement."isActive" = true');
 
-		query
-			.andWhere(
-				new Brackets((qb) => {
-					qb.orWhere('announcement."userId" = :userId', { userId: me.id });
-					qb.orWhere('announcement."userId" IS NULL');
-				}),
-			)
-			.andWhere(
-				new Brackets((qb) => {
-					qb.orWhere('announcement."forExistingUsers" = false');
-					qb.orWhere('announcement.id > :userId', { userId: me.id });
-				}),
-			);
+		q
+			.where('read.id IS NULL')
+			.andWhere('announcement.isActive = true')
+			.andWhere('announcement.silence = false')
+			.andWhere(new Brackets(qb => {
+				qb.orWhere('announcement.userId = :userId', { userId: user.id });
+				qb.orWhere('announcement.userId IS NULL');
+			}))
+			.andWhere(new Brackets(qb => {
+				qb.orWhere('announcement.forExistingUsers = false');
+				qb.orWhere('announcement.id > :userId', { userId: user.id });
+			}));
 
-		return query.getCount();
+		return q.getCount();
 	}
 
 	@bindThis
@@ -358,28 +357,5 @@ export class AnnouncementService {
 		if ((await this.countUnreadAnnouncements(user)) === 0) {
 			this.globalEventService.publishMainStream(user.id, 'readAllAnnouncements');
 		}
-	}
-
-	@bindThis
-	public async packMany(
-		announcements: (MiAnnouncement & { isRead?: boolean | null })[],
-		me: { id: MiUser['id'] } | null | undefined,
-	): Promise<Packed<'Announcement'>[]> {
-		return announcements.map(announcement => ({
-			id: announcement.id,
-			createdAt: this.idService.parse(announcement.id).date.toISOString(),
-			updatedAt: announcement.updatedAt?.toISOString() ?? null,
-			text: announcement.text,
-			title: announcement.title,
-			imageUrl: announcement.imageUrl,
-			icon: announcement.icon,
-			display: announcement.display,
-			needConfirmationToRead: announcement.needConfirmationToRead,
-			closeDuration: announcement.closeDuration,
-			displayOrder: announcement.displayOrder,
-			silence: announcement.silence,
-			forYou: announcement.userId === me?.id,
-			isRead: announcement.isRead ?? undefined,
-		}));
 	}
 }

@@ -12,6 +12,13 @@ export class MiRegistrationTicket {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the RegistrationTicket.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
 	@Index({ unique: true })
 	@Column('varchar', {
 		length: 64,

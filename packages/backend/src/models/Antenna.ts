@@ -14,6 +14,13 @@ export class MiAntenna {
 	public id: string;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the Antenna.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
 	@Column('timestamp with time zone')
 	public lastUsedAt: Date;
 

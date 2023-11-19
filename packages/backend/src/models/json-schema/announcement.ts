@@ -58,6 +58,10 @@ export const packedAnnouncementSchema = {
 			type: 'number',
 			optional: false, nullable: false,
 		},
+		silence: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		isRead: {
 			type: 'boolean',
 			optional: true, nullable: false,

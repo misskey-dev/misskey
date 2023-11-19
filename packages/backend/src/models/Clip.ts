@@ -14,6 +14,13 @@ export class MiClip {
 
 	@Index()
 	@Column('timestamp with time zone', {
+		comment: 'The created date of the Clip.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public lastClippedAt: Date | null;

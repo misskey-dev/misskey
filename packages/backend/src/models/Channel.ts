@@ -15,6 +15,13 @@ export class MiChannel {
 
 	@Index()
 	@Column('timestamp with time zone', {
+		comment: 'The created date of the Channel.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public lastNotedAt: Date | null;

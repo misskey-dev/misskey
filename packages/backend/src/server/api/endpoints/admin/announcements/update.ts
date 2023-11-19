@@ -35,10 +35,10 @@ export const paramDef = {
 		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'] },
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
 		forExistingUsers: { type: 'boolean' },
-		silence: { type: 'boolean' },
 		needConfirmationToRead: { type: 'boolean' },
 		closeDuration: { type: 'number', default: 0 },
 		displayOrder: { type: 'number', default: 0 },
+		silence: { type: 'boolean' },
 		isActive: { type: 'boolean' },
 	},
 	required: ['id'],
@@ -66,10 +66,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				display: ps.display,
 				icon: ps.icon,
 				forExistingUsers: ps.forExistingUsers,
-				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				closeDuration: ps.closeDuration,
 				displayOrder: ps.displayOrder,
+				silence: ps.silence,
 				isActive: ps.isActive,
 			}, me);
 		});

@@ -79,6 +79,10 @@ export const meta = {
 					type: 'number',
 					optional: false, nullable: false,
 				},
+				silence: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
 				userId: {
 					type: 'string',
 					optional: false, nullable: true,
@@ -128,13 +132,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				display: announcement.display,
 				isActive: announcement.isActive,
 				forExistingUsers: announcement.forExistingUsers,
-				silence: announcement.silence,
 				needConfirmationToRead: announcement.needConfirmationToRead,
 				closeDuration: announcement.closeDuration,
 				displayOrder: announcement.displayOrder,
+				silence: announcement.silence,
 				userId: announcement.userId,
 				user: announcement.userInfo,
-				reads: announcement.readCount,
+				reads: announcement.reads,
 			}));
 		});
 	}

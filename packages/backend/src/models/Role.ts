@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 import { id } from './util/id.js';
 
 type CondFormulaValueAnd = {
@@ -88,6 +88,13 @@ export type RoleCondFormulaValue =
 export class MiRole {
 	@PrimaryColumn(id())
 	public id: string;
+
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the Role.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
 
 	@Column('timestamp with time zone', {
 		comment: 'The updated date of the Role.',

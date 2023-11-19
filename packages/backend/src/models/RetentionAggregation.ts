@@ -14,7 +14,8 @@ export class MiRetentionAggregation {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Note.',
+		comment: 'The created date of the GalleryPost.',
+		default: () => 'CURRENT_TIMESTAMP',
 	})
 	public createdAt: Date;
 

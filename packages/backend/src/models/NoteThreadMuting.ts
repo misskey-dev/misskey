@@ -14,6 +14,13 @@ export class MiNoteThreadMuting {
 	public id: string;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the NoteThreadMuting.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
 	@Column({
 		...id(),
 	})

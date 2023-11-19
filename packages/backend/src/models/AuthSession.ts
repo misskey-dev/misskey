@@ -14,6 +14,13 @@ export class MiAuthSession {
 	public id: string;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the AuthSession.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
 	@Column('varchar', {
 		length: 128,
 	})

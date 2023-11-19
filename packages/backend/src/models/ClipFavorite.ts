@@ -15,6 +15,13 @@ export class MiClipFavorite {
 	public id: string;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the ClipFavorite.',
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Index()
 	@Column(id())
 	public userId: MiUser['id'];
 
