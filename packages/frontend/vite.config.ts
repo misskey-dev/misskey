@@ -1,7 +1,7 @@
-import path, {resolve} from 'path';
+import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { type UserConfig, defineConfig } from 'vite';
+import { defineConfig, type UserConfig } from 'vite';
 // @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
@@ -43,8 +43,9 @@ function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	return {
-		root: "src",
-		publicDir: "../assets",
+		root: 'src',
+		publicDir: '../assets',
+		base: './',
 		server: {
 			port: 5173,
 			proxy: {
@@ -60,8 +61,8 @@ export function getConfig(): UserConfig {
 					target: 'ws://127.0.0.1:3000/',
 					ws: true,
 				},
-				"/favicon.ico": 'http://127.0.0.1:3000/',
-			}
+				'/favicon.ico': 'http://127.0.0.1:3000/',
+			},
 		},
 
 		plugins: [
