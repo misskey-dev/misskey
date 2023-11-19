@@ -44,17 +44,27 @@ function toBase62(n: number): string {
 export function getConfig(): UserConfig {
 	return {
 		root: "src",
+		publicDir: "assets",
 		server: {
 			port: 5173,
 			proxy: {
 				'/api': {
+					changeOrigin: true,
 					target: 'http://127.0.0.1:3000/',
 				},
+
 				'/assets': {
 					target: 'http://127.0.0.1:3000/',
 				},
 				'/twemoji': {
 					target: 'http://127.0.0.1:3000/',
+				},
+				'/sw.js': {
+					target: 'http://127.0.0.1:3000/',
+				},
+				'/streaming': {
+					target: 'ws://127.0.0.1:3000/',
+					ws: true,
 				},
 
 			}
