@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
+	<template v-else-if="isRequest && !emoji" #header>{{ i18n.ts.requestCustomEmojis }}</template>
 	<template v-else #header>New emoji</template>
 
 	<div>
@@ -33,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
 				<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
 					<template #label>{{ i18n.ts.name }}</template>
+					<template #caption>{{ i18n.ts.emojiNameValidation }}</template>
 				</MkInput>
 				<MkInput v-model="category" :datalist="customEmojiCategories">
 					<template #label>{{ i18n.ts.category }}</template>
@@ -44,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
-				<MkFolder>
+				<MkFolder v-if="!isRequest">
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
@@ -63,11 +65,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkSwitch v-model="isSensitive">isSensitive</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-				<MkButton v-if="emoji" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
-			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			<div :class="$style.footerButtons">
+				<MkButton v-if="!isRequest" danger rounded style="margin: 0 auto;" @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton v-if="validation" primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
+				<MkButton v-else rounded style="margin: 0 auto;"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			</div>
 		</div>
 	</div>
 </MkModalWindow>
@@ -76,6 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { DriveFile } from 'misskey-js/built/entities.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -89,7 +95,8 @@ import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
-	emoji?: any,
+  emoji?: any,
+  isRequest: boolean,
 }>();
 
 let dialog = $ref(null);
@@ -99,19 +106,22 @@ let aliases: string = $ref(props.emoji ? props.emoji.aliases.join(' ') : '');
 let license: string = $ref(props.emoji ? (props.emoji.license ?? '') : '');
 let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
 let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
-let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
+let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref((props.emoji && props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction) ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<Misskey.entities.DriveFile>();
-
+let chooseFile: DriveFile|null = $ref(null);
+let isRequest = $ref(props.isRequest ?? false);
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
-
+const imgUrl = computed(() => file ? file.url : props.emoji && !isRequest ? `/emoji/${props.emoji.name}.webp` : props.emoji && props.emoji.url ? props.emoji.url : null);
+const validation = computed(() => {
+	return name.match(/^[a-zA-Z0-9_]+$/) && imgUrl.value != null;
+});
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
-	(ev: 'closed'): void
+  (ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
+  (ev: 'closed'): void
 }>();
 
 async function changeImage(ev) {
@@ -142,8 +152,9 @@ async function done() {
 	const params = {
 		name,
 		category: category === '' ? null : category,
-		aliases: aliases.split(' ').filter(x => x !== ''),
+		aliases: aliases.replace('　', ' ').split(' ').filter(x => x !== ''),
 		license: license === '' ? null : license,
+		Request: isRequest,
 		isSensitive,
 		localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
@@ -154,10 +165,17 @@ async function done() {
 	}
 
 	if (props.emoji) {
-		await os.apiWithDialog('admin/emoji/update', {
-			id: props.emoji.id,
-			...params,
-		});
+		if (isRequest) {
+			await os.apiWithDialog('admin/emoji/update-request', {
+				id: props.emoji.id,
+				...params,
+			});
+		} else {
+			await os.apiWithDialog('admin/emoji/update', {
+				id: props.emoji.id,
+				...params,
+			});
+		}
 
 		emit('done', {
 			updated: {
@@ -168,7 +186,9 @@ async function done() {
 
 		dialog.close();
 	} else {
-		const created = await os.apiWithDialog('admin/emoji/add', params);
+		const created = isRequest
+			? await os.apiWithDialog('admin/emoji/add-request', params)
+			: await os.apiWithDialog('admin/emoji/add', params);
 
 		emit('done', {
 			created: created,
@@ -198,46 +218,53 @@ async function del() {
 
 <style lang="scss" module>
 .imgs {
-	display: flex;
-	gap: 8px;
-	flex-wrap: wrap;
-	justify-content: center;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .imgContainer {
-	padding: 8px;
-	border-radius: 6px;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .img {
-	display: block;
-	height: 64px;
-	width: 64px;
-	object-fit: contain;
+  display: block;
+  height: 64px;
+  width: 64px;
+  object-fit: contain;
 }
 
 .roleItem {
-	display: flex;
+  display: flex;
 }
 
 .role {
-	flex: 1;
+  flex: 1;
 }
 
 .roleUnassign {
-	width: 32px;
-	height: 32px;
-	margin-left: 8px;
-	align-self: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  align-self: center;
 }
 
 .footer {
-	position: sticky;
-	bottom: 0;
-	left: 0;
-	padding: 12px;
-	border-top: solid 0.5px var(--divider);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  padding: 12px;
+  border-top: solid 0.5px var(--divider);
+  -webkit-backdrop-filter: var(--blur, blur(15px));
+  backdrop-filter: var(--blur, blur(15px));
+}
+
+.footerButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 </style>

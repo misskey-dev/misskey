@@ -1,21 +1,16 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
+	requireRolePolicy: 'canRequestCustomEmojis',
 
 	errors: {
 		noSuchFile: {
@@ -35,7 +30,6 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
-		fileId: { type: 'string', format: 'misskey:id' },
 		category: {
 			type: 'string',
 			nullable: true,
@@ -45,11 +39,9 @@ export const paramDef = {
 			type: 'string',
 		} },
 		license: { type: 'string', nullable: true },
-		isSensitive: { type: 'boolean' },
-		localOnly: { type: 'boolean' },
-		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-			type: 'string',
-		} },
+		isSensitive: { type: 'boolean', nullable: true },
+		localOnly: { type: 'boolean', nullable: true },
+		fileId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['name', 'fileId'],
 } as const;
@@ -57,35 +49,43 @@ export const paramDef = {
 // TODO: ロジックをサービスに切り出す
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+// eslint-disable-next-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
 		private customEmojiService: CustomEmojiService,
 
-		private emojiEntityService: EmojiEntityService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
+			const isRequestDuplicate = await this.customEmojiService.checkRequestDuplicate(ps.name);
+
+			if (isDuplicate || isRequestDuplicate) throw new ApiError(meta.errors.duplicateName);
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
-			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
-			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
 
-			const emoji = await this.customEmojiService.add({
+			const emoji = await this.customEmojiService.request({
 				driveFile,
 				name: ps.name,
 				category: ps.category ?? null,
 				aliases: ps.aliases ?? [],
-				host: null,
 				license: ps.license ?? null,
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
-			}, me);
+			});
 
-			return this.emojiEntityService.packDetailed(emoji);
+			await this.moderationLogService.log(me, 'addCustomEmoji', {
+				emojiId: emoji.id,
+				emoji: emoji,
+			});
+
+			return {
+				id: emoji.id,
+			};
 		});
 	}
 }

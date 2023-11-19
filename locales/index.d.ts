@@ -261,6 +261,7 @@ export interface Locale {
     "imageUrl": string;
     "remove": string;
     "removed": string;
+    "requestApprovalAreYouSure": string;
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
     "resetAreYouSure": string;
@@ -832,6 +833,7 @@ export interface Locale {
     "high": string;
     "middle": string;
     "low": string;
+    "list": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
     "previewNoteText": string;
@@ -986,6 +988,7 @@ export interface Locale {
     "unassign": string;
     "color": string;
     "manageCustomEmojis": string;
+    "requestCustomEmojis": string;
     "manageAvatarDecorations": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
@@ -1029,6 +1032,10 @@ export interface Locale {
     "sensitiveWordsDescription2": string;
     "notesSearchNotAvailable": string;
     "license": string;
+    "requestPending": string;
+    "approval": string;
+    "requestingEmojis": string;
+    "emojiNameValidation": string;
     "unfavoriteConfirm": string;
     "myClips": string;
     "drivecleaner": string;
@@ -1675,6 +1682,7 @@ export interface Locale {
             "inviteLimitCycle": string;
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
+            "canRequestCustomEmojis": string;
             "canManageAvatarDecorations": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
