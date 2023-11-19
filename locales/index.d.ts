@@ -567,6 +567,10 @@ export interface Locale {
     "script": string;
     "disablePagesScript": string;
     "updateRemoteUser": string;
+    "deleteUserAvatar": string;
+    "deleteUserAvatarConfirm": string;
+    "deleteUserBanner": string;
+    "deleteUserBannerConfirm": string;
     "deleteAllFiles": string;
     "deleteAllFilesConfirm": string;
     "removeAllFollowing": string;
@@ -1947,6 +1951,15 @@ export interface Locale {
         "monthsAgo": string;
         "yearsAgo": string;
         "invalid": string;
+    };
+    "_timeIn": {
+        "seconds": string;
+        "minutes": string;
+        "hours": string;
+        "days": string;
+        "weeks": string;
+        "months": string;
+        "years": string;
     };
     "_time": {
         "second": string;

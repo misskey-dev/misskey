@@ -564,6 +564,10 @@ output: "出力"
 script: "スクリプト"
 disablePagesScript: "Pagesのスクリプトを無効にする"
 updateRemoteUser: "リモートユーザー情報の更新"
+deleteUserAvatar: "アイコンを削除"
+deleteUserAvatarConfirm: "アイコンを削除しますか？"
+deleteUserBanner: "バナーを削除"
+deleteUserBannerConfirm: "バナーを削除しますか？"
 deleteAllFiles: "すべてのファイルを削除"
 deleteAllFilesConfirm: "すべてのファイルを削除しますか？"
 removeAllFollowing: "フォローを全解除"
@@ -1852,6 +1856,15 @@ _ago:
   monthsAgo: "{n}ヶ月前"
   yearsAgo: "{n}年前"
   invalid: "ありません"
+
+_timeIn:
+  seconds: "{n}秒後"
+  minutes: "{n}分後"
+  hours: "{n}時間後"
+  days: "{n}日後"
+  weeks: "{n}週間後"
+  months: "{n}ヶ月後"
+  years: "{n}年後"
 
 _time:
   second: "秒"

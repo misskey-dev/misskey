@@ -15,12 +15,28 @@
 ## 2023.x.x (unreleased)
 
 ### General
+- Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
+- Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
+
+### Client
+-
+
+### Server
+-
+
+## 2023.11.1
+
+### General
 - Feat: 管理者がコントロールパネルからメールアドレスの照会を行えるようになりました
 - Enhance: ローカリゼーションの更新
 - Enhance: 依存関係の更新
 - Enhance: json-schema(OpenAPIの戻り値として使用されるスキーマ定義)を出来る限り最新化 #12311
 
 ### Client
+- Enhance: MFMでルビを振れるように
+	- 例: `$[ruby 三須木 みすき]`
+- Enhance: MFMでUNIX時間を指定して日時を表示できるように
+	- 例: `$[unixtime 1701356400]`
 - Enhance: プラグインでエラーが発生した場合のハンドリングを強化
 - Enhance: 細かなUIのブラッシュアップ
 - Fix: 効果音が再生されるとデバイスで再生している動画や音声が停止する問題を修正 #12339
