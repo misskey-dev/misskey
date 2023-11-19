@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<XDrive ref="drive" @cd="x => folder = x"/>
+	<XDrive ref="drive" :initialFolder="props.folder" @cd="x => folder = x"/>
 </div>
 </template>
 
@@ -14,6 +14,12 @@ import { computed } from 'vue';
 import XDrive from '@/components/MkDrive.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+
+const props = withDefaults(defineProps<{
+  folder?: string;
+}>(), {
+	folder: null,
+});
 
 let folder = $ref(null);
 
