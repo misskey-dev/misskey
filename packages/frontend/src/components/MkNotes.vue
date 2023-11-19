@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
+				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :with-hard-mute="true"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>

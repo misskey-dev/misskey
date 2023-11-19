@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-if="!muted"
+	v-if="!hardMuted && !muted"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</article>
 </div>
-<div v-else :class="$style.muted" @click="muted = false">
+<div v-else-if="!hardMuted" :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -183,6 +183,7 @@ const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
 	pinned?: boolean;
 	mock?: boolean;
+	withHardMute?: boolean;
 }>(), {
 	mock: false,
 });
@@ -240,6 +241,7 @@ const isLong = shouldCollapsed(appearNote, urls ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref($i ? checkWordMute(appearNote, $i, $i.mutedWords) : false);
+const hardMuted = ref(props.withHardMute && ($i ? checkWordMute(appearNote, $i, $i.hardMutedWords) : false));
 const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
