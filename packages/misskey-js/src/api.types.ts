@@ -431,6 +431,7 @@ export type Endpoints = {
 		receiveAnnouncementEmail?: boolean;
 		alwaysMarkNsfw?: boolean;
 		mutedWords?: string[][];
+		hardMutedWords?: string[][];
 		notificationRecieveConfig?: any;
 		emailNotificationTypes?: string[];
 		alsoKnownAs?: string[];

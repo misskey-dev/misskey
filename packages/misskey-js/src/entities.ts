@@ -113,6 +113,7 @@ export type MeDetailed = UserDetailed & {
 	isDeleted: boolean;
 	isExplorable: boolean;
 	mutedWords: string[][];
+	hardMutedWords: string[][];
 	notificationRecieveConfig: {
 		[notificationType in typeof notificationTypes[number]]?: {
 			type: 'all';

@@ -172,6 +172,7 @@ export const paramDef = {
 		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
 		mutedWords: { type: 'array' },
+		hardMutedWords: { type: 'array', items: { type: 'array', items: { type: 'string' } } },
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -256,6 +257,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				profileUpdates.mutedWords = ps.mutedWords;
 				profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 			}
+			if (ps.hardMutedWords !== undefined) profileUpdates.hardMutedWords = ps.hardMutedWords;
 			if (ps.mutedInstances !== undefined) profileUpdates.mutedInstances = ps.mutedInstances;
 			if (ps.notificationRecieveConfig !== undefined) profileUpdates.notificationRecieveConfig = ps.notificationRecieveConfig;
 			if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
