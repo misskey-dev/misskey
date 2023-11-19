@@ -44,6 +44,7 @@ function toBase62(n: number): string {
 export function getConfig(): UserConfig {
 	return {
 		root: "src",
+		publicDir: "../assets",
 		server: {
 			port: 5173,
 			proxy: {
@@ -86,7 +87,7 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
-				'/client-assets/': __dirname + '/client-assets/',
+				'/client-assets/': __dirname + '/assets/client-assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
 				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
