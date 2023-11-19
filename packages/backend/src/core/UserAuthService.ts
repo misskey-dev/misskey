@@ -4,13 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { QueryFailedError } from 'typeorm';
 import * as OTPAuth from 'otpauth';
 import { DI } from '@/di-symbols.js';
 import type { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { MiLocalUser } from '@/models/User.js';
+import { IdentifiableError } from "@/misc/identifiable-error.js";
 
 @Injectable()
 export class UserAuthService {
@@ -38,7 +36,7 @@ export class UserAuthService {
 			});
 
 			if (delta === null) {
-				throw new Error('authentication failed');
+				throw new IdentifiableError('7d0a7d85-206c-4d16-8cf3-8af92249a082', 'authentication failed');
 			}
 		}
 	}
