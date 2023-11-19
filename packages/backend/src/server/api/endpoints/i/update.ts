@@ -124,7 +124,7 @@ export const meta = {
 } as const;
 
 const muteWords = { type: 'array', items: { oneOf: [
-	{type: 'array', items: { type: 'string' }},
+	{ type: 'array', items: { type: 'string' } },
 	{ type: 'string' }
 ] } } as const;
 
@@ -242,7 +242,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
 
 			function validateMuteWordRegex(mutedWords: (string[] | string)[]) {
-				for (let mutedWord of mutedWords) {
+				for (const mutedWord of mutedWords) {
 					if (typeof mutedWord !== "string") continue;
 
 					const regexp = mutedWord.match(/^\/(.+)\/(.*)$/);
