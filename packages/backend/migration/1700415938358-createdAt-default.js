@@ -111,11 +111,9 @@ export class CreatedAtDefault1700415938358 {
         await queryRunner.query(`CREATE INDEX "IDX_3c39bd046f5e69d37f0e4fe768" ON "role" ("createdAt") `);
         await queryRunner.query(`CREATE INDEX "IDX_fe3eb6be723a95c6b7ce539a4f" ON "role_assignment" ("createdAt") `);
         await queryRunner.query(`CREATE INDEX "IDX_89523d5c47dc3fcc0bd6793f18" ON "flash_like" ("createdAt") `);
-        await queryRunner.query(`ALTER TABLE "announcement" ADD CONSTRAINT "FK_fd25dfe3da37df1715f11ba6ec8" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
     }
 
     async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "announcement" DROP CONSTRAINT "FK_fd25dfe3da37df1715f11ba6ec8"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_89523d5c47dc3fcc0bd6793f18"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_fe3eb6be723a95c6b7ce539a4f"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_3c39bd046f5e69d37f0e4fe768"`);
