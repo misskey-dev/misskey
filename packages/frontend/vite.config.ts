@@ -44,7 +44,6 @@ function toBase62(n: number): string {
 export function getConfig(): UserConfig {
 	return {
 		root: "src",
-		publicDir: "assets",
 		server: {
 			port: 5173,
 			proxy: {
@@ -60,9 +59,7 @@ export function getConfig(): UserConfig {
 					target: 'ws://127.0.0.1:3000/',
 					ws: true,
 				},
-				"favicon.ico": 'http://127.0.0.1:3000/',
-				"client-assets": "http://127.0.0.1:3000/"
-
+				"/favicon.ico": 'http://127.0.0.1:3000/',
 			}
 		},
 
@@ -89,7 +86,7 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
-				'/client-assets/': __dirname + '/assets/',
+				'/client-assets/': __dirname + '/client-assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
 				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
