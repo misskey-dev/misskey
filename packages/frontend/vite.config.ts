@@ -1,4 +1,4 @@
-import path from 'path';
+import path, {resolve} from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
@@ -43,10 +43,21 @@ function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	return {
-		base: '/vite/',
-
+		root: "src",
 		server: {
 			port: 5173,
+			proxy: {
+				'/api': {
+					target: 'http://127.0.0.1:3000/',
+				},
+				'/assets': {
+					target: 'http://127.0.0.1:3000/',
+				},
+				'/twemoji': {
+					target: 'http://127.0.0.1:3000/',
+				},
+
+			}
 		},
 
 		plugins: [
@@ -118,9 +129,6 @@ export function getConfig(): UserConfig {
 			],
 			manifest: 'manifest.json',
 			rollupOptions: {
-				input: {
-					app: './src/_boot_.ts',
-				},
 				output: {
 					manualChunks: {
 						vue: ['vue'],
