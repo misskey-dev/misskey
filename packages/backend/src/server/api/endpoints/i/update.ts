@@ -123,6 +123,11 @@ export const meta = {
 	},
 } as const;
 
+const muteWords = { type: 'array', items: { oneOf: [
+	{type: 'array', items: { type: 'string' }},
+	{ type: 'string' }
+] } } as const;
+
 export const paramDef = {
 	type: 'object',
 	properties: {
@@ -171,8 +176,8 @@ export const paramDef = {
 		autoSensitive: { type: 'boolean' },
 		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
-		mutedWords: { type: 'array' },
-		hardMutedWords: { type: 'array', items: { type: 'array', items: { type: 'string' } } },
+		mutedWords: muteWords,
+		hardMutedWords: muteWords,
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -235,6 +240,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
+
+			function validateMuteWordRegex(mutedWords: (string[] | string)[]) {
+				for (let mutedWord of mutedWords) {
+					if (typeof mutedWord !== "string") continue;
+
+					const regexp = mutedWord.match(/^\/(.+)\/(.*)$/);
+					if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
+
+					try {
+						new RE2(regexp[1], regexp[2]);
+					} catch (err) {
+						throw new ApiError(meta.errors.invalidRegexp);
+					}
+				}
+			}
+
 			if (ps.mutedWords !== undefined) {
 				// TODO: ちゃんと数える
 				const length = JSON.stringify(ps.mutedWords).length;
@@ -243,21 +264,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				// validate regular expression syntax
-				ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
-					const regexp = x.match(/^\/(.+)\/(.*)$/);
-					if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
-
-					try {
-						new RE2(regexp[1], regexp[2]);
-					} catch (err) {
-						throw new ApiError(meta.errors.invalidRegexp);
-					}
-				});
+				validateMuteWordRegex(ps.mutedWords);
 
 				profileUpdates.mutedWords = ps.mutedWords;
 				profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 			}
-			if (ps.hardMutedWords !== undefined) profileUpdates.hardMutedWords = ps.hardMutedWords;
+			if (ps.hardMutedWords !== undefined) {
+				validateMuteWordRegex(ps.hardMutedWords);
+				profileUpdates.hardMutedWords = ps.hardMutedWords;
+			}
 			if (ps.mutedInstances !== undefined) profileUpdates.mutedInstances = ps.mutedInstances;
 			if (ps.notificationRecieveConfig !== undefined) profileUpdates.notificationRecieveConfig = ps.notificationRecieveConfig;
 			if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
