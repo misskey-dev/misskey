@@ -13,6 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkFolder>
 
 	<MkFolder>
+		<template #icon><i class="ti ti-message-off"></i></template>
+		<template #label>{{ i18n.ts.hardWordMute }}</template>
+
+		<XWordMute :muted="$i!.hardMutedWords" @save="saveHardMutedWords"/>
+	</MkFolder>
+
+	<MkFolder>
 		<template #icon><i class="ti ti-planet-off"></i></template>
 		<template #label>{{ i18n.ts.instanceMute }}</template>
 
@@ -210,6 +217,10 @@ async function toggleBlockItem(item) {
 
 async function saveMutedWords(mutedWords: (string | string[])[]) {
 	await os.api('i/update', { mutedWords });
+}
+
+async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
+	await os.api('i/update', { hardMutedWords });
 }
 
 const headerActions = $computed(() => []);
