@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } , {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
+                <MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" model-value/>
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
 			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item } , {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
@@ -69,7 +69,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import {defaultStore} from '@/store.js'
-
+import MkSwitchButton from '@/components/MkSwitch.button.vue';
 let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();

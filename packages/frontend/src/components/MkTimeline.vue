@@ -107,12 +107,6 @@ function connectChannel() {
 			withFiles: props.onlyFiles ? true : undefined,
 		});
 	} else if (props.src === 'media') {
-		endpoint = 'notes/hybrid-timeline';
-		query = {
-			withFiles: true,
-			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
-		};
 		connection = stream.useChannel('hybridTimeline', {
 			withFiles: true,
 			withRenotes: props.withRenotes,
@@ -197,6 +191,13 @@ function updatePaginationQuery() {
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+		};
+	}else if(props.src === 'media'){
+		endpoint = 'notes/hybrid-timeline';
+		query = {
+			withFiles: true,
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
 		};
 	} else if (props.src === 'mentions') {
 		endpoint = 'notes/mentions';

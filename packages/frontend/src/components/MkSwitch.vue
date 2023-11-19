@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.disabled]: disabled && gamingType === '', [$style.checked]: checked && gamingType === '' }]">
+<div :class="[$style.root, { [$style.disabled]: disabled , [$style.checked]: checked }]">
 	<input
 		ref="input"
 		type="checkbox"
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@keydown.enter="toggle"
 	>
 	<XButton :checked="checked" :disabled="disabled" @toggle="toggle"/>
-	<span :class="$style.body,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}">
+	<span :class="[$style.body,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light'}]">
 		<!-- TODO: 無名slotの方は廃止 -->
 		<span :class="$style.label">
 			<span @click="toggle">
@@ -30,7 +30,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import {toRefs, Ref, ref, computed, watch} from 'vue';
 import XButton from '@/components/MkSwitch.button.vue';
 import {defaultStore} from "@/store.js";
-let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
+const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
+
+console.log(gamingType.value)
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
