@@ -169,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
 							<template #suffix>{{ policies.wordMuteLimit }}</template>
 							<MkInput v-model="policies.wordMuteLimit" type="number">
-								<template #suffix>chars</template>
+								<template #suffix>items</template>
 							</MkInput>
 						</MkFolder>
 
