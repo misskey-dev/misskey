@@ -3471,6 +3471,10 @@ export interface Locale extends ILocale {
      */
     "gallery": string;
     /**
+     * ギャラリー（ノート）
+     */
+    "galleryFromPosts": string;
+    /**
      * 最近の投稿
      */
     "recentPosts": string;
