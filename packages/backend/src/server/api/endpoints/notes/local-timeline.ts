@@ -114,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.withFiles) {
 				noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
 			} else {
-				if (me) {
+				if (me && ps.withBelowPublic) {
 					const [nonReplyNoteIds, replyNoteIds, localHomeNoteIds] = await this.funoutTimelineService.getMulti([
 						'localTimeline',
 						'localTimelineWithReplies',
