@@ -1136,7 +1136,16 @@ privacyPolicyUrl: "URL นโยบายความเป็นส่วนต
 tosAndPrivacyPolicy: "เงื่อนไขในการให้บริการและนโยบายความเป็นส่วนตัว"
 attach: "แนบ"
 detach: "นำออก"
+angle: "แองเกิล"
 flip: "ย้อนกลับ"
+showAvatarDecorations: "แสดงตกแต่งอวตาร"
+releaseToRefresh: "ปล่อยเพื่อรีเฟรช"
+refreshing: "กำลังรีเฟรช..."
+pullDownToRefresh: "ดึงลงเพื่อรีเฟรช"
+disableStreamingTimeline: "ปิดใช้งานอัปเดตไทม์ไลน์แบบเรียลไทม์"
+useGroupedNotifications: "แสดงผลการแจ้งเตือนแบบกลุ่มแล้ว"
+signupPendingError: "มีปัญหาในการตรวจสอบที่อยู่อีเมลลิงก์อาจหมดอายุแล้ว"
+doReaction: "เพิ่มรีแอคชั่น"
 _announcement:
   forExistingUsers: "ผู้ใช้งานที่มีอยู่เท่านั้น"
   forExistingUsersDescription: "การประกาศนี้จะแสดงต่อผู้ใช้ที่มีอยู่ ณ จุดที่เผยแพร่นั้นๆถ้าหากเปิดใช้งาน ถ้าหากปิดใช้งานผู้ที่กำลังสมัครใหม่หลังจากโพสต์แล้วนั้นก็จะเห็นเช่นกัน"
@@ -1146,6 +1155,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "การมีประกาศที่ใช้งานมากเกินไปนั้นอาจจะทำให้ประสบการณ์ของผู้ใช้งานนั้นดูแย่ลง โปรดกรุณาพิจารณาการเก็บประกาศที่ล้าสมัยด้วยนะค่ะ"
   readConfirmTitle: "ทำเครื่องหมายบอกว่าอ่านแล้วเลยมั้ย?"
   readConfirmText: "การดำเนินการนี้จะทำเครื่องหมายเนื้อหาของ \"{title}\" บอกว่าอ่านแล้วนะ"
+  silence: "ไม่มีการแจ้งเตือน"
 _initialAccountSetting:
   accountCreated: "คุณได้สร้างบัญชีของคุณสำเร็จเรียบร้อยแล้ว!"
   letsStartAccountSetup: "สำหรับผู้เริ่มต้นมาตั้งค่าโปรไฟล์ของคุณกันเถอะ"
@@ -1160,6 +1170,17 @@ _initialAccountSetting:
   haveFun: "ขอให้สนุก {name}!"
   skipAreYouSure: "ต้องการข้ามการตั้งค่าโปรไฟล์จริงๆแบบนั้นหรอ?"
   laterAreYouSure: "ต้องการตั้งค่าโปรไฟล์ในภายหลังจริงๆอย่างงั้นหรอ?"
+_initialTutorial:
+  wellDone: "ทำได้ดีมาก!"
+  _note:
+    title: "โน้ตคืออะไร?"
+  _reaction:
+    title: "รีแอคชั่นคืออะไร?"
+  _postNote:
+    _cw:
+      title: "คำเตือนเกี่ยวกับเนื้อหา"
+      _exampleNote:
+        cw: "นี่อาจจะทำให้คุณหิวอย่างแน่นอน!"
 _serverRules:
   description: "ชุดของกฎที่จะแสดงก่อนการลงทะเบียนเราขอแนะนำให้ตั้งค่าสรุปข้อกำหนดในการให้บริการ"
 _serverSettings:
@@ -2134,3 +2155,13 @@ _fileViewer:
   uploadedAt: "วันที่เข้าร่วม"
   attachedNotes: "โน้ตที่แนบมาด้วย"
   thisPageCanBeSeenFromTheAuthor: "หน้าเพจนี้จะสามารถปรากฏได้โดยผู้ใช้ที่อัปโหลดไฟล์นี้เท่านั้น"
+_externalResourceInstaller:
+  _plugin:
+    metaTitle: "ข้อมูลส่วนเสริม"
+  _theme:
+    metaTitle: "ข้อมูลธีม"
+  _vendorInfo:
+    title: "ข้อมูลผู้จัดจำหน่าย"
+  _errors:
+    _pluginParseFailed:
+      title: "ข้อผิดพลาด AiScript"
