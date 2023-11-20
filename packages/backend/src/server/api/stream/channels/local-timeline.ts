@@ -58,8 +58,8 @@ class LocalTimelineChannel extends Channel {
 		if (note.channelId) {
 			if (!this.withBelowPublic && !this.followingChannels.has(note.channelId)) return;
 		} else {
-			// その投稿のユーザーをフォローしていなかったら弾く
-			if ((this.user!.id !== note.userId) && !Object.hasOwn(this.following, note.userId)) return;
+			// パブリックでないかつその投稿のユーザーをフォローしていなかったら弾く
+			if (note.visibility !== 'public' && (this.user!.id !== note.userId) && !Object.hasOwn(this.following, note.userId)) return;
 		}
 
 		if (['followers', 'specified'].includes(note.visibility)) {
