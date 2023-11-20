@@ -49,8 +49,7 @@ let avatarDecorations: any[] = $ref([]);
 
 async function selectImage(decoration, ev) {
 	const file = await selectFile(ev.currentTarget ?? ev.target, null);
-	const candidate = file.name.replace(/\.(.+)$/, '');
-	decoration.name = candidate;
+	decoration.name = file.name.replace(/\.(.+)$/, '');
 	decoration.url = file.url;
 }
 
