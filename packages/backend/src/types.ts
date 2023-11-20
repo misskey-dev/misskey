@@ -60,6 +60,9 @@ export const moderationLogTypes = [
 	'createAd',
 	'updateAd',
 	'deleteAd',
+	'createAvatarDecoration',
+	'updateAvatarDecoration',
+	'deleteAvatarDecoration',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -171,6 +174,9 @@ export type ModerationLogPayloads = {
 	deleteUserAnnouncement: {
 		announcementId: string;
 		announcement: any;
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
 	};
 	resetPassword: {
 		userId: string;
@@ -218,6 +224,19 @@ export type ModerationLogPayloads = {
 		adId: string;
 		ad: any;
 	};
+	createAvatarDecoration: {
+		avatarDecorationId: string;
+		avatarDecoration: any;
+	};
+	updateAvatarDecoration: {
+		avatarDecorationId: string;
+		before: any;
+		after: any;
+	};
+	deleteAvatarDecoration: {
+		avatarDecorationId: string;
+		avatarDecoration: any;
+	};
 };
 
 export type Serialized<T> = {
@@ -230,3 +249,9 @@ export type Serialized<T> = {
 					? Serialized<T[K]>
 					: T[K];
 };
+
+export type FilterUnionByProperty<
+  Union,
+  Property extends string | number | symbol,
+  Condition
+> = Union extends Record<Property, Condition> ? Union : never;

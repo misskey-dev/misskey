@@ -29,7 +29,7 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-const include = ref<string | null>(null);
+const include = ref<string | null>('all');
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -37,7 +37,8 @@ const pagination = {
 	params: computed(() => ({
 		userId: props.user.id,
 		withRenotes: include.value === 'all',
-		withReplies: include.value === 'all' || include.value === 'files',
+		withReplies: include.value === 'all',
+		withChannelNotes: include.value === 'all',
 		withFiles: include.value === 'files',
 	})),
 };

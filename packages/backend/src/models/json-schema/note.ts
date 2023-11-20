@@ -17,11 +17,6 @@ export const packedNoteSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		updatedAt: {
-			type: 'string',
-			optional: true, nullable: true,
-			format: 'date-time',
-		},
 		deletedAt: {
 			type: 'string',
 			optional: true, nullable: true,
@@ -178,6 +173,14 @@ export const packedNoteSchema = {
 		url: {
 			type: 'string',
 			optional: true, nullable: false,
+		},
+		reactionAndUserPairCache: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 		},
 
 		myReaction: {

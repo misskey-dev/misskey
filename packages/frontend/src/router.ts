@@ -4,7 +4,7 @@
  */
 
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
-import { Router } from '@/nirax';
+import { Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -127,17 +127,9 @@ export const routes = [{
 		name: 'import-export',
 		component: page(() => import('./pages/settings/import-export.vue')),
 	}, {
-		path: '/instance-mute',
-		name: 'instance-mute',
-		component: page(() => import('./pages/settings/instance-mute.vue')),
-	}, {
 		path: '/mute-block',
 		name: 'mute-block',
 		component: page(() => import('./pages/settings/mute-block.vue')),
-	}, {
-		path: '/word-mute',
-		name: 'word-mute',
-		component: page(() => import('./pages/settings/word-mute.vue')),
 	}, {
 		path: '/api',
 		name: 'api',
@@ -322,14 +314,22 @@ export const routes = [{
 	path: '/custom-emojis-manager',
 	component: page(() => import('./pages/custom-emojis-manager.vue')),
 }, {
-	path: '/registry/keys/system/:path(*)?',
+	path: '/avatar-decorations',
+	name: 'avatarDecorations',
+	component: page(() => import('./pages/avatar-decorations.vue')),
+}, {
+	path: '/registry/keys/:domain/:path(*)?',
 	component: page(() => import('./pages/registry.keys.vue')),
 }, {
-	path: '/registry/value/system/:path(*)?',
+	path: '/registry/value/:domain/:path(*)?',
 	component: page(() => import('./pages/registry.value.vue')),
 }, {
 	path: '/registry',
 	component: page(() => import('./pages/registry.vue')),
+}, {
+	path: '/install-extentions',
+	component: page(() => import('./pages/install-extentions.vue')),
+	loginRequired: true,
 }, {
 	path: '/admin/user/:userId',
 	component: iAmModerator ? page(() => import('./pages/admin-user.vue')) : page(() => import('./pages/not-found.vue')),
@@ -351,6 +351,10 @@ export const routes = [{
 		path: '/emojis',
 		name: 'emojis',
 		component: page(() => import('./pages/custom-emojis-manager.vue')),
+	}, {
+		path: '/avatar-decorations',
+		name: 'avatarDecorations',
+		component: page(() => import('./pages/avatar-decorations.vue')),
 	}, {
 		path: '/queue',
 		name: 'queue',
@@ -436,6 +440,10 @@ export const routes = [{
 		name: 'proxy-account',
 		component: page(() => import('./pages/admin/proxy-account.vue')),
 	}, {
+		path: '/external-services',
+		name: 'external-services',
+		component: page(() => import('./pages/admin/external-services.vue')),
+	}, {
 		path: '/other-settings',
 		name: 'other-settings',
 		component: page(() => import('./pages/admin/other-settings.vue')),
@@ -470,6 +478,10 @@ export const routes = [{
 }, {
 	path: '/my/drive',
 	component: page(() => import('./pages/drive.vue')),
+	loginRequired: true,
+}, {
+	path: '/my/drive/file/:fileId',
+	component: page(() => import('./pages/drive.file.vue')),
 	loginRequired: true,
 }, {
 	path: '/my/follow-requests',

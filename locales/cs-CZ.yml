@@ -1096,6 +1096,7 @@ iHaveReadXCarefullyAndAgree: "Přečetl jsem si text \"{x}\" a souhlasím s ním
 icon: "Avatar"
 replies: "Odpovědět"
 renotes: "Přeposlat"
+flip: "Otočit"
 _initialAccountSetting:
   accountCreated: "Váš účet byl úspěšně vytvořen!"
   letsStartAccountSetup: "Pro začátek si nastavte svůj profil."
@@ -1108,7 +1109,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Povolení push oznámení vám umožní přijímat oznámení od {name} přímo ve vašem zařízení."
   initialAccountSettingCompleted: "Nastavení profilu dokončeno!"
   haveFun: "Užívejte {name}!"
-  ifYouNeedLearnMore: "Pokud se chcete dozvědět více o tom, jak používat {name} (Misskey), navštivte {link}."
   skipAreYouSure: "Opravdu chcete přeskočit nastavení profilu?"
   laterAreYouSure: "Opravdu chcete provést nastavení profilu později?"
 _serverRules:
@@ -1559,11 +1559,6 @@ _wordMute:
   muteWords: "Ztlumená slova"
   muteWordsDescription: "Podmínku AND oddělujte mezerami, podmínku OR oddělujte řádkovými zlomy."
   muteWordsDescription2: "Chcete-li použít regulární výrazy, obklopte klíčová slova lomítky."
-  softDescription: "Skrýt poznámky, které splňují nastavené podmínky, z časové osy."
-  hardDescription: "Zabrání přidání poznámek splňujících nastavené podmínky na časovou osu. Kromě toho nebudou tyto poznámky přidány na časovou osu, ani když se podmínky změní."
-  soft: "Měkký"
-  hard: "Tvrdý"
-  mutedNotes: "Ztlumené poznámky"
 _instanceMute:
   instanceMuteDescription: "Tímhle se ztlumí všechny poznámky/poznámky z uvedených instancí, včetně poznámek uživatelů, kteří odpovídají uživateli ze ztlumené instance."
   instanceMuteDescription2: "Oddělte novými řádky"
@@ -1627,9 +1622,6 @@ _theme:
     infoFg: "Text informací"
     infoWarnBg: "Pozadí varování"
     infoWarnFg: "Text varování"
-    cwBg: "Pozadí CW tlačítka"
-    cwFg: "Text CW tlačítka"
-    cwHoverBg: "Pozadí CW tlačítka (Hover)"
     toastBg: "Pozadí oznámení"
     toastFg: "Text oznámení"
     buttonBg: "Pozadí tlačítka"
@@ -1647,8 +1639,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Moje poznámka"
   notification: "Oznámení"
-  chat: "Zprávy"
-  chatBg: "Chat (Pozadí)"
   antenna: "Antény"
   channel: "Oznámení kanálu"
 _ago:
@@ -1667,16 +1657,6 @@ _time:
   minute: "Minut"
   hour: "Hodin"
   day: "Dnů"
-_timelineTutorial:
-  title: "Jak používat Misskey"
-  step1_1: "Toto je \"časová osa\". Zde se chronologicky zobrazují všechny \"poznámky\" odeslané na {name}."
-  step1_2: "Existuje několik různých časových plánů. Například \"Domácí časová osa\" bude obsahovat poznámky uživatelů, které sledujete, a \"Místní časová osa\" bude obsahovat poznámky všech uživatelů {name}."
-  step2_1: "Zkusme zveřejnit poznámku. Můžete tak učinit stisknutím tlačítka s ikonou tužky."
-  step2_2: "Co takhle napsat sebepředstavení, nebo jen \"Ahoj {name}!\", pokud se vám nechce?"
-  step3_1: "Dokončil jsi svou první poznámku?"
-  step3_2: "Na časové ose by se nyní měla zobrazit vaše první poznámka."
-  step4_1: "K poznámkám můžete také připojit \"Reakce\"."
-  step4_2: "Chcete-li připojit reakci, stiskněte na poznámce znaménko \"+\" a vyberte emoji, kterým chcete reagovat."
 _2fa:
   alreadyRegistered: "Již jste zaregistrovali dvoufaktorové ověřovací zařízení."
   registerTOTP: "Registrovat aplikaci autentizátoru"

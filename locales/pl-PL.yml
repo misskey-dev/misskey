@@ -873,6 +873,7 @@ youFollowing: "Śledzeni"
 icon: "Awatar"
 replies: "Odpowiedz"
 renotes: "Udostępnij"
+flip: "Odwróć"
 _role:
   priority: "Priorytet"
   _priority:
@@ -982,9 +983,6 @@ _menuDisplay:
 _wordMute:
   muteWords: "Słowo do wyciszenia"
   muteWordsDescription2: "Otocz słowa kluczowe ukośnikami, aby używać wyrażeń regularnych."
-  soft: "Łagodny"
-  hard: "Twardy"
-  mutedNotes: "Wyciszone wpisy"
 _instanceMute:
   title: "Ukrywa wpisy z wymienionych instancji."
   heading: "Lista instancji do wyciszenia"
@@ -1046,9 +1044,6 @@ _theme:
     infoFg: "Tekst informacji"
     infoWarnBg: "Tło ostrzeżenia"
     infoWarnFg: "Tekst ostrzeżenia"
-    cwBg: "Tło CW"
-    cwFg: "Tekst CW"
-    cwHoverBg: "Tło CW (po najechaniu)"
     toastBg: "Tło powiadomień"
     toastFg: "Tekst powiadomień"
     buttonBg: "Tło przycisku"
@@ -1066,8 +1061,6 @@ _sfx:
   note: "Wpisy"
   noteMy: "Mój wpis"
   notification: "Powiadomienia"
-  chat: "Wiadomości"
-  chatBg: "Rozmowy (tło)"
   antenna: "Anteny"
   channel: "Powiadomienia kanału"
 _ago:

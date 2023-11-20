@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<time :title="absolute">
+<time :title="absolute" :class="{ [$style.old1]: colored && (ago > 60 * 60 * 24 * 90), [$style.old2]: colored && (ago > 60 * 60 * 24 * 180) }">
 	<template v-if="invalid">{{ i18n.ts._ago.invalid }}</template>
 	<template v-else-if="mode === 'relative'">{{ relative }}</template>
 	<template v-else-if="mode === 'absolute'">{{ absolute }}</template>
@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<{
 	time: Date | string | number | null;
 	origin?: Date | null;
 	mode?: 'relative' | 'absolute' | 'detail';
+	colored?: boolean;
 }>(), {
 	origin: isChromatic() ? new Date('2023-04-01T00:00:00Z') : null,
 	mode: 'relative',
@@ -48,8 +49,15 @@ const relative = $computed<string>(() => {
 		ago >= 3600 ? i18n.t('_ago.hoursAgo', { n: Math.round(ago / 3600).toString() }) :
 		ago >= 60 ? i18n.t('_ago.minutesAgo', { n: (~~(ago / 60)).toString() }) :
 		ago >= 10 ? i18n.t('_ago.secondsAgo', { n: (~~(ago % 60)).toString() }) :
-		ago >= -1 ? i18n.ts._ago.justNow :
-		i18n.ts._ago.future);
+		ago >= -3 ? i18n.ts._ago.justNow :
+		ago < -31536000 ? i18n.t('_timeIn.years', { n: Math.round(-ago / 31536000).toString() }) :
+		ago < -2592000 ? i18n.t('_timeIn.months', { n: Math.round(-ago / 2592000).toString() }) :
+		ago < -604800 ? i18n.t('_timeIn.weeks', { n: Math.round(-ago / 604800).toString() }) :
+		ago < -86400 ? i18n.t('_timeIn.days', { n: Math.round(-ago / 86400).toString() }) :
+		ago < -3600 ? i18n.t('_timeIn.hours', { n: Math.round(-ago / 3600).toString() }) :
+		ago < -60 ? i18n.t('_timeIn.minutes', { n: (~~(-ago / 60)).toString() }) :
+		i18n.t('_timeIn.seconds', { n: (~~(-ago % 60)).toString() })
+	);
 });
 
 let tickId: number;
@@ -75,3 +83,13 @@ if (!invalid && props.origin === null && (props.mode === 'relative' || props.mod
 	});
 }
 </script>
+
+<style lang="scss" module>
+.old1 {
+	color: var(--warn);
+}
+
+.old1.old2 {
+	color: var(--error);
+}
+</style>
