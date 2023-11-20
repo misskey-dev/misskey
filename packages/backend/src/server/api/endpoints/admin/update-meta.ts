@@ -113,6 +113,8 @@ export const paramDef = {
 		objectStorageS3ForcePathStyle: { type: 'boolean' },
 		enableIpLogging: { type: 'boolean' },
 		enableActiveEmailValidation: { type: 'boolean' },
+		enableVerifymailApi: { type: 'boolean' },
+		verifymailAuthKey: { type: 'string', nullable: true },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
@@ -121,6 +123,7 @@ export const paramDef = {
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
+		enableFanoutTimelineDbFallback: { type: 'boolean' },
 		perLocalUserUserTimelineCacheMax: { type: 'integer' },
 		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
 		perUserHomeTimelineCacheMax: { type: 'integer' },
@@ -453,6 +456,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 			}
 
+			if (ps.enableVerifymailApi !== undefined) {
+				set.enableVerifymailApi = ps.enableVerifymailApi;
+			}
+
+			if (ps.verifymailAuthKey !== undefined) {
+				if (ps.verifymailAuthKey === '') {
+					set.verifymailAuthKey = null;
+				} else {
+					set.verifymailAuthKey = ps.verifymailAuthKey;
+				}
+			}
+
 			if (ps.enableChartsForRemoteUser !== undefined) {
 				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
 			}
@@ -483,6 +498,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableFanoutTimeline !== undefined) {
 				set.enableFanoutTimeline = ps.enableFanoutTimeline;
+			}
+
+			if (ps.enableFanoutTimelineDbFallback !== undefined) {
+				set.enableFanoutTimelineDbFallback = ps.enableFanoutTimelineDbFallback;
 			}
 
 			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {

@@ -379,16 +379,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const newName = updates.name === undefined ? user.name : updates.name;
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
+			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
 
 			if (newName != null) {
 				const tokens = mfm.parseSimple(newName);
-				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
+				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
 
 			if (newDescription != null) {
 				const tokens = mfm.parse(newDescription);
-				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
-				tags = extractHashtags(tokens!).map(tag => normalizeForSearch(tag)).splice(0, 32);
+				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
+				tags = extractHashtags(tokens).map(tag => normalizeForSearch(tag)).splice(0, 32);
+			}
+
+			for (const field of newFields) {
+				const nameTokens = mfm.parseSimple(field.name);
+				const valueTokens = mfm.parseSimple(field.value);
+				emojis = emojis.concat([
+					...extractCustomEmojisFromMfm(nameTokens),
+					...extractCustomEmojisFromMfm(valueTokens),
+				]);
 			}
 
 			updates.emojis = emojis;
