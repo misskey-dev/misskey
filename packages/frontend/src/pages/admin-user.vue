@@ -122,6 +122,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 						</MkFolder>
 
+                        <div>
+							<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
+							<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
+						</div>
 						<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 					</div>
 				</FormSection>
@@ -318,6 +322,44 @@ async function toggleSuspend(v) {
 		await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.id });
 		await refreshUser();
 	}
+}
+
+async function unsetUserAvatar() {
+  const confirm = await os.confirm({
+    type: 'warning',
+    text: i18n.ts.unsetUserAvatarConfirm,
+  });
+  if (confirm.canceled) return;
+  const process = async () => {
+    await os.api('admin/unset-user-avatar', { userId: user.id });
+    os.success();
+  };
+  await process().catch(err => {
+    os.alert({
+      type: 'error',
+      text: err.toString(),
+    });
+  });
+  refreshUser();
+}
+
+async function unsetUserBanner() {
+  const confirm = await os.confirm({
+    type: 'warning',
+    text: i18n.ts.unsetUserBannerConfirm,
+  });
+  if (confirm.canceled) return;
+  const process = async () => {
+    await os.api('admin/unset-user-banner', { userId: user.id });
+    os.success();
+  };
+  await process().catch(err => {
+    os.alert({
+      type: 'error',
+      text: err.toString(),
+    });
+  });
+  refreshUser();
 }
 
 async function deleteAllFiles() {

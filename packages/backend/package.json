@@ -7,8 +7,8 @@
 		"node": ">=18.16.0"
 	},
 	"scripts": {
-		"start": "node ./built/index.js",
-		"start:test": "NODE_ENV=test node ./built/index.js",
+		"start": "node ./built/boot/entry.js",
+		"start:test": "NODE_ENV=test node ./built/boot/entry.js",
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
 		"revert": "pnpm typeorm migration:revert -d ormconfig.js",
 		"check:connect": "node ./check_connect.js",
