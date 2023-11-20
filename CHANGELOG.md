@@ -5,7 +5,7 @@
 -
 
 ### Client
--
+- Fix: ページ一覧ページの表示がモバイル環境において崩れているのを修正
 
 ### Server
 -
@@ -19,7 +19,7 @@
 - Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
 
 ### Client
--
+- fix: 「設定のバックアップ」で一部の項目がバックアップに含まれていなかった問題を修正
 
 ### Server
 -

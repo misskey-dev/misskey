@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -29,6 +30,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -36,12 +39,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (user == null) {
 				throw new Error('user not found');
 			}
+	
+			if (user.avatarId == null) return;
 
 			await this.usersRepository.update(user.id, {
-				banner: null,
-				bannerId: null,
-				bannerUrl: null,
-				bannerBlurhash: null,
+				avatar: null,
+				avatarId: null,
+				avatarUrl: null,
+				avatarBlurhash: null,
+			});
+
+			this.moderationLogService.log(me, 'unsetUserAvatar', {
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
+				fileId: user.avatarId,
 			});
 		});
 	}
