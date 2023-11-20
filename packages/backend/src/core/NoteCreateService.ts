@@ -518,6 +518,23 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.saveReply(data.reply, note);
 		}
 
+		if (data.reply == null) {
+			// TODO: キャッシュ
+			this.followingsRepository.findBy({
+				followeeId: user.id,
+				notify: 'normal',
+			}).then(followings => {
+				if (note.visibility !== 'specified') {
+					for (const following of followings) {
+						// TODO: ワードミュート考慮
+						this.notificationService.createNotification(following.followerId, 'note', {
+							noteId: note.id,
+						}, user.id);
+					}
+				}
+			});
+		}
+
 		if (data.renote && data.renote.userId !== user.id && !user.isBot) {
 			this.incRenoteCount(data.renote);
 		}
