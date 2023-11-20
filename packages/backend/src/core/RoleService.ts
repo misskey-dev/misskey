@@ -88,11 +88,11 @@ export class RoleService implements OnApplicationShutdown {
 	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
 
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
+
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -493,7 +493,7 @@ export class RoleService implements OnApplicationShutdown {
 	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
 		const roles = await this.getUserRoles(note.userId);
 
-		const redisPipeline = this.redisClient.pipeline();
+		const redisPipeline = this.redisForTimelines.pipeline();
 
 		for (const role of roles) {
 			this.funoutTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
