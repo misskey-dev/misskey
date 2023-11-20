@@ -71,6 +71,8 @@ export const moderationLogTypes = [
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
+	'unsetUserAvatar',
+	'unsetUserBanner',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -244,6 +246,18 @@ export type ModerationLogPayloads = {
 	deleteAvatarDecoration: {
 		avatarDecorationId: string;
 		avatarDecoration: any;
+	};
+	unsetUserAvatar: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+		fileId: string;
+	};
+	unsetUserBanner: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+		fileId: string;
 	};
 };
 
