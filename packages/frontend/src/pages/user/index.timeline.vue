@@ -38,8 +38,8 @@ const pagination = {
 		userId: props.user.id,
 		withRenotes: include.value === 'all',
 		withReplies: include.value === 'all',
-		withChannelNotes: include.value === 'all',
 		withFiles: include.value === 'files',
+		withChannelNotes: true,
 	})),
 };
 </script>
