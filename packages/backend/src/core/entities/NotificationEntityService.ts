@@ -177,7 +177,7 @@ export class NotificationEntityService implements OnModuleInit {
 		) : undefined;
 
 		if (notification.type === 'reaction:grouped') {
-			const reactions = await Promise.all(notification.reactions.map(async reaction => {
+			const reactions = await Promise.allSettled(notification.reactions.map(async reaction => {
 				const user = hint?.packedUsers != null
 					? hint.packedUsers.get(reaction.userId)!
 					: await this.userEntityService.pack(reaction.userId, { id: meId }, {
@@ -193,10 +193,11 @@ export class NotificationEntityService implements OnModuleInit {
 				createdAt: new Date(notification.createdAt).toISOString(),
 				type: notification.type,
 				note: noteIfNeed,
-				reactions,
+				reactions: reactions.filter(result => result.status === 'fulfilled')
+					.map(result => (result as PromiseFulfilledResult<{ user: Packed<'User'>; reaction: string; }>).value),
 			});
 		} else if (notification.type === 'renote:grouped') {
-			const users = await Promise.all(notification.userIds.map(userId => {
+			const users = await Promise.allSettled(notification.userIds.map(userId => {
 				const packedUser = hint?.packedUsers != null ? hint.packedUsers.get(userId) : null;
 				if (packedUser) {
 					return packedUser;
@@ -211,7 +212,8 @@ export class NotificationEntityService implements OnModuleInit {
 				createdAt: new Date(notification.createdAt).toISOString(),
 				type: notification.type,
 				note: noteIfNeed,
-				users,
+				users: users.filter(result => result.status === 'fulfilled')
+					.map(result => (result as PromiseFulfilledResult<Packed<'User'>>).value),
 			});
 		}
 
@@ -280,9 +282,11 @@ export class NotificationEntityService implements OnModuleInit {
 			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
 		}
 
-		return await Promise.all(validNotifications.map(x => this.packGrouped(x, meId, {}, {
+		return (await Promise.allSettled(validNotifications.map(x => this.packGrouped(x, meId, {}, {
 			packedNotes,
 			packedUsers,
-		})));
+		}))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'Notification'>>).value);
 	}
 }
