@@ -134,11 +134,19 @@ export const packedNoteSchema = {
 				},
 				name: {
 					type: 'string',
-					optional: false, nullable: true,
+					optional: false, nullable: false,
+				},
+				color: {
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				isSensitive: {
 					type: 'boolean',
-					optional: true, nullable: false,
+					optional: false, nullable: false,
+				},
+				allowRenoteToExternal: {
+					type: 'boolean',
+					optional: false, nullable: false,
 				},
 			},
 		},
