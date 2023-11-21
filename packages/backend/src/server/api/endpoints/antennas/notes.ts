@@ -87,11 +87,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			if (!antenna.isActive) {
-				antenna.isActive = true;
-				antenna.lastUsedAt = new Date();
-				this.antennasRepository.update(antenna.id, antenna);
+			// falseだった場合はアンテナの配信先が増えたことを通知したい
+			const needPublishEvent = !antenna.isActive;
 
+			antenna.isActive = true;
+			antenna.lastUsedAt = new Date();
+			this.antennasRepository.update(antenna.id, antenna);
+
+			if (needPublishEvent) {
 				this.globalEventService.publishInternalEvent('antennaUpdated', antenna);
 			}
 
