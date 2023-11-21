@@ -18,7 +18,7 @@
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.67",
 		"eslint": "8.53.0",
 		"eslint-plugin-import": "2.29.0",
-		"typescript": "5.2.2"
+		"typescript": "5.3.2"
 	},
 	"type": "module"
 }
