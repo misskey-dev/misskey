@@ -978,7 +978,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
 		});
 
-		test.concurrent('リスインしているユーザーのチャンネルノートが含まれない', async () => {
+		test.concurrent('リスインしているユーザーのチャンネルノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
@@ -991,7 +991,8 @@ describe('Timelines', () => {
 
 			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
 
-			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
 		});
 
 		test.concurrent('[withFiles: true] リスインしているユーザーのファイル付きノートのみ含まれる', async () => {

@@ -743,6 +743,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (renote.channelId != null) {
 				if (renote.replyId == null) {
 					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
+					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
 				}
 			} else {
 				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
@@ -843,6 +844,48 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		const r = this.redisForTimelines.pipeline();
 
+		// TODO: キャッシュ？
+		// eslint-disable-next-line prefer-const
+		let [followings, userListMemberships] = await Promise.all([
+			this.followingsRepository.find({
+				where: {
+					followeeId: user.id,
+					followerHost: IsNull(),
+					isFollowerHibernated: false,
+				},
+				select: ['followerId', 'withReplies'],
+			}),
+			this.userListMembershipsRepository.find({
+				where: {
+					userId: user.id,
+				},
+				select: ['userListId', 'userListUserId', 'withReplies'],
+			}),
+		]);
+
+		if (note.visibility === 'followers') {
+			// TODO: 重そうだから何とかしたい Set 使う？
+			userListMemberships = userListMemberships.filter(x => x.userListUserId === user.id || followings.some(f => f.followerId === x.userListUserId));
+		}
+
+		for (const userListMembership of userListMemberships) {
+			// ダイレクトのとき、そのリストが対象外のユーザーの場合
+			if (
+				note.visibility === 'specified' &&
+				!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
+			) continue;
+
+			// 「自分自身への返信 or そのリストの作成者への返信」のどちらでもない場合
+			if (note.replyId && !(note.replyUserId === note.userId || note.replyUserId === userListMembership.userListUserId)) {
+				if (!userListMembership.withReplies) continue;
+			}
+
+			this.funoutTimelineService.push(`userListTimeline:${userListMembership.userListId}`, note.id, meta.perUserListTimelineCacheMax, r);
+			if (note.fileIds.length > 0) {
+				this.funoutTimelineService.push(`userListTimelineWithFiles:${userListMembership.userListId}`, note.id, meta.perUserListTimelineCacheMax / 2, r);
+			}
+		}
+
 		if (note.channelId) {
 			this.funoutTimelineService.push(`channelTimeline:${note.channelId}`, note.id, this.config.perChannelMaxNoteCacheCount, r);
 
@@ -862,30 +905,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 		} else {
-			// TODO: キャッシュ？
-			// eslint-disable-next-line prefer-const
-			let [followings, userListMemberships] = await Promise.all([
-				this.followingsRepository.find({
-					where: {
-						followeeId: user.id,
-						followerHost: IsNull(),
-						isFollowerHibernated: false,
-					},
-					select: ['followerId', 'withReplies'],
-				}),
-				this.userListMembershipsRepository.find({
-					where: {
-						userId: user.id,
-					},
-					select: ['userListId', 'userListUserId', 'withReplies'],
-				}),
-			]);
-
-			if (note.visibility === 'followers') {
-				// TODO: 重そうだから何とかしたい Set 使う？
-				userListMemberships = userListMemberships.filter(x => x.userListUserId === user.id || followings.some(f => f.followerId === x.userListUserId));
-			}
-
 			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
 			for (const following of followings) {
 				// 基本的にvisibleUserIdsには自身のidが含まれている前提であること
@@ -899,24 +918,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				this.funoutTimelineService.push(`homeTimeline:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax, r);
 				if (note.fileIds.length > 0) {
 					this.funoutTimelineService.push(`homeTimelineWithFiles:${following.followerId}`, note.id, meta.perUserHomeTimelineCacheMax / 2, r);
-				}
-			}
-
-			for (const userListMembership of userListMemberships) {
-				// ダイレクトのとき、そのリストが対象外のユーザーの場合
-				if (
-					note.visibility === 'specified' &&
-					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
-				) continue;
-
-				// 「自分自身への返信 or そのリストの作成者への返信」のどちらでもない場合
-				if (note.replyId && !(note.replyUserId === note.userId || note.replyUserId === userListMembership.userListUserId)) {
-					if (!userListMembership.withReplies) continue;
-				}
-
-				this.funoutTimelineService.push(`userListTimeline:${userListMembership.userListId}`, note.id, meta.perUserListTimelineCacheMax, r);
-				if (note.fileIds.length > 0) {
-					this.funoutTimelineService.push(`userListTimelineWithFiles:${userListMembership.userListId}`, note.id, meta.perUserListTimelineCacheMax / 2, r);
 				}
 			}
 
@@ -947,12 +948,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 					}
 				}
 			}
+		}
 
-			if (Math.random() < 0.1) {
-				process.nextTick(() => {
-					this.checkHibernation(followings);
-				});
-			}
+		if (Math.random() < 0.1) {
+			process.nextTick(() => {
+				this.checkHibernation(followings);
+			});
 		}
 
 		r.exec();

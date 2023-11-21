@@ -200,7 +200,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser')
 			.andWhere('userListMemberships.userListId = :userListId', { userListId: list.id })
-			.andWhere('note.channelId IS NULL') // チャンネルノートではない
 			.andWhere(new Brackets(qb => {
 				qb
 					.where('note.replyId IS NULL') // 返信ではない
