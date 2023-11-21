@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URLSearchParams } from 'node:url';
 import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
+import { SubOutputFormat } from 'deep-email-validator/dist/output/output.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -13,6 +15,7 @@ import type Logger from '@/logger.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 @Injectable()
 export class EmailService {
@@ -27,6 +30,7 @@ export class EmailService {
 
 		private metaService: MetaService,
 		private loggerService: LoggerService,
+		private httpRequestService: HttpRequestService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
 	}
@@ -160,14 +164,25 @@ export class EmailService {
 			email: emailAddress,
 		});
 
-		const validated = meta.enableActiveEmailValidation ? await validateEmail({
-			email: emailAddress,
-			validateRegex: true,
-			validateMx: true,
-			validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
-			validateDisposable: true, // 捨てアドかどうかチェック
-			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
-		}) : { valid: true, reason: null };
+		const verifymailApi = meta.enableVerifymailApi && meta.verifymailAuthKey != null;
+		let validated;
+
+		if (meta.enableActiveEmailValidation && meta.verifymailAuthKey) {
+			if (verifymailApi) {
+				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
+			} else {
+				validated = meta.enableActiveEmailValidation ? await validateEmail({
+					email: emailAddress,
+					validateRegex: true,
+					validateMx: true,
+					validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
+					validateDisposable: true, // 捨てアドかどうかチェック
+					validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
+				}) : { valid: true, reason: null };
+			}
+		} else {
+			validated = { valid: true, reason: null };
+		}
 
 		const available = exist === 0 && validated.valid;
 
@@ -180,6 +195,67 @@ export class EmailService {
 			validated.reason === 'mx' ? 'mx' :
 			validated.reason === 'smtp' ? 'smtp' :
 			null,
+		};
+	}
+
+	private async verifyMail(emailAddress: string, verifymailAuthKey: string): Promise<{
+		valid: boolean;
+		reason: 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | null;
+	}> {
+		const endpoint = 'https://verifymail.io/api/' + emailAddress + '?key=' + verifymailAuthKey;
+		const res = await this.httpRequestService.send(endpoint, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Accept: 'application/json, */*',
+			},
+		});
+
+		const json = (await res.json()) as {
+			block: boolean;
+			catch_all: boolean;
+			deliverable_email: boolean;
+			disposable: boolean;
+			domain: string;
+			email_address: string;
+			email_provider: string;
+			mx: boolean;
+			mx_fallback: boolean;
+			mx_host: string[];
+			mx_ip: string[];
+			mx_priority: { [key: string]: number };
+			privacy: boolean;
+			related_domains: string[];
+		};
+
+		if (json.email_address === undefined) {
+			return {
+				valid: false,
+				reason: 'format',
+			};
+		}
+		if (json.deliverable_email !== undefined && !json.deliverable_email) {
+			return {
+				valid: false,
+				reason: 'smtp',
+			};
+		}
+		if (json.disposable) {
+			return {
+				valid: false,
+				reason: 'disposable',
+			};
+		}
+		if (json.mx !== undefined && !json.mx) {
+			return {
+				valid: false,
+				reason: 'mx',
+			};
+		}
+
+		return {
+			valid: true,
+			reason: null,
 		};
 	}
 }

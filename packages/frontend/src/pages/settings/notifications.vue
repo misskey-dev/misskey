@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection first>
 		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 		<div class="_gaps_s">
-			<MkFolder v-for="type in notificationTypes" :key="type">
+			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
 				<template #label>{{ i18n.t('_notification._types.' + type) }}</template>
 				<template #suffix>
 					{{
@@ -67,6 +67,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const.js';
+
+const nonConfigurableNotificationTypes = ['note'];
 
 let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);

@@ -447,6 +447,17 @@ export class MiMeta {
 	public enableActiveEmailValidation: boolean;
 
 	@Column('boolean', {
+		default: false,
+	})
+	public enableVerifymailApi: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public verifymailAuthKey: string | null;
+
+	@Column('boolean', {
 		default: true,
 	})
 	public enableChartsForRemoteUser: boolean;
@@ -493,6 +504,11 @@ export class MiMeta {
 		default: true,
 	})
 	public enableFanoutTimeline: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableFanoutTimelineDbFallback: boolean;
 
 	@Column('integer', {
 		default: 300,

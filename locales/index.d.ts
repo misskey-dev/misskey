@@ -567,6 +567,10 @@ export interface Locale {
     "script": string;
     "disablePagesScript": string;
     "updateRemoteUser": string;
+    "unsetUserAvatar": string;
+    "unsetUserAvatarConfirm": string;
+    "unsetUserBanner": string;
+    "unsetUserBannerConfirm": string;
     "deleteAllFiles": string;
     "deleteAllFilesConfirm": string;
     "removeAllFollowing": string;
@@ -1285,6 +1289,8 @@ export interface Locale {
         "shortName": string;
         "shortNameDescription": string;
         "fanoutTimelineDescription": string;
+        "fanoutTimelineDbFallback": string;
+        "fanoutTimelineDbFallbackDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;
@@ -1946,6 +1952,15 @@ export interface Locale {
         "yearsAgo": string;
         "invalid": string;
     };
+    "_timeIn": {
+        "seconds": string;
+        "minutes": string;
+        "hours": string;
+        "days": string;
+        "weeks": string;
+        "months": string;
+        "years": string;
+    };
     "_time": {
         "second": string;
         "minute": string;
@@ -2402,6 +2417,8 @@ export interface Locale {
         "createAvatarDecoration": string;
         "updateAvatarDecoration": string;
         "deleteAvatarDecoration": string;
+        "unsetUserAvatar": string;
+        "unsetUserBanner": string;
     };
     "_fileViewer": {
         "title": string;
