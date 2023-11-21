@@ -61,7 +61,7 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba7',
 ] as const;
 
-export async function getAudio(file: string, useCache = true) {
+export async function loadAudio(file: string, useCache = true) {
 	if (useCache && cache.has(file)) {
 		return cache.get(file)!;
 	}
@@ -77,12 +77,6 @@ export async function getAudio(file: string, useCache = true) {
 	return audioBuffer;
 }
 
-export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioElement {
-	const masterVolume = defaultStore.state.sound_masterVolume;
-	audio.volume = masterVolume - ((1 - volume) * masterVolume);
-	return audio;
-}
-
 export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
 	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
@@ -91,16 +85,22 @@ export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notifica
 }
 
 export async function playFile(file: string, volume: number) {
+	const buffer = await loadAudio(file);
+	createSourceNode(buffer, volume)?.start();
+}
+
+export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
 	const masterVolume = defaultStore.state.sound_masterVolume;
 	if (masterVolume === 0 || volume === 0) {
-		return;
+		return null;
 	}
 
 	const gainNode = ctx.createGain();
 	gainNode.gain.value = masterVolume * volume;
 
 	const soundSource = ctx.createBufferSource();
-	soundSource.buffer = await getAudio(file);
+	soundSource.buffer = buffer;
 	soundSource.connect(gainNode).connect(ctx.destination);
-	soundSource.start();
+
+	return soundSource;
 }
