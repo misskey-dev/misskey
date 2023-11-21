@@ -7,7 +7,9 @@ import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
-	const res: any = schema;
+	// optional, refはスキーマ定義に含まれないので分離しておく
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { optional, ref, ...res }: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {
 		const required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
@@ -36,14 +38,7 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 		} else {
 			res.$ref = $ref;
 		}
-
-		// $refを抽出したので不要.
-		res.ref = undefined;
 	}
-
-	// requiredを抽出したので不要.
-	// object以外の型も親階層のobjectによって列挙されているはずなので構わず消す
-	res.optional = undefined;
 
 	return res;
 }
