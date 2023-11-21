@@ -10,7 +10,11 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {
-		res.required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
+		const required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
+		if (required.length > 0) {
+			// 空配列は許可されない
+			res.required = required;
+		}
 
 		for (const k of Object.keys(schema.properties)) {
 			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k]);
@@ -32,7 +36,14 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 		} else {
 			res.$ref = $ref;
 		}
+
+		// $refを抽出したので不要.
+		res.ref = undefined;
 	}
+
+	// requiredを抽出したので不要.
+	// object以外の型も親階層のobjectによって列挙されているはずなので構わず消す
+	res.optional = undefined;
 
 	return res;
 }

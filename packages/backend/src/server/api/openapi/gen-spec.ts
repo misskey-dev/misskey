@@ -31,14 +31,6 @@ export function genOpenapiSpec(config: Config) {
 
 		components: {
 			schemas: schemas,
-
-			securitySchemes: {
-				ApiKeyAuth: {
-					type: 'apiKey',
-					in: 'body',
-					name: 'i',
-				},
-			},
 		},
 	};
 
@@ -67,6 +59,21 @@ export function genOpenapiSpec(config: Config) {
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
 		const schema = { ...endpoint.params };
 
+		if (endpoint.meta.requireCredential) {
+			// https://swagger.io/docs/specification/authentication/api-keys/
+			// ↑曰く、「can be "header", "query" or "cookie"」とのこと。
+			// Misskeyはbodyに埋め込む形にしているので、各エンドポイントのパラメータに直接APIキー用のフィールドを追加する必要がある
+			schema.properties = {
+				'i': {
+					type: 'string',
+					nullable: false,
+					description: 'API Key',
+				},
+				...schema.properties,
+			};
+			schema.required = ['i', ...schema.required ?? []];
+		}
+
 		if (endpoint.meta.requireFile) {
 			schema.properties = {
 				...schema.properties,
@@ -79,6 +86,11 @@ export function genOpenapiSpec(config: Config) {
 			schema.required = [...schema.required ?? [], 'file'];
 		}
 
+		if (schema.required && schema.required.length <= 0) {
+			// 空配列は許可されない
+			schema.required = undefined;
+		}
+
 		const info = {
 			operationId: endpoint.name,
 			summary: endpoint.name,
@@ -89,11 +101,6 @@ export function genOpenapiSpec(config: Config) {
 			},
 			...(endpoint.meta.tags ? {
 				tags: [endpoint.meta.tags[0]],
-			} : {}),
-			...(endpoint.meta.requireCredential ? {
-				security: [{
-					ApiKeyAuth: [],
-				}],
 			} : {}),
 			requestBody: {
 				required: true,
@@ -118,6 +125,11 @@ export function genOpenapiSpec(config: Config) {
 						description: 'OK (without any results)',
 					},
 				}),
+				...(endpoint.meta.res?.optional === true || endpoint.meta.res?.nullable === true ? {
+					'204': {
+						description: 'OK (without any results)',
+					},
+				} : {}),
 				'400': {
 					description: 'Client error',
 					content: {
