@@ -4,7 +4,7 @@
  */
 
 import type { Config } from '@/config.js';
-import endpoints from '../endpoints.js';
+import endpoints, { IEndpoint } from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
@@ -34,7 +34,9 @@ export function genOpenapiSpec(config: Config) {
 		},
 	};
 
-	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
+	// 書き換えたりするのでディープコピーしておく。そのまま編集するとメモリ上の値が汚れて次回以降の出力に影響する
+	const copiedEndpoints = JSON.parse(JSON.stringify(endpoints)) as IEndpoint[];
+	for (const endpoint of copiedEndpoints.filter(ep => !ep.meta.secure)) {
 		const errors = {} as any;
 
 		if (endpoint.meta.errors) {
