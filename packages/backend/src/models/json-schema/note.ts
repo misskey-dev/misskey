@@ -127,22 +127,18 @@ export const packedNoteSchema = {
 		channel: {
 			type: 'object',
 			optional: true, nullable: true,
-			items: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					id: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-					name: {
-						type: 'string',
-						optional: false, nullable: true,
-					},
-					isSensitive: {
-						type: 'boolean',
-						optional: true, nullable: false,
-					},
+			properties: {
+				id: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				name: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
+				isSensitive: {
+					type: 'boolean',
+					optional: true, nullable: false,
 				},
 			},
 		},
