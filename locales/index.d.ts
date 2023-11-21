@@ -567,6 +567,10 @@ export interface Locale {
     "script": string;
     "disablePagesScript": string;
     "updateRemoteUser": string;
+    "unsetUserAvatar": string;
+    "unsetUserAvatarConfirm": string;
+    "unsetUserBanner": string;
+    "unsetUserBannerConfirm": string;
     "deleteAllFiles": string;
     "deleteAllFilesConfirm": string;
     "removeAllFollowing": string;
@@ -2414,6 +2418,8 @@ export interface Locale {
         "createAvatarDecoration": string;
         "updateAvatarDecoration": string;
         "deleteAvatarDecoration": string;
+        "unsetUserAvatar": string;
+        "unsetUserBanner": string;
     };
     "_fileViewer": {
         "title": string;
