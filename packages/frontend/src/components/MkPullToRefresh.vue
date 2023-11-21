@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkLoading from '@/components/global/MkLoading.vue';
-import { onMounted, onUnmounted, watch } from 'vue';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { onMounted, onUnmounted, onActivated, onDeactivated } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
@@ -197,6 +196,7 @@ function onScrollContainerScroll() {
 }
 
 onMounted(() => {
+	isRefreshing = false;
 	if (rootEl == null) return;
 	scrollEl = getScrollContainer(rootEl);
 	if (scrollEl == null) return;
@@ -206,7 +206,18 @@ onMounted(() => {
 	rootEl.addEventListener('touchend', moveEnd, { passive: true });
 });
 
+onActivated(() => {
+	isRefreshing = false;
+});
+
+onDeactivated(() => {
+	scrollEl!.style.touchAction = 'auto';
+	isRefreshing = true;
+});
+
 onUnmounted(() => {
+	scrollEl!.style.touchAction = 'auto';
+	isRefreshing = true;
 	if (scrollEl) scrollEl.removeEventListener('scroll', onScrollContainerScroll);
 	if (rootEl == null) return;
 	rootEl.removeEventListener('touchstart', moveStart);
