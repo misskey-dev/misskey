@@ -30,6 +30,7 @@
 - Feat: 管理者がコントロールパネルからメールアドレスの照会を行えるようになりました
 - Enhance: ローカリゼーションの更新
 - Enhance: 依存関係の更新
+- Enhance: json-schema(OpenAPIの戻り値として使用されるスキーマ定義)を出来る限り最新化 #12311
 
 ### Client
 - Enhance: MFMでルビを振れるように
