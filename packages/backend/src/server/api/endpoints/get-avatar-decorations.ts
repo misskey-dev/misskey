@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const decorations = await this.avatarDecorationService.getAll(true);
 			const allRoles = await this.roleService.getRoles();
 
-			return decorations.map(decoration => ({
+			return decorations.filter(x => x.host === null).map(decoration => ({
 				id: decoration.id,
 				name: decoration.name,
 				description: decoration.description,

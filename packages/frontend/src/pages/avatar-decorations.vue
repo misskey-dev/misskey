@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
-		<div class="_gaps">
+		<div v-if="tab === 'avatarDecorations'" class="_gaps">
 			<MkFolder v-for="avatarDecoration in avatarDecorations" :key="avatarDecoration.id ?? avatarDecoration._id" :defaultOpen="avatarDecoration.id == null">
 				<template #label>{{ avatarDecoration.name }}</template>
 				<template #caption>{{ avatarDecoration.description }}</template>
@@ -22,12 +22,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="avatarDecoration.url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkSwitch v-model="avatarDecoration.localOnly">
+						<template #label>{{ i18n.ts.localOnly }}</template>
+					</MkSwitch>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(avatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 						<MkButton v-if="avatarDecoration.id != null" class="button" inline danger @click="del(avatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					</div>
 				</div>
 			</MkFolder>
+		</div>
+		<div v-else-if="tab === 'avatarDecorationsAcceptHosts'">
+			<MkTextarea v-model="acceptHosts">
+				<span>{{ i18n.ts.avatarDecorationsAcceptInstance }}</span>
+				<template #caption>{{ i18n.ts.avatarDecorationsAcceptInstancesDescription }}</template>
+			</MkTextarea>
+			<MkButton primary @click="acceptSave"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -47,6 +57,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 let avatarDecorations: any[] = $ref([]);
+let tab = $ref('avatarDecorations');
+let acceptHosts: string = $ref('');
 
 function add() {
 	avatarDecorations.unshift({
@@ -78,9 +90,18 @@ async function save(avatarDecoration) {
 	}
 }
 
+async function acceptSave() {
+	await os.apiWithDialog('admin/update-meta', {
+		avatarDecorationAcceptHosts: acceptHosts.split('\n') || [],
+	});
+}
+
 function load() {
 	os.api('admin/avatar-decorations/list').then(_avatarDecorations => {
 		avatarDecorations = _avatarDecorations;
+	});
+	os.api('admin/meta').then(_meta => {
+		acceptHosts = _meta.avatarDecorationAcceptHosts.join('\n');
 	});
 }
 
@@ -93,7 +114,15 @@ const headerActions = $computed(() => [{
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	key: 'avatarDecorations',
+	title: i18n.ts.avatarDecorations,
+	icon: 'ti ti-sparkles',
+}, {
+	key: 'avatarDecorationsAcceptHosts',
+	title: i18n.ts.avatarDecorationsAcceptInstance,
+	icon: 'ti ti-thumb-up-filled',
+}]);
 
 definePageMetadata({
 	title: i18n.ts.avatarDecorations,

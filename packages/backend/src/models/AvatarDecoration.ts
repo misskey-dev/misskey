@@ -17,6 +17,10 @@ export class MiAvatarDecoration {
 	public updatedAt: Date | null;
 
 	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public host: string;
+	@Column('varchar', {
 		length: 1024,
 	})
 	public url: string;
@@ -30,6 +34,11 @@ export class MiAvatarDecoration {
 		length: 2048,
 	})
 	public description: string;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public localOnly: boolean;
 
 	// TODO: 定期ジョブで存在しなくなったロールIDを除去するようにする
 	@Column('varchar', {

@@ -25,6 +25,7 @@ export const paramDef = {
 		id: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1 },
 		description: { type: 'string' },
+		localOnly: { type: 'boolean' },
 		url: { type: 'string', minLength: 1 },
 		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
 			type: 'string',
@@ -43,6 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name,
 				description: ps.description,
 				url: ps.url,
+				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
 			}, me);
 		});

@@ -220,6 +220,8 @@ export interface Locale {
     "blockedInstancesDescription": string;
     "silencedInstances": string;
     "silencedInstancesDescription": string;
+    "avatarDecorationsAcceptInstance": string;
+    "avatarDecorationsAcceptInstancesDescription": string;
     "muteAndBlock": string;
     "mutedUsers": string;
     "blockedUsers": string;

@@ -396,6 +396,7 @@ export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 export type AdminInstanceMetadata = DetailedInstanceMetadata & {
 	// TODO: There are more fields.
 	blockedHosts: string[];
+	avatarDecorationAcceptHosts: string[];
 	silencedHosts: string[];
 	app192IconUrl: string | null;
 	app512IconUrl: string | null;

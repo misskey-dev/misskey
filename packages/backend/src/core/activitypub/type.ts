@@ -179,6 +179,10 @@ export interface IActor extends IObject {
 	endpoints?: {
 		sharedInbox?: string;
 	};
+	AvatarDecorations?:{
+	angle: number;
+	flipH: boolean;
+	}[];
 	'vcard:bday'?: string;
 	'vcard:Address'?: string;
 }
@@ -229,9 +233,17 @@ export interface IApEmoji extends IObject {
 	name: string;
 	updated: string;
 }
+export interface IApAvatarDecoration extends IObject {
+	type: 'AvatarDecoration';
+	name: string;
+	updated: string;
+}
 
 export const isEmoji = (object: IObject): object is IApEmoji =>
 	getApType(object) === 'Emoji' && !Array.isArray(object.icon) && object.icon.url != null;
+
+export const isAvatarDecoration = (object: IObject): object is IApEmoji =>
+	getApType(object) === 'AvatarDecoration' && !Array.isArray(object.icon) && object.icon.url != null;
 
 export interface IKey extends IObject {
 	type: 'Key';

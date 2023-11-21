@@ -313,6 +313,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const allRoles = await this.roleService.getRoles();
 				const decorationIds = decorations
 					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
+					.filter(d => d.host === null)
 					.map(d => d.id);
 
 				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
