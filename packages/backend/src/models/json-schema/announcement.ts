@@ -42,11 +42,11 @@ export const packedAnnouncementSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
-		forYou: {
+		needConfirmationToRead: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		needConfirmationToRead: {
+		forYou: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
