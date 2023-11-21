@@ -13,8 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-for="file in files" :key="file.note.id + file.file.id">
 				<div v-if="file.file.isSensitive && !showingFiles.includes(file.file.id)" :class="$style.sensitive" @click="showingFiles.push(file.file.id)">
 					<div>
-						<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
-						<div>{{ i18n.ts.clickToShow }}</div>
+						<b style="display: block;"><i class="ti ti-eye-exclamation"/> {{ i18n.ts.sensitive }}</b>
+						<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 					</div>
 				</div>
 				<MkA v-else :class="$style.img" :to="notePage(file.note)">
@@ -100,7 +100,15 @@ onMounted(() => {
 }
 
 .sensitive {
-	display: grid;
-  place-items: center;
+	width: 100%;
+	height: 128px;
+	display: flex;
+	font-size: 0.8em;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 6px;
 }
 </style>
