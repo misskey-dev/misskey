@@ -663,7 +663,7 @@ importers:
         version: 5.0.5(rollup@4.4.1)
       '@rollup/plugin-typescript':
         specifier: 11.1.5
-        version: 11.1.5(rollup@4.4.1)(typescript@5.2.2)
+        version: 11.1.5(rollup@4.4.1)(typescript@5.3.2)
       '@rollup/pluginutils':
         specifier: 5.0.5
         version: 5.0.5(rollup@4.4.1)
@@ -5261,7 +5261,7 @@ packages:
       rollup: 4.4.1
     dev: false
 
-  /@rollup/plugin-typescript@11.1.5(rollup@4.4.1)(typescript@5.2.2):
+  /@rollup/plugin-typescript@11.1.5(rollup@4.4.1)(typescript@5.3.2):
     resolution: {integrity: sha512-rnMHrGBB0IUEv69Q8/JGRD/n4/n6b3nfpufUu26axhUcboUzv/twfZU8fIBbTOphRAe0v8EyxzeDpKXqGHfyDA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -5277,7 +5277,7 @@ packages:
       '@rollup/pluginutils': 5.0.5(rollup@4.4.1)
       resolve: 1.22.3
       rollup: 4.4.1
-      typescript: 5.2.2
+      typescript: 5.3.2
     dev: false
 
   /@rollup/pluginutils@5.0.5(rollup@4.4.1):
