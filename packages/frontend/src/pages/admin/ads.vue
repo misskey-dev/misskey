@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XHeader :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 	<MkSpacer :contentMax="900">
-		<MkSelect v-model="type" :class="$style.input" @update:modelValue="onChangePublishing">
+		<MkSelect v-model="filterType" :class="$style.input" @update:modelValue="filterItems">
 			<template #label>{{ i18n.ts.state }}</template>
-			<option value="null">{{ i18n.ts.all }}</option>
-			<option value="true">{{ i18n.ts.publishing }}</option>
-			<option value="false">{{ i18n.ts.expired }}</option>
+			<option value="all">{{ i18n.ts.all }}</option>
+			<option value="publishing">{{ i18n.ts.publishing }}</option>
+			<option value="expired">{{ i18n.ts.expired }}</option>
 		</MkSelect>
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
@@ -104,8 +104,8 @@ let ads: any[] = $ref([]);
 const localTime = new Date();
 const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
 const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, i18n.ts._weekday.tuesday, i18n.ts._weekday.wednesday, i18n.ts._weekday.thursday, i18n.ts._weekday.friday, i18n.ts._weekday.saturday];
+const filterType = ref('all');
 let publishing: boolean | null = null;
-let type = ref('null');
 
 os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 	if (adsResponse != null) {
@@ -123,9 +123,15 @@ os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 	}
 });
 
-const onChangePublishing = (v) => {
-	console.log(v);
-	publishing = v === 'true' ? true : v === 'false' ? false : null;
+const filterItems = (v) => {
+	if (v === 'publishing') {
+		publishing = true;
+	} else if (v === 'expired') {
+		publishing = false;
+	} else {
+		publishing = null;
+	}
+
 	refresh();
 };
 
