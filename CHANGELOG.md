@@ -5,6 +5,7 @@
 -
 
 ### Client
+- Fix: ページ一覧ページの表示がモバイル環境において崩れているのを修正
 - Fix: MFMでルビの中のテキストがnyaizeされない問題を修正
 
 ### Server
@@ -12,12 +13,28 @@
 
 -->
 
+## 2023.x.x (unreleased)
+
+### General
+- Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
+- Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
+
+### Client
+- fix: 「設定のバックアップ」で一部の項目がバックアップに含まれていなかった問題を修正
+- Fix: ウィジェットのジョブキューにて音声の発音方法変更に追従できていなかったのを修正 #12367
+
+### Server
+- Fix: 時間経過により無効化されたアンテナを再有効化したとき、サーバ再起動までその状況が反映されないのを修正 #12303
+- Fix: ロールタイムラインが保存されない問題を修正
+- Fix: api.jsonの生成ロジックを改善 #12402
+
 ## 2023.11.1
 
 ### General
 - Feat: 管理者がコントロールパネルからメールアドレスの照会を行えるようになりました
 - Enhance: ローカリゼーションの更新
 - Enhance: 依存関係の更新
+- Enhance: json-schema(OpenAPIの戻り値として使用されるスキーマ定義)を出来る限り最新化 #12311
 
 ### Client
 - Enhance: MFMでルビを振れるように
