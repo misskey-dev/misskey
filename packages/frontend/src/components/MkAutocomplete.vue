@@ -45,12 +45,12 @@ import contains from '@/scripts/contains.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { MFM_TAGS } from '@/scripts/mfm-tags.js';
 import { defaultStore } from '@/store.js';
 import { emojilist, getEmojiName } from '@/scripts/emojilist.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
+import { MFM_TAGS } from '@/const.js';
 
 type EmojiDef = {
 	emoji: string;

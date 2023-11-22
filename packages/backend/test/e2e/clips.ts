@@ -720,7 +720,7 @@ describe('クリップ', () => {
 		test('を追加できる。', async () => {
 			await addNote({ clipId: aliceClip.id, noteId: aliceNote.id });
 			const res = await show({ clipId: aliceClip.id });
-			assert.strictEqual(res.lastClippedAt, new Date(res.lastClippedAt ?? '').toISOString());
+			assert.strictEqual(res.lastClippedAt, res.lastClippedAt ? new Date(res.lastClippedAt).toISOString() : null);
 			assert.deepStrictEqual((await notes({ clipId: aliceClip.id })).map(x => x.id), [aliceNote.id]);
 
 			// 他人の非公開ノートも突っ込める

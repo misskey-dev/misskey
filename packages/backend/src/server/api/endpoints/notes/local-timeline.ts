@@ -16,6 +16,8 @@ import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { MiLocalUser } from '@/models/User.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -69,6 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private funoutTimelineService: FunoutTimelineService,
 		private queryService: QueryService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -77,6 +80,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
 			if (!policies.ltlAvailable) {
 				throw new ApiError(meta.errors.ltlDisabled);
+			}
+
+			const serverSettings = await this.metaService.fetch();
+
+			if (!serverSettings.enableFanoutTimeline) {
+				return await this.getFromDb({
+					untilId,
+					sinceId,
+					limit: ps.limit,
+					withFiles: ps.withFiles,
+					withReplies: ps.withReplies,
+				}, me);
 			}
 
 			const [
@@ -104,6 +119,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			noteIds = noteIds.slice(0, ps.limit);
 
+			let redisTimeline: MiNote[] = [];
+
 			if (noteIds.length > 0) {
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -114,13 +131,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('renote.user', 'renoteUser')
 					.leftJoinAndSelect('note.channel', 'channel');
 
-				let timeline = await query.getMany();
+				redisTimeline = await query.getMany();
 
-				timeline = timeline.filter(note => {
+				redisTimeline = redisTimeline.filter(note => {
 					if (me && (note.userId === me.id)) {
 						return true;
 					}
-					if (!ps.withReplies && note.replyId && (me == null || note.replyUserId !== me.id)) return false;
+					if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
 					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 					if (note.renoteId) {
@@ -133,58 +150,78 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					return true;
 				});
 
-				// TODO: フィルタした結果件数が足りなかった場合の対応
+				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+			}
 
-				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-
+			if (redisTimeline.length > 0) {
 				process.nextTick(() => {
 					if (me) {
 						this.activeUsersChart.read(me);
 					}
 				});
 
-				return await this.noteEntityService.packMany(timeline, me);
-			} else { // fallback to db
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-					ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-					.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser');
-
-				this.queryService.generateVisibilityQuery(query, me);
-				if (me) this.queryService.generateMutedUserQuery(query, me);
-				if (me) this.queryService.generateBlockedUserQuery(query, me);
-				if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-
-				if (ps.withFiles) {
-					query.andWhere('note.fileIds != \'{}\'');
+				return await this.noteEntityService.packMany(redisTimeline, me);
+			} else {
+				if (serverSettings.enableFanoutTimelineDbFallback) { // fallback to db
+					return await this.getFromDb({
+						untilId,
+						sinceId,
+						limit: ps.limit,
+						withFiles: ps.withFiles,
+						withReplies: ps.withReplies,
+					}, me);
+				} else {
+					return [];
 				}
-
-				if (!ps.withReplies) {
-					query.andWhere(new Brackets(qb => {
-						qb
-							.where('note.replyId IS NULL') // 返信ではない
-							.orWhere(new Brackets(qb => {
-								qb // 返信だけど投稿者自身への返信
-									.where('note.replyId IS NOT NULL')
-									.andWhere('note.replyUserId = note.userId');
-							}));
-					}));
-				}
-
-				const timeline = await query.limit(ps.limit).getMany();
-
-				process.nextTick(() => {
-					if (me) {
-						this.activeUsersChart.read(me);
-					}
-				});
-
-				return await this.noteEntityService.packMany(timeline, me);
 			}
 		});
+	}
+
+	private async getFromDb(ps: {
+		sinceId: string | null,
+		untilId: string | null,
+		limit: number,
+		withFiles: boolean,
+		withReplies: boolean,
+	}, me: MiLocalUser | null) {
+		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId)
+			.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.channelId IS NULL)')
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
+
+		this.queryService.generateVisibilityQuery(query, me);
+		if (me) this.queryService.generateMutedUserQuery(query, me);
+		if (me) this.queryService.generateBlockedUserQuery(query, me);
+		if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+		if (ps.withFiles) {
+			query.andWhere('note.fileIds != \'{}\'');
+		}
+
+		if (!ps.withReplies) {
+			query.andWhere(new Brackets(qb => {
+				qb
+					.where('note.replyId IS NULL') // 返信ではない
+					.orWhere(new Brackets(qb => {
+						qb // 返信だけど投稿者自身への返信
+							.where('note.replyId IS NOT NULL')
+							.andWhere('note.replyUserId = note.userId');
+					}));
+			}));
+		}
+
+		const timeline = await query.limit(ps.limit).getMany();
+
+		process.nextTick(() => {
+			if (me) {
+				this.activeUsersChart.read(me);
+			}
+		});
+
+		return await this.noteEntityService.packMany(timeline, me);
 	}
 }

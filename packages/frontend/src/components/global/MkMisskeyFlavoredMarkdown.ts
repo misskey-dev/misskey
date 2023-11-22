@@ -7,6 +7,7 @@ import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
+import MkTime from '@/components/global/MkTime.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
@@ -17,7 +18,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
-import { nyaize } from '@/scripts/nyaize.js';
+import { nyaize as doNyaize } from '@/scripts/nyaize.js';
 
 const QUOTE_STYLE = `
 display: block;
@@ -28,21 +29,29 @@ border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
 
-export default function(props: {
+type MfmProps = {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
-	i?: Misskey.entities.UserLite;
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-}) {
-	const isNote = props.isNote !== undefined ? props.isNote : true;
+	nyaize: boolean | 'respect';
+	parsedNodes?: mfm.MfmNode[] | null;
+	enableEmojiMenu?: boolean;
+	enableEmojiMenuReaction?: boolean;
+};
 
+// eslint-disable-next-line import/no-default-export
+export default function(props: MfmProps) {
+	const isNote = props.isNote ?? true;
+	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
+
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
-	const ast = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
+	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
 	const validTime = (t: string | null | undefined) => {
 		if (t == null) return null;
@@ -55,13 +64,14 @@ export default function(props: {
 	 * Gen Vue Elements from MFM AST
 	 * @param ast MFM AST
 	 * @param scale How times large the text is
+	 * @param disableNyaize Whether nyaize is disabled or not
 	 */
 	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
-				if (!disableNyaize && props.author?.isCat) {
-					text = nyaize(text);
+				if (!disableNyaize && shouldNyaize) {
+					text = doNyaize(text);
 				}
 
 				if (!props.plain) {
@@ -229,6 +239,34 @@ export default function(props: {
 						style = `background-color: #${color};`;
 						break;
 					}
+					case 'ruby': {
+						if (token.children.length === 1) {
+							const child = token.children[0];
+							const text = child.type === 'text' ? child.props.text : '';
+							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
+						} else {
+							const rt = token.children.at(-1)!;
+							const text = rt.type === 'text' ? rt.props.text : '';
+							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
+						}
+					}
+					case 'unixtime': {
+						const child = token.children[0];
+						const unixtime = parseInt(child.type === 'text' ? child.props.text : '');
+						return h('span', {
+							style: 'display: inline-block; font-size: 90%; border: solid 1px var(--divider); border-radius: 999px; padding: 4px 10px 4px 6px;',
+						}, [
+							h('i', {
+								class: 'ti ti-clock',
+								style: 'margin-right: 0.25em;',
+							}),
+							h(MkTime, {
+								key: Math.random(),
+								time: unixtime * 1000,
+								mode: 'detail',
+							}),
+						]);
+					}
 				}
 				if (style == null) {
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
@@ -320,6 +358,8 @@ export default function(props: {
 						normal: props.plain,
 						host: null,
 						useOriginalSize: scale >= 2.5,
+						menu: props.enableEmojiMenu,
+						menuReaction: props.enableEmojiMenuReaction,
 					})];
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -343,6 +383,8 @@ export default function(props: {
 				return [h(MkEmoji, {
 					key: Math.random(),
 					emoji: token.props.emoji,
+					menu: props.enableEmojiMenu,
+					menuReaction: props.enableEmojiMenuReaction,
 				})];
 			}
 
@@ -377,5 +419,5 @@ export default function(props: {
 	return h('span', {
 		// https://codeday.me/jp/qa/20190424/690106.html
 		style: props.nowrap ? 'white-space: pre; word-wrap: normal; overflow: hidden; text-overflow: ellipsis;' : 'white-space: pre-wrap;',
-	}, genEl(ast, props.rootScale ?? 1));
+	}, genEl(rootAst, props.rootScale ?? 1));
 }
