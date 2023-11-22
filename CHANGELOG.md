@@ -19,6 +19,7 @@
 - Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
 
 ### Client
+- Enhance: 絵文字のオートコンプリート機能強化 #12364
 - fix: 「設定のバックアップ」で一部の項目がバックアップに含まれていなかった問題を修正
 - Fix: ウィジェットのジョブキューにて音声の発音方法変更に追従できていなかったのを修正 #12367
 
