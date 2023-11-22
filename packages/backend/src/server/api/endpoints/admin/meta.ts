@@ -267,6 +267,14 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			enableVerifymailApi: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			verifymailAuthKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableChartsForRemoteUser: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -429,6 +437,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				enableVerifymailApi: instance.enableVerifymailApi,
+				verifymailAuthKey: instance.verifymailAuthKey,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				enableServerMachineStats: instance.enableServerMachineStats,

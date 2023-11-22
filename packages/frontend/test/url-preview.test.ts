@@ -150,7 +150,7 @@ describe('MkUrlPreview', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
-		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
 	});
 
 	test('Loading a post in iframe', async () => {
@@ -159,6 +159,6 @@ describe('MkUrlPreview', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
-		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
 	});
 });
