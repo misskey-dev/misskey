@@ -31,6 +31,13 @@ export function genOpenapiSpec(config: Config) {
 
 		components: {
 			schemas: schemas,
+
+			securitySchemes: {
+				bearerAuth: {
+					type: 'http',
+					scheme: 'bearer',
+				},
+			},
 		},
 	};
 
@@ -61,21 +68,6 @@ export function genOpenapiSpec(config: Config) {
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
 		const schema = { ...endpoint.params };
 
-		if (endpoint.meta.requireCredential) {
-			// https://swagger.io/docs/specification/authentication/api-keys/
-			// ↑曰く、「can be "header", "query" or "cookie"」とのこと。
-			// Misskeyはbodyに埋め込む形にしているので、各エンドポイントのパラメータに直接APIキー用のフィールドを追加する必要がある
-			schema.properties = {
-				'i': {
-					type: 'string',
-					nullable: false,
-					description: 'API Key',
-				},
-				...schema.properties,
-			};
-			schema.required = ['i', ...schema.required ?? []];
-		}
-
 		if (endpoint.meta.requireFile) {
 			schema.properties = {
 				...schema.properties,
@@ -103,6 +95,11 @@ export function genOpenapiSpec(config: Config) {
 			},
 			...(endpoint.meta.tags ? {
 				tags: [endpoint.meta.tags[0]],
+			} : {}),
+			...(endpoint.meta.requireCredential ? {
+				security: [{
+					bearerAuth: [],
+				}],
 			} : {}),
 			requestBody: {
 				required: true,
