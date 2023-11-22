@@ -241,6 +241,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
 
+			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
+				// TODO: ちゃんと数える
+				const length = JSON.stringify(ps.mutedWords).length;
+				if (length > limit) {
+					throw new ApiError(meta.errors.tooManyMutedWords);
+				}
+			}
+
 			function validateMuteWordRegex(mutedWords: (string[] | string)[]) {
 				for (const mutedWord of mutedWords) {
 					if (typeof mutedWord !== "string") continue;
@@ -257,19 +265,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.mutedWords !== undefined) {
-				// TODO: ちゃんと数える
-				const length = JSON.stringify(ps.mutedWords).length;
-				if (length > (await this.roleService.getUserPolicies(user.id)).wordMuteLimit) {
-					throw new ApiError(meta.errors.tooManyMutedWords);
-				}
-
-				// validate regular expression syntax
+				checkMuteWordCount(ps.mutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
 				validateMuteWordRegex(ps.mutedWords);
 
 				profileUpdates.mutedWords = ps.mutedWords;
 				profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 			}
 			if (ps.hardMutedWords !== undefined) {
+				checkMuteWordCount(ps.hardMutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
 				validateMuteWordRegex(ps.hardMutedWords);
 				profileUpdates.hardMutedWords = ps.hardMutedWords;
 			}
