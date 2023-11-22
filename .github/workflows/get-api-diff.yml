@@ -37,6 +37,8 @@ jobs:
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .config/example.yml .config/default.yml
     - name: Build
       run: pnpm build
     - name: Generate API JSON
@@ -78,6 +80,8 @@ jobs:
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .config/example.yml .config/default.yml
     - name: Build
       run: pnpm build
     - name: Generate API JSON
