@@ -146,13 +146,6 @@ export const paramDef = {
 			maxItems: 16,
 			items: { type: 'string', format: 'misskey:id' },
 		},
-		mediaIds: {
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
 		poll: {
 			type: 'object',
 			nullable: true,
@@ -176,7 +169,6 @@ export const paramDef = {
 		{ required: ['text'] },
 		{ required: ['renoteId'] },
 		{ required: ['fileIds'] },
-		{ required: ['mediaIds'] },
 		{ required: ['poll'] },
 	],
 } as const;
