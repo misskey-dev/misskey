@@ -6,6 +6,9 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/backend/**
+      - .github/workflows/get-api-diff.yml
 
 jobs:
   get-from-misskey:
