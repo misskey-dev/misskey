@@ -295,7 +295,7 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 		const queryChars = [...query];
 		const hitEmojis = new Map<string, EmojiScore>();
 
-		emojiDb.forEach(x => {
+		for (const x of emojiDb) {
 			// クエリ文字列の1文字単位で絵文字名にヒットするかを見る
 			// ただし、過剰に検出されるのを防ぐためクエリ文字列に登場する順番で絵文字名を走査する
 
@@ -314,7 +314,7 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 			if (queryCharHitCount > 2) {
 				hitEmojis.set(x.name, { emoji: x, score: queryCharHitCount });
 			}
-		});
+		}
 
 		// ヒットしたものを全部追加すると雑多になるので、先頭の6件程度だけにしておく（6件＝オートコンプリートのポップアップのサイズ分）
 		[...hitEmojis.values()]
