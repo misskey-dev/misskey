@@ -85,11 +85,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					this.cacheService.userMutingsCache.fetch(me.id),
 				]) : [new Set<string>()];
 
-				const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
-					this.funoutTimelineService.get(ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`, untilId, sinceId),
-					ps.withReplies ? this.funoutTimelineService.get(`userTimelineWithReplies:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
-					ps.withChannelNotes ? this.funoutTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
-				]);
+				const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = ps.withFiles
+					? await Promise.all([
+						this.funoutTimelineService.get(`userTimelineWithFiles:${ps.userId}`, untilId, sinceId),
+						ps.withReplies ? this.funoutTimelineService.get(`userTimelineWithRepliesWithFiles:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+						ps.withChannelNotes ? this.funoutTimelineService.get(`userTimelineWithChannelWithFiles:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+					])
+					: await Promise.all([
+						this.funoutTimelineService.get(`userTimeline:${ps.userId}`, untilId, sinceId),
+						ps.withReplies ? this.funoutTimelineService.get(`userTimelineWithReplies:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+						ps.withChannelNotes ? this.funoutTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+					]);
 
 				let noteIds = Array.from(new Set([
 					...noteIdsRes,

@@ -890,6 +890,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.funoutTimelineService.push(`channelTimeline:${note.channelId}`, note.id, this.config.perChannelMaxNoteCacheCount, r);
 
 			this.funoutTimelineService.push(`userTimelineWithChannel:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
+			if (note.fileIds.length > 0) {
+				this.funoutTimelineService.push(`userTimelineWithChannelWithFiles:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax / 2 : meta.perRemoteUserUserTimelineCacheMax / 2, r);
+			}
 
 			const channelFollowings = await this.channelFollowingsRepository.find({
 				where: {
@@ -931,6 +934,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// 自分自身以外への返信
 			if (note.replyId && note.replyUserId !== note.userId) {
 				this.funoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax : meta.perRemoteUserUserTimelineCacheMax, r);
+				if (note.fileIds.length > 0) {
+					this.funoutTimelineService.push(`userTimelineWithRepliesWithFiles:${user.id}`, note.id, note.userHost == null ? meta.perLocalUserUserTimelineCacheMax / 2 : meta.perRemoteUserUserTimelineCacheMax / 2, r);
+				}
 
 				if (note.visibility === 'public' && note.userHost == null) {
 					this.funoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
