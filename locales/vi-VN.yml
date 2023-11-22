@@ -1265,7 +1265,7 @@ _achievements:
       title: "Chức mừng năm mới"
       description: "Đăng nhập vào Tết Nguyên đàn dương lịch"
       flavor: "Chúc bạn năm mới AN KHANG THỊNH VƯỢNG, VẠN SỰ NHƯ Ý!!"
-    _cookieClicked:
+    _puddingClicked:
       flavor: "Bạn nhầm phầm mềm chứ?"
 _role:
   assignTarget: "Phân công"

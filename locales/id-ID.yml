@@ -1420,7 +1420,7 @@ _achievements:
       title: "Selamat Tahun Baru!"
       description: "Login di hari pertama tahun baru"
       flavor: "Untuk tahun baru yang berkah bagi instansi ini"
-    _cookieClicked:
+    _puddingClicked:
       title: "Permainan dimana kamu mengeklik kue"
       description: "Mengeklik kue"
       flavor: "Tunggu, apakah kamu sedang berada di website yang benar?"

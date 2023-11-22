@@ -1513,9 +1513,9 @@ _achievements:
       title: "Happy New Year!"
       description: "Logged in on the first day of the year"
       flavor: "To another great year on this instance"
-    _cookieClicked:
-      title: "A game in which you click cookies"
-      description: "Clicked the cookie"
+    _puddingClicked:
+      title: "A game in which you click puddings"
+      description: "Clicked the pudding"
       flavor: "Wait, are you on the correct website?"
     _brainDiver:
       title: "Brain Diver"

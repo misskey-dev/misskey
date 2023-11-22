@@ -1524,9 +1524,9 @@ _achievements:
       title: "あけましておめでとうございます"
       description: "元日にログインした"
       flavor: "今年も弊サーバーをよろしくお願いします"
-    _cookieClicked:
-      title: "クッキーをクリックするゲーム"
-      description: "クッキーをクリックした"
+    _puddingClicked:
+      title: "プリンをクリックするゲーム"
+      description: "プリンをクリックした"
       flavor: "ソフト間違ってない？"
     _brainDiver:
       title: "Brain Diver"

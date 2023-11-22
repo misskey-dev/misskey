@@ -1608,7 +1608,7 @@ export interface Locale {
                 "description": string;
                 "flavor": string;
             };
-            "_cookieClicked": {
+            "_puddingClicked": {
                 "title": string;
                 "description": string;
                 "flavor": string;

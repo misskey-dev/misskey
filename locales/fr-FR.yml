@@ -1307,7 +1307,7 @@ _achievements:
       description: "Vous vous êtes connecté à la date de votre anniversaire"
     _loggedInOnNewYearsDay:
       title: "Bonne année !"
-    _cookieClicked:
+    _puddingClicked:
       flavor: "Attendez une minute, vous êtes sur le mauvais site web ?"
     _brainDiver:
       flavor: "Misskey-Misskey La-Tu-Ma"

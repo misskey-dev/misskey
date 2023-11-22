@@ -17,7 +17,7 @@ import MkClickerGame from '@/components/MkClickerGame.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 definePageMetadata({
-	title: '🍪👈',
+	title: '🍮👈',
 	icon: 'ti ti-cookie',
 });
 </script>

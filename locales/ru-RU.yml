@@ -1315,7 +1315,7 @@ _achievements:
       title: "С Новым годом!"
       description: "Вход на сайт в первый день года"
       flavor: "Желаем отличного года на нашем сайте!"
-    _cookieClicked:
+    _puddingClicked:
       title: "Игра, в которой вы щёлкаете по печенькам"
       description: "Нажато печенье"
       flavor: "Стоп, вы вообще на том сайте-то?"

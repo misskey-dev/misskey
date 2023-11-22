@@ -1512,9 +1512,9 @@ _achievements:
       title: "Buon anno nuovo!"
       description: "Hai usato effettuato l'accesso il giorno di capodanno"
       flavor: "Anche quest'anno, grazie per il tuo continuo supporto a questa istanza"
-    _cookieClicked:
+    _puddingClicked:
       title: "Clicca il biscotto"
-      description: "Hai giocato a cliccare il cookie"
+      description: "Hai giocato a cliccare il pudding"
       flavor: "È il sito giusto?"
     _brainDiver:
       title: "Brain Diver"

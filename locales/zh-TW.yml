@@ -1514,7 +1514,7 @@ _achievements:
       title: "新年快樂"
       description: "在元旦當天登入了"
       flavor: "今年也請您多多指教！"
-    _cookieClicked:
+    _puddingClicked:
       title: "點擊餅乾的遊戲"
       description: "點擊了餅乾"
       flavor: "是不是軟體有問題？"
