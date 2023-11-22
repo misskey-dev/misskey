@@ -85,6 +85,8 @@ export function genOpenapiSpec(config: Config) {
 			schema.required = undefined;
 		}
 
+		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1);
+
 		const info = {
 			operationId: endpoint.name,
 			summary: endpoint.name,
@@ -101,14 +103,16 @@ export function genOpenapiSpec(config: Config) {
 					bearerAuth: [],
 				}],
 			} : {}),
-			requestBody: {
-				required: true,
-				content: {
-					[requestType]: {
-						schema,
+			...(hasBody ? {
+				requestBody: {
+					required: true,
+					content: {
+						[requestType]: {
+							schema,
+						},
 					},
 				},
-			},
+			} : {}),
 			responses: {
 				...(endpoint.meta.res ? {
 					'200': {
