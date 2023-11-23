@@ -97,17 +97,17 @@ export function openInstanceMenu(ev: MouseEvent) {
 		action: () => {
 			window.open(instance.privacyPolicyUrl, '_blank');
 		},
+	} : undefined, true ? {
+		text: i18n.ts.toServiceArt,
+		icon: 'ti ti-help-circle',
+		action: () => {
+			window.open('https://service.misskey.art', '_blank');
+		},
 	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : null, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
 			window.open('https://misskey-hub.net/help.html', '_blank');
-		},
-	}, {
-		text: i18n.ts.toServiceArt,
-		icon: 'ti ti-help-circle',
-		action: () => {
-			window.open('https://service.misskey.art', '_blank');
 		},
 	}, ($i) ? {
 		text: i18n.ts._initialTutorial.launchTutorial,
