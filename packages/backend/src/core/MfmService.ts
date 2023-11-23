@@ -250,6 +250,12 @@ export class MfmService {
 			}
 		}
 
+		function fnDefault(node: mfm.MfmFn) {
+			const el = doc.createElement('i');
+			appendChildren(node.children, el);
+			return el;
+		}
+
 		const handlers: { [K in mfm.MfmNode['type']]: (node: mfm.NodeType<K>) => any } = {
 			bold: (node) => {
 				const el = doc.createElement('b');
@@ -278,12 +284,16 @@ export class MfmService {
 			fn: (node) => {
 				switch (node.props.name) {
 					case 'unixtime': {
-						const text = node.children[0]!.type === 'text' ? node.children[0].props.text : '';
-						const date = new Date(parseInt(text, 10) * 1000);
-						const el = doc.createElement('time');
-						el.setAttribute('datetime', date.toISOString());
-						el.textContent = date.toISOString();
-						return el;
+						const text = node.children[0].type === 'text' ? node.children[0].props.text : '';
+						try {
+							const date = new Date(parseInt(text, 10) * 1000);
+							const el = doc.createElement('time');
+							el.setAttribute('datetime', date.toISOString());
+							el.textContent = date.toISOString();
+							return el;
+						} catch (err) {
+							return fnDefault(node);
+						}
 					}
 
 					case 'ruby': {
@@ -309,9 +319,7 @@ export class MfmService {
 							const rt = node.children.at(-1);
 
 							if (!rt) {
-								const el = doc.createElement('i');
-								appendChildren(node.children, el);
-								return el;
+								return fnDefault(node);
 							}
 
 							const text = rt.type === 'text' ? rt.props.text : '';
@@ -334,9 +342,7 @@ export class MfmService {
 					}
 
 					default: {
-						const el = doc.createElement('i');
-						appendChildren(node.children, el);
-						return el;
+						return fnDefault(node);
 					}
 				}
 			},
