@@ -1420,7 +1420,7 @@ _achievements:
       title: "¡Feliz Año Nuevo!"
       description: "En linea en año nuevo"
       flavor: "¡Gracias por tu apoyo a la instancia durante todo este año!"
-    _cookieClicked:
+    _puddingClicked:
       title: "Un juego para picarle a una galleta"
       description: "Picaste una galleta"
       flavor: "¿Está mal este juego?"

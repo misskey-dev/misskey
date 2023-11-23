@@ -79,7 +79,7 @@ export const ACHIEVEMENT_TYPES = [
 	'clickedClickHere',
 	'justPlainLucky',
 	'setNameToSyuilo',
-	'cookieClicked',
+	'puddingClicked',
 	'brainDiver',
 	'smashTestNotificationButton',
 	'tutorialCompleted',
@@ -446,7 +446,7 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(255 144 144), rgb(255 232 168))',
 		frame: 'silver',
 	},
-	'cookieClicked': {
+	'puddingClicked': {
 		img: '/fluent-emoji/1f36a.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
