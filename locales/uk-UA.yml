@@ -1122,7 +1122,7 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "З Новим роком!"
       description: "Увійшли в перший день року"
-    _cookieClicked:
+    _puddingClicked:
       flavor: "Чекайте, це вірний сайт?"
     _brainDiver:
       title: "Brain Diver"

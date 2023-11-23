@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<div v-if="game.ready" :class="$style.game">
 		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-		<div :class="$style.count" class=""><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(cookies) }}</div>
+		<div :class="$style.count" class=""><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(puddings) }}</div>
 		<button v-click-anime class="_button" @click="onClick">
-			<img src="/client-assets/cookie.png" :class="$style.img">
+			<img src="/client-assets/pudding.png" :class="$style.img">
 		</button>
 	</div>
 	<div v-else>
@@ -28,29 +28,29 @@ import number from '@/filters/number.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 
 const saveData = game.saveData;
-const cookies = computed(() => saveData.value?.cookies);
+const puddings = computed(() => saveData.value?.puddings);
 let cps = $ref(0);
-let prevCookies = $ref(0);
+let prevPuddings = $ref(0);
 
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
 	const y = ev.clientY;
 	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
 
-	saveData.value!.cookies++;
-	saveData.value!.totalCookies++;
-	saveData.value!.totalHandmadeCookies++;
+	saveData.value!.puddings++;
+	saveData.value!.totalPuddings++;
+	saveData.value!.totalHandmadePuddings++;
 	saveData.value!.clicked++;
 
-	if (cookies.value === 1) {
-		claimAchievement('cookieClicked');
+	if (puddings.value === 1) {
+		claimAchievement('puddingClicked');
 	}
 }
 
 useInterval(() => {
-	const diff = saveData.value!.cookies - prevCookies;
+	const diff = saveData.value!.puddings - prevPuddings;
 	cps = diff;
-	prevCookies = saveData.value!.cookies;
+	prevPuddings = saveData.value!.puddings;
 }, 1000, {
 	immediate: false,
 	afterMounted: true,
@@ -63,7 +63,7 @@ useInterval(game.save, 1000 * 5, {
 
 onMounted(async () => {
 	await game.load();
-	prevCookies = saveData.value!.cookies;
+	prevPuddings = saveData.value!.puddings;
 });
 
 onUnmounted(() => {

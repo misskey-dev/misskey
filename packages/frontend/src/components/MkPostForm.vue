@@ -751,7 +751,11 @@ async function post(ev?: MouseEvent) {
 	// plugin
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
-			postData = await interruptor.handler(deepClone(postData));
+			try {
+				postData = await interruptor.handler(deepClone(postData));
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	}
 
@@ -1069,6 +1073,7 @@ defineExpose({
 
 .preview {
 	padding: 16px 20px 0 20px;
+	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
 }

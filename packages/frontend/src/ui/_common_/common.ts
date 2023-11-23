@@ -25,7 +25,7 @@ function toolsMenuItems(): MenuItem[] {
 	}, {
 		type: 'link',
 		to: '/clicker',
-		text: '🍪👈',
+		text: '🍮👈',
 		icon: 'ti ti-cookie',
 	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',

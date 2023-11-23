@@ -532,7 +532,7 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "Godt nytt år"
       description: "Du logget inn på årets første dag"
-    _cookieClicked:
+    _puddingClicked:
       description: "Du klikket på kjeksen"
       flavor: "Er du på riktig nettsted?"
     _brainDiver:

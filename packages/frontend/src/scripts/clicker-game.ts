@@ -8,9 +8,9 @@ import * as os from '@/os.js';
 
 type SaveData = {
 	gameVersion: number;
-	cookies: number;
-	totalCookies: number;
-	totalHandmadeCookies: number;
+	puddings: number;
+	totalPuddings: number;
+	totalHandmadePuddings: number;
 	clicked: number;
 	achievements: any[];
 	facilities: any[];
@@ -31,9 +31,9 @@ export async function load() {
 		if (err.code === 'NO_SUCH_KEY') {
 			saveData.value = {
 				gameVersion: 2,
-				cookies: 0,
-				totalCookies: 0,
-				totalHandmadeCookies: 0,
+				puddings: 0,
+				totalPuddings: 0,
+				totalHandmadePuddings: 0,
 				clicked: 0,
 				achievements: [],
 				facilities: [],
@@ -48,9 +48,9 @@ export async function load() {
 	if (saveData.value.gameVersion === 1) {
 		saveData.value = {
 			gameVersion: 2,
-			cookies: saveData.value.cookies,
-			totalCookies: saveData.value.cookies,
-			totalHandmadeCookies: saveData.value.cookies,
+			puddings: saveData.value.puddings,
+			totalPuddings: saveData.value.puddings,
+			totalHandmadePuddings: saveData.value.puddings,
 			clicked: saveData.value.clicked,
 			achievements: [],
 			facilities: [],

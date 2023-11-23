@@ -1412,7 +1412,7 @@ _achievements:
       title: "恭贺新禧"
       description: "在元旦登入"
       flavor: "今年也请对本服务器多多指教！"
-    _cookieClicked:
+    _puddingClicked:
       title: "点击饼干小游戏"
       description: "点击了可疑的饼干"
       flavor: "是不是软件有问题？"

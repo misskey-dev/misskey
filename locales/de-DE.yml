@@ -1437,7 +1437,7 @@ _achievements:
       title: "Frohes Neujahr"
       description: "Logge dich am Neujahrstag ein"
       flavor: "Auf ein weiteres tolles Jahr in dieser Instanz"
-    _cookieClicked:
+    _puddingClicked:
       title: "Ein Spiel, in dem du auf einen Keks klickst"
       description: "Den Keks geklickt"
       flavor: "Bist du hier richtig?"

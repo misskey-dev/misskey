@@ -1361,9 +1361,9 @@ _achievements:
       title: "Štastný nový rok!"
       description: "Přihlašte se v den nového roku"
       flavor: "Na další skvělý rok v této instanci"
-    _cookieClicked:
+    _puddingClicked:
       title: "Hra, ve které klikáte na sušenky"
-      description: "Klikněte na soubor cookie"
+      description: "Klikněte na soubor pudidng"
       flavor: "Počkejte, jste na správné webové stránce?"
     _brainDiver:
       title: "Brain Diver"
