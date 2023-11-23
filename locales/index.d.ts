@@ -1642,7 +1642,9 @@ export interface Locale {
         "assignTarget": string;
         "descriptionOfAssignTarget": string;
         "manual": string;
+        "manualRoles": string;
         "conditional": string;
+        "conditionalRoles": string;
         "condition": string;
         "isConditionalRole": string;
         "isPublic": string;
