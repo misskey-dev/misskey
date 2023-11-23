@@ -2,22 +2,30 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import {OpenAPIV3} from "openapi-types";
 import {writeFileSync} from "fs";
 import {toPascal} from "ts-case-convert";
+import openapiTS from "openapi-typescript";
 
-function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, outputPath: string) {
+function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, outputPath: string): string[] {
 	if (!openApiDocs.components?.schemas) {
-		return
+		return []
 	}
 
 	const schemas = openApiDocs.components.schemas;
-	const typeAliasLines = Object.keys(schemas)
-		.map(it => `export type ${it} = components['schemas']['${it}'];`)
+	const schemaNames = Object.keys(schemas)
+	const typeAliasLines: string[] = []
 
-	generateTypeScriptFile(['components'], typeAliasLines, outputPath)
+	typeAliasLines.push(`import { components } from "./types.js";`)
+	typeAliasLines.push(
+		...schemaNames.map(it => `export type ${it} = components['schemas']['${it}'];`)
+	)
+
+	writeFileSync(outputPath, typeAliasLines.join('\n'))
+
+	return schemaNames
 }
 
-function generateEndpoints(openApiDocs: OpenAPIV3.Document, outputPath: string) {
+function generateEndpoints(openApiDocs: OpenAPIV3.Document, entitiesOutputPath: string, endpointOutputPath: string): string[] {
 	if (!openApiDocs.paths) {
-		return
+		return []
 	}
 
 	const endpoints: Endpoint[] = []
@@ -59,28 +67,45 @@ function generateEndpoints(openApiDocs: OpenAPIV3.Document, outputPath: string) 
 		}
 	}
 
-	const outputLines: string[] = []
+	const entitiesOutputLine: string[] = []
 
-	outputLines.push(new EmptyTypeAlias(OperationsAliasType.REQUEST).toLine())
-	outputLines.push(new EmptyTypeAlias(OperationsAliasType.RESPONSE).toLine())
-	outputLines.push('')
+	entitiesOutputLine.push(`import { operations } from "./types.js";`)
+	entitiesOutputLine.push('')
 
-	outputLines.push(
-		...endpoints
-			.flatMap(it => [it.request, it.response].filter(i => i))
-			.map(it => it!.toLine())
+	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.REQUEST).toLine())
+	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.RESPONSE).toLine())
+	entitiesOutputLine.push('')
+
+	const entities = endpoints
+		.flatMap(it => [it.request, it.response].filter(i => i))
+		.map(it => it!)
+	entitiesOutputLine.push(...entities.map(it => it!.toLine()))
+	entitiesOutputLine.push('')
+
+	writeFileSync(entitiesOutputPath, entitiesOutputLine.join('\n'))
+
+	const endpointOutputLine: string[] = []
+
+	endpointOutputLine.push('import type {')
+	endpointOutputLine.push(
+		...[emptyRequest, emptyResponse, ...entities].map(it => '  ' + it.generateName() + ',')
 	)
+	endpointOutputLine.push(`} from '${toImportPath(entitiesOutputPath)}';`)
+	endpointOutputLine.push('')
 
-	outputLines.push('')
-
-	outputLines.push('export type Endpoints = {')
-	outputLines.push(
-		...endpoints
-			.map(it => '  ' + it.toLine())
+	endpointOutputLine.push('export type Endpoints = {')
+	endpointOutputLine.push(
+		...endpoints.map(it => '  ' + it.toLine())
 	)
-	outputLines.push('};')
+	endpointOutputLine.push('};')
+	entitiesOutputLine.push('')
 
-	generateTypeScriptFile(['operations'], outputLines, outputPath)
+	writeFileSync(endpointOutputPath, endpointOutputLine.join('\n'))
+
+	return [
+		'Endpoints',
+		...entities.map(it => it.generateName())
+	]
 }
 
 function isRequestBodyObject(value: unknown): value is OpenAPIV3.RequestBodyObject {
@@ -101,16 +126,10 @@ function isResponseObject(value: unknown): value is OpenAPIV3.ResponseObject {
 	return description !== undefined
 }
 
-function generateTypeScriptFile(importTypeNames: string[], bodies: string[], outputPath: string) {
-	const outputLines: string[] = [];
-	outputLines.push(`import { ${importTypeNames.join(', ')} } from "./types.js";`)
-	outputLines.push('');
-
-	outputLines.push(...bodies);
-	outputLines.push('');
-
-	writeFileSync(outputPath, outputLines.join('\n'))
+function toImportPath(fileName: string, fromPath = '/src', toPath = ''): string {
+	return fileName.replace(fromPath, toPath).replace('.ts', '.js')
 }
+
 
 enum OperationsAliasType {
 	REQUEST = 'Request',
@@ -191,7 +210,23 @@ class Endpoint {
 	}
 }
 
+const openApiTs = await openapiTS("./api.json", {exportType: false})
+writeFileSync('./src/types.ts', openApiTs)
+
 const openApiDocs = await SwaggerParser.validate("./api.json") as OpenAPIV3.Document;
 
-generateSchemaEntities(openApiDocs, './src/models.ts')
-generateEndpoints(openApiDocs, './src/endpoints.ts')
+const modelFileName = './src/models.ts'
+generateSchemaEntities(openApiDocs, modelFileName)
+
+const entitiesFileName = './src/entities.ts'
+const endpointFileName = './src/endpoint.ts'
+generateEndpoints(openApiDocs, entitiesFileName, endpointFileName)
+
+const indexLines: string[] = [
+	`import { Endpoints } from '${toImportPath(endpointFileName)}';`,
+	`import * as Entities from '${toImportPath(entitiesFileName)}';`,
+	`import * as Models from '${toImportPath(modelFileName)}';`,
+	'',
+	'export { Endpoints, Entities, Models };'
+]
+writeFileSync('./src/index.ts', indexLines.join('\n'))
