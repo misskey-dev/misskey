@@ -242,29 +242,7 @@ function exec() {
 			return;
 		}
 
-		const matched: EmojiDef[] = [];
-		const max = 30;
-
-		emojiDb.value.some(x => {
-			if (x.name.startsWith(props.q ?? '') && !x.aliasOf && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
-			return matched.length === max;
-		});
-
-		if (matched.length < max) {
-			emojiDb.value.some(x => {
-				if (x.name.startsWith(props.q ?? '') && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
-				return matched.length === max;
-			});
-		}
-
-		if (matched.length < max) {
-			emojiDb.value.some(x => {
-				if (x.name.includes(props.q ?? '') && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
-				return matched.length === max;
-			});
-		}
-
-		emojis.value = matched;
+		emojis.value = emojiAutoComplete(props.q, emojiDb.value);
 	} else if (props.type === 'mfmTag') {
 		if (!props.q || props.q === '') {
 			mfmTags.value = MFM_TAGS;
@@ -273,6 +251,82 @@ function exec() {
 
 		mfmTags.value = MFM_TAGS.filter(tag => tag.startsWith(props.q ?? ''));
 	}
+}
+
+type EmojiScore = { emoji: EmojiDef, score: number };
+
+function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30): EmojiDef[] {
+	if (!query) {
+		return [];
+	}
+
+	const matched = new Map<string, EmojiScore>();
+
+	// 前方一致（エイリアスなし）
+	emojiDb.some(x => {
+		if (x.name.startsWith(query) && !x.aliasOf) {
+			matched.set(x.name, { emoji: x, score: query.length });
+		}
+		return matched.size === max;
+	});
+
+	// 前方一致（エイリアス込み）
+	if (matched.size < max) {
+		emojiDb.some(x => {
+			if (x.name.startsWith(query)) {
+				matched.set(x.name, { emoji: x, score: query.length });
+			}
+			return matched.size === max;
+		});
+	}
+
+	// 部分一致（エイリアス込み）
+	if (matched.size < max) {
+		emojiDb.some(x => {
+			if (x.name.includes(query)) {
+				matched.set(x.name, { emoji: x, score: query.length });
+			}
+			return matched.size === max;
+		});
+	}
+
+	// 簡易あいまい検索
+	if (matched.size < max) {
+		const queryChars = [...query];
+		const hitEmojis = new Map<string, EmojiScore>();
+
+		for (const x of emojiDb) {
+			// クエリ文字列の1文字単位で絵文字名にヒットするかを見る
+			// ただし、過剰に検出されるのを防ぐためクエリ文字列に登場する順番で絵文字名を走査する
+
+			let queryCharHitPos = 0;
+			let queryCharHitCount = 0;
+			for (let idx = 0; idx < queryChars.length; idx++) {
+				queryCharHitPos = x.name.indexOf(queryChars[idx], queryCharHitPos);
+				if (queryCharHitPos <= -1) {
+					break;
+				}
+
+				queryCharHitCount++;
+			}
+
+			// ヒット数が少なすぎると検索結果が汚れるので調節する
+			if (queryCharHitCount > 2) {
+				hitEmojis.set(x.name, { emoji: x, score: queryCharHitCount });
+			}
+		}
+
+		// ヒットしたものを全部追加すると雑多になるので、先頭の6件程度だけにしておく（6件＝オートコンプリートのポップアップのサイズ分）
+		[...hitEmojis.values()]
+			.sort((x, y) => y.score - x.score)
+			.slice(0, 6)
+			.forEach(it => matched.set(it.emoji.name, it));
+	}
+
+	return [...matched.values()]
+		.sort((x, y) => y.score - x.score)
+		.slice(0, max)
+		.map(it => it.emoji);
 }
 
 function onMousedown(event: Event) {

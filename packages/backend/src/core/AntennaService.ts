@@ -60,11 +60,21 @@ export class AntennaService implements OnApplicationShutdown {
 						lastUsedAt: new Date(body.lastUsedAt),
 					});
 					break;
-				case 'antennaUpdated':
-					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
-						...body,
-						lastUsedAt: new Date(body.lastUsedAt),
-					};
+				case 'antennaUpdated': {
+					const idx = this.antennas.findIndex(a => a.id === body.id);
+					if (idx >= 0) {
+						this.antennas[idx] = {
+							...body,
+							lastUsedAt: new Date(body.lastUsedAt),
+						};
+					} else {
+						// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
+						this.antennas.push({
+							...body,
+							lastUsedAt: new Date(body.lastUsedAt),
+						});
+					}
+				}
 					break;
 				case 'antennaDeleted':
 					this.antennas = this.antennas.filter(a => a.id !== body.id);
