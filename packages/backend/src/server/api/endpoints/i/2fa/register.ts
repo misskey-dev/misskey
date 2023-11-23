@@ -25,6 +25,12 @@ export const meta = {
 			code: 'INCORRECT_PASSWORD',
 			id: '78d6c839-20c9-4c66-b90a-fc0542168b48',
 		},
+
+		authenticationFailed: {
+			message: 'Authentication failed.',
+			code: 'AUTHENTICATION_FAILED',
+			id: 'e428f177-c6ae-4e91-9c7e-334b1836f9aa',
+		},
 	},
 } as const;
 
@@ -59,14 +65,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (profile.twoFactorEnabled) {
 				const token = ps.token;
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.authenticationFailed);
 				}
 
-				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
-					throw new Error('authentication failed');
-				}
+				await this.userAuthService.twoFactorAuthenticate(profile, token);
 			}
 
 			// Generate user's secret key

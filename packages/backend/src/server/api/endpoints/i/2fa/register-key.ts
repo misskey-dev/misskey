@@ -30,6 +30,12 @@ export const meta = {
 			id: '38769596-efe2-4faf-9bec-abbb3f2cd9ba',
 		},
 
+		authenticationFailed: {
+			message: 'Authentication failed.',
+			code: 'AUTHENTICATION_FAILED',
+			id: 'a7628591-668b-47b2-919f-d986b22af06a',
+		},
+
 		twoFactorNotEnabled: {
 			message: '2fa not enabled.',
 			code: 'TWO_FACTOR_NOT_ENABLED',
@@ -77,14 +83,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (profile.twoFactorEnabled) {
 				const token = ps.token;
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.authenticationFailed);
 				}
 
-				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
-					throw new Error('authentication failed');
-				}
+				await this.userAuthService.twoFactorAuthenticate(profile, token);
 			} else {
 				throw new ApiError(meta.errors.twoFactorNotEnabled);
 			}

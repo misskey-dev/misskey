@@ -10,12 +10,27 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 import { DI } from '@/di-symbols.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	requireCredential: true,
 	requireRolePolicy: 'canDeleteContent',
 
 	secure: true,
+
+	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: '44326b04-08ea-4525-b01c-98cc117bdd2a',
+		},
+
+		authenticationFailed: {
+			message: 'Authentication failed.',
+			code: 'AUTHENTICATION_FAILED',
+			id: 'ea791cff-63e7-4b2a-92fc-646ab641794e',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -49,20 +64,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
 			if (!passwordMatched) {
-				throw new Error('incorrect password');
+				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			if (profile.twoFactorEnabled) {
 				const token = ps.token;
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.authenticationFailed);
 				}
 
-				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
-					throw new Error('authentication failed');
-				}
+				await this.userAuthService.twoFactorAuthenticate(profile, token);
 			}
 
 			await this.deleteAccountService.deleteAccount(me);

@@ -35,6 +35,12 @@ export const meta = {
 			id: 'e54c1d7e-e7d6-4103-86b6-0a95069b4ad3',
 		},
 
+		authenticationFailed: {
+			message: 'Authentication failed.',
+			code: 'AUTHENTICATION_FAILED',
+			id: 'ef9323ea-8451-4f7a-8f35-4b1ee014d9b7',
+		},
+
 		unavailable: {
 			message: 'Unavailable email address.',
 			code: 'UNAVAILABLE',
@@ -78,14 +84,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (profile.twoFactorEnabled) {
 				const token = ps.token;
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.authenticationFailed);
 				}
 
-				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
-					throw new Error('authentication failed');
-				}
+				await this.userAuthService.twoFactorAuthenticate(profile, token);
 			}
 
 			if (ps.email != null) {
