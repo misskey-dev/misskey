@@ -1,0 +1,24 @@
+{
+	"name": "misskey-js-codegen",
+	"type": "module",
+	"scripts": {
+		"run": "ts-node --project tsconfig.json --esm ./generator.ts",
+		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"generate-type": "openapi-typescript ./api.json -t true -o src/types.ts"
+	},
+	"devDependencies": {
+		"@apidevtools/swagger-parser": "10.1.0",
+		"@types/node": "20.9.1",
+		"@typescript-eslint/eslint-plugin": "6.11.0",
+		"@typescript-eslint/parser": "6.11.0",
+		"eslint": "8.53.0",
+		"jest": "29.7.0",
+		"openapi-typescript": "6.7.1",
+		"typescript": "5.3.2",
+		"ts-node": "10.9.1",
+		"ts-case-convert": "2.0.2"
+	},
+	"files": [
+		"built"
+	]
+}
