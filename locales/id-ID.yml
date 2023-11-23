@@ -1171,6 +1171,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Terlalu banyak pengumuman dapat memperburuk pengalaman pengguna. Mohon pertimbangkan untuk mengarsipkan pengumuman yang sudah usang/tidak relevan."
   readConfirmTitle: "Tandai telah dibaca?"
   readConfirmText: "Aksi ini akan menandai konten dari \"{title}\" telah dibaca."
+  silence: "Tiada notifikasi"
 _initialAccountSetting:
   accountCreated: "Akun kamu telah sukses dibuat!"
   letsStartAccountSetup: "Untuk pemula, ayo atur profilmu dulu."
@@ -1183,8 +1184,25 @@ _initialAccountSetting:
   pushNotificationDescription: "Menyalakan notifikasi dorong akan membuatmu menerima notifikasi dari {name} secara langsung ke perangkatmu."
   initialAccountSettingCompleted: "Pengaturan profil selesai!"
   haveFun: "Selamat menikmati, {name}!"
+  startTutorial: "Mulai Tutorial"
   skipAreYouSure: "Yakin melewati atur profil?"
   laterAreYouSure: "Yakin banget untuk atur profil nanti?"
+_initialTutorial:
+  launchTutorial: "Lihat Tutorial"
+  title: "Tutorial"
+  skipAreYouSure: "Berhenti dari Tutorial?"
+  _landing:
+    title: "Selamat datang di Tutorial"
+    description: "Di sini kamu dapat mempelajari dasar-dasar dari penggunaan Misskey dan fitur-fiturnya."
+  _note:
+    title: "Apa itu Catatan?"
+  _postNote:
+    title: "Pengaturan posting Catatan"
+    _visibility:
+      public: "Perlihatkan catatan ke semua pengguna."
+      home: "Hanya publik ke lini masa Beranda. Pengguna yang mengunjungi profilmu melalui pengikut dan renote dapat melihatnya."
+      followers: "Perlihatkan ke pengikut saja. Hanya pengikut yang dapat melihat postinganmu dan tidak dapat direnote oleh siapapun."
+      direct: "Hanya perlihatkan ke pengguna spesifik dan penerima akan diberi tahu. Dapat juga digunakan sebagai alternatif dari pesan langsung."
 _serverRules:
   description: "Daftar peraturan akan ditampilkan sebelum pendaftaran. Mengatur ringkasan dari Syarat dan Ketentuan sangat direkomendasikan."
 _serverSettings:
