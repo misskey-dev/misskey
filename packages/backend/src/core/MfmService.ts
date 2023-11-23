@@ -276,17 +276,68 @@ export class MfmService {
 			},
 
 			fn: (node) => {
-				if (node.props.name === 'unixtime') {
-					const text = node.children[0]!.type === 'text' ? node.children[0].props.text : '';
-					const date = new Date(parseInt(text, 10) * 1000);
-					const el = doc.createElement('time');
-					el.setAttribute('datetime', date.toISOString());
-					el.textContent = date.toISOString();
-					return el;
-				} else {
-					const el = doc.createElement('i');
-					appendChildren(node.children, el);
-					return el;
+				switch (node.props.name) {
+					case 'unixtime': {
+						const text = node.children[0]!.type === 'text' ? node.children[0].props.text : '';
+						const date = new Date(parseInt(text, 10) * 1000);
+						const el = doc.createElement('time');
+						el.setAttribute('datetime', date.toISOString());
+						el.textContent = date.toISOString();
+						return el;
+					}
+
+					case 'ruby': {
+						if (node.children.length === 1) {
+							const child = node.children[0];
+							const text = child.type === 'text' ? child.props.text : '';
+							const rubyEl = doc.createElement('ruby');
+							const rtEl = doc.createElement('rt');
+
+							// ruby未対応のHTMLサニタイザーを通したときにルビが「劉備（りゅうび）」となるようにする
+							const rpStartEl = doc.createElement('rp');
+							rpStartEl.appendChild(doc.createTextNode('('));
+							const rpEndEl = doc.createElement('rp');
+							rpEndEl.appendChild(doc.createTextNode(')'));
+
+							rubyEl.appendChild(doc.createTextNode(text.split(' ')[0]));
+							rtEl.appendChild(doc.createTextNode(text.split(' ')[1]));
+							rubyEl.appendChild(rpStartEl);
+							rubyEl.appendChild(rtEl);
+							rubyEl.appendChild(rpEndEl);
+							return rubyEl;
+						} else {
+							const rt = node.children.at(-1);
+
+							if (!rt) {
+								const el = doc.createElement('i');
+								appendChildren(node.children, el);
+								return el;
+							}
+
+							const text = rt.type === 'text' ? rt.props.text : '';
+							const rubyEl = doc.createElement('ruby');
+							const rtEl = doc.createElement('rt');
+
+							// ruby未対応のHTMLサニタイザーを通したときにルビが「劉備（りゅうび）」となるようにする
+							const rpStartEl = doc.createElement('rp');
+							rpStartEl.appendChild(doc.createTextNode('('));
+							const rpEndEl = doc.createElement('rp');
+							rpEndEl.appendChild(doc.createTextNode(')'));
+
+							appendChildren(node.children.slice(0, node.children.length - 1), rubyEl);
+							rtEl.appendChild(doc.createTextNode(text.trim()));
+							rubyEl.appendChild(rpStartEl);
+							rubyEl.appendChild(rtEl);
+							rubyEl.appendChild(rpEndEl);
+							return rubyEl;
+						}
+					}
+
+					default: {
+						const el = doc.createElement('i');
+						appendChildren(node.children, el);
+						return el;
+					}
 				}
 			},
 
