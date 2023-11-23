@@ -1855,7 +1855,7 @@ _ago:
   weeksAgo: "{n}週間前"
   monthsAgo: "{n}ヶ月前"
   yearsAgo: "{n}年前"
-  invalid: "ありません"
+  invalid: "日時の解析に失敗"
 
 _timeIn:
   seconds: "{n}秒後"
