@@ -362,6 +362,7 @@ import * as ep___users_reportAbuse from './endpoints/users/report-abuse.js';
 import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by-username-and-host.js';
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
+import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
@@ -725,6 +726,7 @@ const eps = [
 	['users/search-by-username-and-host', ep___users_searchByUsernameAndHost],
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
+	['users/stats', ep___users_stats],
 	['users/achievements', ep___users_achievements],
 	['users/update-memo', ep___users_updateMemo],
 	['fetch-rss', ep___fetchRss],

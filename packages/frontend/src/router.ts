@@ -171,6 +171,10 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/accounts.vue')),
 	}, {
+		path: '/account-stats',
+		name: 'other',
+		component: page(() => import('./pages/settings/account-stats.vue')),
+	}, {
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
