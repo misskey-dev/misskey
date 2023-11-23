@@ -17,6 +17,7 @@
 ### General
 - Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
 - Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
+- Fix: MFM `$[unixtime ]` に不正な値を入力した際に発生する各種エラーを修正
 
 ### Client
 - Enhance: 絵文字のオートコンプリート機能強化 #12364
@@ -24,6 +25,7 @@
 - Fix: ウィジェットのジョブキューにて音声の発音方法変更に追従できていなかったのを修正 #12367
 
 ### Server
+- Enhance: MFM `$[ruby ]` が他ソフトウェアと連合されるように
 - Fix: 時間経過により無効化されたアンテナを再有効化したとき、サーバ再起動までその状況が反映されないのを修正 #12303
 - Fix: ロールタイムラインが保存されない問題を修正
 - Fix: api.jsonの生成ロジックを改善 #12402
