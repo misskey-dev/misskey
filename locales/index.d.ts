@@ -1038,6 +1038,7 @@ export interface Locale {
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
     "reactionsDisplaySize": string;
+		"limitWidthOfReaction": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
