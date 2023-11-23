@@ -2,9 +2,10 @@
 	"name": "misskey-js-codegen",
 	"type": "module",
 	"scripts": {
-		"run": "ts-node --project tsconfig.json --esm ./generator.ts",
+		"generate": "ts-node --project tsconfig.json --esm ./generator.ts",
+		"build": "pnpm generate && tsc",
 		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
-		"generate-type": "openapi-typescript ./api.json -t true -o src/types.ts"
+		"eslint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "10.1.0",
