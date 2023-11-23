@@ -2381,3 +2381,4 @@ _schedulePost:
   localTime: "端末に設定されているタイムゾーンの時刻で投稿されます。"
   addSchedule: "予約設定"
   willBePostedAtX: "{date}に投稿予約しました。"
+  deleteAreYouSure: "予約投稿を削除しますか？"

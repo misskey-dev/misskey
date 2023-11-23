@@ -36,13 +36,23 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 const isDeleted = ref(false);
 const props = defineProps<{
-  note: Misskey.entities.Note & {isSchedule? : boolean};
+	note: Misskey.entities.Note & {
+		id: string | null;
+		isSchedule?: boolean;
+		scheduledNoteId?: string;
+	};
 }>();
 
 async function deleteScheduleNote() {
-	if (!props.note.isSchedule) return;
-	// スケジュールつきノートの場合は、ノートIDのフィールドに予約投稿ID(scheduledNoteId)が入るので注意！！！！
-	await os.apiWithDialog('notes/schedule/delete', { scheduledNoteId: props.note.id })
+	if (!props.note.isSchedule || !props.note.scheduledNoteId) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts._schedulePost.deleteAreYouSure,
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('notes/schedule/delete', { scheduledNoteId: props.note.scheduledNoteId })
 		.then(() => {
 			isDeleted.value = true;
 		});

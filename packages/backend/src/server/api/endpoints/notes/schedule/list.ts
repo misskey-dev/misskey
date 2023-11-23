@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -23,36 +22,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			properties: {
-				id: { type: 'string', optional: false, nullable: false },
-				note: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						id: { type: 'string', optional: false, nullable: false },
-						text: { type: 'string', optional: false, nullable: false },
-						files: { type: 'array', optional: false, nullable: false, items: { type: 'any' } },
-						localOnly: { type: 'boolean', optional: false, nullable: false },
-						visibility: { type: 'string', optional: false, nullable: false },
-						visibleUsers: { type: 'array', optional: false, nullable: false, items: { type: 'any' } },
-						reactionAcceptance: { type: 'string', optional: false, nullable: false },
-						user: {
-							type: 'object',
-							optional: false, nullable: false,
-							ref: 'User',
-						},
-						createdAt: { type: 'string', optional: false, nullable: false },
-						isSchedule: { type: 'boolean', optional: false, nullable: false },
-					},
-				},
-				userId: { type: 'string', optional: false, nullable: false },
-				scheduledAt: { type: 'string', optional: false, nullable: false },
-			},
 		},
-	},
-	limit: {
-		duration: ms('1hour'),
-		max: 300,
 	},
 
 	errors: {
@@ -84,32 +54,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const scheduleNotes = await query.limit(ps.limit).getMany();
 			const user = await this.userEntityService.pack(me, me);
-			const scheduleNotesPack: {
-				id: string;
-				note: {
-					id: string;
-					text: string;
-					files: any[];
-					localOnly: boolean;
-					visibility: string;
-					visibleUsers: any[];
-					reactionAcceptance: string;
-					user: any;
-					createdAt: string;
-					isSchedule: boolean;
-				};
-				userId: string;
-				scheduledAt: string;
-			}[] = scheduleNotes.map((item: any) => {
+			const scheduleNotesPack = scheduleNotes.map((item) => {
 				return {
 					...item,
+					scheduledAt: new Date(item.scheduledAt).toISOString(),
 					note: {
 						...item.note,
 						user: user,
-						createdAt: new Date(item.scheduledAt),
+						createdAt: new Date(item.scheduledAt).toISOString(),
 						isSchedule: true,
-						// ↓TODO: NoteのIDに予約投稿IDを入れたくない（本来別ものなため）
-						id: this.idService.gen(item.scheduledAt.getTime()),
+						id: null,
+						scheduledNoteId: item.id,
 					},
 				};
 			});

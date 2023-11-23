@@ -2493,6 +2493,7 @@ export interface Locale {
         "localTime": string;
         "addSchedule": string;
         "willBePostedAtX": string;
+        "deleteAreYouSure": string;
     };
 }
 declare const locales: {
