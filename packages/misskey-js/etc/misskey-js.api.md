@@ -1587,7 +1587,8 @@ export type Endpoints = {
             injectFeaturedNote?: boolean;
             receiveAnnouncementEmail?: boolean;
             alwaysMarkNsfw?: boolean;
-            mutedWords?: string[][];
+            mutedWords?: (string[] | string)[];
+            hardMutedWords?: (string[] | string)[];
             notificationRecieveConfig?: any;
             emailNotificationTypes?: string[];
             alsoKnownAs?: string[];
@@ -2543,7 +2544,8 @@ type MeDetailed = UserDetailed & {
     integrations: Record<string, any>;
     isDeleted: boolean;
     isExplorable: boolean;
-    mutedWords: string[][];
+    mutedWords: (string[] | string)[];
+    hardMutedWords: (string[] | string)[];
     notificationRecieveConfig: {
         [notificationType in typeof notificationTypes_2[number]]?: {
             type: 'all';
@@ -3082,9 +3084,9 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:20:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:638:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
-// src/entities.ts:119:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
-// src/entities.ts:637:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:639:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/entities.ts:120:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
+// src/entities.ts:638:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
