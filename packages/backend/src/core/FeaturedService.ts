@@ -77,7 +77,12 @@ export class FeaturedService {
 	// TODO: find better place?
 	@bindThis
 	public shouldBeIncludedInGlobalOrUserFeatured(note: MiNote): boolean {
-		return note.visibility === 'public' && note.userHost == null && note.replyId == null;
+		if (note.visibility !== 'public') return false; // non-public note
+		if (note.userHost != null) return false; // remote
+		if (note.replyId != null) return false; // reply
+		// Channels are checked outside
+
+		return true;
 	}
 
 	@bindThis
