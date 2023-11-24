@@ -77,7 +77,7 @@ export async function loadAudio(file: string, useCache = true) {
 	return audioBuffer;
 }
 
-export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
+export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification' | 'reaction') {
 	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null) return;
