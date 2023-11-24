@@ -24,6 +24,7 @@ import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -64,12 +65,6 @@ export class NoteDeleteService {
 		const deletedAt = new Date();
 		const cascadingNotes = await this.findCascadingNotes(note);
 
-		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
-		if (note.renoteId && (await this.noteEntityService.countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
-			this.notesRepository.decrement({ id: note.renoteId }, 'renoteCount', 1);
-			if (!user.isBot) this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
-		}
-
 		if (note.replyId) {
 			await this.notesRepository.decrement({ id: note.replyId }, 'repliesCount', 1);
 		}
@@ -83,8 +78,8 @@ export class NoteDeleteService {
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
 				let renote: MiNote | null = null;
 
-				// if deletd note is renote
-				if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
+				// if deleted note is renote
+				if (isPureRenote(note)) {
 					renote = await this.notesRepository.findOneBy({
 						id: note.renoteId,
 					});

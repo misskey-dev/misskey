@@ -92,9 +92,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.andWhere(`user.id IN (${ followingQuery.getQuery() })`)
 					.andWhere('user.id != :meId', { meId: me.id })
 					.andWhere('user.isSuspended = FALSE')
-					.andWhere(new Brackets(qb => { qb
-						.where('user.updatedAt IS NULL')
-						.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+					.andWhere(new Brackets(qb => {
+						qb
+							.where('user.updatedAt IS NULL')
+							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 					}));
 
 				query.setParameters(followingQuery.getParameters());

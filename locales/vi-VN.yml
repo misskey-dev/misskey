@@ -1047,6 +1047,7 @@ loadReplies: "Hiển thị các trả lời"
 pinnedList: "Các mục đã được ghim"
 keepScreenOn: "Giữ màn hình luôn bật"
 verifiedLink: "Chúng tôi đã xác nhận bạn là chủ sở hữu của đường dẫn này"
+flip: "Lật"
 _announcement:
   forExistingUsers: "Chỉ những người dùng đã tồn tại"
   forExistingUsersDescription: "Nếu được bật, thông báo này sẽ chỉ hiển thị với những người dùng đã tồn tại vào lúc thông báo được tạo. Nếu tắt đi, những tài khoản mới đăng ký sau khi thông báo được đăng lên cũng sẽ thấy nó."
@@ -1066,7 +1067,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Bật thông báo đẩy sẽ cho phép bạn nhận thông báo từ {name} trực tiếp từ thiết bị của bạn."
   initialAccountSettingCompleted: "Thiết lập tài khoản thành công!"
   haveFun: "Hãy tận hưởng {name} nhé!"
-  ifYouNeedLearnMore: "Nếu bạn muốn tìm hiểu thêm về cách sử dụng {name} (Misskey), hãy vào {link}."
   skipAreYouSure: "Bạn thực sự muốn bỏ qua mục thiết lập tài khoản?"
   laterAreYouSure: "Bạn thực sự muốn thiết lập tài khoản vào lúc khác?"
 _serverSettings:
@@ -1404,11 +1404,6 @@ _wordMute:
   muteWords: "Ẩn từ ngữ"
   muteWordsDescription: "Separate with spaces for an AND condition or with line breaks for an OR condition."
   muteWordsDescription2: "Bao quanh các từ khóa bằng dấu gạch chéo để sử dụng cụm từ thông dụng."
-  softDescription: "Ẩn các tút phù hợp điều kiện đã đặt khỏi bảng tin."
-  hardDescription: "Ngăn các tút đáp ứng các điều kiện đã đặt xuất hiện trên bảng tin. Lưu ý, những tút này sẽ không được thêm vào bảng tin ngay cả khi các điều kiện được thay đổi."
-  soft: "Yếu"
-  hard: "Mạnh"
-  mutedNotes: "Những tút đã ẩn"
 _instanceMute:
   instanceMuteDescription: "Thao tác này sẽ ẩn mọi tút/lượt đăng lại từ các máy chủ được liệt kê, bao gồm cả những tút  dạng trả lời từ máy chủ bị ẩn."
   instanceMuteDescription2: "Tách bằng cách xuống dòng"
@@ -1472,9 +1467,6 @@ _theme:
     infoFg: "Chữ thông tin"
     infoWarnBg: "Nền cảnh báo"
     infoWarnFg: "Chữ cảnh báo"
-    cwBg: "Nền nút nội dung ẩn"
-    cwFg: "Chữ nút nội dung ẩn"
-    cwHoverBg: "Nền nút nội dung ẩn (Chạm)"
     toastBg: "Nền thông báo"
     toastFg: "Chữ thông báo"
     buttonBg: "Nền nút"
@@ -1492,8 +1484,6 @@ _sfx:
   note: "Tút"
   noteMy: "Tút của tôi"
   notification: "Thông báo"
-  chat: "Trò chuyện"
-  chatBg: "Chat (Nền)"
   antenna: "Trạm phát sóng"
   channel: "Kênh"
 _ago:
@@ -1512,9 +1502,6 @@ _time:
   minute: "phút"
   hour: "giờ"
   day: "ngày"
-_timelineTutorial:
-  step4_1: "Bạn có thể thêm \"Reaction\" vào ghi chú"
-  step4_2: "Khi thêm biểu cảm hãy nhấn dấu \"+\""
 _2fa:
   alreadyRegistered: "Bạn đã đăng ký thiết bị xác minh 2 bước."
   registerTOTP: "Đăng ký ứng dụng xác thực"

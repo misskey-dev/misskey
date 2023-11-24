@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
-					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i"/>
+					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :note="note"/>
 				</p>
 				<div v-show="note.cw == null || showContent">
@@ -49,9 +49,9 @@ import { notePage } from '@/filters/note.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { userPage } from "@/filters/user";
-import { checkWordMute } from "@/scripts/check-word-mute";
-import { defaultStore } from "@/store";
+import { userPage } from '@/filters/user.js';
+import { checkWordMute } from '@/scripts/check-word-mute.js';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -63,7 +63,7 @@ const props = withDefaults(defineProps<{
 	depth: 1,
 });
 
-const muted = ref(checkWordMute(props.note, $i, defaultStore.state.mutedWords));
+const muted = ref($i ? checkWordMute(props.note, $i, $i.mutedWords) : false);
 
 let showContent = $ref(false);
 let replies: Misskey.entities.Note[] = $ref([]);

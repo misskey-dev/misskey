@@ -9,6 +9,7 @@ import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -81,9 +82,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private announcementReadsRepository: AnnouncementReadsRepository,
 
 		private queryService: QueryService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			query.andWhere('announcement.isActive = true');
 			if (ps.userId) {
 				query.andWhere('announcement.userId = :userId', { userId: ps.userId });
 			} else {
@@ -102,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return announcements.map(announcement => ({
 				id: announcement.id,
-				createdAt: announcement.createdAt.toISOString(),
+				createdAt: this.idService.parse(announcement.id).date.toISOString(),
 				updatedAt: announcement.updatedAt?.toISOString() ?? null,
 				title: announcement.title,
 				text: announcement.text,
@@ -111,6 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				display: announcement.display,
 				isActive: announcement.isActive,
 				forExistingUsers: announcement.forExistingUsers,
+				silence: announcement.silence,
 				needConfirmationToRead: announcement.needConfirmationToRead,
 				userId: announcement.userId,
 				reads: reads.get(announcement)!,
