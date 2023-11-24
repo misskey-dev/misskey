@@ -265,7 +265,7 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 	// 前方一致（エイリアスなし）
 	emojiDb.some(x => {
 		if (x.name.startsWith(query) && !x.aliasOf) {
-			matched.set(x.name, { emoji: x, score: query.length });
+			matched.set(x.name, { emoji: x, score: query.length + 1 });
 		}
 		return matched.size === max;
 	});
@@ -273,8 +273,8 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 	// 前方一致（エイリアス込み）
 	if (matched.size < max) {
 		emojiDb.some(x => {
-			if (x.name.startsWith(query)) {
-				matched.set(x.name, { emoji: x, score: query.length });
+			if (x.name.startsWith(query) && !matched.has(x.aliasOf ?? x.name)) {
+				matched.set(x.aliasOf ?? x.name, { emoji: x, score: query.length });
 			}
 			return matched.size === max;
 		});
@@ -283,36 +283,32 @@ function emojiAutoComplete(query: string | null, emojiDb: EmojiDef[], max = 30):
 	// 部分一致（エイリアス込み）
 	if (matched.size < max) {
 		emojiDb.some(x => {
-			if (x.name.includes(query)) {
-				matched.set(x.name, { emoji: x, score: query.length });
+			if (x.name.includes(query) && !matched.has(x.aliasOf ?? x.name)) {
+				matched.set(x.aliasOf ?? x.name, { emoji: x, score: query.length - 1 });
 			}
 			return matched.size === max;
 		});
 	}
 
-	// 簡易あいまい検索
-	if (matched.size < max) {
+	// 簡易あいまい検索（3文字以上）
+	if (matched.size < max && query.length > 3) {
 		const queryChars = [...query];
 		const hitEmojis = new Map<string, EmojiScore>();
 
 		for (const x of emojiDb) {
-			// クエリ文字列の1文字単位で絵文字名にヒットするかを見る
-			// ただし、過剰に検出されるのを防ぐためクエリ文字列に登場する順番で絵文字名を走査する
+			// 文字列の位置を進めながら、クエリの文字を順番に探す
 
-			let queryCharHitPos = 0;
-			let queryCharHitCount = 0;
-			for (let idx = 0; idx < queryChars.length; idx++) {
-				queryCharHitPos = x.name.indexOf(queryChars[idx], queryCharHitPos);
-				if (queryCharHitPos <= -1) {
-					break;
-				}
-
-				queryCharHitCount++;
+			let pos = 0;
+			let hit = 0;
+			for (const c of queryChars) {
+				pos = x.name.indexOf(c, pos);
+				if (pos <= -1) break;
+				hit++;
 			}
 
-			// ヒット数が少なすぎると検索結果が汚れるので調節する
-			if (queryCharHitCount > 2) {
-				hitEmojis.set(x.name, { emoji: x, score: queryCharHitCount });
+			// 半分以上の文字が含まれていればヒットとする
+			if (hit > Math.ceil(queryChars.length / 2) && hit - 2 > (matched.get(x.aliasOf ?? x.name)?.score ?? 0)) {
+				hitEmojis.set(x.aliasOf ?? x.name, { emoji: x, score: hit - 2 });
 			}
 		}
 
