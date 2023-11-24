@@ -17,10 +17,12 @@
 ### General
 - Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
 - Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
+- Feat: TL上からノートが見えなくなるワードミュートであるハードミュートを追加
 - Fix: MFM `$[unixtime ]` に不正な値を入力した際に発生する各種エラーを修正
 
 ### Client
 - Enhance: 絵文字のオートコンプリート機能強化 #12364
+- Enhance: ユーザーのRawデータを表示するページが復活
 - fix: 「設定のバックアップ」で一部の項目がバックアップに含まれていなかった問題を修正
 - Fix: ウィジェットのジョブキューにて音声の発音方法変更に追従できていなかったのを修正 #12367
 - Fix: コードエディタが正しく表示されない問題を修正
@@ -32,6 +34,7 @@
 - Fix: ロールタイムラインが保存されない問題を修正
 - Fix: api.jsonの生成ロジックを改善 #12402
 - Fix: 招待コードが使い回せる問題を修正
+- Fix: 特定の条件下でチャンネルやユーザーのノート一覧に最新のノートが表示されなくなる問題を修正
 
 ## 2023.11.1
 
