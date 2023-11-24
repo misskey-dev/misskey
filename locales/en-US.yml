@@ -1735,6 +1735,7 @@ _wordMute:
   muteWords: "Muted words"
   muteWordsDescription: "Separate with spaces for an AND condition or with line breaks for an OR condition."
   muteWordsDescription2: "Surround keywords with slashes to use regular expressions."
+  hideMutedNotes: "Hide notes containing muted words"
 _instanceMute:
   instanceMuteDescription: "This will mute any notes/renotes from the listed instances, including those of users replying to a user from a muted instance."
   instanceMuteDescription2: "Separate with newlines"

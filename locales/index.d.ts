@@ -1865,6 +1865,7 @@ export interface Locale {
         "muteWords": string;
         "muteWordsDescription": string;
         "muteWordsDescription2": string;
+        "hideMutedNotes": string;
     };
     "_instanceMute": {
         "instanceMuteDescription": string;
