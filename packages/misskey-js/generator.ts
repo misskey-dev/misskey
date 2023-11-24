@@ -179,7 +179,7 @@ class EmptyTypeAlias implements IOperationTypeAlias {
 
 	toLine(): string {
 		const name = this.generateName();
-		return `export type ${name} = Record<string, unknown>;`;
+		return `export type ${name} = Record<string, unknown> | undefined;`;
 	}
 }
 
