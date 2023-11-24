@@ -82,6 +82,16 @@ export class FeaturedService {
 		if (note.replyId != null) return false; // reply
 		// Channels are checked outside
 
+		// In nirila misskey, it was very common to notes with `:ohayo_nirila_misskey:` or `:oyasumi_nirila_misskey:`
+		// Will get many reaction`:ohayo_nirila_misskey:` or `:oyasumi_nirila_misskey:` so exclude them
+		// if they don't have any images.
+		if (note.fileIds.length === 0) {
+			for (const exclusion of ["おはよう", "おやすみ", ":ohayo_nirila_misskey:", ":oyasumi_nirila_misskey:"]) {
+				if (note.text?.includes(exclusion)) return false;
+				if (note.cw?.includes(exclusion)) return false;
+			}
+		}
+
 		return true;
 	}
 
