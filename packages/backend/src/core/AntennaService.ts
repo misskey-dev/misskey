@@ -86,12 +86,6 @@ export class AntennaService implements OnApplicationShutdown {
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (const antenna of matchedAntennas) {
-			redisPipeline.xadd(
-				`antennaTimeline:${antenna.id}`,
-				'MAXLEN', '~', '200',
-				'*',
-				'note', note.id);
-
 			this.funoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
