@@ -1,4 +1,5 @@
-import type { Antenna, CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User, UserGroup } from './entities.js';
+import { Antenna, DriveFile, EmojiDetailed, MeDetailed, Note, User } from './autogen/models.js';
+import { MessagingMessage, PageEvent, UserGroup } from './entities.js';
 
 type FIXME = any;
 
@@ -145,6 +146,6 @@ export type NoteUpdatedEvent = {
 export type BroadcastEvents = {
 	noteUpdated: (payload: NoteUpdatedEvent) => void;
 	emojiAdded: (payload: {
-		emoji: CustomEmoji;
+		emoji: EmojiDetailed;
 	}) => void;
 };

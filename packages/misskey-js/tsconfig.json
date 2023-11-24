@@ -24,8 +24,7 @@
 		]
 	},
 	"include": [
-		"src/**/*",
-		"generator.ts"
+		"src/**/*"
 	],
 	"exclude": [
 		"node_modules",

@@ -1,4 +1,4 @@
-import { Endpoints } from './api.types.js';
+import { Endpoints } from './autogen';
 import Stream, { Connection } from './streaming.js';
 import { Channels } from './streaming.types.js';
 import { Acct } from './acct.js';

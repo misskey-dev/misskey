@@ -1,7 +1,6 @@
-import { mkdir, rm, writeFile } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 import { OpenAPIV3 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
-import openapiTS from 'openapi-typescript';
 import SwaggerParser from '@apidevtools/swagger-parser';
 
 async function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, typeFileName: string, outputPath: string) {
@@ -17,6 +16,7 @@ async function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, typeFileN
 	typeAliasLines.push(
 		...schemaNames.map(it => `export type ${it} = components['schemas']['${it}'];`),
 	);
+	typeAliasLines.push('');
 
 	await writeFile(outputPath, typeAliasLines.join('\n'));
 }
@@ -122,7 +122,7 @@ function filterUndefined<T>(item: T): item is Exclude<T, undefined> {
 }
 
 function toImportPath(fileName: string, fromPath = '/src/autogen', toPath = ''): string {
-	return fileName.replace(fromPath, toPath).replace('.d.ts', '.js');
+	return fileName.replace(fromPath, toPath).replace('.ts', '.js');
 }
 
 enum OperationsAliasType {
@@ -205,21 +205,17 @@ class Endpoint {
 
 async function main() {
 	const generatePath = './src/autogen';
-	await rm(generatePath, { recursive: true, force: true });
 	await mkdir(generatePath, { recursive: true });
 
-	const typeFileName = `${generatePath}/types.d.ts`;
-	const openApiTs = await openapiTS('./api.json', { exportType: false });
-	await writeFile(typeFileName, openApiTs);
-
+	const typeFileName = './src/autogen/types.ts';
 	const openApiDocs = await SwaggerParser.validate('./api.json') as OpenAPIV3.Document;
 
-	const modelFileName = `${generatePath}/models.d.ts`;
-	generateSchemaEntities(openApiDocs, typeFileName, modelFileName);
+	const modelFileName = `${generatePath}/models.ts`;
+	await generateSchemaEntities(openApiDocs, typeFileName, modelFileName);
 
-	const entitiesFileName = `${generatePath}/entities.d.ts`;
-	const endpointFileName = `${generatePath}/endpoint.d.ts`;
-	generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
+	const entitiesFileName = `${generatePath}/entities.ts`;
+	const endpointFileName = `${generatePath}/endpoint.ts`;
+	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
 
 	const indexLines: string[] = [
 		`import { Endpoints } from '${toImportPath(endpointFileName)}';`,
@@ -227,8 +223,9 @@ async function main() {
 		`import * as Models from '${toImportPath(modelFileName)}';`,
 		'',
 		'export { Endpoints, Entities, Models };',
+		'',
 	];
-	await writeFile(`${generatePath}/index.d.ts`, indexLines.join('\n'));
+	await writeFile(`${generatePath}/index.ts`, indexLines.join('\n'));
 }
 
 main();
