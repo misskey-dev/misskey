@@ -218,11 +218,9 @@ async function main() {
 	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
 
 	const indexLines: string[] = [
-		`import { Endpoints } from '${toImportPath(endpointFileName)}';`,
-		`import * as Entities from '${toImportPath(entitiesFileName)}';`,
-		`import * as Models from '${toImportPath(modelFileName)}';`,
-		'',
-		'export { Endpoints, Entities, Models };',
+		`export { Endpoints } from '${toImportPath(endpointFileName)}';`,
+		`export * from '${toImportPath(entitiesFileName)}';`,
+		`export * from '${toImportPath(modelFileName)}';`,
 		'',
 	];
 	await writeFile(`${generatePath}/index.ts`, indexLines.join('\n'));
