@@ -18,6 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XPages v-else-if="tab === 'pages'" :user="user"/>
 			<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
 			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
+			<XRaw v-else-if="tab === 'raw'" :user="user"/>
 		</div>
 		<MkError v-else-if="error" @retry="fetchUser()"/>
 		<MkLoading v-else/>
@@ -44,6 +45,7 @@ const XLists = defineAsyncComponent(() => import('./lists.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
 const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
+const XRaw = defineAsyncComponent(() => import('./raw.vue'));
 
 const props = withDefaults(defineProps<{
 	acct: string;
@@ -112,6 +114,10 @@ const headerTabs = $computed(() => user ? [{
 	key: 'gallery',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
+}, {
+	key: 'raw',
+	title: 'Raw',
+	icon: 'ti ti-code',
 }] : []);
 
 definePageMetadata(computed(() => user ? {

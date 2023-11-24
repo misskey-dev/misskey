@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<div
-		v-if="!muted"
+		v-if="!hardMuted && !muted"
 		v-show="!isDeleted"
 		ref="el"
 		v-hotkey="keymap"
@@ -193,6 +193,7 @@ const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
 	pinned?: boolean;
 	mock?: boolean;
+	withHardMute?: boolean;
 }>(), {
 	mock: false,
 });
@@ -248,13 +249,23 @@ const urls = $computed(() => parsed ? extractUrlFromMfm(parsed) : null);
 const isLong = shouldCollapsed(appearNote, urls ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
-const muted = ref($i ? checkWordMute(appearNote, $i, $i.mutedWords) : false);
+const muted = ref(checkMute(appearNote, $i?.mutedWords));
+const hardMuted = ref(props.withHardMute && checkMute(appearNote, $i?.hardMutedWords));
 const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i.id));
 const hideMutedNotes = defaultStore.state.hideMutedNotes;
 let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
+
+function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null): boolean {
+	if (mutedWords == null) return false;
+
+	if (checkWordMute(note, $i, mutedWords)) return true;
+	if (note.reply && checkWordMute(note.reply, $i, mutedWords)) return true;
+	if (note.renote && checkWordMute(note.renote, $i, mutedWords)) return true;
+	return false;
+}
 
 const keymap = {
 	'r': () => reply(true),

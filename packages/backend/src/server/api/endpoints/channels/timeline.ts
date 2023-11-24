@@ -15,6 +15,7 @@ import { IdService } from '@/core/IdService.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -72,11 +73,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private funoutTimelineService: FunoutTimelineService,
 		private cacheService: CacheService,
 		private activeUsersChart: ActiveUsersChart,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 			const isRangeSpecified = untilId != null && sinceId != null;
+
+			const serverSettings = await this.metaService.fetch();
 
 			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
@@ -88,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (me) this.activeUsersChart.read(me);
 
-			if (isRangeSpecified || sinceId == null) {
+			if (serverSettings.enableFanoutTimeline && (isRangeSpecified || sinceId == null)) {
 				const [
 					userIdsWhoMeMuting,
 				] = me ? await Promise.all([

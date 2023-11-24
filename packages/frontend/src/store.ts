@@ -421,6 +421,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'medium' as 'small' | 'medium' | 'large',
 	},
+	limitWidthOfReaction: {
+		where: 'device',
+		default: true,
+	},
 	forceShowAds: {
 		where: 'device',
 		default: false,
