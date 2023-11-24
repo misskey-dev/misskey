@@ -127,6 +127,4 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 		border-color: var(--success);
 	}
 }
-
-
 </style>
