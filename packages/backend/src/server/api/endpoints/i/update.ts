@@ -243,7 +243,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
 				// TODO: ちゃんと数える
-				const length = JSON.stringify(ps.mutedWords).length;
+				const length = JSON.stringify(mutedWords).length;
 				if (length > limit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}
