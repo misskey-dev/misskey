@@ -20,9 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:placeholder="placeholder"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
+			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
 			:step="step"
 			:list="id"
+			:min="min"
+			:max="max"
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
@@ -56,9 +59,12 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];
+	min?: number;
+	max?: number;
 	inline?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;

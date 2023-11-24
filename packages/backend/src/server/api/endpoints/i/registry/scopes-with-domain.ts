@@ -5,26 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MutedNotesRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
-	tags: ['account'],
-
 	requireCredential: true,
-
-	kind: 'read:account',
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			count: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-		},
-	},
+	secure: true,
 } as const;
 
 export const paramDef = {
@@ -36,16 +21,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MutedNotesRepository,
+		private registryApiService: RegistryApiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			return {
-				count: await this.mutedNotesRepository.countBy({
-					userId: me.id,
-					reason: 'word',
-				}),
-			};
+			return await this.registryApiService.getAllScopeAndDomains(me.id);
 		});
 	}
 }

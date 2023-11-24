@@ -16,6 +16,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -57,10 +58,22 @@ export const meta = {
 			id: 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a',
 		},
 
+		cannotRenoteDueToVisibility: {
+			message: 'You can not Renote due to target visibility.',
+			code: 'CANNOT_RENOTE_DUE_TO_VISIBILITY',
+			id: 'be9529e9-fe72-4de0-ae43-0b363c4938af',
+		},
+
 		noSuchReplyTarget: {
 			message: 'No such reply target.',
 			code: 'NO_SUCH_REPLY_TARGET',
 			id: '749ee0f6-d3da-459a-bf02-282e2da4292c',
+		},
+
+		cannotReplyToInvisibleNote: {
+			message: 'You cannot reply to an invisible Note.',
+			code: 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE',
+			id: 'b98980fa-3780-406c-a935-b6d0eeee10d1',
 		},
 
 		cannotReplyToPureRenote: {
@@ -92,6 +105,12 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
 		},
+
+		cannotRenoteOutsideOfChannel: {
+			message: 'Cannot renote outside of channel.',
+			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
+			id: '33510210-8452-094c-6227-4a6c05d99f00',
+		},
 	},
 } as const;
 
@@ -102,7 +121,7 @@ export const paramDef = {
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		cw: { type: 'string', nullable: true, maxLength: 100 },
+		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
 		noExtractMentions: { type: 'boolean', default: false },
@@ -215,7 +234,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (renote == null) {
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+				} else if (isPureRenote(renote)) {
 					throw new ApiError(meta.errors.cannotReRenote);
 				}
 
@@ -231,6 +250,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
+
+				if (renote.visibility === 'followers' && renote.userId !== me.id) {
+					// 他人のfollowers noteはreject
+					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+				} else if (renote.visibility === 'specified') {
+					// specified / direct noteはreject
+					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+				}
+
+				if (renote.channelId && renote.channelId !== ps.channelId) {
+					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
+					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
+					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
+					if (renoteChannel == null) {
+						// リノートしたいノートが書き込まれているチャンネルが無い
+						throw new ApiError(meta.errors.noSuchChannel);
+					} else if (!renoteChannel.allowRenoteToExternal) {
+						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
+						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+					}
+				}
 			}
 
 			let reply: MiNote | null = null;
@@ -240,8 +280,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (reply == null) {
 					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+				} else if (isPureRenote(reply)) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
+				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
+					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 				}
 
 				// Check blocking

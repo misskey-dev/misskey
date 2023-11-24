@@ -27,7 +27,7 @@ function rename(file: Misskey.entities.DriveFile) {
 
 function describe(file: Misskey.entities.DriveFile) {
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
-		default: file.comment != null ? file.comment : '',
+		default: file.comment ?? '',
 		file: file,
 	}, {
 		done: caption => {
@@ -56,6 +56,7 @@ function copyUrl(file: Misskey.entities.DriveFile) {
 	copyToClipboard(file.url);
 	os.success();
 }
+
 /*
 function addApp() {
 	alert('not implemented yet');
@@ -77,6 +78,11 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 	const isImage = file.type.startsWith('image/');
 	let menu;
 	menu = [{
+		type: 'link',
+		to: `/my/drive/file/${file.id}`,
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-info-circle',
+	}, null, {
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(file),

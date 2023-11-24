@@ -845,6 +845,7 @@ sensitiveWords: "Ta'sirchan so'zlar"
 icon: "Avatar"
 replies: "Javob berish"
 renotes: "Qayta qayd etish"
+flip: "Teskari"
 _achievements:
   _types:
     _viewInstanceChart:
@@ -910,7 +911,6 @@ _theme:
 _sfx:
   note: "Qaydlar"
   notification: "Xabarnomalar"
-  chat: "Suhbat"
 _ago:
   minutesAgo: "{n} daqiqa oldin"
   hoursAgo: "{n} soat oldin"

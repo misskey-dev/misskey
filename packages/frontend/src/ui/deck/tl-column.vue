@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
@@ -48,6 +48,7 @@ const props = defineProps<{
 }>();
 
 let disabled = $ref(false);
+let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
 
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
@@ -115,11 +116,11 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRenotes,
 	ref: $$(withRenotes),
-}, {
+}, props.column.tl === 'local' || props.column.tl === 'social' ? {
 	type: 'switch',
-	text: i18n.ts.withReplies,
+	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: $$(withReplies),
-}, {
+} : undefined, {
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
 	ref: $$(onlyFiles),

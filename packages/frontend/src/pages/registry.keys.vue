@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<FormSplit>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._registry.domain }}</template>
-					<template #value>{{ i18n.ts.system }}</template>
+					<template #value>{{ props.domain === '@' ? i18n.ts.system : props.domain.toUpperCase() }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._registry.scope }}</template>
@@ -23,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<FormSection v-if="keys">
 				<template #label>{{ i18n.ts.keys }}</template>
-				<div class="_formLinks">
-					<FormLink v-for="key in keys" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
+				<div class="_gaps_s">
+					<FormLink v-for="key in keys" :to="`/registry/value/${props.domain}/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 				</div>
 			</FormSection>
 		</div>
@@ -46,15 +46,17 @@ import FormSplit from '@/components/form/split.vue';
 
 const props = defineProps<{
 	path: string;
+	domain: string;
 }>();
 
-const scope = $computed(() => props.path.split('/'));
+const scope = $computed(() => props.path ? props.path.split('/') : []);
 
 let keys = $ref(null);
 
 function fetchKeys() {
 	os.api('i/registry/keys-with-type', {
 		scope: scope,
+		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
 		keys = Object.entries(res).sort((a, b) => a[0].localeCompare(b[0]));
 	});

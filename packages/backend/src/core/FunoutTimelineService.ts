@@ -12,8 +12,8 @@ import { IdService } from '@/core/IdService.js';
 @Injectable()
 export class FunoutTimelineService {
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		private idService: IdService,
 	) {
@@ -30,9 +30,9 @@ export class FunoutTimelineService {
 			}
 		} else {
 			// 末尾のIDを取得
-			this.redisClient.lindex('list:' + tl, -1).then(lastId => {
+			this.redisForTimelines.lindex('list:' + tl, -1).then(lastId => {
 				if (lastId == null || (this.idService.parse(id).date.getTime() > this.idService.parse(lastId).date.getTime())) {
-					this.redisClient.lpush('list:' + tl, id);
+					this.redisForTimelines.lpush('list:' + tl, id);
 				} else {
 					Promise.resolve();
 				}
@@ -43,23 +43,23 @@ export class FunoutTimelineService {
 	@bindThis
 	public get(name: string, untilId?: string | null, sinceId?: string | null) {
 		if (untilId && sinceId) {
-			return this.redisClient.lrange('list:' + name, 0, -1)
+			return this.redisForTimelines.lrange('list:' + name, 0, -1)
 				.then(ids => ids.filter(id => id < untilId && id > sinceId).sort((a, b) => a > b ? -1 : 1));
 		} else if (untilId) {
-			return this.redisClient.lrange('list:' + name, 0, -1)
+			return this.redisForTimelines.lrange('list:' + name, 0, -1)
 				.then(ids => ids.filter(id => id < untilId).sort((a, b) => a > b ? -1 : 1));
 		} else if (sinceId) {
-			return this.redisClient.lrange('list:' + name, 0, -1)
+			return this.redisForTimelines.lrange('list:' + name, 0, -1)
 				.then(ids => ids.filter(id => id > sinceId).sort((a, b) => a < b ? -1 : 1));
 		} else {
-			return this.redisClient.lrange('list:' + name, 0, -1)
+			return this.redisForTimelines.lrange('list:' + name, 0, -1)
 				.then(ids => ids.sort((a, b) => a > b ? -1 : 1));
 		}
 	}
 
 	@bindThis
 	public getMulti(name: string[], untilId?: string | null, sinceId?: string | null): Promise<string[][]> {
-		const pipeline = this.redisClient.pipeline();
+		const pipeline = this.redisForTimelines.pipeline();
 		for (const n of name) {
 			pipeline.lrange('list:' + n, 0, -1);
 		}
@@ -76,5 +76,10 @@ export class FunoutTimelineService {
 							: ids.sort((a, b) => a > b ? -1 : 1),
 			);
 		});
+	}
+
+	@bindThis
+	public purge(name: string) {
+		return this.redisForTimelines.del('list:' + name);
 	}
 }

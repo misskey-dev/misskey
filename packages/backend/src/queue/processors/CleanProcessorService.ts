@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, MutedNotesRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/_.js';
+import type { AntennasRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -24,9 +24,6 @@ export class CleanProcessorService {
 
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
-
-		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MutedNotesRepository,
 
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
@@ -46,16 +43,6 @@ export class CleanProcessorService {
 
 		this.userIpsRepository.delete({
 			createdAt: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90))),
-		});
-
-		this.mutedNotesRepository.delete({
-			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
-			reason: 'word',
-		});
-
-		this.mutedNotesRepository.delete({
-			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
-			reason: 'word',
 		});
 
 		// 使われてないアンテナを停止

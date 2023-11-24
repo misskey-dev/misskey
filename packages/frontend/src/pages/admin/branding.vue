@@ -10,12 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkInput v-model="iconUrl">
+					<MkInput v-model="iconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }}</template>
 					</MkInput>
 
-					<MkInput v-model="app192IconUrl">
+					<MkInput v-model="app192IconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
 						<template #caption>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkInput>
 
-					<MkInput v-model="app512IconUrl">
+					<MkInput v-model="app512IconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
 						<template #caption>
@@ -37,27 +37,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkInput>
 
-					<MkInput v-model="bannerUrl">
+					<MkInput v-model="bannerUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.bannerUrl }}</template>
 					</MkInput>
 
-					<MkInput v-model="backgroundImageUrl">
+					<MkInput v-model="backgroundImageUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 					</MkInput>
 
-					<MkInput v-model="notFoundImageUrl">
+					<MkInput v-model="notFoundImageUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.notFoundDescription }}</template>
 					</MkInput>
 
-					<MkInput v-model="infoImageUrl">
+					<MkInput v-model="infoImageUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.nothing }}</template>
 					</MkInput>
 
-					<MkInput v-model="serverErrorImageUrl">
+					<MkInput v-model="serverErrorImageUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.somethingHappened }}</template>
 					</MkInput>

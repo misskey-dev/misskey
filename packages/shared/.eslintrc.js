@@ -38,6 +38,9 @@ module.exports = {
 			'before': true,
 			'after': true,
 		}],
+		'brace-style': ['error', '1tbs', {
+			'allowSingleLine': true,
+		}],
 		'padded-blocks': ['error', 'never'],
 		/* TODO: path aliasを使わないとwarnする
 		'no-restricted-imports': ['warn', {
@@ -64,6 +67,21 @@ module.exports = {
 		'object-curly-spacing': ['error', 'always'],
 		'space-infix-ops': ['error'],
 		'space-before-blocks': ['error', 'always'],
+		'padding-line-between-statements': [
+			'error',
+			{ 'blankLine': 'always', 'prev': 'function', 'next': '*' },
+			{ 'blankLine': 'always', 'prev': '*', 'next': 'function' },
+		],
+		"lines-between-class-members": "off",
+		/* typescript-eslint では enforce に対応してないっぽい
+		'@typescript-eslint/lines-between-class-members': ['error', {
+			enforce: [{
+				blankLine: 'always',
+				prev: 'method',
+				next: '*',
+			}]
+		}],
+		*/
 		'@typescript-eslint/func-call-spacing': ['error', 'never'],
 		'@typescript-eslint/no-explicit-any': ['warn'],
 		'@typescript-eslint/no-unused-vars': ['warn'],

@@ -46,6 +46,7 @@ export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, o
 	};
 
 	function removeListener() { container.removeEventListener('scroll', onScroll); }
+
 	container.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }
@@ -71,6 +72,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	function removeListener() {
 		containerOrWindow.removeEventListener('scroll', onScroll);
 	}
+
 	containerOrWindow.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }

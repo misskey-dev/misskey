@@ -50,6 +50,7 @@ export const paramDef = {
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		color: { type: 'string', minLength: 1, maxLength: 16 },
 		isSensitive: { type: 'boolean', nullable: true },
+		allowRenoteToExternal: { type: 'boolean', nullable: true },
 	},
 	required: ['name'],
 } as const;
@@ -80,14 +81,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const channel = await this.channelsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
 				description: ps.description ?? null,
 				bannerId: banner ? banner.id : null,
 				isSensitive: ps.isSensitive ?? false,
 				...(ps.color !== undefined ? { color: ps.color } : {}),
+				allowRenoteToExternal: ps.allowRenoteToExternal ?? true,
 			} as MiChannel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.channelEntityService.pack(channel, me);

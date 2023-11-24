@@ -48,7 +48,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
-				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
 				return new Map(JSON.parse(value).map((x: Serialized<MiEmoji>) => [x.name, {
 					...x,
 					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
@@ -70,7 +69,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,
@@ -332,7 +331,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		const queryOrNull = async () => (await this.emojisRepository.findOneBy({
 			name,
-			host: host ?? IsNull(),
+			host,
 		})) ?? null;
 
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
@@ -378,6 +377,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		for (const emoji of _emojis) {
 			this.cache.set(`${emoji.name} ${emoji.host}`, emoji);
 		}
+	}
+
+	/**
+	 * ローカル内の絵文字に重複がないかチェックします
+	 * @param name 絵文字名
+	 */
+	@bindThis
+	public checkDuplicate(name: string): Promise<boolean> {
+		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
+	}
+
+	@bindThis
+	public getEmojiById(id: string): Promise<MiEmoji | null> {
+		return this.emojisRepository.findOneBy({ id });
 	}
 
 	@bindThis
