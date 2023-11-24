@@ -16,7 +16,7 @@ import type { AntennasRepository, UserListJoiningsRepository } from '@/models/_.
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -92,7 +92,7 @@ export class AntennaService implements OnApplicationShutdown {
 				'*',
 				'note', note.id);
 
-			this.redisTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
+			this.funoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
 

@@ -53,7 +53,7 @@ import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 
 const mutedWordsCache = new MemorySingleCache<{ userId: MiUserProfile['userId']; mutedWords: MiUserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -199,7 +199,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
-		private redisTimelineService: RedisTimelineService,
+		private funoutTimelineService: FunoutTimelineService,
 		private noteReadService: NoteReadService,
 		private notificationService: NotificationService,
 		private relayService: RelayService,
@@ -829,9 +829,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const r = this.redisClient.pipeline();
 
 		if (note.channelId) {
-			this.redisTimelineService.push(`channelTimeline:${note.channelId}`, note.id, this.config.perChannelMaxNoteCacheCount, r);
+			this.funoutTimelineService.push(`channelTimeline:${note.channelId}`, note.id, this.config.perChannelMaxNoteCacheCount, r);
 
-			this.redisTimelineService.push(`userTimelineWithChannel:${user.id}`, note.id, 300, r);
+			this.funoutTimelineService.push(`userTimelineWithChannel:${user.id}`, note.id, 300, r);
 
 			const channelFollowings = await this.channelFollowingsRepository.find({
 				where: {
@@ -841,9 +841,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 
 			for (const channelFollowing of channelFollowings) {
-				this.redisTimelineService.push(`homeTimeline:${channelFollowing.followerId}`, note.id, 300, r);
+				this.funoutTimelineService.push(`homeTimeline:${channelFollowing.followerId}`, note.id, 300, r);
 				if (note.fileIds.length > 0) {
-					this.redisTimelineService.push(`homeTimelineWithFiles:${channelFollowing.followerId}`, note.id, 300 / 2, r);
+					this.funoutTimelineService.push(`homeTimelineWithFiles:${channelFollowing.followerId}`, note.id, 300 / 2, r);
 				}
 			}
 		} else {
@@ -881,9 +881,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 					if (!this.config.nirila.withRepliesInHomeTL) continue;
 				}
 
-				this.redisTimelineService.push(`homeTimeline:${following.followerId}`, note.id, 300, r);
+				this.funoutTimelineService.push(`homeTimeline:${following.followerId}`, note.id, 300, r);
 				if (note.fileIds.length > 0) {
-					this.redisTimelineService.push(`homeTimelineWithFiles:${following.followerId}`, note.id, 300 / 2, r);
+					this.funoutTimelineService.push(`homeTimelineWithFiles:${following.followerId}`, note.id, 300 / 2, r);
 				}
 			}
 
@@ -899,36 +899,36 @@ export class NoteCreateService implements OnApplicationShutdown {
 					if (!this.config.nirila.withRepliesInHomeTL) continue;
 				}
 
-				this.redisTimelineService.push(`userListTimeline:${userListMembership.userListId}`, note.id, 300, r);
+				this.funoutTimelineService.push(`userListTimeline:${userListMembership.userListId}`, note.id, 300, r);
 				if (note.fileIds.length > 0) {
-					this.redisTimelineService.push(`userListTimelineWithFiles:${userListMembership.userListId}`, note.id, 300 / 2, r);
+					this.funoutTimelineService.push(`userListTimelineWithFiles:${userListMembership.userListId}`, note.id, 300 / 2, r);
 				}
 			}
 
 			if (note.visibility !== 'specified' || !note.visibleUserIds.some(v => v === user.id)) { // 自分自身のHTL
-				this.redisTimelineService.push(`homeTimeline:${user.id}`, note.id, 300, r);
+				this.funoutTimelineService.push(`homeTimeline:${user.id}`, note.id, 300, r);
 				if (note.fileIds.length > 0) {
-					this.redisTimelineService.push(`homeTimelineWithFiles:${user.id}`, note.id, 300 / 2, r);
+					this.funoutTimelineService.push(`homeTimelineWithFiles:${user.id}`, note.id, 300 / 2, r);
 				}
 			}
 
 			// 自分自身以外への返信
 			if (note.replyId && note.replyUserId !== note.userId) {
-				this.redisTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, 300, r);
+				this.funoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, 300, r);
 
 				if (note.visibility === 'public' && note.userHost == null) {
-					this.redisTimelineService.push('localTimelineWithReplies', note.id, 300, r);
+					this.funoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 				}
 			} else {
-				this.redisTimelineService.push(`userTimeline:${user.id}`, note.id, 300, r);
+				this.funoutTimelineService.push(`userTimeline:${user.id}`, note.id, 300, r);
 				if (note.fileIds.length > 0) {
-					this.redisTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, 300 / 2, r);
+					this.funoutTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, 300 / 2, r);
 				}
 
 				if (note.visibility === 'public' && note.userHost == null) {
-					this.redisTimelineService.push('localTimeline', note.id, 1000, r);
+					this.funoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
-						this.redisTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+						this.funoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
 					}
 				}
 			}
