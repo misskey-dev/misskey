@@ -206,7 +206,7 @@ export class ReactionService {
 					this.featuredService.updateInChannelNotesRanking(note.channelId, note.id, 1);
 				}
 			} else {
-				if (note.visibility === 'public' && note.userHost == null && note.replyId == null) {
+				if (this.featuredService.shouldBeIncludedInGlobalOrUserFeatured(note)) {
 					this.featuredService.updateGlobalNotesRanking(note.id, 1);
 					this.featuredService.updatePerUserNotesRanking(note.userId, note.id, 1);
 				}

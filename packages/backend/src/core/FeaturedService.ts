@@ -74,6 +74,12 @@ export class FeaturedService {
 		return Array.from(ranking.keys());
 	}
 
+	// TODO: find better place?
+	@bindThis
+	public shouldBeIncludedInGlobalOrUserFeatured(note: MiNote): boolean {
+		return note.visibility === 'public' && note.userHost == null && note.replyId == null;
+	}
+
 	@bindThis
 	public updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
