@@ -107,7 +107,6 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile, uploads } from '@/scripts/upload.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { mainRouter, useRouter } from '@/router.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -154,7 +153,6 @@ const fetching = ref(true);
 const ilFilesObserver = new IntersectionObserver(
 	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
 );
-const router = useRouter();
 
 watch(folder, () => emit('cd', folder.value));
 
@@ -431,15 +429,9 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 function move(target?: Misskey.entities.DriveFolder) {
 	if (!target) {
 		goRoot();
-		// メインルーターならURLだけ書き換え
-		if (router === mainRouter) history.pushState({}, '', '/my/drive/');
 		return;
 	} else if (typeof target === 'object') {
 		target = target.id;
-		// メインルーターならURLだけ書き換え
-		if (router === mainRouter) {
-			history.pushState({}, '', `/my/drive/folder/${target}`);
-		}
 	}
 
 	fetching.value = true;
