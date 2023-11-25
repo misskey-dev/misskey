@@ -644,7 +644,6 @@ export interface Locale {
     "smtpSecureInfo": string;
     "testEmail": string;
     "wordMute": string;
-    "hardWordMute": string;
     "regexpError": string;
     "regexpErrorDescription": string;
     "instanceMute": string;
@@ -1866,6 +1865,7 @@ export interface Locale {
         "muteWords": string;
         "muteWordsDescription": string;
         "muteWordsDescription2": string;
+        "hideMutedNotes": string;
     };
     "_instanceMute": {
         "instanceMuteDescription": string;

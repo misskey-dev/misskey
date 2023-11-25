@@ -15,7 +15,6 @@ import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, Pag
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
-import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -124,11 +123,6 @@ export const meta = {
 	},
 } as const;
 
-const muteWordsType = { type: 'array', items: { oneOf: [
-	{ type: 'array', items: { type: 'string' } },
-	{ type: 'string' }
-] } } as const;
-
 export const paramDef = {
 	type: 'object',
 	properties: {
@@ -177,8 +171,12 @@ export const paramDef = {
 		autoSensitive: { type: 'boolean' },
 		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
-		mutedWords: muteWordsType,
-		hardMutedWords: muteWordsType,
+		mutedWords: { type: 'array', items: {
+			oneOf: [
+				{ type: 'array', items: { type: 'string' } },
+				{ type: 'string' }
+			]
+		} },
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -241,19 +239,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
-
-			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
-				const length = mutedWords.length;
-				if (length > limit) {
+			if (ps.mutedWords !== undefined) {
+				const length = ps.mutedWords.length;
+				if (length > (await this.roleService.getUserPolicies(user.id)).wordMuteLimit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}
-			}
 
-			function validateMuteWordRegex(mutedWords: (string[] | string)[]) {
-				for (const mutedWord of mutedWords) {
-					if (typeof mutedWord !== "string") continue;
-
-					const regexp = mutedWord.match(/^\/(.+)\/(.*)$/);
+				// validate regular expression syntax
+				ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
+					const regexp = RegExp(/^\/(.+)\/(.*)$/).exec(x as string);
 					if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
 
 					try {
@@ -261,20 +255,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					} catch (err) {
 						throw new ApiError(meta.errors.invalidRegexp);
 					}
-				}
-			}
-
-			if (ps.mutedWords !== undefined) {
-				checkMuteWordCount(ps.mutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
-				validateMuteWordRegex(ps.mutedWords);
+				});
 
 				profileUpdates.mutedWords = ps.mutedWords;
 				profileUpdates.enableWordMute = ps.mutedWords.length > 0;
-			}
-			if (ps.hardMutedWords !== undefined) {
-				checkMuteWordCount(ps.hardMutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
-				validateMuteWordRegex(ps.hardMutedWords);
-				profileUpdates.hardMutedWords = ps.hardMutedWords;
 			}
 			if (ps.mutedInstances !== undefined) profileUpdates.mutedInstances = ps.mutedInstances;
 			if (ps.notificationRecieveConfig !== undefined) profileUpdates.notificationRecieveConfig = ps.notificationRecieveConfig;

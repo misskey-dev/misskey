@@ -370,6 +370,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	hideMutedNotes: {
+		where: 'device',
+		default: false,
+	},
 	tlWithReplies: {
 		where: 'device',
 		default: false,

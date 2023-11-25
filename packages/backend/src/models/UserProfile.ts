@@ -219,11 +219,6 @@ export class MiUserProfile {
 
 	@Column('jsonb', {
 		default: [],
-	})
-	public hardMutedWords: (string[] | string)[];
-
-	@Column('jsonb', {
-		default: [],
 		comment: 'List of instances muted by the user.',
 	})
 	public mutedInstances: string[];
