@@ -1,4 +1,5 @@
-import type { Endpoints } from './autogen';
+import { SwitchCase } from './api.types';
+import type { Endpoints } from './api.types';
 
 const MK_API_ERROR = Symbol();
 
@@ -25,6 +26,19 @@ export type FetchLike = (input: string, init?: {
 		json(): Promise<any>;
 	}>;
 
+type IsNeverType<T> = [T] extends [never] ? true : false;
+type StrictExtract<Union, Cond> = Cond extends Union ? Union : never;
+
+type IsCaseMatched<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
+	Endpoints[E]['res'] extends SwitchCase
+		?	IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>> extends false ? true : false
+		: false
+
+type GetCaseResult<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
+	Endpoints[E]['res'] extends SwitchCase
+		? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>[1]
+		: never
+
 export class APIClient {
 	public origin: string;
 	public credential: string | null | undefined;
@@ -46,7 +60,20 @@ export class APIClient {
 		endpoint: E,
 		params: P = {} as P,
 		credential?: string | null,
-	): Promise<Endpoints[E]['res']> {
+	): Promise<Endpoints[E]['res'] extends SwitchCase
+		?
+		IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> :
+		IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1> :
+		IsCaseMatched<E, P, 2> extends true ? GetCaseResult<E, P, 2> :
+		IsCaseMatched<E, P, 3> extends true ? GetCaseResult<E, P, 3> :
+		IsCaseMatched<E, P, 4> extends true ? GetCaseResult<E, P, 4> :
+		IsCaseMatched<E, P, 5> extends true ? GetCaseResult<E, P, 5> :
+		IsCaseMatched<E, P, 6> extends true ? GetCaseResult<E, P, 6> :
+		IsCaseMatched<E, P, 7> extends true ? GetCaseResult<E, P, 7> :
+		IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> :
+		IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> :
+		Endpoints[E]['res']['$switch']['$default'] :
+		Endpoints[E]['res']> {
 		return new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
@@ -62,10 +89,8 @@ export class APIClient {
 			}).then(async (res) => {
 				const body = res.status === 204 ? null : await res.json();
 
-				if (res.status === 200) {
+				if (res.status === 200 || res.status === 204) {
 					resolve(body);
-				} else if (res.status === 204) {
-					resolve(null);
 				} else {
 					reject({
 						[MK_API_ERROR]: true,

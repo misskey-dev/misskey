@@ -199,7 +199,7 @@ class Endpoint {
 		const reqName = this.request?.generateName() ?? emptyRequest.generateName();
 		const resName = this.response?.generateName() ?? emptyResponse.generateName();
 
-		return `'${this.operationId}': { req: ${reqName}, res: ${resName} };`;
+		return `'${this.operationId}': { req: ${reqName}; res: ${resName} };`;
 	}
 }
 
@@ -216,14 +216,6 @@ async function main() {
 	const entitiesFileName = `${generatePath}/entities.ts`;
 	const endpointFileName = `${generatePath}/endpoint.ts`;
 	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
-
-	const indexLines: string[] = [
-		`export { Endpoints } from '${toImportPath(endpointFileName)}';`,
-		`export * from '${toImportPath(entitiesFileName)}';`,
-		`export * from '${toImportPath(modelFileName)}';`,
-		'',
-	];
-	await writeFile(`${generatePath}/index.ts`, indexLines.join('\n'));
 }
 
 main();

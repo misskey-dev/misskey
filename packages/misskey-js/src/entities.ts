@@ -1,6 +1,7 @@
 import { ModerationLogPayloads, notificationTypes } from './consts.js';
-import { DriveFile, Page, User, UserDetailed } from './autogen';
-export * from './autogen';
+import { DriveFile, Page, User, UserDetailed } from './autogen/models';
+export * from './autogen/entities';
+export * from './autogen/models';
 
 export type ID = string;
 export type DateString = string;
