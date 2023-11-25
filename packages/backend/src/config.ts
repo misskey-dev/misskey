@@ -255,7 +255,7 @@ export function loadConfig(): Config {
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
 		userAgent: `Misskey/${version} (${config.url})`,
-		clientEntry: clientManifest['index.html'],
+		clientEntry: clientManifest['src/_boot_.ts'],
 		clientManifestExists: clientManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
