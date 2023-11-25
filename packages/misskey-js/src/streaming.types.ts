@@ -1,5 +1,5 @@
-import { Antenna, DriveFile, EmojiDetailed, MeDetailed, Note, User } from './autogen/models.js';
-import { MessagingMessage, PageEvent, UserGroup } from './entities.js';
+import { Antenna, DriveFile, EmojiDetailed, MeDetailed, Note, User, Notification } from './autogen/models.js';
+import { PageEvent } from './entities.js';
 
 type FIXME = any;
 
@@ -23,9 +23,6 @@ export type Channels = {
 			readAllUnreadMentions: () => void;
 			unreadSpecifiedNote: (payload: Note['id']) => void;
 			readAllUnreadSpecifiedNotes: () => void;
-			readAllMessagingMessages: () => void;
-			messagingMessage: (payload: MessagingMessage) => void;
-			unreadMessagingMessage: (payload: MessagingMessage) => void;
 			readAllAntennas: () => void;
 			unreadAntenna: (payload: Antenna) => void;
 			readAllAnnouncements: () => void;
@@ -70,23 +67,6 @@ export type Channels = {
 			note: (payload: Note) => void;
 		};
 		receives: null;
-	};
-	messaging: {
-		params: {
-			otherparty?: User['id'] | null;
-			group?: UserGroup['id'] | null;
-		};
-		events: {
-			message: (payload: MessagingMessage) => void;
-			deleted: (payload: MessagingMessage['id']) => void;
-			read: (payload: MessagingMessage['id'][]) => void;
-			typers: (payload: User[]) => void;
-		};
-		receives: {
-			read: {
-				id: MessagingMessage['id'];
-			};
-		};
 	};
 	serverStats: {
 		params: null;

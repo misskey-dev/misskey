@@ -1,30 +1,10 @@
 import { ModerationLogPayloads, notificationTypes } from './consts.js';
-import { DriveFile, Page, User, UserDetailed } from './autogen/models';
+import { Page, User, UserDetailed } from './autogen/models';
 export * from './autogen/entities';
 export * from './autogen/models';
 
 export type ID = string;
 export type DateString = string;
-
-type TODO = Record<string, any>;
-
-export type UserGroup = TODO;
-
-export type MessagingMessage = {
-	id: ID;
-	createdAt: DateString;
-	file: DriveFile | null;
-	fileId: DriveFile['id'] | null;
-	isRead: boolean;
-	reads: User['id'][];
-	text: string | null;
-	user: User;
-	userId: User['id'];
-	recipient?: User | null;
-	recipientId: User['id'] | null;
-	group?: UserGroup | null;
-	groupId: UserGroup['id'] | null;
-};
 
 export type PageEvent = {
 	pageId: Page['id'];
@@ -33,15 +13,6 @@ export type PageEvent = {
 	userId: User['id'];
 	user: User;
 };
-
-export type UserSorting =
-	| '+follower'
-	| '-follower'
-	| '+createdAt'
-	| '-createdAt'
-	| '+updatedAt'
-	| '-updatedAt';
-export type OriginType = 'combined' | 'local' | 'remote';
 
 export type ModerationLog = {
 	id: ID;
