@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Equal, In, IsNull, Not } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
@@ -15,6 +15,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
@@ -38,6 +39,7 @@ export class FeedService {
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
+		private funoutTimelineService: FunoutTimelineService,
 	) {
 	}
 
@@ -61,6 +63,11 @@ export class FeedService {
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
+		let withFilesIds: string[] = [];
+		if (opts.withFiles) {
+			withFilesIds = await this.funoutTimelineService.get(`userTimelineWithFiles:${user.id}`);
+		}
+
 		const notes = await this.notesRepository.find({
 			where: {
 				userId: user.id,
@@ -70,7 +77,7 @@ export class FeedService {
 					replyId: IsNull(),
 				}),
 				...(opts.withFiles ? {
-					fileIds: Not(Equal('{}')),
+					id: In(withFilesIds),
 				} : {}),
 			},
 			order: { id: -1 },
