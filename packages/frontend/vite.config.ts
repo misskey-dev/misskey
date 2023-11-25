@@ -28,6 +28,7 @@ const hash = (str: string, seed = 0): number => {
 };
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';
@@ -43,8 +44,7 @@ function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	return {
-		base: '/vite/',
-
+		root: 'src',
 		server: {
 			port: 5173,
 		},
