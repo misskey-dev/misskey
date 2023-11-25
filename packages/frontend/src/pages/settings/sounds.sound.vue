@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getFileName(x) }}</option>
 	</MkSelect>
 	<div v-if="type === 'driveFile'" :class="$style.fileSelectorRoot">
-		<MkButton inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
-		<div :class="!fileUrl && $style.fileNotSelected">{{ fileName === '' ? i18n.ts._soundSettings.driveFileWarn : fileName }}</div>
+		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
+		<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ fileName === '' ? i18n.ts._soundSettings.driveFileWarn : fileName }}</div>
 	</div>
 	<MkRange v-model="volume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
 		<template #label>{{ i18n.ts.volume }}</template>
@@ -142,9 +142,12 @@ function save() {
 <style module>
 .fileSelectorRoot {
 	display: flex;
-	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
+}
+
+.fileSelectorButton {
+	flex-shrink: 0;
 }
 
 .fileNotSelected {
