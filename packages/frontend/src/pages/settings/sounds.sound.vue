@@ -126,6 +126,8 @@ function save() {
 
 	if (type.value !== 'driveFile') {
 		fileUrl.value = undefined;
+		fileName.value = '';
+		fileId.value = undefined;
 	}
 
 	emit('update', {
