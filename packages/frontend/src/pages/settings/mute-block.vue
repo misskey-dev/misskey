@@ -9,7 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.wordMute }}</template>
 
-		<XWordMute/>
+		<XWordMute :muted="$i!.mutedWords" @save="saveMutedWords"/>
+	</MkFolder>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-message-off"></i></template>
+		<template #label>{{ i18n.ts.hardWordMute }}</template>
+
+		<XWordMute :muted="$i!.hardMutedWords" @save="saveHardMutedWords"/>
 	</MkFolder>
 
 	<MkFolder>
@@ -129,6 +136,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { infoImageUrl } from '@/instance.js';
+import { $i } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const renoteMutingPagination = {
@@ -205,6 +213,14 @@ async function toggleBlockItem(item) {
 	} else {
 		expandedBlockItems.push(item.id);
 	}
+}
+
+async function saveMutedWords(mutedWords: (string | string[])[]) {
+	await os.api('i/update', { mutedWords });
+}
+
+async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
+	await os.api('i/update', { hardMutedWords });
 }
 
 const headerActions = $computed(() => []);

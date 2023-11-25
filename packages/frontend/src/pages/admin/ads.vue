@@ -9,12 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XHeader :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 	<MkSpacer :contentMax="900">
-		<MkSwitch :modelValue="publishing" @update:modelValue="onChangePublishing">
-			{{ i18n.ts.publishing }}
-		</MkSwitch>
+		<MkSelect v-model="filterType" :class="$style.input" @update:modelValue="filterItems">
+			<template #label>{{ i18n.ts.state }}</template>
+			<option value="all">{{ i18n.ts.all }}</option>
+			<option value="publishing">{{ i18n.ts.publishing }}</option>
+			<option value="expired">{{ i18n.ts.expired }}</option>
+		</MkSelect>
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
-				<MkAd v-if="ad.url" :specify="ad"/>
+				<MkAd v-if="ad.url" :key="ad.id" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
 				</MkInput>
@@ -82,14 +85,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -101,24 +104,34 @@ let ads: any[] = $ref([]);
 const localTime = new Date();
 const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
 const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, i18n.ts._weekday.tuesday, i18n.ts._weekday.wednesday, i18n.ts._weekday.thursday, i18n.ts._weekday.friday, i18n.ts._weekday.saturday];
-let publishing = false;
+const filterType = ref('all');
+let publishing: boolean | null = null;
 
 os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
-	ads = adsResponse.map(r => {
-		const exdate = new Date(r.expiresAt);
-		const stdate = new Date(r.startsAt);
-		exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
-		stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
-		return {
-			...r,
-			expiresAt: exdate.toISOString().slice(0, 16),
-			startsAt: stdate.toISOString().slice(0, 16),
-		};
-	});
+	if (adsResponse != null) {
+		ads = adsResponse.map(r => {
+			const exdate = new Date(r.expiresAt);
+			const stdate = new Date(r.startsAt);
+			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
+			stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
+			return {
+				...r,
+				expiresAt: exdate.toISOString().slice(0, 16),
+				startsAt: stdate.toISOString().slice(0, 16),
+			};
+		});
+	}
 });
 
-const onChangePublishing = (v) => {
-	publishing = v;
+const filterItems = (v) => {
+	if (v === 'publishing') {
+		publishing = true;
+	} else if (v === 'expired') {
+		publishing = false;
+	} else {
+		publishing = null;
+	}
+
 	refresh();
 };
 
@@ -197,6 +210,7 @@ function save(ad) {
 
 function more() {
 	os.api('admin/ad/list', { untilId: ads.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
+		if (adsResponse == null) return;
 		ads = ads.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
@@ -213,6 +227,7 @@ function more() {
 
 function refresh() {
 	os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+		if (adsResponse == null) return;
 		ads = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
@@ -251,5 +266,8 @@ definePageMetadata({
 	&:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
+}
+.input {
+	margin-bottom: 32px;
 }
 </style>
