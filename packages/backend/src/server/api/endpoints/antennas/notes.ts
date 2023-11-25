@@ -12,7 +12,7 @@ import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private noteReadService: NoteReadService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.globalEventService.publishInternalEvent('antennaUpdated', antenna);
 			}
 
-			let noteIds = await this.funoutTimelineService.get(`antennaTimeline:${antenna.id}`, untilId, sinceId);
+			let noteIds = await this.fanoutTimelineService.get(`antennaTimeline:${antenna.id}`, untilId, sinceId);
 			noteIds = noteIds.slice(0, ps.limit);
 			if (noteIds.length === 0) {
 				return [];
