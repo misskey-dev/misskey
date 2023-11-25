@@ -152,6 +152,11 @@ describe('Webリソース', () => {
 			type,
 		}));
 
+		test('がGETできる。(ノートが存在しない場合でも。)', async () => await ok({
+			path: path(bob.username),
+			type,
+		}));
+
 		test('は存在しないユーザーはGETできない。', async () => await notOk({
 			path: path('nonexisting'),
 			status: 404,
