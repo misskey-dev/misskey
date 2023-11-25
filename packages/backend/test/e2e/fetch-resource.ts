@@ -93,7 +93,7 @@ describe('Webリソース', () => {
 		});
 		aliceChannel = await channel(alice, {});
 
-		bob = await signup({ username: 'alice' });
+		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
