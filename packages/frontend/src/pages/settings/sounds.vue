@@ -14,9 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkFolder v-for="type in soundsKeys" :key="type">
 				<template #label>{{ i18n.t('_sfx.' + type) }}</template>
-				<template #suffix>{{ sounds[type].type ?? i18n.ts.none }}</template>
+				<template #suffix>{{ getFileName(sounds[type].type) }}</template>
 
-				<XSound :type="sounds[type].type" :volume="sounds[type].volume" @update="(res) => updated(type, res)"/>
+				<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
 			</MkFolder>
 		</div>
 	</FormSection>
@@ -27,6 +27,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { Ref, computed, ref } from 'vue';
+import type { SoundType, OperationType } from '@/scripts/sound.js';
+import type { SoundStore } from '@/store.js';
 import XSound from './sounds.sound.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -40,7 +42,7 @@ const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'
 
 const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel'] as const;
 
-const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
+const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	note: defaultStore.reactiveState.sound_note,
 	noteMy: defaultStore.reactiveState.sound_noteMy,
 	notification: defaultStore.reactiveState.sound_notification,
@@ -48,9 +50,22 @@ const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
 	channel: defaultStore.reactiveState.sound_channel,
 });
 
+function getFileName(f: SoundType): string {
+	switch (f) {
+		case null:
+			return i18n.ts.none;
+		case 'driveFile':
+			return i18n.ts._soundSettings.driveFile;
+		default:
+			return f;
+	}
+}
+
 async function updated(type: keyof typeof sounds.value, sound) {
-	const v = {
+	const v: SoundStore = {
 		type: sound.type,
+		fileId: sound.fileId,
+		fileUrl: sound.fileUrl,
 		volume: sound.volume,
 	};
 

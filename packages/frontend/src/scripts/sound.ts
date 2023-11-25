@@ -4,12 +4,14 @@
  */
 
 import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const ctx = new AudioContext();
 const cache = new Map<string, AudioBuffer>();
 
 export const soundsTypes = [
 	null,
+	'driveFile',
 	'syuilo/n-aec',
 	'syuilo/n-aec-4va',
 	'syuilo/n-aec-4vb',
@@ -61,32 +63,90 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba7',
 ] as const;
 
-export async function loadAudio(file: string, useCache = true) {
-	if (useCache && cache.has(file)) {
-		return cache.get(file)!;
+export const operationTypes = [
+	'noteMy',
+	'note',
+	'antenna',
+	'channel',
+	'notification',
+] as const;
+
+export type SoundType = typeof soundsTypes[number];
+
+export type OperationType = typeof operationTypes[number];
+
+export async function loadAudio(options: { soundType: SoundType, fileId?: string, fileUrl?: string, useCache?: boolean; }) {
+	if (_DEV_) console.log('loading audio. opts:', options);
+	if (options.soundType === null || (options.soundType === 'driveFile' && !options.fileUrl)) {
+		return;
+	}
+	if (options.useCache ?? true) {
+		if (options.soundType === 'driveFile' && options.fileId && cache.has(options.fileId)) {
+			if (_DEV_) console.log('use cache');
+			return cache.get(options.fileId)!;
+		} else if (cache.has(options.soundType)) {
+			if (_DEV_) console.log('use cache');
+			return cache.get(options.soundType)!;
+		}
 	}
 
-	const response = await fetch(`/client-assets/sounds/${file}.mp3`);
+	let response;
+
+	if (options.soundType === 'driveFile') {
+		if (!options.fileUrl) return;
+		try {
+			response = await fetch(options.fileUrl);
+		} catch (err) {
+			try {
+				// URLが変わっている可能性があるのでドライブ側からURLを取得するフォールバック
+				if (!options.fileId) return;
+				const apiRes = await os.api('drive/files/show', {
+					fileId: options.fileId,
+				});
+				response = await fetch(apiRes.url);
+			} catch (fbErr) {
+				// それでも無理なら諦める
+				return;
+			}
+		}
+	} else {
+		try {
+			response = await fetch(`/client-assets/sounds/${options.soundType}.mp3`);
+		} catch (err) {
+			return;
+		}
+	}
+
 	const arrayBuffer = await response.arrayBuffer();
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
-	if (useCache) {
-		cache.set(file, audioBuffer);
+	if (options.useCache ?? true) {
+		if (options.soundType === 'driveFile' && options.fileId) {
+			cache.set(options.fileId, audioBuffer);
+		} else {
+			cache.set(options.soundType, audioBuffer);
+		}
 	}
 
 	return audioBuffer;
 }
 
-export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
+export function play(type: OperationType) {
 	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null) return;
-	playFile(sound.type, sound.volume);
+	playFile({
+		soundType: sound.type,
+		fileId: sound.fileId,
+		fileUrl: sound.fileUrl,
+		volume: sound.volume,
+	});
 }
 
-export async function playFile(file: string, volume: number) {
-	const buffer = await loadAudio(file);
-	createSourceNode(buffer, volume)?.start();
+export async function playFile(options: { soundType: SoundType, fileId?: string, fileUrl?: string, volume: number }) {
+	const buffer = await loadAudio(options);
+	if (!buffer) return;
+	createSourceNode(buffer, options.volume)?.start();
 }
 
 export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
@@ -103,4 +163,18 @@ export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBuf
 	soundSource.connect(gainNode).connect(ctx.destination);
 
 	return soundSource;
+}
+
+export async function getSoundDuration(file: string): Promise<number> {
+	const audioEl = document.createElement('audio');
+	audioEl.src = file;
+	return new Promise((resolve) => {
+		const si = setInterval(() => {
+			if (audioEl.readyState > 0) {
+				resolve(audioEl.duration * 1000);
+				clearInterval(si);
+				audioEl.remove();
+			}
+		}, 100);
+	});
 }
