@@ -78,6 +78,8 @@ const fetch = () => {
 			users.value = res;
 			fetching.value = false;
 		});
+
+		lastFetchedAt = now.toISOString();
 	}
 };
 
