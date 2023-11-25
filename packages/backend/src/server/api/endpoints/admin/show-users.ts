@@ -35,7 +35,7 @@ export const paramDef = {
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'] },
 		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended'], default: 'all' },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
+		origin: { type: 'string', ref: 'UserOrigin', default: 'combined' },
 		username: { type: 'string', nullable: true, default: null },
 		hostname: {
 			type: 'string',

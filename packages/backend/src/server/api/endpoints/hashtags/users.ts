@@ -31,9 +31,9 @@ export const paramDef = {
 	properties: {
 		tag: { type: 'string' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
+		sort: { type: 'string', ref: 'UserSorting' },
 		state: { type: 'string', enum: ['all', 'alive'], default: 'all' },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
+		origin: { type: 'string', ref: 'UserOrigin', default: 'local' },
 	},
 	required: ['tag', 'sort'],
 } as const;

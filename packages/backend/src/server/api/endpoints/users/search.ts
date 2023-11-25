@@ -36,7 +36,7 @@ export const paramDef = {
 		query: { type: 'string' },
 		offset: { type: 'integer', default: 0 },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: 'combined' },
+		origin: { type: 'string', ref: 'UserOrigin', default: 'combined' },
 		detail: { type: 'boolean', default: true },
 	},
 	required: ['query'],
