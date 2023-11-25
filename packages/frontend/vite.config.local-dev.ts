@@ -1,7 +1,7 @@
 import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { type UserConfig, defineConfig } from 'vite';
+import { defineConfig, type UserConfig } from 'vite';
 // @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
@@ -28,6 +28,7 @@ const hash = (str: string, seed = 0): number => {
 };
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';
@@ -43,11 +44,6 @@ function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	return {
-		base: '/vite/',
-
-		server: {
-			port: 5173,
-		},
 
 		plugins: [
 			pluginVue({
@@ -72,7 +68,7 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
-				'/client-assets/': __dirname + '/assets/',
+				'/client-assets/': __dirname + '/assets/client-assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
 				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
@@ -118,9 +114,6 @@ export function getConfig(): UserConfig {
 			],
 			manifest: 'manifest.json',
 			rollupOptions: {
-				input: {
-					app: './src/_boot_.ts',
-				},
 				output: {
 					manualChunks: {
 						vue: ['vue'],
