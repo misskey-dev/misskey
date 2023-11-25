@@ -37,7 +37,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
-import { FeedService } from './FeedService.js';
+import { FeedService, FeedType } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
@@ -416,20 +416,13 @@ export class ClientServerService {
 		// URL preview endpoint
 		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
-		// Atom
-		fastify.get<{ Params: { user: string; } }>('/@:user.atom', this.feedService.handle('atom'));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.atom', this.feedService.handle('atom', { withReplies: true }));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.atom', this.feedService.handle('atom', { withFiles: true }));
-
-		// RSS
-		fastify.get<{ Params: { user: string; } }>('/@:user.rss', this.feedService.handle('rss'));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.rss', this.feedService.handle('rss', { withReplies: true }));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.rss', this.feedService.handle('rss', { withFiles: true }));
-
-		// JSON
-		fastify.get<{ Params: { user: string; } }>('/@:user.json', this.feedService.handle('json'));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_replies.json', this.feedService.handle('json', { withReplies: true }));
-		fastify.get<{ Params: { user: string; } }>('/@:user.with_files.json', this.feedService.handle('json', { withFiles: true }));
+		// Feed
+		const feedTypes: FeedType[] = ['atom', 'rss', 'json'];
+		for (const feedType of feedTypes) {
+			fastify.get<{ Params: { user: string; } }>(`/@:user.${feedType}`, this.feedService.handle(feedType));
+			fastify.get<{ Params: { user: string; } }>(`/@:user.with_replies.${feedType}`, this.feedService.handle(feedType, { withReplies: true }));
+			fastify.get<{ Params: { user: string; } }>(`/@:user.with_files.${feedType}`, this.feedService.handle(feedType, { withFiles: true }));
+		}
 
 		//#region SSR (for crawlers)
 		// User

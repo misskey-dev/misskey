@@ -18,6 +18,8 @@ import { IdService } from '@/core/IdService.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
+export type FeedType = 'atom' | 'rss' | 'json';
+
 @Injectable()
 export class FeedService {
 	constructor(
@@ -123,7 +125,7 @@ export class FeedService {
 
 	@bindThis
 	public handle(
-		feedType: 'atom' | 'rss' | 'json',
+		feedType: FeedType,
 		options?: {
 			withReplies?: boolean;
 			withFiles?: boolean;
