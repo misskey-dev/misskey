@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
+import { onActivated, onMounted, onUnmounted, provide, watch, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -50,7 +50,7 @@ const indexInfo = {
 
 provide('shouldOmitHeaderTitle', false);
 
-let INFO = $ref(indexInfo);
+let INFO = ref(indexInfo);
 let childInfo = $ref(null);
 let narrow = $ref(false);
 let view = $ref(null);
@@ -261,6 +261,7 @@ provideMetadataReceiver((info) => {
 		childInfo = null;
 	} else {
 		childInfo = info;
+		INFO.value.hideWidgets = info.value?.hideWidgets ?? undefined;
 	}
 });
 
