@@ -136,6 +136,8 @@ function save() {
 		fileUrl: fileUrl.value,
 		volume: volume.value,
 	});
+
+	os.success();
 }
 </script>
 
