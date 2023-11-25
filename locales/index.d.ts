@@ -642,6 +642,7 @@ export interface Locale {
     "smtpSecureInfo": string;
     "testEmail": string;
     "wordMute": string;
+    "hardWordMute": string;
     "regexpError": string;
     "regexpErrorDescription": string;
     "instanceMute": string;
@@ -1039,6 +1040,7 @@ export interface Locale {
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
     "reactionsDisplaySize": string;
+    "limitWidthOfReaction": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
@@ -1641,7 +1643,9 @@ export interface Locale {
         "assignTarget": string;
         "descriptionOfAssignTarget": string;
         "manual": string;
+        "manualRoles": string;
         "conditional": string;
+        "conditionalRoles": string;
         "condition": string;
         "isConditionalRole": string;
         "isPublic": string;

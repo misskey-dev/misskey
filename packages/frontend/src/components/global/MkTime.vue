@@ -28,12 +28,25 @@ const props = withDefaults(defineProps<{
 	mode: 'relative',
 });
 
-const _time = props.time == null ? NaN :
-	typeof props.time === 'number' ? props.time :
-	(props.time instanceof Date ? props.time : new Date(props.time)).getTime();
+function getDateSafe(n: Date | string | number) {
+	try {
+		if (n instanceof Date) {
+			return n;
+		}
+		return new Date(n);
+	} catch (err) {
+		return {
+			getTime: () => NaN,
+		};
+	}
+}
+
+// eslint-disable-next-line vue/no-setup-props-destructure
+const _time = props.time == null ? NaN : getDateSafe(props.time).getTime();
 const invalid = Number.isNaN(_time);
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 let now = $ref((props.origin ?? new Date()).getTime());
 const ago = $computed(() => (now - _time) / 1000/*ms*/);
 
