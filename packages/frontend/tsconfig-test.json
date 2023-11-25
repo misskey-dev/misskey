@@ -1,0 +1,11 @@
+{
+	"extends": ["./tsconfig"],
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.vue"
+	],
+	"exclude": [
+		".storybook/**/*",
+		"test/**/*",
+	]
+}
