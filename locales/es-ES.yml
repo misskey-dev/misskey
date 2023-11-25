@@ -2211,3 +2211,42 @@ _fileViewer:
   thisPageCanBeSeenFromTheAuthor: "Esta página solo puede ser vista por el autor."
 _externalResourceInstaller:
   title: "Instalar desde sitio externo"
+  checkVendorBeforeInstall: "Asegúrate de que el distribuidor de este recurso es de confianza antes de proceder a la instalación."
+  _plugin:
+    title: "¿Quieres instalar este plugin?"
+    metaTitle: "Información del plugin"
+  _theme:
+    title: "¿Quieres instalar este tema?"
+    metaTitle: "Información del tema"
+  _meta:
+    base: "Esquema de color base"
+  _vendorInfo:
+    title: "Información del distribuidor"
+    endpoint: "Terminal referenciada"
+    hashVerify: "Verificación de hash"
+  _errors:
+    _invalidParams:
+      title: "Parámetros inválidos"
+      description: "No hay información suficiente para cargar datos de un sitio externo. Por favor, confirma la URL introducida."
+    _resourceTypeNotSupported:
+      title: "Este recurso externo no es compatible"
+      description: "El tipo de este recurso externo no es compatible. Por favor, contacta con el administrador del sitio."
+    _failedToFetch:
+      title: "No se pudo obtener los datos"
+      fetchErrorDescription: "Ha ocurrido un error al comunicarse con el sitio externo. Si no se soluciona tras intentarlo otra vez, por favor, contacta con el administrador del sitio."
+      parseErrorDescription: "Ha ocurrido un error al procesar los datos obtenidos del sitio externo. Por favor, contacta con el administrador del sitio."
+    _hashUnmatched:
+      title: "Verificación de datos fallida"
+      description: "Ha ocurrido un error al verificar la integridad de los datos obtenidos. Por seguridad, la instalación no se puede realizar. Por favor, contacta con el administrador del sitio."
+    _pluginParseFailed:
+      title: "Error de AiScript"
+      description: "Los datos se han obtenido correctamente, pero ha ocurrido un error de AiScript al procesarlos. Por favor, contacta con el autor del plugin. Se pueden ver más detalles del error en la consola de Javascript."
+    _pluginInstallFailed:
+      title: "Instalación del plugin fallida."
+      description: "Ha ocurrido un problema al instalar el plugin. Por favor, inténtalo de nuevo. Se pueden ver más detalles del error en la consola de Javascript."
+    _themeParseFailed:
+      title: "Análisis del tema fallido"
+      description: "Los datos se han obtenido correctamente, pero ha ocurrido un error al analizar el tema. Por favor, contacta con el autor. Se pueden ver más detalles del error en la consola de Javascript."
+    _themeInstallFailed:
+      title: "Instalación de tema fallida"
+      description: "Ha ocurrido un problema al instalar el tema. Por favor, inténtalo de nuevo. Se pueden ver más detalles del error en la consola de Javascript."
