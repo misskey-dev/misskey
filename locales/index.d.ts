@@ -2494,6 +2494,7 @@ export interface Locale {
         "addSchedule": string;
         "willBePostedAtX": string;
         "deleteAreYouSure": string;
+        "deleteAndEditConfirm": string;
     };
 }
 declare const locales: {

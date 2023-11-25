@@ -9,11 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:withOkButton="false"
 	@click="cancel()"
 	@close="cancel()"
-	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts._schedulePost.list }}</template>
 	<MkSpacer :marginMin="14" :marginMax="16">
-		<MkPagination :pagination="pagination">
+		<MkPagination ref="paginationEl" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
 					<img :src="infoImageUrl" class="_ghost"/>
@@ -23,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<template #default="{ items }">
 				<div class="_gaps">
-					<MkNoteSimple v-for="item in items" :key="item.id" :scheduled="true" :note="item.note"/>
+					<MkNoteSimple v-for="item in items" :key="item.id" :scheduled="true" :note="item.note" @editScheduleNote="listUpdate"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -42,9 +41,7 @@ import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
 const emit = defineEmits<{
-	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
-	(ev: 'c-losed'): void;
 }>();
 
 const dialogEl = ref();
@@ -52,11 +49,15 @@ const cancel = () => {
 	emit('cancel');
 	dialogEl.value.close();
 };
-
+const paginationEl = ref();
 const pagination: Paging = {
 	endpoint: 'notes/schedule/list',
 	limit: 10,
 };
+
+function listUpdate() {
+	paginationEl.value.reload();
+}
 </script>
 
 <style lang="scss" module>

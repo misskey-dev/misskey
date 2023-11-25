@@ -983,6 +983,11 @@ onMounted(() => {
 			files = init.files;
 			cw = init.cw;
 			useCw = init.cw != null;
+			if (init.isSchedule) {
+				schedule = {
+					scheduledAt: init.createdAt,
+				};
+			}
 			if (init.poll) {
 				poll = {
 					choices: init.poll.choices.map(x => x.text),

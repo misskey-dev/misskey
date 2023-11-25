@@ -2382,3 +2382,4 @@ _schedulePost:
   addSchedule: "予約設定"
   willBePostedAtX: "{date}に投稿予約しました。"
   deleteAreYouSure: "予約投稿を削除しますか？"
+  deleteAndEditConfirm: "予約投稿を削除して編集しますか？"

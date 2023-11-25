@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSubNoteContent :class="$style.text" :note="note"/>
 			</div>
 			<div v-if="note.isSchedule" style="margin-top: 10px;">
-				<MkButton :class="$style.button" inline @click="editScheduleNote(note.id)">{{ i18n.ts.edit }}</MkButton>
+				<MkButton :class="$style.button" inline @click="editScheduleNote()">{{ i18n.ts.deleteAndEdit }}</MkButton>
 				<MkButton :class="$style.button" inline danger @click="deleteScheduleNote()">{{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
@@ -43,6 +43,10 @@ const props = defineProps<{
 	};
 }>();
 
+const emit = defineEmits<{
+  (ev: 'editScheduleNote'): void;
+}>();
+
 async function deleteScheduleNote() {
 	if (!props.note.isSchedule || !props.note.scheduledNoteId) return;
 
@@ -58,8 +62,24 @@ async function deleteScheduleNote() {
 		});
 }
 
-function editScheduleNote(id) {
+async function editScheduleNote() {
+	if (!props.note.isSchedule || !props.note.scheduledNoteId) return;
 
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts._schedulePost.deleteAndEditConfirm,
+	});
+
+	if (canceled) return;
+
+	await os.api('notes/schedule/delete', { scheduledNoteId: props.note.scheduledNoteId })
+		.then(() => {
+			isDeleted.value = true;
+		});
+
+	await os.post({ initialNote: props.note, renote: props.note.renote, reply: props.note.reply, channel: props.note.channel });
+
+	emit('editScheduleNote');
 }
 
 const showContent = $ref(false);
