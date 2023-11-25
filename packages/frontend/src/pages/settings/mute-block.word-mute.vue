@@ -20,17 +20,10 @@ import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
-const props = defineProps<{
-	muted: (string[] | string)[];
-}>();
-
-const emit = defineEmits<{
-	(ev: 'save', value: (string[] | string)[]): void;
-}>();
-
-const render = (mutedWords) => mutedWords.map(x => {
+const render = (mutedWords?: (string | string[])[]) => mutedWords?.map(x => {
 	if (Array.isArray(x)) {
 		return x.join(' ');
 	} else {
@@ -38,7 +31,7 @@ const render = (mutedWords) => mutedWords.map(x => {
 	}
 }).join('\n');
 
-const mutedWords = ref(render(props.muted));
+const mutedWords = ref(render($i?.mutedWords));
 const changed = ref(false);
 
 watch(mutedWords, () => {
@@ -46,14 +39,14 @@ watch(mutedWords, () => {
 });
 
 async function save() {
-	const parseMutes = (mutes) => {
-		// split into lines, remove empty lines and unnecessary whitespace
-		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
+	const parseMutes = (mutes?: string): (string | string[])[] => {
+		const parsed: (string | string[])[] = [];
+		if (!mutes) return parsed;
 
+		// split into lines, remove empty lines and unnecessary whitespace
 		// check each line if it is a RegExp or not
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			const regexp = line.match(/^\/(.+)\/(.*)$/);
+		for (const [i, line] of mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '').entries()) {
+			const regexp = RegExp(/^\/(.+)\/(.*)$/).exec(line);
 			if (regexp) {
 				// check that the RegExp is valid
 				try {
@@ -69,15 +62,16 @@ async function save() {
 					// re-throw error so these invalid settings are not saved
 					throw err;
 				}
+				parsed.push(line);
 			} else {
-				lines[i] = line.split(' ');
+				parsed.push(line.split(' '));
 			}
 		}
 
-		return lines;
+		return parsed;
 	};
 
-	let parsed;
+	let parsed: (string | string[])[];
 	try {
 		parsed = parseMutes(mutedWords.value);
 	} catch (err) {
@@ -85,7 +79,9 @@ async function save() {
 		return;
 	}
 
-	emit('save', parsed);
+	await os.api('i/update', {
+		mutedWords: parsed,
+	});
 
 	changed.value = false;
 }

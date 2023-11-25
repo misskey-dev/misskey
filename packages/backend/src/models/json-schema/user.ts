@@ -534,18 +534,6 @@ export const packedMeDetailedOnlySchema = {
 				},
 			},
 		},
-		hardMutedWords: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'array',
-				nullable: false, optional: false,
-				items: {
-					type: 'string',
-					nullable: false, optional: false,
-				},
-			},
-		},
 		mutedInstances: {
 			type: 'array',
 			nullable: true, optional: false,
