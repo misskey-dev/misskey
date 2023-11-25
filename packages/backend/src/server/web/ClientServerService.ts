@@ -37,7 +37,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
-import { FeedService, FeedType } from './FeedService.js';
+import { FeedService, FeedFormat } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
@@ -417,11 +417,11 @@ export class ClientServerService {
 		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
 		// Feed
-		const feedTypes: FeedType[] = ['atom', 'rss', 'json'];
-		for (const feedType of feedTypes) {
-			fastify.get<{ Params: { user: string; } }>(`/@:user.${feedType}`, this.feedService.handle(feedType));
-			fastify.get<{ Params: { user: string; } }>(`/@:user.with_replies.${feedType}`, this.feedService.handle(feedType, { withReplies: true }));
-			fastify.get<{ Params: { user: string; } }>(`/@:user.with_files.${feedType}`, this.feedService.handle(feedType, { withFiles: true }));
+		const feedFormats: FeedFormat[] = ['atom', 'rss', 'json'];
+		for (const feedFormat of feedFormats) {
+			fastify.get<{ Params: { user: string; } }>(`/@:user.${feedFormat}`, this.feedService.handle(feedFormat));
+			fastify.get<{ Params: { user: string; } }>(`/@:user.with_replies.${feedFormat}`, this.feedService.handle(feedFormat, { withReplies: true }));
+			fastify.get<{ Params: { user: string; } }>(`/@:user.with_files.${feedFormat}`, this.feedService.handle(feedFormat, { withFiles: true }));
 		}
 
 		//#region SSR (for crawlers)

@@ -18,7 +18,7 @@ import { IdService } from '@/core/IdService.js';
 import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export type FeedType = 'atom' | 'rss' | 'json';
+export type FeedFormat = 'atom' | 'rss' | 'json';
 
 @Injectable()
 export class FeedService {
@@ -125,7 +125,7 @@ export class FeedService {
 
 	@bindThis
 	public handle(
-		feedType: FeedType,
+		feedFormat: FeedFormat,
 		options?: {
 			withReplies?: boolean;
 			withFiles?: boolean;
@@ -145,14 +145,14 @@ export class FeedService {
 			const feed = user && await this.packFeed(user, options);
 
 			if (feed) {
-				const subtype = feedType === 'atom' || feedType === 'rss'
-					? `${feedType}+xml`
-					: feedType;
+				const subtype = feedFormat === 'atom' || feedFormat === 'rss'
+					? `${feedFormat}+xml`
+					: feedFormat;
 
 				reply.header('Content-Type', `application/${subtype}; charset=utf-8`);
 
-				if (feedType === 'atom') return feed.atom1();
-				else if (feedType === 'rss') return feed.rss2();
+				if (feedFormat === 'atom') return feed.atom1();
+				else if (feedFormat === 'rss') return feed.rss2();
 				else return feed.json1();
 			} else {
 				reply.code(404);
