@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<template #label>{{ i18n.ts.sounds }}</template>
 		<div class="_gaps_s">
-			<MkFolder v-for="type in soundsKeys" :key="type">
+			<MkFolder v-for="type in operationTypes" :key="type">
 				<template #label>{{ i18n.t('_sfx.' + type) }}</template>
 				<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 
@@ -36,11 +36,10 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { operationTypes } from '@/scripts/sound.js';
 import { defaultStore } from '@/store.js';
 
 const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
-
-const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel', 'reaction'] as const;
 
 const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	note: defaultStore.reactiveState.sound_note,
