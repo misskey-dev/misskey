@@ -8,6 +8,7 @@ import * as os from '@/os.js';
 
 const ctx = new AudioContext();
 const cache = new Map<string, AudioBuffer>();
+let canPlay = true;
 
 export const soundsTypes = [
 	null,
@@ -71,7 +72,7 @@ export const operationTypes = [
 	'antenna',
 	'channel',
 	'notification',
-  'reaction',
+	'reaction',
 ] as const;
 
 export type SoundType = typeof soundsTypes[number];
@@ -134,16 +135,22 @@ export async function loadAudio(options: { soundType: SoundType, fileId?: string
 	return audioBuffer;
 }
 
-
 export function play(type: OperationType) {
 	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
-	if (sound.type == null) return;
+	if (sound.type == null || !canPlay) return;
+
+	canPlay = false;
 	playFile({
 		soundType: sound.type,
 		fileId: sound.fileId,
 		fileUrl: sound.fileUrl,
 		volume: sound.volume,
+	}).then(() => {
+		// ごく短時間に音が重複しないように
+		setTimeout(() => {
+			canPlay = true;
+		}, 25);
 	});
 }
 
