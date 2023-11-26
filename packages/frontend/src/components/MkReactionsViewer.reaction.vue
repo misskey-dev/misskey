@@ -28,6 +28,7 @@ import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -59,6 +60,10 @@ async function toggleReaction() {
 		});
 		if (confirm.canceled) return;
 
+		if (oldReaction !== props.reaction) {
+			sound.play('reaction');
+		}
+
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count - 1));
 			return;
@@ -75,6 +80,8 @@ async function toggleReaction() {
 			}
 		});
 	} else {
+		sound.play('reaction');
+
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
 			return;
