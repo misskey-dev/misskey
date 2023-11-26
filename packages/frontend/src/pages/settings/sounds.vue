@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkFolder v-for="type in soundsKeys" :key="type">
 				<template #label>{{ i18n.t('_sfx.' + type) }}</template>
-				<template #suffix>{{ getFileName(sounds[type].type) }}</template>
+				<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 
 				<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
 			</MkFolder>
@@ -51,7 +51,7 @@ const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	reaction: defaultStore.reactiveState.sound_reaction,
 });
 
-function getFileName(f: SoundType): string {
+function getSoundTypeName(f: SoundType): string {
 	switch (f) {
 		case null:
 			return i18n.ts.none;

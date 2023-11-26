@@ -7,11 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<MkSelect v-model="type">
 		<template #label>{{ i18n.ts.sound }}</template>
-		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getFileName(x) }}</option>
+		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getSoundTypeName(x) }}</option>
 	</MkSelect>
 	<div v-if="type === 'driveFile'" :class="$style.fileSelectorRoot">
 		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
-		<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ fileName === '' ? i18n.ts._soundSettings.driveFileWarn : fileName }}</div>
+		<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ friendlyFileName }}</div>
 	</div>
 	<MkRange v-model="volume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
 		<template #label>{{ i18n.ts.volume }}</template>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type { SoundType } from '@/scripts/sound.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -59,7 +59,7 @@ if (type.value === 'driveFile' && fileId.value) {
 	fileName.value = apiRes.name;
 }
 
-function getFileName(f: SoundType): string {
+function getSoundTypeName(f: SoundType): string {
 	switch (f) {
 		case null:
 			return i18n.ts.none;
@@ -69,6 +69,17 @@ function getFileName(f: SoundType): string {
 			return f;
 	}
 }
+
+const friendlyFileName = computed<string>(() => {
+	if (fileName.value) {
+		return fileName.value;
+	}
+	if (fileUrl.value) {
+		return fileUrl.value;
+	}
+
+	return i18n.ts._soundSettings.driveFileWarn;
+});
 
 function selectSound(ev) {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts._soundSettings.driveFile).then(async (file) => {
