@@ -7,7 +7,7 @@ export class AddBdayIndex1700902349231 {
     name = 'AddBdayIndex1700902349231'
 
     async up(queryRunner) {
-        await queryRunner.query(`CREATE INDEX "IDX_de22cd2b445eee31ae51cdbe99" ON "user_profile" ("birthday")`);
+      await queryRunner.query(`CREATE INDEX "IDX_de22cd2b445eee31ae51cdbe99" ON "user_profile" (SUBSTR("birthday", 6, 5))`);
     }
 
     async down(queryRunner) {
