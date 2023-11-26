@@ -18,6 +18,7 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
+		"update-and-build-misskey-js": "pnpm --filter backend build && pnpm --filter backend generate-api-json && node ./scripts/copy-file.js packages/backend/built/api.json packages/misskey-js/api.json && pnpm --filter misskey-js build",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
