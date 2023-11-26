@@ -5,6 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
+	<MkSwitch v-model="notUseSound">
+		<template #label>{{ i18n.ts.notUseSound }}</template>
+	</MkSwitch>
+	<MkSwitch v-model="useSoundOnlyWhenActive">
+		<template #label>{{ i18n.ts.useSoundOnlyWhenActive }}</template>
+	</MkSwitch>
 	<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
 		<template #label>{{ i18n.ts.masterVolume }}</template>
 	</MkRange>
@@ -38,7 +44,10 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { operationTypes } from '@/scripts/sound.js';
 import { defaultStore } from '@/store.js';
+import MkSwitch from '@/components/MkSwitch.vue';
 
+const notUseSound = computed(defaultStore.makeGetterSetter('sound_notUseSound'));
+const useSoundOnlyWhenActive = computed(defaultStore.makeGetterSetter('sound_useSoundOnlyWhenActive'));
 const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
 
 const sounds = ref<Record<OperationType, Ref<SoundStore>>>({

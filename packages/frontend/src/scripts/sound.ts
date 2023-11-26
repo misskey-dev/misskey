@@ -181,7 +181,7 @@ export async function playFile(soundStore: SoundStore) {
 
 export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
 	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (masterVolume === 0 || volume === 0) {
+	if (isMute() || masterVolume === 0 || volume === 0) {
 		return null;
 	}
 
@@ -211,4 +211,22 @@ export async function getSoundDuration(file: string): Promise<number> {
 			}
 		}, 100);
 	});
+}
+
+/**
+ * ミュートすべきかどうかを判断する
+ */
+export function isMute(): boolean {
+	if (defaultStore.state.sound_notUseSound) {
+		// サウンドを出力しない
+		return true;
+	}
+
+	// noinspection RedundantIfStatementJS
+	if (defaultStore.state.sound_useSoundOnlyWhenActive && document.visibilityState === 'hidden') {
+		// ブラウザがアクティブな時のみサウンドを出力する
+		return true;
+	}
+
+	return false;
 }
