@@ -38,6 +38,7 @@ export const soundsTypes = [
 	'syuilo/waon',
 	'syuilo/popo',
 	'syuilo/triple',
+	'syuilo/bubble',
 	'syuilo/poi1',
 	'syuilo/poi2',
 	'syuilo/pirori',

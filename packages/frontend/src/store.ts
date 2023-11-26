@@ -413,7 +413,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	sound_reaction: {
 		where: 'device',
-		default: { type: 'syuilo/poi1', volume: 0 },
+		default: { type: 'syuilo/bubble', volume: 1 },
 	},
 }));
 
