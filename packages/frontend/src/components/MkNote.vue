@@ -150,8 +150,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</I18n>
 </div>
-    <div v-else-if="hideMutedNotes" />
-
 </template>
 
 <script lang="ts" setup>
