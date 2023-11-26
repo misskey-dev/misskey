@@ -14,7 +14,8 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { QueryService } from '@/core/QueryService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -70,7 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -78,7 +80,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const isRangeSpecified = untilId != null && sinceId != null;
 			const isSelf = me && (me.id === ps.userId);
 
-			if (isRangeSpecified || sinceId == null) {
+			const serverSettings = await this.metaService.fetch();
+
+			if (serverSettings.enableFanoutTimeline && (isRangeSpecified || sinceId == null)) {
 				const [
 					userIdsWhoMeMuting,
 				] = me ? await Promise.all([
@@ -86,9 +90,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				]) : [new Set<string>()];
 
 				const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
-					this.funoutTimelineService.get(ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`, untilId, sinceId),
-					ps.withReplies ? this.funoutTimelineService.get(`userTimelineWithReplies:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
-					ps.withChannelNotes ? this.funoutTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+					this.fanoutTimelineService.get(ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`, untilId, sinceId),
+					ps.withReplies ? this.fanoutTimelineService.get(`userTimelineWithReplies:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+					ps.withChannelNotes ? this.fanoutTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
 				]);
 
 				let noteIds = Array.from(new Set([

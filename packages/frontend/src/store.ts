@@ -330,6 +330,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'medium' as 'small' | 'medium' | 'large',
 	},
+	limitWidthOfReaction: {
+		where: 'device',
+		default: true,
+	},
 	forceShowAds: {
 		where: 'device',
 		default: false,
@@ -414,6 +418,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	sound_channel: {
 		where: 'device',
 		default: { type: 'syuilo/square-pico', volume: 1 },
+	},
+	sound_reaction: {
+		where: 'device',
+		default: { type: 'syuilo/bubble2', volume: 1 },
 	},
 }));
 
