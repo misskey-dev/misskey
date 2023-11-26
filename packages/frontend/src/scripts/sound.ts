@@ -146,9 +146,9 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
  * 既定のスプライトを再生する
  * @param type スプライトの種類を指定
  */
-export function play(type: OperationType) {
-	const sound = defaultStore.state[`sound_${type}`];
-	if (_DEV_) console.log('play', type, sound);
+export function play(operationType: OperationType) {
+	const sound = defaultStore.state[`sound_${operationType}`];
+	if (_DEV_) console.log('play', operationType, sound);
 	if (sound.type == null || !canPlay) return;
 
 	canPlay = false;
