@@ -38,7 +38,7 @@ import { defaultStore } from '@/store.js';
 
 const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
 
-const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel'] as const;
+const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel', 'reaction'] as const;
 
 const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
 	note: defaultStore.reactiveState.sound_note,
@@ -46,6 +46,7 @@ const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
 	notification: defaultStore.reactiveState.sound_notification,
 	antenna: defaultStore.reactiveState.sound_antenna,
 	channel: defaultStore.reactiveState.sound_channel,
+	reaction: defaultStore.reactiveState.sound_reaction,
 });
 
 async function updated(type: keyof typeof sounds.value, sound) {
