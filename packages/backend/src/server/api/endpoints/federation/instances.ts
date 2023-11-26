@@ -44,7 +44,7 @@ export const paramDef = {
 		offset: { type: 'integer', default: 0 },
 		sort: {
 			type: 'string',
-			optional: true, nullable: true,
+			nullable: true,
 			enum: [
 				'+pubSub',
 				'-pubSub',
