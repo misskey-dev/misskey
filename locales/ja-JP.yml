@@ -564,6 +564,8 @@ showInPage: "ページで表示"
 popout: "ポップアウト"
 volume: "音量"
 masterVolume: "マスター音量"
+notUseSound: "サウンドを出力しない"
+useSoundOnlyWhenActive: "Misskeyがアクティブな時のみサウンドを出力する"
 details: "詳細"
 chooseEmoji: "絵文字を選択"
 unableToProcess: "操作を完了できません"
@@ -1889,6 +1891,7 @@ _sfx:
   notification: "通知"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
+  reaction: "リアクション選択時"
 
 _ago:
   future: "未来"
