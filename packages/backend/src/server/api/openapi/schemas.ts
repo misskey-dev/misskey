@@ -43,19 +43,6 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 	return res;
 }
 
-export function omitAjvNotSupportProperty(schema: Schema): Schema {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { optional, ref, ...res } = JSON.parse(JSON.stringify(schema)) as Schema;
-
-	if (res.type === 'object' && res.properties) {
-		for (const k of Object.keys(res.properties)) {
-			res.properties[k] = omitAjvNotSupportProperty(res.properties[k]);
-		}
-	}
-
-	return res;
-}
-
 export const schemas = {
 	Error: {
 		type: 'object',

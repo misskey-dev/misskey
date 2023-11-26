@@ -36,9 +36,6 @@ import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
-import { enumUserOriginSchema } from '@/models/json-schema/enum-user-origin.js';
-import { enumUserSortingSchema } from '@/models/json-schema/enum-user-sorting.js';
-import { enumNotificationTypeSchema } from '@/models/json-schema/enum-notification-type.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -74,11 +71,6 @@ export const refs = {
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
-
-	// enum
-	UserOrigin: enumUserOriginSchema,
-	UserSorting: enumUserSortingSchema,
-	NotificationType: enumNotificationTypeSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;

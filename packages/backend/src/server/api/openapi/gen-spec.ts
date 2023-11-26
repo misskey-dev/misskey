@@ -108,7 +108,7 @@ export function genOpenapiSpec(config: Config) {
 					required: true,
 					content: {
 						[requestType]: {
-							schema: convertSchemaToOpenApiSchema(schema),
+							schema,
 						},
 					},
 				},
