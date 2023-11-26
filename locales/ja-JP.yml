@@ -1848,6 +1848,7 @@ _sfx:
   notification: "通知"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
+  reaction: "リアクション選択時"
 
 _soundSettings:
   driveFile: "ドライブの音声を使用"

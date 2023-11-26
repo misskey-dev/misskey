@@ -40,6 +40,8 @@ export const soundsTypes = [
 	'syuilo/waon',
 	'syuilo/popo',
 	'syuilo/triple',
+	'syuilo/bubble1',
+	'syuilo/bubble2',
 	'syuilo/poi1',
 	'syuilo/poi2',
 	'syuilo/pirori',
@@ -69,6 +71,7 @@ export const operationTypes = [
 	'antenna',
 	'channel',
 	'notification',
+  'reaction',
 ] as const;
 
 export type SoundType = typeof soundsTypes[number];
@@ -130,6 +133,7 @@ export async function loadAudio(options: { soundType: SoundType, fileId?: string
 
 	return audioBuffer;
 }
+
 
 export function play(type: OperationType) {
 	const sound = defaultStore.state[`sound_${type}`];

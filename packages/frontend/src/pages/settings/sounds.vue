@@ -40,7 +40,7 @@ import { defaultStore } from '@/store.js';
 
 const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
 
-const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel'] as const;
+const soundsKeys = ['note', 'noteMy', 'notification', 'antenna', 'channel', 'reaction'] as const;
 
 const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	note: defaultStore.reactiveState.sound_note,
@@ -48,6 +48,7 @@ const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	notification: defaultStore.reactiveState.sound_notification,
 	antenna: defaultStore.reactiveState.sound_antenna,
 	channel: defaultStore.reactiveState.sound_channel,
+	reaction: defaultStore.reactiveState.sound_reaction,
 });
 
 function getFileName(f: SoundType): string {

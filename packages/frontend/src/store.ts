@@ -419,6 +419,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: { type: 'syuilo/square-pico', volume: 1 } as SoundStore,
 	},
+	sound_reaction: {
+		where: 'device',
+		default: { type: 'syuilo/bubble2', volume: 1 },
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

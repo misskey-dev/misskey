@@ -1943,6 +1943,7 @@ export interface Locale {
         "notification": string;
         "antenna": string;
         "channel": string;
+        "reaction": string;
     };
     "_soundSettings": {
         "driveFile": string;
