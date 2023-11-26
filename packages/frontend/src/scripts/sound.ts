@@ -107,7 +107,7 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 		}
 	}
 
-	let response;
+	let response: Response;
 
 	if (soundStore.type === 'driveFile') {
 		try {
