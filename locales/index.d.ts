@@ -547,6 +547,8 @@ export interface Locale {
     "popout": string;
     "volume": string;
     "masterVolume": string;
+    "notUseSound": string;
+    "useSoundOnlyWhenActive": string;
     "details": string;
     "chooseEmoji": string;
     "unableToProcess": string;
@@ -1943,6 +1945,7 @@ export interface Locale {
         "notification": string;
         "antenna": string;
         "channel": string;
+        "reaction": string;
     };
     "_ago": {
         "future": string;
