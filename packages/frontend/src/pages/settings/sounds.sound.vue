@@ -110,7 +110,7 @@ function selectSound(ev) {
 }
 
 function listen() {
-	if (type.value === 'driveFile' && !fileUrl.value) {
+	if (type.value === 'driveFile' && (!fileUrl.value || !fileId.value)) {
 		os.alert({
 			type: 'warning',
 			text: i18n.ts._soundSettings.driveFileWarn,
@@ -118,10 +118,13 @@ function listen() {
 		return;
 	}
 
-	playFile({
-		soundType: type.value,
-		fileUrl: fileUrl.value,
-		fileId: fileId.value,
+	playFile(type.value === 'driveFile' ? {
+		type: 'driveFile',
+		fileId: fileId.value as string,
+		fileUrl: fileUrl.value as string,
+		volume: volume.value,
+	} : {
+		type: type.value,
 		volume: volume.value,
 	});
 }

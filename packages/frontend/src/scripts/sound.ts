@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
@@ -75,37 +76,43 @@ export const operationTypes = [
 	'reaction',
 ] as const;
 
+/** サウンドの種類 */
 export type SoundType = typeof soundsTypes[number];
 
+/** スプライトの種類 */
 export type OperationType = typeof operationTypes[number];
 
-export async function loadAudio(options: { soundType: SoundType, fileId?: string, fileUrl?: string, useCache?: boolean; }) {
+/**
+ * 音声を読み込む
+ * @param soundStore サウンド設定
+ * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
+ */
+export async function loadAudio(soundStore: SoundStore, options?: { useCache?: boolean; }) {
 	if (_DEV_) console.log('loading audio. opts:', options);
-	if (options.soundType === null || (options.soundType === 'driveFile' && !options.fileUrl)) {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (soundStore.type === null || (soundStore.type === 'driveFile' && !soundStore.fileUrl)) {
 		return;
 	}
-	if (options.useCache ?? true) {
-		if (options.soundType === 'driveFile' && options.fileId && cache.has(options.fileId)) {
+	if (options?.useCache ?? true) {
+		if (soundStore.type === 'driveFile' && cache.has(soundStore.fileId)) {
 			if (_DEV_) console.log('use cache');
-			return cache.get(options.fileId)!;
-		} else if (cache.has(options.soundType)) {
+			return cache.get(soundStore.fileId) as AudioBuffer;
+		} else if (cache.has(soundStore.type)) {
 			if (_DEV_) console.log('use cache');
-			return cache.get(options.soundType)!;
+			return cache.get(soundStore.type) as AudioBuffer;
 		}
 	}
 
 	let response;
 
-	if (options.soundType === 'driveFile') {
-		if (!options.fileUrl) return;
+	if (soundStore.type === 'driveFile') {
 		try {
-			response = await fetch(options.fileUrl);
+			response = await fetch(soundStore.fileUrl);
 		} catch (err) {
 			try {
 				// URLが変わっている可能性があるのでドライブ側からURLを取得するフォールバック
-				if (!options.fileId) return;
 				const apiRes = await os.api('drive/files/show', {
-					fileId: options.fileId,
+					fileId: soundStore.fileId,
 				});
 				response = await fetch(apiRes.url);
 			} catch (fbErr) {
@@ -115,7 +122,7 @@ export async function loadAudio(options: { soundType: SoundType, fileId?: string
 		}
 	} else {
 		try {
-			response = await fetch(`/client-assets/sounds/${options.soundType}.mp3`);
+			response = await fetch(`/client-assets/sounds/${soundStore.type}.mp3`);
 		} catch (err) {
 			return;
 		}
@@ -124,29 +131,28 @@ export async function loadAudio(options: { soundType: SoundType, fileId?: string
 	const arrayBuffer = await response.arrayBuffer();
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
-	if (options.useCache ?? true) {
-		if (options.soundType === 'driveFile' && options.fileId) {
-			cache.set(options.fileId, audioBuffer);
+	if (options?.useCache ?? true) {
+		if (soundStore.type === 'driveFile') {
+			cache.set(soundStore.fileId, audioBuffer);
 		} else {
-			cache.set(options.soundType, audioBuffer);
+			cache.set(soundStore.type, audioBuffer);
 		}
 	}
 
 	return audioBuffer;
 }
 
+/**
+ * 既定のスプライトを再生する
+ * @param type スプライトの種類を指定
+ */
 export function play(type: OperationType) {
 	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null || !canPlay) return;
 
 	canPlay = false;
-	playFile({
-		soundType: sound.type,
-		fileId: sound.fileId,
-		fileUrl: sound.fileUrl,
-		volume: sound.volume,
-	}).then(() => {
+	playFile(sound).then(() => {
 		// ごく短時間に音が重複しないように
 		setTimeout(() => {
 			canPlay = true;
@@ -154,10 +160,14 @@ export function play(type: OperationType) {
 	});
 }
 
-export async function playFile(options: { soundType: SoundType, fileId?: string, fileUrl?: string, volume: number }) {
-	const buffer = await loadAudio(options);
+/**
+ * サウンド設定形式で指定された音声を再生する
+ * @param soundStore サウンド設定
+ */
+export async function playFile(soundStore: SoundStore) {
+	const buffer = await loadAudio(soundStore);
 	if (!buffer) return;
-	createSourceNode(buffer, options.volume)?.start();
+	createSourceNode(buffer, soundStore.volume)?.start();
 }
 
 export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
@@ -176,6 +186,10 @@ export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBuf
 	return soundSource;
 }
 
+/**
+ * 音声の長さをミリ秒で取得する
+ * @param file ファイルのURL（ドライブIDではない）
+ */
 export async function getSoundDuration(file: string): Promise<number> {
 	const audioEl = document.createElement('audio');
 	audioEl.src = file;

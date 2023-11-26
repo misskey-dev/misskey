@@ -36,11 +36,14 @@ interface PageViewInterruptor {
 	handler: (page: Misskey.entities.Page) => unknown;
 }
 
-export interface SoundStore {
-	type: SoundType,
-	fileId?: string,
-	fileUrl?: string,
-	volume: number,
+export type SoundStore = {
+	type: Exclude<SoundType, 'driveFile'>;
+	volume: number;
+} | {
+	type: 'driveFile';
+	fileId: string;
+	fileUrl: string;
+	volume: number;
 }
 
 export const postFormActions: PostFormAction[] = [];
