@@ -38,17 +38,17 @@ interface PageViewInterruptor {
 
 /** サウンド設定 */
 export type SoundStore = {
-	type: Exclude<SoundType, 'driveFile'>;
+	type: Exclude<SoundType, '_driveFile_'>;
 	volume: number;
 } | {
-	type: 'driveFile';
+	type: '_driveFile_';
 
 	/** ドライブのファイルID */
 	fileId: string;
 
 	/** ファイルURL（こちらが優先される） */
 	fileUrl: string;
-	
+
 	volume: number;
 }
 

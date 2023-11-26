@@ -16,7 +16,7 @@ export const soundsTypes = [
 	null,
 
 	// ドライブの音声
-	'driveFile',
+	'_driveFile_',
 
 	// プリインストール
 	'syuilo/n-aec',
@@ -95,7 +95,7 @@ export type OperationType = typeof operationTypes[number];
 export async function loadAudio(soundStore: SoundStore, options?: { useCache?: boolean; }) {
 	if (_DEV_) console.log('loading audio. opts:', options);
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (soundStore.type === null || (soundStore.type === 'driveFile' && !soundStore.fileUrl)) {
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -103,7 +103,7 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 		ctx = new AudioContext();
 	}
 	if (options?.useCache ?? true) {
-		if (soundStore.type === 'driveFile' && cache.has(soundStore.fileId)) {
+		if (soundStore.type === '_driveFile_' && cache.has(soundStore.fileId)) {
 			if (_DEV_) console.log('use cache');
 			return cache.get(soundStore.fileId) as AudioBuffer;
 		} else if (cache.has(soundStore.type)) {
@@ -114,7 +114,7 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 
 	let response: Response;
 
-	if (soundStore.type === 'driveFile') {
+	if (soundStore.type === '_driveFile_') {
 		try {
 			response = await fetch(soundStore.fileUrl);
 		} catch (err) {
@@ -141,7 +141,7 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
 	if (options?.useCache ?? true) {
-		if (soundStore.type === 'driveFile') {
+		if (soundStore.type === '_driveFile_') {
 			cache.set(soundStore.fileId, audioBuffer);
 		} else {
 			cache.set(soundStore.type, audioBuffer);

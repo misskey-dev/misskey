@@ -63,7 +63,7 @@ function getSoundTypeName(f: SoundType): string {
 	switch (f) {
 		case null:
 			return i18n.ts.none;
-		case 'driveFile':
+		case '_driveFile_':
 			return i18n.ts._soundSettings.driveFile;
 		default:
 			return f;

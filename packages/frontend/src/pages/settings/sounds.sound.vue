@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.sound }}</template>
 		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getSoundTypeName(x) }}</option>
 	</MkSelect>
-	<div v-if="type === 'driveFile'" :class="$style.fileSelectorRoot">
+	<div v-if="type === '_driveFile_'" :class="$style.fileSelectorRoot">
 		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
 		<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ friendlyFileName }}</div>
 	</div>
@@ -52,7 +52,7 @@ const fileUrl = ref(props.fileUrl);
 const fileName = ref<string>('');
 const volume = ref(props.volume);
 
-if (type.value === 'driveFile' && fileId.value) {
+if (type.value === '_driveFile_' && fileId.value) {
 	const apiRes = await os.api('drive/files/show', {
 		fileId: fileId.value,
 	});
@@ -63,7 +63,7 @@ function getSoundTypeName(f: SoundType): string {
 	switch (f) {
 		case null:
 			return i18n.ts.none;
-		case 'driveFile':
+		case '_driveFile_':
 			return i18n.ts._soundSettings.driveFile;
 		default:
 			return f;
@@ -110,7 +110,7 @@ function selectSound(ev) {
 }
 
 function listen() {
-	if (type.value === 'driveFile' && (!fileUrl.value || !fileId.value)) {
+	if (type.value === '_driveFile_' && (!fileUrl.value || !fileId.value)) {
 		os.alert({
 			type: 'warning',
 			text: i18n.ts._soundSettings.driveFileWarn,
@@ -118,8 +118,8 @@ function listen() {
 		return;
 	}
 
-	playFile(type.value === 'driveFile' ? {
-		type: 'driveFile',
+	playFile(type.value === '_driveFile_' ? {
+		type: '_driveFile_',
 		fileId: fileId.value as string,
 		fileUrl: fileUrl.value as string,
 		volume: volume.value,
@@ -130,7 +130,7 @@ function listen() {
 }
 
 function save() {
-	if (type.value === 'driveFile' && !fileUrl.value) {
+	if (type.value === '_driveFile_' && !fileUrl.value) {
 		os.alert({
 			type: 'warning',
 			text: i18n.ts._soundSettings.driveFileWarn,
@@ -138,7 +138,7 @@ function save() {
 		return;
 	}
 
-	if (type.value !== 'driveFile') {
+	if (type.value !== '_driveFile_') {
 		fileUrl.value = undefined;
 		fileName.value = '';
 		fileId.value = undefined;
