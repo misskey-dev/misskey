@@ -7,7 +7,7 @@ import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
-const ctx = new AudioContext();
+let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
 let canPlay = true;
 
@@ -92,6 +92,10 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (soundStore.type === null || (soundStore.type === 'driveFile' && !soundStore.fileUrl)) {
 		return;
+	}
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (ctx == null) {
+		ctx = new AudioContext();
 	}
 	if (options?.useCache ?? true) {
 		if (soundStore.type === 'driveFile' && cache.has(soundStore.fileId)) {
