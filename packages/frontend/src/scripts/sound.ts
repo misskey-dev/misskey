@@ -5,7 +5,7 @@
 
 import { defaultStore } from '@/store.js';
 
-const ctx = new AudioContext();
+let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
 let canPlay = true;
 
@@ -65,6 +65,9 @@ export const soundsTypes = [
 ] as const;
 
 export async function loadAudio(file: string, useCache = true) {
+	if (ctx == null) {
+		ctx = new AudioContext();
+	}
 	if (useCache && cache.has(file)) {
 		return cache.get(file)!;
 	}
