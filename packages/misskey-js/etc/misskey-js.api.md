@@ -1404,10 +1404,7 @@ declare namespace entities {
         GalleryPost,
         EmojiSimple,
         EmojiDetailed,
-        Flash,
-        UserOrigin,
-        UserSorting,
-        NotificationType
+        Flash
     }
 }
 export { entities }
@@ -2098,9 +2095,6 @@ type Notification_2 = components['schemas']['Notification'];
 type NotificationsCreateRequest = operations['notifications/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotificationType = components['schemas']['NotificationType'];
-
-// @public (undocumented)
 export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "achievementEarned"];
 
 // @public (undocumented)
@@ -2297,9 +2291,6 @@ type UsernameAvailableRequest = operations['username/available']['requestBody'][
 type UsernameAvailableResponse = operations['username/available']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type UserOrigin = components['schemas']['UserOrigin'];
-
-// @public (undocumented)
 type UsersAchievementsRequest = operations['users/achievements']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2400,9 +2391,6 @@ type UsersNotesRequest = operations['users/notes']['requestBody']['content']['ap
 
 // @public (undocumented)
 type UsersNotesResponse = operations['users/notes']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
-type UserSorting = components['schemas']['UserSorting'];
 
 // @public (undocumented)
 type UsersPagesRequest = operations['users/pages']['requestBody']['content']['application/json'];
