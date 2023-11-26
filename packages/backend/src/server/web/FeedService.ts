@@ -15,7 +15,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 export type FeedFormat = 'atom' | 'rss' | 'json';
@@ -41,7 +41,7 @@ export class FeedService {
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 	) {
 	}
 
@@ -67,7 +67,7 @@ export class FeedService {
 
 		let withFilesIds: string[] = [];
 		if (opts.withFiles) {
-			withFilesIds = await this.funoutTimelineService.get(`userTimelineWithFiles:${user.id}`);
+			withFilesIds = await this.fanoutTimelineService.get(`userTimelineWithFiles:${user.id}`);
 		}
 
 		const notes = await this.notesRepository.find({
