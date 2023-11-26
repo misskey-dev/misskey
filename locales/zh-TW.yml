@@ -1816,6 +1816,7 @@ _sfx:
   notification: "通知"
   antenna: "天線接收"
   channel: "頻道通知"
+  reaction: "選擇反應時"
 _ago:
   future: "未來"
   justNow: "剛剛"
