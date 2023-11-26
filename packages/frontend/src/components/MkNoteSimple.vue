@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-if="!muted" :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
@@ -19,19 +19,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 </div>
+<div v-else :class="$style.muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
+				<MkUserName :user="note.user"/>
+			</MkA>
+		</template>
+	</I18n>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import { $i } from '@/account.js';
+import { checkWordMute } from '@/scripts/check-word-mute.js';
+import { deepClone } from '@/scripts/clone.js';
+import { userPage } from '@/filters/user.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
+
+let note = $ref(deepClone(props.note));
+const muted = ref(checkWordMute(note, $i, $i?.mutedWords));
 
 const showContent = $ref(false);
 </script>
@@ -77,6 +93,12 @@ const showContent = $ref(false);
 	cursor: default;
 	margin: 0;
 	padding: 0;
+}
+
+.muted {
+	padding: 8px;
+	text-align: center;
+	opacity: 0.7;
 }
 
 @container (min-width: 250px) {
