@@ -5,8 +5,9 @@
 
 import { defaultStore } from '@/store.js';
 
-const ctx = new AudioContext();
+let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
+let canPlay = true;
 
 export const soundsTypes = [
 	null,
@@ -38,6 +39,8 @@ export const soundsTypes = [
 	'syuilo/waon',
 	'syuilo/popo',
 	'syuilo/triple',
+	'syuilo/bubble1',
+	'syuilo/bubble2',
 	'syuilo/poi1',
 	'syuilo/poi2',
 	'syuilo/pirori',
@@ -62,6 +65,9 @@ export const soundsTypes = [
 ] as const;
 
 export async function loadAudio(file: string, useCache = true) {
+	if (ctx == null) {
+		ctx = new AudioContext();
+	}
 	if (useCache && cache.has(file)) {
 		return cache.get(file)!;
 	}
@@ -77,11 +83,18 @@ export async function loadAudio(file: string, useCache = true) {
 	return audioBuffer;
 }
 
-export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
+export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification' | 'reaction') {
 	const sound = defaultStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
-	if (sound.type == null) return;
-	playFile(sound.type, sound.volume);
+	if (sound.type == null || !canPlay) return;
+
+	canPlay = false;
+	playFile(sound.type, sound.volume).then(() => {
+		// ごく短時間に音が重複しないように
+		setTimeout(() => {
+			canPlay = true;
+		}, 25);
+	});
 }
 
 export async function playFile(file: string, volume: number) {
@@ -91,7 +104,7 @@ export async function playFile(file: string, volume: number) {
 
 export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
 	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (masterVolume === 0 || volume === 0) {
+	if (isMute() || masterVolume === 0 || volume === 0) {
 		return null;
 	}
 
@@ -103,4 +116,19 @@ export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBuf
 	soundSource.connect(gainNode).connect(ctx.destination);
 
 	return soundSource;
+}
+
+export function isMute(): boolean {
+	if (defaultStore.state.sound_notUseSound) {
+		// サウンドを出力しない
+		return true;
+	}
+
+	// noinspection RedundantIfStatementJS
+	if (defaultStore.state.sound_useSoundOnlyWhenActive && document.visibilityState === 'hidden') {
+		// ブラウザがアクティブな時のみサウンドを出力する
+		return true;
+	}
+
+	return false;
 }
