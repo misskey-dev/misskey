@@ -104,7 +104,7 @@ export async function playFile(file: string, volume: number) {
 
 export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
 	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (masterVolume === 0 || volume === 0) {
+	if (isMute() || masterVolume === 0 || volume === 0) {
 		return null;
 	}
 
@@ -116,4 +116,19 @@ export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBuf
 	soundSource.connect(gainNode).connect(ctx.destination);
 
 	return soundSource;
+}
+
+export function isMute(): boolean {
+	if (defaultStore.state.sound_notUseSound) {
+		// サウンドを出力しない
+		return true;
+	}
+
+	// noinspection RedundantIfStatementJS
+	if (defaultStore.state.sound_useSoundOnlyWhenActive && document.visibilityState === 'hidden') {
+		// ブラウザがアクティブな時のみサウンドを出力する
+		return true;
+	}
+
+	return false;
 }
