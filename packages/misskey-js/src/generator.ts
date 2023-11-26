@@ -216,6 +216,12 @@ async function main() {
 	const entitiesFileName = `${generatePath}/entities.ts`;
 	const endpointFileName = `${generatePath}/endpoint.ts`;
 	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
+
+	const meta = {
+		version: openApiDocs.info.version,
+		generatedAt: new Date().toUTCString(),
+	};
+	await writeFile('./src/autogen/meta.json', JSON.stringify(meta));
 }
 
 main();

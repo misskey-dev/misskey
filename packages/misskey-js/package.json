@@ -5,7 +5,7 @@
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
 	"scripts": {
-		"build": "pnpm generate && tsc",
+		"build": "tsc",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
