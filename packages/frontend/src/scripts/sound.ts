@@ -12,8 +12,13 @@ const cache = new Map<string, AudioBuffer>();
 let canPlay = true;
 
 export const soundsTypes = [
+	// 音声なし
 	null,
+
+	// ドライブの音声
 	'driveFile',
+
+	// プリインストール
 	'syuilo/n-aec',
 	'syuilo/n-aec-4va',
 	'syuilo/n-aec-4vb',

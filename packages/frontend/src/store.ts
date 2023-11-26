@@ -36,13 +36,19 @@ interface PageViewInterruptor {
 	handler: (page: Misskey.entities.Page) => unknown;
 }
 
+/** サウンド設定 */
 export type SoundStore = {
 	type: Exclude<SoundType, 'driveFile'>;
 	volume: number;
 } | {
 	type: 'driveFile';
+
+	/** ドライブのファイルID */
 	fileId: string;
+
+	/** ファイルURL（こちらが優先される） */
 	fileUrl: string;
+	
 	volume: number;
 }
 
