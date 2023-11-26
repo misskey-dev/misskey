@@ -399,6 +399,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 0.3,
 	},
+	sound_notUseSound: {
+		where: 'device',
+		default: false,
+	},
+	sound_useSoundOnlyWhenActive: {
+		where: 'device',
+		default: false,
+	},
 	sound_note: {
 		where: 'device',
 		default: { type: 'syuilo/n-aec', volume: 1 },
