@@ -142,6 +142,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</I18n>
 </div>
+<div v-else>
+	<!--
+		MkDateSeparatedList uses TransitionGroup which requires single element in the child elements
+		so MkNote create empty div instead of no elements
+	-->
+</div>
 </template>
 
 <script lang="ts" setup>
