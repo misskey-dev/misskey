@@ -11,7 +11,7 @@
 		"chromatic": "chromatic",
 		"test": "vitest --run",
 		"test-and-coverage": "vitest --run --coverage --globals",
-		"typecheck": "vue-tsc -p tsconfig-test.json --noEmit",
+		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
