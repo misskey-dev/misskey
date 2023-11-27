@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSubNoteContent :class="$style.text" :note="note"/>
 			</div>
 			<div v-if="note.isSchedule" style="margin-top: 10px;">
-				<MkButton :class="$style.button" inline @click="editScheduleNote()">{{ i18n.ts.deleteAndEdit }}</MkButton>
-				<MkButton :class="$style.button" inline danger @click="deleteScheduleNote()">{{ i18n.ts.delete }}</MkButton>
+				<MkButton :class="$style.button" inline @click="editScheduleNote()"><i class="ti ti-pencil"></i> {{ i18n.ts.deleteAndEdit }}</MkButton>
+				<MkButton :class="$style.button" inline danger @click="deleteScheduleNote()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 	</div>

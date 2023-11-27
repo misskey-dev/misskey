@@ -68,8 +68,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
-	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-	<MkScheduleEditor v-if="schedule" v-model="schedule" @destroyed="schedule = null"/>
+	<div :class="$style.postOptionsRoot">
+		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+		<MkScheduleEditor v-if="schedule" v-model="schedule" @destroyed="schedule = null"/>
+	</div>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
@@ -1210,6 +1212,15 @@ defineExpose({
 	z-index: 1;
 	padding-bottom: 8px;
 	border-bottom: solid 0.5px var(--divider);
+}
+
+.postOptionsRoot {
+	>* {
+		border-bottom: solid 0.5px var(--divider);
+	}
+	>:last-child {
+		border-bottom: none;
+	}
 }
 
 .hashtags {
