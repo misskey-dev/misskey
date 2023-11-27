@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Xev from 'xev';
 import * as Bull from 'bullmq';
+import * as Redis from 'ioredis';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -25,6 +26,9 @@ export class QueueStatsService implements OnApplicationShutdown {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.redisForJobQueue)
+		private redisForJobQueue: Redis.Redis,
+
 		private queueService: QueueService,
 	) {
 	}
@@ -43,8 +47,8 @@ export class QueueStatsService implements OnApplicationShutdown {
 		let activeDeliverJobs = 0;
 		let activeInboxJobs = 0;
 
-		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config, QUEUE.DELIVER));
-		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config, QUEUE.INBOX));
+		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config, QUEUE.DELIVER, this.redisForJobQueue));
+		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config, QUEUE.INBOX, this.redisForJobQueue));
 
 		deliverQueueEvents.on('active', () => {
 			activeDeliverJobs++;

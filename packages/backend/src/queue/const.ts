@@ -5,6 +5,7 @@
 
 import { Config } from '@/config.js';
 import type * as Bull from 'bullmq';
+import type * as Redis from 'ioredis';
 
 export const QUEUE = {
 	DELIVER: 'deliver',
@@ -17,12 +18,9 @@ export const QUEUE = {
 	WEBHOOK_DELIVER: 'webhookDeliver',
 };
 
-export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.QueueOptions {
+export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof typeof QUEUE], redisConnection: Redis.Redis): Bull.QueueOptions {
 	return {
-		connection: {
-			...config.redisForJobQueue,
-			keyPrefix: undefined,
-		},
+		connection: redisConnection,
 		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};
 }
