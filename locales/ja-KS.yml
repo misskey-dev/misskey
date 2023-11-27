@@ -1819,6 +1819,13 @@ _sfx:
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
   reaction: "ツッコミ選んどるとき"
+_soundSettings:
+  driveFile: "ドライブん中の音使う"
+  driveFileWarn: "ドライブん中のファイル選びや"
+  driveFileTypeWarn: "このファイルは対応しとらへん"
+  driveFileTypeWarnDescription: "音声ファイルを選びや"
+  driveFileDurationWarn: "音が長すぎるわ"
+  driveFileDurationWarnDescription: "長い音使うたらMisskey使うのに良うないかもしれへんで。それでもええか？"
 _ago:
   future: "未来"
   justNow: "ついさっき"
