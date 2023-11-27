@@ -1819,6 +1819,13 @@ _sfx:
   antenna: "Ricezione dell'antenna"
   channel: "Notifiche di canale"
   reaction: "Quando seleziono una reazione"
+_soundSettings:
+  driveFile: "Suoni del Drive"
+  driveFileWarn: "Seleziona file dal dispositivo"
+  driveFileTypeWarn: "Formato file non supportato"
+  driveFileTypeWarnDescription: "Per favore, scegli un file di tipo audio"
+  driveFileDurationWarn: "La durata dell'audio è troppo lunga"
+  driveFileDurationWarnDescription: "Scegliere un audio lungo potrebbe interferire con l'uso di Misskey. Vuoi continuare lo stesso?"
 _ago:
   future: "Futuro"
   justNow: "Adesso"
