@@ -93,23 +93,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// user mute and blocking
 				const [
 					userIdsWhoMeMuting,
-					userIdsWhoBlockingMe,
 				] = await Promise.all([
 					this.cacheService.userMutingsCache.fetch(me.id),
-					this.cacheService.userBlockedCache.fetch(me.id),
 				]);
 
 				notes = notes.filter(note => {
-					if (note.userId === me.id) {
-						return true;
-					}
-					if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
-					if (isUserRelated(note, userIdsWhoMeMuting)) return false;
+					if (isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
 					return true;
 				});
 
-				// Get next page if notes is empty?
+				// TODO: フィルタで件数が減った場合の埋め合わせ処理
 			}
 
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
