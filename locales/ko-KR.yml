@@ -1819,6 +1819,13 @@ _sfx:
   antenna: "안테나 수신"
   channel: "채널 알림"
   reaction: "리액션 선택"
+_soundSettings:
+  driveFile: "드라이브에 있는 오디오를 사용"
+  driveFileWarn: "드라이브에 있는 파일을 선택하세요."
+  driveFileTypeWarn: "이 파일은 지원되지 않습니다."
+  driveFileTypeWarnDescription: "오디오 파일을 선택하세요."
+  driveFileDurationWarn: "오디오가 너무 길어요."
+  driveFileDurationWarnDescription: "길은 오디오를 사용하시는 경우 미스키 사용에 지장이 갈 수도 있습니다. 그래도 괜찮습니까?"
 _ago:
   future: "미래"
   justNow: "방금 전"
