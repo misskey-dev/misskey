@@ -94,7 +94,7 @@ if (process.argv.includes("--watch")) {
 	const watcher = fs.watch('./', { recursive: true });
 
 	for await (const event of watcher) {
-		const filename = event.filename.replaceAll('\\', '/');
+		const filename = event.filename?.replaceAll('\\', '/');
 
 		if (/^packages\/[a-z]+\/src/.test(filename)) {
 			await build();
