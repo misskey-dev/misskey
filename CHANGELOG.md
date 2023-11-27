@@ -42,6 +42,9 @@
 
 ## 2023.11.1
 
+### Note
+- 悪意のある第三者がリモートユーザーになりすました任意のアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-3f39-6537-3cgc)をご覧ください。
+
 ### General
 - Feat: 管理者がコントロールパネルからメールアドレスの照会を行えるようになりました
 - Enhance: ローカリゼーションの更新
@@ -79,7 +82,6 @@
 
 ### Note
 - iOS 16.4未満を使用している場合はiOS 16.4以上にアップデートをお願いします
-- 悪意のある第三者がリモートユーザーになりすました任意のアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-3f39-6537-3cgc)をご覧ください。
 
 ### General
 - Feat: アイコンデコレーション機能
