@@ -104,7 +104,13 @@ let jammedAudioBuffer: AudioBuffer | null = $ref(null);
 let jammedSoundNodePlaying: boolean = $ref(false);
 
 if (defaultStore.state.sound_masterVolume) {
-	sound.loadAudio('syuilo/queue-jammed').then(buf => jammedAudioBuffer = buf);
+	sound.loadAudio({
+		type: 'syuilo/queue-jammed',
+		volume: 1,
+	}).then(buf => {
+		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
+		jammedAudioBuffer = buf;
+	});
 }
 
 for (const domain of ['inbox', 'deliver']) {
