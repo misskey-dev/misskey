@@ -2,8 +2,55 @@ import { mkdir, writeFile } from 'fs/promises';
 import { OpenAPIV3 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
 import SwaggerParser from '@apidevtools/swagger-parser';
+import openapiTS from 'openapi-typescript';
 
-async function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, typeFileName: string, outputPath: string) {
+function generateVersionHeaderComment(openApiDocs: OpenAPIV3.Document): string {
+	const contents = {
+		version: openApiDocs.info.version,
+		generatedAt: new Date().toISOString(),
+	};
+
+	const lines: string[] = [];
+	lines.push('/*');
+	for (const [key, value] of Object.entries(contents)) {
+		lines.push(` * ${key}: ${value}`);
+	}
+	lines.push(' */');
+
+	return lines.join('\n');
+}
+
+async function generateBaseTypes(
+	openApiDocs: OpenAPIV3.Document,
+	openApiJsonPath: string,
+	typeFileName: string,
+) {
+	const disabledLints = [
+		'@typescript-eslint/naming-convention',
+		'@typescript-eslint/no-explicit-any',
+	];
+
+	const lines: string[] = [];
+	for (const lint of disabledLints) {
+		lines.push(`/* eslint ${lint}: 0 */`);
+	}
+	lines.push('');
+
+	lines.push(generateVersionHeaderComment(openApiDocs));
+	lines.push('');
+
+	const generatedTypes = await openapiTS(openApiJsonPath, { exportType: true });
+	lines.push(generatedTypes);
+	lines.push('');
+
+	await writeFile(typeFileName, lines.join('\n'));
+}
+
+async function generateSchemaEntities(
+	openApiDocs: OpenAPIV3.Document,
+	typeFileName: string,
+	outputPath: string,
+) {
 	if (!openApiDocs.components?.schemas) {
 		return;
 	}
@@ -12,6 +59,8 @@ async function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, typeFileN
 	const schemaNames = Object.keys(schemas);
 	const typeAliasLines: string[] = [];
 
+	typeAliasLines.push(generateVersionHeaderComment(openApiDocs));
+	typeAliasLines.push('');
 	typeAliasLines.push(`import { components } from '${toImportPath(typeFileName)}';`);
 	typeAliasLines.push(
 		...schemaNames.map(it => `export type ${it} = components['schemas']['${it}'];`),
@@ -21,7 +70,12 @@ async function generateSchemaEntities(openApiDocs: OpenAPIV3.Document, typeFileN
 	await writeFile(outputPath, typeAliasLines.join('\n'));
 }
 
-async function generateEndpoints(openApiDocs: OpenAPIV3.Document, typeFileName: string, entitiesOutputPath: string, endpointOutputPath: string) {
+async function generateEndpoints(
+	openApiDocs: OpenAPIV3.Document,
+	typeFileName: string,
+	entitiesOutputPath: string,
+	endpointOutputPath: string,
+) {
 	const endpoints: Endpoint[] = [];
 
 	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
@@ -65,6 +119,9 @@ async function generateEndpoints(openApiDocs: OpenAPIV3.Document, typeFileName: 
 
 	const entitiesOutputLine: string[] = [];
 
+	entitiesOutputLine.push(generateVersionHeaderComment(openApiDocs));
+	entitiesOutputLine.push('');
+
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
 	entitiesOutputLine.push('');
 
@@ -81,6 +138,9 @@ async function generateEndpoints(openApiDocs: OpenAPIV3.Document, typeFileName: 
 	await writeFile(entitiesOutputPath, entitiesOutputLine.join('\n'));
 
 	const endpointOutputLine: string[] = [];
+
+	endpointOutputLine.push(generateVersionHeaderComment(openApiDocs));
+	endpointOutputLine.push('');
 
 	endpointOutputLine.push('import type {');
 	endpointOutputLine.push(
@@ -121,7 +181,7 @@ function filterUndefined<T>(item: T): item is Exclude<T, undefined> {
 	return item !== undefined;
 }
 
-function toImportPath(fileName: string, fromPath = '/src/autogen', toPath = ''): string {
+function toImportPath(fileName: string, fromPath = '/built/autogen', toPath = ''): string {
 	return fileName.replace(fromPath, toPath).replace('.ts', '.js');
 }
 
@@ -204,11 +264,14 @@ class Endpoint {
 }
 
 async function main() {
-	const generatePath = './src/autogen';
+	const generatePath = './built/autogen';
 	await mkdir(generatePath, { recursive: true });
 
-	const typeFileName = './src/autogen/types.ts';
-	const openApiDocs = await SwaggerParser.validate('./api.json') as OpenAPIV3.Document;
+	const openApiJsonPath = './api.json';
+	const openApiDocs = await SwaggerParser.validate(openApiJsonPath) as OpenAPIV3.Document;
+
+	const typeFileName = './built/autogen/types.ts';
+	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);
 
 	const modelFileName = `${generatePath}/models.ts`;
 	await generateSchemaEntities(openApiDocs, typeFileName, modelFileName);
@@ -216,12 +279,6 @@ async function main() {
 	const entitiesFileName = `${generatePath}/entities.ts`;
 	const endpointFileName = `${generatePath}/endpoint.ts`;
 	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
-
-	const meta = {
-		version: openApiDocs.info.version,
-		generatedAt: new Date().toUTCString(),
-	};
-	await writeFile('./src/autogen/meta.json', JSON.stringify(meta));
 }
 
 main();
