@@ -1819,6 +1819,13 @@ _sfx:
   antenna: "天線接收"
   channel: "頻道通知"
   reaction: "選擇反應時"
+_soundSettings:
+  driveFile: "使用雲端硬碟的音效檔案"
+  driveFileWarn: "請選擇雲端硬碟中的檔案"
+  driveFileTypeWarn: "不支援此檔案"
+  driveFileTypeWarnDescription: "請選擇音效檔案"
+  driveFileDurationWarn: "音效太長了"
+  driveFileDurationWarnDescription: "使用長音效檔可能會影響 Misskey 的使用。仍要使用此檔案嗎？"
 _ago:
   future: "未來"
   justNow: "剛剛"
