@@ -10,6 +10,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { CacheService } from '@/core/CacheService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -50,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let noteIds: string[];
@@ -84,10 +87,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			const notes = await query.getMany();
-			notes.sort((a, b) => a.id > b.id ? -1 : 1);
+			let notes = await query.getMany();
 
-			// TODO: ミュート等考慮
+			if (me != null) {
+				// user mute and blocking
+				const [
+					userIdsWhoMeMuting,
+				] = await Promise.all([
+					this.cacheService.userMutingsCache.fetch(me.id),
+				]);
+
+				notes = notes.filter(note => {
+					if (isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+
+					return true;
+				});
+
+				// TODO: フィルタで件数が減った場合の埋め合わせ処理
+			}
+
+			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 
 			return await this.noteEntityService.packMany(notes, me);
 		});
