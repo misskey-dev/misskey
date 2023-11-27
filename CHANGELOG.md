@@ -42,6 +42,9 @@
 
 ## 2023.11.1
 
+### Note
+- 悪意のある第三者がリモートユーザーになりすました任意のアクティビティを受け取れてしまう問題を修正しました。詳しくは[GitHub security advisory](https://github.com/misskey-dev/misskey/security/advisories/GHSA-3f39-6537-3cgc)をご覧ください。
+
 ### General
 - Feat: 管理者がコントロールパネルからメールアドレスの照会を行えるようになりました
 - Enhance: ローカリゼーションの更新
