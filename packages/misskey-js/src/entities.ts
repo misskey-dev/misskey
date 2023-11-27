@@ -112,7 +112,8 @@ export type MeDetailed = UserDetailed & {
 	integrations: Record<string, any>;
 	isDeleted: boolean;
 	isExplorable: boolean;
-	mutedWords: string[][];
+	mutedWords: (string[] | string)[];
+	hardMutedWords: (string[] | string)[];
 	notificationRecieveConfig: {
 		[notificationType in typeof notificationTypes[number]]?: {
 			type: 'all';
