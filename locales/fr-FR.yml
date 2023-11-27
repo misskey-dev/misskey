@@ -1563,6 +1563,13 @@ _sfx:
   antenna: "Réception de l’antenne"
   channel: "Notifications de canal"
   reaction: "Lors de la sélection de la réaction"
+_soundSettings:
+  driveFile: "Utiliser un effet sonore sur le Disque"
+  driveFileWarn: "Veuillez sélectionner le fichier sur le Disque"
+  driveFileTypeWarn: "Ce fichier n'est pas pris en charge"
+  driveFileTypeWarnDescription: "Veuillez sélectionner un fichier audio"
+  driveFileDurationWarn: "L'effet sonore est trop long"
+  driveFileDurationWarnDescription: "Utiliser un effet sonore long peut affecter l'utilisation de Misskey. Voulez-vous encore continuer ?"
 _ago:
   future: "Futur"
   justNow: "à l’instant"
