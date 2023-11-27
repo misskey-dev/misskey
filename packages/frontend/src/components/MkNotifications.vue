@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated, watch } from 'vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -43,19 +43,29 @@ const props = defineProps<{
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination: Paging = defaultStore.state.useGroupedNotifications ? {
-	endpoint: 'i/notifications-grouped' as const,
-	limit: 20,
-	params: computed(() => ({
-		excludeTypes: props.excludeTypes ?? undefined,
-	})),
-} : {
-	endpoint: 'i/notifications' as const,
-	limit: 20,
-	params: computed(() => ({
-		excludeTypes: props.excludeTypes ?? undefined,
-	})),
-};
+let pagination = $ref<Paging | null>(null);
+watch(() => defaultStore.reactiveState.useGroupedNotifications.value, (v) => {
+	console.log(v);
+	switchNotificationEndpoint();
+});
+
+switchNotificationEndpoint();
+
+function switchNotificationEndpoint() {
+	pagination = defaultStore.state.useGroupedNotifications ? {
+		endpoint: 'i/notifications-grouped' as const,
+		limit: 20,
+		params: computed(() => ({
+			excludeTypes: props.excludeTypes ?? undefined,
+		})),
+	} : {
+		endpoint: 'i/notifications' as const,
+		limit: 20,
+		params: computed(() => ({
+			excludeTypes: props.excludeTypes ?? undefined,
+		})),
+	};
+}
 
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
