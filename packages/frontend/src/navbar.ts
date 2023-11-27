@@ -14,7 +14,7 @@ import { ui } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { clearCache } from './scripts/clear-cache.js';
 
-export const navbarItemDef = reactive(Object.assign({
+export const navbarItemDef = reactive({
 	notifications: {
 		title: i18n.ts.notifications,
 		icon: 'ti ti-bell',
@@ -172,7 +172,6 @@ export const navbarItemDef = reactive(Object.assign({
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
 	},
-}, _DEV_ ? {
 	cacheClear: {
 		title: i18n.ts.cacheClear,
 		icon: 'ti ti-trash',
@@ -180,4 +179,4 @@ export const navbarItemDef = reactive(Object.assign({
 			clearCache();
 		},
 	},
-} : {}));
+});
