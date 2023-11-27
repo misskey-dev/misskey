@@ -43,29 +43,19 @@ const props = defineProps<{
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-let pagination = $ref<Paging | null>(null);
-watch(() => defaultStore.reactiveState.useGroupedNotifications.value, (v) => {
-	console.log(v);
-	switchNotificationEndpoint();
+let pagination = $computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
+	endpoint: 'i/notifications-grouped' as const,
+	limit: 20,
+	params: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+} : {
+	endpoint: 'i/notifications' as const,
+	limit: 20,
+	params: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
 });
-
-switchNotificationEndpoint();
-
-function switchNotificationEndpoint() {
-	pagination = defaultStore.state.useGroupedNotifications ? {
-		endpoint: 'i/notifications-grouped' as const,
-		limit: 20,
-		params: computed(() => ({
-			excludeTypes: props.excludeTypes ?? undefined,
-		})),
-	} : {
-		endpoint: 'i/notifications' as const,
-		limit: 20,
-		params: computed(() => ({
-			excludeTypes: props.excludeTypes ?? undefined,
-		})),
-	};
-}
 
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
