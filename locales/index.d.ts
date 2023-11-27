@@ -568,6 +568,10 @@ export interface Locale {
     "script": string;
     "disablePagesScript": string;
     "updateRemoteUser": string;
+    "deleteUserAvatar": string;
+    "deleteUserAvatarConfirm": string;
+    "deleteUserBanner": string;
+    "deleteUserBannerConfirm": string;
     "deleteAllFiles": string;
     "deleteAllFilesConfirm": string;
     "removeAllFollowing": string;
@@ -1038,6 +1042,7 @@ export interface Locale {
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
     "reactionsDisplaySize": string;
+    "limitWidthOfReaction": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
