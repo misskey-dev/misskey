@@ -15,6 +15,7 @@
 ## 2023.x.x-kinel.x (unreleased)
 
 ### General
+- こんにりらみすきー部がハイライトから除外されるようになりました
 
 ### Client
 

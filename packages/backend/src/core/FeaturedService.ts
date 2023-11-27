@@ -86,7 +86,7 @@ export class FeaturedService {
 		// Will get many reaction`:ohayo_nirila_misskey:` or `:oyasumi_nirila_misskey:` so exclude them
 		// if they don't have any images.
 		if (note.fileIds.length === 0) {
-			for (const exclusion of ["おはよう", "おやすみ", ":ohayo_nirila_misskey:", ":oyasumi_nirila_misskey:"]) {
+			for (const exclusion of ["おはよう", "おやすみ", ":ohayo_nirila_misskey:", ":oyasumi_nirila_misskey:", ":kon_nirila_misskey:"]) {
 				if (note.text?.includes(exclusion)) return false;
 				if (note.cw?.includes(exclusion)) return false;
 			}
