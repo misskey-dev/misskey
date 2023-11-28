@@ -14,7 +14,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 		private queryService: QueryService,
 		private userFollowingService: UserFollowingService,
 		private metaService: MetaService,
@@ -120,20 +120,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let shouldFallbackToDb = false;
 
 			if (ps.withFiles) {
-				const [htlNoteIds, ltlNoteIds] = await this.funoutTimelineService.getMulti([
+				const [htlNoteIds, ltlNoteIds] = await this.fanoutTimelineService.getMulti([
 					`homeTimelineWithFiles:${me.id}`,
 					'localTimelineWithFiles',
 				], untilId, sinceId);
 				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
 			} else if (ps.withReplies) {
-				const [htlNoteIds, ltlNoteIds, ltlReplyNoteIds] = await this.funoutTimelineService.getMulti([
+				const [htlNoteIds, ltlNoteIds, ltlReplyNoteIds] = await this.fanoutTimelineService.getMulti([
 					`homeTimeline:${me.id}`,
 					'localTimeline',
 					'localTimelineWithReplies',
 				], untilId, sinceId);
 				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds, ...ltlReplyNoteIds]));
 			} else {
-				const [htlNoteIds, ltlNoteIds] = await this.funoutTimelineService.getMulti([
+				const [htlNoteIds, ltlNoteIds] = await this.fanoutTimelineService.getMulti([
 					`homeTimeline:${me.id}`,
 					'localTimeline',
 				], untilId, sinceId);
