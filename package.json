@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.11.1",
+	"version": "2023.11.1-alpha.puyo-1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
