@@ -13,6 +13,7 @@ type ShowUserReq = { username: string; host?: string; } | { userId: User['id']; 
 
 export type Endpoints = {
 	// admin
+	'admin/note-public-to-home': { req: { noteId: Note['id'] }; res: null };
 	'admin/abuse-user-reports': { req: TODO; res: TODO; };
 	'admin/delete-all-files-of-a-user': { req: { userId: User['id']; }; res: null; };
 	'admin/delete-user-avatar': { req: { userId: User['id']; }; res: null; };

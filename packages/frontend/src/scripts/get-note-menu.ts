@@ -137,6 +137,17 @@ export function getNoteMenu(props: {
 
 	const cleanups = [] as (() => void)[];
 
+	function makeHome(): void {
+		os.confirm({
+			type: 'warning',
+			text: '本当にホーム投稿にしますか？',
+		}).then(({ canceled }) => {
+			if (canceled) return;
+
+			os.api('admin/note-public-to-home', { noteId: appearNote.id });
+		});
+	}
+
 	function del(): void {
 		os.confirm({
 			type: 'warning',
@@ -363,7 +374,13 @@ export function getNoteMenu(props: {
 					text: i18n.ts.delete,
 					danger: true,
 					action: del,
-				}]
+				},
+				$i.isModerator || $i.isAdmin ? {
+					icon: 'ti ti-home',
+					text: 'ホーム投稿にする', // めんどうなのでとりあえずハードコード
+					danger: true,
+					action: makeHome,
+				} : undefined]
 			: []
 			)]
 			.filter(x => x !== undefined);
