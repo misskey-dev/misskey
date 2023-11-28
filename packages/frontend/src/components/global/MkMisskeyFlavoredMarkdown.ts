@@ -268,7 +268,7 @@ export default function(props: MfmProps) {
 						]);
 					}
 				}
-				if (style == undefined) {
+				if (style === undefined) {
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
 				} else {
 					return h('span', {
