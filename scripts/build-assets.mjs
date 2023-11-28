@@ -91,16 +91,10 @@ async function build() {
 await build();
 
 if (process.argv.includes("--watch")) {
-	const watcher = fs.watch('./', { recursive: true });
-
+	const watcher = fs.watch('./locales');
 	for await (const event of watcher) {
 		const filename = event.filename?.replaceAll('\\', '/');
-
-		if (/^packages\/[a-z]+\/src/.test(filename)) {
-			await build();
-		}
-
-		if (/^locales\/[a-z]+-[A-Z]+\.yml/.test(filename)) {
+		if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
 			locales = buildLocales();
 			await copyFrontendLocales()
 		}
