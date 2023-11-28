@@ -62,6 +62,7 @@ import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
+import * as ep___admin_notePublicToHome from './endpoints/admin/note-public-to-home.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
@@ -423,6 +424,7 @@ const $admin_relays_add: Provider = { provide: 'ep:admin/relays/add', useClass: 
 const $admin_relays_list: Provider = { provide: 'ep:admin/relays/list', useClass: ep___admin_relays_list.default };
 const $admin_relays_remove: Provider = { provide: 'ep:admin/relays/remove', useClass: ep___admin_relays_remove.default };
 const $admin_resetPassword: Provider = { provide: 'ep:admin/reset-password', useClass: ep___admin_resetPassword.default };
+const $admin_notePublicToHome: Provider = { provide: 'ep:admin/note-public-to-home', useClass: ep___admin_notePublicToHome.default };
 const $admin_resolveAbuseUserReport: Provider = { provide: 'ep:admin/resolve-abuse-user-report', useClass: ep___admin_resolveAbuseUserReport.default };
 const $admin_sendEmail: Provider = { provide: 'ep:admin/send-email', useClass: ep___admin_sendEmail.default };
 const $admin_serverInfo: Provider = { provide: 'ep:admin/server-info', useClass: ep___admin_serverInfo.default };
@@ -788,6 +790,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_relays_list,
 		$admin_relays_remove,
 		$admin_resetPassword,
+		$admin_notePublicToHome,
 		$admin_resolveAbuseUserReport,
 		$admin_sendEmail,
 		$admin_serverInfo,
@@ -1147,6 +1150,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_relays_list,
 		$admin_relays_remove,
 		$admin_resetPassword,
+		$admin_notePublicToHome,
 		$admin_resolveAbuseUserReport,
 		$admin_sendEmail,
 		$admin_serverInfo,

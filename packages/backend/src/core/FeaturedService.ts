@@ -96,6 +96,29 @@ export class FeaturedService {
 	}
 
 	@bindThis
+	private removeNoteFromRankingOf(name: string, windowRange: number, element: string, redisPipeline: Redis.ChainableCommander) {
+		// removing from current & previous window is enough
+		const currentWindow = this.getCurrentWindow(windowRange);
+		const previousWindow = currentWindow - 1;
+
+		redisPipeline.zrem(`${name}:${currentWindow}`, element);
+		redisPipeline.zrem(`${name}:${previousWindow}`, element);
+	}
+
+	@bindThis
+	public async removeNote(note: MiNote): Promise<void> {
+		const redisPipeline = this.redisClient.pipeline();
+		this.removeNoteFromRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, note.id, redisPipeline);
+		this.removeNoteFromRankingOf(`featuredPerUserNotesRanking:${note.userId}`, PER_USER_NOTES_RANKING_WINDOW, note.id, redisPipeline);
+
+		if (note.channelId) {
+			this.removeNoteFromRankingOf(`featuredInChannelNotesRanking:${note.channelId}`, GLOBAL_NOTES_RANKING_WINDOW, note.id, redisPipeline);
+		}
+
+		await redisPipeline.exec();
+	}
+
+	@bindThis
 	public updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
 	}
