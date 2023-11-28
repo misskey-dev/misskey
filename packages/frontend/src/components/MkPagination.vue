@@ -188,7 +188,7 @@ watch([$$(backed), $$(contentEl)], () => {
 });
 
 // パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
-watch(() => props.pagination.params, init, { deep: true });
+watch(() => [props.pagination.endpoint, props.pagination.params], init, { deep: true });
 
 watch(() => queue.value.size, () => emit('queue', queue.value.size));
 
