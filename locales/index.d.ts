@@ -1947,6 +1947,14 @@ export interface Locale {
         "channel": string;
         "reaction": string;
     };
+    "_soundSettings": {
+        "driveFile": string;
+        "driveFileWarn": string;
+        "driveFileTypeWarn": string;
+        "driveFileTypeWarnDescription": string;
+        "driveFileDurationWarn": string;
+        "driveFileDurationWarnDescription": string;
+    };
     "_ago": {
         "future": string;
         "justNow": string;
