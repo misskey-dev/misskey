@@ -21,6 +21,7 @@
 - Fix: 全体ハイライトでユーザーミュートが正常に機能しない問題
 
 ### Client
+- Fix: 通知のグルーピング設定を変更してもリロードされるまで表示が変わらない問題を修正 #12470
 
 ### Server
 - Fix: includeSensitiveChannelがfunout timelineの範囲では機能しない問題
