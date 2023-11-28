@@ -53,7 +53,7 @@ export const paramDef = {
 		untilDate: { type: 'integer' },
 		withFiles: { type: 'boolean', default: false },
 		excludeNsfw: { type: 'boolean', default: false },
-		includeSensitiveChannel: { type: 'boolean', default: false },
+		includeSensitiveChannel: { type: 'boolean' },
 	},
 	required: ['userId'],
 } as const;
@@ -78,6 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 			const isRangeSpecified = untilId != null && sinceId != null;
 			const isSelf = me && (me.id === ps.userId);
+			const includeSensitiveChannel = ps.includeSensitiveChannel ?? isSelf;
 
 			if (isRangeSpecified || sinceId == null) {
 				const [
@@ -123,7 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							}
 						}
 
-						if (note.channel?.isSensitive && !ps.includeSensitiveChannel) return false;
+						if (note.channel?.isSensitive && !includeSensitiveChannel) return false;
 						if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
 						if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
 
@@ -151,7 +152,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			if (ps.withChannelNotes) {
-				if (!ps.includeSensitiveChannel) query.andWhere(new Brackets(qb => {
+				if (!includeSensitiveChannel) query.andWhere(new Brackets(qb => {
 					qb.orWhere('note.channelId IS NULL');
 					qb.orWhere('channel.isSensitive = false');
 				}));
