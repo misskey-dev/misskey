@@ -20,6 +20,7 @@
 ### Client
 
 ### Server
+- Fix: includeSensitiveChannelがfunout timelineの範囲では機能しない問題
 
 ## 2023.11.1-kinel.2
 
