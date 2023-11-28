@@ -1825,7 +1825,7 @@ _soundSettings:
   driveFileTypeWarn: "不支援此檔案"
   driveFileTypeWarnDescription: "請選擇音效檔案"
   driveFileDurationWarn: "音效太長了"
-  driveFileDurationWarnDescription: "使用長音效檔可能會影響 Misskey 的使用。仍要使用此檔案嗎？"
+  driveFileDurationWarnDescription: "使用長音效檔可能會影響 Misskey 的使用體驗。仍要使用此檔案嗎？"
 _ago:
   future: "未來"
   justNow: "剛剛"
