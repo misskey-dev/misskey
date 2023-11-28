@@ -335,6 +335,12 @@ type DriveFolder = TODO_2;
 
 // @public (undocumented)
 export type Endpoints = {
+    'admin/note-public-to-home': {
+        req: {
+            noteId: Note['id'];
+        };
+        res: null;
+    };
     'admin/abuse-user-reports': {
         req: TODO;
         res: TODO;
@@ -3047,9 +3053,9 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 
 // Warnings were encountered during analysis:
 //
-// src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:20:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:635:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:17:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:21:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:636:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/entities.ts:117:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
 // src/entities.ts:628:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
