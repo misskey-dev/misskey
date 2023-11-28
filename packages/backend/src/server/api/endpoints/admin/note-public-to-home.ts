@@ -88,6 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					text: null,
 					fileIds: [],
 					hasPoll: false,
+					visibility: 'public',
 				}, { visibility: 'home' });
 			});
 
@@ -97,6 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('note.text IS NULL')
 				.andWhere('note.fileIds = \'{}\'')
 				.andWhere('note.hasPoll = false')
+				.andWhere('note.visibility = \'home\'')
 				.getMany();
 
 			// remove from funout local timeline
