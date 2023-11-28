@@ -212,6 +212,8 @@ export async function common(createVue: () => App<Element>) {
 		navigator.wakeLock.request('screen')
 			.then(onVisibilityChange)
 			.catch(() => {
+				// On WebKit-based browsers, user activation is required to send wake lock request
+				// https://webkit.org/blog/13862/the-user-activation-api/
 				document.addEventListener(
 					'click',
 					() => navigator.wakeLock.request('screen').then(onVisibilityChange),
