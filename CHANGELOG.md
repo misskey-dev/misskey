@@ -15,6 +15,7 @@
 ## 2023.x.x (unreleased)
 
 ### General
+- publicノートをhomeノートにするモデレーションを追加
 - Fix: 全体ハイライトでユーザーミュートが正常に機能しない問題
 
 ### Client
