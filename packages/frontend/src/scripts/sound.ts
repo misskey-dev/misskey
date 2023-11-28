@@ -160,17 +160,13 @@ export function play(operationType: OperationType) {
 	if (_DEV_) console.log('play', operationType, sound);
 	if (sound.type == null || !canPlay) return;
 
-	(async () => {
-		canPlay = false;
-		try {
-			await playFile(sound);
-		} finally {
-			// ごく短時間に音が重複しないように
-			setTimeout(() => {
-				canPlay = true;
-			}, 25);
-		}
-	})();
+	canPlay = false;
+	playFile(sound).finally(() => {
+		// ごく短時間に音が重複しないように
+		setTimeout(() => {
+			canPlay = true;
+		}, 25);
+	});
 }
 
 /**
