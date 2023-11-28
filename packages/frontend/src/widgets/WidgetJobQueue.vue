@@ -58,6 +58,7 @@ import { useStream } from '@/stream.js';
 import number from '@/filters/number.js';
 import * as sound from '@/scripts/sound.js';
 import { deepClone } from '@/scripts/clone.js';
+import { defaultStore } from '@/store.js';
 
 const name = 'jobQueue';
 
@@ -99,7 +100,18 @@ const current = reactive({
 	},
 });
 const prev = reactive({} as typeof current);
-const jammedSound = sound.setVolume(sound.getAudio('syuilo/queue-jammed'), 1);
+let jammedAudioBuffer: AudioBuffer | null = $ref(null);
+let jammedSoundNodePlaying: boolean = $ref(false);
+
+if (defaultStore.state.sound_masterVolume) {
+	sound.loadAudio({
+		type: 'syuilo/queue-jammed',
+		volume: 1,
+	}).then(buf => {
+		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
+		jammedAudioBuffer = buf;
+	});
+}
 
 for (const domain of ['inbox', 'deliver']) {
 	prev[domain] = deepClone(current[domain]);
@@ -113,8 +125,13 @@ const onStats = (stats) => {
 		current[domain].waiting = stats[domain].waiting;
 		current[domain].delayed = stats[domain].delayed;
 
-		if (current[domain].waiting > 0 && widgetProps.sound && jammedSound.paused) {
-			jammedSound.play();
+		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer && !jammedSoundNodePlaying) {
+			const soundNode = sound.createSourceNode(jammedAudioBuffer, 1);
+			if (soundNode) {
+				jammedSoundNodePlaying = true;
+				soundNode.onended = () => jammedSoundNodePlaying = false;
+				soundNode.start();
+			}
 		}
 	}
 };

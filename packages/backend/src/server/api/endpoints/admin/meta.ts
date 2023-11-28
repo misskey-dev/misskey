@@ -267,6 +267,14 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			enableVerifymailApi: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			verifymailAuthKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableChartsForRemoteUser: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -292,6 +300,10 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			enableFanoutTimeline: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			enableFanoutTimelineDbFallback: {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
@@ -417,6 +429,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				enableVerifymailApi: instance.enableVerifymailApi,
+				verifymailAuthKey: instance.verifymailAuthKey,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				enableServerMachineStats: instance.enableServerMachineStats,
@@ -424,6 +438,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,
+				enableFanoutTimelineDbFallback: instance.enableFanoutTimelineDbFallback,
 				perLocalUserUserTimelineCacheMax: instance.perLocalUserUserTimelineCacheMax,
 				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,

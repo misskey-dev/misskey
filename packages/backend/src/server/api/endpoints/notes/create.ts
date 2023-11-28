@@ -70,6 +70,12 @@ export const meta = {
 			id: '749ee0f6-d3da-459a-bf02-282e2da4292c',
 		},
 
+		cannotReplyToInvisibleNote: {
+			message: 'You cannot reply to an invisible Note.',
+			code: 'CANNOT_REPLY_TO_AN_INVISIBLE_NOTE',
+			id: 'b98980fa-3780-406c-a935-b6d0eeee10d1',
+		},
+
 		cannotReplyToPureRenote: {
 			message: 'You can not reply to a pure Renote.',
 			code: 'CANNOT_REPLY_TO_A_PURE_RENOTE',
@@ -256,7 +262,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (renote.channelId && renote.channelId !== ps.channelId) {
 					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
 					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
-					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
+					const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
 					if (renoteChannel == null) {
 						// リノートしたいノートが書き込まれているチャンネルが無い
 						throw new ApiError(meta.errors.noSuchChannel);
@@ -276,6 +282,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.noSuchReplyTarget);
 				} else if (isPureRenote(reply)) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
+				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
+					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 				}
 
 				// Check blocking
