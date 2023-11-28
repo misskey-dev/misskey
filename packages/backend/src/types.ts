@@ -63,6 +63,7 @@ export const moderationLogTypes = [
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
+	'makeNoteHome',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -236,6 +237,9 @@ export type ModerationLogPayloads = {
 	deleteAvatarDecoration: {
 		avatarDecorationId: string;
 		avatarDecoration: any;
+	};
+	makeNoteHome: {
+		targetNoteId: string;
 	};
 };
 
