@@ -184,6 +184,33 @@ const headerActions = $computed(() => {
 	return tmp;
 });
 
+const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+	key: 'list:' + l.id,
+	title: l.name,
+	icon: 'ti ti-star',
+	iconOnly: true,
+}))), {
+	key: 'social',
+	title: i18n.ts._timelines.home,
+	icon: 'ti ti-home',
+	iconOnly: true,
+}, ...(isLocalTimelineAvailable ? [{
+	key: 'local',
+	title: i18n.ts._timelines.local,
+	icon: 'ti ti-planet',
+	iconOnly: true,
+}] : []), ...(isGlobalTimelineAvailable ? [{
+	key: 'global',
+	title: i18n.ts._timelines.global,
+	icon: 'ti ti-whirl',
+	iconOnly: true,
+}] : []), {
+	icon: 'ti ti-device-tv',
+	title: i18n.ts.channel,
+	iconOnly: true,
+	onClick: chooseChannel,
+}] as Tab[]);
+
 const headerTabsWhenNotLogin = $computed(() => [
 	...(isLocalTimelineAvailable ? [{
 		key: 'local',
