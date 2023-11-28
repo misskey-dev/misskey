@@ -1222,7 +1222,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
 
-		test.concurrent('[withChannelNotes: true, includeSensitiveChannel: false] 自分が取得したも場合センシティブチャンネル投稿が含まれない', async () => {
+		test.concurrent('[withChannelNotes: true, includeSensitiveChannel: false] 自分が取得した場合もセンシティブチャンネル投稿が含まれない', async () => {
 			const [bob] = await Promise.all([signup()]);
 
 			const channel = await api('/channels/create', { name: 'channel', isSensitive: true }, bob).then(x => x.body);
