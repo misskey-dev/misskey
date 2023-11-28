@@ -18,16 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os.js';
-import number from '@/filters/number.js';
-import { defaultStore } from '@/store.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+
+const props = defineProps<{
+	muted: (string[] | string)[];
+}>();
+
+const emit = defineEmits<{
+	(ev: 'save', value: (string[] | string)[]): void;
+}>();
 
 const render = (mutedWords) => mutedWords.map(x => {
 	if (Array.isArray(x)) {
@@ -37,8 +38,7 @@ const render = (mutedWords) => mutedWords.map(x => {
 	}
 }).join('\n');
 
-const tab = ref('soft');
-const mutedWords = ref(render($i!.mutedWords));
+const mutedWords = ref(render(props.muted));
 const changed = ref(false);
 
 watch(mutedWords, () => {
@@ -85,9 +85,7 @@ async function save() {
 		return;
 	}
 
-	await os.api('i/update', {
-		mutedWords: parsed,
-	});
+	emit('save', parsed);
 
 	changed.value = false;
 }
