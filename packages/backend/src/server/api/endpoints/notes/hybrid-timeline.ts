@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const serverSettings = await this.metaService.fetch();
 
 			if (!serverSettings.enableFanoutTimeline) {
-				return await this.getFromDb({
+				const timeline = await this.getFromDb({
 					untilId,
 					sinceId,
 					limit: ps.limit,
@@ -104,6 +104,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withReplies: ps.withReplies,
 				}, me);
+
+				process.nextTick(() => {
+					this.activeUsersChart.read(me);
+				});
+
+				return await this.noteEntityService.packMany(timeline, me);
 			}
 
 			const [
@@ -187,7 +193,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(redisTimeline, me);
 			} else {
 				if (serverSettings.enableFanoutTimelineDbFallback) { // fallback to db
-					return await this.getFromDb({
+					const timeline = await this.getFromDb({
 						untilId,
 						sinceId,
 						limit: ps.limit,
@@ -197,6 +203,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						withFiles: ps.withFiles,
 						withReplies: ps.withReplies,
 					}, me);
+
+					process.nextTick(() => {
+						this.activeUsersChart.read(me);
+					});
+
+					return await this.noteEntityService.packMany(timeline, me);
 				} else {
 					return [];
 				}
@@ -301,12 +313,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 		//#endregion
 
-		const timeline = await query.limit(ps.limit).getMany();
-
-		process.nextTick(() => {
-			this.activeUsersChart.read(me);
-		});
-
-		return await this.noteEntityService.packMany(timeline, me);
+		return await query.limit(ps.limit).getMany();
 	}
 }
