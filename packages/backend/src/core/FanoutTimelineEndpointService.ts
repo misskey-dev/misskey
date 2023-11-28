@@ -31,7 +31,7 @@ export class FanoutTimelineEndpointService {
 		untilId: string | null,
 		sinceId: string | null,
 		limit: number,
-		me?: { id: MiUser['id'] },
+		me?: { id: MiUser['id'] } | undefined | null,
 		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
 		noteFilter: (note: MiNote) => boolean,
 		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
