@@ -103,6 +103,8 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
 	(ev: 'status', error: boolean): void;
+	(ev: 'addedQueue', item: MisskeyEntity): void;
+	(ev: 'executedQueue', items: MisskeyEntity[]): void;
 }>();
 
 let rootEl = $shallowRef<HTMLElement>();
@@ -188,10 +190,7 @@ watch([$$(backed), $$(contentEl)], () => {
 // パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
 watch(() => props.pagination.params, init, { deep: true });
 
-watch(queue, (a, b) => {
-	if (a.size === 0 && b.size === 0) return;
-	emit('queue', queue.value.size);
-}, { deep: true });
+watch(() => queue.value.size, () => emit('queue', queue.value.size));
 
 watch(error, (n, o) => {
 	if (n === o) return;
@@ -411,12 +410,15 @@ function concatItems(oldItems: MisskeyEntity[]) {
 }
 
 function executeQueue() {
-	unshiftItems(Array.from(queue.value.values()));
+	const items = Array.from(queue.value.values());
+	unshiftItems(items);
+	emit('executedQueue', items);
 	queue.value = new Map();
 }
 
 function prependQueue(newItem: MisskeyEntity) {
 	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyEntity][]);
+	emit('addedQueue', newItem);
 }
 
 /*
