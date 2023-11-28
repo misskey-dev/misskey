@@ -15,10 +15,12 @@
 ## 2023.x.x (unreleased)
 
 ### General
+- Fix: 全体ハイライトでユーザーミュートが正常に機能しない問題
 
 ### Client
 
 ### Server
+- Fix: includeSensitiveChannelがfunout timelineの範囲では機能しない問題
 
 ## 2023.11.1-kinel.2
 

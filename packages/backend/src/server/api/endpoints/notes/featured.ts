@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				]);
 
 				notes = notes.filter(note => {
-					if (isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+					if (isUserRelated(note, userIdsWhoMeMuting)) return false;
 
 					return true;
 				});
