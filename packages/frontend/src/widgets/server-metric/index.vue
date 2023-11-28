@@ -20,7 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentExpose } from '../widget';
-import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
