@@ -144,8 +144,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const redisTimeline = await this.fanoutTimelineEndpointService.timeline({
-				untilId, sinceId, limit: ps.limit,
+				untilId,
+				sinceId,
+				limit: ps.limit,
 				redisTimelines: timelineConfig,
+				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				noteFilter: (note) => {
 					if (note.userId === me.id) {
 						return true;

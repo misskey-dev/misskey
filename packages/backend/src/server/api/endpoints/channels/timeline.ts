@@ -104,6 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sinceId,
 				limit: ps.limit,
 				me,
+				useDbFallback: true,
 				redisTimelines: [`channelTimeline:${channel.id}`],
 				noteFilter: note => {
 					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;

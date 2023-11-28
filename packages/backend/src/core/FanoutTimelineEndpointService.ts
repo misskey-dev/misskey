@@ -12,7 +12,6 @@ import { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class FanoutTimelineEndpointService {
@@ -22,7 +21,6 @@ export class FanoutTimelineEndpointService {
 
 		private noteEntityService: NoteEntityService,
 		private fanoutTimelineService: FanoutTimelineService,
-		private metaService: MetaService,
 	) {
 	}
 
@@ -32,6 +30,7 @@ export class FanoutTimelineEndpointService {
 		sinceId: string | null,
 		limit: number,
 		me?: { id: MiUser['id'] } | undefined | null,
+		useDbFallback: boolean,
 		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
 		noteFilter: (note: MiNote) => boolean,
 		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
@@ -83,7 +82,7 @@ export class FanoutTimelineEndpointService {
 			}
 		}
 
-		if ((await this.metaService.fetch()).enableFanoutTimelineDbFallback) { // fallback to db
+		if (ps.useDbFallback) { // fallback to db
 			const timeline = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 
 			return await this.noteEntityService.packMany(timeline, ps.me);

@@ -134,6 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sinceId,
 				limit: ps.limit,
 				me,
+				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				redisTimelines: ps.withFiles ? [`userListTimelineWithFiles:${list.id}`] : [`userListTimeline:${list.id}`],
 				noteFilter: note => {
 					if (note.userId === me.id) {

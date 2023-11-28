@@ -110,6 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				limit: ps.limit,
 				me,
 				redisTimelines,
+				useDbFallback: true,
 				noteFilter: note => {
 					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
