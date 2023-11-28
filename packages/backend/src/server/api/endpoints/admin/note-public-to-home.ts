@@ -83,13 +83,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await transactionalEntityManager.update(MiPoll, { noteId: note.id }, { noteVisibility: 'home' });
 
 				// change visibility of pure renotes
-				await transactionalEntityManager.update(MiNote, {
-					renoteId: note.id,
-					text: null,
-					fileIds: [],
-					hasPoll: false,
-					visibility: 'public',
-				}, { visibility: 'home' });
+				await transactionalEntityManager.createQueryBuilder()
+					.from(MiNote, 'note')
+					.update()
+					.where('renoteId = :renoteId', { renoteId: note.id })
+					.andWhere('text IS NULL')
+					.andWhere('fileIds = \'{}\'')
+					.andWhere('hasPoll = false')
+					.andWhere('visibility = \'public\'')
+					.set({ visibility: 'home' })
+					.execute();
 			});
 
 			// collect renotes after changing visibility of original note
