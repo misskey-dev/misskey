@@ -84,84 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const serverSettings = await this.metaService.fetch();
 
-			if (serverSettings.enableFanoutTimeline) {
-				const [
-					userIdsWhoMeMuting,
-					userIdsWhoMeMutingRenotes,
-					userIdsWhoBlockingMe,
-				] = me ? await Promise.all([
-					this.cacheService.userMutingsCache.fetch(me.id),
-					this.cacheService.renoteMutingsCache.fetch(me.id),
-					this.cacheService.userBlockedCache.fetch(me.id),
-				]) : [new Set<string>(), new Set<string>(), new Set<string>()];
-
-				let noteIds: string[];
-
-				if (ps.withFiles) {
-					noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
-				} else {
-					const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
-						'localTimeline',
-						'localTimelineWithReplies',
-					], untilId, sinceId);
-					noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
-					noteIds.sort((a, b) => a > b ? -1 : 1);
-				}
-
-				noteIds = noteIds.slice(0, ps.limit);
-
-				let redisTimeline: MiNote[] = [];
-
-				if (noteIds.length > 0) {
-					const query = this.notesRepository.createQueryBuilder('note')
-						.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-						.innerJoinAndSelect('note.user', 'user')
-						.leftJoinAndSelect('note.reply', 'reply')
-						.leftJoinAndSelect('note.renote', 'renote')
-						.leftJoinAndSelect('reply.user', 'replyUser')
-						.leftJoinAndSelect('renote.user', 'renoteUser')
-						.leftJoinAndSelect('note.channel', 'channel');
-
-					redisTimeline = await query.getMany();
-
-					redisTimeline = redisTimeline.filter(note => {
-						if (me && (note.userId === me.id)) {
-							return true;
-						}
-						if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
-						if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-						if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-						if (note.renoteId) {
-							if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-								if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-								if (ps.withRenotes === false) return false;
-							}
-						}
-
-						return true;
-					});
-
-					redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
-				}
-
-				if (redisTimeline.length > 0) {
-					process.nextTick(() => {
-						if (me) {
-							this.activeUsersChart.read(me);
-						}
-					});
-
-					return await this.noteEntityService.packMany(redisTimeline, me);
-				} else { // fallback to db
-					return await this.getFromDb({
-						untilId,
-						sinceId,
-						limit: ps.limit,
-						withFiles: ps.withFiles,
-						withReplies: ps.withReplies,
-					}, me);
-				}
-			} else {
+			if (!serverSettings.enableFanoutTimeline) {
 				return await this.getFromDb({
 					untilId,
 					sinceId,
@@ -169,6 +92,87 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withReplies: ps.withReplies,
 				}, me);
+			}
+
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoMeMutingRenotes,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.renoteMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
+
+			let noteIds: string[];
+
+			if (ps.withFiles) {
+				noteIds = await this.funoutTimelineService.get('localTimelineWithFiles', untilId, sinceId);
+			} else {
+				const [nonReplyNoteIds, replyNoteIds] = await this.funoutTimelineService.getMulti([
+					'localTimeline',
+					'localTimelineWithReplies',
+				], untilId, sinceId);
+				noteIds = Array.from(new Set([...nonReplyNoteIds, ...replyNoteIds]));
+				noteIds.sort((a, b) => a > b ? -1 : 1);
+			}
+
+			noteIds = noteIds.slice(0, ps.limit);
+
+			let redisTimeline: MiNote[] = [];
+
+			if (noteIds.length > 0) {
+				const query = this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.leftJoinAndSelect('note.channel', 'channel');
+
+				redisTimeline = await query.getMany();
+
+				redisTimeline = redisTimeline.filter(note => {
+					if (me && (note.userId === me.id)) {
+						return true;
+					}
+					if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
+					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+					if (note.renoteId) {
+						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
+							if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
+							if (ps.withRenotes === false) return false;
+						}
+					}
+
+					return true;
+				});
+
+				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+			}
+
+			if (redisTimeline.length > 0) {
+				process.nextTick(() => {
+					if (me) {
+						this.activeUsersChart.read(me);
+					}
+				});
+
+				return await this.noteEntityService.packMany(redisTimeline, me);
+			} else {
+				if (serverSettings.enableFanoutTimelineDbFallback) { // fallback to db
+					return await this.getFromDb({
+						untilId,
+						sinceId,
+						limit: ps.limit,
+						withFiles: ps.withFiles,
+						withReplies: ps.withReplies,
+					}, me);
+				} else {
+					return [];
+				}
 			}
 		});
 	}
@@ -182,7 +186,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}, me: MiLocalUser | null) {
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
-			.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+			.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.channelId IS NULL)')
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
