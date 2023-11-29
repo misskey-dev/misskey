@@ -12,7 +12,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 		private cacheService: CacheService,
 		private activeUsersChart: ActiveUsersChart,
 		private metaService: MetaService,
@@ -99,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					this.cacheService.userMutingsCache.fetch(me.id),
 				]) : [new Set<string>()];
 
-				let noteIds = await this.funoutTimelineService.get(`channelTimeline:${channel.id}`, untilId, sinceId);
+				let noteIds = await this.fanoutTimelineService.get(`channelTimeline:${channel.id}`, untilId, sinceId);
 				noteIds = noteIds.slice(0, ps.limit);
 
 				if (noteIds.length > 0) {

@@ -544,6 +544,8 @@ showInPage: "ページで表示"
 popout: "ポップアウト"
 volume: "音量"
 masterVolume: "マスター音量"
+notUseSound: "サウンドを出力しない"
+useSoundOnlyWhenActive: "Misskeyがアクティブな時のみサウンドを出力する"
 details: "詳細"
 chooseEmoji: "絵文字を選択"
 unableToProcess: "操作を完了できません"
@@ -1848,6 +1850,15 @@ _sfx:
   notification: "通知"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
+  reaction: "リアクション選択時"
+
+_soundSettings:
+  driveFile: "ドライブの音声を使用"
+  driveFileWarn: "ドライブのファイルを選択してください"
+  driveFileTypeWarn: "このファイルは対応していません"
+  driveFileTypeWarnDescription: "音声ファイルを選択してください"
+  driveFileDurationWarn: "音声が長すぎます"
+  driveFileDurationWarnDescription: "長い音声を使用するとMisskeyの使用に支障をきたす可能性があります。それでも続行しますか？"
 
 _ago:
   future: "未来"

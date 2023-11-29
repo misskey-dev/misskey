@@ -58,6 +58,7 @@ import { useStream } from '@/stream.js';
 import number from '@/filters/number.js';
 import * as sound from '@/scripts/sound.js';
 import { deepClone } from '@/scripts/clone.js';
+import { defaultStore } from '@/store.js';
 
 const name = 'jobQueue';
 
@@ -102,7 +103,15 @@ const prev = reactive({} as typeof current);
 let jammedAudioBuffer: AudioBuffer | null = $ref(null);
 let jammedSoundNodePlaying: boolean = $ref(false);
 
-sound.loadAudio('syuilo/queue-jammed').then(buf => jammedAudioBuffer = buf);
+if (defaultStore.state.sound_masterVolume) {
+	sound.loadAudio({
+		type: 'syuilo/queue-jammed',
+		volume: 1,
+	}).then(buf => {
+		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
+		jammedAudioBuffer = buf;
+	});
+}
 
 for (const domain of ['inbox', 'deliver']) {
 	prev[domain] = deepClone(current[domain]);
