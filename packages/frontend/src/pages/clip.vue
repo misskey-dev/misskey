@@ -36,6 +36,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 const props = defineProps<{
 	clipId: string,
@@ -117,7 +118,7 @@ const headerActions = $computed(() => clip && isOwned ? [{
 
 		clipsCache.delete();
 	},
-}, ...(clip.isPublic ? [{
+}, ...(clip.isPublic && isSupportShare() ? [{
 	icon: 'ti ti-share',
 	text: i18n.ts.share,
 	handler: async (): Promise<void> => {

@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" asLike class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
 							<MkButton v-else v-tooltip="i18n.ts.like" asLike class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
 							<MkButton v-tooltip="i18n.ts.shareWithNote" class="button" rounded @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></MkButton>
-							<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
+							<MkButton v-if="isSupportShare()" v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
 						</div>
 					</div>
 					<div v-else :class="$style.ready">
@@ -70,6 +70,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 const props = defineProps<{
 	id: string;

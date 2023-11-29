@@ -86,6 +86,8 @@ import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { PageHeaderItem } from '@/types/page-header.js';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 const router = useRouter();
 
@@ -167,24 +169,31 @@ async function search() {
 
 const headerActions = $computed(() => {
 	if (channel && channel.userId) {
-		const share = {
-			icon: 'ti ti-share',
-			text: i18n.ts.share,
-			handler: async (): Promise<void> => {
-				navigator.share({
-					title: channel.name,
-					text: channel.description,
-					url: `${url}/channels/${channel.id}`,
-				});
-			},
-		};
+		const headerItems: PageHeaderItem[] = [];
 
-		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
-		return canEdit ? [share, {
-			icon: 'ti ti-settings',
-			text: i18n.ts.edit,
-			handler: edit,
-		}] : [share];
+		if (isSupportShare()) {
+			headerItems.push( {
+				icon: 'ti ti-share',
+				text: i18n.ts.share,
+				handler: async (): Promise<void> => {
+					navigator.share({
+						title: channel.name,
+						text: channel.description,
+						url: `${url}/channels/${channel.id}`,
+					});
+				},
+			} );
+		}
+
+		if (($i && $i.id === channel.userId) || iAmModerator) {
+			headerItems.push({
+				icon: 'ti ti-settings',
+				text: i18n.ts.edit,
+				handler: edit,
+			});
+		}
+
+		return headerItems.length > 0 ? headerItems : null;
 	} else {
 		return null;
 	}

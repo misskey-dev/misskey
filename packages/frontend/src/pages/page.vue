@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="other">
 							<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-							<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+							<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
 						</div>
 					</div>
 					<div class="user">
@@ -90,6 +90,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { pageViewInterruptors, defaultStore } from '@/store.js';
 import { deepClone } from '@/scripts/clone.js';
 import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 const props = defineProps<{
 	pageName: string;

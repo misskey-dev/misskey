@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div class="other">
 								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
 								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -74,6 +74,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 const router = useRouter();
 
