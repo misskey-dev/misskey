@@ -32,20 +32,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
-import { } from 'vue';
+import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { postMessage } from '@/scripts/post-message.js';
 import { i18n } from '@/i18n.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const localOnlyQuery = urlParams.get('localOnly');
 const visibilityQuery = urlParams.get('visibility') as typeof Misskey.noteVisibilities[number];
 
-let state = $ref('fetching' as 'fetching' | 'writing' | 'posted');
+const state = ref<'fetching' | 'writing' | 'posted'>('fetching');
 let title = $ref(urlParams.get('title'));
 const text = urlParams.get('text');
 const url = urlParams.get('url');
@@ -161,6 +161,12 @@ function close(): void {
 function goToMisskey(): void {
 	location.href = '/';
 }
+
+watch(state, (to) => {
+	if (to === 'posted') {
+		postMessage('misskey:shareForm:shareCompleted');
+	}
+});
 
 const headerActions = $computed(() => []);
 
