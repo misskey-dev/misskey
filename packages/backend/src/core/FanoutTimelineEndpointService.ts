@@ -35,6 +35,20 @@ export class FanoutTimelineEndpointService {
 		noteFilter: (note: MiNote) => boolean,
 		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 	}): Promise<Packed<'Note'>[]> {
+		return await this.noteEntityService.packMany(await this.getMiNotes(ps), ps.me);
+	}
+
+	@bindThis
+	private async getMiNotes(ps: {
+		untilId: string | null,
+		sinceId: string | null,
+		limit: number,
+		me?: { id: MiUser['id'] } | undefined | null,
+		useDbFallback: boolean,
+		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
+		noteFilter: (note: MiNote) => boolean,
+		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
+	}): Promise<MiNote[]> {
 		let noteIds: string[];
 		let shouldFallbackToDb = false;
 
@@ -58,36 +72,36 @@ export class FanoutTimelineEndpointService {
 
 		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
 
-		let redisTimeline: MiNote[] = [];
-
 		if (!shouldFallbackToDb) {
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
-
-			redisTimeline = await query.getMany();
-
-			redisTimeline = redisTimeline.filter(ps.noteFilter);
-
-			redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
+			const redisTimeline = await this.getAndFilterFromDb(noteIds, ps.noteFilter);
 
 			// TODO: 足りない分の埋め合わせ
 			if (redisTimeline.length !== 0) {
-				return await this.noteEntityService.packMany(redisTimeline, ps.me);
+				return redisTimeline;
 			}
 		}
 
 		if (ps.useDbFallback) { // fallback to db
-			const timeline = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
-
-			return await this.noteEntityService.packMany(timeline, ps.me);
+			return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 		} else {
 			return [];
 		}
+	}
+
+	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean): Promise<MiNote[]> {
+		const query = this.notesRepository.createQueryBuilder('note')
+			.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser')
+			.leftJoinAndSelect('note.channel', 'channel');
+
+		const notes = (await query.getMany()).filter(noteFilter);
+
+		notes.sort((a, b) => a.id > b.id ? -1 : 1);
+
+		return notes;
 	}
 }
