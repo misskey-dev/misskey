@@ -84,6 +84,7 @@ const $redisForJobQueue: Provider = {
 	useFactory: (config: Config) => {
 		return new Redis.Redis({
 			...config.redisForJobQueue,
+			maxRetriesPerRequest: null,
 			keyPrefix: undefined,
 		});
 	},
