@@ -83,11 +83,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const serverSettings = await this.metaService.fetch();
 
 			if (serverSettings.enableFanoutTimeline && (isRangeSpecified || sinceId == null)) {
-				const [
-					userIdsWhoMeMuting,
-				] = me ? await Promise.all([
-					this.cacheService.userMutingsCache.fetch(me.id),
-				]) : [new Set<string>()];
+				const [userIdsWhoMeMuting, userIdsWhoBlockingMe] = me
+					? await Promise.all([
+						this.cacheService.userMutingsCache.fetch(me.id),
+						this.cacheService.userBlockedCache.fetch(me.id),
+					])
+					: [new Set<string>(), new Set<string>()];
 
 				const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
 					this.fanoutTimelineService.get(ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`, untilId, sinceId),
@@ -119,6 +120,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 					timeline = timeline.filter(note => {
 						if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+
+						if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;
 
 						if (note.renoteId) {
 							if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
