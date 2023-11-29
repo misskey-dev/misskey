@@ -84,7 +84,7 @@ export class FanoutTimelineEndpointService {
 				const remainingToRead = ps.limit - redisTimeline.length;
 
 				// DBからの取り直しを減らす初回と同じ割合以上で成功すると仮定するが、クエリの長さを考えて三倍まで
-				const countToGet = remainingToRead * Math.ceil(Math.min(1 / lastSuccessfulRate, 3));
+				const countToGet = remainingToRead * Math.ceil(Math.min(1.1 / lastSuccessfulRate, 3));
 				noteIds = redisResultIds.slice(readFromRedis, readFromRedis + countToGet);
 
 				readFromRedis += noteIds.length;
