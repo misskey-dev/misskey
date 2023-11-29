@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:renote="renote"
 			:initialVisibleUsers="visibleUsers"
 			class="_panel"
-			@posted="state = 'posted'"
+			@posted="onPosted"
 		/>
 		<div v-else-if="state === 'posted'" class="_buttonsCenter">
 			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
@@ -162,11 +162,10 @@ function goToMisskey(): void {
 	location.href = '/';
 }
 
-watch(state, (to) => {
-	if (to === 'posted') {
-		postMessageToParentWindow('misskey:shareForm:shareCompleted');
-	}
-});
+function onPosted(): void {
+	state.value = 'posted';
+	postMessageToParentWindow('misskey:shareForm:shareCompleted');
+}
 
 const headerActions = $computed(() => []);
 
