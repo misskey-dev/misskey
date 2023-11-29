@@ -52,6 +52,9 @@ export class FanoutTimelineEndpointService {
 		let noteIds: string[];
 		let shouldFallbackToDb = false;
 
+		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
+		if (ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
+
 		const timelines = ps.redisTimelines.map(x => typeof x === 'string' ? x : x.name);
 
 		const redisResult = await this.fanoutTimelineService.getMulti(timelines, ps.untilId, ps.sinceId);
@@ -65,27 +68,42 @@ export class FanoutTimelineEndpointService {
 			}
 		}
 
-		noteIds = Array.from(new Set(redisResult.flat(1)));
+		const redisResultIds = Array.from(new Set(redisResult.flat(1)));
 
-		noteIds.sort((a, b) => a > b ? -1 : 1);
-		noteIds = noteIds.slice(0, ps.limit);
+		redisResultIds.sort((a, b) => a > b ? -1 : 1);
+		noteIds = redisResultIds.slice(0, ps.limit);
 
 		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
 
 		if (!shouldFallbackToDb) {
-			const redisTimeline = await this.getAndFilterFromDb(noteIds, ps.noteFilter);
+			const redisTimeline: MiNote[] = [];
+			let readFromRedis = 0;
+			let lastSuccessfulRate = 1; // rateをキャッシュする？
 
-			// TODO: 足りない分の埋め合わせ
-			if (redisTimeline.length !== 0) {
-				return redisTimeline;
+			while ((redisResultIds.length - readFromRedis) !== 0) {
+				const remainingToRead = ps.limit - redisTimeline.length;
+
+				// DBからの取り直しを減らす初回と同じ割合以上で成功すると仮定するが、クエリの長さを考えて三倍まで
+				const countToGet = remainingToRead * Math.ceil(Math.min(1 / lastSuccessfulRate, 3));
+				noteIds = redisResultIds.slice(readFromRedis, readFromRedis + countToGet);
+
+				readFromRedis += noteIds.length;
+
+				const gotFromDb = await this.getAndFilterFromDb(noteIds, ps.noteFilter);
+				redisTimeline.push(...gotFromDb);
+				lastSuccessfulRate = gotFromDb.length / noteIds.length;
+
+				if (redisTimeline.length >= ps.limit) {
+					// 十分Redisからとれた
+					return redisTimeline.slice(0, ps.limit);
+				}
 			}
+
+			// まだ足りない分はDBにフォールバック
+			return await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, ps.limit);
 		}
 
-		if (ps.useDbFallback) { // fallback to db
-			return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
-		} else {
-			return [];
-		}
+		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
 	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean): Promise<MiNote[]> {
