@@ -83,17 +83,13 @@ export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notifica
 	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null || !canPlay) return;
 
-	(async () => {
-		canPlay = false;
-		try {
-			await playFile(sound.type, sound.volume);
-		} finally {
-			// ごく短時間に音が重複しないように
-			setTimeout(() => {
-				canPlay = true;
-			}, 25);
-		}
-	})();
+	canPlay = false;
+	playFile(sound.type, sound.volume).then(() => {
+		// ごく短時間に音が重複しないように
+		setTimeout(() => {
+			canPlay = true;
+		}, 25);
+	});
 }
 
 export async function playFile(file: string, volume: number) {
