@@ -17,7 +17,7 @@ export type MiPostMessageEvent = {
 /**
  * 親フレームにイベントを送信
  */
-export function postMessage(type: PostMessageEventType, payload?: any): void {
+export function postMessageToParent(type: PostMessageEventType, payload?: any): void {
 	window.postMessage({
 		type,
 		payload,

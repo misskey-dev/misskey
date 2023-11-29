@@ -38,7 +38,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { postMessage } from '@/scripts/post-message.js';
+import { postMessageToParent } from '@/scripts/post-message.js';
 import { i18n } from '@/i18n.js';
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -164,7 +164,7 @@ function goToMisskey(): void {
 
 watch(state, (to) => {
 	if (to === 'posted') {
-		postMessage('misskey:shareForm:shareCompleted');
+		postMessageToParent('misskey:shareForm:shareCompleted');
 	}
 });
 
