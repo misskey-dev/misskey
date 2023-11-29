@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Mfm v-if="cw != ''" :text="cw" :author="user" :nyaize="'respect'" :i="user" style="margin-right: 8px;"/>
 				<MkCwButton v-model="showContent" :text="text.trim()" :files="files" :poll="poll" style="margin: 4px 0;"/>
 			</p>
-			<div v-show="!useCw || showContent">
+			<div v-show="!useCw || cw == null || showContent">
 				<Mfm :text="text.trim()" :author="user" :nyaize="'respect'" :i="user"/>
 			</div>
 		</div>
