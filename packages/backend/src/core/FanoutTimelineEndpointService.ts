@@ -53,7 +53,7 @@ export class FanoutTimelineEndpointService {
 		let shouldFallbackToDb = false;
 
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
-		if (ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
+		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
 		const timelines = ps.redisTimelines.map(x => typeof x === 'string' ? x : x.name);
 
@@ -79,6 +79,7 @@ export class FanoutTimelineEndpointService {
 			const redisTimeline: MiNote[] = [];
 			let readFromRedis = 0;
 			let lastSuccessfulRate = 1; // rateをキャッシュする？
+			let trialCount = 1;
 
 			while ((redisResultIds.length - readFromRedis) !== 0) {
 				const remainingToRead = ps.limit - redisTimeline.length;
@@ -93,6 +94,8 @@ export class FanoutTimelineEndpointService {
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
+				console.log(`fanoutTimelineTrial#${trialCount++}: req: ${ps.limit}, tried: ${noteIds.length}, got: ${gotFromDb.length}, rate: ${lastSuccessfulRate}, total: ${redisTimeline.length}, fromRedis: ${redisResultIds.length}`);
+
 				if (redisTimeline.length >= ps.limit) {
 					// 十分Redisからとれた
 					return redisTimeline.slice(0, ps.limit);
@@ -100,7 +103,11 @@ export class FanoutTimelineEndpointService {
 			}
 
 			// まだ足りない分はDBにフォールバック
-			return await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, ps.limit);
+			const remainingToRead = ps.limit - redisTimeline.length;
+			const gotFromDb = await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, remainingToRead);
+			redisTimeline.push(...gotFromDb);
+			console.log(`fanoutTimelineTrial#db: req: ${ps.limit}, tried: ${remainingToRead}, got: ${gotFromDb.length}, since: ${noteIds[noteIds.length - 1]}, until: ${ps.untilId}, total: ${redisTimeline.length}`);
+			return redisTimeline;
 		}
 
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
