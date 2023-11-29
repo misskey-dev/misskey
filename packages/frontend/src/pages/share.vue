@@ -144,7 +144,7 @@ async function init() {
 		});
 	}
 
-	state = 'writing';
+	state.value = 'writing';
 }
 
 init();
