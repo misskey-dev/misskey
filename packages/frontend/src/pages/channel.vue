@@ -88,6 +88,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const router = useRouter();
 
@@ -171,8 +172,17 @@ const headerActions = $computed(() => {
 	if (channel && channel.userId) {
 		const headerItems: PageHeaderItem[] = [];
 
+		headerItems.push({
+			icon: 'ti ti-link',
+			text: i18n.ts.copyUrl,
+			handler: async (): Promise<void> => {
+				copyToClipboard(`${url}/channels/${channel.id}`);
+				os.success();
+			},
+		});
+
 		if (isSupportShare()) {
-			headerItems.push( {
+			headerItems.push({
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
 				handler: async (): Promise<void> => {
@@ -182,7 +192,7 @@ const headerActions = $computed(() => {
 						url: `${url}/channels/${channel.id}`,
 					});
 				},
-			} );
+			});
 		}
 
 		if (($i && $i.id === channel.userId) || iAmModerator) {

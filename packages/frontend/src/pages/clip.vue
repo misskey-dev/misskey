@@ -37,6 +37,7 @@ import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache';
 import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	clipId: string,
@@ -118,7 +119,14 @@ const headerActions = $computed(() => clip && isOwned ? [{
 
 		clipsCache.delete();
 	},
-}, ...(clip.isPublic && isSupportShare() ? [{
+}, ...(clip.isPublic ? [{
+	icon: 'ti ti-link',
+	text: i18n.ts.copyUrl,
+	handler: async (): Promise<void> => {
+		copyToClipboard(`${url}/clips/${clip.id}`);
+		os.success();
+	},
+}] : []), ...(clip.isPublic && isSupportShare() ? [{
 	icon: 'ti ti-share',
 	text: i18n.ts.share,
 	handler: async (): Promise<void> => {
