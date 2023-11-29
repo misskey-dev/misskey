@@ -1498,8 +1498,8 @@ _achievements:
       title: "읽고 답하긴 하시는 건가요?"
       description: "100자가 넘는 노트가 작성되고 3초 안에 반응했습니다"
     _clickedClickHere:
-      title: "여길 눌러보세요"
-      description: "여길을 눌러봤습니다"
+      title: "여기를 누르세요"
+      description: "여기를 눌렀습니다"
     _justPlainLucky:
       title: "그냥 운이 좋았어"
       description: "매 10초마다 0.01%의 확률로 달성됩니다"
@@ -1693,7 +1693,7 @@ _registry:
   domain: "도메인"
   createKey: "키 생성"
 _aboutMisskey:
-  about: "Misskey는 syuilo에 의해서 2014년부터 개발되어 온 오픈소스 소프트웨어 입니다."
+  about: "Misskey는 syuilo가 2014년부터 개발한 오픈소스 소프트웨어입니다."
   contributors: "주요 기여자"
   allContributors: "모든 기여자"
   source: "소스 코드"
