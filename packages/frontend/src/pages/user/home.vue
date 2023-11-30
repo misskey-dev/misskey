@@ -133,7 +133,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 				<div v-if="!disableNotes">
 					<div style="margin-bottom: 8px;">{{ i18n.ts.featured }}</div>
-					<MkNotes :class="$style.tl" :noGap="true" :pagination="pagination"/>
+					<MkNotes :class="$style.tl" :noGap="true" :pagination="pagination">
+						<template #empty>
+							<MkNotes :class="$style.tl" :noGap="true" :pagination="fallbackPagination"></MkNotes>
+						</template>
+					</MkNotes>
 				</div>
 			</div>
 		</div>
@@ -148,6 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, provide } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -217,12 +222,22 @@ watch($$(moderationNote), async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
 });
 
-const pagination = {
-	endpoint: 'users/featured-notes' as const,
+const pagination: Paging = {
+	endpoint: 'users/featured-notes',
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
-		includeSensitiveChannel: $i != null,
+	})),
+};
+
+const fallbackPagination: Paging = {
+	endpoint: 'users/notes',
+	limit: 10,
+	params: computed(() => ({
+		userId: props.user.id,
+		withChannelNotes: true,
+		withRenotes: true,
+		withReplies: false,
 	})),
 };
 
