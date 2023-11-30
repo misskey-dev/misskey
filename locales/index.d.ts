@@ -547,6 +547,8 @@ export interface Locale {
     "popout": string;
     "volume": string;
     "masterVolume": string;
+    "notUseSound": string;
+    "useSoundOnlyWhenActive": string;
     "details": string;
     "chooseEmoji": string;
     "unableToProcess": string;
@@ -642,6 +644,7 @@ export interface Locale {
     "smtpSecureInfo": string;
     "testEmail": string;
     "wordMute": string;
+    "hardWordMute": string;
     "regexpError": string;
     "regexpErrorDescription": string;
     "instanceMute": string;
@@ -1027,6 +1030,8 @@ export interface Locale {
     "sensitiveWords": string;
     "sensitiveWordsDescription": string;
     "sensitiveWordsDescription2": string;
+    "hiddenTags": string;
+    "hiddenTagsDescription": string;
     "notesSearchNotAvailable": string;
     "license": string;
     "unfavoriteConfirm": string;
@@ -1039,6 +1044,7 @@ export interface Locale {
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
     "reactionsDisplaySize": string;
+    "limitWidthOfReaction": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
@@ -1641,7 +1647,9 @@ export interface Locale {
         "assignTarget": string;
         "descriptionOfAssignTarget": string;
         "manual": string;
+        "manualRoles": string;
         "conditional": string;
+        "conditionalRoles": string;
         "condition": string;
         "isConditionalRole": string;
         "isPublic": string;
@@ -1939,6 +1947,15 @@ export interface Locale {
         "notification": string;
         "antenna": string;
         "channel": string;
+        "reaction": string;
+    };
+    "_soundSettings": {
+        "driveFile": string;
+        "driveFileWarn": string;
+        "driveFileTypeWarn": string;
+        "driveFileTypeWarnDescription": string;
+        "driveFileDurationWarn": string;
+        "driveFileDurationWarnDescription": string;
     };
     "_ago": {
         "future": string;
@@ -2093,6 +2110,7 @@ export interface Locale {
             "chooseList": string;
         };
         "clicker": string;
+        "birthdayFollowings": string;
     };
     "_cw": {
         "hide": string;
@@ -2488,4 +2506,5 @@ export interface Locale {
 declare const locales: {
     [lang: string]: Locale;
 };
+export function build(): Locale;
 export default locales;
