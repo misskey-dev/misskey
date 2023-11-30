@@ -177,7 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
 				<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
 			</div>
-			<div class="_gaps_s">
+			<div class="_gaps_m">
 				<MkSwitch v-model="dataSaver.media">
 					{{ i18n.ts._dataSaver._media.title }}
 					<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
