@@ -36,17 +36,18 @@ server {
                 try_files $uri @proxy;
         }
 
-        location /media {
-                resolver 8.8.8.8 valid=5s;
-                proxy_buffers 10 32k;
-                proxy_buffer_size 32k;
-                proxy_redirect off;
-                proxy_http_version 1.1;
-                proxy_hide_header x-amz-id-2;
-                proxy_hide_header x-amz-request-id;
-                proxy_hide_header Set-Cookie;
-                proxy_ignore_headers Cache-Control Set-Cookie;
-                tcp_nodelay on;
-                proxy_pass ${S3_PROXY_PASS};
-        }
+# NOTE: Cloudflare workersに移譲する
+#        location /media {
+#                resolver 8.8.8.8 valid=5s;
+#                proxy_buffers 10 32k;
+#                proxy_buffer_size 32k;
+#                proxy_redirect off;
+#                proxy_http_version 1.1;
+#                proxy_hide_header x-amz-id-2;
+#                proxy_hide_header x-amz-request-id;
+#                proxy_hide_header Set-Cookie;
+#                proxy_ignore_headers Cache-Control Set-Cookie;
+#                tcp_nodelay on;
+#                proxy_pass ${S3_PROXY_PASS};
+#        }
 }
