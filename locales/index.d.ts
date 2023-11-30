@@ -1030,6 +1030,8 @@ export interface Locale {
     "sensitiveWords": string;
     "sensitiveWordsDescription": string;
     "sensitiveWordsDescription2": string;
+    "hiddenTags": string;
+    "hiddenTagsDescription": string;
     "notesSearchNotAvailable": string;
     "license": string;
     "unfavoriteConfirm": string;
