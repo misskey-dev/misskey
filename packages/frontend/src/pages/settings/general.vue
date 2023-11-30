@@ -242,6 +242,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
+const dataSaver = ref(defaultStore.state.dataSaver);
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -272,7 +273,6 @@ const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('dis
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
-const dataSaver = computed(defaultStore.makeGetterSetter('dataSaver'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -410,7 +410,7 @@ function enableAllDataSaver() {
 
 	Object.keys(g).forEach((key) => { g[key] = true; });
 
-	defaultStore.set('dataSaver', g);
+	dataSaver.value = g;
 }
 
 function disableAllDataSaver() {
@@ -418,8 +418,14 @@ function disableAllDataSaver() {
 
 	Object.keys(g).forEach((key) => { g[key] = false; });
 
-	defaultStore.set('dataSaver', g);
+	dataSaver.value = g;
 }
+
+watch(dataSaver, (to) => {
+	defaultStore.set('dataSaver', to);
+}, {
+	deep: true,
+});
 
 const headerActions = $computed(() => []);
 
