@@ -549,6 +549,8 @@ export interface Locale {
     "popout": string;
     "volume": string;
     "masterVolume": string;
+    "notUseSound": string;
+    "useSoundOnlyWhenActive": string;
     "details": string;
     "chooseEmoji": string;
     "unableToProcess": string;
