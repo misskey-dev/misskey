@@ -103,7 +103,7 @@ export default function(props: MfmProps) {
 
 			case 'fn': {
 				// TODO: CSSを文字列で組み立てていくと token.props.args.~~~ 経由でCSSインジェクションできるのでよしなにやる
-				let style;
+				let style: string | undefined;
 				switch (token.props.name) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
@@ -268,7 +268,7 @@ export default function(props: MfmProps) {
 						]);
 					}
 				}
-				if (style == null) {
+				if (style === undefined) {
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
 				} else {
 					return h('span', {
