@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:pagination="pagination"
 	:disableAutoLoad="disableAutoLoad"
 	@addedQueue="onAddedQueue"
-	@executedQueue="onExecutedQueue"
+	@removedQueue="onRemovedQueue"
 >
 	<template #empty>
 		<div class="_fullinfo">
@@ -70,7 +70,7 @@ function onAddedQueue(item: MisskeyEntity) {
 	stream.send('s', { id: item.id });
 }
 
-function onExecutedQueue(items: MisskeyEntity[]) {
+function onRemovedQueue(items: MisskeyEntity[]) {
 	if (!stream) {
 		return;
 	}

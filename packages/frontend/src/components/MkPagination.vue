@@ -104,7 +104,7 @@ const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
 	(ev: 'status', error: boolean): void;
 	(ev: 'addedQueue', item: MisskeyEntity): void;
-	(ev: 'executedQueue', items: MisskeyEntity[]): void;
+	(ev: 'removedQueue', items: MisskeyEntity[]): void;
 }>();
 
 let rootEl = $shallowRef<HTMLElement>();
@@ -412,13 +412,20 @@ function concatItems(oldItems: MisskeyEntity[]) {
 function executeQueue() {
 	const items = Array.from(queue.value.values());
 	unshiftItems(items);
-	emit('executedQueue', items);
+	emit('removedQueue', items);
 	queue.value = new Map();
 }
 
 function prependQueue(newItem: MisskeyEntity) {
-	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyEntity][]);
+	const newQueueItems = [[newItem.id, newItem], ...queue.value];
+	queue.value = new Map(newQueueItems.slice(0, props.displayLimit) as [string, MisskeyEntity][]);
+
 	emit('addedQueue', newItem);
+	if (newQueueItems.length > props.displayLimit) {
+		// キューからあふれたアイテムの通知
+		const overflowItem = newQueueItems[newQueueItems.length - 1];
+		emit('removedQueue', [{ id: overflowItem[0] }]);
+	}
 }
 
 /*
