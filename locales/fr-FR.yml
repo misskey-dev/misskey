@@ -1702,6 +1702,7 @@ _widgets:
   userList: "Liste utilisateur"
   _userList:
     chooseList: "Sélectionner une liste"
+  birthdayFollowings: "Utilisateurs qui fêtent l'anniversaire aujourd'hui"
 _cw:
   hide: "Masquer"
   show: "Afficher le contenu"
