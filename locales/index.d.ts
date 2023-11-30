@@ -2110,6 +2110,7 @@ export interface Locale {
             "chooseList": string;
         };
         "clicker": string;
+        "birthdayFollowings": string;
     };
     "_cw": {
         "hide": string;
@@ -2505,4 +2506,5 @@ export interface Locale {
 declare const locales: {
     [lang: string]: Locale;
 };
+export function build(): Locale;
 export default locales;
