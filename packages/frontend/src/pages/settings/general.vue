@@ -122,7 +122,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -169,6 +168,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSection>
 
 	<FormSection>
+		<template #label>{{ i18n.ts.dataSaver }}</template>
+
+		<div class="_gaps_m">
+			<MkInfo>{{ i18n.ts.tryReloadIfNotApplied }}</MkInfo>
+
+			<div class="_buttons">
+				<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
+				<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
+			</div>
+			<div class="_gaps_s">
+				<MkSwitch v-model="dataSaver.media">
+					{{ i18n.ts._dataSaver._media.title }}
+					<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="dataSaver.avatar">
+					{{ i18n.ts._dataSaver._avatar.title }}
+					<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="dataSaver.urlPreview">
+					{{ i18n.ts._dataSaver._urlPreview.title }}
+					<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="dataSaver.code">
+					{{ i18n.ts._dataSaver._code.title }}
+					<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
+				</MkSwitch>
+			</div>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<template #label>{{ i18n.ts.other }}</template>
 
 		<div class="_gaps">
@@ -198,6 +228,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -241,7 +272,7 @@ const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('dis
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
-const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
+const dataSaver = computed(defaultStore.makeGetterSetter('dataSaver'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -372,6 +403,22 @@ function testNotification(): void {
 	smashTimer = window.setTimeout(() => {
 		smashCount = 0;
 	}, 300);
+}
+
+function enableAllDataSaver() {
+	const g = defaultStore.state.dataSaver;
+
+	Object.keys(g).forEach((key) => { g[key] = true; });
+
+	defaultStore.set('dataSaver', g);
+}
+
+function disableAllDataSaver() {
+	const g = defaultStore.state.dataSaver;
+
+	Object.keys(g).forEach((key) => { g[key] = false; });
+
+	defaultStore.set('dataSaver', g);
 }
 
 const headerActions = $computed(() => []);

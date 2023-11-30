@@ -1171,6 +1171,8 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "code": string;
+    "tryReloadIfNotApplied": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2500,6 +2502,24 @@ export interface Locale {
                 "title": string;
                 "description": string;
             };
+        };
+    };
+    "_dataSaver": {
+        "_media": {
+            "title": string;
+            "description": string;
+        };
+        "_avatar": {
+            "title": string;
+            "description": string;
+        };
+        "_urlPreview": {
+            "title": string;
+            "description": string;
+        };
+        "_code": {
+            "title": string;
+            "description": string;
         };
     };
 }

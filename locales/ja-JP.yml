@@ -1168,6 +1168,8 @@ useGroupedNotifications: "通知をグルーピングして表示する"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 doReaction: "リアクションする"
+code: "コード"
+tryReloadIfNotApplied: "設定が反映されない場合はリロードをお試しください。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2389,3 +2391,17 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "テーマのインストールに失敗しました"
       description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+
+_dataSaver:
+  _media:
+    title: "メディアの読み込み"
+    description: "画像・動画が自動で読み込まれるのを防止します。隠れている画像・動画はタップすると読み込まれます。"
+  _avatar:
+    title: "アイコン画像"
+    description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
+  _urlPreview:
+    title: "URLプレビューのサムネイル"
+    description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
+  _code:
+    title: "コードハイライト"
+    description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
