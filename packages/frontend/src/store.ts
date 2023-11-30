@@ -406,7 +406,7 @@ export const defaultStore = markRaw(new Storage('base', {
 			avatar: false,
 			urlPreview: false,
 			code: false,
-		},
+		} as Record<string, boolean>,
 	},
 
 	sound_masterVolume: {
