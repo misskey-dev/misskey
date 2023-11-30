@@ -12,6 +12,15 @@
 
 -->
 
+## 2023.x.x (unreleased)
+
+### General
+
+### Client
+- Fix: 音がならない問題
+
+### Server
+
 ## 2023.11.1-kinel.3
 
 ### General

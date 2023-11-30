@@ -84,7 +84,7 @@ export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notifica
 	if (sound.type == null || !canPlay) return;
 
 	canPlay = false;
-	playFile(sound).finally(() => {
+	playFile(sound.type, sound.volume).finally(() => {
 		// ごく短時間に音が重複しないように
 		setTimeout(() => {
 			canPlay = true;
