@@ -191,6 +191,10 @@ export const packedNoteSchema = {
 				optional: false, nullable: false,
 			},
 		},
+		clippedCount: {
+			type: 'number',
+			optional: true, nullable: false,
+		},
 
 		myReaction: {
 			type: 'object',
