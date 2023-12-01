@@ -417,6 +417,7 @@ async function save() {
 			summary,
 			permissions,
 			script,
+			visibility,
 		});
 		router.push('/play/' + created.id + '/edit');
 	}

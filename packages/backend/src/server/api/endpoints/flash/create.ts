@@ -39,6 +39,7 @@ export const paramDef = {
 		permissions: { type: 'array', items: {
 			type: 'string',
 		} },
+		visibility: { type: 'string', enum: ['public', 'private'] },
 	},
 	required: ['title', 'summary', 'script', 'permissions'],
 } as const;
@@ -61,6 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				summary: ps.summary,
 				script: ps.script,
 				permissions: ps.permissions,
+				visibility: ps.visibility,
 			}).then(x => this.flashsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.flashEntityService.pack(flash, me);

@@ -42,6 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.flashsRepository.createQueryBuilder('flash')
 				.andWhere('flash.likedCount > 0')
+				.andWhere('flash.visibility = \'public\'')
 				.orderBy('flash.likedCount', 'DESC');
 
 			const flashs = await query.limit(10).getMany();
