@@ -76,6 +76,7 @@ import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
+import { MiScheduledNote } from '@/models/ScheduledNote.js';
 
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -149,6 +150,7 @@ export const entities = [
 	MiRenoteMuting,
 	MiBlocking,
 	MiNote,
+	MiScheduledNote,
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,

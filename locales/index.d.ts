@@ -619,6 +619,7 @@ export interface Locale {
     "enableInfiniteScroll": string;
     "visibility": string;
     "poll": string;
+    "schedulePost": string;
     "useCw": string;
     "enablePlayer": string;
     "disablePlayer": string;
@@ -1715,6 +1716,7 @@ export interface Locale {
             "gtlAvailable": string;
             "ltlAvailable": string;
             "canPublicNote": string;
+            "canScheduleNote": string;
             "canEditNote": string;
             "canInvite": string;
             "inviteLimit": string;
@@ -2557,6 +2559,16 @@ export interface Locale {
                 "description": string;
             };
         };
+    };
+    "_schedulePost": {
+        "list": string;
+        "postDate": string;
+        "postTime": string;
+        "localTime": string;
+        "addSchedule": string;
+        "willBePostedAtX": string;
+        "deleteAreYouSure": string;
+        "deleteAndEditConfirm": string;
     };
 }
 declare const locales: {

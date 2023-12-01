@@ -172,6 +172,14 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
 	},
+	scheduledNotes: {
+		title: i18n.ts._schedulePost.list,
+		icon: 'ti ti-calendar-event',
+		show: computed(() => $i && $i.policies?.canScheduleNote),
+		action: (ev) => {
+			os.listSchedulePost();
+		},
+	},
 	cacheClear: {
 		title: i18n.ts.cacheClear,
 		icon: 'ti ti-trash',

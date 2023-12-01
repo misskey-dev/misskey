@@ -488,9 +488,9 @@ onBeforeUnmount(() => {
 .indicator {
 	position: absolute;
 	top: 5px;
-	left: 13px;
+	right: 18px;
 	color: var(--indicator);
-	font-size: 12px;
+	font-size: 8px;
 	animation: blink 1s infinite;
 }
 

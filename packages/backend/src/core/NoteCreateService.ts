@@ -15,19 +15,16 @@ import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
 import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { IPoll } from '@/models/Poll.js';
 import { MiPoll } from '@/models/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
-import type { MiChannel } from '@/models/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
+import type { MiNoteCreateOption as Option, MiMinimumUser as MinimumUser } from '@/types.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -115,35 +112,6 @@ class NotificationManager {
 		}
 	}
 }
-
-type MinimumUser = {
-	id: MiUser['id'];
-	host: MiUser['host'];
-	username: MiUser['username'];
-	uri: MiUser['uri'];
-};
-
-type Option = {
-	createdAt?: Date | null;
-	name?: string | null;
-	text?: string | null;
-	reply?: MiNote | null;
-	renote?: MiNote | null;
-	files?: MiDriveFile[] | null;
-	poll?: IPoll | null;
-	localOnly?: boolean | null;
-	reactionAcceptance?: MiNote['reactionAcceptance'];
-	cw?: string | null;
-	visibility?: string;
-	visibleUsers?: MinimumUser[] | null;
-	channel?: MiChannel | null;
-	apMentions?: MinimumUser[] | null;
-	apHashtags?: string[] | null;
-	apEmojis?: string[] | null;
-	uri?: string | null;
-	url?: string | null;
-	app?: MiApp | null;
-};
 
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
@@ -368,7 +336,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
 		}
-
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
