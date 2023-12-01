@@ -17,6 +17,7 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -117,10 +118,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userIdsWhoMeMuting,
 				userIdsWhoMeMutingRenotes,
 				userIdsWhoBlockingMe,
+				userMutedInstances,
 			] = await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.renoteMutingsCache.fetch(me.id),
 				this.cacheService.userBlockedCache.fetch(me.id),
+				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
 			]);
 
 			let noteIds = await this.fanoutTimelineService.get(ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`, untilId, sinceId);
@@ -135,8 +138,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.leftJoinAndSelect('note.reply', 'reply')
 					.leftJoinAndSelect('note.renote', 'renote')
 					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
+					.leftJoinAndSelect('renote.user', 'renoteUser');
 
 				redisTimeline = await query.getMany();
 
@@ -152,6 +154,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							if (ps.withRenotes === false) return false;
 						}
 					}
+					if (isInstanceMuted(note, userMutedInstances)) return false;
 
 					return true;
 				});
