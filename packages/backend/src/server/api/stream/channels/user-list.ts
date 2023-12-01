@@ -81,7 +81,7 @@ class UserListChannel extends Channel {
 		const isMe = this.user!.id === note.userId;
 
 		// チャンネル投稿は無視する
-		if (!note.channelId) return;
+		if (note.channelId) return;
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
