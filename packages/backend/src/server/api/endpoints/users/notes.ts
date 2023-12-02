@@ -53,7 +53,6 @@ export const paramDef = {
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 		withFiles: { type: 'boolean', default: false },
-		excludeNsfw: { type: 'boolean', default: false },
 	},
 	required: ['userId'],
 } as const;

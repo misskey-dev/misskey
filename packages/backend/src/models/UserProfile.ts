@@ -29,6 +29,7 @@ export class MiUserProfile {
 	})
 	public location: string | null;
 
+	@Index()
 	@Column('char', {
 		length: 10, nullable: true,
 		comment: 'The birthday (YYYY-MM-DD) of the User.',

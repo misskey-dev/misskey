@@ -9,7 +9,6 @@ import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['meta'],
