@@ -53,7 +53,7 @@ const pagination = {
 	})),
 };
 
-const isOwned: boolean | null = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
+const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
 watch(() => props.clipId, async () => {
 	clip.value = await os.api('clips/show', {
