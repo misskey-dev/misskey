@@ -206,6 +206,7 @@ async function init(): Promise<void> {
 	await os.api(props.pagination.endpoint, {
 		...params,
 		limit: props.pagination.limit ?? 10,
+		allowPartial: true,
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
