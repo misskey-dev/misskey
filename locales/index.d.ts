@@ -314,6 +314,7 @@ export interface Locale {
     "createFolder": string;
     "renameFolder": string;
     "deleteFolder": string;
+    "folder": string;
     "addFile": string;
     "emptyDrive": string;
     "emptyFolder": string;
@@ -440,7 +441,6 @@ export interface Locale {
     "notFound": string;
     "notFoundDescription": string;
     "uploadFolder": string;
-    "cacheClear": string;
     "markAsReadAllNotifications": string;
     "markAsReadAllUnreadNotes": string;
     "markAsReadAllTalkMessages": string;
