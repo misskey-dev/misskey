@@ -1028,6 +1028,8 @@ resetPasswordConfirm: "パスワードリセットしますか？"
 sensitiveWords: "センシティブワード"
 sensitiveWordsDescription: "設定したワードが含まれるノートの公開範囲をホームにします。改行で区切って複数設定できます。"
 sensitiveWordsDescription2: "スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。"
+hiddenTags: "非表示ハッシュタグ"
+hiddenTagsDescription: "設定したタグをトレンドに表示させないようにします。改行で区切って複数設定できます。"
 notesSearchNotAvailable: "ノート検索は利用できません。"
 license: "ライセンス"
 unfavoriteConfirm: "お気に入り解除しますか？"
@@ -2014,6 +2016,7 @@ _widgets:
   _userList:
     chooseList: "リストを選択"
   clicker: "クリッカー"
+  birthdayFollowings: "今日誕生日のユーザー"
 
 _cw:
   hide: "隠す"

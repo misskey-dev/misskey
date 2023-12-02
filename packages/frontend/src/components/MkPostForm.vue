@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<MkScheduleEditor v-if="schedule" v-model="schedule" @destroyed="schedule = null"/>
 	</div>
-	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :user="postAccount ?? $i"/>
+	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer :class="$style.footer">
@@ -373,8 +373,8 @@ function checkMissingMention() {
 				return;
 			}
 		}
-		hasNotSpecifiedMentions = false;
 	}
+	hasNotSpecifiedMentions = false;
 }
 
 function addMissingMention() {

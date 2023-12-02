@@ -202,20 +202,24 @@ export async function common(createVue: () => App<Element>) {
 		}
 	}, { immediate: true });
 
-	if (defaultStore.state.keepScreenOn) {
-		if ('wakeLock' in navigator) {
-			navigator.wakeLock.request('screen')
-			.then(() => {
-				document.addEventListener('visibilitychange', async () => {
-					if (document.visibilityState === 'visible') {
-						navigator.wakeLock.request('screen');
-					}
-				});
-			})
-			.catch(() => {
-				// If Permission fails on an AppleDevice such as Safari
-			});
+	// Keep screen on
+	const onVisibilityChange = () => document.addEventListener('visibilitychange', () => {
+		if (document.visibilityState === 'visible') {
+			navigator.wakeLock.request('screen');
 		}
+	});
+	if (defaultStore.state.keepScreenOn && 'wakeLock' in navigator) {
+		navigator.wakeLock.request('screen')
+			.then(onVisibilityChange)
+			.catch(() => {
+				// On WebKit-based browsers, user activation is required to send wake lock request
+				// https://webkit.org/blog/13862/the-user-activation-api/
+				document.addEventListener(
+					'click',
+					() => navigator.wakeLock.request('screen').then(onVisibilityChange),
+					{ once: true },
+				);
+			});
 	}
 
 	//#region Fetch user

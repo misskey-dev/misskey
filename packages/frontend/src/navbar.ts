@@ -12,6 +12,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
+import { clearCache } from './scripts/clear-cache.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -171,12 +172,18 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
 	},
-	scheduledNotes: {
-		title: i18n.ts._schedulePost.list,
-		icon: 'ti ti-calendar-event',
-		show: computed(() => $i && $i.policies?.canScheduleNote),
+	cacheClear: {
+		title: i18n.ts.cacheClear,
+		icon: 'ti ti-trash',
 		action: (ev) => {
-			os.listSchedulePost();
+			clearCache();
+		},
+    scheduledNotes: {
+			title: i18n.ts._schedulePost.list,
+			icon: 'ti ti-calendar-event',
+			show: computed(() => $i && $i.policies?.canScheduleNote),
+			action: (ev) => {
+				os.listSchedulePost();
 		},
 	},
 });
