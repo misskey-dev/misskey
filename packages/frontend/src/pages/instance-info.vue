@@ -144,8 +144,8 @@ const props = defineProps<{
 
 const tab = ref('overview');
 const chartSrc = ref('instance-requests');
-const meta = ref<Misskey.entities.AdminInstanceMetadata | null>(null);
-const instance = ref<Misskey.entities.Instance | null>(null);
+const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
+const instance = ref<Misskey.entities.FederationInstance | null>(null);
 const suspended = ref(false);
 const isBlocked = ref(false);
 const isSilenced = ref(false);
@@ -169,10 +169,10 @@ async function fetch(): Promise<void> {
 	instance.value = await os.api('federation/show-instance', {
 		host: props.host,
 	});
-	suspended.value = instance.value.isSuspended;
-	isBlocked.value = instance.value.isBlocked;
-	isSilenced.value = instance.value.isSilenced;
-	faviconUrl.value = getProxiedImageUrlNullable(instance.value.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value.iconUrl, 'preview');
+	suspended.value = instance.value?.isSuspended ?? false;
+	isBlocked.value = instance.value?.isBlocked ?? false;
+	isSilenced.value = instance.value?.isSilenced ?? false;
+	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
 }
 
 async function toggleBlock(): Promise<void> {
@@ -188,8 +188,9 @@ async function toggleSilenced(): Promise<void> {
 	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
+	const silencedHosts = meta.value.silencedHosts ?? [];
 	await os.api('admin/update-meta', {
-		silencedHosts: isSilenced.value ? meta.value.silencedHosts.concat([host]) : meta.value.silencedHosts.filter(x => x !== host),
+		silencedHosts: isSilenced.value ? silencedHosts.concat([host]) : silencedHosts.filter(x => x !== host),
 	});
 }
 

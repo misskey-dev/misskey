@@ -67,15 +67,14 @@ import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
-const meta = ref<Misskey.entities.Instance>();
-const stats = ref(null);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
 os.api('meta', { detail: true }).then(_meta => {
 	meta.value = _meta;
 });
 
-os.api('stats', {
-}).then((res) => {
+os.api('stats', {}).then((res) => {
 	stats.value = res;
 });
 

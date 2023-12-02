@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<{
 
 const loaded = ref(false);
 const serverIsDead = ref(false);
-const meta = ref<Misskey.entities.LiteInstanceMetadata | null>(null);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
 
 os.api('meta', {
 	detail: false,
