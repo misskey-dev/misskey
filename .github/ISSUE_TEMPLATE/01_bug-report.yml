@@ -1,26 +1,26 @@
-name: 🐛 Bug Report
-description: Create a report to help us improve
+name: 🐛 バグ報告
+description: 修正/改善のための報告
 labels: ["⚠️bug?"]
 
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting!
-        First, in order to avoid duplicate Issues, please search to see if the problem you found has already been reported on [misskey.niri.la issues](https://github.com/niri-la/misskey.niri.la/issues).
-        Also, you should report issues only when reproduced on `misskey.niri.la`.
+        バグ報告を検討していただきありがとうございます!
+        重複を避けるために、同様の問題が既に報告されていないか[にりらみすきー部のIssue](https://github.com/niri-la/misskey.niri.la/issues)を確認してみてください。
+        また、にりらみすきー部で再現したバグのみを報告してください。
 
   - type: textarea
     attributes:
-      label: 💡 Summary
-      description: Tell us what the bug is
+      label: 💡 概要
+      description: どんなバグですか?
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 🥰 Expected Behavior
-      description: Tell us what should happen
+      label: 🥰 想定される挙動
+      description: 本来どうあるべきですか?
     validations:
       required: true
 
@@ -28,14 +28,14 @@ body:
     attributes:
       label: 🤬 Actual Behavior
       description: |
-        Tell us what happens instead of the expected behavior.
-        Please include errors from the developer console and/or server log files if you have access to them.
+        実際には何が起きていますか?
+        可能であれば、デベロッパーツールでのエラーメッセージなども載せてください。
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 📝 Steps to Reproduce
+      label: 📝 再現手順
       placeholder: |
         1.
         2.
@@ -45,17 +45,17 @@ body:
 
   - type: textarea
     attributes:
-      label: 💻 Frontend Environment
+      label: 💻 お使いの環境
       description: |
-        Tell us where on the platform it happens
-        DO NOT WRITE "latest". Please provide the specific version.
+        どんな環境で問題が起きましたか?
+        "最新"のような書き方はせず、具体的なバージョンを教えてください。
 
-        Examples:
-          * Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
-          * Browser: Chrome 113.0.5672.126
+        例:
+          * 機種とOS: MacBook Pro (14inch, 2021), macOS Ventura 13.4
+          * ブラウザ: Chrome 113.0.5672.126
       value: |
-        * Model and OS of the device(s):
-        * Browser:
+        * 機種とOS:
+        * ブラウザ:
       render: markdown
     validations:
       required: false
