@@ -21,6 +21,12 @@ export const packedDriveFolderSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		parentId: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
 		foldersCount: {
 			type: 'number',
 			optional: true, nullable: false,
@@ -28,12 +34,6 @@ export const packedDriveFolderSchema = {
 		filesCount: {
 			type: 'number',
 			optional: true, nullable: false,
-		},
-		parentId: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'id',
-			example: 'xxxxxxxxxx',
 		},
 		parent: {
 			type: 'object',
