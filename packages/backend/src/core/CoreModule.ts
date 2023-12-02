@@ -4,6 +4,7 @@
  */
 
 import { Module } from '@nestjs/common';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
@@ -195,6 +196,7 @@ const $SearchService: Provider = { provide: 'SearchService', useExisting: Search
 const $ClipService: Provider = { provide: 'ClipService', useExisting: ClipService };
 const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
 const $FanoutTimelineService: Provider = { provide: 'FanoutTimelineService', useExisting: FanoutTimelineService };
+const $FanoutTimelineEndpointService: Provider = { provide: 'FanoutTimelineEndpointService', useExisting: FanoutTimelineEndpointService };
 const $ChannelFollowingService: Provider = { provide: 'ChannelFollowingService', useExisting: ChannelFollowingService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 
@@ -331,6 +333,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ClipService,
 		FeaturedService,
 		FanoutTimelineService,
+		FanoutTimelineEndpointService,
 		ChannelFollowingService,
 		RegistryApiService,
 		ChartLoggerService,
@@ -460,6 +463,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ClipService,
 		$FeaturedService,
 		$FanoutTimelineService,
+		$FanoutTimelineEndpointService,
 		$ChannelFollowingService,
 		$RegistryApiService,
 		$ChartLoggerService,
@@ -590,6 +594,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ClipService,
 		FeaturedService,
 		FanoutTimelineService,
+		FanoutTimelineEndpointService,
 		ChannelFollowingService,
 		RegistryApiService,
 		FederationChart,
@@ -718,6 +723,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ClipService,
 		$FeaturedService,
 		$FanoutTimelineService,
+		$FanoutTimelineEndpointService,
 		$ChannelFollowingService,
 		$RegistryApiService,
 		$FederationChart,
