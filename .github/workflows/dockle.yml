@@ -20,7 +20,7 @@ jobs:
           sudo dpkg -i dockle.deb
       - run: |
           cp .config/docker_example.env .config/docker.env
-          cp ./docker-compose.yml.example ./docker-compose.yml
+          cp ./docker-compose_example.yml ./docker-compose.yml
       - run: |
           docker compose up -d web
           docker tag "$(docker compose images web | awk 'OFS=":" {print $4}' | tail -n +2)" misskey-web:latest

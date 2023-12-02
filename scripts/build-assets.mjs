@@ -9,9 +9,11 @@ import cssnano from 'cssnano';
 import postcss from 'postcss';
 import * as terser from 'terser';
 
-import locales from '../locales/index.js';
+import { build as buildLocales } from '../locales/index.js';
 import generateDTS from '../locales/generateDTS.js';
 import meta from '../package.json' assert { type: "json" };
+
+let locales = buildLocales();
 
 async function copyFrontendFonts() {
   await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
@@ -31,6 +33,13 @@ async function copyFrontendLocales() {
   for (const [lang, locale] of Object.entries(locales)) {
     await fs.writeFile(`./built/_frontend_dist_/locales/${lang}.${meta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
   }
+}
+
+async function copyFrontendShikiAssets() {
+  await fs.cp('./packages/frontend/node_modules/shiki/dist', './built/_frontend_dist_/shiki/dist', { dereference: true, recursive: true });
+  await fs.cp('./packages/frontend/node_modules/shiki/languages', './built/_frontend_dist_/shiki/languages', { dereference: true, recursive: true });
+  await fs.cp('./packages/frontend/node_modules/aiscript-vscode/aiscript/syntaxes', './built/_frontend_dist_/shiki/languages', { dereference: true, recursive: true });
+  await fs.cp('./packages/frontend/node_modules/shiki/themes', './built/_frontend_dist_/shiki/themes', { dereference: true, recursive: true });
 }
 
 async function copyBackendViews() {
@@ -72,6 +81,7 @@ async function build() {
     copyFrontendFonts(),
     copyFrontendTablerIcons(),
     copyFrontendLocales(),
+    copyFrontendShikiAssets(),
     copyBackendViews(),
     buildBackendScript(),
     buildBackendStyle(),
@@ -81,10 +91,12 @@ async function build() {
 await build();
 
 if (process.argv.includes("--watch")) {
-  const watcher = fs.watch('./packages', { recursive: true });
-  for await (const event of watcher) {
-    if (/^[a-z]+\/src/.test(event.filename)) {
-      await build();
-    }
-  }
+	const watcher = fs.watch('./locales');
+	for await (const event of watcher) {
+		const filename = event.filename?.replaceAll('\\', '/');
+		if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
+			locales = buildLocales();
+			await copyFrontendLocales()
+		}
+	}
 }

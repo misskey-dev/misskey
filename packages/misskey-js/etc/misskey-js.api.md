@@ -134,6 +134,20 @@ type Blocking = {
 // @public (undocumented)
 type Channel = {
     id: ID;
+    lastNotedAt: Date | null;
+    userId: User['id'] | null;
+    user: User | null;
+    name: string;
+    description: string | null;
+    bannerId: DriveFile['id'] | null;
+    banner: DriveFile | null;
+    pinnedNoteIds: string[];
+    color: string;
+    isArchived: boolean;
+    notesCount: number;
+    usersCount: number;
+    isSensitive: boolean;
+    allowRenoteToExternal: boolean;
 };
 
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
@@ -326,6 +340,18 @@ export type Endpoints = {
         res: TODO;
     };
     'admin/delete-all-files-of-a-user': {
+        req: {
+            userId: User['id'];
+        };
+        res: null;
+    };
+    'admin/unset-user-avatar': {
+        req: {
+            userId: User['id'];
+        };
+        res: null;
+    };
+    'admin/unset-user-banner': {
         req: {
             userId: User['id'];
         };
@@ -1482,10 +1508,6 @@ export type Endpoints = {
         };
         res: null;
     };
-    'i/registry/scopes': {
-        req: NoParams;
-        res: string[][];
-    };
     'i/registry/set': {
         req: {
             key: string;
@@ -1543,7 +1565,8 @@ export type Endpoints = {
             injectFeaturedNote?: boolean;
             receiveAnnouncementEmail?: boolean;
             alwaysMarkNsfw?: boolean;
-            mutedWords?: string[][];
+            mutedWords?: (string[] | string)[];
+            hardMutedWords?: (string[] | string)[];
             notificationRecieveConfig?: any;
             emailNotificationTypes?: string[];
             alsoKnownAs?: string[];
@@ -2229,6 +2252,22 @@ export type Endpoints = {
             };
         };
     };
+    'fetch-rss': {
+        req: {
+            url: string;
+        };
+        res: TODO;
+    };
+    'fetch-external-resources': {
+        req: {
+            url: string;
+            hash: string;
+        };
+        res: {
+            type: string;
+            data: string;
+        };
+    };
 };
 
 declare namespace entities {
@@ -2472,12 +2511,14 @@ type MeDetailed = UserDetailed & {
     hasUnreadMessagingMessage: boolean;
     hasUnreadNotification: boolean;
     hasUnreadSpecifiedNotes: boolean;
+    unreadNotificationsCount: number;
     hideOnlineStatus: boolean;
     injectFeaturedNote: boolean;
     integrations: Record<string, any>;
     isDeleted: boolean;
     isExplorable: boolean;
-    mutedWords: string[][];
+    mutedWords: (string[] | string)[];
+    hardMutedWords: (string[] | string)[];
     notificationRecieveConfig: {
         [notificationType in typeof notificationTypes_2[number]]?: {
             type: 'all';
@@ -2634,10 +2675,28 @@ type ModerationLog = {
 } | {
     type: 'deleteAd';
     info: ModerationLogPayloads['deleteAd'];
+} | {
+    type: 'createAvatarDecoration';
+    info: ModerationLogPayloads['createAvatarDecoration'];
+} | {
+    type: 'updateAvatarDecoration';
+    info: ModerationLogPayloads['updateAvatarDecoration'];
+} | {
+    type: 'deleteAvatarDecoration';
+    info: ModerationLogPayloads['deleteAvatarDecoration'];
+} | {
+    type: 'resolveAbuseReport';
+    info: ModerationLogPayloads['resolveAbuseReport'];
+} | {
+    type: 'unsetUserAvatar';
+    info: ModerationLogPayloads['unsetUserAvatar'];
+} | {
+    type: 'unsetUserBanner';
+    info: ModerationLogPayloads['unsetUserBanner'];
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
@@ -2658,6 +2717,8 @@ type Note = {
     fileIds: DriveFile['id'][];
     visibility: 'public' | 'home' | 'followers' | 'specified';
     visibleUserIds?: User['id'][];
+    channel?: Channel;
+    channelId?: Channel['id'];
     localOnly?: boolean;
     myReaction?: string;
     reactions: Record<string, number>;
@@ -2965,6 +3026,12 @@ type UserLite = {
     onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
     avatarUrl: string;
     avatarBlurhash: string;
+    avatarDecorations: {
+        id: ID;
+        url: string;
+        angle?: number;
+        flipH?: boolean;
+    }[];
     emojis: {
         name: string;
         url: string;
@@ -2987,10 +3054,10 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // Warnings were encountered during analysis:
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:633:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
-// src/entities.ts:109:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
-// src/entities.ts:605:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:20:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:635:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/entities.ts:117:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
+// src/entities.ts:628:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

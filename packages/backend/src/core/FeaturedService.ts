@@ -5,11 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiNote, MiUser } from '@/models/_.js';
+import type { MiGalleryPost, MiNote, MiUser } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 const GLOBAL_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
+export const GALLERY_POSTS_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
 const PER_USER_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 7; // 1週間ごと
 const HASHTAG_RANKING_WINDOW = 1000 * 60 * 60; // 1時間ごと
 
@@ -52,7 +53,7 @@ export class FeaturedService {
 			`${name}:${currentWindow}`, 0, threshold, 'REV', 'WITHSCORES');
 		redisPipeline.zrange(
 			`${name}:${previousWindow}`, 0, threshold, 'REV', 'WITHSCORES');
-		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => r[1] as string[]) : [[], []]);
+		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => (r[1] ?? []) as string[]) : [[], []]);
 
 		const ranking = new Map<string, number>();
 		for (let i = 0; i < currentRankingResult.length; i += 2) {
@@ -80,6 +81,11 @@ export class FeaturedService {
 	}
 
 	@bindThis
+	public updateGalleryPostsRanking(galleryPostId: MiGalleryPost['id'], score = 1): Promise<void> {
+		return this.updateRankingOf('featuredGalleryPostsRanking', GALLERY_POSTS_RANKING_WINDOW, galleryPostId, score);
+	}
+
+	@bindThis
 	public updateInChannelNotesRanking(channelId: MiNote['channelId'], noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
 	}
@@ -97,6 +103,11 @@ export class FeaturedService {
 	@bindThis
 	public getGlobalNotesRanking(threshold: number): Promise<MiNote['id'][]> {
 		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, threshold);
+	}
+
+	@bindThis
+	public getGalleryPostsRanking(threshold: number): Promise<MiGalleryPost['id'][]> {
+		return this.getRankingOf('featuredGalleryPostsRanking', GALLERY_POSTS_RANKING_WINDOW, threshold);
 	}
 
 	@bindThis

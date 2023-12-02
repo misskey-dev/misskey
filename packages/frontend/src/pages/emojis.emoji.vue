@@ -46,7 +46,7 @@ function menu(ev) {
 			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
-					text: `License: ${res.license}`,
+					text: `Name: ${res.name}\nAliases: ${res.aliases.join(' ')}\nCategory: ${res.category}\nisSensitive: ${res.isSensitive}\nlocalOnly: ${res.localOnly}\nLicense: ${res.license}\nURL: ${res.url}`,
 				});
 			});
 		},

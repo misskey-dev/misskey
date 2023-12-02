@@ -51,7 +51,8 @@ function submit() {
 
 		os.alert({
 			type: 'error',
-			text: i18n.ts.somethingHappened,
+			title: i18n.ts.somethingHappened,
+			text: i18n.ts.signupPendingError,
 		});
 	});
 }

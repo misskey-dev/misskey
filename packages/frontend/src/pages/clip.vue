@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="clip" class="_gaps">
 			<div class="_panel">
 				<div v-if="clip.description" :class="$style.description">
-					<Mfm :text="clip.description" :isNote="false" :i="$i"/>
+					<Mfm :text="clip.description" :isNote="false"/>
 				</div>
 				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
 				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
@@ -36,6 +36,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	clipId: string,
@@ -118,6 +120,13 @@ const headerActions = $computed(() => clip && isOwned ? [{
 		clipsCache.delete();
 	},
 }, ...(clip.isPublic ? [{
+	icon: 'ti ti-link',
+	text: i18n.ts.copyUrl,
+	handler: async (): Promise<void> => {
+		copyToClipboard(`${url}/clips/${clip.id}`);
+		os.success();
+	},
+}] : []), ...(clip.isPublic && isSupportShare() ? [{
 	icon: 'ti ti-share',
 	text: i18n.ts.share,
 	handler: async (): Promise<void> => {

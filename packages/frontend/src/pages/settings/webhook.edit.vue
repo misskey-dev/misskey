@@ -108,6 +108,7 @@ async function del(): Promise<void> {
 
 	router.push('/settings/webhook');
 }
+
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);
