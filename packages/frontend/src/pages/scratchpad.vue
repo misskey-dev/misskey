@@ -59,7 +59,7 @@ let aiscript: Interpreter;
 const code = ref('');
 const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
-let components: Ref<AsUiComponent>[] = ref([]);
+let components = ref<Ref<AsUiComponent>[]>([]);
 let uiKey = ref(0);
 
 const saved = miLocalStorage.getItem('scratchpad');

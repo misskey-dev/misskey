@@ -52,7 +52,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 const parser = new Parser();
 
 const root = ref<AsUiRoot>();
-const components: Ref<AsUiComponent>[] = ref([]);
+const components = ref<Ref<AsUiComponent>[]>([]);
 
 async function run() {
 	const aiscript = new Interpreter({
