@@ -29,6 +29,7 @@ export class FanoutTimelineEndpointService {
 		untilId: string | null,
 		sinceId: string | null,
 		limit: number,
+		allowPartial: boolean,
 		me?: { id: MiUser['id'] } | undefined | null,
 		useDbFallback: boolean,
 		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
@@ -43,6 +44,7 @@ export class FanoutTimelineEndpointService {
 		untilId: string | null,
 		sinceId: string | null,
 		limit: number,
+		allowPartial: boolean,
 		me?: { id: MiUser['id'] } | undefined | null,
 		useDbFallback: boolean,
 		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
@@ -96,7 +98,7 @@ export class FanoutTimelineEndpointService {
 
 				console.log(`fanoutTimelineTrial#${trialCount++}: req: ${ps.limit}, tried: ${noteIds.length}, got: ${gotFromDb.length}, rate: ${lastSuccessfulRate}, total: ${redisTimeline.length}, fromRedis: ${redisResultIds.length}`);
 
-				if (redisTimeline.length >= ps.limit) {
+				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
 					// 十分Redisからとれた
 					return redisTimeline.slice(0, ps.limit);
 				}

@@ -51,6 +51,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 	},
@@ -115,6 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				untilId,
 				sinceId,
 				limit: ps.limit,
+				allowPartial: ps.allowPartial,
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				redisTimelines: ps.withFiles ? ['localTimelineWithFiles'] : ['localTimeline', 'localTimelineWithReplies'],
