@@ -29,8 +29,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { notificationTypes } from '@/const.js';
 
-let tab = ref('all');
-let includeTypes = ref<string[] | null>(null);
+const tab = ref('all');
+const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value.includes(t)) : null);
 
 const mentionsPagination = {

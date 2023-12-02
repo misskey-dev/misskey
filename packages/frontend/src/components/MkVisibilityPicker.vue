@@ -62,7 +62,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let v = ref(props.currentVisibility);
+const v = ref(props.currentVisibility);
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	v.value = visibility;

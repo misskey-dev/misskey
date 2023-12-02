@@ -90,19 +90,19 @@ const emit = defineEmits<{
 	(ev: 'hide'): void;
 }>();
 
-let itemsEl = shallowRef<HTMLDivElement>();
+const itemsEl = shallowRef<HTMLDivElement>();
 
-let items2 = ref<InnerMenuItem[]>([]);
+const items2 = ref<InnerMenuItem[]>([]);
 
-let child = shallowRef<InstanceType<typeof XChild>>();
+const child = shallowRef<InstanceType<typeof XChild>>();
 
-let keymap = computed(() => ({
+const keymap = computed(() => ({
 	'up|k|shift+tab': focusUp,
 	'down|j|tab': focusDown,
 	'esc': close,
 }));
 
-let childShowingItem = ref<MenuItem | null>();
+const childShowingItem = ref<MenuItem | null>();
 
 let preferClick = isTouchUsing || props.asDrawer;
 
@@ -126,7 +126,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-let childTarget = shallowRef<HTMLElement | null>();
+const childTarget = shallowRef<HTMLElement | null>();
 
 function closeChild() {
 	childMenu.value = null;

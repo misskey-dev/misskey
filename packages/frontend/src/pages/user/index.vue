@@ -54,9 +54,9 @@ const props = withDefaults(defineProps<{
 	page: 'home',
 });
 
-let tab = ref(props.page);
-let user = ref<null | Misskey.entities.UserDetailed>(null);
-let error = ref(null);
+const tab = ref(props.page);
+const user = ref<null | Misskey.entities.UserDetailed>(null);
+const error = ref(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;

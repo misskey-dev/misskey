@@ -48,7 +48,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const router = useRouter();
 
-let tab = ref('featured');
+const tab = ref('featured');
 
 const featuredFlashsPagination = {
 	endpoint: 'flash/featured' as const,

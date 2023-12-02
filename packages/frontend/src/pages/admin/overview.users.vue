@@ -23,8 +23,8 @@ import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { defaultStore } from '@/store.js';
 
-let newUsers = ref(null);
-let fetching = ref(true);
+const newUsers = ref(null);
+const fetching = ref(true);
 
 const fetch = async () => {
 	const _newUsers = await os.api('admin/show-users', {

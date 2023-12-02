@@ -58,9 +58,9 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-let list = ref();
-let users = ref([]);
-let fetching = ref(true);
+const list = ref();
+const users = ref([]);
+const fetching = ref(true);
 
 async function chooseList() {
 	const lists = await os.api('users/lists/list');

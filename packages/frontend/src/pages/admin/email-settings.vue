@@ -78,13 +78,13 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
-let enableEmail = ref<boolean>(false);
-let email = ref<any>(null);
-let smtpSecure = ref<boolean>(false);
-let smtpHost = ref<string>('');
-let smtpPort = ref<number>(0);
-let smtpUser = ref<string>('');
-let smtpPass = ref<string>('');
+const enableEmail = ref<boolean>(false);
+const email = ref<any>(null);
+const smtpSecure = ref<boolean>(false);
+const smtpHost = ref<string>('');
+const smtpPort = ref<number>(0);
+const smtpUser = ref<string>('');
+const smtpPass = ref<string>('');
 
 async function init() {
 	const meta = await os.api('admin/meta');

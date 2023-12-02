@@ -36,8 +36,8 @@ const props = withDefaults(defineProps<{
 	initialTab: 'featured',
 });
 
-let tab = ref(props.initialTab);
-let tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
+const tab = ref(props.initialTab);
+const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
 
 watch(() => props.tag, () => {
 	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);

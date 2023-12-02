@@ -41,8 +41,8 @@ const emit = defineEmits<{
 	(ev: 'update', result: any): void;
 }>();
 
-let type = ref(props.value.type);
-let userListId = ref(props.value.userListId);
+const type = ref(props.value.type);
+const userListId = ref(props.value.userListId);
 
 function save() {
 	emit('update', { type: type.value, userListId: userListId.value });

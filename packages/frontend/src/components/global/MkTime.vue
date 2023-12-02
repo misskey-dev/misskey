@@ -47,7 +47,7 @@ const invalid = Number.isNaN(_time);
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-let now = ref((props.origin ?? new Date()).getTime());
+const now = ref((props.origin ?? new Date()).getTime());
 const ago = computed(() => (now.value - _time) / 1000/*ms*/);
 
 const relative = computed<string>(() => {

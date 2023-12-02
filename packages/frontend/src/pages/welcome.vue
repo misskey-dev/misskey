@@ -18,7 +18,7 @@ import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let meta = ref(null);
+const meta = ref(null);
 
 os.api('meta', { detail: true }).then(res => {
 	meta.value = res;

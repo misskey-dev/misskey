@@ -138,19 +138,19 @@ const texts = computed(() => {
 });
 
 let enabled = true;
-let majorGraduationColor = ref<string>();
+const majorGraduationColor = ref<string>();
 //let minorGraduationColor = $ref<string>();
-let sHandColor = ref<string>();
-let mHandColor = ref<string>();
-let hHandColor = ref<string>();
-let nowColor = ref<string>();
-let h = ref<number>(0);
-let m = ref<number>(0);
-let s = ref<number>(0);
-let hAngle = ref<number>(0);
-let mAngle = ref<number>(0);
-let sAngle = ref<number>(0);
-let disableSAnimate = ref(false);
+const sHandColor = ref<string>();
+const mHandColor = ref<string>();
+const hHandColor = ref<string>();
+const nowColor = ref<string>();
+const h = ref<number>(0);
+const m = ref<number>(0);
+const s = ref<number>(0);
+const hAngle = ref<number>(0);
+const mAngle = ref<number>(0);
+const sAngle = ref<number>(0);
+const disableSAnimate = ref(false);
 let sOneRound = false;
 const sLine = ref<SVGPathElement>();
 

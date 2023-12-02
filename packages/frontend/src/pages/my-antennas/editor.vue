@@ -69,18 +69,18 @@ const emit = defineEmits<{
 	(ev: 'deleted'): void,
 }>();
 
-let name = ref<string>(props.antenna.name);
-let src = ref<string>(props.antenna.src);
-let userListId = ref<any>(props.antenna.userListId);
-let users = ref<string>(props.antenna.users.join('\n'));
-let keywords = ref<string>(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
-let excludeKeywords = ref<string>(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
-let caseSensitive = ref<boolean>(props.antenna.caseSensitive);
-let localOnly = ref<boolean>(props.antenna.localOnly);
-let withReplies = ref<boolean>(props.antenna.withReplies);
-let withFile = ref<boolean>(props.antenna.withFile);
-let notify = ref<boolean>(props.antenna.notify);
-let userLists = ref<any>(null);
+const name = ref<string>(props.antenna.name);
+const src = ref<string>(props.antenna.src);
+const userListId = ref<any>(props.antenna.userListId);
+const users = ref<string>(props.antenna.users.join('\n'));
+const keywords = ref<string>(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
+const excludeKeywords = ref<string>(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
+const caseSensitive = ref<boolean>(props.antenna.caseSensitive);
+const localOnly = ref<boolean>(props.antenna.localOnly);
+const withReplies = ref<boolean>(props.antenna.withReplies);
+const withFile = ref<boolean>(props.antenna.withFile);
+const notify = ref<boolean>(props.antenna.notify);
+const userLists = ref<any>(null);
 
 watch(() => src.value, async () => {
 	if (src.value === 'list' && userLists.value === null) {

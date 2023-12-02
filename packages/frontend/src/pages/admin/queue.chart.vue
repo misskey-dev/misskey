@@ -63,10 +63,10 @@ const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
 const jobs = ref([]);
-let chartProcess = shallowRef<InstanceType<typeof XChart>>();
-let chartActive = shallowRef<InstanceType<typeof XChart>>();
-let chartDelayed = shallowRef<InstanceType<typeof XChart>>();
-let chartWaiting = shallowRef<InstanceType<typeof XChart>>();
+const chartProcess = shallowRef<InstanceType<typeof XChart>>();
+const chartActive = shallowRef<InstanceType<typeof XChart>>();
+const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
+const chartWaiting = shallowRef<InstanceType<typeof XChart>>();
 
 const props = defineProps<{
 	domain: string;

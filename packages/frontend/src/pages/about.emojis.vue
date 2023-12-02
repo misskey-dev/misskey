@@ -47,9 +47,9 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 
 const customEmojiTags = getCustomEmojiTags();
-let q = ref('');
-let searchEmojis = ref<Misskey.entities.CustomEmoji[]>(null);
-let selectedTags = ref(new Set());
+const q = ref('');
+const searchEmojis = ref<Misskey.entities.CustomEmoji[]>(null);
+const selectedTags = ref(new Set());
 
 function search() {
 	if ((q.value === '' || q.value == null) && selectedTags.value.size === 0) {

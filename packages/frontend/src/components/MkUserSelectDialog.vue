@@ -78,12 +78,12 @@ const props = defineProps<{
 	includeSelf?: boolean;
 }>();
 
-let username = ref('');
-let host = ref('');
-let users = ref<Misskey.entities.UserDetailed[]>([]);
-let recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
-let selected = ref<Misskey.entities.UserDetailed | null>(null);
-let dialogEl = ref();
+const username = ref('');
+const host = ref('');
+const users = ref<Misskey.entities.UserDetailed[]>([]);
+const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
+const selected = ref<Misskey.entities.UserDetailed | null>(null);
+const dialogEl = ref();
 
 const search = () => {
 	if (username.value === '' && host.value === '') {

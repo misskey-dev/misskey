@@ -95,19 +95,19 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
-let useObjectStorage = ref<boolean>(false);
-let objectStorageBaseUrl = ref<string | null>(null);
-let objectStorageBucket = ref<string | null>(null);
-let objectStoragePrefix = ref<string | null>(null);
-let objectStorageEndpoint = ref<string | null>(null);
-let objectStorageRegion = ref<string | null>(null);
-let objectStoragePort = ref<number | null>(null);
-let objectStorageAccessKey = ref<string | null>(null);
-let objectStorageSecretKey = ref<string | null>(null);
-let objectStorageUseSSL = ref<boolean>(false);
-let objectStorageUseProxy = ref<boolean>(false);
-let objectStorageSetPublicRead = ref<boolean>(false);
-let objectStorageS3ForcePathStyle = ref<boolean>(true);
+const useObjectStorage = ref<boolean>(false);
+const objectStorageBaseUrl = ref<string | null>(null);
+const objectStorageBucket = ref<string | null>(null);
+const objectStoragePrefix = ref<string | null>(null);
+const objectStorageEndpoint = ref<string | null>(null);
+const objectStorageRegion = ref<string | null>(null);
+const objectStoragePort = ref<number | null>(null);
+const objectStorageAccessKey = ref<string | null>(null);
+const objectStorageSecretKey = ref<string | null>(null);
+const objectStorageUseSSL = ref<boolean>(false);
+const objectStorageUseProxy = ref<boolean>(false);
+const objectStorageSetPublicRead = ref<boolean>(false);
+const objectStorageS3ForcePathStyle = ref<boolean>(true);
 
 async function init() {
 	const meta = await os.api('admin/meta');

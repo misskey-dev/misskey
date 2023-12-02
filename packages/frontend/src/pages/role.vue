@@ -52,10 +52,10 @@ const props = withDefaults(defineProps<{
 	initialTab: 'users',
 });
 
-let tab = ref(props.initialTab);
-let role = ref();
-let error = ref();
-let visible = ref(false);
+const tab = ref(props.initialTab);
+const role = ref();
+const error = ref();
+const visible = ref(false);
 
 watch(() => props.role, () => {
 	os.api('roles/show', {

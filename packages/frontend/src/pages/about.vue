@@ -126,8 +126,8 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
-let stats = ref(null);
-let tab = ref(props.initialTab);
+const stats = ref(null);
+const tab = ref(props.initialTab);
 
 watch(tab, () => {
 	if (tab.value === 'charts') {

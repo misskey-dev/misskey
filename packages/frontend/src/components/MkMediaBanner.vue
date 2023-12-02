@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<{
 });
 
 const audioEl = shallowRef<HTMLAudioElement>();
-let hide = ref(true);
+const hide = ref(true);
 
 watch(audioEl, () => {
 	if (audioEl.value) {

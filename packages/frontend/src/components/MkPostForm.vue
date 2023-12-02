@@ -166,34 +166,34 @@ const cwInputEl = shallowRef<HTMLInputElement | null>(null);
 const hashtagsInputEl = shallowRef<HTMLInputElement | null>(null);
 const visibilityButton = shallowRef<HTMLElement | null>(null);
 
-let posting = ref(false);
-let posted = ref(false);
-let text = ref(props.initialText ?? '');
-let files = ref(props.initialFiles ?? []);
-let poll = ref<{
+const posting = ref(false);
+const posted = ref(false);
+const text = ref(props.initialText ?? '');
+const files = ref(props.initialFiles ?? []);
+const poll = ref<{
 	choices: string[];
 	multiple: boolean;
 	expiresAt: string | null;
 	expiredAfter: string | null;
 } | null>(null);
-let useCw = ref(false);
-let showPreview = ref(defaultStore.state.showPreview);
+const useCw = ref(false);
+const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
-let cw = ref<string | null>(null);
-let localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
-let visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
-let visibleUsers = ref([]);
+const cw = ref<string | null>(null);
+const localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
+const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
+const visibleUsers = ref([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
 }
-let reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
-let autocomplete = ref(null);
-let draghover = ref(false);
-let quoteId = ref(null);
-let hasNotSpecifiedMentions = ref(false);
-let recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
-let imeText = ref('');
-let showingOptions = ref(false);
+const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
+const autocomplete = ref(null);
+const draghover = ref(false);
+const quoteId = ref(null);
+const hasNotSpecifiedMentions = ref(false);
+const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
+const imeText = ref('');
+const showingOptions = ref(false);
 
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -863,7 +863,7 @@ function showActions(ev) {
 	})), ev.currentTarget ?? ev.target);
 }
 
-let postAccount = ref<Misskey.entities.UserDetailed | null>(null);
+const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
 function openAccountMenu(ev: MouseEvent) {
 	if (props.mock) return;

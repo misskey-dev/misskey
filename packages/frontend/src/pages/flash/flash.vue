@@ -78,8 +78,8 @@ const props = defineProps<{
 	id: string;
 }>();
 
-let flash = ref(null);
-let error = ref(null);
+const flash = ref(null);
+const error = ref(null);
 
 function fetchFlash() {
 	flash.value = null;
@@ -138,8 +138,8 @@ watch(() => props.id, fetchFlash, { immediate: true });
 
 const parser = new Parser();
 
-let started = ref(false);
-let aiscript = shallowRef<Interpreter | null>(null);
+const started = ref(false);
+const aiscript = shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 

@@ -74,13 +74,13 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 
-let enableRegistration = ref<boolean>(false);
-let emailRequiredForSignup = ref<boolean>(false);
-let sensitiveWords = ref<string>('');
-let hiddenTags = ref<string>('');
-let preservedUsernames = ref<string>('');
-let tosUrl = ref<string | null>(null);
-let privacyPolicyUrl = ref<string | null>(null);
+const enableRegistration = ref<boolean>(false);
+const emailRequiredForSignup = ref<boolean>(false);
+const sensitiveWords = ref<string>('');
+const hiddenTags = ref<string>('');
+const preservedUsernames = ref<string>('');
+const tosUrl = ref<string | null>(null);
+const privacyPolicyUrl = ref<string | null>(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');

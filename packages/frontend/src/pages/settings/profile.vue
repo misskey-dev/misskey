@@ -144,7 +144,7 @@ import MkInfo from '@/components/MkInfo.vue';
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
-let avatarDecorations = ref<any[]>([]);
+const avatarDecorations = ref<any[]>([]);
 
 const profile = reactive({
 	name: $i.name,

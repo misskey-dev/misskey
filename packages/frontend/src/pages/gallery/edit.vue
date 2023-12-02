@@ -56,11 +56,11 @@ const props = defineProps<{
 	postId?: string;
 }>();
 
-let init = ref(null);
-let files = ref([]);
-let description = ref(null);
-let title = ref(null);
-let isSensitive = ref(false);
+const init = ref(null);
+const files = ref([]);
+const description = ref(null);
+const title = ref(null);
+const isSensitive = ref(false);
 
 function selectFile(evt) {
 	selectFiles(evt.currentTarget ?? evt.target, null).then(selected => {

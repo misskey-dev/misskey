@@ -234,17 +234,17 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
-let tab = ref(props.initialTab);
-let chartSrc = ref('per-user-notes');
-let user = ref<null | Misskey.entities.UserDetailed>();
-let init = ref<ReturnType<typeof createFetcher>>();
-let info = ref();
-let ips = ref(null);
-let ap = ref(null);
-let moderator = ref(false);
-let silenced = ref(false);
-let suspended = ref(false);
-let moderationNote = ref('');
+const tab = ref(props.initialTab);
+const chartSrc = ref('per-user-notes');
+const user = ref<null | Misskey.entities.UserDetailed>();
+const init = ref<ReturnType<typeof createFetcher>>();
+const info = ref();
+const ips = ref(null);
+const ap = ref(null);
+const moderator = ref(false);
+const silenced = ref(false);
+const suspended = ref(false);
+const moderationNote = ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -259,7 +259,7 @@ const announcementsPagination = {
 		userId: props.userId,
 	})),
 };
-let expandedRoles = ref([]);
+const expandedRoles = ref([]);
 
 function createFetcher() {
 	return () => Promise.all([os.api('users/show', {

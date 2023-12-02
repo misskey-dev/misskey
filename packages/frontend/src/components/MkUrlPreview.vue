@@ -112,23 +112,23 @@ const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_
 const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
-let fetching = ref(true);
-let title = ref<string | null>(null);
-let description = ref<string | null>(null);
-let thumbnail = ref<string | null>(null);
-let icon = ref<string | null>(null);
-let sitename = ref<string | null>(null);
-let player = ref({
+const fetching = ref(true);
+const title = ref<string | null>(null);
+const description = ref<string | null>(null);
+const thumbnail = ref<string | null>(null);
+const icon = ref<string | null>(null);
+const sitename = ref<string | null>(null);
+const player = ref({
 	url: null,
 	width: null,
 	height: null,
 } as SummalyResult['player']);
-let playerEnabled = ref(false);
-let tweetId = ref<string | null>(null);
-let tweetExpanded = ref(props.detail);
+const playerEnabled = ref(false);
+const tweetId = ref<string | null>(null);
+const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
-let tweetHeight = ref(150);
-let unknownUrl = ref(false);
+const tweetHeight = ref(150);
+const unknownUrl = ref(false);
 
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');

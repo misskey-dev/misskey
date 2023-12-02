@@ -101,25 +101,25 @@ const emit = defineEmits<{
 
 const host = toUnicode(config.host);
 
-let hcaptcha = ref<Captcha | undefined>();
-let recaptcha = ref<Captcha | undefined>();
-let turnstile = ref<Captcha | undefined>();
+const hcaptcha = ref<Captcha | undefined>();
+const recaptcha = ref<Captcha | undefined>();
+const turnstile = ref<Captcha | undefined>();
 
-let username = ref<string>('');
-let password = ref<string>('');
-let retypedPassword = ref<string>('');
-let invitationCode = ref<string>('');
-let email = ref('');
-let usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
-let emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
-let passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
-let passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
-let submitting = ref<boolean>(false);
-let hCaptchaResponse = ref(null);
-let reCaptchaResponse = ref(null);
-let turnstileResponse = ref(null);
-let usernameAbortController = ref<null | AbortController>(null);
-let emailAbortController = ref<null | AbortController>(null);
+const username = ref<string>('');
+const password = ref<string>('');
+const retypedPassword = ref<string>('');
+const invitationCode = ref<string>('');
+const email = ref('');
+const usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
+const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
+const passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
+const passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
+const submitting = ref<boolean>(false);
+const hCaptchaResponse = ref(null);
+const reCaptchaResponse = ref(null);
+const turnstileResponse = ref(null);
+const usernameAbortController = ref<null | AbortController>(null);
+const emailAbortController = ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||

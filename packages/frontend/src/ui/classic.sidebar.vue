@@ -74,11 +74,11 @@ const otherNavItemIndicated = computed<boolean>(() => {
 	}
 	return false;
 });
-let el = shallowRef<HTMLElement>();
+const el = shallowRef<HTMLElement>();
 // let accounts = $ref([]);
 // let connection = $ref(null);
-let iconOnly = ref(false);
-let settingsWindowed = ref(false);
+const iconOnly = ref(false);
+const settingsWindowed = ref(false);
 
 function calcViewState() {
 	iconOnly.value = (window.innerWidth <= WINDOW_THRESHOLD) || (menuDisplay.value === 'sideIcon');

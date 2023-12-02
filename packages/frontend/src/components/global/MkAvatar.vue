@@ -116,7 +116,7 @@ function getDecorationScale() {
 	return scaleX === 1 ? undefined : `${scaleX} 1`;
 }
 
-let color = ref<string | undefined>();
+const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
 	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);

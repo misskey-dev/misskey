@@ -61,13 +61,13 @@ import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let reports = shallowRef<InstanceType<typeof MkPagination>>();
+const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
-let state = ref('unresolved');
-let reporterOrigin = ref('combined');
-let targetUserOrigin = ref('combined');
-let searchUsername = ref('');
-let searchHost = ref('');
+const state = ref('unresolved');
+const reporterOrigin = ref('combined');
+const targetUserOrigin = ref('combined');
+const searchUsername = ref('');
+const searchHost = ref('');
 
 const pagination = {
 	endpoint: 'admin/abuse-user-reports' as const,

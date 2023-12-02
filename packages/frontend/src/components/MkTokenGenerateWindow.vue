@@ -68,8 +68,8 @@ const emit = defineEmits<{
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
-let name = ref(props.initialName);
-let permissions = ref({});
+const name = ref(props.initialName);
+const permissions = ref({});
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {

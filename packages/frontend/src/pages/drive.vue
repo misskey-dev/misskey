@@ -15,7 +15,7 @@ import XDrive from '@/components/MkDrive.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let folder = ref(null);
+const folder = ref(null);
 
 const headerActions = computed(() => []);
 

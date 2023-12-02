@@ -82,21 +82,21 @@ const props = defineProps<{
 	initUser?: string;
 }>();
 
-let tab = ref('settings');
-let author = ref($i);
-let readonly = ref(false);
-let page = ref(null);
-let pageId = ref(null);
-let currentName = ref(null);
-let title = ref('');
-let summary = ref(null);
-let name = ref(Date.now().toString());
-let eyeCatchingImage = ref(null);
-let eyeCatchingImageId = ref(null);
-let font = ref('sans-serif');
-let content = ref([]);
-let alignCenter = ref(false);
-let hideTitleWhenPinned = ref(false);
+const tab = ref('settings');
+const author = ref($i);
+const readonly = ref(false);
+const page = ref(null);
+const pageId = ref(null);
+const currentName = ref(null);
+const title = ref('');
+const summary = ref(null);
+const name = ref(Date.now().toString());
+const eyeCatchingImage = ref(null);
+const eyeCatchingImageId = ref(null);
+const font = ref('sans-serif');
+const content = ref([]);
+const alignCenter = ref(false);
+const hideTitleWhenPinned = ref(false);
 
 provide('readonly', readonly.value);
 provide('getPageBlockList', getPageBlockList);

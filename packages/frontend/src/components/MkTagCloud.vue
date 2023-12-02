@@ -23,11 +23,11 @@ const SAFE_FOR_HTML_ID = 'abcdefghijklmnopqrstuvwxyz';
 const computedStyle = getComputedStyle(document.documentElement);
 const idForCanvas = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 const idForTags = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
-let available = ref(false);
-let rootEl = shallowRef<HTMLElement | null>(null);
-let canvasEl = shallowRef<HTMLCanvasElement | null>(null);
-let tagsEl = shallowRef<HTMLElement | null>(null);
-let width = ref(300);
+const available = ref(false);
+const rootEl = shallowRef<HTMLElement | null>(null);
+const canvasEl = shallowRef<HTMLCanvasElement | null>(null);
+const tagsEl = shallowRef<HTMLElement | null>(null);
+const width = ref(300);
 
 watch(available, () => {
 	try {

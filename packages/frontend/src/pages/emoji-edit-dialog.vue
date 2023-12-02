@@ -92,16 +92,16 @@ const props = defineProps<{
 	emoji?: any,
 }>();
 
-let dialog = ref(null);
-let name = ref<string>(props.emoji ? props.emoji.name : '');
-let category = ref<string>(props.emoji ? props.emoji.category : '');
-let aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
-let license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
-let isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
-let localOnly = ref(props.emoji ? props.emoji.localOnly : false);
-let roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
-let rolesThatCanBeUsedThisEmojiAsReaction = ref([]);
-let file = ref<Misskey.entities.DriveFile>();
+const dialog = ref(null);
+const name = ref<string>(props.emoji ? props.emoji.name : '');
+const category = ref<string>(props.emoji ? props.emoji.category : '');
+const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
+const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
+const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
+const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
+const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
+const rolesThatCanBeUsedThisEmojiAsReaction = ref([]);
+const file = ref<Misskey.entities.DriveFile>();
 
 watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);

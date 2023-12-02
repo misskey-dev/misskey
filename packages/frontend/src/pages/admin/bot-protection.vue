@@ -76,13 +76,13 @@ import { i18n } from '@/i18n.js';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
-let provider = ref(null);
-let hcaptchaSiteKey = ref<string | null>(null);
-let hcaptchaSecretKey = ref<string | null>(null);
-let recaptchaSiteKey = ref<string | null>(null);
-let recaptchaSecretKey = ref<string | null>(null);
-let turnstileSiteKey = ref<string | null>(null);
-let turnstileSecretKey = ref<string | null>(null);
+const provider = ref(null);
+const hcaptchaSiteKey = ref<string | null>(null);
+const hcaptchaSecretKey = ref<string | null>(null);
+const recaptchaSiteKey = ref<string | null>(null);
+const recaptchaSecretKey = ref<string | null>(null);
+const turnstileSiteKey = ref<string | null>(null);
+const turnstileSecretKey = ref<string | null>(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');

@@ -38,10 +38,10 @@ const props = defineProps<{
 	antennaId: string;
 }>();
 
-let antenna = ref(null);
-let queue = ref(0);
-let rootEl = shallowRef<HTMLElement>();
-let tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+const antenna = ref(null);
+const queue = ref(0);
+const rootEl = shallowRef<HTMLElement>();
+const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
 const keymap = computed(() => ({
 	't': focus,
 }));

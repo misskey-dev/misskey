@@ -84,8 +84,8 @@ const props = defineProps<{
 	postId: string;
 }>();
 
-let post = ref(null);
-let error = ref(null);
+const post = ref(null);
+const error = ref(null);
 const otherPostsPagination = {
 	endpoint: 'users/gallery/posts' as const,
 	limit: 6,

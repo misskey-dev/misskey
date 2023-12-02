@@ -70,9 +70,9 @@ import { notificationTypes } from '@/const.js';
 
 const nonConfigurableNotificationTypes = ['note'];
 
-let allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
-let pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
-let sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
+const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
+const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
+const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await os.api('users/lists/list');
 
 async function readAllUnreadNotes() {

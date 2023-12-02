@@ -100,8 +100,8 @@ const current = reactive({
 	},
 });
 const prev = reactive({} as typeof current);
-let jammedAudioBuffer = ref<AudioBuffer | null>(null);
-let jammedSoundNodePlaying = ref<boolean>(false);
+const jammedAudioBuffer = ref<AudioBuffer | null>(null);
+const jammedSoundNodePlaying = ref<boolean>(false);
 
 if (defaultStore.state.sound_masterVolume) {
 	sound.loadAudio({

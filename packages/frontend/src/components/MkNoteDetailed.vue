@@ -235,7 +235,7 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-let note = ref(deepClone(props.note));
+const note = ref(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
@@ -269,7 +269,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = computed(() => isRenote ? note.value.renote as Misskey.entities.Note : note.value);
+const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entities.Note : note.value);
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const isDeleted = ref(false);
@@ -299,8 +299,8 @@ provide('react', (reaction: string) => {
 	});
 });
 
-let tab = ref('replies');
-let reactionTabType = ref(null);
+const tab = ref('replies');
+const reactionTabType = ref(null);
 
 const renotesPagination = computed(() => ({
 	endpoint: 'notes/renotes',

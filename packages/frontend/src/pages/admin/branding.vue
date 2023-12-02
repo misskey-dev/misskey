@@ -111,18 +111,18 @@ import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { host } from '@/config.js';
 
-let iconUrl = ref<string | null>(null);
-let app192IconUrl = ref<string | null>(null);
-let app512IconUrl = ref<string | null>(null);
-let bannerUrl = ref<string | null>(null);
-let backgroundImageUrl = ref<string | null>(null);
-let themeColor = ref<any>(null);
-let defaultLightTheme = ref<any>(null);
-let defaultDarkTheme = ref<any>(null);
-let serverErrorImageUrl = ref<string | null>(null);
-let infoImageUrl = ref<string | null>(null);
-let notFoundImageUrl = ref<string | null>(null);
-let manifestJsonOverride = ref<string>('{}');
+const iconUrl = ref<string | null>(null);
+const app192IconUrl = ref<string | null>(null);
+const app512IconUrl = ref<string | null>(null);
+const bannerUrl = ref<string | null>(null);
+const backgroundImageUrl = ref<string | null>(null);
+const themeColor = ref<any>(null);
+const defaultLightTheme = ref<any>(null);
+const defaultDarkTheme = ref<any>(null);
+const serverErrorImageUrl = ref<string | null>(null);
+const infoImageUrl = ref<string | null>(null);
+const notFoundImageUrl = ref<string | null>(null);
+const manifestJsonOverride = ref<string>('{}');
 
 async function init() {
 	const meta = await os.api('admin/meta');

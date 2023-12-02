@@ -46,9 +46,9 @@ function resolveNested(current: Resolved, d = 0): Resolved | null {
 }
 
 const current = resolveNested(router.current)!;
-let currentPageComponent = shallowRef(current.route.component);
-let currentPageProps = ref(current.props);
-let key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
+const currentPageComponent = shallowRef(current.route.component);
+const currentPageProps = ref(current.props);
+const key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
 
 function onChange({ resolved, key: newKey }) {
 	const current = resolveNested(resolved);

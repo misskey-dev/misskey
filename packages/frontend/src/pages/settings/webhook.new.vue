@@ -48,17 +48,17 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let name = ref('');
-let url = ref('');
-let secret = ref('');
+const name = ref('');
+const url = ref('');
+const secret = ref('');
 
-let event_follow = ref(true);
-let event_followed = ref(true);
-let event_note = ref(true);
-let event_reply = ref(true);
-let event_renote = ref(true);
-let event_reaction = ref(true);
-let event_mention = ref(true);
+const event_follow = ref(true);
+const event_followed = ref(true);
+const event_note = ref(true);
+const event_reply = ref(true);
+const event_renote = ref(true);
+const event_reaction = ref(true);
+const event_mention = ref(true);
 
 async function create(): Promise<void> {
 	const events = [];

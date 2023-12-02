@@ -98,12 +98,12 @@ const viewId = uuid();
 const canvas = shallowRef<HTMLCanvasElement>();
 const root = shallowRef<HTMLDivElement>();
 const img = shallowRef<HTMLImageElement>();
-let loaded = ref(false);
-let canvasWidth = ref(64);
-let canvasHeight = ref(64);
-let imgWidth = ref(props.width);
-let imgHeight = ref(props.height);
-let bitmapTmp = ref<CanvasImageSource | undefined>();
+const loaded = ref(false);
+const canvasWidth = ref(64);
+const canvasHeight = ref(64);
+const imgWidth = ref(props.width);
+const imgHeight = ref(props.height);
+const bitmapTmp = ref<CanvasImageSource | undefined>();
 const hide = computed(() => !loaded.value || props.forceBlurhash);
 
 function waitForDecode() {

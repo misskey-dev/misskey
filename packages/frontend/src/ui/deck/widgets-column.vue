@@ -26,7 +26,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let edit = ref(false);
+const edit = ref(false);
 
 function addWidget(widget) {
 	addColumnWidget(props.column.id, widget);

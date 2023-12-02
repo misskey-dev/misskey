@@ -68,9 +68,9 @@ import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let host = ref('');
-let state = ref('federating');
-let sort = ref('+pubSub');
+const host = ref('');
+const state = ref('federating');
+const sort = ref('+pubSub');
 const pagination = {
 	endpoint: 'federation/instances' as const,
 	limit: 10,

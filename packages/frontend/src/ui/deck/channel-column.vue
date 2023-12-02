@@ -33,8 +33,8 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let timeline = shallowRef<InstanceType<typeof MkTimeline>>();
-let channel = shallowRef<Misskey.entities.Channel>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const channel = shallowRef<Misskey.entities.Channel>();
 
 if (props.column.channelId == null) {
 	setChannel();

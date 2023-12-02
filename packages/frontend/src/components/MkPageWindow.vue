@@ -55,8 +55,8 @@ defineEmits<{
 const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
 
 const contents = shallowRef<HTMLElement>();
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
-let windowEl = shallowRef<InstanceType<typeof MkWindow>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
 const history = ref<{ path: string; key: any; }[]>([{
 	path: router.getCurrentPath(),
 	key: router.getCurrentKey(),
@@ -86,7 +86,7 @@ const buttonsRight = computed(() => {
 
 	return buttons;
 });
-let reloadCount = ref(0);
+const reloadCount = ref(0);
 
 router.addListener('push', ctx => {
 	history.value.push({ path: ctx.path, key: ctx.key });

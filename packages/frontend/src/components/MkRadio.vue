@@ -36,7 +36,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let checked = computed(() => props.modelValue === props.value);
+const checked = computed(() => props.modelValue === props.value);
 
 function toggle(): void {
 	if (props.disabled) return;

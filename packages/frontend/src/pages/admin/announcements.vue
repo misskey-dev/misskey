@@ -84,7 +84,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-let announcements = ref<any[]>([]);
+const announcements = ref<any[]>([]);
 
 os.api('admin/announcements/list').then(announcementResponse => {
 	announcements.value = announcementResponse;

@@ -60,8 +60,8 @@ const keymap = {
 const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
 
-let queue = ref(0);
-let srcWhenNotSignin = ref(isLocalTimelineAvailable ? 'local' : 'global');
+const queue = ref(0);
+const srcWhenNotSignin = ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value), set: (x) => saveSrc(x) });
 const withRenotes = ref(true);
 const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);

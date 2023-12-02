@@ -24,7 +24,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let notificationsComponent = shallowRef<InstanceType<typeof XNotifications>>();
+const notificationsComponent = shallowRef<InstanceType<typeof XNotifications>>();
 
 function func() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSelectWindow.vue')), {

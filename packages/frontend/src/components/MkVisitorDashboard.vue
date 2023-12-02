@@ -67,8 +67,8 @@ import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
-let meta = ref<Misskey.entities.Instance>();
-let stats = ref(null);
+const meta = ref<Misskey.entities.Instance>();
+const stats = ref(null);
 
 os.api('meta', { detail: true }).then(_meta => {
 	meta.value = _meta;

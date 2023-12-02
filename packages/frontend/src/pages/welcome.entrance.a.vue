@@ -48,8 +48,8 @@ import MkNumber from '@/components/MkNumber.vue';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
-let meta = ref<Misskey.entities.Instance>();
-let instances = ref<any[]>();
+const meta = ref<Misskey.entities.Instance>();
+const instances = ref<any[]>();
 
 function getInstanceIcon(instance): string {
   return getProxiedImageUrl(instance.iconUrl, 'preview');

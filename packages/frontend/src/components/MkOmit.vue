@@ -22,9 +22,9 @@ const props = withDefaults(defineProps<{
 	maxHeight: 200,
 });
 
-let content = shallowRef<HTMLElement>();
-let omitted = ref(false);
-let ignoreOmit = ref(false);
+const content = shallowRef<HTMLElement>();
+const omitted = ref(false);
+const ignoreOmit = ref(false);
 
 const calcOmit = () => {
 	if (omitted.value || ignoreOmit.value) return;

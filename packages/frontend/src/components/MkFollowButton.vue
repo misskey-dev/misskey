@@ -57,9 +57,9 @@ const emit = defineEmits<{
 	(_: 'update:user', value: Misskey.entities.UserDetailed): void
 }>();
 
-let isFollowing = ref(props.user.isFollowing);
-let hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFromYou);
-let wait = ref(false);
+const isFollowing = ref(props.user.isFollowing);
+const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFromYou);
+const wait = ref(false);
 const connection = useStream().useChannel('main');
 
 if (props.user.isFollowing == null) {

@@ -80,9 +80,9 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let user = ref<Misskey.entities.UserDetailed | null>(null);
-let top = ref(0);
-let left = ref(0);
+const user = ref<Misskey.entities.UserDetailed | null>(null);
+const top = ref(0);
+const left = ref(0);
 
 function showMenu(ev: MouseEvent) {
 	const { menu, cleanup } = getUserMenu(user.value);

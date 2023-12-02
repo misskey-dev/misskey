@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<{
 	limit: 50,
 });
 
-let chartSrc = ref('per-user-notes');
+const chartSrc = ref('per-user-notes');
 
 function showMenu(ev: MouseEvent) {
 	os.popupMenu([{

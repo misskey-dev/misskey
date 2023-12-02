@@ -62,17 +62,17 @@ import * as os from '@/os.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
-let signing = ref(false);
-let user = ref<Misskey.entities.UserDetailed | null>(null);
-let username = ref('');
-let password = ref('');
-let token = ref('');
-let host = ref(toUnicode(configHost));
-let totpLogin = ref(false);
-let queryingKey = ref(false);
-let credentialRequest = ref<CredentialRequestOptions | null>(null);
-let hCaptchaResponse = ref(null);
-let reCaptchaResponse = ref(null);
+const signing = ref(false);
+const user = ref<Misskey.entities.UserDetailed | null>(null);
+const username = ref('');
+const password = ref('');
+const token = ref('');
+const host = ref(toUnicode(configHost));
+const totpLogin = ref(false);
+const queryingKey = ref(false);
+const credentialRequest = ref<CredentialRequestOptions | null>(null);
+const hCaptchaResponse = ref(null);
+const reCaptchaResponse = ref(null);
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;

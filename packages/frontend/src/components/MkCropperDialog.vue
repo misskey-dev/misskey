@@ -56,10 +56,10 @@ const props = defineProps<{
 }>();
 
 const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
-let dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
-let imgEl = shallowRef<HTMLImageElement>();
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const imgEl = shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
-let loading = ref(true);
+const loading = ref(true);
 
 const ok = async () => {
 	const promise = new Promise<Misskey.entities.DriveFile>(async (res) => {

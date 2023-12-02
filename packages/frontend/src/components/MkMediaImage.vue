@@ -73,8 +73,8 @@ const props = withDefaults(defineProps<{
 	controls: true,
 });
 
-let hide = ref(true);
-let darkMode = ref<boolean>(defaultStore.state.darkMode);
+const hide = ref(true);
+const darkMode = ref<boolean>(defaultStore.state.darkMode);
 
 const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url

@@ -67,13 +67,13 @@ const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
 }>();
 
-let body = shallowRef<HTMLDivElement | null>();
+const body = shallowRef<HTMLDivElement | null>();
 
-let dragging = ref(false);
+const dragging = ref(false);
 watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
 
-let draghover = ref(false);
-let dropready = ref(false);
+const draghover = ref(false);
+const dropready = ref(false);
 
 const isMainColumn = computed(() => props.column.type === 'main');
 const active = computed(() => props.column.active !== false);

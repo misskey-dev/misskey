@@ -40,8 +40,8 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let id = ref<any>(props.modelValue.note);
-let note = ref<any>(null);
+const id = ref<any>(props.modelValue.note);
+const note = ref<any>(null);
 
 watch(id, async () => {
 	if (id.value && (id.value.startsWith('http://') || id.value.startsWith('https://'))) {

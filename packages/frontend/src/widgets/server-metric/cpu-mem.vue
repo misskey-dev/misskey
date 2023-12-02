@@ -83,23 +83,23 @@ const props = defineProps<{
 	meta: any
 }>();
 
-let viewBoxX = ref<number>(50);
-let viewBoxY = ref<number>(30);
-let stats = ref<any[]>([]);
+const viewBoxX = ref<number>(50);
+const viewBoxY = ref<number>(30);
+const stats = ref<any[]>([]);
 const cpuGradientId = uuid();
 const cpuMaskId = uuid();
 const memGradientId = uuid();
 const memMaskId = uuid();
-let cpuPolylinePoints = ref<string>('');
-let memPolylinePoints = ref<string>('');
-let cpuPolygonPoints = ref<string>('');
-let memPolygonPoints = ref<string>('');
-let cpuHeadX = ref<any>(null);
-let cpuHeadY = ref<any>(null);
-let memHeadX = ref<any>(null);
-let memHeadY = ref<any>(null);
-let cpuP = ref<string>('');
-let memP = ref<string>('');
+const cpuPolylinePoints = ref<string>('');
+const memPolylinePoints = ref<string>('');
+const cpuPolygonPoints = ref<string>('');
+const memPolygonPoints = ref<string>('');
+const cpuHeadX = ref<any>(null);
+const cpuHeadY = ref<any>(null);
+const memHeadX = ref<any>(null);
+const memHeadY = ref<any>(null);
+const cpuP = ref<string>('');
+const memP = ref<string>('');
 
 onMounted(() => {
 	props.connection.on('stats', onStats);

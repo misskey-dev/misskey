@@ -96,12 +96,12 @@ const props = defineProps<{
 	channelId: string;
 }>();
 
-let tab = ref('overview');
-let channel = ref(null);
-let favorited = ref(false);
-let searchQuery = ref('');
-let searchPagination = ref();
-let searchKey = ref('');
+const tab = ref('overview');
+const channel = ref(null);
+const favorited = ref(false);
+const searchQuery = ref('');
+const searchPagination = ref();
+const searchKey = ref('');
 const featuredPagination = computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,

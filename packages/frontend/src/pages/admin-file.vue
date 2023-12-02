@@ -82,10 +82,10 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { iAmAdmin, iAmModerator } from '@/account.js';
 
-let tab = ref('overview');
-let file = ref<any>(null);
-let info = ref<any>(null);
-let isSensitive = ref<boolean>(false);
+const tab = ref('overview');
+const file = ref<any>(null);
+const info = ref<any>(null);
+const isSensitive = ref<boolean>(false);
 
 const props = defineProps<{
 	fileId: string,

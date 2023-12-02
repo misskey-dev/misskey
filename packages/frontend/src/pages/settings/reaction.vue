@@ -73,7 +73,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deepClone } from '@/scripts/clone.js';
 
-let reactions = ref(deepClone(defaultStore.state.reactions));
+const reactions = ref(deepClone(defaultStore.state.reactions));
 
 const reactionPickerSize = computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = computed(defaultStore.makeGetterSetter('reactionPickerWidth'));

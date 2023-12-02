@@ -47,12 +47,12 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-let fetching = ref(true);
-let files = ref<{
+const fetching = ref(true);
+const files = ref<{
 	note: Misskey.entities.Note;
 	file: Misskey.entities.DriveFile;
 }[]>([]);
-let showingFiles = ref<string[]>([]);
+const showingFiles = ref<string[]>([]);
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages

@@ -62,17 +62,17 @@ const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 
-let isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
-let widgetsShowing = ref(false);
-let fullView = ref(false);
-let globalHeaderHeight = ref(0);
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const widgetsShowing = ref(false);
+const fullView = ref(false);
+const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 const showMenuOnTop = computed(() => defaultStore.state.menuDisplay === 'top');
-let live2d = shallowRef<HTMLIFrameElement>();
-let widgetsLeft = ref();
-let widgetsRight = ref();
+const live2d = shallowRef<HTMLIFrameElement>();
+const widgetsLeft = ref();
+const widgetsRight = ref();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {

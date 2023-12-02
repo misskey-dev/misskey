@@ -19,8 +19,8 @@ import { Chart, LegendItem } from 'chart.js';
 const props = defineProps({
 });
 
-let chart = shallowRef<Chart>();
-let items = shallowRef<LegendItem[]>([]);
+const chart = shallowRef<Chart>();
+const items = shallowRef<LegendItem[]>([]);
 
 function update(_chart: Chart, _items: LegendItem[]) {
 	chart.value = _chart,

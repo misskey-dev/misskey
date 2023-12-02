@@ -87,7 +87,7 @@ function g(id) {
 	return props.components.find(x => x.value.id === id).value;
 }
 
-let valueForSwitch = ref(c.default ?? false);
+const valueForSwitch = ref(c.default ?? false);
 
 function onSwitchUpdate(v) {
 	valueForSwitch.value = v;

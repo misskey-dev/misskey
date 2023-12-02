@@ -79,7 +79,7 @@ const props = defineProps<{
 }>();
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
-let list = ref<Misskey.entities.UserList | null>(null);
+const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
 const membershipsPagination = {

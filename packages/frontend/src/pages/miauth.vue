@@ -61,7 +61,7 @@ const props = defineProps<{
 
 const _permissions = props.permission ? props.permission.split(',') : [];
 
-let state = ref<string | null>(null);
+const state = ref<string | null>(null);
 
 async function accept(): Promise<void> {
 	state.value = 'waiting';

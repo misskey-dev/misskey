@@ -47,8 +47,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let cloud = shallowRef<InstanceType<typeof MkTagCloud> | null>();
-let activeInstances = shallowRef(null);
+const cloud = shallowRef<InstanceType<typeof MkTagCloud> | null>();
+const activeInstances = shallowRef(null);
 
 function onInstanceClick(i) {
 	os.pageWindow(`/instance-info/${i.host}`);

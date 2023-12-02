@@ -35,7 +35,7 @@ initChart();
 const chartLimit = 50;
 const chartEl = shallowRef<HTMLCanvasElement>();
 const chartEl2 = shallowRef<HTMLCanvasElement>();
-let fetching = ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();

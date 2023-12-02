@@ -34,7 +34,7 @@ import MkInfo from '@/components/MkInfo.vue';
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));
 const XUser = defineAsyncComponent(() => import('./search.user.vue'));
 
-let tab = ref('note');
+const tab = ref('note');
 
 const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 

@@ -38,10 +38,10 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-let list = ref(null);
-let queue = ref(0);
-let tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
-let rootEl = shallowRef<HTMLElement>();
+const list = ref(null);
+const queue = ref(0);
+const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+const rootEl = shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {
 	list.value = await os.api('users/lists/show', {

@@ -363,8 +363,8 @@ const props = defineProps<{
 	id?: string;
 }>();
 
-let flash = ref(null);
-let visibility = ref('public');
+const flash = ref(null);
+const visibility = ref('public');
 
 if (props.id) {
 	flash.value = await os.api('flash/show', {
@@ -372,10 +372,10 @@ if (props.id) {
 	});
 }
 
-let title = ref(flash.value?.title ?? 'New Play');
-let summary = ref(flash.value?.summary ?? '');
-let permissions = ref(flash.value?.permissions ?? []);
-let script = ref(flash.value?.script ?? PRESET_DEFAULT);
+const title = ref(flash.value?.title ?? 'New Play');
+const summary = ref(flash.value?.summary ?? '');
+const permissions = ref(flash.value?.permissions ?? []);
+const script = ref(flash.value?.script ?? PRESET_DEFAULT);
 
 function selectPreset(ev: MouseEvent) {
 	os.popupMenu([{

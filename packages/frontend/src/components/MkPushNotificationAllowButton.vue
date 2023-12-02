@@ -63,12 +63,12 @@ defineProps<{
 }>();
 
 // ServiceWorker registration
-let registration = ref<ServiceWorkerRegistration | undefined>();
+const registration = ref<ServiceWorkerRegistration | undefined>();
 // If this browser supports push notification
-let supported = ref(false);
+const supported = ref(false);
 // If this browser has already subscribed to push notification
-let pushSubscription = ref<PushSubscription | null>(null);
-let pushRegistrationInServer = ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
+const pushSubscription = ref<PushSubscription | null>(null);
+const pushRegistrationInServer = ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
 
 function subscribe() {
 	if (!registration.value || !supported.value || !instance.swPublickey) return;

@@ -90,7 +90,7 @@ const usersPagination = {
 	})),
 };
 
-let expandedItems = ref([]);
+const expandedItems = ref([]);
 
 const role = reactive(await os.api('admin/roles/show', {
 	roleId: props.id,

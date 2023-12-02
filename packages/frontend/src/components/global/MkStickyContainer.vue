@@ -27,13 +27,13 @@ const headerEl = shallowRef<HTMLElement>();
 const footerEl = shallowRef<HTMLElement>();
 const bodyEl = shallowRef<HTMLElement>();
 
-let headerHeight = ref<string | undefined>();
-let childStickyTop = ref(0);
+const headerHeight = ref<string | undefined>();
+const childStickyTop = ref(0);
 const parentStickyTop = inject<Ref<number>>(CURRENT_STICKY_TOP, ref(0));
 provide(CURRENT_STICKY_TOP, childStickyTop);
 
-let footerHeight = ref<string | undefined>();
-let childStickyBottom = ref(0);
+const footerHeight = ref<string | undefined>();
+const childStickyBottom = ref(0);
 const parentStickyBottom = inject<Ref<number>>(CURRENT_STICKY_BOTTOM, ref(0));
 provide(CURRENT_STICKY_BOTTOM, childStickyBottom);
 

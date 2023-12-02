@@ -70,10 +70,10 @@ const getBgColor = (el: HTMLElement) => {
 	}
 };
 
-let rootEl = shallowRef<HTMLElement>();
-let bgSame = ref(false);
-let opened = ref(props.defaultOpen);
-let openedAtLeastOnce = ref(props.defaultOpen);
+const rootEl = shallowRef<HTMLElement>();
+const bgSame = ref(false);
+const opened = ref(props.defaultOpen);
+const openedAtLeastOnce = ref(props.defaultOpen);
 
 function enter(el) {
 	const elementHeight = el.getBoundingClientRect().height;

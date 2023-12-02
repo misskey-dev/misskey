@@ -154,9 +154,9 @@ const blockingPagination = {
 	limit: 10,
 };
 
-let expandedRenoteMuteItems = ref([]);
-let expandedMuteItems = ref([]);
-let expandedBlockItems = ref([]);
+const expandedRenoteMuteItems = ref([]);
+const expandedMuteItems = ref([]);
+const expandedBlockItems = ref([]);
 
 async function unrenoteMute(user, ev) {
 	os.popupMenu([{

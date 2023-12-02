@@ -36,9 +36,9 @@ import * as os from '@/os.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 import { $i } from '@/account.js';
 
-let notes = ref<Misskey.entities.Note[]>([]);
-let isScrolling = ref(false);
-let scrollEl = shallowRef<HTMLElement>();
+const notes = ref<Misskey.entities.Note[]>([]);
+const isScrolling = ref(false);
+const scrollEl = shallowRef<HTMLElement>();
 
 os.apiGet('notes/featured').then(_notes => {
 	notes.value = _notes;

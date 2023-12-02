@@ -20,7 +20,7 @@ import { antennasCache } from '@/cache';
 
 const router = useRouter();
 
-let antenna = ref<any>(null);
+const antenna = ref<any>(null);
 
 const props = defineProps<{
 	antennaId: string

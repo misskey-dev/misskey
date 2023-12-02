@@ -74,10 +74,10 @@ const props = defineProps<{
 	tag?: string;
 }>();
 
-let origin = ref('local');
-let tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
-let tagsLocal = ref([]);
-let tagsRemote = ref([]);
+const origin = ref('local');
+const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
+const tagsLocal = ref([]);
+const tagsRemote = ref([]);
 
 watch(() => props.tag, () => {
 	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);

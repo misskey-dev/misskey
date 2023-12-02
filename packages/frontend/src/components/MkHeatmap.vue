@@ -31,7 +31,7 @@ const rootEl = shallowRef<HTMLDivElement>(null);
 const chartEl = shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
-let fetching = ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',

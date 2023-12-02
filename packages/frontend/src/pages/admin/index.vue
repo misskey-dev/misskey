@@ -50,17 +50,17 @@ const indexInfo = {
 
 provide('shouldOmitHeaderTitle', false);
 
-let INFO = ref(indexInfo);
-let childInfo = ref(null);
-let narrow = ref(false);
-let view = ref(null);
-let el = ref(null);
-let pageProps = ref({});
+const INFO = ref(indexInfo);
+const childInfo = ref(null);
+const narrow = ref(false);
+const view = ref(null);
+const el = ref(null);
+const pageProps = ref({});
 let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
 let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
 let noEmailServer = !instance.enableEmail;
-let thereIsUnresolvedAbuseReport = ref(false);
-let currentPage = computed(() => router.currentRef.value.child);
+const thereIsUnresolvedAbuseReport = ref(false);
+const currentPage = computed(() => router.currentRef.value.child);
 
 os.api('admin/abuse-user-reports', {
 	state: 'unresolved',

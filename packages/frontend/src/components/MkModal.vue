@@ -89,13 +89,13 @@ const emit = defineEmits<{
 
 provide('modal', true);
 
-let maxHeight = ref<number>();
-let fixed = ref(false);
-let transformOrigin = ref('center');
-let showing = ref(true);
-let content = shallowRef<HTMLElement>();
+const maxHeight = ref<number>();
+const fixed = ref(false);
+const transformOrigin = ref('center');
+const showing = ref(true);
+const content = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
-let useSendAnime = ref(false);
+const useSendAnime = ref(false);
 const type = computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
@@ -108,7 +108,7 @@ const type = computed<ModalTypes>(() => {
 	}
 });
 const isEnableBgTransparent = computed(() => props.transparentBg && (type.value === 'popup'));
-let transitionName = computed((() =>
+const transitionName = computed((() =>
 	defaultStore.state.animation
 		? useSendAnime.value
 			? 'send'
@@ -119,7 +119,7 @@ let transitionName = computed((() =>
 					: 'modal'
 		: ''
 ));
-let transitionDuration = computed((() =>
+const transitionDuration = computed((() =>
 	transitionName.value === 'send'
 		? 400
 		: transitionName.value === 'modal-popup'

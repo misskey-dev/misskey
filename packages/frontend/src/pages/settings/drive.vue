@@ -76,8 +76,8 @@ const fetching = ref(true);
 const usage = ref<any>(null);
 const capacity = ref<any>(null);
 const uploadFolder = ref<any>(null);
-let alwaysMarkNsfw = ref($i.alwaysMarkNsfw);
-let autoSensitive = ref($i.autoSensitive);
+const alwaysMarkNsfw = ref($i.alwaysMarkNsfw);
+const autoSensitive = ref($i.autoSensitive);
 
 const meterStyle = computed(() => {
 	return {

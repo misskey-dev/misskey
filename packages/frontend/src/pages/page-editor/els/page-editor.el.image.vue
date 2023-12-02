@@ -35,7 +35,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let file = ref<any>(null);
+const file = ref<any>(null);
 
 async function choose() {
 	os.selectDriveFile(false).then((fileResponse) => {

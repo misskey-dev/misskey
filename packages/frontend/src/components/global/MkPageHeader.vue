@@ -69,9 +69,9 @@ const metadata = injectPageMetadata();
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-let el = shallowRef<HTMLElement | undefined>(undefined);
+const el = shallowRef<HTMLElement | undefined>(undefined);
 const bg = ref<string | undefined>(undefined);
-let narrow = ref(false);
+const narrow = ref(false);
 const hasTabs = computed(() => props.tabs.length > 0);
 const hasActions = computed(() => props.actions && props.actions.length > 0);
 const show = computed(() => {

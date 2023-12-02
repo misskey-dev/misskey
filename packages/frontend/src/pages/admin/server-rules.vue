@@ -52,7 +52,7 @@ import MkInput from '@/components/MkInput.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-let serverRules = ref<string[]>(instance.serverRules);
+const serverRules = ref<string[]>(instance.serverRules);
 
 const save = async () => {
 	await os.apiWithDialog('admin/update-meta', {

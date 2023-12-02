@@ -69,11 +69,11 @@ const props = defineProps<{
 	type?: string;
 }>();
 
-let key = ref('');
-let tab = ref('featured');
-let searchQuery = ref('');
-let searchType = ref('nameAndDescription');
-let channelPagination = ref();
+const key = ref('');
+const tab = ref('featured');
+const searchQuery = ref('');
+const searchType = ref('nameAndDescription');
+const channelPagination = ref();
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';

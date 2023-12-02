@@ -49,7 +49,7 @@ const props = defineProps<{
 
 const instances = ref<Misskey.entities.Instance[]>([]);
 const fetching = ref(true);
-let key = ref(0);
+const key = ref(0);
 
 const tick = () => {
 	os.api('federation/instances', {

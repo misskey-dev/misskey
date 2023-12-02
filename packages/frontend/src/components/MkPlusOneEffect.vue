@@ -23,7 +23,7 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-let up = ref(false);
+const up = ref(false);
 const zIndex = os.claimZIndex('middle');
 const angle = (45 - (Math.random() * 90)) + 'deg';
 

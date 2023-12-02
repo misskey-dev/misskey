@@ -23,7 +23,7 @@ import { defaultStore } from '@/store.js';
 
 const zIndex = os.claimZIndex('high');
 
-let hasDisconnected = ref(false);
+const hasDisconnected = ref(false);
 
 function onDisconnected() {
 	hasDisconnected.value = true;

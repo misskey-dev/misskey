@@ -35,7 +35,7 @@ defineProps<{
 }>();
 
 const contents = shallowRef<HTMLElement>();
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {

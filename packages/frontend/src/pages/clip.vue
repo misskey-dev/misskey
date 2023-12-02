@@ -43,8 +43,8 @@ const props = defineProps<{
 	clipId: string,
 }>();
 
-let clip = ref<Misskey.entities.Clip | null>(null);
-let favorited = ref(false);
+const clip = ref<Misskey.entities.Clip | null>(null);
+const favorited = ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,
 	limit: 10,

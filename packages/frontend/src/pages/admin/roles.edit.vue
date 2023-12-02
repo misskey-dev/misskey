@@ -39,8 +39,8 @@ const props = defineProps<{
 	id?: string;
 }>();
 
-let role = ref(null);
-let data = ref(null);
+const role = ref(null);
+const data = ref(null);
 
 if (props.id) {
 	role.value = await os.api('admin/roles/show', {

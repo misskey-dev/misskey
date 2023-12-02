@@ -46,7 +46,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-let avatarDecorations = ref<any[]>([]);
+const avatarDecorations = ref<any[]>([]);
 
 function add() {
 	avatarDecorations.value.unshift({

@@ -71,7 +71,7 @@ const url = computed(() => {
 });
 
 const alt = computed(() => `:${customEmojiName.value}:`);
-let errored = ref(url.value == null);
+const errored = ref(url.value == null);
 
 function onClick(ev: MouseEvent) {
 	if (props.menu) {

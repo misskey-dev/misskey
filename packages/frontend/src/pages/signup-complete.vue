@@ -32,7 +32,7 @@ import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
-let submitting = ref(false);
+const submitting = ref(false);
 
 const props = defineProps<{
 	code: string;

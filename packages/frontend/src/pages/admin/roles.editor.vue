@@ -562,7 +562,7 @@ const props = defineProps<{
 	readonly?: boolean;
 }>();
 
-let role = ref(deepClone(props.modelValue));
+const role = ref(deepClone(props.modelValue));
 
 // fill missing policy
 for (const ROLE_POLICY of ROLE_POLICIES) {
@@ -575,7 +575,7 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 	}
 }
 
-let rolePermission = computed({
+const rolePermission = computed({
 	get: () => role.value.isAdministrator ? 'administrator' : role.value.isModerator ? 'moderator' : 'normal',
 	set: (val) => {
 		role.value.isAdministrator = val === 'administrator';
@@ -583,7 +583,7 @@ let rolePermission = computed({
 	},
 });
 
-let q = ref('');
+const q = ref('');
 
 function getPriorityIcon(option) {
 	if (option.priority === 2) return 'ti ti-arrows-up';

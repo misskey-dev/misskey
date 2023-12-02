@@ -27,7 +27,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const statusbars = defaultStore.reactiveState.statusbars;
 
-let userLists = ref();
+const userLists = ref();
 
 onMounted(() => {
 	os.api('users/lists/list').then(res => {

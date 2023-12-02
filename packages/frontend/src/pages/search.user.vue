@@ -40,10 +40,10 @@ import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
-let key = ref('');
-let searchQuery = ref('');
-let searchOrigin = ref('combined');
-let userPagination = ref();
+const key = ref('');
+const searchQuery = ref('');
+const searchOrigin = ref('combined');
+const userPagination = ref();
 
 async function search() {
 	const query = searchQuery.value.toString().trim();

@@ -25,7 +25,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
-let tab = ref('deliver');
+const tab = ref('deliver');
 
 function clear() {
 	os.confirm({

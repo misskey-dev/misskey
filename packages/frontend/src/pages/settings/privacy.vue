@@ -77,19 +77,19 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let isLocked = ref($i.isLocked);
-let autoAcceptFollowed = ref($i.autoAcceptFollowed);
-let noCrawle = ref($i.noCrawle);
-let preventAiLearning = ref($i.preventAiLearning);
-let isExplorable = ref($i.isExplorable);
-let hideOnlineStatus = ref($i.hideOnlineStatus);
-let publicReactions = ref($i.publicReactions);
-let ffVisibility = ref($i.ffVisibility);
+const isLocked = ref($i.isLocked);
+const autoAcceptFollowed = ref($i.autoAcceptFollowed);
+const noCrawle = ref($i.noCrawle);
+const preventAiLearning = ref($i.preventAiLearning);
+const isExplorable = ref($i.isExplorable);
+const hideOnlineStatus = ref($i.hideOnlineStatus);
+const publicReactions = ref($i.publicReactions);
+const ffVisibility = ref($i.ffVisibility);
 
-let defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
-let defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
-let rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
-let keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
+const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
+const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
+const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
+const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 function save() {
 	os.api('i/update', {

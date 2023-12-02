@@ -34,9 +34,9 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let rootEl = shallowRef<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 
-let zIndex = ref<number>(os.claimZIndex('high'));
+const zIndex = ref<number>(os.claimZIndex('high'));
 
 const SCROLLBAR_THICKNESS = 16;
 

@@ -53,11 +53,11 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let dialog = ref<InstanceType<typeof MkModalWindow>>();
+const dialog = ref<InstanceType<typeof MkModalWindow>>();
 
-let username = ref('');
-let email = ref('');
-let processing = ref(false);
+const username = ref('');
+const email = ref('');
+const processing = ref(false);
 
 async function onSubmit() {
 	processing.value = true;

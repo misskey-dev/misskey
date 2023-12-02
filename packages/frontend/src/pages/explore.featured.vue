@@ -31,5 +31,5 @@ const paginationForPolls = {
 	offsetMode: true,
 };
 
-let tab = ref('notes');
+const tab = ref('notes');
 </script>

@@ -69,11 +69,11 @@ import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { defaultStore } from '@/store.js';
 
-let stats = ref<any>(null);
-let usersComparedToThePrevDay = ref<number>();
-let notesComparedToThePrevDay = ref<number>();
-let onlineUsersCount = ref(0);
-let fetching = ref(true);
+const stats = ref<any>(null);
+const usersComparedToThePrevDay = ref<number>();
+const notesComparedToThePrevDay = ref<number>();
+const onlineUsersCount = ref(0);
+const fetching = ref(true);
 
 onMounted(async () => {
 	const [_stats, _onlineUsersCount] = await Promise.all([

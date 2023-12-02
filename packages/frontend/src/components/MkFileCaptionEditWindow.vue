@@ -44,7 +44,7 @@ const emit = defineEmits<{
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
-let caption = ref(props.default);
+const caption = ref(props.default);
 
 async function ok() {
 	emit('done', caption.value);

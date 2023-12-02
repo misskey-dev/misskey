@@ -105,12 +105,12 @@ const emit = defineEmits<{
 	(ev: 'status', error: boolean): void;
 }>();
 
-let rootEl = shallowRef<HTMLElement>();
+const rootEl = shallowRef<HTMLElement>();
 
 // 遡り中かどうか
-let backed = ref(false);
+const backed = ref(false);
 
-let scrollRemove = ref<(() => void) | null>(null);
+const scrollRemove = ref<(() => void) | null>(null);
 
 /**
  * 表示するアイテムのソース
@@ -153,7 +153,7 @@ const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 // 先頭が表示されているかどうかを検出
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
-let scrollObserver = ref<IntersectionObserver>();
+const scrollObserver = ref<IntersectionObserver>();
 
 watch([() => props.pagination.reversed, scrollableElement], () => {
 	if (scrollObserver.value) scrollObserver.value.disconnect();

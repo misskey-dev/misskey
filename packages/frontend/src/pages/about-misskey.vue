@@ -310,11 +310,11 @@ const patrons = [
 	'SHO SEKIGUCHI',
 ];
 
-let thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
+const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
 
 let easterEggReady = false;
-let easterEggEmojis = ref([]);
-let easterEggEngine = ref(null);
+const easterEggEmojis = ref([]);
+const easterEggEngine = ref(null);
 const containerEl = shallowRef<HTMLElement>();
 
 function iconLoaded() {

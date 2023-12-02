@@ -40,10 +40,10 @@ import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let logs = shallowRef<InstanceType<typeof MkPagination>>();
+const logs = shallowRef<InstanceType<typeof MkPagination>>();
 
-let type = ref(null);
-let moderatorId = ref('');
+const type = ref(null);
+const moderatorId = ref('');
 
 const pagination = {
 	endpoint: 'admin/show-moderation-logs' as const,

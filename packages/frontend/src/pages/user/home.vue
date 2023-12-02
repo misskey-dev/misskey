@@ -198,16 +198,16 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-let user = ref(props.user);
-let parallaxAnimationId = ref<null | number>(null);
-let narrow = ref<null | boolean>(null);
-let rootEl = ref<null | HTMLElement>(null);
-let bannerEl = ref<null | HTMLElement>(null);
-let memoTextareaEl = ref<null | HTMLElement>(null);
-let memoDraft = ref(props.user.memo);
-let isEditingMemo = ref(false);
-let moderationNote = ref(props.user.moderationNote);
-let editModerationNote = ref(false);
+const user = ref(props.user);
+const parallaxAnimationId = ref<null | number>(null);
+const narrow = ref<null | boolean>(null);
+const rootEl = ref<null | HTMLElement>(null);
+const bannerEl = ref<null | HTMLElement>(null);
+const memoTextareaEl = ref<null | HTMLElement>(null);
+const memoDraft = ref(props.user.memo);
+const isEditingMemo = ref(false);
+const moderationNote = ref(props.user.moderationNote);
+const editModerationNote = ref(false);
 
 watch(moderationNote, async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });

@@ -26,7 +26,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 
 onMounted(() => {
 	if (props.column.antennaId == null) {

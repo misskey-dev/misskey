@@ -61,11 +61,11 @@ const props = defineProps<{
 	noteId: string;
 }>();
 
-let note = ref<null | Misskey.entities.Note>();
-let clips = ref();
-let showPrev = ref(false);
-let showNext = ref(false);
-let error = ref();
+const note = ref<null | Misskey.entities.Note>();
+const clips = ref();
+const showPrev = ref(false);
+const showNext = ref(false);
+const error = ref();
 
 const prevPagination = {
 	endpoint: 'users/notes' as const,

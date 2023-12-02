@@ -70,8 +70,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-let type = ref('all');
-let sort = ref('+createdAt');
+const type = ref('all');
+const sort = ref('+createdAt');
 
 const pagination: Paging = {
 	endpoint: 'admin/invite/list' as const,

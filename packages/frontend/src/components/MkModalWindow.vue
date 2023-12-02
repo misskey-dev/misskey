@@ -44,11 +44,11 @@ const emit = defineEmits<{
 	(event: 'ok'): void;
 }>();
 
-let modal = shallowRef<InstanceType<typeof MkModal>>();
-let rootEl = shallowRef<HTMLElement>();
-let headerEl = shallowRef<HTMLElement>();
-let bodyWidth = ref(0);
-let bodyHeight = ref(0);
+const modal = shallowRef<InstanceType<typeof MkModal>>();
+const rootEl = shallowRef<HTMLElement>();
+const headerEl = shallowRef<HTMLElement>();
+const bodyWidth = ref(0);
+const bodyHeight = ref(0);
 
 const close = () => {
 	modal.value.close();

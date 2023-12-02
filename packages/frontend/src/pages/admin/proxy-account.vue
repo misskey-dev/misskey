@@ -31,8 +31,8 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let proxyAccount = ref<any>(null);
-let proxyAccountId = ref<any>(null);
+const proxyAccount = ref<any>(null);
+const proxyAccountId = ref<any>(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');

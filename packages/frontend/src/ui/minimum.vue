@@ -20,7 +20,7 @@ import { mainRouter } from '@/router.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {

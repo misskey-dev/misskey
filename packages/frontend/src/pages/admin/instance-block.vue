@@ -33,9 +33,9 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let blockedHosts = ref<string>('');
-let silencedHosts = ref<string>('');
-let tab = ref('block');
+const blockedHosts = ref<string>('');
+const silencedHosts = ref<string>('');
+const tab = ref('block');
 
 async function init() {
 	const meta = await os.api('admin/meta');

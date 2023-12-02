@@ -29,7 +29,7 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.j
 import { instanceName, ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
 
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 
 const showBottom = !(new URLSearchParams(location.search)).has('zen') && ui === 'deck';
 

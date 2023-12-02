@@ -38,8 +38,8 @@ const emit = defineEmits<{
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
-let reactions = ref<[string, number][]>([]);
-let hasMoreReactions = ref(false);
+const reactions = ref<[string, number][]>([]);
+const hasMoreReactions = ref(false);
 
 if (props.note.myReaction && !Object.keys(reactions.value).includes(props.note.myReaction)) {
 	reactions.value[props.note.myReaction] = props.note.reactions[props.note.myReaction];

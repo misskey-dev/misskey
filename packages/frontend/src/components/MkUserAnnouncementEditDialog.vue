@@ -66,12 +66,12 @@ const props = defineProps<{
 	announcement?: any,
 }>();
 
-let dialog = ref(null);
-let title = ref<string>(props.announcement ? props.announcement.title : '');
-let text = ref<string>(props.announcement ? props.announcement.text : '');
-let icon = ref<string>(props.announcement ? props.announcement.icon : 'info');
-let display = ref<string>(props.announcement ? props.announcement.display : 'dialog');
-let needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const dialog = ref(null);
+const title = ref<string>(props.announcement ? props.announcement.title : '');
+const text = ref<string>(props.announcement ? props.announcement.text : '');
+const icon = ref<string>(props.announcement ? props.announcement.icon : 'info');
+const display = ref<string>(props.announcement ? props.announcement.display : 'dialog');
+const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,

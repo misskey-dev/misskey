@@ -59,10 +59,10 @@ import { i18n } from '@/i18n.js';
 
 const WINDOW_THRESHOLD = 1400;
 
-let settingsWindowed = ref(window.innerWidth > WINDOW_THRESHOLD);
-let menu = ref(defaultStore.state.menu);
+const settingsWindowed = ref(window.innerWidth > WINDOW_THRESHOLD);
+const menu = ref(defaultStore.state.menu);
 // const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
-let otherNavItemIndicated = computed<boolean>(() => {
+const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {
 		if (menu.value.includes(def)) continue;
 		if (navbarItemDef[def].indicated) return true;

@@ -63,7 +63,7 @@ const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = ref<Misskey.entities.Notification[]>([]);
+const notifications = ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
 	if (document.visibilityState === 'visible') {

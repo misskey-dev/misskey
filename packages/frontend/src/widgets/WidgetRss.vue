@@ -72,7 +72,7 @@ const fetchEndpoint = computed(() => {
 	url.searchParams.set('url', widgetProps.url);
 	return url;
 });
-let intervalClear = ref<(() => void) | undefined>();
+const intervalClear = ref<(() => void) | undefined>();
 
 const tick = () => {
 	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;

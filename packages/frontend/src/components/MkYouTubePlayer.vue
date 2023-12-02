@@ -36,9 +36,9 @@ const props = defineProps<{
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
-let fetching = ref(true);
-let title = ref<string | null>(null);
-let player = ref({
+const fetching = ref(true);
+const title = ref<string | null>(null);
+const player = ref({
 	url: null,
 	width: null,
 	height: null,

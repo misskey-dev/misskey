@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<{
 	withChart: true,
 });
 
-let chartValues = ref<number[] | null>(null);
+const chartValues = ref<number[] | null>(null);
 
 onMounted(() => {
 	if (props.withChart) {

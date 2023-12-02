@@ -142,14 +142,14 @@ const props = defineProps<{
 	host: string;
 }>();
 
-let tab = ref('overview');
-let chartSrc = ref('instance-requests');
-let meta = ref<Misskey.entities.AdminInstanceMetadata | null>(null);
-let instance = ref<Misskey.entities.Instance | null>(null);
-let suspended = ref(false);
-let isBlocked = ref(false);
-let isSilenced = ref(false);
-let faviconUrl = ref<string | null>(null);
+const tab = ref('overview');
+const chartSrc = ref('instance-requests');
+const meta = ref<Misskey.entities.AdminInstanceMetadata | null>(null);
+const instance = ref<Misskey.entities.Instance | null>(null);
+const suspended = ref(false);
+const isBlocked = ref(false);
+const isSilenced = ref(false);
+const faviconUrl = ref<string | null>(null);
 
 const usersPagination = {
 	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,

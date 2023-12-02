@@ -31,7 +31,7 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 
-let scopesWithDomain = ref(null);
+const scopesWithDomain = ref(null);
 
 function fetchScopes() {
 	os.api('i/registry/scopes-with-domain').then(res => {

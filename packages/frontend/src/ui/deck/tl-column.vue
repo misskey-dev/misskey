@@ -47,8 +47,8 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let disabled = ref(false);
-let timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const disabled = ref(false);
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));

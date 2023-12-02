@@ -31,8 +31,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-let user = ref<null | Misskey.entities.UserDetailed>(null);
-let error = ref(null);
+const user = ref<null | Misskey.entities.UserDetailed>(null);
+const error = ref(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;

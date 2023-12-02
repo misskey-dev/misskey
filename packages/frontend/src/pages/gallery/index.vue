@@ -61,9 +61,9 @@ const props = defineProps<{
 	tag?: string;
 }>();
 
-let tab = ref('explore');
-let tags = ref([]);
-let tagsRef = ref();
+const tab = ref('explore');
+const tags = ref([]);
+const tagsRef = ref();
 
 const recentPostsPagination = {
 	endpoint: 'gallery/posts' as const,

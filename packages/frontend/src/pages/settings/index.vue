@@ -50,10 +50,10 @@ const childInfo = ref(null);
 
 const router = useRouter();
 
-let narrow = ref(false);
+const narrow = ref(false);
 const NARROW_THRESHOLD = 600;
 
-let currentPage = computed(() => router.currentRef.value.child);
+const currentPage = computed(() => router.currentRef.value.child);
 
 const ro = new ResizeObserver((entries, observer) => {
 	if (entries.length === 0) return;

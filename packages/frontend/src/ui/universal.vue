@@ -127,7 +127,7 @@ window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
 
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 const widgetsShowing = ref(false);
 const navFooter = shallowRef<HTMLElement>();
 const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
@@ -216,7 +216,7 @@ function top() {
 	});
 }
 
-let navFooterHeight = ref(0);
+const navFooterHeight = ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
 watch(navFooter, () => {

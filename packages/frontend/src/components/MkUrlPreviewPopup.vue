@@ -28,8 +28,8 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let top = ref(0);
-let left = ref(0);
+const top = ref(0);
+const left = ref(0);
 
 onMounted(() => {
 	const rect = props.source.getBoundingClientRect();

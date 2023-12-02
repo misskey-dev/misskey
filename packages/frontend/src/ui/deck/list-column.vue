@@ -26,7 +26,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const withRenotes = ref(props.column.withRenotes ?? true);
 
 if (props.column.listId == null) {

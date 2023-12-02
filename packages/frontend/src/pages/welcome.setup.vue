@@ -44,9 +44,9 @@ import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 
-let username = ref('');
-let password = ref('');
-let submitting = ref(false);
+const username = ref('');
+const password = ref('');
+const submitting = ref(false);
 
 function submit() {
 	if (submitting.value) return;

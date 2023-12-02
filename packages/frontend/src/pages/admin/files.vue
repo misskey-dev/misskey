@@ -45,11 +45,11 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let origin = ref('local');
-let type = ref(null);
-let searchHost = ref('');
-let userId = ref('');
-let viewMode = ref('grid');
+const origin = ref('local');
+const type = ref(null);
+const searchHost = ref('');
+const userId = ref('');
+const viewMode = ref('grid');
 const pagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,

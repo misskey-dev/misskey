@@ -46,8 +46,8 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let deeplAuthKey = ref<string>('');
-let deeplIsPro = ref<boolean>(false);
+const deeplAuthKey = ref<string>('');
+const deeplIsPro = ref<boolean>(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');

@@ -21,8 +21,8 @@ import { onMounted, ref } from 'vue';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 
-let moderators = ref<any>(null);
-let fetching = ref(true);
+const moderators = ref<any>(null);
+const fetching = ref(true);
 
 onMounted(async () => {
 	moderators.value = await os.api('admin/show-users', {

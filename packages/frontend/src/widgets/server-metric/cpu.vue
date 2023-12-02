@@ -23,7 +23,7 @@ const props = defineProps<{
 	meta: any
 }>();
 
-let usage = ref<number>(0);
+const usage = ref<number>(0);
 
 function onStats(stats) {
 	usage.value = stats.cpu;

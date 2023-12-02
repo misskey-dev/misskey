@@ -46,16 +46,16 @@ const localOnlyQuery = urlParams.get('localOnly');
 const visibilityQuery = urlParams.get('visibility') as typeof Misskey.noteVisibilities[number];
 
 const state = ref<'fetching' | 'writing' | 'posted'>('fetching');
-let title = ref(urlParams.get('title'));
+const title = ref(urlParams.get('title'));
 const text = urlParams.get('text');
 const url = urlParams.get('url');
-let initialText = ref<string | undefined>();
-let reply = ref<Misskey.entities.Note | undefined>();
-let renote = ref<Misskey.entities.Note | undefined>();
-let visibility = ref(Misskey.noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
-let localOnly = ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
-let files = ref([] as Misskey.entities.DriveFile[]);
-let visibleUsers = ref([] as Misskey.entities.User[]);
+const initialText = ref<string | undefined>();
+const reply = ref<Misskey.entities.Note | undefined>();
+const renote = ref<Misskey.entities.Note | undefined>();
+const visibility = ref(Misskey.noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
+const localOnly = ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
+const files = ref([] as Misskey.entities.DriveFile[]);
+const visibleUsers = ref([] as Misskey.entities.User[]);
 
 async function init() {
 	let noteText = '';

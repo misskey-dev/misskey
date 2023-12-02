@@ -84,7 +84,7 @@ import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
-let pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
@@ -101,10 +101,10 @@ const announcements = {
 
 const isTimelineAvailable = ref(instance.policies?.ltlAvailable || instance.policies?.gtlAvailable);
 
-let showMenu = ref(false);
-let isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
-let narrow = ref(window.innerWidth < 1280);
-let meta = ref();
+const showMenu = ref(false);
+const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+const narrow = ref(window.innerWidth < 1280);
+const meta = ref();
 
 const keymap = computed(() => {
 	return {

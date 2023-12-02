@@ -69,13 +69,13 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 
-let paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-let sort = ref('+createdAt');
-let state = ref('all');
-let origin = ref('local');
-let searchUsername = ref('');
-let searchHost = ref('');
+const sort = ref('+createdAt');
+const state = ref('all');
+const origin = ref('local');
+const searchUsername = ref('');
+const searchHost = ref('');
 const pagination = {
 	endpoint: 'admin/show-users' as const,
 	limit: 10,

@@ -107,11 +107,11 @@ const emit = defineEmits<{
 
 provide('inWindow', true);
 
-let rootEl = shallowRef<HTMLElement | null>();
-let showing = ref(true);
+const rootEl = shallowRef<HTMLElement | null>();
+const showing = ref(true);
 let beforeClickedAt = 0;
-let maximized = ref(false);
-let minimized = ref(false);
+const maximized = ref(false);
+const minimized = ref(false);
 let unResizedTop = '';
 let unResizedLeft = '';
 let unResizedWidth = '';

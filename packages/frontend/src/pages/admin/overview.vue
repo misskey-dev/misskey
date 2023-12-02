@@ -83,15 +83,15 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const rootEl = shallowRef<HTMLElement>();
-let serverInfo = ref<any>(null);
-let topSubInstancesForPie = ref<any>(null);
-let topPubInstancesForPie = ref<any>(null);
-let federationPubActive = ref<number | null>(null);
-let federationPubActiveDiff = ref<number | null>(null);
-let federationSubActive = ref<number | null>(null);
-let federationSubActiveDiff = ref<number | null>(null);
-let newUsers = ref(null);
-let activeInstances = shallowRef(null);
+const serverInfo = ref<any>(null);
+const topSubInstancesForPie = ref<any>(null);
+const topPubInstancesForPie = ref<any>(null);
+const federationPubActive = ref<number | null>(null);
+const federationPubActiveDiff = ref<number | null>(null);
+const federationSubActive = ref<number | null>(null);
+const federationSubActiveDiff = ref<number | null>(null);
+const newUsers = ref(null);
+const activeInstances = shallowRef(null);
 const queueStatsConnection = markRaw(useStream().useChannel('queueStats'));
 const now = new Date();
 const filesPagination = {

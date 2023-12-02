@@ -16,7 +16,7 @@ import { ref } from 'vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';
 
-let roles = ref();
+const roles = ref();
 
 os.api('roles/list').then(res => {
 	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.displayOrder - a.displayOrder);

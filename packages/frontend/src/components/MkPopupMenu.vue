@@ -28,7 +28,7 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-let modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 const manualShowing = ref(true);
 const hiding = ref(false);
 

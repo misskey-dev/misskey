@@ -35,10 +35,10 @@ const RELEASE_TRANSITION_DURATION = 200;
 const PULL_BRAKE_BASE = 1.5;
 const PULL_BRAKE_FACTOR = 170;
 
-let isPullStart = ref(false);
-let isPullEnd = ref(false);
-let isRefreshing = ref(false);
-let pullDistance = ref(0);
+const isPullStart = ref(false);
+const isPullEnd = ref(false);
+const isRefreshing = ref(false);
+const pullDistance = ref(0);
 
 let supportPointerDesktop = false;
 let startScreenY: number | null = null;

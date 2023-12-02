@@ -41,8 +41,8 @@ const pagination = {
 	limit: 10,
 };
 
-let tab = ref('my');
-let favorites = ref();
+const tab = ref('my');
+const favorites = ref();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

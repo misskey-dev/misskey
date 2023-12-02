@@ -129,18 +129,18 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let summalyProxy = ref<string>('');
-let enableHcaptcha = ref<boolean>(false);
-let enableRecaptcha = ref<boolean>(false);
-let enableTurnstile = ref<boolean>(false);
-let sensitiveMediaDetection = ref<string>('none');
-let sensitiveMediaDetectionSensitivity = ref<number>(0);
-let setSensitiveFlagAutomatically = ref<boolean>(false);
-let enableSensitiveMediaDetectionForVideos = ref<boolean>(false);
-let enableIpLogging = ref<boolean>(false);
-let enableActiveEmailValidation = ref<boolean>(false);
-let enableVerifymailApi = ref<boolean>(false);
-let verifymailAuthKey = ref<string | null>(null);
+const summalyProxy = ref<string>('');
+const enableHcaptcha = ref<boolean>(false);
+const enableRecaptcha = ref<boolean>(false);
+const enableTurnstile = ref<boolean>(false);
+const sensitiveMediaDetection = ref<string>('none');
+const sensitiveMediaDetectionSensitivity = ref<number>(0);
+const setSensitiveFlagAutomatically = ref<boolean>(false);
+const enableSensitiveMediaDetectionForVideos = ref<boolean>(false);
+const enableIpLogging = ref<boolean>(false);
+const enableActiveEmailValidation = ref<boolean>(false);
+const enableVerifymailApi = ref<boolean>(false);
+const verifymailAuthKey = ref<string | null>(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');

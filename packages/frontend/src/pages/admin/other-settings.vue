@@ -52,10 +52,10 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 
-let enableServerMachineStats = ref<boolean>(false);
-let enableIdenticonGeneration = ref<boolean>(false);
-let enableChartsForRemoteUser = ref<boolean>(false);
-let enableChartsForFederatedInstances = ref<boolean>(false);
+const enableServerMachineStats = ref<boolean>(false);
+const enableIdenticonGeneration = ref<boolean>(false);
+const enableChartsForRemoteUser = ref<boolean>(false);
+const enableChartsForFederatedInstances = ref<boolean>(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');

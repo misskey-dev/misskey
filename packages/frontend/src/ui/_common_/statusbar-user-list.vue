@@ -50,7 +50,7 @@ const props = defineProps<{
 
 const notes = ref<Misskey.entities.Note[]>([]);
 const fetching = ref(true);
-let key = ref(0);
+const key = ref(0);
 
 const tick = () => {
 	if (props.userListId == null) return;

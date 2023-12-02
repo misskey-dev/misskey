@@ -54,13 +54,13 @@ import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { i18n } from '@/i18n.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 
-let topSubInstancesForPie = ref<any>(null);
-let topPubInstancesForPie = ref<any>(null);
-let federationPubActive = ref<number | null>(null);
-let federationPubActiveDiff = ref<number | null>(null);
-let federationSubActive = ref<number | null>(null);
-let federationSubActiveDiff = ref<number | null>(null);
-let fetching = ref(true);
+const topSubInstancesForPie = ref<any>(null);
+const topPubInstancesForPie = ref<any>(null);
+const federationPubActive = ref<number | null>(null);
+const federationPubActiveDiff = ref<number | null>(null);
+const federationSubActive = ref<number | null>(null);
+const federationSubActiveDiff = ref<number | null>(null);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 

@@ -33,11 +33,11 @@ const props = defineProps<{
 }>();
 
 const chartEl = shallowRef<HTMLCanvasElement>(null);
-let legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
+const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 50;
-let fetching = ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 

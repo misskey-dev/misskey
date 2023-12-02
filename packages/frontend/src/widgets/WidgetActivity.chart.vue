@@ -39,14 +39,14 @@ const props = defineProps<{
 	activity: any[]
 }>();
 
-let viewBoxX = ref(147);
-let viewBoxY = ref(60);
-let zoom = ref(1);
-let pos = ref(0);
-let pointsNote = ref<any>(null);
-let pointsReply = ref<any>(null);
-let pointsRenote = ref<any>(null);
-let pointsTotal = ref<any>(null);
+const viewBoxX = ref(147);
+const viewBoxY = ref(60);
+const zoom = ref(1);
+const pos = ref(0);
+const pointsNote = ref<any>(null);
+const pointsReply = ref<any>(null);
+const pointsRenote = ref<any>(null);
+const pointsTotal = ref<any>(null);
 
 function dragListen(fn) {
 	window.addEventListener('mousemove', fn);

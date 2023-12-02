@@ -29,8 +29,8 @@ import { claimAchievement } from '@/scripts/achievements.js';
 
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);
-let cps = ref(0);
-let prevCookies = ref(0);
+const cps = ref(0);
+const prevCookies = ref(0);
 
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;

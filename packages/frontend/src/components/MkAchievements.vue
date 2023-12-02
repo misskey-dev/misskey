@@ -67,7 +67,7 @@ const props = withDefaults(defineProps<{
 	withDescription: true,
 });
 
-let achievements = ref();
+const achievements = ref();
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {

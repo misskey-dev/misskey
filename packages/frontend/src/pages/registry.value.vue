@@ -64,8 +64,8 @@ const props = defineProps<{
 const scope = computed(() => props.path.split('/').slice(0, -1));
 const key = computed(() => props.path.split('/').at(-1));
 
-let value = ref(null);
-let valueForEditor = ref(null);
+const value = ref(null);
+const valueForEditor = ref(null);
 
 function fetchValue() {
 	os.api('i/registry/get-detail', {
