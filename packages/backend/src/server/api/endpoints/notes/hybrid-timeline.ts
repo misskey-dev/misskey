@@ -149,6 +149,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sinceId,
 				limit: ps.limit,
 				allowPartial: ps.allowPartial,
+				me,
 				redisTimelines: timelineConfig,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				noteFilter: (note) => {
