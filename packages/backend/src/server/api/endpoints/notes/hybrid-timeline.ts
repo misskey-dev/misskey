@@ -124,7 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let timelineConfig: (string | { name: string, fallbackIfEmpty: boolean })[];
+			let timelineConfig: string[];
 
 			if (ps.withFiles) {
 				timelineConfig = [
