@@ -217,7 +217,7 @@ function top() {
 }
 
 let navFooterHeight = ref(0);
-provide<Ref<number>>(CURRENT_STICKY_BOTTOM, (navFooterHeight));
+provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
 watch(navFooter, () => {
 	if (navFooter.value) {
