@@ -406,7 +406,7 @@ function testNotification(): void {
 }
 
 function enableAllDataSaver() {
-	const g = defaultStore.state.dataSaver;
+	const g = { ...defaultStore.state.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = true; });
 
