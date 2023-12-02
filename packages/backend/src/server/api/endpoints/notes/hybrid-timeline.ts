@@ -128,18 +128,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.withFiles) {
 				timelineConfig = [
-					{ name: `homeTimelineWithFiles:${me.id}`, fallbackIfEmpty: true },
+					`homeTimelineWithFiles:${me.id}`,
 					'localTimelineWithFiles',
 				];
 			} else if (ps.withReplies) {
 				timelineConfig = [
-					{ name: `homeTimeline:${me.id}`, fallbackIfEmpty: true },
+					`homeTimeline:${me.id}`,
 					'localTimeline',
 					'localTimelineWithReplies',
 				];
 			} else {
 				timelineConfig = [
-					{ name: `homeTimeline:${me.id}`, fallbackIfEmpty: true },
+					`homeTimeline:${me.id}`,
 					'localTimeline',
 				];
 			}

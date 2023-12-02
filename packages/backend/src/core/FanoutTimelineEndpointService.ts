@@ -32,7 +32,7 @@ export class FanoutTimelineEndpointService {
 		allowPartial: boolean,
 		me?: { id: MiUser['id'] } | undefined | null,
 		useDbFallback: boolean,
-		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
+		redisTimelines: string[],
 		noteFilter: (note: MiNote) => boolean,
 		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 	}): Promise<Packed<'Note'>[]> {
@@ -47,7 +47,7 @@ export class FanoutTimelineEndpointService {
 		allowPartial: boolean,
 		me?: { id: MiUser['id'] } | undefined | null,
 		useDbFallback: boolean,
-		redisTimelines: (string | { name: string, fallbackIfEmpty: boolean })[],
+		redisTimelines: string[],
 		noteFilter: (note: MiNote) => boolean,
 		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 	}): Promise<MiNote[]> {
@@ -57,18 +57,7 @@ export class FanoutTimelineEndpointService {
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
-		const timelines = ps.redisTimelines.map(x => typeof x === 'string' ? x : x.name);
-
-		const redisResult = await this.fanoutTimelineService.getMulti(timelines, ps.untilId, ps.sinceId);
-
-		for (let i = 0; i < ps.redisTimelines.length; i++) {
-			const sourceRedisConfig = ps.redisTimelines[i];
-			if (typeof sourceRedisConfig === 'object' && sourceRedisConfig.fallbackIfEmpty) {
-				if (redisResult[i].length === 0) {
-					shouldFallbackToDb = true;
-				}
-			}
-		}
+		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
 		const redisResultIds = Array.from(new Set(redisResult.flat(1)));
 
