@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { shallowRef } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
@@ -39,15 +39,15 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function onClose() {
 	emit('cancelled');
-	if (dialog) dialog.close();
+	if (dialog.value) dialog.value.close();
 }
 
 function onLogin(res) {
 	emit('done', res);
-	if (dialog) dialog.close();
+	if (dialog.value) dialog.value.close();
 }
 </script>

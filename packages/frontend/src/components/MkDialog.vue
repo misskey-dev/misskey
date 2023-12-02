@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
+import { onBeforeUnmount, onMounted, ref, shallowRef, computed } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -122,18 +122,18 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 const inputValue = ref<string | number | null>(props.input?.default ?? null);
 const selectedValue = ref(props.select?.default ?? null);
 
-let disabledReason = $ref<null | 'charactersExceeded' | 'charactersBelow'>(null);
-const okButtonDisabled = $computed<boolean>(() => {
+let disabledReason = ref<null | 'charactersExceeded' | 'charactersBelow'>(null);
+const okButtonDisabled = computed<boolean>(() => {
 	if (props.input) {
 		if (props.input.minLength) {
 			if ((inputValue.value || inputValue.value === '') && (inputValue.value as string).length < props.input.minLength) {
-				disabledReason = 'charactersBelow';
+				disabledReason.value = 'charactersBelow';
 				return true;
 			}
 		}
 		if (props.input.maxLength) {
 			if (inputValue.value && (inputValue.value as string).length > props.input.maxLength) {
-				disabledReason = 'charactersExceeded';
+				disabledReason.value = 'charactersExceeded';
 				return true;
 			}
 		}

@@ -109,8 +109,8 @@ function deleted(id: string) {
 	}
 }
 
-const headerActions = $computed(() => []);
-const headerTabs = $computed(() => []);
+const headerActions = computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.invite,
