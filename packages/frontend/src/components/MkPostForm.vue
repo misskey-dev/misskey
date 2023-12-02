@@ -892,9 +892,9 @@ onMounted(() => {
 	}
 
 	// TODO: detach when unmount
-	new Autocomplete(textareaEl.value, (text));
-	new Autocomplete(cwInputEl.value, (cw));
-	new Autocomplete(hashtagsInputEl.value, (hashtags));
+	new Autocomplete(textareaEl.value, text);
+	new Autocomplete(cwInputEl.value, cw);
+	new Autocomplete(hashtagsInputEl.value, hashtags);
 
 	nextTick(() => {
 		// 書きかけの投稿を復元

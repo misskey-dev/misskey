@@ -72,7 +72,7 @@ const menu = [
 	{
 		type: 'switch',
 		text: i18n.ts.showRenotes,
-		ref: (withRenotes),
+		ref: withRenotes,
 	},
 ];
 </script>

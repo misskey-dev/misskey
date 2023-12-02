@@ -172,6 +172,6 @@ if (navigator.serviceWorker == null) {
 }
 
 defineExpose({
-	pushRegistrationInServer: (pushRegistrationInServer),
+	pushRegistrationInServer: pushRegistrationInServer,
 });
 </script>

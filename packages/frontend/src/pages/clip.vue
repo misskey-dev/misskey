@@ -64,7 +64,7 @@ watch(() => props.clipId, async () => {
 	immediate: true,
 });
 
-provide('currentClip', (clip));
+provide('currentClip', clip);
 
 function favorite() {
 	os.apiWithDialog('clips/favorite', {

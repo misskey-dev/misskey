@@ -103,7 +103,7 @@ let roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.role
 let rolesThatCanBeUsedThisEmojiAsReaction = ref([]);
 let file = ref<Misskey.entities.DriveFile>();
 
-watch((roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
+watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 

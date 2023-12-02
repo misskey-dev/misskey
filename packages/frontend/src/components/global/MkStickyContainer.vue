@@ -30,12 +30,12 @@ const bodyEl = shallowRef<HTMLElement>();
 let headerHeight = ref<string | undefined>();
 let childStickyTop = ref(0);
 const parentStickyTop = inject<Ref<number>>(CURRENT_STICKY_TOP, ref(0));
-provide(CURRENT_STICKY_TOP, (childStickyTop));
+provide(CURRENT_STICKY_TOP, childStickyTop);
 
 let footerHeight = ref<string | undefined>();
 let childStickyBottom = ref(0);
 const parentStickyBottom = inject<Ref<number>>(CURRENT_STICKY_BOTTOM, ref(0));
-provide(CURRENT_STICKY_BOTTOM, (childStickyBottom));
+provide(CURRENT_STICKY_BOTTOM, childStickyBottom);
 
 const calc = () => {
 	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
@@ -91,6 +91,6 @@ onUnmounted(() => {
 });
 
 defineExpose({
-	rootEl: (rootEl),
+	rootEl: rootEl,
 });
 </script>

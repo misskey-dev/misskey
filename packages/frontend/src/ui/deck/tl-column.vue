@@ -115,15 +115,15 @@ const menu = [{
 }, {
 	type: 'switch',
 	text: i18n.ts.showRenotes,
-	ref: (withRenotes),
+	ref: withRenotes,
 }, props.column.tl === 'local' || props.column.tl === 'social' ? {
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
-	ref: (withReplies),
+	ref: withReplies,
 } : undefined, {
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
-	ref: (onlyFiles),
+	ref: onlyFiles,
 }];
 </script>
 

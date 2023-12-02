@@ -145,7 +145,7 @@ onMounted(() => {
 });
 
 defineExpose({
-	showMenu: (showMenu),
+	showMenu: showMenu,
 });
 </script>
 

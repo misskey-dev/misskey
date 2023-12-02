@@ -155,7 +155,7 @@ const BACKGROUND_PAUSE_WAIT_SEC = 10;
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
 let scrollObserver = ref<IntersectionObserver>();
 
-watch([() => props.pagination.reversed, (scrollableElement)], () => {
+watch([() => props.pagination.reversed, scrollableElement], () => {
 	if (scrollObserver.value) scrollObserver.value.disconnect();
 
 	scrollObserver.value = new IntersectionObserver(entries => {
@@ -174,7 +174,7 @@ watch(rootEl, () => {
 	});
 });
 
-watch([(backed), (contentEl)], () => {
+watch([backed, contentEl], () => {
 	if (!backed.value) {
 		if (!contentEl.value) return;
 

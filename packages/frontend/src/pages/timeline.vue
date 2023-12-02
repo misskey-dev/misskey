@@ -158,16 +158,16 @@ const headerActions = computed(() => {
 					type: 'switch',
 					text: i18n.ts.showRenotes,
 					icon: 'ti ti-repeat',
-					ref: (withRenotes),
+					ref: withRenotes,
 				}, src.value === 'local' || src.value === 'social' ? {
 					type: 'switch',
 					text: i18n.ts.showRepliesToOthersInTimeline,
-					ref: (withReplies),
+					ref: withReplies,
 				} : undefined, {
 					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
 					icon: 'ti ti-photo',
-					ref: (onlyFiles),
+					ref: onlyFiles,
 				}], ev.currentTarget ?? ev.target);
 			},
 		},

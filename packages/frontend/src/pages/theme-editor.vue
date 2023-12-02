@@ -132,7 +132,7 @@ let description = ref<string | null>(null);
 let themeCode = ref<string | null>(null);
 let changed = ref(false);
 
-useLeaveGuard((changed));
+useLeaveGuard(changed);
 
 function showPreview() {
 	os.pageWindow('/preview');
