@@ -13,6 +13,18 @@ import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 
+type TimelineOptions = {
+	untilId: string | null,
+	sinceId: string | null,
+	limit: number,
+	allowPartial: boolean,
+	me?: { id: MiUser['id'] } | undefined | null,
+	useDbFallback: boolean,
+	redisTimelines: string[],
+	noteFilter: (note: MiNote) => boolean,
+	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
+};
+
 @Injectable()
 export class FanoutTimelineEndpointService {
 	constructor(
@@ -25,32 +37,12 @@ export class FanoutTimelineEndpointService {
 	}
 
 	@bindThis
-	async timeline(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		allowPartial: boolean,
-		me?: { id: MiUser['id'] } | undefined | null,
-		useDbFallback: boolean,
-		redisTimelines: string[],
-		noteFilter: (note: MiNote) => boolean,
-		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
-	}): Promise<Packed<'Note'>[]> {
+	async timeline(ps: TimelineOptions): Promise<Packed<'Note'>[]> {
 		return await this.noteEntityService.packMany(await this.getMiNotes(ps), ps.me);
 	}
 
 	@bindThis
-	private async getMiNotes(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		allowPartial: boolean,
-		me?: { id: MiUser['id'] } | undefined | null,
-		useDbFallback: boolean,
-		redisTimelines: string[],
-		noteFilter: (note: MiNote) => boolean,
-		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
-	}): Promise<MiNote[]> {
+	private async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
 		let noteIds: string[];
 		let shouldFallbackToDb = false;
 
