@@ -144,8 +144,8 @@ const props = defineProps<{
 
 let tab = $ref('overview');
 let chartSrc = $ref('instance-requests');
-let meta = $ref<Misskey.entities.AdminInstanceMetadata | null>(null);
-let instance = $ref<Misskey.entities.Instance | null>(null);
+let meta = $ref<Misskey.entities.AdminMetaResponse | null>(null);
+let instance = $ref<Misskey.entities.FederationInstance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
 let isSilenced = $ref(false);
@@ -169,10 +169,10 @@ async function fetch(): Promise<void> {
 	instance = await os.api('federation/show-instance', {
 		host: props.host,
 	});
-	suspended = instance.isSuspended;
-	isBlocked = instance.isBlocked;
-	isSilenced = instance.isSilenced;
-	faviconUrl = getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.iconUrl, 'preview');
+	suspended = instance?.isSuspended ?? false;
+	isBlocked = instance?.isBlocked ?? false;
+	isSilenced = instance?.isSilenced ?? false;
+	faviconUrl = getProxiedImageUrlNullable(instance?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance?.iconUrl, 'preview');
 }
 
 async function toggleBlock(): Promise<void> {
@@ -188,8 +188,9 @@ async function toggleSilenced(): Promise<void> {
 	if (!meta) throw new Error('No meta?');
 	if (!instance) throw new Error('No instance?');
 	const { host } = instance;
+	const silencedHosts = meta.silencedHosts ?? [];
 	await os.api('admin/update-meta', {
-		silencedHosts: isSilenced ? meta.silencedHosts.concat([host]) : meta.silencedHosts.filter(x => x !== host),
+		silencedHosts: isSilenced ? silencedHosts.concat([host]) : silencedHosts.filter(x => x !== host),
 	});
 }
 

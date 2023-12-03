@@ -304,8 +304,6 @@ export class UserFollowingService implements OnModuleInit {
 					});
 				}
 			});
-
-			this.fanoutTimelineService.purge(`homeTimeline:${follower.id}`);
 		}
 
 		// Publish followed event
@@ -373,8 +371,6 @@ export class UserFollowingService implements OnModuleInit {
 					});
 				}
 			});
-
-			this.fanoutTimelineService.purge(`homeTimeline:${follower.id}`);
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
