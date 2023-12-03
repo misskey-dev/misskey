@@ -3,3 +3,4 @@ packages:
  - 'packages/frontend'
  - 'packages/sw'
  - 'packages/misskey-js'
+ - 'packages/misskey-js/generator'

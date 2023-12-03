@@ -17,6 +17,8 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -52,6 +54,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 		includeMyRenotes: { type: 'boolean', default: true },
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
@@ -82,6 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private idService: IdService,
 		private fanoutTimelineService: FanoutTimelineService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 		private queryService: QueryService,
 		private metaService: MetaService,
 	) {
@@ -101,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const serverSettings = await this.metaService.fetch();
 
 			if (!serverSettings.enableFanoutTimeline) {
-				return await this.getFromDb(list, {
+				const timeline = await this.getFromDb(list, {
 					untilId,
 					sinceId,
 					limit: ps.limit,
@@ -111,36 +115,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
 				}, me);
+
+				this.activeUsersChart.read(me);
+
+				await this.noteEntityService.packMany(timeline, me);
 			}
 
 			const [
 				userIdsWhoMeMuting,
 				userIdsWhoMeMutingRenotes,
 				userIdsWhoBlockingMe,
+				userMutedInstances,
 			] = await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.renoteMutingsCache.fetch(me.id),
 				this.cacheService.userBlockedCache.fetch(me.id),
+				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
 			]);
 
-			let noteIds = await this.fanoutTimelineService.get(ps.withFiles ? `userListTimelineWithFiles:${list.id}` : `userListTimeline:${list.id}`, untilId, sinceId);
-			noteIds = noteIds.slice(0, ps.limit);
-
-			let redisTimeline: MiNote[] = [];
-
-			if (noteIds.length > 0) {
-				const query = this.notesRepository.createQueryBuilder('note')
-					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
-
-				redisTimeline = await query.getMany();
-
-				redisTimeline = redisTimeline.filter(note => {
+			const timeline = await this.fanoutTimelineEndpointService.timeline({
+				untilId,
+				sinceId,
+				limit: ps.limit,
+				allowPartial: ps.allowPartial,
+				me,
+				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
+				redisTimelines: ps.withFiles ? [`userListTimelineWithFiles:${list.id}`] : [`userListTimeline:${list.id}`],
+				noteFilter: note => {
 					if (note.userId === me.id) {
 						return true;
 					}
@@ -152,32 +153,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							if (ps.withRenotes === false) return false;
 						}
 					}
+					if (isInstanceMuted(note, userMutedInstances)) return false;
 
 					return true;
-				});
+				},
+				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb(list, {
+					untilId,
+					sinceId,
+					limit,
+					includeMyRenotes: ps.includeMyRenotes,
+					includeRenotedMyNotes: ps.includeRenotedMyNotes,
+					includeLocalRenotes: ps.includeLocalRenotes,
+					withFiles: ps.withFiles,
+					withRenotes: ps.withRenotes,
+				}, me),
+			});
 
-				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
-			}
+			this.activeUsersChart.read(me);
 
-			if (redisTimeline.length > 0) {
-				this.activeUsersChart.read(me);
-				return await this.noteEntityService.packMany(redisTimeline, me);
-			} else {
-				if (serverSettings.enableFanoutTimelineDbFallback) { // fallback to db
-					return await this.getFromDb(list, {
-						untilId,
-						sinceId,
-						limit: ps.limit,
-						includeMyRenotes: ps.includeMyRenotes,
-						includeRenotedMyNotes: ps.includeRenotedMyNotes,
-						includeLocalRenotes: ps.includeLocalRenotes,
-						withFiles: ps.withFiles,
-						withRenotes: ps.withRenotes,
-					}, me);
-				} else {
-					return [];
-				}
-			}
+			return timeline;
 		});
 	}
 
@@ -271,10 +265,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 		//#endregion
 
-		const timeline = await query.limit(ps.limit).getMany();
-
-		this.activeUsersChart.read(me);
-
-		return await this.noteEntityService.packMany(timeline, me);
+		return await query.limit(ps.limit).getMany();
 	}
 }
