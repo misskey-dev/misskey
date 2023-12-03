@@ -16,6 +16,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -97,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userMutingsCache.fetch(me.id),
 			]) : [new Set<string>()];
 
-			const redisTimelines = [ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`];
+			const redisTimelines: FanoutTimelineName[] = [ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`];
 
 			if (ps.withReplies) redisTimelines.push(`userTimelineWithReplies:${ps.userId}`);
 			if (ps.withChannelNotes) redisTimelines.push(`userTimelineWithChannel:${ps.userId}`);

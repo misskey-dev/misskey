@@ -11,7 +11,7 @@ import type { MiNote } from '@/models/Note.js';
 import { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 
 type TimelineOptions = {
 	untilId: string | null,
@@ -20,7 +20,7 @@ type TimelineOptions = {
 	allowPartial: boolean,
 	me?: { id: MiUser['id'] } | undefined | null,
 	useDbFallback: boolean,
-	redisTimelines: string[],
+	redisTimelines: FanoutTimelineName[],
 	noteFilter: (note: MiNote) => boolean,
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 };

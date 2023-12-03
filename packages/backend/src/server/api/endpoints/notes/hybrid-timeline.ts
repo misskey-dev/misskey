@@ -14,7 +14,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -124,7 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let timelineConfig: string[];
+			let timelineConfig: FanoutTimelineName[];
 
 			if (ps.withFiles) {
 				timelineConfig = [

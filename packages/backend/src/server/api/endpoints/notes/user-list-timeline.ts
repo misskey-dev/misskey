@@ -13,7 +13,6 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -84,7 +83,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private cacheService: CacheService,
 		private idService: IdService,
-		private fanoutTimelineService: FanoutTimelineService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 		private queryService: QueryService,
 		private metaService: MetaService,
