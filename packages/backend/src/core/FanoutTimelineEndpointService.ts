@@ -85,7 +85,7 @@ export class FanoutTimelineEndpointService {
 
 			if (ps.excludeReplies) {
 				const parentFilter = filter;
-				filter = (note) => !isReply(note, ps.me) && parentFilter(note);
+				filter = (note) => !isReply(note, ps.me?.id) && parentFilter(note);
 			}
 
 			if (ps.me) {

@@ -5,6 +5,6 @@
 
 import { MiUser } from '@/models/User.js';
 
-export function isReply(note: any, me?: { id: MiUser['id'] } | undefined | null): boolean {
-	return note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id);
+export function isReply(note: any, viewerId?: MiUser['id'] | undefined | null): boolean {
+	return note.replyId && note.replyUserId !== note.userId && note.replyUserId !== viewerId;
 }
