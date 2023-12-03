@@ -39,6 +39,12 @@ export const meta = {
 			code: 'LTL_DISABLED',
 			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd',
 		},
+
+		bothWithRepliesAndWithFiles: {
+			message: 'Specifying both withReplies and withFiles is not supported',
+			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
+			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793'
+		},
 	},
 } as const;
 
@@ -81,6 +87,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (!policies.ltlAvailable) {
 				throw new ApiError(meta.errors.ltlDisabled);
 			}
+
+			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
 
 			const serverSettings = await this.metaService.fetch();
 
