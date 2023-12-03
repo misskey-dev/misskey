@@ -343,7 +343,7 @@ describe('2要素認証', () => {
 			}),
 			password: '',
 		});
-		assert.strictEqual(signinResponse2.status, 200, JSON.stringify(signinResponse2.body));
+		assert.strictEqual(signinResponse2.status, 200);
 		assert.notEqual(signinResponse2.body.i, undefined);
 
 		// 後片付け
