@@ -1168,8 +1168,8 @@ useGroupedNotifications: "알림을 그룹화하고 표시"
 signupPendingError: "메일 주소 확인중에 문제가 발생했습니다. 링크의 유효기간이 지났을 가능성이 있습니다."
 cwNotationRequired: "'내용을 숨기기'를 체크한 경우 주석을 써야 합니다."
 doReaction: "리액션 추가"
-code: "코드"
-reloadRequiredToApplySettings: "설정을 적용하려면 새로고침을 해야합니다."
+code: "문자열"
+reloadRequiredToApplySettings: "설정을 적용하려면 새로고침을 해야 합니다."
 _announcement:
   forExistingUsers: "기존 유저에게만 알림"
   forExistingUsersDescription: "활성화하면 이 공지사항을 게시한 시점에서 이미 가입한 유저에게만 표시합니다. 비활성화하면 게시 후에 가입한 유저에게도 표시합니다."
@@ -2327,13 +2327,13 @@ _externalResourceInstaller:
 _dataSaver:
   _media:
     title: "미디어 불러오기"
-    description: "사진이나 동영상을 자동으로 로드하는 것을 방지합니다. 숨겨져 있는 사진이나 동영상을 눌러서 로드할 수 있습니다."
+    description: "사진이나 동영상을 자동으로 불러오지 않습니다. 숨겨 놓은 사진이나 동영상은 누르면 불러옵니다."
   _avatar:
     title: "아이콘 이미지"
-    description: "아이콘 이미지의 애니메이션을 멈춥니다. 애니메이션 이미지는 통상 이미지보다 파일 사이즈가 큰 경우가 있기 때문에, 데이터 사용량을 절약할 수 있습니다."
+    description: "아이콘 이미지의 애니메이션을 멈춥니다. 애니메이션 이미지는 일반 이미지보다 파일 크기가 클 수 있으므로 데이터 사용량을 더 줄일 수 있습니다."
   _urlPreview:
     title: "URL 미리보기의 섬네일"
     description: "URL 미리보기의 섬네일 이미지를 불러오지 않게 됩니다."
   _code:
-    title: "코드 하이라이트"
-    description: "MFM 등으로 코드 강조 기법이 사용되는 경우, 직접 누르실 때까지 로드되지 않습니다. 코드 강조에서는 강조할 언어마다 그 정의 파일을 불러오는데, 이것들이 불러와지지 않아서 데이터 사용량을 절약할 수 있습니다."
+    title: "문자열 강조"
+    description: "MFM 등으로 문자열 강조 기법을 사용할 때 누르기 전에는 불러오지 않습니다. 문자열 강조에서는 강조할 언어마다 그 정의 파일을 불러와야 하지만 이를 자동으로 불러오지 않으므로 데이터 사용량을 줄일 수 있습니다."
