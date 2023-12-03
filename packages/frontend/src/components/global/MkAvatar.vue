@@ -83,7 +83,7 @@ const bound = $computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = $computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.enableDataSaverMode)
+const url = $computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar)
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
 
