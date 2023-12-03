@@ -7,11 +7,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { genAid, parseAid } from '@/misc/id/aid.js';
-import { genAidx, parseAidx } from '@/misc/id/aidx.js';
-import { genMeid, parseMeid } from '@/misc/id/meid.js';
-import { genMeidg, parseMeidg } from '@/misc/id/meidg.js';
-import { genObjectId, parseObjectId } from '@/misc/id/object-id.js';
+import { genAid, isSafeAidT, parseAid } from '@/misc/id/aid.js';
+import { genAidx, isSafeAidxT, parseAidx } from '@/misc/id/aidx.js';
+import { genMeid, isSafeMeidT, parseMeid } from '@/misc/id/meid.js';
+import { genMeidg, isSafeMeidgT, parseMeidg } from '@/misc/id/meidg.js';
+import { genObjectId, isSafeObjectIdT, parseObjectId } from '@/misc/id/object-id.js';
 import { bindThis } from '@/decorators.js';
 import { parseUlid } from '@/misc/id/ulid.js';
 
@@ -24,6 +24,19 @@ export class IdService {
 		private config: Config,
 	) {
 		this.method = config.id.toLowerCase();
+	}
+
+	@bindThis
+	public isSafeT(t: number): boolean {
+		switch (this.method) {
+			case 'aid': return isSafeAidT(t);
+			case 'aidx': return isSafeAidxT(t);
+			case 'meid': return isSafeMeidT(t);
+			case 'meidg': return isSafeMeidgT(t);
+			case 'ulid': return t > 0;
+			case 'objectid': return isSafeObjectIdT(t);
+			default: throw new Error('unrecognized id generation method');
+		}
 	}
 
 	/**
