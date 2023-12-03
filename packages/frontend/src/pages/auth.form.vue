@@ -27,7 +27,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	session: Misskey.entities.AuthSession;
+	session: Misskey.entities.AuthSessionShowResponse;
 }>();
 
 const emit = defineEmits<{

@@ -8,7 +8,7 @@ describe('API', () => {
 			credential: 'TOKEN'
 		});
 		const res = await cli.request('meta', { detail: true });
-		expectType<Misskey.entities.DetailedInstanceMetadata>(res);
+		expectType<Misskey.entities.MetaResponse>(res);
 	});
 
 	test('conditional respose type (meta)', async () => {
@@ -18,16 +18,16 @@ describe('API', () => {
 		});
 
 		const res = await cli.request('meta', { detail: true });
-		expectType<Misskey.entities.DetailedInstanceMetadata>(res);
+		expectType<Misskey.entities.MetaResponse>(res);
 
 		const res2 = await cli.request('meta', { detail: false });
-		expectType<Misskey.entities.LiteInstanceMetadata>(res2);
+		expectType<Misskey.entities.MetaResponse>(res2);
 
 		const res3 = await cli.request('meta', { });
-		expectType<Misskey.entities.LiteInstanceMetadata>(res3);
+		expectType<Misskey.entities.MetaResponse>(res3);
 
 		const res4 = await cli.request('meta', { detail: true as boolean });
-		expectType<Misskey.entities.LiteInstanceMetadata | Misskey.entities.DetailedInstanceMetadata>(res4);
+		expectType<Misskey.entities.MetaResponse>(res4);
 	});
 
 	test('conditional respose type (users/show)', async () => {
