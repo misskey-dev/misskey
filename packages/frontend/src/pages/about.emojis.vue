@@ -48,7 +48,7 @@ import { $i } from '@/account.js';
 
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');
-let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
+let searchEmojis = $ref<Misskey.entities.EmojiSimple[]>(null);
 let selectedTags = $ref(new Set());
 
 function search() {

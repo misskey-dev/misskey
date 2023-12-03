@@ -1,0 +1,20 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "nodenext",
+		"strict": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"esModuleInterop": true,
+		"lib": [
+			"esnext",
+		]
+	},
+	"include": [
+		"src/**/*.ts",
+		"built/**/*.ts"
+	],
+	"exclude": []
+}
