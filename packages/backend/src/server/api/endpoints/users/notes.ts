@@ -11,7 +11,6 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
@@ -101,12 +100,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(timeline, me);
 			}
 
-			const [
-				userIdsWhoMeMuting,
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-			]) : [new Set<string>()];
-
 			const redisTimelines: FanoutTimelineName[] = [ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`];
 
 			if (ps.withReplies) redisTimelines.push(`userTimelineWithReplies:${ps.userId}`);
@@ -122,18 +115,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				me,
 				redisTimelines,
 				useDbFallback: true,
+				ignoreAuthorFromMute: true,
+				excludeReplies: ps.withChannelNotes && !ps.withReplies, // userTimelineWithChannel may include replies
+				excludeNoFiles: ps.withChannelNotes && ps.withFiles, // userTimelineWithChannel may include notes without files
+				excludePureRenotes: !ps.withRenotes,
 				noteFilter: note => {
-					if (ps.withFiles && note.fileIds.length === 0) {
-						return false;
-					}
-					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
-
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (ps.withRenotes === false) return false;
-						}
-					}
-
 					if (note.channel?.isSensitive && !isSelf) return false;
 					if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
 					if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
