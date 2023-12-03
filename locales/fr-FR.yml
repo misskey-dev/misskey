@@ -1117,6 +1117,8 @@ useGroupedNotifications: "Grouper les notifications"
 signupPendingError: "Un problème est survenu lors de la vérification de votre adresse e-mail. Le lien a peut-être expiré."
 cwNotationRequired: "Si « Masquer le contenu » est activé, une description doit être fournie."
 doReaction: "Réagir"
+code: "Code"
+reloadRequiredToApplySettings: "Le rafraîchissement est nécessaire pour que les paramètres prennent effet."
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
   shouldNotBeUsedToPresentPermanentInfo: "Puisque cela pourrait nuire considérablement à l'expérience utilisateur pour les nouveaux utilisateurs, il est recommandé d'utiliser les annonces pour afficher des informations temporaires plutôt que des informations persistantes."
@@ -2015,3 +2017,7 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "Échec d'installation du thème"
       description: "Il y a eu un problème lors de l'installation du thème. Veuillez réessayer. Pour plus de détails sur l'erreur, veuillez consulter la console JavaScript."
+_dataSaver:
+  _media:
+    title: "Chargement du média"
+    description: "Empêche le chargement automatique des images et des vidéos. Appuyez sur les images et les vidéos cachées pour les charger."
