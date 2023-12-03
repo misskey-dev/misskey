@@ -1172,7 +1172,7 @@ export interface Locale {
     "cwNotationRequired": string;
     "doReaction": string;
     "code": string;
-    "tryReloadIfNotApplied": string;
+    "reloadRequiredToApplySettings": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
