@@ -293,6 +293,11 @@ type AdminUpdateUserNoteRequest = operations['admin/update-user-note']['requestB
 type Announcement = components['schemas']['Announcement'];
 
 // @public (undocumented)
+type AnnouncementCreated = {
+    announcement: Announcement;
+};
+
+// @public (undocumented)
 type AnnouncementsRequest = operations['announcements']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -488,9 +493,7 @@ export type Channels = {
             unreadAntenna: (payload: Antenna) => void;
             readAllAnnouncements: () => void;
             myTokenRegenerated: () => void;
-            reversiNoInvites: () => void;
-            reversiInvited: (payload: FIXME) => void;
-            signin: (payload: FIXME) => void;
+            signin: (payload: Signin) => void;
             registryUpdated: (payload: {
                 scope?: string[];
                 key: string;
@@ -498,41 +501,116 @@ export type Channels = {
             }) => void;
             driveFileCreated: (payload: DriveFile) => void;
             readAntenna: (payload: Antenna) => void;
+            receiveFollowRequest: (payload: User) => void;
+            announcementCreated: (payload: AnnouncementCreated) => void;
         };
         receives: null;
     };
     homeTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     localTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     hybridTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     globalTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    userList: {
+        params: {
+            listId: string;
+            withFiles?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    hashtag: {
+        params: {
+            q?: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    roleTimeline: {
+        params: {
+            roleId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    antenna: {
+        params: {
+            antennaId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    channel: {
+        params: {
+            channelId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    drive: {
+        params: null;
+        events: {
+            fileCreated: (payload: DriveFile) => void;
+            fileDeleted: (payload: DriveFile['id']) => void;
+            fileUpdated: (payload: DriveFile) => void;
+            folderCreated: (payload: DriveFolder) => void;
+            folderDeleted: (payload: DriveFolder['id']) => void;
+            folderUpdated: (payload: DriveFile) => void;
         };
         receives: null;
     };
     serverStats: {
         params: null;
         events: {
-            stats: (payload: FIXME) => void;
+            stats: (payload: ServerStats) => void;
+            statsLog: (payload: ServerStatsLog) => void;
         };
         receives: {
             requestLog: {
@@ -544,7 +622,8 @@ export type Channels = {
     queueStats: {
         params: null;
         events: {
-            stats: (payload: FIXME) => void;
+            stats: (payload: QueueStats) => void;
+            statsLog: (payload: QueueStatsLog) => void;
         };
         receives: {
             requestLog: {
@@ -552,6 +631,18 @@ export type Channels = {
                 length: number;
             };
         };
+    };
+    admin: {
+        params: null;
+        events: {
+            newAbuseUserReport: {
+                id: string;
+                targetUserId: string;
+                reporterId: string;
+                comment: string;
+            };
+        };
+        receives: null;
     };
 };
 
@@ -847,6 +938,16 @@ type EmailAddressAvailableRequest = operations['email-address/available']['reque
 type EmailAddressAvailableResponse = operations['email-address/available']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type EmojiAdded = {
+    emoji: EmojiDetailed;
+};
+
+// @public (undocumented)
+type EmojiDeleted = {
+    emojis: EmojiDetailed[];
+};
+
+// @public (undocumented)
 type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
@@ -860,6 +961,11 @@ type EmojiSimple = components['schemas']['EmojiSimple'];
 
 // @public (undocumented)
 type EmojisResponse = operations['emojis']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiUpdated = {
+    emojis: EmojiDetailed[];
+};
 
 // @public (undocumented)
 type EmptyRequest = Record<string, unknown> | undefined;
@@ -902,6 +1008,14 @@ declare namespace entities {
         DateString,
         PageEvent,
         ModerationLog,
+        ServerStats,
+        ServerStatsLog,
+        QueueStats,
+        QueueStatsLog,
+        EmojiAdded,
+        EmojiUpdated,
+        EmojiDeleted,
+        AnnouncementCreated,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -1404,7 +1518,8 @@ declare namespace entities {
         GalleryPost,
         EmojiSimple,
         EmojiDetailed,
-        Flash
+        Flash,
+        Signin
     }
 }
 export { entities }
@@ -2155,6 +2270,25 @@ type PromoReadRequest = operations['promo/read']['requestBody']['content']['appl
 type QueueCount = components['schemas']['QueueCount'];
 
 // @public (undocumented)
+type QueueStats = {
+    deliver: {
+        activeSincePrevTick: number;
+        active: number;
+        waiting: number;
+        delayed: number;
+    };
+    inbox: {
+        activeSincePrevTick: number;
+        active: number;
+        waiting: number;
+        delayed: number;
+    };
+};
+
+// @public (undocumented)
+type QueueStatsLog = string[];
+
+// @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2189,6 +2323,29 @@ type RolesShowRequest = operations['roles/show']['requestBody']['content']['appl
 
 // @public (undocumented)
 type RolesUsersRequest = operations['roles/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ServerStats = {
+    cpu: number;
+    mem: {
+        used: number;
+        active: number;
+    };
+    net: {
+        rx: number;
+        tx: number;
+    };
+    fs: {
+        r: number;
+        w: number;
+    };
+};
+
+// @public (undocumented)
+type ServerStatsLog = string[];
+
+// @public (undocumented)
+type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
@@ -2448,8 +2605,7 @@ type UsersUpdateMemoRequest = operations['users/update-memo']['requestBody']['co
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:24:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:31:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
+// src/entities.ts:25:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

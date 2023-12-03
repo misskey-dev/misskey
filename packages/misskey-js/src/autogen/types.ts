@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.11.1
- * generatedAt: 2023-11-27T02:24:44.994Z
+ * version: 2023.12.0-beta.1
+ * generatedAt: 2023-12-03T02:04:44.864Z
  */
 
 /**
@@ -3388,6 +3388,7 @@ export type components = {
       uri?: string;
       url?: string;
       reactionAndUserPairCache?: string[];
+      clippedCount?: number;
       myReaction?: Record<string, unknown> | null;
     };
     NoteReaction: {
@@ -3785,6 +3786,14 @@ export type components = {
       script: string;
       likedCount: number | null;
       isLiked?: boolean;
+    };
+    Signin: {
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      ip: string;
+      headers: Record<string, never>;
+      success: boolean;
     };
   };
   responses: never;
@@ -6405,10 +6414,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-              /** @example GR6S02ERUA5VR */
-              code: string;
-            }[];
+          'application/json': components['schemas']['InviteCode'][];
         };
       };
       /** @description Client error */
@@ -6471,7 +6477,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>[];
+          'application/json': components['schemas']['InviteCode'][];
         };
       };
       /** @description Client error */
@@ -9600,6 +9606,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
         };
       };
     };
@@ -15893,10 +15901,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-            /** @example GR6S02ERUA5VR */
-            code: string;
-          };
+          'application/json': components['schemas']['InviteCode'];
         };
       };
       /** @description Client error */
@@ -17349,6 +17354,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -17419,14 +17426,14 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
-          /** @default false */
-          excludeNsfw?: boolean;
           /** @default 10 */
           limit?: number;
           /** Format: misskey:id */
           sinceId?: string;
           /** Format: misskey:id */
           untilId?: string;
+          /** @default false */
+          allowPartial?: boolean;
           sinceDate?: number;
           untilDate?: number;
         };
@@ -18317,6 +18324,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -18502,6 +18511,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -20799,6 +20810,7 @@ export type operations = {
           username?: string;
           /** @description The local host is represented with `null`. */
           host?: string | null;
+          birthday?: string | null;
         };
       };
     };
@@ -21704,9 +21716,9 @@ export type operations = {
           sinceDate?: number;
           untilDate?: number;
           /** @default false */
-          withFiles?: boolean;
+          allowPartial?: boolean;
           /** @default false */
-          excludeNsfw?: boolean;
+          withFiles?: boolean;
         };
       };
     };
