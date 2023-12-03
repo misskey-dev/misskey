@@ -70,7 +70,6 @@ export class FanoutTimelineEndpointService {
 			const redisTimeline: MiNote[] = [];
 			let readFromRedis = 0;
 			let lastSuccessfulRate = 1; // rateをキャッシュする？
-			let trialCount = 1;
 
 			while ((redisResultIds.length - readFromRedis) !== 0) {
 				const remainingToRead = ps.limit - redisTimeline.length;
@@ -85,8 +84,6 @@ export class FanoutTimelineEndpointService {
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
-				console.log(`fanoutTimelineTrial#${trialCount++}: req: ${ps.limit}, tried: ${noteIds.length}, got: ${gotFromDb.length}, rate: ${lastSuccessfulRate}, total: ${redisTimeline.length}, fromRedis: ${redisResultIds.length}`);
-
 				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
 					// 十分Redisからとれた
 					return redisTimeline.slice(0, ps.limit);
@@ -97,7 +94,6 @@ export class FanoutTimelineEndpointService {
 			const remainingToRead = ps.limit - redisTimeline.length;
 			const gotFromDb = await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, remainingToRead);
 			redisTimeline.push(...gotFromDb);
-			console.log(`fanoutTimelineTrial#db: req: ${ps.limit}, tried: ${remainingToRead}, got: ${gotFromDb.length}, since: ${noteIds[noteIds.length - 1]}, until: ${ps.untilId}, total: ${redisTimeline.length}`);
 			return redisTimeline;
 		}
 
