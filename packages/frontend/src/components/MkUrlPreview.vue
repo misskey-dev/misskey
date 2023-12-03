@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail" :class="$style.thumbnail" :style="defaultStore.state.enableDataSaverMode ? '' : `background-image: url('${thumbnail}')`">
+		<div v-if="thumbnail" :class="$style.thumbnail" :style="defaultStore.state.dataSaver.urlPreview ? '' : `background-image: url('${thumbnail}')`">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
