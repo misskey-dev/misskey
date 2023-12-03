@@ -311,6 +311,7 @@ folderName: "Nome della cartella"
 createFolder: "Nuova cartella"
 renameFolder: "Rinomina cartella"
 deleteFolder: "Elimina cartella"
+folder: "Cartella"
 addFile: "Allega"
 emptyDrive: "Il Drive è vuoto"
 emptyFolder: "La cartella è vuota"
@@ -1026,6 +1027,8 @@ resetPasswordConfirm: "Vuoi davvero ripristinare la password?"
 sensitiveWords: "Parole esplicite"
 sensitiveWordsDescription: "Imposta automaticamente \"Home\" alla visibilità delle Note che contengono una qualsiasi parola tra queste configurate. Puoi separarle per riga."
 sensitiveWordsDescription2: "Gli spazi creano la relazione \"E\" tra parole (questo E quello). Racchiudere una parola nelle slash \"/\" la trasforma in Espressione Regolare."
+hiddenTags: "Hashtag nascosti"
+hiddenTagsDescription: "Impedire la visualizzazione del tag impostato nei trend. Puoi impostare più valori, uno per riga."
 notesSearchNotAvailable: "Non è possibile cercare tra le Note."
 license: "Licenza"
 unfavoriteConfirm: "Vuoi davvero rimuovere la preferenza?"
@@ -1165,6 +1168,8 @@ useGroupedNotifications: "Mostra le notifiche raggruppate"
 signupPendingError: "Si è verificato un problema durante la verifica del tuo indirizzo email. Potrebbe essere scaduto il collegamento temporaneo."
 cwNotationRequired: "Devi indicare perché il contenuto è indicato come esplicito."
 doReaction: "Reagisci"
+code: "Codice"
+reloadRequiredToApplySettings: "Per applicare le impostazioni, occorre ricaricare."
 _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
@@ -1969,6 +1974,7 @@ _widgets:
   _userList:
     chooseList: "Seleziona una lista"
   clicker: "Cliccaggio"
+  birthdayFollowings: "Chi nacque oggi"
 _cw:
   hide: "Nascondere"
   show: "Continua la lettura..."
@@ -2318,3 +2324,15 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "Impossibile installare la variazione grafica"
       description: "Si è verificato un impedimento durante l'installazione della variazione grafica. Per favore riprova e consulta la console di Javascript per ottenere dettagli aggiuntivi."
+_dataSaver:
+  _media:
+    title: "Caricamento dei media"
+    description: "Impedire il caricamento automatico di immagini e video. Devi toccare le immagini o i video nascosti per caricarli."
+  _avatar:
+    title: "Immagine del profilo"
+    description: "Impedire l'animazione per l'immagine del profilo. Le immagini animate possono avere dimensioni file maggiori rispetto a quelle normali, puoi ridurre ulteriormente l'utilizzo dei dati."
+  _urlPreview:
+    title: "Anteprime delle URL"
+    description: "Impedire il caricamento delle anteprime URL."
+  _code:
+    title: "Codice evidenziato"
