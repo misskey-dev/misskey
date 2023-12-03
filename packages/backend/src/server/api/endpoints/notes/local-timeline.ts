@@ -116,8 +116,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				allowPartial: ps.allowPartial,
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
-				redisTimelines: ps.withFiles ? ['localTimelineWithFiles'] : ps.withReplies ? ['localTimeline', 'localTimelineWithReplies'] : ['localTimeline'],
+				redisTimelines: ps.withFiles ? ['localTimelineWithFiles'] : ['localTimeline', 'localTimelineWithReplies'],
 				alwaysIncludeMyNotes: true,
+				excludeReplies: !ps.withReplies,
 				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
