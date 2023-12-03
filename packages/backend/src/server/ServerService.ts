@@ -119,8 +119,8 @@ export class ServerService implements OnApplicationShutdown {
 				return;
 			}
 
-			const name = path.split('@')[0].replace('.webp', '');
-			const host = path.split('@')[1]?.replace('.webp', '');
+			const name = path.split('@')[0].replace(/\.webp$/i, '');
+			const host = path.split('@')[1]?.replace(/\.webp$/i, '');
 
 			const emoji = await this.emojisRepository.findOneBy({
 				// `@.` is the spec of ReactionService.decodeReaction
