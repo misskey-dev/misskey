@@ -114,6 +114,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimelines,
 				useDbFallback: true,
 				noteFilter: note => {
+					if (ps.withFiles && note.fileIds.length === 0) {
+						return false;
+					}
 					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 					if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;
 

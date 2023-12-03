@@ -18,6 +18,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -124,10 +125,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userIdsWhoMeMuting,
 				userIdsWhoMeMutingRenotes,
 				userIdsWhoBlockingMe,
+				userMutedInstances,
 			] = await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.renoteMutingsCache.fetch(me.id),
 				this.cacheService.userBlockedCache.fetch(me.id),
+				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
 			]);
 
 			const timeline = await this.fanoutTimelineEndpointService.timeline({
@@ -150,6 +153,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							if (ps.withRenotes === false) return false;
 						}
 					}
+					if (isInstanceMuted(note, userMutedInstances)) return false;
 
 					return true;
 				},
