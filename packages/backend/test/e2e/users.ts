@@ -815,7 +815,7 @@ describe('ユーザー', () => {
 	});
 	test.each([
 		{ label: '「見つけやすくする」がOFFのユーザーが含まれる', user: (): User => userNotExplorable },
-		{ label: 'ミュートユーザーが含まれる', user: (): User => userMutedByAlice },
+		{ label: 'ミュートユーザーが含まれない', user: (): User => userMutedByAlice, excluded: true },
 		{ label: 'ブロックされているユーザーが含まれる', user: (): User => userBlockedByAlice },
 		{ label: 'ブロックしてきているユーザーが含まれない', user: (): User => userBlockingAlice, excluded: true },
 		{ label: '承認制ユーザーが含まれる', user: (): User => userLocking },
