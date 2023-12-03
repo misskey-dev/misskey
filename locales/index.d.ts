@@ -1171,6 +1171,8 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "translateLanguage": string;
+    "useUILanguageAsTranslateLanguage": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
