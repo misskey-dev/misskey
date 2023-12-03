@@ -47,7 +47,7 @@ const props = defineProps<{
 	refreshIntervalSec?: number;
 }>();
 
-const instances = ref<Misskey.entities.Instance[]>([]);
+const instances = ref<Misskey.entities.FederationInstance[]>([]);
 const fetching = ref(true);
 let key = $ref(0);
 

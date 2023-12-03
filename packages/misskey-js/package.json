@@ -13,7 +13,8 @@
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"jest": "jest --coverage --detectOpenHandles",
-		"test": "pnpm jest && pnpm tsd"
+		"test": "pnpm jest && pnpm tsd",
+		"update-autogen-code": "pnpm --filter misskey-js-type-generator generate && ncp generator/built/autogen src/autogen"
 	},
 	"repository": {
 		"type": "git",
@@ -32,7 +33,8 @@
 		"jest-websocket-mock": "2.5.0",
 		"mock-socket": "9.3.1",
 		"tsd": "0.29.0",
-		"typescript": "5.3.2"
+		"typescript": "5.3.2",
+		"ncp": "2.0.0"
 	},
 	"files": [
 		"built"
