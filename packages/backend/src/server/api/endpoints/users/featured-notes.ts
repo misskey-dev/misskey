@@ -9,7 +9,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
-import { QueryService } from '@/core/QueryService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -47,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
-		private queryService: QueryService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let noteIds = await this.featuredService.getPerUserNotesRanking(ps.userId, 50);
@@ -62,6 +63,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>()];
+
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
@@ -71,13 +80,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			this.queryService.generateVisibilityQuery(query, me);
-			if (me) {
-				// Featuredなノートはauthorのノートしか含まれないのでミュートのフィルターは必要なし
-				this.queryService.generateBlockedUserQuery(query, me);
-			}
+			const notes = (await query.getMany()).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
-			const notes = await query.getMany();
+				return true;
+			});
+
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 
 			return await this.noteEntityService.packMany(notes, me);
