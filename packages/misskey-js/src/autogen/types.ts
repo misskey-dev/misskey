@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.0-beta.1
- * generatedAt: 2023-12-03T02:04:44.864Z
+ * generatedAt: 2023-12-04T05:05:14.780Z
  */
 
 /**
@@ -3218,7 +3218,8 @@ export type components = {
       isBlocked?: boolean;
       isMuted?: boolean;
       isRenoteMuted?: boolean;
-      notify?: string;
+      /** @enum {string} */
+      notify?: 'normal' | 'none';
       withReplies?: boolean;
     };
     MeDetailedOnly: {
@@ -3287,7 +3288,12 @@ export type components = {
       };
       email?: string | null;
       emailVerified?: boolean | null;
-      securityKeysList?: Record<string, never>[];
+      securityKeysList?: {
+          id: string;
+          name: string;
+          /** Format: date-time */
+          lastUsed: string;
+        }[];
     };
     UserDetailedNotMe: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'];
     MeDetailed: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'] & components['schemas']['MeDetailedOnly'];

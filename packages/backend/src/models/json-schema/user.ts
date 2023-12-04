@@ -698,6 +698,23 @@ export const packedMeDetailedOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
+				properties: {
+					id: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'id',
+						example: 'xxxxxxxxxx',
+					},
+					name: {
+						type: 'string',
+						nullable: false, optional: false,
+					},
+					lastUsed: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'date-time',
+					},
+				},
 			},
 		},
 		//#endregion
