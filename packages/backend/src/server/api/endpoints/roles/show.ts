@@ -22,6 +22,12 @@ export const meta = {
 			id: 'de5502bf-009a-4639-86c1-fec349e46dcb',
 		},
 	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Role',
+	},
 } as const;
 
 export const paramDef = {
