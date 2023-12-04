@@ -12,7 +12,7 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 
-const meta = ref<Misskey.entities.DetailedInstanceMetadata>();
+const meta = ref<Misskey.entities.MetaResponse>();
 
 os.api('meta', { detail: true }).then(gotMeta => {
 	meta.value = gotMeta;

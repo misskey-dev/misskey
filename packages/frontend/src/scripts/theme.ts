@@ -44,10 +44,10 @@ export const getBuiltinThemes = () => Promise.all(
 		'd-cherry',
 		'd-ice',
 		'd-u0',
-		
+
 		'n-light',
 		'n-dark',
-	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
+	].map(name => import(`@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
 export const getBuiltinThemesRef = () => {

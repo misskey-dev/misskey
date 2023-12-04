@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.12.0-beta.1",
+	"version": "2023.12.0-beta.2",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -18,6 +18,7 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-misskey-js-with-types": "pnpm --filter backend build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
@@ -47,17 +48,18 @@
 		"execa": "8.0.1",
 		"cssnano": "6.0.1",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.31",
+		"postcss": "8.4.32",
 		"terser": "5.24.0",
 		"typescript": "5.3.2"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.12.0",
-		"@typescript-eslint/parser": "6.12.0",
+		"@typescript-eslint/eslint-plugin": "6.13.1",
+		"@typescript-eslint/parser": "6.13.1",
 		"cross-env": "7.0.3",
 		"cypress": "13.6.0",
-		"eslint": "8.54.0",
-		"start-server-and-test": "2.0.3"
+		"eslint": "8.55.0",
+		"start-server-and-test": "2.0.3",
+		"ncp": "2.0.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"

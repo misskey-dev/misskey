@@ -19,6 +19,7 @@ import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js
 import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
+import { emojiPicker } from '@/scripts/emoji-picker.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -30,6 +31,7 @@ export async function mainBoot() {
 	));
 
 	reactionPicker.init();
+	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
 		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
