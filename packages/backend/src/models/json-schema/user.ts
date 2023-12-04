@@ -9,11 +9,11 @@ const notificationRecieveConfig = {
 	properties: {
 		type: {
 			type: 'string',
-			enum: ['all', 'following', 'follower', 'mutualFollow', 'list', 'never'],
 			nullable: false, optional: false,
+			enum: ['all', 'following', 'follower', 'mutualFollow', 'list', 'never'],
 		},
 	},
-};
+} as const;
 
 export const packedUserLiteSchema = {
 	type: 'object',
