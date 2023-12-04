@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.0-beta.1
- * generatedAt: 2023-12-04T07:13:58.538Z
+ * generatedAt: 2023-12-04T11:17:52.154Z
  */
 
 import { operations } from './types.js';
@@ -89,8 +89,11 @@ export type AdminDeleteAccountRequest = operations['admin/delete-account']['requ
 export type AdminDeleteAccountResponse = operations['admin/delete-account']['responses']['200']['content']['application/json'];
 export type AdminUpdateUserNoteRequest = operations['admin/update-user-note']['requestBody']['content']['application/json'];
 export type AdminRolesCreateRequest = operations['admin/roles/create']['requestBody']['content']['application/json'];
+export type AdminRolesCreateResponse = operations['admin/roles/create']['responses']['200']['content']['application/json'];
 export type AdminRolesDeleteRequest = operations['admin/roles/delete']['requestBody']['content']['application/json'];
+export type AdminRolesListResponse = operations['admin/roles/list']['responses']['200']['content']['application/json'];
 export type AdminRolesShowRequest = operations['admin/roles/show']['requestBody']['content']['application/json'];
+export type AdminRolesShowResponse = operations['admin/roles/show']['responses']['200']['content']['application/json'];
 export type AdminRolesUpdateRequest = operations['admin/roles/update']['requestBody']['content']['application/json'];
 export type AdminRolesAssignRequest = operations['admin/roles/assign']['requestBody']['content']['application/json'];
 export type AdminRolesUnassignRequest = operations['admin/roles/unassign']['requestBody']['content']['application/json'];
@@ -404,7 +407,9 @@ export type FlashMyLikesResponse = operations['flash/my-likes']['responses']['20
 export type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
 export type PinnedUsersResponse = operations['pinned-users']['responses']['200']['content']['application/json'];
 export type PromoReadRequest = operations['promo/read']['requestBody']['content']['application/json'];
+export type RolesListResponse = operations['roles/list']['responses']['200']['content']['application/json'];
 export type RolesShowRequest = operations['roles/show']['requestBody']['content']['application/json'];
+export type RolesShowResponse = operations['roles/show']['responses']['200']['content']['application/json'];
 export type RolesUsersRequest = operations['roles/users']['requestBody']['content']['application/json'];
 export type RolesNotesRequest = operations['roles/notes']['requestBody']['content']['application/json'];
 export type RolesNotesResponse = operations['roles/notes']['responses']['200']['content']['application/json'];
