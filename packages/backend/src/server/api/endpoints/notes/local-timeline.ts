@@ -42,7 +42,7 @@ export const meta = {
 		bothWithRepliesAndWithFiles: {
 			message: 'Specifying both withReplies and withFiles is not supported',
 			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
-			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793'
+			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793',
 		},
 	},
 } as const;
@@ -116,9 +116,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				allowPartial: ps.allowPartial,
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
-				redisTimelines: ps.withFiles ? ['localTimelineWithFiles'] : ['localTimeline', 'localTimelineWithReplies'],
+				redisTimelines:
+					ps.withFiles ? ['localTimelineWithFiles']
+					: ps.withReplies ? ['localTimeline', 'localTimelineWithReplies']
+					: me ? ['localTimeline', `localTimelineWithReplyTo:${me.id}`]
+					: ['localTimeline'],
 				alwaysIncludeMyNotes: true,
-				excludeReplies: !ps.withReplies,
 				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
