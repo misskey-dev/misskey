@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiNote, NotesRepository } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -13,7 +13,6 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
@@ -38,6 +37,12 @@ export const meta = {
 			message: 'Local timeline has been disabled.',
 			code: 'LTL_DISABLED',
 			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd',
+		},
+
+		bothWithRepliesAndWithFiles: {
+			message: 'Specifying both withReplies and withFiles is not supported',
+			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
+			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793',
 		},
 	},
 } as const;
@@ -82,6 +87,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.ltlDisabled);
 			}
 
+			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
+
 			const serverSettings = await this.metaService.fetch();
 
 			if (!serverSettings.enableFanoutTimeline) {
@@ -102,16 +109,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(timeline, me);
 			}
 
-			const [
-				userIdsWhoMeMuting,
-				userIdsWhoMeMutingRenotes,
-				userIdsWhoBlockingMe,
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.renoteMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
-
 			const timeline = await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
@@ -119,23 +116,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				allowPartial: ps.allowPartial,
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
-				redisTimelines: ps.withFiles ? ['localTimelineWithFiles'] : ['localTimeline', 'localTimelineWithReplies'],
-				noteFilter: note => {
-					if (me && (note.userId === me.id)) {
-						return true;
-					}
-					if (!ps.withReplies && note.replyId && note.replyUserId !== note.userId && (me == null || note.replyUserId !== me.id)) return false;
-					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (me && isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-							if (ps.withRenotes === false) return false;
-						}
-					}
-
-					return true;
-				},
+				redisTimelines:
+					ps.withFiles ? ['localTimelineWithFiles']
+					: ps.withReplies ? ['localTimeline', 'localTimelineWithReplies']
+					: me ? ['localTimeline', `localTimelineWithReplyTo:${me.id}`]
+					: ['localTimeline'],
+				alwaysIncludeMyNotes: true,
+				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
 					sinceId,

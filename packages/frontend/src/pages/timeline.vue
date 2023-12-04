@@ -157,17 +157,17 @@ const headerActions = computed(() => {
 				os.popupMenu([{
 					type: 'switch',
 					text: i18n.ts.showRenotes,
-					icon: 'ti ti-repeat',
 					ref: withRenotes,
 				}, src.value === 'local' || src.value === 'social' ? {
 					type: 'switch',
 					text: i18n.ts.showRepliesToOthersInTimeline,
 					ref: withReplies,
+					disabled: onlyFiles,
 				} : undefined, {
 					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
-					icon: 'ti ti-photo',
 					ref: onlyFiles,
+					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
 				}], ev.currentTarget ?? ev.target);
 			},
 		},
