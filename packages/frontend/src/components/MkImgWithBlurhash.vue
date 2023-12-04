@@ -21,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { $ref } from 'vue/macros';
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
 import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch.js';
