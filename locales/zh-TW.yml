@@ -1168,6 +1168,8 @@ useGroupedNotifications: "分組顯示通知訊息"
 signupPendingError: "驗證您的電子郵件地址時出現問題。連結可能已過期。"
 cwNotationRequired: "如果開啟「隱藏內容」，則需要註解說明。"
 doReaction: "做出反應"
+code: "程式碼"
+reloadRequiredToApplySettings: "需要重新載入頁面設定才能生效。"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
@@ -2322,3 +2324,16 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "無法安裝佈景主題"
       description: "安裝佈景主題時出現問題。請再試一次。請參閱 Javascript 控制台以取得錯誤詳細資訊。"
+_dataSaver:
+  _media:
+    title: "載入媒體檔案"
+    description: "防止自動載入圖片和影片。點擊隱藏的圖片/影片即可載入。"
+  _avatar:
+    title: "大頭貼"
+    description: "停止顯示大頭貼的動畫。由於動畫圖片的檔案大小可能比普通圖片大，這可以進一步減少資料流量。"
+  _urlPreview:
+    title: "網址預覽縮圖"
+    description: "將不再自動載入網址預覽縮圖。"
+  _code:
+    title: "程式碼突出顯示"
+    description: "如果使用了 MFM 的程式碼突顯標記，則在點擊之前不會載入。程式碼突顯要求加載每種程式語言的突顯定義檔案，但由於這些檔案不再自動載入，因此有望減少資料流量。"
