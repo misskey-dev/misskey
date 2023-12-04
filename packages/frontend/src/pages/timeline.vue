@@ -158,6 +158,7 @@ const headerActions = $computed(() => {
 					type: 'switch',
 					text: i18n.ts.showRenotes,
 					ref: $$(withRenotes),
+					disabled: false,
 				}, src === 'local' || src === 'social' ? {
 					type: 'switch',
 					text: i18n.ts.showRepliesToOthersInTimeline,
