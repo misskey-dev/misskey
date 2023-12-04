@@ -398,6 +398,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 		notify: {
 			type: 'string',
 			nullable: false, optional: true,
+			enum: ['normal', 'none'],
 		},
 		withReplies: {
 			type: 'boolean',
