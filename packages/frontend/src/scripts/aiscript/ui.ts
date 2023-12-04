@@ -121,6 +121,7 @@ export type AsUiPostFormButton = AsUiComponentBase & {
 	rounded?: boolean;
 	form?: {
 		text: string;
+		cw?: string;
 	};
 };
 
@@ -128,6 +129,7 @@ export type AsUiPostForm = AsUiComponentBase & {
 	type: 'postForm';
 	form?: {
 		text: string;
+		cw?: string;
 	};
 };
 
@@ -454,8 +456,11 @@ function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: valu
 	const getForm = () => {
 		const text = form!.value.get('text');
 		utils.assertString(text);
+		const cw = form!.value.get('cw');
+		if (cw) utils.assertString(cw);
 		return {
 			text: text.value,
+			cw: cw?.value,
 		};
 	};
 
@@ -478,8 +483,11 @@ function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn
 	const getForm = () => {
 		const text = form!.value.get('text');
 		utils.assertString(text);
+		const cw = form!.value.get('cw');
+		if (cw) utils.assertString(cw);
 		return {
 			text: text.value,
+			cw: cw?.value,
 		};
 	};
 
