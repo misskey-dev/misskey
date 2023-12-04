@@ -3,6 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+const notificationRecieveConfig = {
+	type: 'object',
+	nullable: false, optional: true,
+	properties: {
+		type: {
+			type: 'string',
+			enum: ['all', 'following', 'follower', 'mutualFollow', 'list', 'never'],
+			nullable: false, optional: false,
+		},
+	},
+};
+
 export const packedUserLiteSchema = {
 	type: 'object',
 	properties: {
@@ -554,6 +566,19 @@ export const packedMeDetailedOnlySchema = {
 		notificationRecieveConfig: {
 			type: 'object',
 			nullable: false, optional: false,
+			properties: {
+				app: notificationRecieveConfig,
+				quote: notificationRecieveConfig,
+				reply: notificationRecieveConfig,
+				follow: notificationRecieveConfig,
+				renote: notificationRecieveConfig,
+				mention: notificationRecieveConfig,
+				reaction: notificationRecieveConfig,
+				pollEnded: notificationRecieveConfig,
+				achievementEarned: notificationRecieveConfig,
+				receiveFollowRequest: notificationRecieveConfig,
+				followRequestAccepted: notificationRecieveConfig,
+			},
 		},
 		emailNotificationTypes: {
 			type: 'array',
