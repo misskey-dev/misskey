@@ -107,6 +107,10 @@ export class AntennaService implements OnApplicationShutdown {
 	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
+		if (note.channelId != null) console.warn('Note with channel is not supported yet.');
+		if (note.channelId != null) return false;
+		if (note.channel != null) console.warn('Note with channel is not supported yet.');
+		if (note.channel != null) return false;
 
 		if (antenna.localOnly && noteUser.host != null) return false;
 
