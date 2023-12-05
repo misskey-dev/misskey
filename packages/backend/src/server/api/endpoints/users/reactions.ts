@@ -4,12 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, NoteReactionsRepository } from '@/models/_.js';
+import type { UserProfilesRepository, NotesRepository, NoteReactionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { MiNoteReaction } from "@/models/_.js";
 
 export const meta = {
 	tags: ['users', 'reactions'],
@@ -56,6 +57,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
@@ -69,16 +73,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.reactionsNotPublic);
 			}
 
-			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'),
-				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('reaction.userId = :userId', { userId: ps.userId })
-				.leftJoinAndSelect('reaction.note', 'note');
+			const query = this.notesRepository.createQueryBuilder('note')
+				.innerJoinAndSelect(qb =>
+					this.queryService.makePaginationQuery(
+						qb
+							.from(this.noteReactionsRepository.metadata.targetName, 'reaction')
+							.where('"reaction"."userId" = :userId', { userId: ps.userId }),
+						ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate
+					),
+					'reaction',
+					'"reaction"."noteId" = note.id'
+				);
 
 			this.queryService.generateVisibilityQuery(query, me);
 
 			const reactions = await query
 				.limit(ps.limit)
-				.getMany();
+				.getRawMany<MiNoteReaction>();
 
 			return await this.noteReactionEntityService.packMany(reactions, me, { withNote: true });
 		});
