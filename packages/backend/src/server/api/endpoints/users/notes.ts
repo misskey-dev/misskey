@@ -10,7 +10,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import { IdService } from '@/core/IdService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -101,13 +100,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(timeline, me);
 			}
 
-			const [
-				userIdsWhoMeMuting, userIdsWhoBlockingMe
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-			]) : [new Set<string>(), new Set<string>()];
-
 			const redisTimelines: FanoutTimelineName[] = [ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`];
 
 			if (ps.withReplies) redisTimelines.push(`userTimelineWithReplies:${ps.userId}`);
@@ -128,18 +120,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludeNoFiles: ps.withChannelNotes && ps.withFiles, // userTimelineWithChannel may include notes without files
 				excludePureRenotes: !ps.withRenotes,
 				noteFilter: note => {
-					if (ps.withFiles && note.fileIds.length === 0) {
-						return false;
-					}
-					if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
-					if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;
-
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (ps.withRenotes === false) return false;
-						}
-					}
-
 					if (note.channel?.isSensitive && !isSelf) return false;
 					if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
 					if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
