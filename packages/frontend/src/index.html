@@ -13,16 +13,12 @@
 		content="default-src 'self';
 		  script-src 'self';
 		  style-src 'self' 'unsafe-inline';
-		  img-src 'self' data: www.google.com xn--931a.moe  127.0.0.1:5173 127.0.0.1:3000"
+		  img-src 'self' data: www.google.com xn--931a.moe localhost:3000 localhost:5137 127.0.0.1:5173 127.0.0.1:3000"
 	/>
-
-	<link rel="stylesheet" href="@tabler/icons-webfont/tabler-icons.css">
-	<link rel="stylesheet" href="./style.scss" />
-
 </head>
 
 <body>
 <div id="app"></div>
-<script type="module" src="./_boot_.ts"></script>
+<script type="module" src="./_dev_boot_.ts"></script>
 </body>
 </html>
