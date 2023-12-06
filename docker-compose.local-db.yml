@@ -37,8 +37,6 @@ services:
 #      - MEILI_ENV=production
 #    env_file:
 #      - .config/meilisearch.env
-#    networks:
-#      - internal_network
 #    volumes:
 #      - ./meili_data:/meili_data
 
