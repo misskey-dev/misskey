@@ -1821,6 +1821,7 @@ _sfx:
   notification: "Notifications"
   antenna: "Antennas"
   channel: "Channel notifications"
+  reaction: "On choosing a reaction"
 _ago:
   future: "Future"
   justNow: "Just now"
@@ -2315,5 +2316,9 @@ _externalResourceInstaller:
       title: "Failed to install theme"
       description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."
 _dataSaver:
+  _avatar:
+    title: "Avatar image"
+    description: "Stop avatar image animation. Animated images can be larger in file size than normal  images, potentially leading to further reductions in data traffic."
   _code:
-    title: "Syntax highlighting"
+    title: "Code highlighting"
+    description: "If code highlighting notations are used in MFM, etc., they will not load until tapped. Syntax highlighting requires downloading the highlight definition files for each programming language. Therefore, disabling the automatic loading of these files is expected to reduce the amount of communication data."
