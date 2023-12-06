@@ -193,7 +193,7 @@ function fetch(resetOffset = false): void {
 	}).then(announcementResponse => {
 		announcements = announcements.concat(announcementResponse);
 		hasMore.value = announcementResponse?.length === 10;
-		offset.value += announcements.length;
+		offset.value += announcementResponse?.length ?? 0;
 	});
 }
 

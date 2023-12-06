@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
 						</div>
 					</div>
-					<div v-if="tab !== 'past' && $i && !announcement.silence && !announcement.isRead" :class="$style.footer">
+					<div v-if="$i && !announcement.silence && !announcement.isRead" :class="$style.footer">
 						<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 					</div>
 				</section>

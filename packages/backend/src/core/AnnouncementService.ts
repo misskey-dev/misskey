@@ -140,6 +140,7 @@ export class AnnouncementService {
 		moderator: MiUser,
 	): Promise<(MiAnnouncement & { userInfo: Packed<'UserLite'> | null, reads: number })[]> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
+
 		if (userId) {
 			query.andWhere('announcement."userId" = :userId', { userId: userId });
 		} else {
@@ -148,7 +149,6 @@ export class AnnouncementService {
 
 		query.orderBy({
 			'announcement."isActive"': 'DESC',
-			'announcement."displayOrder"': 'DESC',
 			'announcement.id': 'DESC',
 		});
 
@@ -259,9 +259,10 @@ export class AnnouncementService {
 		me: MiUser | null,
 		limit: number,
 		offset: number,
-		isActive?: boolean,
+		isActive: boolean,
 	): Promise<Packed<'Announcement'>[]> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
+
 		if (me) {
 			query.leftJoin(
 				MiAnnouncementRead,
@@ -295,17 +296,21 @@ export class AnnouncementService {
 			query.andWhere('announcement."forExistingUsers" = false');
 		}
 
-		if (isActive !== undefined) {
-			query.andWhere('announcement."isActive" = :isActive', {
-				isActive: isActive,
+		query.andWhere('announcement."isActive" = :isActive', {
+			isActive: isActive,
+		});
+
+		if (isActive) {
+			query.orderBy({
+				'"isRead"': 'ASC',
+				'announcement."displayOrder"': 'DESC',
+				'announcement.id': 'DESC',
+			});
+		} else {
+			query.orderBy({
+				'announcement.id': 'DESC',
 			});
 		}
-
-		query.orderBy({
-			'"isRead"': 'ASC',
-			'announcement."displayOrder"': 'DESC',
-			'announcement.id': 'DESC',
-		});
 
 		return this.announcementEntityService.packMany(
 			await query
