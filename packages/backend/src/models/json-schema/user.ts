@@ -329,41 +329,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
-				properties: {
-					id: {
-						type: 'string',
-						nullable: false, optional: false,
-						format: 'id',
-					},
-					name: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					color: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					iconUrl: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					description: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					isModerator: {
-						type: 'boolean',
-						nullable: false, optional: false,
-					},
-					isAdministrator: {
-						type: 'boolean',
-						nullable: false, optional: false,
-					},
-					displayOrder: {
-						type: 'number',
-						nullable: false, optional: false,
-					},
-				},
+				ref: 'RoleLite',
 			},
 		},
 		memo: {

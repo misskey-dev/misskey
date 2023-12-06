@@ -228,10 +228,19 @@ type AdminRolesAssignRequest = operations['admin/roles/assign']['requestBody']['
 type AdminRolesCreateRequest = operations['admin/roles/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesCreateResponse = operations['admin/roles/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminRolesDeleteRequest = operations['admin/roles/delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesListResponse = operations['admin/roles/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminRolesShowRequest = operations['admin/roles/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesShowResponse = operations['admin/roles/show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminRolesUnassignRequest = operations['admin/roles/unassign']['requestBody']['content']['application/json'];
@@ -1099,8 +1108,11 @@ declare namespace entities {
         AdminDeleteAccountResponse,
         AdminUpdateUserNoteRequest,
         AdminRolesCreateRequest,
+        AdminRolesCreateResponse,
         AdminRolesDeleteRequest,
+        AdminRolesListResponse,
         AdminRolesShowRequest,
+        AdminRolesShowResponse,
         AdminRolesUpdateRequest,
         AdminRolesAssignRequest,
         AdminRolesUnassignRequest,
@@ -1414,7 +1426,9 @@ declare namespace entities {
         PingResponse,
         PinnedUsersResponse,
         PromoReadRequest,
+        RolesListResponse,
         RolesShowRequest,
+        RolesShowResponse,
         RolesUsersRequest,
         RolesNotesRequest,
         RolesNotesResponse,
@@ -1519,7 +1533,9 @@ declare namespace entities {
         EmojiSimple,
         EmojiDetailed,
         Flash,
-        Signin
+        Signin,
+        RoleLite,
+        Role
     }
 }
 export { entities }
@@ -2313,6 +2329,15 @@ type ResetPasswordRequest = operations['reset-password']['requestBody']['content
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type Role = components['schemas']['Role'];
+
+// @public (undocumented)
+type RoleLite = components['schemas']['RoleLite'];
+
+// @public (undocumented)
+type RolesListResponse = operations['roles/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type RolesNotesRequest = operations['roles/notes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2320,6 +2345,9 @@ type RolesNotesResponse = operations['roles/notes']['responses']['200']['content
 
 // @public (undocumented)
 type RolesShowRequest = operations['roles/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesShowResponse = operations['roles/show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type RolesUsersRequest = operations['roles/users']['requestBody']['content']['application/json'];
