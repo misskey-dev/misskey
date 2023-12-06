@@ -2314,3 +2314,6 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "Failed to install theme"
       description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."
+_dataSaver:
+  _code:
+    title: "Syntax highlighting"
