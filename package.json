@@ -18,6 +18,7 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-misskey-js-with-types": "pnpm --filter backend build && pnpm --filter backend generate-api-json && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
@@ -57,7 +58,8 @@
 		"cross-env": "7.0.3",
 		"cypress": "13.6.0",
 		"eslint": "8.54.0",
-		"start-server-and-test": "2.0.3"
+		"start-server-and-test": "2.0.3",
+		"ncp": "2.0.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"

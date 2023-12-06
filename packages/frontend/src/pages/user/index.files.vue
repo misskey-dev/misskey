@@ -64,7 +64,6 @@ onMounted(() => {
 	os.api('users/notes', {
 		userId: props.user.id,
 		withFiles: true,
-		excludeNsfw: defaultStore.state.nsfw !== 'ignore',
 		limit: 15,
 	}).then(notes => {
 		for (const note of notes) {

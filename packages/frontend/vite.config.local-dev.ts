@@ -9,6 +9,7 @@ const devConfig = {
 	root: 'src',
 	publicDir: '../assets',
 	base: './',
+	plugins: [...defaultConfig.plugins],
 	server: {
 		host: '127.0.0.1',
 		port: 5173,
@@ -38,11 +39,14 @@ const devConfig = {
 		},
 	},
 	build: {
-		manifest: 'manifest.json',
+		...defaultConfig.build,
 		rollupOptions: {
 			...defaultConfig.build?.rollupOptions,
 			input: 'index.html',
 		},
+	},
+	resolve: {
+		...defaultConfig.resolve,
 	},
 };
 

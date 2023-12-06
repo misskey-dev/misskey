@@ -366,8 +366,8 @@ function checkMissingMention() {
 				return;
 			}
 		}
-		hasNotSpecifiedMentions = false;
 	}
+	hasNotSpecifiedMentions = false;
 }
 
 function addMissingMention() {
@@ -1059,8 +1059,9 @@ defineExpose({
 
 .visibility {
 	overflow: clip;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 210px;
 
 	&:enabled {
 		> .headerRightButtonText {
