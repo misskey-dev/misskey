@@ -1177,6 +1177,9 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Zu viele aktive Ankündigungen können die Benutzerfreundlichkeit verschlechtern. Es wird empfohlen, veraltete Ankündigungen zu archivieren."
   readConfirmTitle: "Als gelesen markieren?"
   readConfirmText: "Dies markiert den Inhalt von \"{title}\" als gelesen."
+  dialogAnnouncementUxWarn: "Bei der Verwendung von mehr als zwei Meldungen im Dialog-Format wird um Vorsicht geboten, da dies negative Auswirkungen auf die UX haben kann."
+  silence: "Keine Benachrichtigung"
+  silenceDescription: "Wenn aktiviert, gibt diese Meldung keine Nachricht aus und muss nicht als \"gelesen\" markiert werden."
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
   letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
@@ -1189,8 +1192,20 @@ _initialAccountSetting:
   pushNotificationDescription: "Durch die Aktivierung von Push-Benachrichtigungen kannst du von {name} Benachrichtigungen direkt auf dein Gerät erhalten."
   initialAccountSettingCompleted: "Kontoeinrichtung abgeschlossen!"
   haveFun: "Viel Spaß mit {name}!"
+  youCanContinueTutorial: "Du kannst mit dem Tutorial von {name}(Misskey) fortfahren, oder auch abbrechen und gleich anfangen Misskey zu benutzen."
+  startTutorial: "Fange mit dem Tutorial an"
   skipAreYouSure: "Die Kontoeinrichtung wirklich überspringen?"
   laterAreYouSure: "Die Kontoeinrichtung wirklich später erledigen?"
+_initialTutorial:
+  launchTutorial: "Tutorial ansehen"
+  title: "Tutorial"
+  wellDone: "Gut gemacht!"
+  skipAreYouSure: "Möchtest du das Tutorial verlassen?"
+  _landing:
+    title: "Willkommen zum Tutorial"
+    description: "Hier kannst du sehen, wie Misskey funktioniert"
+  _note:
+    title: "Was sind Notizen?"
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
 _serverSettings:
