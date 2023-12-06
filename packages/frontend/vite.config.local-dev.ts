@@ -9,7 +9,6 @@ const devConfig = {
 	root: 'src',
 	publicDir: '../assets',
 	base: './',
-	plugins: [...defaultConfig.plugins],
 	server: {
 		host: '127.0.0.1',
 		port: 5173,
@@ -45,11 +44,7 @@ const devConfig = {
 			input: 'index.html',
 		},
 	},
-	resolve: {
-		...defaultConfig.resolve,
-	},
 };
 
-console.log(devConfig);
 export default defineConfig(({ command, mode }) => devConfig);
 
