@@ -1,189 +1,51 @@
-import path from 'path';
-import pluginReplace from '@rollup/plugin-replace';
-import pluginVue from '@vitejs/plugin-vue';
-import { defineConfig, type UserConfig } from 'vite';
-// @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
-import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
+import { defineConfig } from 'vite';
+import { getConfig } from './vite.config.js';
 
-import locales from '../../locales';
-import meta from '../../package.json';
-import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
-import pluginJson5 from './vite.json5';
+const defaultConfig = getConfig();
 
-const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
-
-const hash = (str: string, seed = 0): number => {
-	let h1 = 0xdeadbeef ^ seed,
-		h2 = 0x41c6ce57 ^ seed;
-	for (let i = 0, ch; i < str.length; i++) {
-		ch = str.charCodeAt(i);
-		h1 = Math.imul(h1 ^ ch, 2654435761);
-		h2 = Math.imul(h2 ^ ch, 1597334677);
-	}
-
-	h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-	h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-
-	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+const devConfig = {
+	// 基本の設定は vite.config.js から引き継ぐ
+	...defaultConfig,
+	root: 'src',
+	publicDir: '../assets',
+	base: './',
+	server: {
+		host: '127.0.0.1',
+		port: 5173,
+		proxy: {
+			'/api': {
+				changeOrigin: true,
+				target: 'http://127.0.0.1:3000/',
+			},
+			'/assets': 'http://127.0.0.1:3000/',
+			'/files': 'http://127.0.0.1:3000/',
+			'/twemoji': 'http://127.0.0.1:3000/',
+			'/fluent-emoji': 'http://127.0.0.1:3000/',
+			'/sw.js': 'http://127.0.0.1:3000/',
+			'/streaming': {
+				target: 'ws://127.0.0.1:3000/',
+				ws: true,
+			},
+			'/favicon.ico': 'http://127.0.0.1:3000/',
+			'/identicon': {
+				target: 'http://127.0.0.1:3000/',
+				rewrite(path) {
+					return path.replace('@127.0.0.1:5173', '');
+				},
+			},
+			'/url': 'http://127.0.0.1:3000',
+			'/proxy': 'http://127.0.0.1:3000',
+		},
+	},
+	build: {
+		manifest: 'manifest.json',
+		rollupOptions: {
+			...defaultConfig.build?.rollupOptions,
+			input: 'index.html',
+		},
+	},
 };
 
-const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+console.log(devConfig);
+export default defineConfig(({ command, mode }) => devConfig);
 
-function toBase62(n: number): string {
-	if (n === 0) {
-		return '0';
-	}
-	let result = '';
-	while (n > 0) {
-		result = BASE62_DIGITS[n % BASE62_DIGITS.length] + result;
-		n = Math.floor(n / BASE62_DIGITS.length);
-	}
-
-	return result;
-}
-
-export function getConfig(): UserConfig {
-	return {
-		root: 'src',
-		publicDir: '../assets',
-		base: './',
-		server: {
-			host: '127.0.0.1',
-			port: 5173,
-			proxy: {
-				'/api': {
-					changeOrigin: true,
-					target: 'http://127.0.0.1:3000/',
-				},
-				'/assets': 'http://127.0.0.1:3000/',
-				'/files': 'http://127.0.0.1:3000/',
-				'/twemoji': 'http://127.0.0.1:3000/',
-				'/fluent-emoji': 'http://127.0.0.1:3000/',
-				'/sw.js': 'http://127.0.0.1:3000/',
-				'/streaming': {
-					target: 'ws://127.0.0.1:3000/',
-					ws: true,
-				},
-				'/favicon.ico': 'http://127.0.0.1:3000/',
-				'/identicon': {
-					target: 'http://127.0.0.1:3000/',
-					rewrite(path) {
-						return path.replace('@127.0.0.1:5173', '');
-					},
-
-				},
-				'/url': 'http://127.0.0.1:3000',
-				'/proxy': 'http://127.0.0.1:3000',
-			},
-		},
-
-		plugins: [
-			pluginVue({
-				reactivityTransform: true,
-			}),
-			ReactivityTransform(),
-			pluginUnwindCssModuleClassName(),
-			pluginJson5(),
-			...process.env.NODE_ENV === 'production'
-				? [
-					pluginReplace({
-						preventAssignment: true,
-						values: {
-							'isChromatic()': JSON.stringify(false),
-						},
-					}),
-				]
-				: [],
-		],
-
-		resolve: {
-			extensions,
-			alias: {
-				'@/': __dirname + '/src/',
-				'/client-assets/': __dirname + '/assets/',
-				'/static-assets/': __dirname + '/../backend/assets/',
-				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
-				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
-			},
-		},
-
-		css: {
-			modules: {
-				generateScopedName(name, filename, _css): string {
-					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
-					if (process.env.NODE_ENV === 'production') {
-						return 'x' + toBase62(hash(id)).substring(0, 4);
-					} else {
-						return id;
-					}
-				},
-			},
-		},
-
-		define: {
-			_VERSION_: JSON.stringify(meta.version),
-			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
-			_ENV_: JSON.stringify(process.env.NODE_ENV),
-			_DEV_: process.env.NODE_ENV !== 'production',
-			_PERF_PREFIX_: JSON.stringify('Misskey:'),
-			_DATA_TRANSFER_DRIVE_FILE_: JSON.stringify('mk_drive_file'),
-			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
-			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
-			__VUE_OPTIONS_API__: true,
-			__VUE_PROD_DEVTOOLS__: false,
-		},
-
-		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
-		optimizeDeps: {
-			include: ['misskey-js'],
-		},
-
-		build: {
-			target: [
-				'chrome116',
-				'firefox116',
-				'safari16',
-			],
-			manifest: 'manifest.json',
-			rollupOptions: {
-				output: {
-					manualChunks: {
-						vue: ['vue'],
-						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
-					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
-				},
-			},
-			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_vite_',
-			assetsDir: '.',
-			emptyOutDir: false,
-			sourcemap: process.env.NODE_ENV === 'development',
-			reportCompressedSize: false,
-
-			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
-			commonjsOptions: {
-				include: [/misskey-js/, /node_modules/],
-			},
-		},
-
-		worker: {
-			format: 'es',
-		},
-
-		test: {
-			environment: 'happy-dom',
-			deps: {
-				inline: [
-					// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-					'browser-image-resizer',
-				],
-			},
-		},
-	};
-}
-
-const config = defineConfig(({ command, mode }) => getConfig());
-
-export default config;

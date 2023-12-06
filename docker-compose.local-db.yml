@@ -1,5 +1,7 @@
 version: "3"
 
+# このconfigは、 dockerでMisskey本体を起動せず、 redisとpostgresql などだけを起動します
+
 services:
   redis:
     restart: always
