@@ -38,3 +38,7 @@ export function parseMeidg(id: string): { date: Date; } {
 		date: new Date(parseInt(id.slice(1, 12), 16)),
 	};
 }
+
+export function isSafeMeidgT(t: number): boolean {
+	return t > 0;
+}

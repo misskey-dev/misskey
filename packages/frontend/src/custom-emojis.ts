@@ -10,7 +10,7 @@ import { useStream } from '@/stream.js';
 import { get, set } from '@/scripts/idb-proxy.js';
 
 const storageCache = await get('emojis');
-export const customEmojis = shallowRef<Misskey.entities.CustomEmoji[]>(Array.isArray(storageCache) ? storageCache : []);
+export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);
 export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
 	const categories = new Set<string>();
 	for (const emoji of customEmojis.value) {
@@ -21,7 +21,7 @@ export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
 	return markRaw([...Array.from(categories), null]);
 });
 
-export const customEmojisMap = new Map<string, Misskey.entities.CustomEmoji>();
+export const customEmojisMap = new Map<string, Misskey.entities.EmojiSimple>();
 watch(customEmojis, emojis => {
 	customEmojisMap.clear();
 	for (const emoji of emojis) {
@@ -38,7 +38,7 @@ stream.on('emojiAdded', emojiData => {
 });
 
 stream.on('emojiUpdated', emojiData => {
-	customEmojis.value = customEmojis.value.map(item => emojiData.emojis.find(search => search.name === item.name) as Misskey.entities.CustomEmoji ?? item);
+	customEmojis.value = customEmojis.value.map(item => emojiData.emojis.find(search => search.name === item.name) as Misskey.entities.EmojiSimple ?? item);
 	set('emojis', customEmojis.value);
 });
 
