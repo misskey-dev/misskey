@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.11.1
- * generatedAt: 2023-11-27T02:24:44.994Z
+ * version: 2023.12.0-beta.1
+ * generatedAt: 2023-12-04T07:13:58.362Z
  */
 
 /**
@@ -3218,7 +3218,8 @@ export type components = {
       isBlocked?: boolean;
       isMuted?: boolean;
       isRenoteMuted?: boolean;
-      notify?: string;
+      /** @enum {string} */
+      notify?: 'normal' | 'none';
       withReplies?: boolean;
     };
     MeDetailedOnly: {
@@ -3253,7 +3254,52 @@ export type components = {
       mutedWords: string[][];
       hardMutedWords: string[][];
       mutedInstances: string[] | null;
-      notificationRecieveConfig: Record<string, never>;
+      notificationRecieveConfig: {
+        app?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        quote?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        reply?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        follow?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        renote?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        mention?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        reaction?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        pollEnded?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        achievementEarned?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        receiveFollowRequest?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+        followRequestAccepted?: {
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'list' | 'never';
+        };
+      };
       emailNotificationTypes: string[];
       achievements: {
           name: string;
@@ -3287,7 +3333,16 @@ export type components = {
       };
       email?: string | null;
       emailVerified?: boolean | null;
-      securityKeysList?: Record<string, never>[];
+      securityKeysList?: {
+          /**
+           * Format: id
+           * @example xxxxxxxxxx
+           */
+          id: string;
+          name: string;
+          /** Format: date-time */
+          lastUsed: string;
+        }[];
     };
     UserDetailedNotMe: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'];
     MeDetailed: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'] & components['schemas']['MeDetailedOnly'];
@@ -3388,6 +3443,7 @@ export type components = {
       uri?: string;
       url?: string;
       reactionAndUserPairCache?: string[];
+      clippedCount?: number;
       myReaction?: Record<string, unknown> | null;
     };
     NoteReaction: {
@@ -3785,6 +3841,14 @@ export type components = {
       script: string;
       likedCount: number | null;
       isLiked?: boolean;
+    };
+    Signin: {
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      ip: string;
+      headers: Record<string, never>;
+      success: boolean;
     };
   };
   responses: never;
@@ -6405,10 +6469,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-              /** @example GR6S02ERUA5VR */
-              code: string;
-            }[];
+          'application/json': components['schemas']['InviteCode'][];
         };
       };
       /** @description Client error */
@@ -6471,7 +6532,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>[];
+          'application/json': components['schemas']['InviteCode'][];
         };
       };
       /** @description Client error */
@@ -9600,6 +9661,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
         };
       };
     };
@@ -15893,10 +15956,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-            /** @example GR6S02ERUA5VR */
-            code: string;
-          };
+          'application/json': components['schemas']['InviteCode'];
         };
       };
       /** @description Client error */
@@ -17349,6 +17409,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -17419,14 +17481,14 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
-          /** @default false */
-          excludeNsfw?: boolean;
           /** @default 10 */
           limit?: number;
           /** Format: misskey:id */
           sinceId?: string;
           /** Format: misskey:id */
           untilId?: string;
+          /** @default false */
+          allowPartial?: boolean;
           sinceDate?: number;
           untilDate?: number;
         };
@@ -18317,6 +18379,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -18502,6 +18566,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -20799,6 +20865,7 @@ export type operations = {
           username?: string;
           /** @description The local host is represented with `null`. */
           host?: string | null;
+          birthday?: string | null;
         };
       };
     };
@@ -21704,9 +21771,9 @@ export type operations = {
           sinceDate?: number;
           untilDate?: number;
           /** @default false */
-          withFiles?: boolean;
+          allowPartial?: boolean;
           /** @default false */
-          excludeNsfw?: boolean;
+          withFiles?: boolean;
         };
       };
     };
