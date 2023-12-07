@@ -25,7 +25,6 @@
 		"@syuilo/aiscript": "0.16.0",
 		"@tabler/icons-webfont": "2.37.0",
 		"@vitejs/plugin-vue": "4.5.1",
-		"@vue-macros/reactivity-transform": "0.4.0",
 		"@vue/compiler-sfc": "3.3.9",
 		"astring": "1.8.6",
 		"autosize": "6.0.1",

@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref, computed } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -30,11 +31,11 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 
-let scopesWithDomain = $ref(null);
+const scopesWithDomain = ref(null);
 
 function fetchScopes() {
 	os.api('i/registry/scopes-with-domain').then(res => {
-		scopesWithDomain = res;
+		scopesWithDomain.value = res;
 	});
 }
 
@@ -66,9 +67,9 @@ async function createKey() {
 
 fetchScopes();
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.registry,

@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import { host, version } from '@/config.js';
@@ -44,21 +44,21 @@ import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 
-let username = $ref('');
-let password = $ref('');
-let submitting = $ref(false);
+const username = ref('');
+const password = ref('');
+const submitting = ref(false);
 
 function submit() {
-	if (submitting) return;
-	submitting = true;
+	if (submitting.value) return;
+	submitting.value = true;
 
 	os.api('admin/accounts/create', {
-		username: username,
-		password: password,
+		username: username.value,
+		password: password.value,
 	}).then(res => {
 		return login(res.token);
 	}).catch(() => {
-		submitting = false;
+		submitting.value = false;
 
 		os.alert({
 			type: 'error',

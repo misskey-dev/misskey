@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import XModLog from './modlog.ModLog.vue';
@@ -40,25 +40,25 @@ import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let logs = $shallowRef<InstanceType<typeof MkPagination>>();
+const logs = shallowRef<InstanceType<typeof MkPagination>>();
 
-let type = $ref(null);
-let moderatorId = $ref('');
+const type = ref(null);
+const moderatorId = ref('');
 
 const pagination = {
 	endpoint: 'admin/show-moderation-logs' as const,
 	limit: 30,
 	params: computed(() => ({
-		type,
-		userId: moderatorId === '' ? null : moderatorId,
+		type: type.value,
+		userId: moderatorId.value === '' ? null : moderatorId.value,
 	})),
 };
 
 console.log(Misskey);
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.moderationLogs,

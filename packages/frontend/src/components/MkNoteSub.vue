@@ -65,15 +65,15 @@ const props = withDefaults(defineProps<{
 
 const muted = ref($i ? checkWordMute(props.note, $i, $i.mutedWords) : false);
 
-let showContent = $ref(false);
-let replies: Misskey.entities.Note[] = $ref([]);
+const showContent = ref(false);
+const replies = ref<Misskey.entities.Note[]>([]);
 
 if (props.detail) {
 	os.api('notes/children', {
 		noteId: props.note.id,
 		limit: 5,
 	}).then(res => {
-		replies = res;
+		replies.value = res;
 	});
 }
 </script>

@@ -126,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -154,9 +154,9 @@ const blockingPagination = {
 	limit: 10,
 };
 
-let expandedRenoteMuteItems = $ref([]);
-let expandedMuteItems = $ref([]);
-let expandedBlockItems = $ref([]);
+const expandedRenoteMuteItems = ref([]);
+const expandedMuteItems = ref([]);
+const expandedBlockItems = ref([]);
 
 async function unrenoteMute(user, ev) {
 	os.popupMenu([{
@@ -192,26 +192,26 @@ async function unblock(user, ev) {
 }
 
 async function toggleRenoteMuteItem(item) {
-	if (expandedRenoteMuteItems.includes(item.id)) {
-		expandedRenoteMuteItems = expandedRenoteMuteItems.filter(x => x !== item.id);
+	if (expandedRenoteMuteItems.value.includes(item.id)) {
+		expandedRenoteMuteItems.value = expandedRenoteMuteItems.value.filter(x => x !== item.id);
 	} else {
-		expandedRenoteMuteItems.push(item.id);
+		expandedRenoteMuteItems.value.push(item.id);
 	}
 }
 
 async function toggleMuteItem(item) {
-	if (expandedMuteItems.includes(item.id)) {
-		expandedMuteItems = expandedMuteItems.filter(x => x !== item.id);
+	if (expandedMuteItems.value.includes(item.id)) {
+		expandedMuteItems.value = expandedMuteItems.value.filter(x => x !== item.id);
 	} else {
-		expandedMuteItems.push(item.id);
+		expandedMuteItems.value.push(item.id);
 	}
 }
 
 async function toggleBlockItem(item) {
-	if (expandedBlockItems.includes(item.id)) {
-		expandedBlockItems = expandedBlockItems.filter(x => x !== item.id);
+	if (expandedBlockItems.value.includes(item.id)) {
+		expandedBlockItems.value = expandedBlockItems.value.filter(x => x !== item.id);
 	} else {
-		expandedBlockItems.push(item.id);
+		expandedBlockItems.value.push(item.id);
 	}
 }
 
@@ -223,9 +223,9 @@ async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
 	await os.api('i/update', { hardMutedWords });
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.muteAndBlock,

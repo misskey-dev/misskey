@@ -34,18 +34,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 const props = defineProps<{
 	activity: any[]
 }>();
 
-let viewBoxX: number = $ref(147);
-let viewBoxY: number = $ref(60);
-let zoom: number = $ref(1);
-let pos: number = $ref(0);
-let pointsNote: any = $ref(null);
-let pointsReply: any = $ref(null);
-let pointsRenote: any = $ref(null);
-let pointsTotal: any = $ref(null);
+const viewBoxX = ref(147);
+const viewBoxY = ref(60);
+const zoom = ref(1);
+const pos = ref(0);
+const pointsNote = ref<any>(null);
+const pointsReply = ref<any>(null);
+const pointsRenote = ref<any>(null);
+const pointsTotal = ref<any>(null);
 
 function dragListen(fn) {
 	window.addEventListener('mousemove', fn);
@@ -62,17 +63,17 @@ function dragClear(fn) {
 function onMousedown(ev) {
 	const clickX = ev.clientX;
 	const clickY = ev.clientY;
-	const baseZoom = zoom;
-	const basePos = pos;
+	const baseZoom = zoom.value;
+	const basePos = pos.value;
 
 	// 動かした時
 	dragListen(me => {
 		let moveLeft = me.clientX - clickX;
 		let moveTop = me.clientY - clickY;
 
-		zoom = Math.max(1, baseZoom + (-moveTop / 20));
-		pos = Math.min(0, basePos + moveLeft);
-		if (pos < -(((props.activity.length - 1) * zoom) - viewBoxX)) pos = -(((props.activity.length - 1) * zoom) - viewBoxX);
+		zoom.value = Math.max(1, baseZoom + (-moveTop / 20));
+		pos.value = Math.min(0, basePos + moveLeft);
+		if (pos.value < -(((props.activity.length - 1) * zoom.value) - viewBoxX.value)) pos.value = -(((props.activity.length - 1) * zoom.value) - viewBoxX.value);
 
 		render();
 	});
@@ -82,10 +83,10 @@ function render() {
 	const peak = Math.max(...props.activity.map(d => d.total));
 	if (peak !== 0) {
 		const activity = props.activity.slice().reverse();
-		pointsNote = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.notes / peak)) * viewBoxY}`).join(' ');
-		pointsReply = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.replies / peak)) * viewBoxY}`).join(' ');
-		pointsRenote = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.renotes / peak)) * viewBoxY}`).join(' ');
-		pointsTotal = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.total / peak)) * viewBoxY}`).join(' ');
+		pointsNote.value = activity.map((d, i) => `${(i * zoom.value) + pos.value},${(1 - (d.notes / peak)) * viewBoxY.value}`).join(' ');
+		pointsReply.value = activity.map((d, i) => `${(i * zoom.value) + pos.value},${(1 - (d.replies / peak)) * viewBoxY.value}`).join(' ');
+		pointsRenote.value = activity.map((d, i) => `${(i * zoom.value) + pos.value},${(1 - (d.renotes / peak)) * viewBoxY.value}`).join(' ');
+		pointsTotal.value = activity.map((d, i) => `${(i * zoom.value) + pos.value},${(1 - (d.total / peak)) * viewBoxY.value}`).join(' ');
 	}
 }
 </script>

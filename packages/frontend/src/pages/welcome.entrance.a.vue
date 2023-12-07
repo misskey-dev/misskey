@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
@@ -48,8 +48,8 @@ import MkNumber from '@/components/MkNumber.vue';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
-let meta = $ref<Misskey.entities.MetaResponse>();
-let instances = $ref<Misskey.entities.FederationInstance[]>();
+const meta = ref<Misskey.entities.MetaResponse>();
+const instances = ref<Misskey.entities.FederationInstance[]>();
 
 function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
 	if (!instance.iconUrl) {
@@ -60,14 +60,14 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 }
 
 os.api('meta', { detail: true }).then(_meta => {
-	meta = _meta;
+	meta.value = _meta;
 });
 
 os.apiGet('federation/instances', {
 	sort: '+pubSub',
 	limit: 20,
 }).then(_instances => {
-	instances = _instances;
+	instances.value = _instances;
 });
 </script>
 
