@@ -28,6 +28,7 @@ type TimelineOptions = {
 	redisTimelines: FanoutTimelineName[],
 	noteFilter?: (note: MiNote) => boolean,
 	alwaysIncludeMyNotes?: boolean;
+	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
@@ -113,7 +114,7 @@ export class FanoutTimelineEndpointService {
 
 				const parentFilter = filter;
 				filter = (note) => {
-					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromMute)) return false;
+					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (isPureRenote(note) && isUserRelated(note, userIdsWhoMeMutingRenotes, ps.ignoreAuthorFromMute)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
