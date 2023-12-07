@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import XColumn from './column.vue';
 import { addColumnWidget, Column, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store.js';
 import XWidgets from '@/components/MkWidgets.vue';
@@ -26,7 +26,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let edit = $ref(false);
+const edit = ref(false);
 
 function addWidget(widget) {
 	addColumnWidget(props.column.id, widget);
@@ -45,7 +45,7 @@ function updateWidgets(widgets) {
 }
 
 function func() {
-	edit = !edit;
+	edit.value = !edit.value;
 }
 
 const menu = [{

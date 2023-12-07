@@ -127,16 +127,16 @@ window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
 
-let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsShowing = $ref(false);
-const navFooter = $shallowRef<HTMLElement>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const widgetsShowing = ref(false);
+const navFooter = shallowRef<HTMLElement>();
 const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
-	pageMetadata = info;
-	if (pageMetadata.value) {
-		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+	pageMetadata.value = info;
+	if (pageMetadata.value.value) {
+		document.title = `${pageMetadata.value.value.title} | ${instanceName}`;
 	}
 });
 
@@ -216,16 +216,16 @@ function top() {
 	});
 }
 
-let navFooterHeight = $ref(0);
-provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
+const navFooterHeight = ref(0);
+provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
-watch($$(navFooter), () => {
-	if (navFooter) {
-		navFooterHeight = navFooter.offsetHeight;
-		document.body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
+watch(navFooter, () => {
+	if (navFooter.value) {
+		navFooterHeight.value = navFooter.value.offsetHeight;
+		document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
 		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
 	} else {
-		navFooterHeight = 0;
+		navFooterHeight.value = 0;
 		document.body.style.setProperty('--stickyBottom', '0px');
 		document.body.style.setProperty('--minBottomSpacing', '0px');
 	}

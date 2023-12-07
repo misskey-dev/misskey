@@ -51,9 +51,9 @@ async function post() {
 	notes.value?.pagingComponent?.reload();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: props.tag,

@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, shallowRef, ref } from 'vue';
 
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -61,31 +61,31 @@ import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let reports = $shallowRef<InstanceType<typeof MkPagination>>();
+const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
-let state = $ref('unresolved');
-let reporterOrigin = $ref('combined');
-let targetUserOrigin = $ref('combined');
-let searchUsername = $ref('');
-let searchHost = $ref('');
+const state = ref('unresolved');
+const reporterOrigin = ref('combined');
+const targetUserOrigin = ref('combined');
+const searchUsername = ref('');
+const searchHost = ref('');
 
 const pagination = {
 	endpoint: 'admin/abuse-user-reports' as const,
 	limit: 10,
 	params: computed(() => ({
-		state,
-		reporterOrigin,
-		targetUserOrigin,
+		state: state.value,
+		reporterOrigin: reporterOrigin.value,
+		targetUserOrigin: targetUserOrigin.value,
 	})),
 };
 
 function resolved(reportId) {
-	reports.removeItem(reportId);
+	reports.value.removeItem(reportId);
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.abuseReports,

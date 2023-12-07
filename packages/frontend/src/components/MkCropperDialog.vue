@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
@@ -56,10 +56,10 @@ const props = defineProps<{
 }>();
 
 const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
-let dialogEl = $shallowRef<InstanceType<typeof MkModalWindow>>();
-let imgEl = $shallowRef<HTMLImageElement>();
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const imgEl = shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
-let loading = $ref(true);
+const loading = ref(true);
 
 const ok = async () => {
 	const promise = new Promise<Misskey.entities.DriveFile>(async (res) => {
@@ -94,16 +94,16 @@ const ok = async () => {
 	const f = await promise;
 
 	emit('ok', f);
-	dialogEl!.close();
+	dialogEl.value!.close();
 };
 
 const cancel = () => {
 	emit('cancel');
-	dialogEl!.close();
+	dialogEl.value!.close();
 };
 
 const onImageLoad = () => {
-	loading = false;
+	loading.value = false;
 
 	if (cropper) {
 		cropper.getCropperImage()!.$center('contain');
@@ -112,7 +112,7 @@ const onImageLoad = () => {
 };
 
 onMounted(() => {
-	cropper = new Cropper(imgEl!, {
+	cropper = new Cropper(imgEl.value!, {
 	});
 
 	const computedStyle = getComputedStyle(document.documentElement);

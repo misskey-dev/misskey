@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -76,37 +76,37 @@ import { i18n } from '@/i18n.js';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
-let provider = $ref(null);
-let hcaptchaSiteKey: string | null = $ref(null);
-let hcaptchaSecretKey: string | null = $ref(null);
-let recaptchaSiteKey: string | null = $ref(null);
-let recaptchaSecretKey: string | null = $ref(null);
-let turnstileSiteKey: string | null = $ref(null);
-let turnstileSecretKey: string | null = $ref(null);
+const provider = ref(null);
+const hcaptchaSiteKey = ref<string | null>(null);
+const hcaptchaSecretKey = ref<string | null>(null);
+const recaptchaSiteKey = ref<string | null>(null);
+const recaptchaSecretKey = ref<string | null>(null);
+const turnstileSiteKey = ref<string | null>(null);
+const turnstileSecretKey = ref<string | null>(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	hcaptchaSiteKey = meta.hcaptchaSiteKey;
-	hcaptchaSecretKey = meta.hcaptchaSecretKey;
-	recaptchaSiteKey = meta.recaptchaSiteKey;
-	recaptchaSecretKey = meta.recaptchaSecretKey;
-	turnstileSiteKey = meta.turnstileSiteKey;
-	turnstileSecretKey = meta.turnstileSecretKey;
+	hcaptchaSiteKey.value = meta.hcaptchaSiteKey;
+	hcaptchaSecretKey.value = meta.hcaptchaSecretKey;
+	recaptchaSiteKey.value = meta.recaptchaSiteKey;
+	recaptchaSecretKey.value = meta.recaptchaSecretKey;
+	turnstileSiteKey.value = meta.turnstileSiteKey;
+	turnstileSecretKey.value = meta.turnstileSecretKey;
 
-	provider = meta.enableHcaptcha ? 'hcaptcha' : meta.enableRecaptcha ? 'recaptcha' : meta.enableTurnstile ? 'turnstile' : null;
+	provider.value = meta.enableHcaptcha ? 'hcaptcha' : meta.enableRecaptcha ? 'recaptcha' : meta.enableTurnstile ? 'turnstile' : null;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		enableHcaptcha: provider === 'hcaptcha',
-		hcaptchaSiteKey,
-		hcaptchaSecretKey,
-		enableRecaptcha: provider === 'recaptcha',
-		recaptchaSiteKey,
-		recaptchaSecretKey,
-		enableTurnstile: provider === 'turnstile',
-		turnstileSiteKey,
-		turnstileSecretKey,
+		enableHcaptcha: provider.value === 'hcaptcha',
+		hcaptchaSiteKey: hcaptchaSiteKey.value,
+		hcaptchaSecretKey: hcaptchaSecretKey.value,
+		enableRecaptcha: provider.value === 'recaptcha',
+		recaptchaSiteKey: recaptchaSiteKey.value,
+		recaptchaSecretKey: recaptchaSecretKey.value,
+		enableTurnstile: provider.value === 'turnstile',
+		turnstileSiteKey: turnstileSiteKey.value,
+		turnstileSecretKey: turnstileSecretKey.value,
 	}).then(() => {
 		fetchInstance();
 	});

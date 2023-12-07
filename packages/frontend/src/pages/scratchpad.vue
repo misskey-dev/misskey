@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
+import { onDeactivated, onUnmounted, Ref, ref, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -59,8 +59,8 @@ let aiscript: Interpreter;
 const code = ref('');
 const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
-let components: Ref<AsUiComponent>[] = $ref([]);
-let uiKey = $ref(0);
+const components = ref<Ref<AsUiComponent>[]>([]);
+const uiKey = ref(0);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
@@ -74,15 +74,15 @@ watch(code, () => {
 async function run() {
 	if (aiscript) aiscript.abort();
 	root.value = undefined;
-	components = [];
-	uiKey++;
+	components.value = [];
+	uiKey.value++;
 	logs.value = [];
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
 			storageKey: 'widget',
 			token: $i?.token,
 		}),
-		...registerAsUiLib(components, (_root) => {
+		...registerAsUiLib(components.value, (_root) => {
 			root.value = _root.value;
 		}),
 	}), {
@@ -160,9 +160,9 @@ onUnmounted(() => {
 	if (aiscript) aiscript.abort();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.scratchpad,

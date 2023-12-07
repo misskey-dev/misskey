@@ -21,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { $ref } from 'vue/macros';
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
 import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch.js';
@@ -58,7 +57,7 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { defaultStore } from '@/store.js';
@@ -98,41 +97,41 @@ const viewId = uuid();
 const canvas = shallowRef<HTMLCanvasElement>();
 const root = shallowRef<HTMLDivElement>();
 const img = shallowRef<HTMLImageElement>();
-let loaded = $ref(false);
-let canvasWidth = $ref(64);
-let canvasHeight = $ref(64);
-let imgWidth = $ref(props.width);
-let imgHeight = $ref(props.height);
-let bitmapTmp = $ref<CanvasImageSource | undefined>();
-const hide = computed(() => !loaded || props.forceBlurhash);
+const loaded = ref(false);
+const canvasWidth = ref(64);
+const canvasHeight = ref(64);
+const imgWidth = ref(props.width);
+const imgHeight = ref(props.height);
+const bitmapTmp = ref<CanvasImageSource | undefined>();
+const hide = computed(() => !loaded.value || props.forceBlurhash);
 
 function waitForDecode() {
 	if (props.src != null && props.src !== '') {
 		nextTick()
 			.then(() => img.value?.decode())
 			.then(() => {
-				loaded = true;
+				loaded.value = true;
 			}, error => {
 				console.log('Error occurred during decoding image', img.value, error);
 			});
 	} else {
-		loaded = false;
+		loaded.value = false;
 	}
 }
 
 watch([() => props.width, () => props.height, root], () => {
 	const ratio = props.width / props.height;
 	if (ratio > 1) {
-		canvasWidth = Math.round(64 * ratio);
-		canvasHeight = 64;
+		canvasWidth.value = Math.round(64 * ratio);
+		canvasHeight.value = 64;
 	} else {
-		canvasWidth = 64;
-		canvasHeight = Math.round(64 / ratio);
+		canvasWidth.value = 64;
+		canvasHeight.value = Math.round(64 / ratio);
 	}
 
 	const clientWidth = root.value?.clientWidth ?? 300;
-	imgWidth = clientWidth;
-	imgHeight = Math.round(clientWidth / ratio);
+	imgWidth.value = clientWidth;
+	imgHeight.value = Math.round(clientWidth / ratio);
 }, {
 	immediate: true,
 });
@@ -140,15 +139,15 @@ watch([() => props.width, () => props.height, root], () => {
 function drawImage(bitmap: CanvasImageSource) {
 	// canvasがない（mountedされていない）場合はTmpに保存しておく
 	if (!canvas.value) {
-		bitmapTmp = bitmap;
+		bitmapTmp.value = bitmap;
 		return;
 	}
 
 	// canvasがあれば描画する
-	bitmapTmp = undefined;
+	bitmapTmp.value = undefined;
 	const ctx = canvas.value.getContext('2d');
 	if (!ctx) return;
-	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
+	ctx.drawImage(bitmap, 0, 0, canvasWidth.value, canvasHeight.value);
 }
 
 function drawAvg() {
@@ -160,7 +159,7 @@ function drawAvg() {
 	// avgColorでお茶をにごす
 	ctx.beginPath();
 	ctx.fillStyle = extractAvgColorFromBlurhash(props.hash) ?? '#888';
-	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value);
 }
 
 async function draw() {
@@ -212,8 +211,8 @@ watch(() => props.hash, () => {
 
 onMounted(() => {
 	// drawImageがmountedより先に呼ばれている場合はここで描画する
-	if (bitmapTmp) {
-		drawImage(bitmapTmp);
+	if (bitmapTmp.value) {
+		drawImage(bitmapTmp.value);
 	}
 	waitForDecode();
 });
