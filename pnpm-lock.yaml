@@ -21,6 +21,9 @@ importers:
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
+      katex:
+        specifier: 0.16.8
+        version: 0.16.8
       postcss:
         specifier: 8.4.32
         version: 8.4.32
@@ -994,7 +997,7 @@ importers:
         version: 7.6.3
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
-        version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.3)(@storybook/components@7.5.3)(@storybook/core-events@7.6.3)(@storybook/manager-api@7.6.3)(@storybook/preview-api@7.6.3)(@storybook/theming@7.6.3)(@storybook/types@7.6.3)(react-dom@18.2.0)(react@18.2.0)
+        version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.3)(@storybook/components@7.6.3)(@storybook/core-events@7.6.3)(@storybook/manager-api@7.6.3)(@storybook/preview-api@7.6.3)(@storybook/theming@7.6.3)(@storybook/types@7.6.3)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8
@@ -6649,17 +6652,6 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/channels@7.5.3:
-    resolution: {integrity: sha512-dhWuV2o2lmxH0RKuzND8jxYzvSQTSmpE13P0IT/k8+I1up/rSNYOBQJT6SalakcNWXFAMXguo/8E7ApmnKKcEw==}
-    dependencies:
-      '@storybook/client-logger': 7.5.3
-      '@storybook/core-events': 7.5.3
-      '@storybook/global': 5.0.0
-      qs: 6.11.1
-      telejson: 7.2.0
-      tiny-invariant: 1.3.1
-    dev: true
-
   /@storybook/channels@7.6.3:
     resolution: {integrity: sha512-o9J0TBbFon16tUlU5V6kJgzAlsloJcS1cTHWqh3VWczohbRm+X1PLNUihJ7Q8kBWXAuuJkgBu7RQH7Ib46WyYg==}
     dependencies:
@@ -6723,12 +6715,6 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@storybook/client-logger@7.5.3:
-    resolution: {integrity: sha512-vUFYALypjix5FoJ5M/XUP6KmyTnQJNW1poHdW7WXUVSg+lBM6E5eAtjTm0hdxNNDH8KSrdy24nCLra5h0X0BWg==}
-    dependencies:
-      '@storybook/global': 5.0.0
-    dev: true
-
   /@storybook/client-logger@7.6.3:
     resolution: {integrity: sha512-BpsCnefrBFdxD6ukMjAblm1D6zB4U5HR1I85VWw6LOqZrfzA6l/1uBxItz0XG96HTjngbvAabWf5k7ZFCx5UCg==}
     dependencies:
@@ -6754,29 +6740,6 @@ packages:
       recast: 0.23.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@storybook/components@7.5.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-M3+cjvEsDGLUx8RvK5wyF6/13LNlUnKbMgiDE8Sxk/v/WPpyhOAIh/B8VmrU1psahS61Jd4MTkFmLf1cWau1vw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      '@radix-ui/react-select': 1.2.2(react-dom@18.2.0)(react@18.2.0)
-      '@radix-ui/react-toolbar': 1.0.4(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/client-logger': 7.5.3
-      '@storybook/csf': 0.1.0
-      '@storybook/global': 5.0.0
-      '@storybook/theming': 7.5.3(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/types': 7.5.3
-      memoizerific: 1.11.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      use-resize-observer: 9.1.0(react-dom@18.2.0)(react@18.2.0)
-      util-deprecate: 1.0.2
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
     dev: true
 
   /@storybook/components@7.6.3(react-dom@18.2.0)(react@18.2.0):
@@ -6838,12 +6801,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: true
-
-  /@storybook/core-events@7.5.3:
-    resolution: {integrity: sha512-DFOpyQ22JD5C1oeOFzL8wlqSWZzrqgDfDbUGP8xdO4wJu+FVTxnnWN6ZYLdTPB1u27DOhd7TzjQMfLDHLu7kbQ==}
-    dependencies:
-      ts-dedent: 2.2.0
     dev: true
 
   /@storybook/core-events@7.6.3:
@@ -6926,12 +6883,6 @@ packages:
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@storybook/csf@0.1.0:
-    resolution: {integrity: sha512-uk+jMXCZ8t38jSTHk2o5btI+aV2Ksbvl6DoOv3r6VaCM1KZqeuMwtwywIQdflkA8/6q/dKT8z8L+g8hC4GC3VQ==}
-    dependencies:
-      type-fest: 2.19.0
     dev: true
 
   /@storybook/csf@0.1.2:
@@ -7153,20 +7104,6 @@ packages:
       ts-dedent: 2.2.0
     dev: true
 
-  /@storybook/theming@7.5.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-Cjmthe1MAk0z4RKCZ7m72gAD8YD0zTAH97z5ryM1Qv84QXjiCQ143fGOmYz1xEQdNFpOThPcwW6FEccLHTkVcg==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      '@emotion/use-insertion-effect-with-fallbacks': 1.0.0(react@18.2.0)
-      '@storybook/client-logger': 7.5.3
-      '@storybook/global': 5.0.0
-      memoizerific: 1.11.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: true
-
   /@storybook/theming@7.6.3(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-9ToNU2LM6a2kVBjOXitXEeEOuMurVLhn+uaZO1dJjv8NGnJVYiLwNPwrLsImiUD8/XXNuil972aanBR6+Aj9jw==}
     peerDependencies:
@@ -7179,15 +7116,6 @@ packages:
       memoizerific: 1.11.3
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    dev: true
-
-  /@storybook/types@7.5.3:
-    resolution: {integrity: sha512-iu5W0Kdd6nysN5CPkY4GRl+0BpxRTdSfBIJak7mb6xCIHSB5t1tw4BOuqMQ5EgpikRY3MWJ4gY647QkWBX3MNQ==}
-    dependencies:
-      '@storybook/channels': 7.5.3
-      '@types/babel__core': 7.20.0
-      '@types/express': 4.17.17
-      file-system-cache: 2.3.0
     dev: true
 
   /@storybook/types@7.6.3:
@@ -7241,7 +7169,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.3.9(typescript@5.3.2)
-      vue-component-type-helpers: 1.8.24
+      vue-component-type-helpers: 1.8.25
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -8028,8 +7956,8 @@ packages:
     dev: true
 
   /@types/katex@0.16.3:
-  resolution: {integrity: sha512-CeVMX9EhVUW8MWnei05eIRks4D5Wscw/W9Byz1s3PA+yJvcdvq9SaDjiUKvRvEgjpdTyJMjQA43ae4KTwsvOPg==}
-  dev: true
+    resolution: {integrity: sha512-CeVMX9EhVUW8MWnei05eIRks4D5Wscw/W9Byz1s3PA+yJvcdvq9SaDjiUKvRvEgjpdTyJMjQA43ae4KTwsvOPg==}
+    dev: true
 
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
@@ -19756,8 +19684,8 @@ packages:
     resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
     dev: false
 
-  /vue-component-type-helpers@1.8.24:
-    resolution: {integrity: sha512-lqWs/7fdRXoSBAlbouHBX+LNuaY6gI9xWW34m/ZIz9zVPYHEyw0b2/zaCBwlKx0NtKTeF/6pOpvrxVkh7nhIYg==}
+  /vue-component-type-helpers@1.8.25:
+    resolution: {integrity: sha512-NCA6sekiJIMnMs4DdORxATXD+/NRkQpS32UC+I1KQJUasx+Z7MZUb3Y+MsKsFmX+PgyTYSteb73JW77AibaCCw==}
     dev: true
 
   /vue-component-type-helpers@1.8.4:
@@ -20336,7 +20264,7 @@ packages:
       sharp: 0.31.3
     dev: false
 
-  github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.3)(@storybook/components@7.5.3)(@storybook/core-events@7.6.3)(@storybook/manager-api@7.6.3)(@storybook/preview-api@7.6.3)(@storybook/theming@7.6.3)(@storybook/types@7.6.3)(react-dom@18.2.0)(react@18.2.0):
+  github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.3)(@storybook/components@7.6.3)(@storybook/core-events@7.6.3)(@storybook/manager-api@7.6.3)(@storybook/preview-api@7.6.3)(@storybook/theming@7.6.3)(@storybook/types@7.6.3)(react-dom@18.2.0)(react@18.2.0):
     resolution: {tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
     id: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
     name: storybook-addon-misskey-theme
@@ -20358,7 +20286,7 @@ packages:
         optional: true
     dependencies:
       '@storybook/blocks': 7.6.3(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/components': 7.5.3(react-dom@18.2.0)(react@18.2.0)
+      '@storybook/components': 7.6.3(react-dom@18.2.0)(react@18.2.0)
       '@storybook/core-events': 7.6.3
       '@storybook/manager-api': 7.6.3(react-dom@18.2.0)(react@18.2.0)
       '@storybook/preview-api': 7.6.3

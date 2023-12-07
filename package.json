@@ -45,9 +45,10 @@
 		"lodash": "4.17.21"
 	},
 	"dependencies": {
-		"execa": "8.0.1",
 		"cssnano": "6.0.1",
+		"execa": "8.0.1",
 		"js-yaml": "4.1.0",
+		"katex": "0.16.8",
 		"postcss": "8.4.32",
 		"terser": "5.24.0",
 		"typescript": "5.3.2"
@@ -58,8 +59,8 @@
 		"cross-env": "7.0.3",
 		"cypress": "13.6.0",
 		"eslint": "8.55.0",
-		"start-server-and-test": "2.0.3",
-		"ncp": "2.0.0"
+		"ncp": "2.0.0",
+		"start-server-and-test": "2.0.3"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"
