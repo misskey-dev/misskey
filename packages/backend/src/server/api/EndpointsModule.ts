@@ -52,6 +52,8 @@ import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js'
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
 import * as ep___admin_invite_create from './endpoints/admin/invite/create.js';
 import * as ep___admin_invite_list from './endpoints/admin/invite/list.js';
+import * as ep___admin_root_add from './endpoints/admin/root/add.js';
+import * as ep___admin_root_remove from './endpoints/admin/root/remove.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -413,6 +415,8 @@ const $admin_getTableStats: Provider = { provide: 'ep:admin/get-table-stats', us
 const $admin_getUserIps: Provider = { provide: 'ep:admin/get-user-ips', useClass: ep___admin_getUserIps.default };
 const $admin_invite_create: Provider = { provide: 'ep:admin/invite/create', useClass: ep___admin_invite_create.default };
 const $admin_invite_list: Provider = { provide: 'ep:admin/invite/list', useClass: ep___admin_invite_list.default };
+const $admin_root_add: Provider = { provide: 'ep:admin/root/add', useClass: ep___admin_root_add.default };
+const $admin_root_remove: Provider = { provide: 'ep:admin/root/remove', useClass: ep___admin_root_remove.default };
 const $admin_promo_create: Provider = { provide: 'ep:admin/promo/create', useClass: ep___admin_promo_create.default };
 const $admin_queue_clear: Provider = { provide: 'ep:admin/queue/clear', useClass: ep___admin_queue_clear.default };
 const $admin_queue_deliverDelayed: Provider = { provide: 'ep:admin/queue/deliver-delayed', useClass: ep___admin_queue_deliverDelayed.default };
@@ -778,6 +782,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_getUserIps,
 		$admin_invite_create,
 		$admin_invite_list,
+		$admin_root_add,
+		$admin_root_remove,
 		$admin_promo_create,
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
@@ -1137,6 +1143,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_getUserIps,
 		$admin_invite_create,
 		$admin_invite_list,
+		$admin_root_add,
+		$admin_root_remove,
 		$admin_promo_create,
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
