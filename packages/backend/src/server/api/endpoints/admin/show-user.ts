@@ -58,7 +58,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const isModerator = await this.roleService.isModerator(user);
-			const isRoot = await this.roleService.isAdministrator(user);
 			const isSilenced = !(await this.roleService.getUserPolicies(user.id)).canPublicNote;
 
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
@@ -86,7 +85,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				mutedInstances: profile.mutedInstances,
 				notificationRecieveConfig: profile.notificationRecieveConfig,
 				isModerator: isModerator,
-				isRoot: isRoot,
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
 				isHibernated: user.isHibernated,
