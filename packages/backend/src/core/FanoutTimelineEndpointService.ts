@@ -149,8 +149,17 @@ export class FanoutTimelineEndpointService {
 
 			// まだ足りない分はDBにフォールバック
 			const remainingToRead = ps.limit - redisTimeline.length;
-			if (shouldPrepend) redisTimeline.reverse();
-			const gotFromDb = await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, remainingToRead);
+			let dbUntil: string | null;
+			let dbSince: string | null;
+			if (shouldPrepend) {
+				redisTimeline.reverse();
+				dbUntil = ps.untilId;
+				dbSince = noteIds[noteIds.length - 1];
+			} else {
+				dbUntil = noteIds[noteIds.length - 1];
+				dbSince = ps.sinceId;
+			}
+			const gotFromDb = await ps.dbFallback(dbUntil, dbSince, remainingToRead);
 			return shouldPrepend ? [...gotFromDb, ...redisTimeline] : [...redisTimeline, ...gotFromDb];
 		}
 
