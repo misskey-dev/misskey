@@ -6,6 +6,7 @@
 import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
+import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
@@ -35,6 +36,22 @@ interface PageViewInterruptor {
 	handler: (page: Misskey.entities.Page) => unknown;
 }
 
+/** サウンド設定 */
+export type SoundStore = {
+	type: Exclude<SoundType, '_driveFile_'>;
+	volume: number;
+} | {
+	type: '_driveFile_';
+
+	/** ドライブのファイルID */
+	fileId: string;
+
+	/** ファイルURL（こちらが優先される） */
+	fileUrl: string;
+
+	volume: number;
+}
+
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -49,9 +66,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: 0,
 	},
-	timelineTutorial: {
+	timelineTutorials: {
 		where: 'account',
-		default: 0,
+		default: {
+			home: false,
+			local: false,
+			social: false,
+			global: false,
+		},
 	},
 	keepCw: {
 		where: 'account',
@@ -201,10 +223,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	enableDataSaverMode: {
-		where: 'device',
-		default: false,
-	},
 	disableShowingAnimatedImages: {
 		where: 'device',
 		default: window.matchMedia('(prefers-reduced-motion)').matches,
@@ -325,6 +343,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'medium' as 'small' | 'medium' | 'large',
 	},
+	limitWidthOfReaction: {
+		where: 'device',
+		default: true,
+	},
 	forceShowAds: {
 		where: 'device',
 		default: false,
@@ -368,6 +390,60 @@ export const defaultStore = markRaw(new Storage('base', {
 	defaultWithReplies: {
 		where: 'account',
 		default: false,
+	},
+	disableStreamingTimeline: {
+		where: 'device',
+		default: false,
+	},
+	useGroupedNotifications: {
+		where: 'device',
+		default: true,
+	},
+	dataSaver: {
+		where: 'device',
+		default: {
+			media: false,
+			avatar: false,
+			urlPreview: false,
+			code: false,
+		} as Record<string, boolean>,
+	},
+
+	sound_masterVolume: {
+		where: 'device',
+		default: 0.3,
+	},
+	sound_notUseSound: {
+		where: 'device',
+		default: false,
+	},
+	sound_useSoundOnlyWhenActive: {
+		where: 'device',
+		default: false,
+	},
+	sound_note: {
+		where: 'device',
+		default: { type: 'syuilo/n-aec', volume: 1 } as SoundStore,
+	},
+	sound_noteMy: {
+		where: 'device',
+		default: { type: 'syuilo/n-cea-4va', volume: 1 } as SoundStore,
+	},
+	sound_notification: {
+		where: 'device',
+		default: { type: 'syuilo/n-ea', volume: 1 } as SoundStore,
+	},
+	sound_antenna: {
+		where: 'device',
+		default: { type: 'syuilo/triple', volume: 1 } as SoundStore,
+	},
+	sound_channel: {
+		where: 'device',
+		default: { type: 'syuilo/square-pico', volume: 1 } as SoundStore,
+	},
+	sound_reaction: {
+		where: 'device',
+		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
 }));
 

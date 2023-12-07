@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -66,12 +66,12 @@ const props = defineProps<{
 	announcement?: any,
 }>();
 
-let dialog = $ref(null);
-let title: string = $ref(props.announcement ? props.announcement.title : '');
-let text: string = $ref(props.announcement ? props.announcement.text : '');
-let icon: string = $ref(props.announcement ? props.announcement.icon : 'info');
-let display: string = $ref(props.announcement ? props.announcement.display : 'dialog');
-let needConfirmationToRead = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const dialog = ref(null);
+const title = ref<string>(props.announcement ? props.announcement.title : '');
+const text = ref<string>(props.announcement ? props.announcement.text : '');
+const icon = ref<string>(props.announcement ? props.announcement.icon : 'info');
+const display = ref<string>(props.announcement ? props.announcement.display : 'dialog');
+const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
@@ -80,12 +80,12 @@ const emit = defineEmits<{
 
 async function done() {
 	const params = {
-		title: title,
-		text: text,
-		icon: icon,
+		title: title.value,
+		text: text.value,
+		icon: icon.value,
 		imageUrl: null,
-		display: display,
-		needConfirmationToRead: needConfirmationToRead,
+		display: display.value,
+		needConfirmationToRead: needConfirmationToRead.value,
 		userId: props.user.id,
 	};
 
@@ -102,7 +102,7 @@ async function done() {
 			},
 		});
 
-		dialog.close();
+		dialog.value.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -110,14 +110,14 @@ async function done() {
 			created: created,
 		});
 
-		dialog.close();
+		dialog.value.close();
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title }),
+		text: i18n.t('removeAreYouSure', { x: title.value }),
 	});
 	if (canceled) return;
 
@@ -127,7 +127,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.close();
+		dialog.value.close();
 	});
 }
 </script>

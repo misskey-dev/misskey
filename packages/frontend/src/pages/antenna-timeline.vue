@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref, shallowRef } from 'vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
@@ -38,20 +38,20 @@ const props = defineProps<{
 	antennaId: string;
 }>();
 
-let antenna = $ref(null);
-let queue = $ref(0);
-let rootEl = $shallowRef<HTMLElement>();
-let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
-const keymap = $computed(() => ({
+const antenna = ref(null);
+const queue = ref(0);
+const rootEl = shallowRef<HTMLElement>();
+const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+const keymap = computed(() => ({
 	't': focus,
 }));
 
 function queueUpdated(q) {
-	queue = q;
+	queue.value = q;
 }
 
 function top() {
-	scroll(rootEl, { top: 0 });
+	scroll(rootEl.value, { top: 0 });
 }
 
 async function timetravel() {
@@ -60,7 +60,7 @@ async function timetravel() {
 	});
 	if (canceled) return;
 
-	tlEl.timetravel(date);
+	tlEl.value.timetravel(date);
 }
 
 function settings() {
@@ -68,16 +68,16 @@ function settings() {
 }
 
 function focus() {
-	tlEl.focus();
+	tlEl.value.focus();
 }
 
 watch(() => props.antennaId, async () => {
-	antenna = await os.api('antennas/show', {
+	antenna.value = await os.api('antennas/show', {
 		antennaId: props.antennaId,
 	});
 }, { immediate: true });
 
-const headerActions = $computed(() => antenna ? [{
+const headerActions = computed(() => antenna.value ? [{
 	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
@@ -87,10 +87,10 @@ const headerActions = $computed(() => antenna ? [{
 	handler: settings,
 }] : []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => antenna ? {
-	title: antenna.name,
+definePageMetadata(computed(() => antenna.value ? {
+	title: antenna.value.name,
 	icon: 'ti ti-antenna',
 } : null));
 </script>

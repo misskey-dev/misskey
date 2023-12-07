@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.color }}</template>
 	</MkColorInput>
 
-	<MkInput v-model="role.iconUrl">
+	<MkInput v-model="role.iconUrl" type="url">
 		<template #label>{{ i18n.ts._role.iconUrl }}</template>
 	</MkInput>
 
@@ -254,6 +254,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
 					<MkRange v-model="role.policies.canManageCustomEmojis.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canManageAvatarDecorations, 'canManageAvatarDecorations'])">
+				<template #label>{{ i18n.ts._role._options.canManageAvatarDecorations }}</template>
+				<template #suffix>
+					<span v-if="role.policies.canManageAvatarDecorations.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canManageAvatarDecorations.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canManageAvatarDecorations)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.canManageAvatarDecorations.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.canManageAvatarDecorations.value" :disabled="role.policies.canManageAvatarDecorations.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.canManageAvatarDecorations.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
@@ -517,7 +537,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -542,12 +562,12 @@ const props = defineProps<{
 	readonly?: boolean;
 }>();
 
-let role = $ref(deepClone(props.modelValue));
+const role = ref(deepClone(props.modelValue));
 
 // fill missing policy
 for (const ROLE_POLICY of ROLE_POLICIES) {
-	if (role.policies[ROLE_POLICY] == null) {
-		role.policies[ROLE_POLICY] = {
+	if (role.value.policies[ROLE_POLICY] == null) {
+		role.value.policies[ROLE_POLICY] = {
 			useDefault: true,
 			priority: 0,
 			value: instance.policies[ROLE_POLICY],
@@ -555,15 +575,15 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 	}
 }
 
-let rolePermission = $computed({
-	get: () => role.isAdministrator ? 'administrator' : role.isModerator ? 'moderator' : 'normal',
+const rolePermission = computed({
+	get: () => role.value.isAdministrator ? 'administrator' : role.value.isModerator ? 'moderator' : 'normal',
 	set: (val) => {
-		role.isAdministrator = val === 'administrator';
-		role.isModerator = val === 'moderator';
+		role.value.isAdministrator = val === 'administrator';
+		role.value.isModerator = val === 'moderator';
 	},
 });
 
-let q = $ref('');
+const q = ref('');
 
 function getPriorityIcon(option) {
 	if (option.priority === 2) return 'ti ti-arrows-up';
@@ -572,32 +592,32 @@ function getPriorityIcon(option) {
 }
 
 function matchQuery(keywords: string[]): boolean {
-	if (q.trim().length === 0) return true;
-	return keywords.some(keyword => keyword.toLowerCase().includes(q.toLowerCase()));
+	if (q.value.trim().length === 0) return true;
+	return keywords.some(keyword => keyword.toLowerCase().includes(q.value.toLowerCase()));
 }
 
 const save = throttle(100, () => {
 	const data = {
-		name: role.name,
-		description: role.description,
-		color: role.color === '' ? null : role.color,
-		iconUrl: role.iconUrl === '' ? null : role.iconUrl,
-		displayOrder: role.displayOrder,
-		target: role.target,
-		condFormula: role.condFormula,
-		isAdministrator: role.isAdministrator,
-		isModerator: role.isModerator,
-		isPublic: role.isPublic,
-		isExplorable: role.isExplorable,
-		asBadge: role.asBadge,
-		canEditMembersByModerator: role.canEditMembersByModerator,
-		policies: role.policies,
+		name: role.value.name,
+		description: role.value.description,
+		color: role.value.color === '' ? null : role.value.color,
+		iconUrl: role.value.iconUrl === '' ? null : role.value.iconUrl,
+		displayOrder: role.value.displayOrder,
+		target: role.value.target,
+		condFormula: role.value.condFormula,
+		isAdministrator: role.value.isAdministrator,
+		isModerator: role.value.isModerator,
+		isPublic: role.value.isPublic,
+		isExplorable: role.value.isExplorable,
+		asBadge: role.value.asBadge,
+		canEditMembersByModerator: role.value.canEditMembersByModerator,
+		policies: role.value.policies,
 	};
 
 	emit('update:modelValue', data);
 });
 
-watch($$(role), save, { deep: true });
+watch(role, save, { deep: true });
 </script>
 
 <style lang="scss" module>

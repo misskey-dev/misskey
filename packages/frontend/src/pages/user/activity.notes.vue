@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import { Chart, ChartDataset } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
@@ -32,12 +32,12 @@ const props = defineProps<{
 	user: Misskey.entities.User;
 }>();
 
-const chartEl = $shallowRef<HTMLCanvasElement>(null);
-let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
+const chartEl = shallowRef<HTMLCanvasElement>(null);
+const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 50;
-let fetching = $ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -87,7 +87,7 @@ async function renderChart() {
 		}, extra);
 	}
 
-	chartInstance = new Chart(chartEl, {
+	chartInstance = new Chart(chartEl.value, {
 		type: 'bar',
 		data: {
 			datasets: [
@@ -161,10 +161,10 @@ async function renderChart() {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor), chartLegend(legendEl)],
+		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],
 	});
 
-	fetching = false;
+	fetching.value = false;
 }
 
 onMounted(async () => {

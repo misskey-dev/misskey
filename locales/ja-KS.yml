@@ -979,6 +979,7 @@ assign: "アサイン"
 unassign: "アサインを解除"
 color: "色"
 manageCustomEmojis: "カスタム絵文字の管理"
+manageAvatarDecorations: "アバターを飾るモンの管理"
 youCannotCreateAnymore: "これ以上作れなさそうやわ"
 cannotPerformTemporary: "一時的に利用できへんで"
 cannotPerformTemporaryDescription: "操作回数が制限を超えたから一時的に利用できへんくなったで。ちょっと時間置いてからもう一回やってやー。"
@@ -1132,6 +1133,10 @@ mutualFollow: "お互いフォローしてんで"
 fileAttachedOnly: "ファイル付きのみ"
 showRepliesToOthersInTimeline: "タイムラインに他の人への返信とかも含めんで"
 hideRepliesToOthersInTimeline: "タイムラインに他の人への返信とかは見ーへんで"
+showRepliesToOthersInTimelineAll: ""
+hideRepliesToOthersInTimelineAll: ""
+confirmShowRepliesAll: ""
+confirmHideRepliesAll: ""
 externalServices: "他のサイトのサービス"
 impressum: "運営者の情報"
 impressumUrl: "運営者の情報URL"
@@ -1139,6 +1144,20 @@ impressumDescription: "ドイツなどのほんま1部の国と地域ではな�
 privacyPolicy: "プライバシーポリシー"
 privacyPolicyUrl: "プライバシーポリシーURL"
 tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
+avatarDecorations: "アイコンデコレーション"
+attach: ""
+detach: ""
+angle: ""
+flip: "反転"
+showAvatarDecorations: ""
+releaseToRefresh: "離してリロード"
+refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロードするで"
+disableStreamingTimeline: "タイムラインのリアルタイム更新をやめるで"
+useGroupedNotifications: "通知をグルーピングしてだすで"
+signupPendingError: "メールアドレスの確認中に問題が起こってえらいこっちゃ。リンクの有効期限が切れてるかもやで"
+cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要やで。"
+doReaction: "ツッコミすんで"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
@@ -1148,6 +1167,10 @@ _announcement:
   tooManyActiveAnnouncementDescription: "アクティブなお知らせが多いため、UXが低下する可能性があります。終了したお知らせはアーカイブすることを検討した方がええよ。"
   readConfirmTitle: "既読にしてええんやな?"
   readConfirmText: "「{title}」の内容を読み、既読にします。"
+  shouldNotBeUsedToPresentPermanentInfo: "新規ユーザーのUXを損ねやすいから、お知らせはストック情報やのうてフロー情報の掲示に使った方がええで。"
+  dialogAnnouncementUxWarn: "ダイアログ形式のお知らせが同時に2つ以上ある場合、UXに悪影響を及ぼす可能性が高くなるから、使用は慎重にすんのがおすすめやで。"
+  silence: "通知せんで"
+  silenceDescription: "オンにすると、このお知らせは通知されないで、既読にする必要もなくなるで。"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
@@ -1160,9 +1183,24 @@ _initialAccountSetting:
   pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をあんたのデバイスで受け取れるで。"
   initialAccountSettingCompleted: "初期設定が終わったで。"
   haveFun: "{name}、楽しんでな～"
-  ifYouNeedLearnMore: "{name}(Misskey)の使い方とかをよー知りたいんやったら{link}をみてな。"
+  youCanContinueTutorial: "このまま{name}(Misskey)の使い方のチュートリアルに進めるけど、ここで中断してすぐに使い始めることもできるで。"
+  startTutorial: "チュートリアルを開始するで"
   skipAreYouSure: "初期設定飛ばすか？"
   laterAreYouSure: "初期設定あとでやり直すん？"
+_initialTutorial:
+  launchTutorial: "チュートリアルを見るで"
+  title: "チュートリアルやで"
+  wellDone: "やるやん"
+  skipAreYouSure: "チュートリアルをやめるか？"
+  _landing:
+    title: "チュートリアルによう来たな"
+    description: "ここでは、Misskeyの基本的な使い方や機能を確認できるで。"
+  _note:
+    title: "ノートってなんや？"
+    description: "Misskeyでの投稿は「ノート」って呼ばれてるで。ノートはタイムラインに時系列で並んでいて、リアルタイムで更新されてるで。"
+    reply: "返信することもできるで。返信に対しての返信も可能で、スレッドのように会話を続けることもできるで。"
+    renote: "そのノートを自分のタイムラインに流して共有することもできるで。テキストを追加して引用することもできるで。"
+    reaction: "ツッコミをつけることもできるで。細かいことは次のページで解説するで。"
 _serverRules:
   description: "新規登録前に見せる、サーバーの簡潔なルールを設定すんで。内容は使うための決め事の要約とすることを推奨するわ。"
 _serverSettings:
@@ -1174,6 +1212,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.jsonのオーバーライド"
   shortName: "略称"
   shortNameDescription: "サーバーの名前が長い時に、代わりに表示することのできるあだ名。"
+  fanoutTimelineDescription: ""
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに引っ越す"
   moveFromSub: "別のアカウントへエイリアスを作る"
@@ -1474,6 +1513,7 @@ _role:
     inviteLimitCycle: "招待コードの発行間隔"
     inviteExpirationTime: "招待コードの有効期限"
     canManageCustomEmojis: "カスタム絵文字の管理"
+    canManageAvatarDecorations: "アバターを飾るモンの管理"
     driveCapacity: "ドライブ容量"
     alwaysMarkNsfw: "勝手にファイルにNSFWをくっつける"
     pinMax: "ノートのピン留めの最大数"
@@ -1593,6 +1633,7 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にもぎょうさんの人からサポートしてもろてんねん。ほんまおおきに🥰"
   patrons: "支援者"
+  projectMembers: ""
 _displayOfSensitiveMedia:
   respect: "きわどいのは見とうない"
   ignore: "きわどいのも見たい"
@@ -1724,16 +1765,6 @@ _time:
   minute: "分"
   hour: "時間"
   day: "日"
-_timelineTutorial:
-  title: "Misskeyってなんや？"
-  step1_1: "これは「タイムライン」や。{name}に投稿された「ノート」が順番に表示されるで。"
-  step1_2: "タイムラインには何個か種類があってな、例えば「ホームタイムライン」だったらあんたのフォローしてる人のノート、「ローカルタイムライン」には{name}全部のノートが流れてくるで。"
-  step2_1: "試しに、何かノートを投稿してみ。画面の鉛筆マークのボタンでフォームが開くで。"
-  step2_2: "最初のノートは、自己紹介とか「{name}始めてみたんや」とかがええと思うで。"
-  step3_1: "投稿できた？"
-  step3_2: "あんたのノートがタイムラインに出てきたら成功や。"
-  step4_1: "ノートには、「ツッコミ」を付けれるで。"
-  step4_2: "ツッコむんやったら、ノートの「+」マークを押して、好きな絵文字を選ぶんやで。"
 _2fa:
   alreadyRegistered: "もう設定終わっとるわ。"
   registerTOTP: "認証アプリの設定はじめる"
@@ -2146,6 +2177,9 @@ _moderationLogTypes:
   createAd: "広告を作んで"
   deleteAd: "広告ほかす"
   updateAd: "広告を更新"
+  createAvatarDecoration: "アイコンデコレーションを作成"
+  updateAvatarDecoration: "アイコンデコレーションを更新"
+  deleteAvatarDecoration: "アイコンデコレーションを削除"
 _fileViewer:
   title: "ファイルの詳しい情報"
   type: "ファイルの種類"
@@ -2154,3 +2188,39 @@ _fileViewer:
   uploadedAt: "追加した日"
   attachedNotes: "ファイルがついてきてるノート"
   thisPageCanBeSeenFromTheAuthor: "このページはこのファイルをアップした人しか見れへんねん。"
+_externalResourceInstaller:
+  title: "ほかのサイトからインストール"
+  checkVendorBeforeInstall: "配ってるとこが信頼できるか確認した上でインストールしてな。"
+  _plugin:
+    title: "このプラグイン、インストールする？"
+    metaTitle: "プラグイン情報"
+  _theme:
+    title: "このテーマインストールする？"
+    metaTitle: "テーマ情報"
+  _meta:
+    base: ""
+  _vendorInfo:
+    title: ""
+    endpoint: ""
+    hashVerify: ""
+  _errors:
+    _invalidParams:
+      title: ""
+      description: ""
+    _resourceTypeNotSupported:
+      title: ""
+      description: ""
+    _failedToFetch:
+      title: ""
+    _pluginParseFailed:
+      title: "AiScriptエラー起こしてもうたねん"
+      description: "データは取得できたものの、AiScript解析時にエラーがあったから読み込めへんかってん。すまんが、プラグインを作った人に問い合わせてくれへん？ごめんな。エラーの詳細はJavaScriptコンソール読んでな。"
+    _pluginInstallFailed:
+      title: "プラグインのインストール失敗してもた"
+      description: "プラグインのインストール中に問題発生してもた、もう1度試してな。エラーの詳細はJavaScriptのコンソール見てや。"
+    _themeParseFailed:
+      title: "テーマ解析エラー"
+      description: "データは取得できたものの、テーマファイル解析時にエラーがあったから読み込めへんかってん。すまんが、テーマ作った人に問い合わせてくれへん？ごめんな。エラーの詳細はJavaScriptコンソール読んでな。"
+    _themeInstallFailed:
+      title: "テーマインストールに失敗してもた"
+      description: "テーマのインストール中に問題発生してもた、もう1度試してな。エラーの詳細はJavaScriptのコンソール見てや。"

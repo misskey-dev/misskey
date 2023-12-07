@@ -16,7 +16,7 @@ import type { AntennasRepository, UserListMembershipsRepository } from '@/models
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -60,11 +60,21 @@ export class AntennaService implements OnApplicationShutdown {
 						lastUsedAt: new Date(body.lastUsedAt),
 					});
 					break;
-				case 'antennaUpdated':
-					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
-						...body,
-						lastUsedAt: new Date(body.lastUsedAt),
-					};
+				case 'antennaUpdated': {
+					const idx = this.antennas.findIndex(a => a.id === body.id);
+					if (idx >= 0) {
+						this.antennas[idx] = {
+							...body,
+							lastUsedAt: new Date(body.lastUsedAt),
+						};
+					} else {
+						// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
+						this.antennas.push({
+							...body,
+							lastUsedAt: new Date(body.lastUsedAt),
+						});
+					}
+				}
 					break;
 				case 'antennaDeleted':
 					this.antennas = this.antennas.filter(a => a.id !== body.id);
@@ -84,7 +94,7 @@ export class AntennaService implements OnApplicationShutdown {
 		const redisPipeline = this.redisForTimelines.pipeline();
 
 		for (const antenna of matchedAntennas) {
-			this.funoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
+			this.fanoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
 

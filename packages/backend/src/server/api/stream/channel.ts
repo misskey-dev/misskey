@@ -41,6 +41,10 @@ export default abstract class Channel {
 		return this.connection.userIdsWhoBlockingMe;
 	}
 
+	protected get userMutedInstances() {
+		return this.connection.userMutedInstances;
+	}
+
 	protected get followingChannels() {
 		return this.connection.followingChannels;
 	}
@@ -67,6 +71,8 @@ export default abstract class Channel {
 	}
 
 	public abstract init(params: any): void;
+
 	public dispose?(): void;
+
 	public onMessage?(type: string, body: any): void;
 }

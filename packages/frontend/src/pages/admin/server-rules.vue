@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
@@ -52,20 +52,20 @@ import MkInput from '@/components/MkInput.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-let serverRules: string[] = $ref(instance.serverRules);
+const serverRules = ref<string[]>(instance.serverRules);
 
 const save = async () => {
 	await os.apiWithDialog('admin/update-meta', {
-		serverRules,
+		serverRules: serverRules.value,
 	});
 	fetchInstance();
 };
 
 const remove = (index: number): void => {
-	serverRules.splice(index, 1);
+	serverRules.value.splice(index, 1);
 };
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.serverRules,

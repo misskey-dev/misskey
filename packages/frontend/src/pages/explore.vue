@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref, shallowRef } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
 import XRoles from './explore.roles.vue';
@@ -36,16 +36,16 @@ const props = withDefaults(defineProps<{
 	initialTab: 'featured',
 });
 
-let tab = $ref(props.initialTab);
-let tagsEl = $shallowRef<InstanceType<typeof MkFoldableSection>>();
+const tab = ref(props.initialTab);
+const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
 
 watch(() => props.tag, () => {
-	if (tagsEl) tagsEl.toggleContent(props.tag == null);
+	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'featured',
 	icon: 'ti ti-bolt',
 	title: i18n.ts.featured,

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import Fastify, { FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
+import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
@@ -86,6 +87,13 @@ export class ServerService implements OnApplicationShutdown {
 			});
 		}
 
+		// Register raw-body parser for ActivityPub HTTP signature validation.
+		await fastify.register(fastifyRawBody, {
+			global: false,
+			encoding: null,
+			runFirst: true,
+		});
+
 		// Register non-serving static server so that the child services can use reply.sendFile.
 		// `root` here is just a placeholder and each call must use its own `rootPath`.
 		fastify.register(fastifyStatic, {
@@ -111,8 +119,8 @@ export class ServerService implements OnApplicationShutdown {
 				return;
 			}
 
-			const name = path.split('@')[0].replace('.webp', '');
-			const host = path.split('@')[1]?.replace('.webp', '');
+			const name = path.split('@')[0].replace(/\.webp$/i, '');
+			const host = path.split('@')[1]?.replace(/\.webp$/i, '');
 
 			const emoji = await this.emojisRepository.findOneBy({
 				// `@.` is the spec of ReactionService.decodeReaction

@@ -52,7 +52,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isMobile" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
+			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
+				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+			</span>
+		</button>
 		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
@@ -87,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
@@ -166,7 +171,7 @@ function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-let columnsEl = $shallowRef<HTMLElement>();
+const columnsEl = shallowRef<HTMLElement>();
 
 const addColumn = async (ev) => {
 	const columns = [
@@ -207,7 +212,7 @@ const onContextmenu = (ev) => {
 
 function onWheel(ev: WheelEvent) {
 	if (ev.deltaX === 0) {
-		columnsEl.scrollLeft += ev.deltaY;
+		columnsEl.value.scrollLeft += ev.deltaY;
 	}
 }
 
@@ -485,5 +490,10 @@ body {
 	color: var(--indicator);
 	font-size: 16px;
 	animation: blink 1s infinite;
+
+	&:has(.itemIndicateValueIcon) {
+		animation: none;
+		font-size: 12px;
+	}
 }
 </style>

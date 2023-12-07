@@ -27,7 +27,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
+			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
+				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+			</span>
+		</button>
 		<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
 		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
@@ -122,16 +127,16 @@ window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
 
-let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsShowing = $ref(false);
-const navFooter = $shallowRef<HTMLElement>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const widgetsShowing = ref(false);
+const navFooter = shallowRef<HTMLElement>();
 const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
-	pageMetadata = info;
-	if (pageMetadata.value) {
-		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+	pageMetadata.value = info;
+	if (pageMetadata.value.value) {
+		document.title = `${pageMetadata.value.value.title} | ${instanceName}`;
 	}
 });
 
@@ -211,16 +216,16 @@ function top() {
 	});
 }
 
-let navFooterHeight = $ref(0);
-provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
+const navFooterHeight = ref(0);
+provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
-watch($$(navFooter), () => {
-	if (navFooter) {
-		navFooterHeight = navFooter.offsetHeight;
-		document.body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
+watch(navFooter, () => {
+	if (navFooter.value) {
+		navFooterHeight.value = navFooter.value.offsetHeight;
+		document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
 		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
 	} else {
-		navFooterHeight = 0;
+		navFooterHeight.value = 0;
 		document.body.style.setProperty('--stickyBottom', '0px');
 		document.body.style.setProperty('--minBottomSpacing', '0px');
 	}
@@ -444,6 +449,11 @@ $widgets-hide-threshold: 1090px;
 	color: var(--indicator);
 	font-size: 16px;
 	animation: blink 1s infinite;
+
+	&:has(.itemIndicateValueIcon) {
+		animation: none;
+		font-size: 12px;
+	}
 }
 
 .menuDrawerBg {

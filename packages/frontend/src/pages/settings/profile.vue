@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
 				@click="openDecoration(avatarDecoration)"
 			>
-				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="2 / 3">{{ avatarDecoration.name }}</MkCondensedLine></div>
+				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
 				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
 				<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
 			</div>
@@ -144,7 +144,7 @@ import MkInfo from '@/components/MkInfo.vue';
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
-let avatarDecorations: any[] = $ref([]);
+const avatarDecorations = ref<any[]>([]);
 
 const profile = reactive({
 	name: $i.name,
@@ -166,7 +166,7 @@ const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name
 const fieldEditMode = ref(false);
 
 os.api('get-avatar-decorations').then(_avatarDecorations => {
-	avatarDecorations = _avatarDecorations;
+	avatarDecorations.value = _avatarDecorations;
 });
 
 function addField() {
@@ -273,9 +273,9 @@ function openDecoration(avatarDecoration) {
 	}, {}, 'closed');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.profile,

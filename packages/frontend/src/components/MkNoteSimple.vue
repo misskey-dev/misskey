@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
 			<p v-if="note.cw != null" :class="$style.cw">
-				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i" :emojiUrls="note.emojis"/>
-				<MkCwButton v-model="showContent" :note="note"/>
+				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
+				<MkCwButton v-model="showContent" :text="note.text" :files="note.files" :poll="note.poll"/>
 			</p>
 			<div v-show="note.cw == null || showContent">
 				<MkSubNoteContent :class="$style.text" :note="note"/>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
@@ -33,7 +33,7 @@ const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const showContent = $ref(false);
+const showContent = ref(false);
 </script>
 
 <style lang="scss" module>

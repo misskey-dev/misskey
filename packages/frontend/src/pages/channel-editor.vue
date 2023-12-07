@@ -24,6 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.sensitive }}</template>
 			</MkSwitch>
 
+			<MkSwitch v-model="allowRenoteToExternal">
+				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
+			</MkSwitch>
+
 			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
@@ -76,7 +80,7 @@ import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from "@/components/MkSwitch.vue";
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -86,21 +90,22 @@ const props = defineProps<{
 	channelId?: string;
 }>();
 
-let channel = $ref(null);
-let name = $ref(null);
-let description = $ref(null);
-let bannerUrl = $ref<string | null>(null);
-let bannerId = $ref<string | null>(null);
-let color = $ref('#000');
-let isSensitive = $ref(false);
+const channel = ref(null);
+const name = ref(null);
+const description = ref(null);
+const bannerUrl = ref<string | null>(null);
+const bannerId = ref<string | null>(null);
+const color = ref('#000');
+const isSensitive = ref(false);
+const allowRenoteToExternal = ref(true);
 const pinnedNotes = ref([]);
 
-watch(() => bannerId, async () => {
-	if (bannerId == null) {
-		bannerUrl = null;
+watch(() => bannerId.value, async () => {
+	if (bannerId.value == null) {
+		bannerUrl.value = null;
 	} else {
-		bannerUrl = (await os.api('drive/files/show', {
-			fileId: bannerId,
+		bannerUrl.value = (await os.api('drive/files/show', {
+			fileId: bannerId.value,
 		})).url;
 	}
 });
@@ -108,19 +113,20 @@ watch(() => bannerId, async () => {
 async function fetchChannel() {
 	if (props.channelId == null) return;
 
-	channel = await os.api('channels/show', {
+	channel.value = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
 
-	name = channel.name;
-	description = channel.description;
-	bannerId = channel.bannerId;
-	bannerUrl = channel.bannerUrl;
-	isSensitive = channel.isSensitive;
-	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
+	name.value = channel.value.name;
+	description.value = channel.value.description;
+	bannerId.value = channel.value.bannerId;
+	bannerUrl.value = channel.value.bannerUrl;
+	isSensitive.value = channel.value.isSensitive;
+	pinnedNotes.value = channel.value.pinnedNoteIds.map(id => ({
 		id,
 	}));
-	color = channel.color;
+	color.value = channel.value.color;
+	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
 }
 
 fetchChannel();
@@ -144,22 +150,20 @@ function removePinnedNote(index: number) {
 
 function save() {
 	const params = {
-		name: name,
-		description: description,
-		bannerId: bannerId,
+		name: name.value,
+		description: description.value,
+		bannerId: bannerId.value,
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
-		color: color,
-		isSensitive: isSensitive,
+		color: color.value,
+		isSensitive: isSensitive.value,
+		allowRenoteToExternal: allowRenoteToExternal.value,
 	};
 
 	if (props.channelId) {
 		params.channelId = props.channelId;
-		os.api('channels/update', params).then(() => {
-			os.success();
-		});
+		os.apiWithDialog('channels/update', params);
 	} else {
-		os.api('channels/create', params).then(created => {
-			os.success();
+		os.apiWithDialog('channels/create', params).then(created => {
 			router.push(`/channels/${created.id}`);
 		});
 	}
@@ -168,7 +172,7 @@ function save() {
 async function archive() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.t('channelArchiveConfirmTitle', { name: name }),
+		title: i18n.t('channelArchiveConfirmTitle', { name: name.value }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
 
@@ -184,17 +188,17 @@ async function archive() {
 
 function setBannerImage(evt) {
 	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
-		bannerId = file.id;
+		bannerId.value = file.id;
 	});
 }
 
 function removeBannerImage() {
-	bannerId = null;
+	bannerId.value = null;
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => props.channelId ? {
 	title: i18n.ts._channel.edit,

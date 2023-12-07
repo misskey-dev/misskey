@@ -155,7 +155,7 @@ const edit = (emoji) => {
 	}, 'closed');
 };
 
-const im = (emoji) => {
+const importEmoji = (emoji) => {
 	os.apiWithDialog('admin/emoji/copy', {
 		emojiId: emoji.id,
 	});
@@ -168,7 +168,7 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	}, {
 		text: i18n.ts.import,
 		icon: 'ti ti-plus',
-		action: () => { im(emoji); },
+		action: () => { importEmoji(emoji); },
 	}], ev.currentTarget ?? ev.target);
 };
 
@@ -286,7 +286,7 @@ const delBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
@@ -296,7 +296,7 @@ const headerActions = $computed(() => [{
 	handler: menu,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'local',
 	title: i18n.ts.local,
 }, {

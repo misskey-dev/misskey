@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton inline @click="copy(plugin)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
 						</div>
 
-						<MkCode :code="plugin.src ?? ''"/>
+						<MkCode :code="plugin.src ?? ''" lang="is"/>
 					</div>
 				</MkFolder>
 			</div>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref } from 'vue';
+import { nextTick, ref, computed } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -77,9 +77,11 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
-function uninstall(plugin) {
+async function uninstall(plugin) {
 	ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
-	os.success();
+	await os.apiWithDialog('i/revoke-token', {
+		token: plugin.token,
+	});
 	nextTick(() => {
 		unisonReload();
 	});
@@ -119,9 +121,9 @@ function changeActive(plugin, active) {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.plugins,

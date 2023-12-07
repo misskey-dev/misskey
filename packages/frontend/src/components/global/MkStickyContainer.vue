@@ -18,36 +18,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
-import { $$ } from 'vue/macros';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
+
 import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const';
 
-const rootEl = $shallowRef<HTMLElement>();
-const headerEl = $shallowRef<HTMLElement>();
-const footerEl = $shallowRef<HTMLElement>();
-const bodyEl = $shallowRef<HTMLElement>();
+const rootEl = shallowRef<HTMLElement>();
+const headerEl = shallowRef<HTMLElement>();
+const footerEl = shallowRef<HTMLElement>();
+const bodyEl = shallowRef<HTMLElement>();
 
-let headerHeight = $ref<string | undefined>();
-let childStickyTop = $ref(0);
+const headerHeight = ref<string | undefined>();
+const childStickyTop = ref(0);
 const parentStickyTop = inject<Ref<number>>(CURRENT_STICKY_TOP, ref(0));
-provide(CURRENT_STICKY_TOP, $$(childStickyTop));
+provide(CURRENT_STICKY_TOP, childStickyTop);
 
-let footerHeight = $ref<string | undefined>();
-let childStickyBottom = $ref(0);
+const footerHeight = ref<string | undefined>();
+const childStickyBottom = ref(0);
 const parentStickyBottom = inject<Ref<number>>(CURRENT_STICKY_BOTTOM, ref(0));
-provide(CURRENT_STICKY_BOTTOM, $$(childStickyBottom));
+provide(CURRENT_STICKY_BOTTOM, childStickyBottom);
 
 const calc = () => {
 	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
-	if (headerEl != null) {
-		childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
-		headerHeight = headerEl.offsetHeight.toString();
+	if (headerEl.value != null) {
+		childStickyTop.value = parentStickyTop.value + headerEl.value.offsetHeight;
+		headerHeight.value = headerEl.value.offsetHeight.toString();
 	}
 
 	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
-	if (footerEl != null) {
-		childStickyBottom = parentStickyBottom.value + footerEl.offsetHeight;
-		footerHeight = footerEl.offsetHeight.toString();
+	if (footerEl.value != null) {
+		childStickyBottom.value = parentStickyBottom.value + footerEl.value.offsetHeight;
+		footerHeight.value = footerEl.value.offsetHeight.toString();
 	}
 };
 
@@ -62,28 +62,28 @@ onMounted(() => {
 
 	watch([parentStickyTop, parentStickyBottom], calc);
 
-	watch($$(childStickyTop), () => {
-		bodyEl.style.setProperty('--stickyTop', `${childStickyTop}px`);
+	watch(childStickyTop, () => {
+		bodyEl.value.style.setProperty('--stickyTop', `${childStickyTop.value}px`);
 	}, {
 		immediate: true,
 	});
 
-	watch($$(childStickyBottom), () => {
-		bodyEl.style.setProperty('--stickyBottom', `${childStickyBottom}px`);
+	watch(childStickyBottom, () => {
+		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
 	}, {
 		immediate: true,
 	});
 
-	headerEl.style.position = 'sticky';
-	headerEl.style.top = 'var(--stickyTop, 0)';
-	headerEl.style.zIndex = '1000';
+	headerEl.value.style.position = 'sticky';
+	headerEl.value.style.top = 'var(--stickyTop, 0)';
+	headerEl.value.style.zIndex = '1000';
 
-	footerEl.style.position = 'sticky';
-	footerEl.style.bottom = 'var(--stickyBottom, 0)';
-	footerEl.style.zIndex = '1000';
+	footerEl.value.style.position = 'sticky';
+	footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
+	footerEl.value.style.zIndex = '1000';
 
-	observer.observe(headerEl);
-	observer.observe(footerEl);
+	observer.observe(headerEl.value);
+	observer.observe(footerEl.value);
 });
 
 onUnmounted(() => {
@@ -91,6 +91,6 @@ onUnmounted(() => {
 });
 
 defineExpose({
-	rootEl: $$(rootEl),
+	rootEl: rootEl,
 });
 </script>

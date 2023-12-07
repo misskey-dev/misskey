@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -23,14 +23,14 @@ import { defaultStore } from '@/store.js';
 
 const zIndex = os.claimZIndex('high');
 
-let hasDisconnected = $ref(false);
+const hasDisconnected = ref(false);
 
 function onDisconnected() {
-	hasDisconnected = true;
+	hasDisconnected.value = true;
 }
 
 function resetDisconnected() {
-	hasDisconnected = false;
+	hasDisconnected.value = false;
 }
 
 function reload() {
