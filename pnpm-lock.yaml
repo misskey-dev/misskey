@@ -754,6 +754,9 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
+      katex:
+        specifier: 0.16.8
+        version: 0.16.8
       matter-js:
         specifier: 0.19.0
         version: 0.19.0
@@ -893,6 +896,9 @@ importers:
       '@types/estree':
         specifier: 1.0.5
         version: 1.0.5
+      '@types/katex':
+        specifier: 0.16.3
+        version: 0.16.3
       '@types/matter-js':
         specifier: 0.19.5
         version: 0.19.5
@@ -8021,6 +8027,10 @@ packages:
     resolution: {integrity: sha512-sOA+eVnHU+FziThpMhuqs/tjFKe5gHVJKIS7g1BzhXP+e2FS8OvtzM0K3IzFxVksDOr98Gz5FJiZVxZ9uFoHhw==}
     dev: true
 
+  /@types/katex@0.16.3:
+  resolution: {integrity: sha512-CeVMX9EhVUW8MWnei05eIRks4D5Wscw/W9Byz1s3PA+yJvcdvq9SaDjiUKvRvEgjpdTyJMjQA43ae4KTwsvOPg==}
+  dev: true
+
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
@@ -14491,6 +14501,13 @@ packages:
     dependencies:
       jwa: 2.0.0
       safe-buffer: 5.2.1
+    dev: false
+
+  /katex@0.16.8:
+    resolution: {integrity: sha512-ftuDnJbcbOckGY11OO+zg3OofESlbR5DRl2cmN8HeWeeFIV7wTXvAOx8kEjZjobhA+9wh2fbKeO6cdcA9Mnovg==}
+    hasBin: true
+    dependencies:
+      commander: 8.3.0
     dev: false
 
   /keyv@4.5.2:
