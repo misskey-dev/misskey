@@ -56,13 +56,12 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 	return promise;
 }
 
-export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
-	hostUrl: string,
+export async function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
+	host: string,
 	endpoint: E, data: P = {} as any,
 	token?: string | null | undefined,
 	signal?: AbortSignal,
 ): Promise<Misskey.api.SwitchCaseResponseType<E, P>> {
-	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	const [hostName, hostUrl] = await (new Promise(resolve => resolve(URL(host))))
 		.then(url => {
