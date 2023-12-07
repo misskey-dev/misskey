@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import XColumn from './column.vue';
 import { Column } from './deck-store.js';
 import MkNotes from '@/components/MkNotes.vue';
@@ -30,11 +30,11 @@ const pagination = {
 	},
 };
 
-const tlComponent: InstanceType<typeof MkNotes> = $ref();
+const tlComponent = ref<InstanceType<typeof MkNotes>>();
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		tlComponent.pagingComponent?.reload().then(() => {
+		tlComponent.value.pagingComponent?.reload().then(() => {
 			res();
 		});
 	});

@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { $i, getAccounts } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance.js';
@@ -62,26 +63,26 @@ defineProps<{
 }>();
 
 // ServiceWorker registration
-let registration = $ref<ServiceWorkerRegistration | undefined>();
+const registration = ref<ServiceWorkerRegistration | undefined>();
 // If this browser supports push notification
-let supported = $ref(false);
+const supported = ref(false);
 // If this browser has already subscribed to push notification
-let pushSubscription = $ref<PushSubscription | null>(null);
-let pushRegistrationInServer = $ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
+const pushSubscription = ref<PushSubscription | null>(null);
+const pushRegistrationInServer = ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
 
 function subscribe() {
-	if (!registration || !supported || !instance.swPublickey) return;
+	if (!registration.value || !supported.value || !instance.swPublickey) return;
 
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
-	return promiseDialog(registration.pushManager.subscribe({
+	return promiseDialog(registration.value.pushManager.subscribe({
 		userVisibleOnly: true,
 		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
 	})
 		.then(async subscription => {
-			pushSubscription = subscription;
+			pushSubscription.value = subscription;
 
 			// Register
-			pushRegistrationInServer = await api('sw/register', {
+			pushRegistrationInServer.value = await api('sw/register', {
 				endpoint: subscription.endpoint,
 				auth: encode(subscription.getKey('auth')),
 				publickey: encode(subscription.getKey('p256dh')),
@@ -102,12 +103,12 @@ function subscribe() {
 }
 
 async function unsubscribe() {
-	if (!pushSubscription) return;
+	if (!pushSubscription.value) return;
 
-	const endpoint = pushSubscription.endpoint;
+	const endpoint = pushSubscription.value.endpoint;
 	const accounts = await getAccounts();
 
-	pushRegistrationInServer = undefined;
+	pushRegistrationInServer.value = undefined;
 
 	if ($i && accounts.length >= 2) {
 		apiWithDialog('sw/unregister', {
@@ -115,11 +116,11 @@ async function unsubscribe() {
 			endpoint,
 		});
 	} else {
-		pushSubscription.unsubscribe();
+		pushSubscription.value.unsubscribe();
 		apiWithDialog('sw/unregister', {
 			endpoint,
 		});
-		pushSubscription = null;
+		pushSubscription.value = null;
 	}
 }
 
@@ -150,20 +151,20 @@ if (navigator.serviceWorker == null) {
 	// TODO: よしなに？
 } else {
 	navigator.serviceWorker.ready.then(async swr => {
-		registration = swr;
+		registration.value = swr;
 
-		pushSubscription = await registration.pushManager.getSubscription();
+		pushSubscription.value = await registration.value.pushManager.getSubscription();
 
 		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
-			supported = true;
+			supported.value = true;
 
-			if (pushSubscription) {
+			if (pushSubscription.value) {
 				const res = await api('sw/show-registration', {
-					endpoint: pushSubscription.endpoint,
+					endpoint: pushSubscription.value.endpoint,
 				});
 
 				if (res) {
-					pushRegistrationInServer = res;
+					pushRegistrationInServer.value = res;
 				}
 			}
 		}
@@ -171,6 +172,6 @@ if (navigator.serviceWorker == null) {
 }
 
 defineExpose({
-	pushRegistrationInServer: $$(pushRegistrationInServer),
+	pushRegistrationInServer: pushRegistrationInServer,
 });
 </script>

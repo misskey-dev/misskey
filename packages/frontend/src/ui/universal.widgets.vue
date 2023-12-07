@@ -13,10 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-let editMode = $ref(false);
+import { computed, ref } from 'vue';
+const editMode = ref(false);
 </script>
 <script lang="ts" setup>
-import { } from 'vue';
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<{
 	place: null,
 });
 
-const widgets = $computed(() => {
+const widgets = computed(() => {
 	if (props.place === null) return defaultStore.reactiveState.widgets.value;
 	if (props.place === 'left') return defaultStore.reactiveState.widgets.value.filter(w => w.place === 'left');
 	return defaultStore.reactiveState.widgets.value.filter(w => w.place !== 'left');

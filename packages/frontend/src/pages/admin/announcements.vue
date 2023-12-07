@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -84,14 +84,14 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-let announcements: any[] = $ref([]);
+const announcements = ref<any[]>([]);
 
 os.api('admin/announcements/list').then(announcementResponse => {
-	announcements = announcementResponse;
+	announcements.value = announcementResponse;
 });
 
 function add() {
-	announcements.unshift({
+	announcements.value.unshift({
 		_id: Math.random().toString(36),
 		id: null,
 		title: 'New announcement',
@@ -111,7 +111,7 @@ function del(announcement) {
 		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		announcements = announcements.filter(x => x !== announcement);
+		announcements.value = announcements.value.filter(x => x !== announcement);
 		os.api('admin/announcements/delete', announcement);
 	});
 }
@@ -134,27 +134,27 @@ async function save(announcement) {
 }
 
 function more() {
-	os.api('admin/announcements/list', { untilId: announcements.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
-		announcements = announcements.concat(announcementResponse);
+	os.api('admin/announcements/list', { untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
+		announcements.value = announcements.value.concat(announcementResponse);
 	});
 }
 
 function refresh() {
 	os.api('admin/announcements/list').then(announcementResponse => {
-		announcements = announcementResponse;
+		announcements.value = announcementResponse;
 	});
 }
 
 refresh();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.announcements,

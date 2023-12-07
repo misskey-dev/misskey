@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import * as os from '@/os.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -52,29 +52,29 @@ const props = withDefaults(defineProps<{
 	initialTab: 'users',
 });
 
-let tab = $ref(props.initialTab);
-let role = $ref();
-let error = $ref();
-let visible = $ref(false);
+const tab = ref(props.initialTab);
+const role = ref();
+const error = ref();
+const visible = ref(false);
 
 watch(() => props.role, () => {
 	os.api('roles/show', {
 		roleId: props.role,
 	}).then(res => {
-		role = res;
-		document.title = `${role?.name} | ${instanceName}`;
-		visible = res.isExplorable && res.isPublic;
+		role.value = res;
+		document.title = `${role.value?.name} | ${instanceName}`;
+		visible.value = res.isExplorable && res.isPublic;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
-			error = i18n.ts.noRole;
+			error.value = i18n.ts.noRole;
 		} else {
-			error = i18n.ts.somethingHappened;
+			error.value = i18n.ts.somethingHappened;
 		}
-		document.title = `${error} | ${instanceName}`;
+		document.title = `${error.value} | ${instanceName}`;
 	});
 }, { immediate: true });
 
-const users = $computed(() => ({
+const users = computed(() => ({
 	endpoint: 'roles/users' as const,
 	limit: 30,
 	params: {
@@ -82,7 +82,7 @@ const users = $computed(() => ({
 	},
 }));
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'users',
 	icon: 'ti ti-users',
 	title: i18n.ts.users,
@@ -93,7 +93,7 @@ const headerTabs = $computed(() => [{
 }]);
 
 definePageMetadata(computed(() => ({
-	title: role?.name,
+	title: role.value?.name,
 	icon: 'ti ti-badge',
 })));
 </script>

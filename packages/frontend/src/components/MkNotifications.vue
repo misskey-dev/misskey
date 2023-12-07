@@ -43,7 +43,7 @@ const props = defineProps<{
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-let pagination = $computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
+const pagination = computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,
 	limit: 20,
 	params: computed(() => ({

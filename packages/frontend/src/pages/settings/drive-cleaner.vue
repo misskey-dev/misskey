@@ -60,7 +60,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
 
-let sortMode = ref('+size');
+const sortMode = ref('+size');
 const pagination = {
 	endpoint: 'drive/files' as const,
 	limit: 10,

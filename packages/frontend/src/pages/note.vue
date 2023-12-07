@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
@@ -61,18 +61,18 @@ const props = defineProps<{
 	noteId: string;
 }>();
 
-let note = $ref<null | Misskey.entities.Note>();
-let clips = $ref();
-let showPrev = $ref(false);
-let showNext = $ref(false);
-let error = $ref();
+const note = ref<null | Misskey.entities.Note>();
+const clips = ref();
+const showPrev = ref(false);
+const showNext = ref(false);
+const error = ref();
 
 const prevPagination = {
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => note ? ({
-		userId: note.userId,
-		untilId: note.id,
+	params: computed(() => note.value ? ({
+		userId: note.value.userId,
+		untilId: note.value.id,
 	}) : null),
 };
 
@@ -80,30 +80,30 @@ const nextPagination = {
 	reversed: true,
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => note ? ({
-		userId: note.userId,
-		sinceId: note.id,
+	params: computed(() => note.value ? ({
+		userId: note.value.userId,
+		sinceId: note.value.id,
 	}) : null),
 };
 
 function fetchNote() {
-	showPrev = false;
-	showNext = false;
-	note = null;
+	showPrev.value = false;
+	showNext.value = false;
+	note.value = null;
 	os.api('notes/show', {
 		noteId: props.noteId,
 	}).then(res => {
-		note = res;
+		note.value = res;
 		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
-		if (note.clippedCount > 0 || new Date(note.createdAt).getTime() < new Date('2023-10-01').getTime()) {
+		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			os.api('notes/clips', {
-				noteId: note.id,
+				noteId: note.value.id,
 			}).then((_clips) => {
-				clips = _clips;
+				clips.value = _clips;
 			});
 		}
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
@@ -111,18 +111,18 @@ watch(() => props.noteId, fetchNote, {
 	immediate: true,
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => note ? {
+definePageMetadata(computed(() => note.value ? {
 	title: i18n.ts.note,
-	subtitle: dateString(note.createdAt),
-	avatar: note.user,
-	path: `/notes/${note.id}`,
+	subtitle: dateString(note.value.createdAt),
+	avatar: note.value.user,
+	path: `/notes/${note.value.id}`,
 	share: {
-		title: i18n.t('noteOf', { user: note.user.name }),
-		text: note.text,
+		title: i18n.t('noteOf', { user: note.value.user.name }),
+		text: note.value.text,
 	},
 } : null));
 </script>

@@ -25,29 +25,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
-let submitting = $ref(false);
+const submitting = ref(false);
 
 const props = defineProps<{
 	code: string;
 }>();
 
 function submit() {
-	if (submitting) return;
-	submitting = true;
+	if (submitting.value) return;
+	submitting.value = true;
 
 	os.api('signup-pending', {
 		code: props.code,
 	}).then(res => {
 		return login(res.i, '/');
 	}).catch(() => {
-		submitting = false;
+		submitting.value = false;
 
 		os.alert({
 			type: 'error',

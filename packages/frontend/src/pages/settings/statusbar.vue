@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -27,11 +27,11 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const statusbars = defaultStore.reactiveState.statusbars;
 
-let userLists = $ref();
+const userLists = ref();
 
 onMounted(() => {
 	os.api('users/lists/list').then(res => {
-		userLists = res;
+		userLists.value = res;
 	});
 });
 
@@ -45,9 +45,9 @@ async function add() {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.statusbar,
