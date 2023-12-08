@@ -1,34 +1,34 @@
 'packages/backend':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['packages/backend/**/*']
+    - any-glob-to-any-file: ['packages/backend/**/*']
 
 'packages/backend:test':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['packages/backend/test/**/*']
+    - any-glob-to-any-file: ['packages/backend/test/**/*']
 
 'packages/frontend':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['packages/frontend/**/*']
+    - any-glob-to-any-file: ['packages/frontend/**/*']
 
 'packages/frontend:test':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['cypress/**/*']
+    - any-glob-to-any-file: ['cypress/**/*']
 
 'packages/sw':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['packages/sw/**/*']
+    - any-glob-to-any-file: ['packages/sw/**/*']
 
 'packages/misskey-js':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['packages/misskey-js/**/*']
+    - any-glob-to-any-file: ['packages/misskey-js/**/*']
 
 'packages/misskey-js:test':
 - any:
   - changed-files:
-    - AnyGlobToAnyFile: ['packages/misskey-js/test/**/*', 'packages/misskey-js/test-d/**/*']
+    - any-glob-to-any-file: ['packages/misskey-js/test/**/*', 'packages/misskey-js/test-d/**/*']
