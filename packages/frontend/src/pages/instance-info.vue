@@ -217,7 +217,7 @@ const headerActions = $computed(() => [{
 	text: `https://${props.host}`,
 	icon: 'ti ti-external-link',
 	handler: () => {
-		window.open(`https://${props.host}`, '_blank');
+		window.open(`https://${props.host}`, '_blank', 'noopener');
 	},
 }]);
 
