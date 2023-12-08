@@ -61,7 +61,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {
-			window.open(props.to, '_blank');
+			window.open(props.to, '_blank', 'noopener');
 		},
 	}, {
 		icon: 'ti ti-link',

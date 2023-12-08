@@ -23,7 +23,7 @@ const query = ref(props.q);
 const search = () => {
 	const sp = new URLSearchParams();
 	sp.append('q', query.value);
-	window.open(`https://www.google.com/search?${sp.toString()}`, '_blank');
+	window.open(`https://www.google.com/search?${sp.toString()}`, '_blank', 'noopener');
 };
 </script>
 

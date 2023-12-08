@@ -112,7 +112,7 @@ const contextmenu = computed(() => ([{
 	icon: 'ti ti-external-link',
 	text: i18n.ts.openInNewTab,
 	action: () => {
-		window.open(url + router.getCurrentPath(), '_blank');
+		window.open(url + router.getCurrentPath(), '_blank', 'noopener');
 		windowEl.value.close();
 	},
 }, {
