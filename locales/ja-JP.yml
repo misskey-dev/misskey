@@ -311,6 +311,7 @@ folderName: "フォルダー名"
 createFolder: "フォルダーを作成"
 renameFolder: "フォルダー名を変更"
 deleteFolder: "フォルダーを削除"
+folder: "フォルダー"
 addFile: "ファイルを追加"
 emptyDrive: "ドライブは空です"
 emptyFolder: "フォルダーは空です"
@@ -437,7 +438,6 @@ share: "共有"
 notFound: "見つかりません"
 notFoundDescription: "指定されたURLに該当するページはありませんでした。"
 uploadFolder: "既定アップロード先"
-cacheClear: "キャッシュを削除"
 markAsReadAllNotifications: "すべての通知を既読にする"
 markAsReadAllUnreadNotes: "すべての投稿を既読にする"
 markAsReadAllTalkMessages: "すべてのチャットを既読にする"
@@ -1027,6 +1027,8 @@ resetPasswordConfirm: "パスワードリセットしますか？"
 sensitiveWords: "センシティブワード"
 sensitiveWordsDescription: "設定したワードが含まれるノートの公開範囲をホームにします。改行で区切って複数設定できます。"
 sensitiveWordsDescription2: "スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。"
+hiddenTags: "非表示ハッシュタグ"
+hiddenTagsDescription: "設定したタグをトレンドに表示させないようにします。改行で区切って複数設定できます。"
 notesSearchNotAvailable: "ノート検索は利用できません。"
 license: "ライセンス"
 unfavoriteConfirm: "お気に入り解除しますか？"
@@ -1166,6 +1168,8 @@ useGroupedNotifications: "通知をグルーピングして表示する"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 doReaction: "リアクションする"
+code: "コード"
+reloadRequiredToApplySettings: "設定の反映にはリロードが必要です。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2012,6 +2016,7 @@ _widgets:
   _userList:
     chooseList: "リストを選択"
   clicker: "クリッカー"
+  birthdayFollowings: "今日誕生日のユーザー"
 
 _cw:
   hide: "隠す"
@@ -2386,3 +2391,17 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "テーマのインストールに失敗しました"
       description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+
+_dataSaver:
+  _media:
+    title: "メディアの読み込み"
+    description: "画像・動画が自動で読み込まれるのを防止します。隠れている画像・動画はタップすると読み込まれます。"
+  _avatar:
+    title: "アイコン画像"
+    description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
+  _urlPreview:
+    title: "URLプレビューのサムネイル"
+    description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
+  _code:
+    title: "コードハイライト"
+    description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"

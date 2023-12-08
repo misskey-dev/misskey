@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
@@ -35,14 +35,14 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let file: any = $ref(null);
+const file = ref<any>(null);
 
 async function choose() {
 	os.selectDriveFile(false).then((fileResponse) => {
-		file = fileResponse[0];
+		file.value = fileResponse[0];
 		emit('update:modelValue', {
 			...props.modelValue,
-			fileId: file.id,
+			fileId: file.value.id,
 		});
 	});
 }
@@ -54,7 +54,7 @@ onMounted(async () => {
 		os.api('drive/files/show', {
 			fileId: props.modelValue.fileId,
 		}).then(fileResponse => {
-			file = fileResponse;
+			file.value = fileResponse;
 		});
 	}
 });

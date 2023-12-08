@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -106,9 +106,9 @@ onMounted(() => {
 	});
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.email,

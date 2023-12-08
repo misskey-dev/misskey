@@ -17,21 +17,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 
-let moderators: any = $ref(null);
-let fetching = $ref(true);
+const moderators = ref<any>(null);
+const fetching = ref(true);
 
 onMounted(async () => {
-	moderators = await os.api('admin/show-users', {
+	moderators.value = await os.api('admin/show-users', {
 		sort: '+lastActiveDate',
 		state: 'adminOrModerator',
 		limit: 30,
 	});
 
-	fetching = false;
+	fetching.value = false;
 });
 </script>
 

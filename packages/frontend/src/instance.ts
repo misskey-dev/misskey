@@ -15,7 +15,7 @@ const cached = miLocalStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(cached ? JSON.parse(cached) : {
+export const instance: Misskey.entities.MetaResponse = reactive(cached ? JSON.parse(cached) : {
 	// TODO: set default values
 });
 

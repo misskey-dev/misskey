@@ -63,7 +63,7 @@ async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLE
 </script>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -86,7 +86,7 @@ const container = shallowRef<HTMLElement | null | undefined>(undefined);
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
-const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
+const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
 let lightbox: PhotoSwipeLightbox | null;
 
 const popstateHandler = (): void => {

@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import MkFlashPreview from '@/components/MkFlashPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -48,7 +48,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const router = useRouter();
 
-let tab = $ref('featured');
+const tab = ref('featured');
 
 const featuredFlashsPagination = {
 	endpoint: 'flash/featured' as const,
@@ -67,13 +67,13 @@ function create() {
 	router.push('/play/new');
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'featured',
 	title: i18n.ts._play.featured,
 	icon: 'ti ti-flare',

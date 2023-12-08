@@ -21,6 +21,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
+			ref: 'InviteCode',
 		},
 	},
 } as const;

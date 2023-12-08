@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user.js';
@@ -80,18 +80,18 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let user = $ref<Misskey.entities.UserDetailed | null>(null);
-let top = $ref(0);
-let left = $ref(0);
+const user = ref<Misskey.entities.UserDetailed | null>(null);
+const top = ref(0);
+const left = ref(0);
 
 function showMenu(ev: MouseEvent) {
-	const { menu, cleanup } = getUserMenu(user);
+	const { menu, cleanup } = getUserMenu(user.value);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 onMounted(() => {
 	if (typeof props.q === 'object') {
-		user = props.q;
+		user.value = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
 			Misskey.acct.parse(props.q.substring(1)) :
@@ -99,7 +99,7 @@ onMounted(() => {
 
 		os.api('users/show', query).then(res => {
 			if (!props.showing) return;
-			user = res;
+			user.value = res;
 		});
 	}
 
@@ -107,8 +107,8 @@ onMounted(() => {
 	const x = ((rect.left + (props.source.offsetWidth / 2)) - (300 / 2)) + window.pageXOffset;
 	const y = rect.top + props.source.offsetHeight + window.pageYOffset;
 
-	top = y;
-	left = x;
+	top.value = y;
+	left.value = x;
 });
 </script>
 

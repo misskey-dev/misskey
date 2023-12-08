@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
 					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
-					<MkCwButton v-model="showContent" :note="note"/>
+					<MkCwButton v-model="showContent" :text="note.text" :files="note.files" :poll="note.poll"/>
 				</p>
 				<div v-show="note.cw == null || showContent">
 					<MkSubNoteContent :class="$style.text" :note="note"/>
@@ -65,15 +65,15 @@ const props = withDefaults(defineProps<{
 
 const muted = ref($i ? checkWordMute(props.note, $i, $i.mutedWords) : false);
 
-let showContent = $ref(false);
-let replies: Misskey.entities.Note[] = $ref([]);
+const showContent = ref(false);
+const replies = ref<Misskey.entities.Note[]>([]);
 
 if (props.detail) {
 	os.api('notes/children', {
 		noteId: props.note.id,
 		limit: 5,
 	}).then(res => {
-		replies = res;
+		replies.value = res;
 	});
 }
 </script>

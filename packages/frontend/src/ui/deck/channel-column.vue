@@ -19,6 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
@@ -32,8 +33,8 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
-let channel = $shallowRef<Misskey.entities.Channel>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const channel = shallowRef<Misskey.entities.Channel>();
 
 if (props.column.channelId == null) {
 	setChannel();
@@ -58,14 +59,14 @@ async function setChannel() {
 }
 
 async function post() {
-	if (!channel || channel.id !== props.column.channelId) {
-		channel = await os.api('channels/show', {
+	if (!channel.value || channel.value.id !== props.column.channelId) {
+		channel.value = await os.api('channels/show', {
 			channelId: props.column.channelId,
 		});
 	}
 
 	os.post({
-		channel,
+		channel: channel.value,
 	});
 }
 
