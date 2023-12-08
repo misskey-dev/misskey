@@ -96,7 +96,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			utils.assertString(url);
-			window.open(url.value, '_blank');
+			window.open(url.value, '_blank', 'noopener');
 		}),
 		'Plugin:config': values.OBJ(config),
 	};

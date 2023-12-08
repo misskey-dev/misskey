@@ -107,31 +107,31 @@ function showMenu(ev) {
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
 		action: () => {
-			window.open(instance.impressumUrl, '_blank');
+			window.open(instance.impressumUrl, '_blank', 'noopener');
 		},
 	} : undefined, (instance.tosUrl) ? {
 		text: i18n.ts.termsOfService,
 		icon: 'ti ti-notebook',
 		action: () => {
-			window.open(instance.tosUrl, '_blank');
+			window.open(instance.tosUrl, '_blank', 'noopener');
 		},
 	} : undefined, (instance.privacyPolicyUrl) ? {
 		text: i18n.ts.privacyPolicy,
 		icon: 'ti ti-shield-lock',
 		action: () => {
-			window.open(instance.privacyPolicyUrl, '_blank');
+			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
 		},
 	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : null, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.md', '_blank');
+			window.open('https://misskey-hub.net/help.md', '_blank', 'noopener');
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function exploreOtherServers() {
-	window.open('https://join.misskey.page/instances', '_blank');
+	window.open('https://join.misskey.page/instances', '_blank', 'noopener');
 }
 </script>
 

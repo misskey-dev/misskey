@@ -120,7 +120,7 @@ const headerActions = computed(() => [{
 	text: i18n.ts.openInNewTab,
 	icon: 'ti ti-external-link',
 	handler: () => {
-		window.open(file.value.url, '_blank');
+		window.open(file.value.url, '_blank', 'noopener');
 	},
 }]);
 

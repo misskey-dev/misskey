@@ -56,7 +56,7 @@ const headerActions = computed(() => [{
 	icon: 'ti ti-external-link',
 	text: i18n.ts.dashboard,
 	handler: () => {
-		window.open(config.url + '/queue', '_blank');
+		window.open(config.url + '/queue', '_blank', 'noopener');
 	},
 }]);
 
