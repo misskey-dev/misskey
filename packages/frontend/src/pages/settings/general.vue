@@ -293,6 +293,7 @@ const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroup
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
+  miLocalStorage.removeItem('localeVersion');
 });
 
 watch(fontSize, () => {
