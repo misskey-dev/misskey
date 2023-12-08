@@ -88,9 +88,12 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/bui
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
 
+RUN corepack pack
+
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV MALLOC_CONF=background_thread:true,metadata_thp:auto,dirty_decay_ms:30000,muzzy_decay_ms:30000
 ENV NODE_ENV=production
+ENV COREPACK_ENABLE_NETWORK=0
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart:docker"]
