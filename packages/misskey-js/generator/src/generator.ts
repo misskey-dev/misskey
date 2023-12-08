@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'fs/promises';
 import { OpenAPIV3 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
 import SwaggerParser from '@apidevtools/swagger-parser';
-import openapiTS, { OperationObject } from 'openapi-typescript';
+import openapiTS from 'openapi-typescript';
 
 function generateVersionHeaderComment(openApiDocs: OpenAPIV3.Document): string {
 	const contents = {
