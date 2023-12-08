@@ -261,7 +261,7 @@ provideMetadataReceiver((info) => {
 		childInfo.value = null;
 	} else {
 		childInfo.value = info;
-		INFO.value.hideWidgets = info.value.hideWidgets ?? undefined;
+		INFO.value.needWideArea = info.value.needWideArea ?? undefined;
 	}
 });
 
