@@ -21,6 +21,8 @@ const devConfig = {
 				target: 'http://localhost:3000/',
 			},
 			'/assets': 'http://localhost:3000/',
+			'/static-assets': 'http://localhost:3000/',
+			'/client-assets': 'http://localhost:3000/',
 			'/files': 'http://localhost:3000/',
 			'/twemoji': 'http://localhost:3000/',
 			'/fluent-emoji': 'http://localhost:3000/',
