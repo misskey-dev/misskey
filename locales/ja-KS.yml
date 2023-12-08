@@ -1169,6 +1169,7 @@ signupPendingError: "メアド確認してたらなんか変なことなった�
 cwNotationRequired: "「内容を隠す」んやったら注釈書かなアカンで。"
 doReaction: "ツッコむで"
 code: "コード"
+reloadRequiredToApplySettings: "設定を見るんにはリロードが必要やで。"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "オンにしたらこのお知らせができた時点でおる人らにだけお知らせが行くで。切ったらこの知らせが行ったあとにアカウント作った人にもちゃんとお知らせが行くで。"
