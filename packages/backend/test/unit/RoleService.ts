@@ -288,6 +288,8 @@ describe('RoleService', () => {
 
 			await roleService.assign(user.id, role.id);
 
+			await sleep(100);
+
 			const assignments = await roleAssignmentsRepository.find({
 				where: {
 					userId: user.id,
@@ -311,6 +313,8 @@ describe('RoleService', () => {
 			});
 
 			await roleService.assign(user.id, role.id);
+
+			await sleep(100);
 
 			const assignments = await roleAssignmentsRepository.find({
 				where: {
