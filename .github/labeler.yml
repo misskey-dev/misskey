@@ -1,21 +1,27 @@
 'packages/backend':
-- packages/backend/**/*
+- any:
+  - changed-files: ['packages/backend/**/*']
 
 'packages/backend:test':
-- packages/backend/test/**/*
+- any:
+  - changed-files: ['packages/backend/test/**/*']
 
 'packages/frontend':
-- packages/frontend/**/*
+- any:
+  - changed-files: ['packages/frontend/**/*']
 
 'packages/frontend:test':
-- cypress/**/*
+- any:
+  - changed-files: ['cypress/**/*']
 
 'packages/sw':
-- packages/sw/**/*
+- any:
+  - changed-files: ['packages/sw/**/*']
 
 'packages/misskey-js':
-- packages/misskey-js/**/*
+- any:
+  - changed-files: ['packages/misskey-js/**/*']
 
 'packages/misskey-js:test':
-- packages/misskey-js/test/**/*
-- packages/misskey-js/test-d/**/*
+- any:
+  - changed-files: ['packages/misskey-js/test/**/*', 'packages/misskey-js/test-d/**/*']
