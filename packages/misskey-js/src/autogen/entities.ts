@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0-beta.1
- * generatedAt: 2023-12-04T11:17:52.154Z
+ * version: 2023.11.0-beta.3
+ * generatedAt: 2023-12-08T04:57:48.409Z
  */
 
 import { operations } from './types.js';
@@ -43,6 +43,7 @@ export type AdminEmojiCopyRequest = operations['admin/emoji/copy']['requestBody'
 export type AdminEmojiCopyResponse = operations['admin/emoji/copy']['responses']['200']['content']['application/json'];
 export type AdminEmojiDeleteBulkRequest = operations['admin/emoji/delete-bulk']['requestBody']['content']['application/json'];
 export type AdminEmojiDeleteRequest = operations['admin/emoji/delete']['requestBody']['content']['application/json'];
+export type AdminEmojiImportZipRequest = operations['admin/emoji/import-zip']['requestBody']['content']['application/json'];
 export type AdminEmojiListRemoteRequest = operations['admin/emoji/list-remote']['requestBody']['content']['application/json'];
 export type AdminEmojiListRemoteResponse = operations['admin/emoji/list-remote']['responses']['200']['content']['application/json'];
 export type AdminEmojiListRequest = operations['admin/emoji/list']['requestBody']['content']['application/json'];
@@ -119,6 +120,7 @@ export type AppCreateRequest = operations['app/create']['requestBody']['content'
 export type AppCreateResponse = operations['app/create']['responses']['200']['content']['application/json'];
 export type AppShowRequest = operations['app/show']['requestBody']['content']['application/json'];
 export type AppShowResponse = operations['app/show']['responses']['200']['content']['application/json'];
+export type AuthAcceptRequest = operations['auth/accept']['requestBody']['content']['application/json'];
 export type AuthSessionGenerateRequest = operations['auth/session/generate']['requestBody']['content']['application/json'];
 export type AuthSessionGenerateResponse = operations['auth/session/generate']['responses']['200']['content']['application/json'];
 export type AuthSessionShowRequest = operations['auth/session/show']['requestBody']['content']['application/json'];
@@ -278,13 +280,31 @@ export type HashtagsTrendResponse = operations['hashtags/trend']['responses']['2
 export type HashtagsUsersRequest = operations['hashtags/users']['requestBody']['content']['application/json'];
 export type HashtagsUsersResponse = operations['hashtags/users']['responses']['200']['content']['application/json'];
 export type IResponse = operations['i']['responses']['200']['content']['application/json'];
+export type I2faDoneRequest = operations['i/2fa/done']['requestBody']['content']['application/json'];
+export type I2faKeyDoneRequest = operations['i/2fa/key-done']['requestBody']['content']['application/json'];
+export type I2faPasswordLessRequest = operations['i/2fa/password-less']['requestBody']['content']['application/json'];
+export type I2faRegisterKeyRequest = operations['i/2fa/register-key']['requestBody']['content']['application/json'];
+export type I2faRegisterRequest = operations['i/2fa/register']['requestBody']['content']['application/json'];
+export type I2faUpdateKeyRequest = operations['i/2fa/update-key']['requestBody']['content']['application/json'];
+export type I2faRemoveKeyRequest = operations['i/2fa/remove-key']['requestBody']['content']['application/json'];
+export type I2faUnregisterRequest = operations['i/2fa/unregister']['requestBody']['content']['application/json'];
+export type IAppsRequest = operations['i/apps']['requestBody']['content']['application/json'];
+export type IAuthorizedAppsRequest = operations['i/authorized-apps']['requestBody']['content']['application/json'];
 export type IClaimAchievementRequest = operations['i/claim-achievement']['requestBody']['content']['application/json'];
+export type IChangePasswordRequest = operations['i/change-password']['requestBody']['content']['application/json'];
+export type IDeleteAccountRequest = operations['i/delete-account']['requestBody']['content']['application/json'];
+export type IExportFollowingRequest = operations['i/export-following']['requestBody']['content']['application/json'];
 export type IFavoritesRequest = operations['i/favorites']['requestBody']['content']['application/json'];
 export type IFavoritesResponse = operations['i/favorites']['responses']['200']['content']['application/json'];
 export type IGalleryLikesRequest = operations['i/gallery/likes']['requestBody']['content']['application/json'];
 export type IGalleryLikesResponse = operations['i/gallery/likes']['responses']['200']['content']['application/json'];
 export type IGalleryPostsRequest = operations['i/gallery/posts']['requestBody']['content']['application/json'];
 export type IGalleryPostsResponse = operations['i/gallery/posts']['responses']['200']['content']['application/json'];
+export type IImportBlockingRequest = operations['i/import-blocking']['requestBody']['content']['application/json'];
+export type IImportFollowingRequest = operations['i/import-following']['requestBody']['content']['application/json'];
+export type IImportMutingRequest = operations['i/import-muting']['requestBody']['content']['application/json'];
+export type IImportUserListsRequest = operations['i/import-user-lists']['requestBody']['content']['application/json'];
+export type IImportAntennasRequest = operations['i/import-antennas']['requestBody']['content']['application/json'];
 export type INotificationsRequest = operations['i/notifications']['requestBody']['content']['application/json'];
 export type INotificationsResponse = operations['i/notifications']['responses']['200']['content']['application/json'];
 export type INotificationsGroupedRequest = operations['i/notifications-grouped']['requestBody']['content']['application/json'];
@@ -296,6 +316,7 @@ export type IPagesResponse = operations['i/pages']['responses']['200']['content'
 export type IPinRequest = operations['i/pin']['requestBody']['content']['application/json'];
 export type IPinResponse = operations['i/pin']['responses']['200']['content']['application/json'];
 export type IReadAnnouncementRequest = operations['i/read-announcement']['requestBody']['content']['application/json'];
+export type IRegenerateTokenRequest = operations['i/regenerate-token']['requestBody']['content']['application/json'];
 export type IRegistryGetAllRequest = operations['i/registry/get-all']['requestBody']['content']['application/json'];
 export type IRegistryGetDetailRequest = operations['i/registry/get-detail']['requestBody']['content']['application/json'];
 export type IRegistryGetRequest = operations['i/registry/get']['requestBody']['content']['application/json'];
@@ -303,10 +324,15 @@ export type IRegistryKeysWithTypeRequest = operations['i/registry/keys-with-type
 export type IRegistryKeysRequest = operations['i/registry/keys']['requestBody']['content']['application/json'];
 export type IRegistryRemoveRequest = operations['i/registry/remove']['requestBody']['content']['application/json'];
 export type IRegistrySetRequest = operations['i/registry/set']['requestBody']['content']['application/json'];
+export type IRevokeTokenRequest = operations['i/revoke-token']['requestBody']['content']['application/json'];
+export type ISigninHistoryRequest = operations['i/signin-history']['requestBody']['content']['application/json'];
+export type ISigninHistoryResponse = operations['i/signin-history']['responses']['200']['content']['application/json'];
 export type IUnpinRequest = operations['i/unpin']['requestBody']['content']['application/json'];
 export type IUnpinResponse = operations['i/unpin']['responses']['200']['content']['application/json'];
+export type IUpdateEmailRequest = operations['i/update-email']['requestBody']['content']['application/json'];
 export type IUpdateRequest = operations['i/update']['requestBody']['content']['application/json'];
 export type IUpdateResponse = operations['i/update']['responses']['200']['content']['application/json'];
+export type IMoveRequest = operations['i/move']['requestBody']['content']['application/json'];
 export type IWebhooksCreateRequest = operations['i/webhooks/create']['requestBody']['content']['application/json'];
 export type IWebhooksShowRequest = operations['i/webhooks/show']['requestBody']['content']['application/json'];
 export type IWebhooksUpdateRequest = operations['i/webhooks/update']['requestBody']['content']['application/json'];
@@ -321,6 +347,8 @@ export type MetaResponse = operations['meta']['responses']['200']['content']['ap
 export type EmojisResponse = operations['emojis']['responses']['200']['content']['application/json'];
 export type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
 export type EmojiResponse = operations['emoji']['responses']['200']['content']['application/json'];
+export type MiauthGenTokenRequest = operations['miauth/gen-token']['requestBody']['content']['application/json'];
+export type MiauthGenTokenResponse = operations['miauth/gen-token']['responses']['200']['content']['application/json'];
 export type MuteCreateRequest = operations['mute/create']['requestBody']['content']['application/json'];
 export type MuteDeleteRequest = operations['mute/delete']['requestBody']['content']['application/json'];
 export type MuteListRequest = operations['mute/list']['requestBody']['content']['application/json'];
@@ -383,6 +411,7 @@ export type NotesUnrenoteRequest = operations['notes/unrenote']['requestBody']['
 export type NotesUserListTimelineRequest = operations['notes/user-list-timeline']['requestBody']['content']['application/json'];
 export type NotesUserListTimelineResponse = operations['notes/user-list-timeline']['responses']['200']['content']['application/json'];
 export type NotificationsCreateRequest = operations['notifications/create']['requestBody']['content']['application/json'];
+export type PagePushRequest = operations['page-push']['requestBody']['content']['application/json'];
 export type PagesCreateRequest = operations['pages/create']['requestBody']['content']['application/json'];
 export type PagesCreateResponse = operations['pages/create']['responses']['200']['content']['application/json'];
 export type PagesDeleteRequest = operations['pages/delete']['requestBody']['content']['application/json'];
