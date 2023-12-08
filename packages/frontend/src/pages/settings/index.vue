@@ -236,6 +236,7 @@ provideMetadataReceiver((info) => {
 		childInfo.value = null;
 	} else {
 		childInfo.value = info;
+		INFO.value.needWideArea = info.value?.needWideArea ?? undefined;
 	}
 });
 

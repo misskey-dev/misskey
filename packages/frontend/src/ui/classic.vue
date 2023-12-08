@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!showMenuOnTop" class="sidebar">
 			<XSidebar/>
 		</div>
-		<div v-else ref="widgetsLeft" class="widgets left">
+		<div v-else-if="!pageMetadata?.needWideArea" ref="widgetsLeft" class="widgets left">
 			<XWidgets place="left" :marginTop="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</main>
 
-		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
+		<div v-if="isDesktop && !pageMetadata?.needWideArea" ref="widgetsRight" class="widgets right">
 			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
@@ -64,7 +64,7 @@ const DESKTOP_THRESHOLD = 1100;
 
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
-const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | PageMetadata>();
 const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
@@ -76,9 +76,9 @@ const widgetsRight = ref();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
-	pageMetadata.value = info;
-	if (pageMetadata.value.value) {
-		document.title = `${pageMetadata.value.value.title} | ${instanceName}`;
+	pageMetadata.value = info.value;
+	if (pageMetadata.value) {
+		document.title = `${pageMetadata.value.title} | ${instanceName}`;
 	}
 });
 provide('shouldHeaderThin', showMenuOnTop.value);
