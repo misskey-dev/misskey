@@ -21,6 +21,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -109,6 +110,7 @@ export class RoleService implements OnApplicationShutdown {
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
 		private fanoutTimelineService: FanoutTimelineService,
+		private notificationService: NotificationService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -423,6 +425,12 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+
+		if (role.isPublic) {
+			this.notificationService.createNotification(userId, 'roleAssigned', {
+				roleId: roleId,
+			});
+		}
 
 		if (moderator) {
 			const user = await this.usersRepository.findOneByOrFail({ id: userId });
