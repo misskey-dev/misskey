@@ -13,10 +13,6 @@
 
 -->
 ## 2023.x.x (unreleased)
-### Changes
-- AiScript: `Mk:apiExternal`の送信先は連合中のサーバーに限定されるようになりました。
-
-## 2023.x.x (unreleased)
 
 ### General
 - Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
@@ -49,6 +45,7 @@
 - Fix: 共有機能をサポートしていないブラウザの場合は共有ボタンを非表示にする #11305
 - Fix: 通知のグルーピング設定を変更してもリロードされるまで表示が変わらない問題を修正 #12470
 - Fix: 長い名前のチャンネルにおける投稿フォームの表示が崩れる問題を修正
+- AiScript: `Mk:apiExternal`の送信先は連合中のサーバーに限定されるようになりました。
 
 ### Server
 - Enhance: MFM `$[ruby ]` が他ソフトウェアと連合されるように
