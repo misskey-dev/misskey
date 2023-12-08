@@ -43,7 +43,7 @@ export function genOpenapiSpec(config: Config) {
 
 	// 書き換えたりするのでディープコピーしておく。そのまま編集するとメモリ上の値が汚れて次回以降の出力に影響する
 	const copiedEndpoints = JSON.parse(JSON.stringify(endpoints)) as IEndpoint[];
-	for (const endpoint of copiedEndpoints.filter(ep => !ep.meta.secure)) {
+	for (const endpoint of copiedEndpoints) {
 		const errors = {} as any;
 
 		if (endpoint.meta.errors) {
@@ -59,6 +59,11 @@ export function genOpenapiSpec(config: Config) {
 		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
 
 		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
+
+		if (endpoint.meta.secure) {
+			desc += '**Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.\n';
+		}
+
 		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
 		if (endpoint.meta.kind) {
 			const kind = endpoint.meta.kind;

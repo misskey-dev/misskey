@@ -159,6 +159,68 @@ async function generateEndpoints(
 	await writeFile(endpointOutputPath, endpointOutputLine.join('\n'));
 }
 
+async function generateApiClientJSDoc(
+	openApiDocs: OpenAPIV3.Document,
+	apiClientFileName: string,
+	endpointsFileName: string,
+	warningsOutputPath: string,
+) {
+	const endpoints: { operationId: string; description: string; }[] = [];
+
+	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
+	const paths = openApiDocs.paths;
+	const postPathItems = Object.keys(paths)
+		.map(it => paths[it]?.post)
+		.filter(filterUndefined);
+
+	for (const operation of postPathItems) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const operationId = operation.operationId!;
+
+		if (operation.description) {
+			endpoints.push({
+				operationId: operationId,
+				description: operation.description,
+			});
+		}
+	}
+
+	const endpointOutputLine: string[] = [];
+
+	endpointOutputLine.push(generateVersionHeaderComment(openApiDocs));
+	endpointOutputLine.push('');
+
+	endpointOutputLine.push(`import type { SwitchCaseResponseType } from '${toImportPath(apiClientFileName)}';`);
+	endpointOutputLine.push(`import type { Endpoints } from '${toImportPath(endpointsFileName)}';`);
+	endpointOutputLine.push('');
+
+	endpointOutputLine.push(`declare module '${toImportPath(apiClientFileName)}' {`);
+	endpointOutputLine.push('  export interface APIClient {');
+	for (let i = 0; i < endpoints.length; i++) {
+		const endpoint = endpoints[i];
+
+		endpointOutputLine.push(
+			'    /**',
+			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
+			'     */',
+			`    request<E extends '${endpoint.operationId}', P extends Endpoints[E][\'req\']>(`,
+			'      endpoint: E,',
+			'      params: P,',
+			'      credential?: string | null,',
+			'    ): Promise<SwitchCaseResponseType<E, P>>;',
+		);
+
+		if (i < endpoints.length - 1) {
+			endpointOutputLine.push('\n');
+		}
+	}
+	endpointOutputLine.push('  }');
+	endpointOutputLine.push('}');
+	endpointOutputLine.push('');
+
+	await writeFile(warningsOutputPath, endpointOutputLine.join('\n'));
+}
+
 function isRequestBodyObject(value: unknown): value is OpenAPIV3.RequestBodyObject {
 	if (!value) {
 		return false;
@@ -279,6 +341,9 @@ async function main() {
 	const entitiesFileName = `${generatePath}/entities.ts`;
 	const endpointFileName = `${generatePath}/endpoint.ts`;
 	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
+
+	const apiClientWarningFileName = `${generatePath}/apiClientJSDoc.ts`;
+	await generateApiClientJSDoc(openApiDocs, '../api.ts', endpointFileName, apiClientWarningFileName);
 }
 
 main();

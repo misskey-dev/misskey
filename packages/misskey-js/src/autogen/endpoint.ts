@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0-beta.1
- * generatedAt: 2023-12-04T11:17:52.156Z
+ * version: 2023.11.0-beta.3
+ * generatedAt: 2023-12-08T04:57:48.415Z
  */
 
 import type {
@@ -41,6 +41,7 @@ import type {
 	AdminEmojiCopyResponse,
 	AdminEmojiDeleteBulkRequest,
 	AdminEmojiDeleteRequest,
+	AdminEmojiImportZipRequest,
 	AdminEmojiListRemoteRequest,
 	AdminEmojiListRemoteResponse,
 	AdminEmojiListRequest,
@@ -117,6 +118,7 @@ import type {
 	AppCreateResponse,
 	AppShowRequest,
 	AppShowResponse,
+	AuthAcceptRequest,
 	AuthSessionGenerateRequest,
 	AuthSessionGenerateResponse,
 	AuthSessionShowRequest,
@@ -276,13 +278,31 @@ import type {
 	HashtagsUsersRequest,
 	HashtagsUsersResponse,
 	IResponse,
+	I2faDoneRequest,
+	I2faKeyDoneRequest,
+	I2faPasswordLessRequest,
+	I2faRegisterKeyRequest,
+	I2faRegisterRequest,
+	I2faUpdateKeyRequest,
+	I2faRemoveKeyRequest,
+	I2faUnregisterRequest,
+	IAppsRequest,
+	IAuthorizedAppsRequest,
 	IClaimAchievementRequest,
+	IChangePasswordRequest,
+	IDeleteAccountRequest,
+	IExportFollowingRequest,
 	IFavoritesRequest,
 	IFavoritesResponse,
 	IGalleryLikesRequest,
 	IGalleryLikesResponse,
 	IGalleryPostsRequest,
 	IGalleryPostsResponse,
+	IImportBlockingRequest,
+	IImportFollowingRequest,
+	IImportMutingRequest,
+	IImportUserListsRequest,
+	IImportAntennasRequest,
 	INotificationsRequest,
 	INotificationsResponse,
 	INotificationsGroupedRequest,
@@ -294,6 +314,7 @@ import type {
 	IPinRequest,
 	IPinResponse,
 	IReadAnnouncementRequest,
+	IRegenerateTokenRequest,
 	IRegistryGetAllRequest,
 	IRegistryGetDetailRequest,
 	IRegistryGetRequest,
@@ -301,10 +322,15 @@ import type {
 	IRegistryKeysRequest,
 	IRegistryRemoveRequest,
 	IRegistrySetRequest,
+	IRevokeTokenRequest,
+	ISigninHistoryRequest,
+	ISigninHistoryResponse,
 	IUnpinRequest,
 	IUnpinResponse,
+	IUpdateEmailRequest,
 	IUpdateRequest,
 	IUpdateResponse,
+	IMoveRequest,
 	IWebhooksCreateRequest,
 	IWebhooksShowRequest,
 	IWebhooksUpdateRequest,
@@ -319,6 +345,8 @@ import type {
 	EmojisResponse,
 	EmojiRequest,
 	EmojiResponse,
+	MiauthGenTokenRequest,
+	MiauthGenTokenResponse,
 	MuteCreateRequest,
 	MuteDeleteRequest,
 	MuteListRequest,
@@ -381,6 +409,7 @@ import type {
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
 	NotificationsCreateRequest,
+	PagePushRequest,
 	PagesCreateRequest,
 	PagesCreateResponse,
 	PagesDeleteRequest,
@@ -511,6 +540,7 @@ export type Endpoints = {
 	'admin/emoji/copy': { req: AdminEmojiCopyRequest; res: AdminEmojiCopyResponse };
 	'admin/emoji/delete-bulk': { req: AdminEmojiDeleteBulkRequest; res: EmptyResponse };
 	'admin/emoji/delete': { req: AdminEmojiDeleteRequest; res: EmptyResponse };
+	'admin/emoji/import-zip': { req: AdminEmojiImportZipRequest; res: EmptyResponse };
 	'admin/emoji/list-remote': { req: AdminEmojiListRemoteRequest; res: AdminEmojiListRemoteResponse };
 	'admin/emoji/list': { req: AdminEmojiListRequest; res: AdminEmojiListResponse };
 	'admin/emoji/remove-aliases-bulk': { req: AdminEmojiRemoveAliasesBulkRequest; res: EmptyResponse };
@@ -568,6 +598,7 @@ export type Endpoints = {
 	'ap/show': { req: ApShowRequest; res: ApShowResponse };
 	'app/create': { req: AppCreateRequest; res: AppCreateResponse };
 	'app/show': { req: AppShowRequest; res: AppShowResponse };
+	'auth/accept': { req: AuthAcceptRequest; res: EmptyResponse };
 	'auth/session/generate': { req: AuthSessionGenerateRequest; res: AuthSessionGenerateResponse };
 	'auth/session/show': { req: AuthSessionShowRequest; res: AuthSessionShowResponse };
 	'auth/session/userkey': { req: AuthSessionUserkeyRequest; res: AuthSessionUserkeyResponse };
@@ -631,6 +662,7 @@ export type Endpoints = {
 	'email-address/available': { req: EmailAddressAvailableRequest; res: EmailAddressAvailableResponse };
 	'endpoint': { req: EndpointRequest; res: EmptyResponse };
 	'endpoints': { req: EmptyRequest; res: EndpointsResponse };
+	'export-custom-emojis': { req: EmptyRequest; res: EmptyResponse };
 	'federation/followers': { req: FederationFollowersRequest; res: FederationFollowersResponse };
 	'federation/following': { req: FederationFollowingRequest; res: FederationFollowingResponse };
 	'federation/instances': { req: FederationInstancesRequest; res: FederationInstancesResponse };
@@ -664,10 +696,34 @@ export type Endpoints = {
 	'hashtags/trend': { req: EmptyRequest; res: HashtagsTrendResponse };
 	'hashtags/users': { req: HashtagsUsersRequest; res: HashtagsUsersResponse };
 	'i': { req: EmptyRequest; res: IResponse };
+	'i/2fa/done': { req: I2faDoneRequest; res: EmptyResponse };
+	'i/2fa/key-done': { req: I2faKeyDoneRequest; res: EmptyResponse };
+	'i/2fa/password-less': { req: I2faPasswordLessRequest; res: EmptyResponse };
+	'i/2fa/register-key': { req: I2faRegisterKeyRequest; res: EmptyResponse };
+	'i/2fa/register': { req: I2faRegisterRequest; res: EmptyResponse };
+	'i/2fa/update-key': { req: I2faUpdateKeyRequest; res: EmptyResponse };
+	'i/2fa/remove-key': { req: I2faRemoveKeyRequest; res: EmptyResponse };
+	'i/2fa/unregister': { req: I2faUnregisterRequest; res: EmptyResponse };
+	'i/apps': { req: IAppsRequest; res: EmptyResponse };
+	'i/authorized-apps': { req: IAuthorizedAppsRequest; res: EmptyResponse };
 	'i/claim-achievement': { req: IClaimAchievementRequest; res: EmptyResponse };
+	'i/change-password': { req: IChangePasswordRequest; res: EmptyResponse };
+	'i/delete-account': { req: IDeleteAccountRequest; res: EmptyResponse };
+	'i/export-blocking': { req: EmptyRequest; res: EmptyResponse };
+	'i/export-following': { req: IExportFollowingRequest; res: EmptyResponse };
+	'i/export-mute': { req: EmptyRequest; res: EmptyResponse };
+	'i/export-notes': { req: EmptyRequest; res: EmptyResponse };
+	'i/export-favorites': { req: EmptyRequest; res: EmptyResponse };
+	'i/export-user-lists': { req: EmptyRequest; res: EmptyResponse };
+	'i/export-antennas': { req: EmptyRequest; res: EmptyResponse };
 	'i/favorites': { req: IFavoritesRequest; res: IFavoritesResponse };
 	'i/gallery/likes': { req: IGalleryLikesRequest; res: IGalleryLikesResponse };
 	'i/gallery/posts': { req: IGalleryPostsRequest; res: IGalleryPostsResponse };
+	'i/import-blocking': { req: IImportBlockingRequest; res: EmptyResponse };
+	'i/import-following': { req: IImportFollowingRequest; res: EmptyResponse };
+	'i/import-muting': { req: IImportMutingRequest; res: EmptyResponse };
+	'i/import-user-lists': { req: IImportUserListsRequest; res: EmptyResponse };
+	'i/import-antennas': { req: IImportAntennasRequest; res: EmptyResponse };
 	'i/notifications': { req: INotificationsRequest; res: INotificationsResponse };
 	'i/notifications-grouped': { req: INotificationsGroupedRequest; res: INotificationsGroupedResponse };
 	'i/page-likes': { req: IPageLikesRequest; res: IPageLikesResponse };
@@ -675,15 +731,21 @@ export type Endpoints = {
 	'i/pin': { req: IPinRequest; res: IPinResponse };
 	'i/read-all-unread-notes': { req: EmptyRequest; res: EmptyResponse };
 	'i/read-announcement': { req: IReadAnnouncementRequest; res: EmptyResponse };
+	'i/regenerate-token': { req: IRegenerateTokenRequest; res: EmptyResponse };
 	'i/registry/get-all': { req: IRegistryGetAllRequest; res: EmptyResponse };
 	'i/registry/get-detail': { req: IRegistryGetDetailRequest; res: EmptyResponse };
 	'i/registry/get': { req: IRegistryGetRequest; res: EmptyResponse };
 	'i/registry/keys-with-type': { req: IRegistryKeysWithTypeRequest; res: EmptyResponse };
 	'i/registry/keys': { req: IRegistryKeysRequest; res: EmptyResponse };
 	'i/registry/remove': { req: IRegistryRemoveRequest; res: EmptyResponse };
+	'i/registry/scopes-with-domain': { req: EmptyRequest; res: EmptyResponse };
 	'i/registry/set': { req: IRegistrySetRequest; res: EmptyResponse };
+	'i/revoke-token': { req: IRevokeTokenRequest; res: EmptyResponse };
+	'i/signin-history': { req: ISigninHistoryRequest; res: ISigninHistoryResponse };
 	'i/unpin': { req: IUnpinRequest; res: IUnpinResponse };
+	'i/update-email': { req: IUpdateEmailRequest; res: EmptyResponse };
 	'i/update': { req: IUpdateRequest; res: IUpdateResponse };
+	'i/move': { req: IMoveRequest; res: EmptyResponse };
 	'i/webhooks/create': { req: IWebhooksCreateRequest; res: EmptyResponse };
 	'i/webhooks/list': { req: EmptyRequest; res: EmptyResponse };
 	'i/webhooks/show': { req: IWebhooksShowRequest; res: EmptyResponse };
@@ -696,6 +758,7 @@ export type Endpoints = {
 	'meta': { req: MetaRequest; res: MetaResponse };
 	'emojis': { req: EmptyRequest; res: EmojisResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
+	'miauth/gen-token': { req: MiauthGenTokenRequest; res: MiauthGenTokenResponse };
 	'mute/create': { req: MuteCreateRequest; res: EmptyResponse };
 	'mute/delete': { req: MuteDeleteRequest; res: EmptyResponse };
 	'mute/list': { req: MuteListRequest; res: MuteListResponse };
@@ -736,6 +799,7 @@ export type Endpoints = {
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
 	'notifications/mark-all-as-read': { req: EmptyRequest; res: EmptyResponse };
 	'notifications/test-notification': { req: EmptyRequest; res: EmptyResponse };
+	'page-push': { req: PagePushRequest; res: EmptyResponse };
 	'pages/create': { req: PagesCreateRequest; res: PagesCreateResponse };
 	'pages/delete': { req: PagesDeleteRequest; res: EmptyResponse };
 	'pages/featured': { req: EmptyRequest; res: PagesFeaturedResponse };
