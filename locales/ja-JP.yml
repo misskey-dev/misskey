@@ -2214,7 +2214,7 @@ _notification:
   pollEnded: "アンケートの結果が出ました"
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
-  roleAssigned: "ロールがアサインされました"
+  roleAssigned: "ロールが付与されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
   testNotification: "通知テスト"
