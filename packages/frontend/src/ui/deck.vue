@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
@@ -171,7 +171,7 @@ function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-let columnsEl = $shallowRef<HTMLElement>();
+const columnsEl = shallowRef<HTMLElement>();
 
 const addColumn = async (ev) => {
 	const columns = [
@@ -212,7 +212,7 @@ const onContextmenu = (ev) => {
 
 function onWheel(ev: WheelEvent) {
 	if (ev.deltaX === 0) {
-		columnsEl.scrollLeft += ev.deltaY;
+		columnsEl.value.scrollLeft += ev.deltaY;
 	}
 }
 

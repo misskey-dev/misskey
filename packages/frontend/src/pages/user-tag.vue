@@ -25,7 +25,7 @@ const props = defineProps<{
 	tag: string;
 }>();
 
-const tagUsers = $computed(() => ({
+const tagUsers = computed(() => ({
 	endpoint: 'hashtags/users' as const,
 	limit: 30,
 	params: {

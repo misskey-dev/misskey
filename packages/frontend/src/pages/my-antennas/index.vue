@@ -28,14 +28,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated } from 'vue';
+import { onActivated, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache';
 import { infoImageUrl } from '@/instance.js';
 
-const antennas = $computed(() => antennasCache.value.value ?? []);
+const antennas = computed(() => antennasCache.value.value ?? []);
 
 function fetch() {
 	antennasCache.fetch();
@@ -43,7 +43,7 @@ function fetch() {
 
 fetch();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-refresh',
 	text: i18n.ts.reload,
@@ -53,7 +53,7 @@ const headerActions = $computed(() => [{
 	},
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.manageAntennas,

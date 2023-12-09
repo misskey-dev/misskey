@@ -146,7 +146,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -198,19 +198,19 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-let user = $ref(props.user);
-let parallaxAnimationId = $ref<null | number>(null);
-let narrow = $ref<null | boolean>(null);
-let rootEl = $ref<null | HTMLElement>(null);
-let bannerEl = $ref<null | HTMLElement>(null);
-let memoTextareaEl = $ref<null | HTMLElement>(null);
-let memoDraft = $ref(props.user.memo);
-let isEditingMemo = $ref(false);
-let moderationNote = $ref(props.user.moderationNote);
-let editModerationNote = $ref(false);
+const user = ref(props.user);
+const parallaxAnimationId = ref<null | number>(null);
+const narrow = ref<null | boolean>(null);
+const rootEl = ref<null | HTMLElement>(null);
+const bannerEl = ref<null | HTMLElement>(null);
+const memoTextareaEl = ref<null | HTMLElement>(null);
+const memoDraft = ref(props.user.memo);
+const isEditingMemo = ref(false);
+const moderationNote = ref(props.user.moderationNote);
+const editModerationNote = ref(false);
 
-watch($$(moderationNote), async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
+watch(moderationNote, async () => {
+	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
 
 const pagination = {
@@ -221,32 +221,32 @@ const pagination = {
 	})),
 };
 
-const style = $computed(() => {
+const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
 	return {
 		backgroundImage: `url(${ props.user.bannerUrl })`,
 	};
 });
 
-const age = $computed(() => {
+const age = computed(() => {
 	return calcAge(props.user.birthday);
 });
 
 function menu(ev) {
-	const { menu, cleanup } = getUserMenu(user, router);
+	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 function parallaxLoop() {
-	parallaxAnimationId = window.requestAnimationFrame(parallaxLoop);
+	parallaxAnimationId.value = window.requestAnimationFrame(parallaxLoop);
 	parallax();
 }
 
 function parallax() {
-	const banner = bannerEl as any;
+	const banner = bannerEl.value as any;
 	if (banner == null) return;
 
-	const top = getScrollPosition(rootEl);
+	const top = getScrollPosition(rootEl.value);
 
 	if (top < 0) return;
 
@@ -256,33 +256,33 @@ function parallax() {
 }
 
 function showMemoTextarea() {
-	isEditingMemo = true;
+	isEditingMemo.value = true;
 	nextTick(() => {
-		memoTextareaEl?.focus();
+		memoTextareaEl.value?.focus();
 	});
 }
 
 function adjustMemoTextarea() {
-	if (!memoTextareaEl) return;
-	memoTextareaEl.style.height = '0px';
-	memoTextareaEl.style.height = `${memoTextareaEl.scrollHeight}px`;
+	if (!memoTextareaEl.value) return;
+	memoTextareaEl.value.style.height = '0px';
+	memoTextareaEl.value.style.height = `${memoTextareaEl.value.scrollHeight}px`;
 }
 
 async function updateMemo() {
 	await api('users/update-memo', {
-		memo: memoDraft,
+		memo: memoDraft.value,
 		userId: props.user.id,
 	});
-	isEditingMemo = false;
+	isEditingMemo.value = false;
 }
 
 watch([props.user], () => {
-	memoDraft = props.user.memo;
+	memoDraft.value = props.user.memo;
 });
 
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);
-	narrow = rootEl!.clientWidth < 1000;
+	narrow.value = rootEl.value!.clientWidth < 1000;
 
 	if (props.user.birthday) {
 		const m = new Date().getMonth() + 1;
@@ -301,8 +301,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (parallaxAnimationId) {
-		window.cancelAnimationFrame(parallaxAnimationId);
+	if (parallaxAnimationId.value) {
+		window.cancelAnimationFrame(parallaxAnimationId.value);
 	}
 });
 </script>
