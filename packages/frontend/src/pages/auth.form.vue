@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -35,11 +35,11 @@ const emit = defineEmits<{
 	(event: 'denied'): void;
 }>();
 
-const app = $computed(() => props.session.app);
+const app = computed(() => props.session.app);
 
-const name = $computed(() => {
+const name = computed(() => {
 	const el = document.createElement('div');
-	el.textContent = app.name;
+	el.textContent = app.value.name;
 	return el.innerHTML;
 });
 

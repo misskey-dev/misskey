@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick } from 'vue';
+import { onMounted, nextTick, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
@@ -23,11 +23,11 @@ import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
-const rootEl = $shallowRef<HTMLDivElement>(null);
-const chartEl = $shallowRef<HTMLCanvasElement>(null);
+const rootEl = shallowRef<HTMLDivElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
-let fetching = $ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',
@@ -38,8 +38,8 @@ async function renderChart() {
 		chartInstance.destroy();
 	}
 
-	const wide = rootEl.offsetWidth > 600;
-	const narrow = rootEl.offsetWidth < 400;
+	const wide = rootEl.value.offsetWidth > 600;
+	const narrow = rootEl.value.offsetWidth < 400;
 
 	const maxDays = wide ? 10 : narrow ? 5 : 7;
 
@@ -66,7 +66,7 @@ async function renderChart() {
 		}
 	}
 
-	fetching = false;
+	fetching.value = false;
 
 	await nextTick();
 
@@ -83,7 +83,7 @@ async function renderChart() {
 
 	const marginEachCell = 12;
 
-	chartInstance = new Chart(chartEl, {
+	chartInstance = new Chart(chartEl.value, {
 		type: 'matrix',
 		data: {
 			datasets: [{

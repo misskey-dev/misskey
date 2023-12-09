@@ -278,7 +278,7 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url ?? appearNote.uri, '_blank');
+					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
 			} : undefined,
 			...(isSupportShare() ? [{
@@ -382,7 +382,7 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
-				window.open(appearNote.url ?? appearNote.uri, '_blank');
+				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
 		} : undefined]
 			.filter(x => x !== undefined);
