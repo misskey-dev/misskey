@@ -16,7 +16,6 @@
 		"watch:swc": "swc src -d built -D -w",
 		"build:tsc": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
-		"dev": "node ./built/boot/entry.js",
 		"typecheck": "tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.ts\"",
 		"lint": "pnpm typecheck && pnpm eslint",

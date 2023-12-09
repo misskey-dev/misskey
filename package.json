@@ -27,7 +27,7 @@
 		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
-		"dev": "pnpm -r dev",
+		"dev": "node ./scripts/dev.mjs",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
