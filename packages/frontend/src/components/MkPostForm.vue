@@ -135,6 +135,7 @@ const props = withDefaults(defineProps<{
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.User;
 	initialText?: string;
+	initialCw?: string;
 	initialVisibility?: (typeof Misskey.noteVisibilities)[number];
 	initialFiles?: Misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
@@ -177,10 +178,10 @@ const poll = ref<{
 	expiresAt: string | null;
 	expiredAfter: string | null;
 } | null>(null);
-const useCw = ref(false);
+const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
-const cw = ref<string | null>(null);
+const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
 const visibleUsers = ref([]);
