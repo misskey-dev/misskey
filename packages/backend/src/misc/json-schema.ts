@@ -36,9 +36,10 @@ import { packedPageLikeSchema, packedPageSchema } from '@/models/json-schema/pag
 import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
 import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
-import { packedRoleSchema } from '@/models/json-schema/role.js';
 import { packedUserListMembershipSchema, packedUserListSchema } from '@/models/json-schema/user-list.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
+import { packedSigninSchema } from '@/models/json-schema/signin.js';
+import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -80,6 +81,8 @@ export const refs = {
 	Flash: packedFlashSchema,
 	FlashLike: packedFlashLikeSchema,
 
+	Signin: packedSigninSchema,
+	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
 	AbuseUserReport: packedAbuseUserReportSchema,
 	ModerationLog: packedModerationLogSchema,

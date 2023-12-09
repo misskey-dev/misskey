@@ -11,7 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkUserName :user="user" :nowrap="true"/>
 		</div>
 		<div>
-			<div>
+			<p v-if="useCw" :class="$style.cw">
+				<Mfm v-if="cw != ''" :text="cw" :author="user" :nyaize="'respect'" :i="user" style="margin-right: 8px;"/>
+				<MkCwButton v-model="showContent" :text="text.trim()" :files="files" :poll="poll" style="margin: 4px 0;"/>
+			</p>
+			<div v-show="!useCw || showContent">
 				<Mfm :text="text.trim()" :author="user" :nyaize="'respect'" :i="user"/>
 			</div>
 		</div>
@@ -20,11 +24,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkCwButton from '@/components/MkCwButton.vue';
+
+const showContent = ref(false);
 
 const props = defineProps<{
 	text: string;
+	files: Misskey.entities.DriveFile[];
+	poll?: {
+		choices: string[];
+		multiple: boolean;
+		expiresAt: string | null;
+		expiredAfter: string | null;
+	};
+	useCw: boolean;
+	cw: string | null;
 	user: Misskey.entities.User;
 }>();
 </script>
@@ -51,6 +67,14 @@ const props = defineProps<{
 .main {
 	flex: 1;
 	min-width: 0;
+}
+
+.cw {
+	cursor: default;
+	display: block;
+	margin: 0;
+	padding: 0;
+	overflow-wrap: break-word;
 }
 
 .header {

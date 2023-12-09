@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
@@ -62,17 +62,17 @@ import * as os from '@/os.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
-let signing = $ref(false);
-let user = $ref<Misskey.entities.UserDetailed | null>(null);
-let username = $ref('');
-let password = $ref('');
-let token = $ref('');
-let host = $ref(toUnicode(configHost));
-let totpLogin = $ref(false);
-let queryingKey = $ref(false);
-let credentialRequest = $ref<CredentialRequestOptions | null>(null);
-let hCaptchaResponse = $ref(null);
-let reCaptchaResponse = $ref(null);
+const signing = ref(false);
+const user = ref<Misskey.entities.UserDetailed | null>(null);
+const username = ref('');
+const password = ref('');
+const token = ref('');
+const host = ref(toUnicode(configHost));
+const totpLogin = ref(false);
+const queryingKey = ref(false);
+const credentialRequest = ref<CredentialRequestOptions | null>(null);
+const hCaptchaResponse = ref(null);
+const reCaptchaResponse = ref(null);
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -98,11 +98,11 @@ const props = defineProps({
 
 function onUsernameChange(): void {
 	os.api('users/show', {
-		username: username,
+		username: username.value,
 	}).then(userResponse => {
-		user = userResponse;
+		user.value = userResponse;
 	}, () => {
-		user = null;
+		user.value = null;
 	});
 }
 
@@ -113,21 +113,21 @@ function onLogin(res: any): Promise<void> | void {
 }
 
 async function queryKey(): Promise<void> {
-	queryingKey = true;
-	await webAuthnRequest(credentialRequest)
+	queryingKey.value = true;
+	await webAuthnRequest(credentialRequest.value)
 		.catch(() => {
-			queryingKey = false;
+			queryingKey.value = false;
 			return Promise.reject(null);
 		}).then(credential => {
-			credentialRequest = null;
-			queryingKey = false;
-			signing = true;
+			credentialRequest.value = null;
+			queryingKey.value = false;
+			signing.value = true;
 			return os.api('signin', {
-				username,
-				password,
+				username: username.value,
+				password: password.value,
 				credential: credential.toJSON(),
-				'hcaptcha-response': hCaptchaResponse,
-				'g-recaptcha-response': reCaptchaResponse,
+				'hcaptcha-response': hCaptchaResponse.value,
+				'g-recaptcha-response': reCaptchaResponse.value,
 			});
 		}).then(res => {
 			emit('login', res);
@@ -138,39 +138,39 @@ async function queryKey(): Promise<void> {
 				type: 'error',
 				text: i18n.ts.signinFailed,
 			});
-			signing = false;
+			signing.value = false;
 		});
 }
 
 function onSubmit(): void {
-	signing = true;
-	if (!totpLogin && user && user.twoFactorEnabled) {
-		if (webAuthnSupported() && user.securityKeys) {
+	signing.value = true;
+	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
+		if (webAuthnSupported() && user.value.securityKeys) {
 			os.api('signin', {
-				username,
-				password,
-				'hcaptcha-response': hCaptchaResponse,
-				'g-recaptcha-response': reCaptchaResponse,
+				username: username.value,
+				password: password.value,
+				'hcaptcha-response': hCaptchaResponse.value,
+				'g-recaptcha-response': reCaptchaResponse.value,
 			}).then(res => {
-				totpLogin = true;
-				signing = false;
-				credentialRequest = parseRequestOptionsFromJSON({
+				totpLogin.value = true;
+				signing.value = false;
+				credentialRequest.value = parseRequestOptionsFromJSON({
 					publicKey: res,
 				});
 			})
 				.then(() => queryKey())
 				.catch(loginFailed);
 		} else {
-			totpLogin = true;
-			signing = false;
+			totpLogin.value = true;
+			signing.value = false;
 		}
 	} else {
 		os.api('signin', {
-			username,
-			password,
-			'hcaptcha-response': hCaptchaResponse,
-			'g-recaptcha-response': reCaptchaResponse,
-			token: user?.twoFactorEnabled ? token : undefined,
+			username: username.value,
+			password: password.value,
+			'hcaptcha-response': hCaptchaResponse.value,
+			'g-recaptcha-response': reCaptchaResponse.value,
+			token: user.value?.twoFactorEnabled ? token.value : undefined,
 		}).then(res => {
 			emit('login', res);
 			onLogin(res);
@@ -218,8 +218,8 @@ function loginFailed(err: any): void {
 		}
 	}
 
-	totpLogin = false;
-	signing = false;
+	totpLogin.value = false;
+	signing.value = false;
 }
 
 function resetPassword(): void {

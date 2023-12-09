@@ -38,3 +38,7 @@ export function parseObjectId(id: string): { date: Date; } {
 		date: new Date(parseInt(id.slice(0, 8), 16) * 1000),
 	};
 }
+
+export function isSafeObjectIdT(t: number): boolean {
+	return t > 0;
+}

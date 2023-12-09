@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -49,22 +49,22 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
-const passwordInput = $shallowRef<InstanceType<typeof MkInput>>();
-const password = $ref('');
-const token = $ref(null);
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const passwordInput = shallowRef<InstanceType<typeof MkInput>>();
+const password = ref('');
+const token = ref(null);
 
 function onClose() {
 	emit('cancelled');
-	if (dialog) dialog.close();
+	if (dialog.value) dialog.value.close();
 }
 
 function done(res) {
-	emit('done', { password, token });
-	if (dialog) dialog.close();
+	emit('done', { password: password.value, token: token.value });
+	if (dialog.value) dialog.value.close();
 }
 
 onMounted(() => {
-	if (passwordInput) passwordInput.focus();
+	if (passwordInput.value) passwordInput.value.focus();
 });
 </script>

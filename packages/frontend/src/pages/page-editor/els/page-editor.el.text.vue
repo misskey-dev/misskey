@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
 
@@ -28,12 +28,12 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-const text = $ref(props.modelValue.text ?? '');
+const text = ref(props.modelValue.text ?? '');
 
-watch($$(text), () => {
+watch(text, () => {
 	emit('update:modelValue', {
 		...props.modelValue,
-		text,
+		text: text.value,
 	});
 });
 </script>

@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -42,12 +42,12 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
-let caption = $ref(props.default);
+const caption = ref(props.default);
 
 async function ok() {
-	emit('done', caption);
-	dialog.close();
+	emit('done', caption.value);
+	dialog.value.close();
 }
 </script>

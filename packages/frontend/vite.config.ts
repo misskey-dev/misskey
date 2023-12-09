@@ -1,9 +1,9 @@
 import path from 'path';
-import { type UserConfig, defineConfig } from 'vite'; // @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 import typescript from '@rollup/plugin-typescript';
+import { type UserConfig, defineConfig } from 'vite';
+
 import locales from '../../locales';
 import meta from '../../package.json';
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
@@ -50,10 +50,7 @@ export function getConfig(): UserConfig {
 
 		plugins: [
 			typescript(),
-			pluginVue({
-				reactivityTransform: true,
-			}),
-			ReactivityTransform(),
+			pluginVue(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
 			...process.env.NODE_ENV === 'production'
@@ -150,10 +147,14 @@ export function getConfig(): UserConfig {
 		test: {
 			environment: 'happy-dom',
 			deps: {
-				inline: [
-					// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-					'browser-image-resizer',
-				],
+				optimizer: {
+					web: {
+						include: [
+							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
+							'browser-image-resizer',
+						],
+					},
+				},
 			},
 		},
 	};

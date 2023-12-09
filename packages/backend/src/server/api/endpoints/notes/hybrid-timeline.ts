@@ -5,20 +5,20 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, FollowingsRepository, MiNote, ChannelFollowingsRepository } from '@/models/_.js';
+import type { NotesRepository, ChannelFollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -42,6 +42,12 @@ export const meta = {
 			code: 'STL_DISABLED',
 			id: '620763f4-f621-4533-ab33-0577a1a3c342',
 		},
+
+		bothWithRepliesAndWithFiles: {
+			message: 'Specifying both withReplies and withFiles is not supported',
+			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
+			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f'
+		},
 	},
 } as const;
 
@@ -53,6 +59,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 		includeMyRenotes: { type: 'boolean', default: true },
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
@@ -77,10 +84,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
-		private funoutTimelineService: FunoutTimelineService,
 		private queryService: QueryService,
 		private userFollowingService: UserFollowingService,
 		private metaService: MetaService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -91,10 +98,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.stlDisabled);
 			}
 
+			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
+
 			const serverSettings = await this.metaService.fetch();
 
 			if (!serverSettings.enableFanoutTimeline) {
-				return await this.getFromDb({
+				const timeline = await this.getFromDb({
 					untilId,
 					sinceId,
 					limit: ps.limit,
@@ -104,103 +113,61 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withReplies: ps.withReplies,
 				}, me);
-			}
 
-			const [
-				userIdsWhoMeMuting,
-				userIdsWhoMeMutingRenotes,
-				userIdsWhoBlockingMe,
-			] = await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.renoteMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-			]);
-
-			let noteIds: string[];
-			let shouldFallbackToDb = false;
-
-			if (ps.withFiles) {
-				const [htlNoteIds, ltlNoteIds] = await this.funoutTimelineService.getMulti([
-					`homeTimelineWithFiles:${me.id}`,
-					'localTimelineWithFiles',
-				], untilId, sinceId);
-				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
-			} else if (ps.withReplies) {
-				const [htlNoteIds, ltlNoteIds, ltlReplyNoteIds] = await this.funoutTimelineService.getMulti([
-					`homeTimeline:${me.id}`,
-					'localTimeline',
-					'localTimelineWithReplies',
-				], untilId, sinceId);
-				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds, ...ltlReplyNoteIds]));
-			} else {
-				const [htlNoteIds, ltlNoteIds] = await this.funoutTimelineService.getMulti([
-					`homeTimeline:${me.id}`,
-					'localTimeline',
-				], untilId, sinceId);
-				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
-				shouldFallbackToDb = htlNoteIds.length === 0;
-			}
-
-			noteIds.sort((a, b) => a > b ? -1 : 1);
-			noteIds = noteIds.slice(0, ps.limit);
-
-			shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
-
-			let redisTimeline: MiNote[] = [];
-
-			if (!shouldFallbackToDb) {
-				const query = this.notesRepository.createQueryBuilder('note')
-					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
-
-				redisTimeline = await query.getMany();
-
-				redisTimeline = redisTimeline.filter(note => {
-					if (note.userId === me.id) {
-						return true;
-					}
-					if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
-					if (isUserRelated(note, userIdsWhoMeMuting)) return false;
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-							if (ps.withRenotes === false) return false;
-						}
-					}
-
-					return true;
-				});
-
-				redisTimeline.sort((a, b) => a.id > b.id ? -1 : 1);
-			}
-
-			if (redisTimeline.length > 0) {
 				process.nextTick(() => {
 					this.activeUsersChart.read(me);
 				});
 
-				return await this.noteEntityService.packMany(redisTimeline, me);
-			} else {
-				if (serverSettings.enableFanoutTimelineDbFallback) { // fallback to db
-					return await this.getFromDb({
-						untilId,
-						sinceId,
-						limit: ps.limit,
-						includeMyRenotes: ps.includeMyRenotes,
-						includeRenotedMyNotes: ps.includeRenotedMyNotes,
-						includeLocalRenotes: ps.includeLocalRenotes,
-						withFiles: ps.withFiles,
-						withReplies: ps.withReplies,
-					}, me);
-				} else {
-					return [];
-				}
+				return await this.noteEntityService.packMany(timeline, me);
 			}
+
+			let timelineConfig: FanoutTimelineName[];
+
+			if (ps.withFiles) {
+				timelineConfig = [
+					`homeTimelineWithFiles:${me.id}`,
+					'localTimelineWithFiles',
+				];
+			} else if (ps.withReplies) {
+				timelineConfig = [
+					`homeTimeline:${me.id}`,
+					'localTimeline',
+					'localTimelineWithReplies',
+				];
+			} else {
+				timelineConfig = [
+					`homeTimeline:${me.id}`,
+					'localTimeline',
+				];
+			}
+
+			const redisTimeline = await this.fanoutTimelineEndpointService.timeline({
+				untilId,
+				sinceId,
+				limit: ps.limit,
+				allowPartial: ps.allowPartial,
+				me,
+				redisTimelines: timelineConfig,
+				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
+				alwaysIncludeMyNotes: true,
+				excludePureRenotes: !ps.withRenotes,
+				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
+					untilId,
+					sinceId,
+					limit,
+					includeMyRenotes: ps.includeMyRenotes,
+					includeRenotedMyNotes: ps.includeRenotedMyNotes,
+					includeLocalRenotes: ps.includeLocalRenotes,
+					withFiles: ps.withFiles,
+					withReplies: ps.withReplies,
+				}, me),
+			});
+
+			process.nextTick(() => {
+				this.activeUsersChart.read(me);
+			});
+
+			return redisTimeline;
 		});
 	}
 
@@ -301,12 +268,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 		//#endregion
 
-		const timeline = await query.limit(ps.limit).getMany();
-
-		process.nextTick(() => {
-			this.activeUsersChart.read(me);
-		});
-
-		return await this.noteEntityService.packMany(timeline, me);
+		return await query.limit(ps.limit).getMany();
 	}
 }

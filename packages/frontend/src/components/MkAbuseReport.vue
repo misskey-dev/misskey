@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -56,11 +57,11 @@ const emit = defineEmits<{
 	(ev: 'resolved', reportId: string): void;
 }>();
 
-let forward = $ref(props.report.forwarded);
+const forward = ref(props.report.forwarded);
 
 function resolve() {
 	os.apiWithDialog('admin/resolve-abuse-user-report', {
-		forward: forward,
+		forward: forward.value,
 		reportId: props.report.id,
 	}).then(() => {
 		emit('resolved', props.report.id);

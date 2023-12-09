@@ -4,11 +4,10 @@
  */
 
 import * as Misskey from 'misskey-js';
-import * as Acct from 'misskey-js/src/acct.js';
 import { url } from '@/config.js';
 
 export const acct = (user: Misskey.Acct) => {
-	return Acct.toString(user);
+	return Misskey.acct.toString(user);
 };
 
 export const userName = (user: Misskey.entities.User) => {

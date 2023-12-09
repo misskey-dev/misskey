@@ -103,7 +103,7 @@ export default function(props: MfmProps) {
 
 			case 'fn': {
 				// TODO: CSSを文字列で組み立てていくと token.props.args.~~~ 経由でCSSインジェクションできるのでよしなにやる
-				let style;
+				let style: string | undefined;
 				switch (token.props.name) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
@@ -242,11 +242,17 @@ export default function(props: MfmProps) {
 					case 'ruby': {
 						if (token.children.length === 1) {
 							const child = token.children[0];
-							const text = child.type === 'text' ? child.props.text : '';
+							let text = child.type === 'text' ? child.props.text : '';
+							if (!disableNyaize && shouldNyaize) {
+								text = doNyaize(text);
+							}
 							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
 						} else {
 							const rt = token.children.at(-1)!;
-							const text = rt.type === 'text' ? rt.props.text : '';
+							let text = rt.type === 'text' ? rt.props.text : '';
+							if (!disableNyaize && shouldNyaize) {
+								text = doNyaize(text);
+							}
 							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
 						}
 					}
@@ -268,7 +274,7 @@ export default function(props: MfmProps) {
 						]);
 					}
 				}
-				if (style == null) {
+				if (style === undefined) {
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
 				} else {
 					return h('span', {

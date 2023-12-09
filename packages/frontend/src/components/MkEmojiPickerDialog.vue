@@ -36,15 +36,17 @@ import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 import { defaultStore } from '@/store.js';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
+  choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,
 	asReactionPicker: false,
+	choseAndClose: true,
 });
 
 const emit = defineEmits<{
@@ -58,7 +60,9 @@ const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
 	emit('done', emoji);
-	modal.value?.close();
+	if (props.choseAndClose) {
+		modal.value?.close();
+	}
 }
 
 function opening() {

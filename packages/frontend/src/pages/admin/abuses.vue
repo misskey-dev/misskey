@@ -79,7 +79,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, shallowRef, ref } from 'vue';
+
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -91,15 +92,15 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let reports = $shallowRef<InstanceType<typeof MkPagination>>();
-let resolverPagingComponent = $ref<InstanceType<typeof MkPagination>>();
-let folderComponent = $ref<InstanceType<typeof MkFolder>>();
+const reports = shallowRef<InstanceType<typeof MkPagination>>();
+const resolverPagingComponent = ref<InstanceType<typeof MkPagination>>();
+const folderComponent = ref<InstanceType<typeof MkFolder>>();
 
-let state = $ref('unresolved');
-let reporterOrigin = $ref('combined');
-let targetUserOrigin = $ref('combined');
-let tab = $ref('list');
-let editableResolver: null | string = $ref(null);
+const state = ref('unresolved');
+const reporterOrigin = ref('combined');
+const targetUserOrigin = ref('combined');
+const tab = ref('list');
+const editableResolver = ref<null | string>(null);
 const defaultResolver = {
 	name: '',
 	targetUserPattern: '',
@@ -110,7 +111,7 @@ const defaultResolver = {
 	forward: false,
 };
 
-let newResolver = $ref<{
+const newResolver = ref<{
 	name: string;
 	targetUserPattern: string;
 	reporterPattern: string;
@@ -120,7 +121,7 @@ let newResolver = $ref<{
 	forward: boolean;
 }>(defaultResolver);
 
-let editingResolver = $ref<{
+const editingResolver = ref<{
 	name: string;
 	targetUserPattern: string;
 	reporterPattern: string;
@@ -135,9 +136,9 @@ const pagination = {
 	endpoint: 'admin/abuse-user-reports' as const,
 	limit: 10,
 	params: computed(() => ({
-		state,
-		reporterOrigin,
-		targetUserOrigin,
+		state: state.value,
+		reporterOrigin: reporterOrigin.value,
+		targetUserOrigin: targetUserOrigin.value,
 	})),
 };
 
@@ -147,26 +148,26 @@ const resolverPagination = {
 };
 
 function resolved(reportId) {
-	reports!.removeItem(item => item.id === reportId);
+	reports.value!.removeItem(item => item.id === reportId);
 }
 
 function edit(id: string) {
-	editableResolver = id;
+	editableResolver.value = id;
 }
 
 function save(): void {
 	os.apiWithDialog('admin/abuse-report-resolver/update', {
-		resolverId: editableResolver,
-		name: editingResolver.name,
-		targetUserPattern: editingResolver.targetUserPattern || null,
-		reporterPattern: editingResolver.reporterPattern || null,
-		reportContentPattern: editingResolver.reportContentPattern || null,
-		...(editingResolver.previousExpiresAt && editingResolver.previousExpiresAt === editingResolver.expiresAt ? {} : {
-			expiresAt: editingResolver.expiresAt,
+		resolverId: editableResolver.value,
+		name: editingResolver.value.name,
+		targetUserPattern: editingResolver.value.targetUserPattern || null,
+		reporterPattern: editingResolver.value.reporterPattern || null,
+		reportContentPattern: editingResolver.value.reportContentPattern || null,
+		...(editingResolver.value.previousExpiresAt && editingResolver.value.previousExpiresAt === editingResolver.value.expiresAt ? {} : {
+			expiresAt: editingResolver.value.expiresAt,
 		}),
-		forward: editingResolver.forward,
+		forward: editingResolver.value.forward,
 	}).then(() => {
-		editableResolver = null;
+		editableResolver.value = null;
 	});
 }
 
@@ -174,33 +175,33 @@ function deleteResolver(id: string): void {
 	os.apiWithDialog('admin/abuse-report-resolver/delete', {
 		resolverId: id,
 	}).then(() => {
-		resolverPagingComponent?.reload();
+		resolverPagingComponent.value?.reload();
 	});
 }
 
 function create(): void {
 	os.apiWithDialog('admin/abuse-report-resolver/create', {
-		name: newResolver.name,
-		targetUserPattern: newResolver.targetUserPattern || null,
-		reporterPattern: newResolver.reporterPattern || null,
-		reportContentPattern: newResolver.reportContentPattern || null,
-		expiresAt: newResolver.expiresAt,
-		forward: newResolver.forward,
+		name: newResolver.value.name,
+		targetUserPattern: newResolver.value.targetUserPattern || null,
+		reporterPattern: newResolver.value.reporterPattern || null,
+		reportContentPattern: newResolver.value.reportContentPattern || null,
+		expiresAt: newResolver.value.expiresAt,
+		forward: newResolver.value.forward,
 	}).then(() => {
-		folderComponent?.toggle();
-		resolverPagingComponent?.reload();
-		newResolver.name = '';
-		newResolver.targetUserPattern = '';
-		newResolver.reporterPattern = '';
-		newResolver.reportContentPattern = '';
-		newResolver.expiresAt = 'indefinitely';
-		newResolver.forward = false;
+		folderComponent.value?.toggle();
+		resolverPagingComponent.value?.reload();
+		newResolver.value.name = '';
+		newResolver.value.targetUserPattern = '';
+		newResolver.value.reporterPattern = '';
+		newResolver.value.reportContentPattern = '';
+		newResolver.value.expiresAt = 'indefinitely';
+		newResolver.value.forward = false;
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'list',
 	title: i18n.ts._abuse.list,
 }, {

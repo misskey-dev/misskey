@@ -442,7 +442,6 @@ export interface Locale {
     "notFound": string;
     "notFoundDescription": string;
     "uploadFolder": string;
-    "cacheClear": string;
     "markAsReadAllNotifications": string;
     "markAsReadAllUnreadNotes": string;
     "markAsReadAllTalkMessages": string;
@@ -549,6 +548,8 @@ export interface Locale {
     "popout": string;
     "volume": string;
     "masterVolume": string;
+    "notUseSound": string;
+    "useSoundOnlyWhenActive": string;
     "details": string;
     "chooseEmoji": string;
     "unableToProcess": string;
@@ -1029,6 +1030,8 @@ export interface Locale {
     "sensitiveWords": string;
     "sensitiveWordsDescription": string;
     "sensitiveWordsDescription2": string;
+    "hiddenTags": string;
+    "hiddenTagsDescription": string;
     "notesSearchNotAvailable": string;
     "license": string;
     "unfavoriteConfirm": string;
@@ -1172,6 +1175,8 @@ export interface Locale {
     "doReaction": string;
     "urlPreviewDenyList": string;
     "urlPreviewDenyListDescription": string;
+    "code": string;
+    "reloadRequiredToApplySettings": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1952,6 +1957,15 @@ export interface Locale {
         "notification": string;
         "antenna": string;
         "channel": string;
+        "reaction": string;
+    };
+    "_soundSettings": {
+        "driveFile": string;
+        "driveFileWarn": string;
+        "driveFileTypeWarn": string;
+        "driveFileTypeWarnDescription": string;
+        "driveFileDurationWarn": string;
+        "driveFileDurationWarnDescription": string;
     };
     "_ago": {
         "future": string;
@@ -2106,6 +2120,7 @@ export interface Locale {
             "chooseList": string;
         };
         "clicker": string;
+        "birthdayFollowings": string;
     };
     "_cw": {
         "hide": string;
@@ -2518,8 +2533,27 @@ export interface Locale {
             };
         };
     };
+    "_dataSaver": {
+        "_media": {
+            "title": string;
+            "description": string;
+        };
+        "_avatar": {
+            "title": string;
+            "description": string;
+        };
+        "_urlPreview": {
+            "title": string;
+            "description": string;
+        };
+        "_code": {
+            "title": string;
+            "description": string;
+        };
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
 };
+export function build(): Locale;
 export default locales;

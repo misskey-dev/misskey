@@ -27,20 +27,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <!-- フォルダの中にはカスタム絵文字やフォルダがある -->
 <section v-else v-panel style="border-radius: 6px; border-bottom: 0.5px solid var(--divider);">
   <header class="_acrylic" @click="shown = !shown">
-    <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-folder"></i>:{{ customEmojiTree.length }} <i class="ti ti-icons"></i>:{{ emojis.length }})
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-folder ti-fw"></i>:{{ customEmojiTree.length }} <i class="ti ti-icons ti-fw"></i>:{{ emojis.length }})
   </header>
   <div v-if="shown" style="padding-left: 9px;">
-    <MkEmojiPickerSection
-        v-for="child in customEmojiTree"
-        :key="`custom:${child.category}`"
-        :initialShown="initialShown"
-        :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
-        :hasChildSection="child.children.length !== 0"
-        :customEmojiTree="child.children"
-        @chosen="nestedChosen"
-    >
-      {{ child.category || i18n.ts.other }}
-    </MkEmojiPickerSection>
+      <MkEmojiPickerSection
+          v-for="child in customEmojiTree"
+          :key="`custom:${child.category}`"
+          :initialShown="initialShown"
+          :emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
+          :hasChildSection="child.children.length !== 0"
+          :customEmojiTree="child.children"
+          @chosen="nestedChosen"
+      >
+          {{ child.category || i18n.ts.other }}
+      </MkEmojiPickerSection>
   </div>
   <div v-if="shown" class="body">
     <button

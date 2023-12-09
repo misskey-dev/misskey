@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
@@ -28,7 +29,7 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-const active = $computed(() => {
+const active = computed(() => {
 	if (props.activeClass == null) return false;
 	const resolved = router.resolve(props.to);
 	if (resolved == null) return false;

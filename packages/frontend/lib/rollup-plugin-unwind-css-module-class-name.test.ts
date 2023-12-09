@@ -89,7 +89,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       api("users/notes", {
         userId: props.user.id,
         fileType: image,
-        excludeNsfw: defaultStore.state.nsfw !== "ignore",
         limit: 10
       }).then((notes) => {
         for (const note of notes) {
@@ -198,7 +197,6 @@ const _sfc_main = defineComponent({
       api("users/notes", {
         userId: props.user.id,
         fileType: image,
-        excludeNsfw: defaultStore.state.nsfw !== "ignore",
         limit: 10
       }).then(notes => {
         for (const note of notes) {

@@ -24,12 +24,6 @@ export const packedModerationLogSchema = {
 		info: {
 			type: 'object',
 			optional: false, nullable: false,
-			patternProperties: {
-				'^': {
-					type: 'object',
-					nullable: false, optional: false,
-				},
-			},
 		},
 		userId: {
 			type: 'string',
