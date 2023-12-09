@@ -327,7 +327,7 @@ const reactionsPagination = computed(() => ({
 	},
 }));
 
-const quotesPagination = $computed(() => ({
+const quotesPagination = computed(() => ({
 	endpoint: 'notes/quotes',
 	limit: 10,
 	params: {
