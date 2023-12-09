@@ -183,7 +183,22 @@ export class EmailService {
 		} else {
 			validated = { valid: true, reason: null };
 		}
-
+		if (meta.enableActiveEmailValidation) {
+			const dispose = await this.httpRequestService.send('https://raw.githubusercontent.com/mattyatea/disposable-email-domains/master/disposable_email_blocklist.conf', {
+				method: 'GET',
+			});
+			const dispoes_2 = await this.httpRequestService.send('https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains_strict.txt', {
+				method: 'GET',
+			});
+			const disposableEmailDomains = (await dispose.text()).split('\n');
+			const disposableEmailDomains_2 = (await dispoes_2.text()).split('\n');
+			disposableEmailDomains.push(...disposableEmailDomains_2);
+			const domain = emailAddress.split('@')[1];
+			console.log(domain)
+			if (disposableEmailDomains.includes(domain)) {
+				validated = { valid: false, reason: 'disposable' };
+			}
+		}
 		const available = exist === 0 && validated.valid;
 
 		return {
