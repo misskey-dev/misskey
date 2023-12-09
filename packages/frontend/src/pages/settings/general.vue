@@ -49,7 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
-				<MkSwitch v-model="hideMutedNotes">{{ i18n.ts.hideMutedNotes }}</MkSwitch>
 				<MkSwitch v-model="showVisibilityColor">{{ i18n.ts.showVisibilityColor}}</MkSwitch>
         <MkColorInput v-if="showVisibilityColor" v-model="homeColor">
           <template #label>{{ i18n.ts._visibility.home }}</template>
@@ -139,10 +138,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
-				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
-				<MkSwitch v-model="enableUltimateDataSaverMode">{{ i18n.ts.UltimateDataSaver }}</MkSwitch>
-				<MkSwitch v-model="enableCellularWithUltimateDataSaver">{{ i18n.ts.cellularWithUltimateDataSaver }}</MkSwitch>
+				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
+				<MkSwitch v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
                 <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
                 <MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
@@ -258,7 +255,6 @@ const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showC
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
 const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthOfReaction'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
-const hideMutedNotes = computed(defaultStore.makeGetterSetter('hideMutedNotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
@@ -271,8 +267,6 @@ const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('dis
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const enableCellularWithDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithDataSaver'));
-const enableUltimateDataSaverMode = computed(defaultStore.makeGetterSetter('enableUltimateDataSaverMode'))
-const enableCellularWithUltimateDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithUltimateDataSaver'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
@@ -301,7 +295,6 @@ const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimel
 const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTimeline'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
 const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))
-const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));

@@ -66,9 +66,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkSwitch v-model="isSensitive">{{ i18n.ts.isSensitive }}</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-				<MkSwitch v-if="!isRequest" v-model="draft" :disabled="isRequest">
+          <MkSwitch v-model="isNotifyIsHome">
+              {{ i18n.ts.isNotifyIsHome }}
+          </MkSwitch>
+				<MkSwitch v-if="!isRequest" v-model="draft" >
 					{{ i18n.ts.draft }}
 				</MkSwitch>
+
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
@@ -116,6 +120,7 @@ let file = $ref<Misskey.entities.DriveFile>();
 let chooseFile: DriveFile|null = $ref(null);
 let draft = $ref(props.emoji ? props.emoji.draft : false);
 let isRequest = $ref(props.isRequest);
+let isNotifyIsHome = $ref(false);
 let url;
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
@@ -148,6 +153,7 @@ async function add() {
 		aliases: aliases.split(' '),
 		license: license === '' ? null : license,
 		fileId: chooseFile.id,
+		isNotifyIsHome: isNotifyIsHome,
 	});
 
 	emit('done', {
@@ -220,6 +226,7 @@ async function done() {
 		isSensitive,
 		localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
+        isNotifyIsHome,
 	};
 
 	if (file) {

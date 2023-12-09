@@ -282,6 +282,7 @@ export interface Locale {
     "messaging": string;
     "upload": string;
     "keepOriginalUploading": string;
+    "isNotifyIsHome": string;
     "keepOriginalUploadingDescription": string;
     "fromDrive": string;
     "fromUrl": string;
@@ -1716,8 +1717,8 @@ export interface Locale {
             "gtlAvailable": string;
             "ltlAvailable": string;
             "canPublicNote": string;
-            "canScheduleNote": string;
             "canEditNote": string;
+            "canScheduleNote": string;
             "canInvite": string;
             "inviteLimit": string;
             "inviteLimitCycle": string;

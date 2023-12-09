@@ -38,6 +38,7 @@ export const paramDef = {
 		fileId: { type: 'string', format: 'misskey:id' },
 		isSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
+		isNotifyIsHome: { type: 'boolean', default: false },
 	},
 	required: ['name', 'fileId'],
 } as const;
@@ -84,6 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (EmojiBotToken){
 				const data_Miss = {
 					'i': EmojiBotToken,
+					'visibility': ps.isNotifyIsHome ?  'home' : 'public',
 					'text':
 						'絵文字名 : :' + ps.name + ':\n' +
 						'カテゴリ : ' + ps.category + '\n' +
