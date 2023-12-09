@@ -857,7 +857,9 @@ async function insertEmoji(ev: MouseEvent) {
 		},
 		() => {
 			textAreaReadOnly.value = false;
-			focus();
+			setTimeout(() => {
+				focus();
+			}, 10);
 		},
 	);
 }
