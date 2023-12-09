@@ -191,8 +191,6 @@ export class EmailService {
 				method: 'GET',
 			});
 			const disposableEmailDomains = (await dispose.text()).split('\n');
-			const disposableEmailDomains_2 = (await dispoes_2.text()).split('\n');
-			disposableEmailDomains.push(...disposableEmailDomains_2);
 			const domain = emailAddress.split('@')[1];
 			console.log(domain)
 			if (disposableEmailDomains.includes(domain)) {
