@@ -56,54 +56,6 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 	return promise;
 }
 
-export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
-	hostUrl: string,
-	endpoint: E, data: P = {} as any,
-	token?: string | null | undefined,
-	signal?: AbortSignal,
-): Promise<Misskey.api.SwitchCaseResponseType<E, P>> {
-	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
-	if (endpoint.includes('://')) throw new Error('invalid endpoint');
-	pendingApiRequestsCount.value++;
-
-	const onFinally = () => {
-		pendingApiRequestsCount.value--;
-	};
-
-	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
-		// Append a credential
-		(data as any).i = token;
-
-		const fullUrl = (hostUrl.slice(-1) === '/' ? hostUrl.slice(0, -1) : hostUrl)
-				+ '/api/' + (endpoint.slice(0, 1) === '/' ? endpoint.slice(1) : endpoint);
-		// Send request
-		window.fetch(fullUrl, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			credentials: 'omit',
-			cache: 'no-cache',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			signal,
-		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
-				resolve(body);
-			} else if (res.status === 204) {
-				resolve();
-			} else {
-				reject(body.error);
-			}
-		}).catch(reject);
-	});
-
-	promise.then(onFinally, onFinally);
-
-	return promise;
-}
-
 // Implements Misskey.api.ApiClient.request
 export function apiGet<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
 	endpoint: E,
