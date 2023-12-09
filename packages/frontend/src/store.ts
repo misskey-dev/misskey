@@ -119,6 +119,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 	},
+	emojiDeckItems: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
 	reactionAcceptance: {
 		where: 'account',
 		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
@@ -338,6 +342,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	showClipButtonInNoteFooter: {
 		where: 'device',
 		default: false,
+	},
+	useReactionDeckItems: {
+		where: 'device',
+		default: true,
 	},
 	reactionsDisplaySize: {
 		where: 'device',

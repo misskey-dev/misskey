@@ -124,7 +124,14 @@ export interface Locale {
     "add": string;
     "reaction": string;
     "reactions": string;
-    "reactionSetting": string;
+    "reactionDeckSettingTitle": string;
+    "reactionDeckSettingDescription": string;
+    "emojiDeckSettingTitle": string;
+    "emojiDeckSettingDescription": string;
+    "diversionReactionDeckEmojisTitle": string;
+    "diversionReactionDeckEmojisDescription": string;
+    "diversionReactionDeckSettingCaption": string;
+    "diversionReactionDeckSettingDescription": string;
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
     "attachCancel": string;

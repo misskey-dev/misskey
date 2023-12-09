@@ -5,6 +5,7 @@
 
 import { defineAsyncComponent, Ref, ref } from 'vue';
 import { popup } from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 class ReactionPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
@@ -17,8 +18,10 @@ class ReactionPicker {
 	}
 
 	public async init() {
+		const reactionsRef = defaultStore.reactiveState.reactions;
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
+			pinnedEmojis: reactionsRef,
 			asReactionPicker: true,
 			manualShowing: this.manualShowing,
 		}, {
@@ -35,7 +38,7 @@ class ReactionPicker {
 		});
 	}
 
-	public show(src: HTMLElement, onChosen: ReactionPicker['onChosen'], onClosed: ReactionPicker['onClosed']) {
+	public show(src: HTMLElement, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {
 		this.src.value = src;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;

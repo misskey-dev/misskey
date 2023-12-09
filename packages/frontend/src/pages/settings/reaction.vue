@@ -5,65 +5,129 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FromSlot>
-		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
-		<div v-panel style="border-radius: 6px;">
-			<Sortable v-model="reactions" :class="$style.reactions" :itemKey="item => item" :animation="150" :delay="100" :delayOnTouchOnly="true">
-				<template #item="{element}">
-					<button class="_button" :class="$style.reactionsItem" @click="remove(element, $event)">
-						<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
-						<MkEmoji v-else :emoji="element" :normal="true"/>
-					</button>
-				</template>
-				<template #footer>
-					<button class="_button" :class="$style.reactionsAdd" @click="chooseEmoji"><i class="ti ti-plus"></i></button>
-				</template>
-			</Sortable>
+	<FormSection first="true">
+		<template #label>{{ i18n.ts.reactionDeckSettingTitle }}</template>
+		<template #description>{{ i18n.ts.reactionDeckSettingDescription }}</template>
+
+		<div class="_gaps_m">
+			<div>
+				<div v-panel style="border-radius: 6px;">
+					<Sortable
+						v-model="reactionDeckItems"
+						:class="$style.reactions"
+						:itemKey="item => item"
+						:animation="150"
+						:delay="100"
+						:delayOnTouchOnly="true"
+					>
+						<template #item="{element}">
+							<button class="_button" :class="$style.reactionsItem" @click="removeReaction(element, $event)">
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkEmoji v-else :emoji="element" :normal="true"/>
+							</button>
+						</template>
+						<template #footer>
+							<button class="_button" :class="$style.reactionsAdd" @click="chooseReaction">
+								<i class="ti ti-plus"></i>
+							</button>
+						</template>
+					</Sortable>
+				</div>
+				<span class="description">{{ i18n.ts.reactionSettingDescription2 }}</span>
+			</div>
+
+			<div class="_buttons">
+				<MkButton inline @click="previewReaction"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+				<MkButton inline danger @click="setDefaultReaction"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+			</div>
 		</div>
-		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
-	</FromSlot>
-
-	<MkRadios v-model="reactionPickerSize">
-		<template #label>{{ i18n.ts.size }}</template>
-		<option :value="1">{{ i18n.ts.small }}</option>
-		<option :value="2">{{ i18n.ts.medium }}</option>
-		<option :value="3">{{ i18n.ts.large }}</option>
-	</MkRadios>
-	<MkRadios v-model="reactionPickerWidth">
-		<template #label>{{ i18n.ts.numberOfColumn }}</template>
-		<option :value="1">5</option>
-		<option :value="2">6</option>
-		<option :value="3">7</option>
-		<option :value="4">8</option>
-		<option :value="5">9</option>
-	</MkRadios>
-	<MkRadios v-model="reactionPickerHeight">
-		<template #label>{{ i18n.ts.height }}</template>
-		<option :value="1">{{ i18n.ts.small }}</option>
-		<option :value="2">{{ i18n.ts.medium }}</option>
-		<option :value="3">{{ i18n.ts.large }}</option>
-		<option :value="4">{{ i18n.ts.large }}+</option>
-	</MkRadios>
-
-	<MkSwitch v-model="reactionPickerUseDrawerForMobile">
-		{{ i18n.ts.useDrawerReactionPickerForMobile }}
-		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-	</MkSwitch>
+	</FormSection>
 
 	<FormSection>
-		<div class="_buttons">
-			<MkButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-			<MkButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+		<template #label>{{ i18n.ts.emojiDeckSettingTitle }}</template>
+		<template #description>{{ i18n.ts.emojiDeckSettingDescription }}</template>
+
+		<div class="_gaps_m">
+			<MkSwitch v-model="useReactionDeckItems">
+				{{ i18n.ts.diversionReactionDeckSettingCaption }}
+				<template #caption>{{ i18n.ts.diversionReactionDeckSettingDescription }}</template>
+			</MkSwitch>
+
+			<div v-if="!useReactionDeckItems">
+				<div v-panel style="border-radius: 6px;">
+					<Sortable
+						v-model="emojiDeckItems"
+						:class="$style.reactions"
+						:itemKey="item => item"
+						:animation="150"
+						:delay="100"
+						:delayOnTouchOnly="true"
+					>
+						<template #item="{element}">
+							<button class="_button" :class="$style.reactionsItem" @click="removeEmoji(element, $event)">
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkEmoji v-else :emoji="element" :normal="true"/>
+							</button>
+						</template>
+						<template #footer>
+							<button class="_button" :class="$style.reactionsAdd" @click="chooseEmoji">
+								<i class="ti ti-plus"></i>
+							</button>
+						</template>
+					</Sortable>
+				</div>
+				<span class="description">{{ i18n.ts.reactionSettingDescription2 }}</span>
+			</div>
+
+			<div v-if="!useReactionDeckItems" class="_buttons">
+				<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+				<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+			</div>
+		</div>
+	</FormSection>
+
+	<FormSection>
+		<template #label>{{ i18n.ts.diversionReactionDeckEmojisTitle }}</template>
+		<template #description>{{ i18n.ts.diversionReactionDeckEmojisDescription }}</template>
+
+		<div class="_gaps_m">
+			<MkRadios v-model="reactionPickerSize">
+				<template #label>{{ i18n.ts.size }}</template>
+				<option :value="1">{{ i18n.ts.small }}</option>
+				<option :value="2">{{ i18n.ts.medium }}</option>
+				<option :value="3">{{ i18n.ts.large }}</option>
+			</MkRadios>
+
+			<MkRadios v-model="reactionPickerWidth">
+				<template #label>{{ i18n.ts.numberOfColumn }}</template>
+				<option :value="1">5</option>
+				<option :value="2">6</option>
+				<option :value="3">7</option>
+				<option :value="4">8</option>
+				<option :value="5">9</option>
+			</MkRadios>
+
+			<MkRadios v-model="reactionPickerHeight">
+				<template #label>{{ i18n.ts.height }}</template>
+				<option :value="1">{{ i18n.ts.small }}</option>
+				<option :value="2">{{ i18n.ts.medium }}</option>
+				<option :value="3">{{ i18n.ts.large }}</option>
+				<option :value="4">{{ i18n.ts.large }}+</option>
+			</MkRadios>
+
+			<MkSwitch v-model="reactionPickerUseDrawerForMobile">
+				{{ i18n.ts.useDrawerReactionPickerForMobile }}
+				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
+			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, watch, ref, computed } from 'vue';
+import { computed, ref, Ref, watch } from 'vue';
 import Sortable from 'vuedraggable';
 import MkRadios from '@/components/MkRadios.vue';
-import FromSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -72,88 +136,110 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deepClone } from '@/scripts/clone.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { emojiPicker } from '@/scripts/emoji-picker.js';
+import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
 
-const reactions = ref(deepClone(defaultStore.state.reactions));
+const reactionDeckItems: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
+const emojiDeckItems: Ref<string[]> = ref(deepClone(defaultStore.state.emojiDeckItems));
 
+const useReactionDeckItems = computed(defaultStore.makeGetterSetter('useReactionDeckItems'));
 const reactionPickerSize = computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
 
-function save() {
-	defaultStore.set('reactions', reactions.value);
+const removeReaction = (reaction: string, ev: MouseEvent) => remove(reactionDeckItems, reaction, ev);
+const chooseReaction = (ev: MouseEvent) => pickEmoji(reactionDeckItems, ev);
+const setDefaultReaction = () => setDefault(reactionDeckItems);
+
+const removeEmoji = (reaction: string, ev: MouseEvent) => remove(emojiDeckItems, reaction, ev);
+const chooseEmoji = (ev: MouseEvent) => pickEmoji(emojiDeckItems, ev);
+const setDefaultEmoji = () => setDefault(emojiDeckItems);
+
+function previewReaction(ev: MouseEvent) {
+	reactionPicker.show(getHTMLElement(ev));
 }
 
-function remove(reaction, ev: MouseEvent) {
+function previewEmoji(ev: MouseEvent) {
+	emojiPicker.show(getHTMLElement(ev), undefined, undefined, 'emojis');
+}
+
+function remove(itemsRef: Ref<string[]>, reaction: string, ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		action: () => {
-			reactions.value = reactions.value.filter(x => x !== reaction);
+			itemsRef.value = itemsRef.value.filter(x => x !== reaction);
 		},
-	}], ev.currentTarget ?? ev.target);
+	}], getHTMLElement(ev));
 }
 
-function preview(ev: MouseEvent) {
-	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-		asReactionPicker: true,
-		src: ev.currentTarget ?? ev.target,
-	}, {}, 'closed');
-}
-
-async function setDefault() {
+async function setDefault(itemsRef: Ref<string[]>) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.resetAreYouSure,
 	});
 	if (canceled) return;
 
-	reactions.value = deepClone(defaultStore.def.reactions.default);
+	itemsRef.value = deepClone(defaultStore.def.reactions.default);
 }
 
-function chooseEmoji(ev: MouseEvent) {
-	os.pickEmoji(ev.currentTarget ?? ev.target, {
+async function pickEmoji(itemsRef: Ref<string[]>, ev: MouseEvent) {
+	os.pickEmoji(getHTMLElement(ev), {
 		showPinned: false,
-	}).then(emoji => {
-		if (!reactions.value.includes(emoji)) {
-			reactions.value.push(emoji);
+	}).then(it => {
+		const emoji = it as string;
+		if (!itemsRef.value.includes(emoji)) {
+			itemsRef.value.push(emoji);
 		}
 	});
 }
 
-watch(reactions, () => {
-	save();
+function getHTMLElement(ev: MouseEvent): HTMLElement {
+	const target = ev.currentTarget ?? ev.target;
+	return target as HTMLElement;
+}
+
+watch(reactionDeckItems, () => {
+	defaultStore.set('reactions', reactionDeckItems.value);
 }, {
 	deep: true,
 });
 
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
+watch(emojiDeckItems, () => {
+	defaultStore.set('emojiDeckItems', emojiDeckItems.value);
+}, {
+	deep: true,
+});
 
 definePageMetadata({
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',
-	action: {
-		icon: 'ti ti-eye',
-		handler: preview,
-	},
 });
 </script>
 
+<style lang="scss">
+.description {
+  font-size: 0.85em;
+  color: var(--fgTransparentWeak);
+}
+</style>
+
 <style lang="scss" module>
 .reactions {
-	padding: 12px;
-	font-size: 1.1em;
+  padding: 12px;
+  font-size: 1.1em;
 }
 
 .reactionsItem {
-	display: inline-block;
-	padding: 8px;
-	cursor: move;
+  display: inline-block;
+  padding: 8px;
+  cursor: move;
 }
 
 .reactionsAdd {
-	display: inline-block;
-	padding: 8px;
+  display: inline-block;
+  padding: 8px;
 }
 </style>

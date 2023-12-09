@@ -77,8 +77,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:key="`custom:${child.value}`"
 				:initialShown="false"
 				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
-        :hasChildSection="child.children.length !== 0"
-        :customEmojiTree="child.children"
+				:hasChildSection="child.children.length !== 0"
+				:customEmojiTree="child.children"
 				@chosen="chosen"
 			>
 				{{ child.value || i18n.ts.other }}
@@ -103,12 +103,12 @@ import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
-  emojilist,
-  emojiCharByCategory,
-  UnicodeEmojiDef,
-  unicodeEmojiCategories as categories,
-  getEmojiName,
-  CustomEmojiFolderTree
+	emojilist,
+	emojiCharByCategory,
+	UnicodeEmojiDef,
+	unicodeEmojiCategories as categories,
+	getEmojiName,
+	CustomEmojiFolderTree,
 } from '@/scripts/emojilist.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
@@ -121,6 +121,7 @@ import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
+  pinnedEmojis?: string[];
 	asReactionPicker?: boolean;
 	maxHeight?: number;
 	asDrawer?: boolean;
@@ -137,15 +138,13 @@ const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 
 const {
-	reactions: pinnedReactions,
 	reactionPickerSize,
 	reactionPickerWidth,
 	reactionPickerHeight,
-	disableShowingAnimatedImages,
 	recentlyUsedEmojis,
 } = defaultStore.reactiveState;
 
-const pinned = computed(() => props.asReactionPicker ? pinnedReactions.value : []); // TODO: 非リアクションの絵文字ピッカー用のpinned絵文字を設定可能にする？
+const pinned = computed(() => props.pinnedEmojis);
 const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
 const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
@@ -154,7 +153,7 @@ const searchResultCustom = ref<Misskey.entities.EmojiSimple[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
-const customEmojiFolderRoot: CustomEmojiFolderTree = { value: "", category: "", children: [] };
+const customEmojiFolderRoot: CustomEmojiFolderTree = { value: '', category: '', children: [] };
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
 	const parts = input.split('/').map(p => p.trim());
@@ -176,9 +175,9 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
 }
 
 customEmojiCategories.value.forEach(ec => {
-  if (ec !== null) {
-    parseAndMergeCategories(ec, customEmojiFolderRoot);
-  }
+	if (ec !== null) {
+		parseAndMergeCategories(ec, customEmojiFolderRoot);
+	}
 });
 
 parseAndMergeCategories('', customEmojiFolderRoot);

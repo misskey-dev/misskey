@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, Ref, ref } from 'vue';
+import { defineAsyncComponent, Ref, ref, computed, ComputedRef } from 'vue';
 import { popup } from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 /**
  * 絵文字ピッカーを表示する。
@@ -15,6 +16,7 @@ import { popup } from '@/os.js';
 class EmojiPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
+	private itemPresetType = ref<DeckItemPresetType>('auto');
 	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
 
@@ -22,10 +24,30 @@ class EmojiPicker {
 		// nop
 	}
 
+	private createDeckItemCompute(): ComputedRef<string[]> {
+		const itemPresetType = this.itemPresetType;
+		const useReactionDeckItems = defaultStore.reactiveState.useReactionDeckItems;
+		const reactionsRef = defaultStore.reactiveState.reactions;
+		const emojisRef = defaultStore.reactiveState.emojiDeckItems;
+
+		return computed(() => {
+			switch (itemPresetType.value) {
+				case 'reactions':
+					return reactionsRef.value;
+				case 'emojis':
+					return emojisRef.value;
+				default:
+					return useReactionDeckItems.value ? reactionsRef.value : emojisRef.value;
+			}
+		});
+	}
+
 	public async init() {
+		const emojisComputed = this.createDeckItemCompute();
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
-			asReactionPicker: false,
+			pinnedEmojis: emojisComputed,
+			asReactionPicker: true,
 			manualShowing: this.manualShowing,
 			choseAndClose: false,
 		}, {
@@ -44,14 +66,18 @@ class EmojiPicker {
 
 	public show(
 		src: HTMLElement,
-		onChosen: EmojiPicker['onChosen'],
-		onClosed: EmojiPicker['onClosed'],
+		onChosen?: EmojiPicker['onChosen'],
+		onClosed?: EmojiPicker['onClosed'],
+		itemPresetType: DeckItemPresetType = 'auto',
 	) {
 		this.src.value = src;
+		this.itemPresetType.value = itemPresetType;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;
 		this.onClosed = onClosed;
 	}
 }
+
+export type DeckItemPresetType = 'reactions' | 'emojis' | 'auto';
 
 export const emojiPicker = new EmojiPicker();

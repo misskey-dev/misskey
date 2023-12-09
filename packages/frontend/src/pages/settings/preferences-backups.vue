@@ -95,6 +95,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'numberOfPageCache',
 	'showNoteActionsOnlyHover',
 	'showClipButtonInNoteFooter',
+	'useReactionDeckItems',
 	'reactionsDisplaySize',
 	'forceShowAds',
 	'aiChanMode',
