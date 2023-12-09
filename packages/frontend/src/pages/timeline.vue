@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide } from 'vue';
+import { computed, watch, provide, shallowRef, ref } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -57,28 +57,28 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = $shallowRef<HTMLElement>();
+const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
+const rootEl = shallowRef<HTMLElement>();
 
-let queue = $ref(0);
-let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
-const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
-const withRenotes = $ref(true);
-const withReplies = $ref($i ? defaultStore.state.tlWithReplies : false);
-const onlyFiles = $ref(false);
+const queue = ref(0);
+const srcWhenNotSignin = ref(isLocalTimelineAvailable ? 'local' : 'global');
+const src = computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value), set: (x) => saveSrc(x) });
+const withRenotes = ref(true);
+const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);
+const onlyFiles = ref(false);
 
-watch($$(src), () => queue = 0);
+watch(src, () => queue.value = 0);
 
-watch($$(withReplies), (x) => {
+watch(withReplies, (x) => {
 	if ($i) defaultStore.set('tlWithReplies', x);
 });
 
 function queueUpdated(q: number): void {
-	queue = q;
+	queue.value = q;
 }
 
 function top(): void {
-	if (rootEl) scroll(rootEl, { top: 0 });
+	if (rootEl.value) scroll(rootEl.value, { top: 0 });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
@@ -125,7 +125,7 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string
 		src: newSrc,
 		userList,
 	});
-	srcWhenNotSignin = newSrc;
+	srcWhenNotSignin.value = newSrc;
 }
 
 async function timetravel(): Promise<void> {
@@ -134,21 +134,21 @@ async function timetravel(): Promise<void> {
 	});
 	if (canceled) return;
 
-	tlComponent.timetravel(date);
+	tlComponent.value.timetravel(date);
 }
 
 function focus(): void {
-	tlComponent.focus();
+	tlComponent.value.focus();
 }
 
 function closeTutorial(): void {
-	if (!['home', 'local', 'social', 'global'].includes(src)) return;
+	if (!['home', 'local', 'social', 'global'].includes(src.value)) return;
 	const before = defaultStore.state.timelineTutorials;
-	before[src] = true;
+	before[src.value] = true;
 	defaultStore.set('timelineTutorials', before);
 }
 
-const headerActions = $computed(() => {
+const headerActions = computed(() => {
 	const tmp = [
 		{
 			icon: 'ti ti-dots',
@@ -157,17 +157,17 @@ const headerActions = $computed(() => {
 				os.popupMenu([{
 					type: 'switch',
 					text: i18n.ts.showRenotes,
-					icon: 'ti ti-repeat',
-					ref: $$(withRenotes),
-				}, src === 'local' || src === 'social' ? {
+					ref: withRenotes,
+				}, src.value === 'local' || src.value === 'social' ? {
 					type: 'switch',
 					text: i18n.ts.showRepliesToOthersInTimeline,
-					ref: $$(withReplies),
+					ref: withReplies,
+					disabled: onlyFiles,
 				} : undefined, {
 					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
-					icon: 'ti ti-photo',
-					ref: $$(onlyFiles),
+					ref: onlyFiles,
+					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
 				}], ev.currentTarget ?? ev.target);
 			},
 		},
@@ -178,14 +178,14 @@ const headerActions = $computed(() => {
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
 				console.log('called');
-				tlComponent.reloadTimeline();
+				tlComponent.value.reloadTimeline();
 			},
 		});
 	}
 	return tmp;
 });
 
-const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
 	key: 'list:' + l.id,
 	title: l.name,
 	icon: 'ti ti-star',
@@ -227,7 +227,7 @@ const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLis
 	onClick: chooseChannel,
 }] as Tab[]);
 
-const headerTabsWhenNotLogin = $computed(() => [
+const headerTabsWhenNotLogin = computed(() => [
 	...(isLocalTimelineAvailable ? [{
 		key: 'local',
 		title: i18n.ts._timelines.local,
@@ -244,7 +244,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-universe' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
+	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : 'ti ti-home',
 })));
 </script>
 

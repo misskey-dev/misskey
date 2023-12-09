@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0-beta.1
- * generatedAt: 2023-12-03T02:04:45.051Z
+ * version: 2023.11.0-beta.3
+ * generatedAt: 2023-12-08T04:57:48.405Z
  */
 
 import { components } from './types.js';
@@ -38,3 +38,5 @@ export type EmojiSimple = components['schemas']['EmojiSimple'];
 export type EmojiDetailed = components['schemas']['EmojiDetailed'];
 export type Flash = components['schemas']['Flash'];
 export type Signin = components['schemas']['Signin'];
+export type RoleLite = components['schemas']['RoleLite'];
+export type Role = components['schemas']['Role'];

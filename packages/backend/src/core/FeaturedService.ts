@@ -14,6 +14,8 @@ export const GALLERY_POSTS_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ご�
 const PER_USER_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 7; // 1週間ごと
 const HASHTAG_RANKING_WINDOW = 1000 * 60 * 60; // 1時間ごと
 
+const featuredEpoc = new Date('2023-01-01T00:00:00Z').getTime();
+
 @Injectable()
 export class FeaturedService {
 	constructor(
@@ -24,7 +26,7 @@ export class FeaturedService {
 
 	@bindThis
 	private getCurrentWindow(windowRange: number): number {
-		const passed = new Date().getTime() - new Date(new Date().getFullYear(), 0, 1).getTime();
+		const passed = new Date().getTime() - featuredEpoc;
 		return Math.floor(passed / windowRange);
 	}
 

@@ -11,7 +11,30 @@ import type { MiNote } from '@/models/Note.js';
 import { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { CacheService } from '@/core/CacheService.js';
+import { isReply } from '@/misc/is-reply.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+
+type TimelineOptions = {
+	untilId: string | null,
+	sinceId: string | null,
+	limit: number,
+	allowPartial: boolean,
+	me?: { id: MiUser['id'] } | undefined | null,
+	useDbFallback: boolean,
+	redisTimelines: FanoutTimelineName[],
+	noteFilter?: (note: MiNote) => boolean,
+	alwaysIncludeMyNotes?: boolean;
+	ignoreAuthorFromBlock?: boolean;
+	ignoreAuthorFromMute?: boolean;
+	excludeNoFiles?: boolean;
+	excludeReplies?: boolean;
+	excludePureRenotes: boolean;
+	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
+};
 
 @Injectable()
 export class FanoutTimelineEndpointService {
@@ -20,91 +43,131 @@ export class FanoutTimelineEndpointService {
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
+		private cacheService: CacheService,
 		private fanoutTimelineService: FanoutTimelineService,
 	) {
 	}
 
 	@bindThis
-	async timeline(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		allowPartial: boolean,
-		me?: { id: MiUser['id'] } | undefined | null,
-		useDbFallback: boolean,
-		redisTimelines: string[],
-		noteFilter: (note: MiNote) => boolean,
-		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
-	}): Promise<Packed<'Note'>[]> {
+	async timeline(ps: TimelineOptions): Promise<Packed<'Note'>[]> {
 		return await this.noteEntityService.packMany(await this.getMiNotes(ps), ps.me);
 	}
 
 	@bindThis
-	private async getMiNotes(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		allowPartial: boolean,
-		me?: { id: MiUser['id'] } | undefined | null,
-		useDbFallback: boolean,
-		redisTimelines: string[],
-		noteFilter: (note: MiNote) => boolean,
-		dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
-	}): Promise<MiNote[]> {
+	private async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
 		let noteIds: string[];
 		let shouldFallbackToDb = false;
 
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
+		const shouldPrepend = ps.sinceId && !ps.untilId;
+		const idCompare: (a: string, b: string) => number = shouldPrepend ? (a, b) => a < b ? -1 : 1 : (a, b) => a > b ? -1 : 1;
+
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
+		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
 		const redisResultIds = Array.from(new Set(redisResult.flat(1)));
 
-		redisResultIds.sort((a, b) => a > b ? -1 : 1);
+		redisResultIds.sort(idCompare);
 		noteIds = redisResultIds.slice(0, ps.limit);
 
 		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
 
 		if (!shouldFallbackToDb) {
+			let filter = ps.noteFilter ?? (_note => true);
+
+			if (ps.alwaysIncludeMyNotes && ps.me) {
+				const me = ps.me;
+				const parentFilter = filter;
+				filter = (note) => note.userId === me.id || parentFilter(note);
+			}
+
+			if (ps.excludeNoFiles) {
+				const parentFilter = filter;
+				filter = (note) => note.fileIds.length !== 0 && parentFilter(note);
+			}
+
+			if (ps.excludeReplies) {
+				const parentFilter = filter;
+				filter = (note) => !isReply(note, ps.me?.id) && parentFilter(note);
+			}
+
+			if (ps.excludePureRenotes) {
+				const parentFilter = filter;
+				filter = (note) => !isPureRenote(note) && parentFilter(note);
+			}
+
+			if (ps.me) {
+				const me = ps.me;
+				const [
+					userIdsWhoMeMuting,
+					userIdsWhoMeMutingRenotes,
+					userIdsWhoBlockingMe,
+					userMutedInstances,
+				] = await Promise.all([
+					this.cacheService.userMutingsCache.fetch(ps.me.id),
+					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
+					this.cacheService.userBlockedCache.fetch(ps.me.id),
+					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
+				]);
+
+				const parentFilter = filter;
+				filter = (note) => {
+					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
+					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
+					if (isPureRenote(note) && isUserRelated(note, userIdsWhoMeMutingRenotes, ps.ignoreAuthorFromMute)) return false;
+					if (isInstanceMuted(note, userMutedInstances)) return false;
+
+					return parentFilter(note);
+				};
+			}
+
 			const redisTimeline: MiNote[] = [];
 			let readFromRedis = 0;
 			let lastSuccessfulRate = 1; // rateをキャッシュする？
-			let trialCount = 1;
 
 			while ((redisResultIds.length - readFromRedis) !== 0) {
 				const remainingToRead = ps.limit - redisTimeline.length;
 
 				// DBからの取り直しを減らす初回と同じ割合以上で成功すると仮定するが、クエリの長さを考えて三倍まで
-				const countToGet = remainingToRead * Math.ceil(Math.min(1.1 / lastSuccessfulRate, 3));
+				const countToGet = Math.ceil(remainingToRead * Math.min(1.1 / lastSuccessfulRate, 3));
 				noteIds = redisResultIds.slice(readFromRedis, readFromRedis + countToGet);
 
 				readFromRedis += noteIds.length;
 
-				const gotFromDb = await this.getAndFilterFromDb(noteIds, ps.noteFilter);
+				const gotFromDb = await this.getAndFilterFromDb(noteIds, filter, idCompare);
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
-				console.log(`fanoutTimelineTrial#${trialCount++}: req: ${ps.limit}, tried: ${noteIds.length}, got: ${gotFromDb.length}, rate: ${lastSuccessfulRate}, total: ${redisTimeline.length}, fromRedis: ${redisResultIds.length}`);
-
 				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
 					// 十分Redisからとれた
-					return redisTimeline.slice(0, ps.limit);
+					const result = redisTimeline.slice(0, ps.limit);
+					if (shouldPrepend) result.reverse();
+					return result;
 				}
 			}
 
 			// まだ足りない分はDBにフォールバック
 			const remainingToRead = ps.limit - redisTimeline.length;
-			const gotFromDb = await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, remainingToRead);
-			redisTimeline.push(...gotFromDb);
-			console.log(`fanoutTimelineTrial#db: req: ${ps.limit}, tried: ${remainingToRead}, got: ${gotFromDb.length}, since: ${noteIds[noteIds.length - 1]}, until: ${ps.untilId}, total: ${redisTimeline.length}`);
-			return redisTimeline;
+			let dbUntil: string | null;
+			let dbSince: string | null;
+			if (shouldPrepend) {
+				redisTimeline.reverse();
+				dbUntil = ps.untilId;
+				dbSince = noteIds[noteIds.length - 1];
+			} else {
+				dbUntil = noteIds[noteIds.length - 1];
+				dbSince = ps.sinceId;
+			}
+			const gotFromDb = await ps.dbFallback(dbUntil, dbSince, remainingToRead);
+			return shouldPrepend ? [...gotFromDb, ...redisTimeline] : [...redisTimeline, ...gotFromDb];
 		}
 
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
-	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean): Promise<MiNote[]> {
+	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
 		const query = this.notesRepository.createQueryBuilder('note')
 			.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 			.innerJoinAndSelect('note.user', 'user')
@@ -116,7 +179,7 @@ export class FanoutTimelineEndpointService {
 
 		const notes = (await query.getMany()).filter(noteFilter);
 
-		notes.sort((a, b) => a.id > b.id ? -1 : 1);
+		notes.sort((a, b) => idCompare(a.id, b.id));
 
 		return notes;
 	}
