@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { Ref } from 'vue';
+import { Ref, ref } from 'vue';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -88,10 +88,10 @@ function g(id) {
 	return props.components.find(x => x.value.id === id).value;
 }
 
-let valueForSwitch = $ref(c.default ?? false);
+const valueForSwitch = ref(c.default ?? false);
 
 function onSwitchUpdate(v) {
-	valueForSwitch = v;
+	valueForSwitch.value = v;
 	if (c.onChange) c.onChange(v);
 }
 

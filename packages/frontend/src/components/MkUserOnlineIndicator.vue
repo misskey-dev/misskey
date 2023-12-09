@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 
@@ -24,7 +24,7 @@ const props = defineProps<{
 	user: Misskey.entities.User;
 }>();
 
-const text = $computed(() => {
+const text = computed(() => {
 	switch (props.user.onlineStatus) {
 		case 'online': return i18n.ts.online;
 		case 'active': return i18n.ts.active;

@@ -28,6 +28,7 @@ type TimelineOptions = {
 	redisTimelines: FanoutTimelineName[],
 	noteFilter?: (note: MiNote) => boolean,
 	alwaysIncludeMyNotes?: boolean;
+	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
@@ -60,11 +61,15 @@ export class FanoutTimelineEndpointService {
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
+		const shouldPrepend = ps.sinceId && !ps.untilId;
+		const idCompare: (a: string, b: string) => number = shouldPrepend ? (a, b) => a < b ? -1 : 1 : (a, b) => a > b ? -1 : 1;
+
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
+		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
 		const redisResultIds = Array.from(new Set(redisResult.flat(1)));
 
-		redisResultIds.sort((a, b) => a > b ? -1 : 1);
+		redisResultIds.sort(idCompare);
 		noteIds = redisResultIds.slice(0, ps.limit);
 
 		shouldFallbackToDb = shouldFallbackToDb || (noteIds.length === 0);
@@ -109,7 +114,7 @@ export class FanoutTimelineEndpointService {
 
 				const parentFilter = filter;
 				filter = (note) => {
-					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromMute)) return false;
+					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (isPureRenote(note) && isUserRelated(note, userIdsWhoMeMutingRenotes, ps.ignoreAuthorFromMute)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
@@ -126,32 +131,43 @@ export class FanoutTimelineEndpointService {
 				const remainingToRead = ps.limit - redisTimeline.length;
 
 				// DBからの取り直しを減らす初回と同じ割合以上で成功すると仮定するが、クエリの長さを考えて三倍まで
-				const countToGet = remainingToRead * Math.ceil(Math.min(1.1 / lastSuccessfulRate, 3));
+				const countToGet = Math.ceil(remainingToRead * Math.min(1.1 / lastSuccessfulRate, 3));
 				noteIds = redisResultIds.slice(readFromRedis, readFromRedis + countToGet);
 
 				readFromRedis += noteIds.length;
 
-				const gotFromDb = await this.getAndFilterFromDb(noteIds, filter);
+				const gotFromDb = await this.getAndFilterFromDb(noteIds, filter, idCompare);
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
 				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
 					// 十分Redisからとれた
-					return redisTimeline.slice(0, ps.limit);
+					const result = redisTimeline.slice(0, ps.limit);
+					if (shouldPrepend) result.reverse();
+					return result;
 				}
 			}
 
 			// まだ足りない分はDBにフォールバック
 			const remainingToRead = ps.limit - redisTimeline.length;
-			const gotFromDb = await ps.dbFallback(noteIds[noteIds.length - 1], ps.sinceId, remainingToRead);
-			redisTimeline.push(...gotFromDb);
-			return redisTimeline;
+			let dbUntil: string | null;
+			let dbSince: string | null;
+			if (shouldPrepend) {
+				redisTimeline.reverse();
+				dbUntil = ps.untilId;
+				dbSince = noteIds[noteIds.length - 1];
+			} else {
+				dbUntil = noteIds[noteIds.length - 1];
+				dbSince = ps.sinceId;
+			}
+			const gotFromDb = await ps.dbFallback(dbUntil, dbSince, remainingToRead);
+			return shouldPrepend ? [...gotFromDb, ...redisTimeline] : [...redisTimeline, ...gotFromDb];
 		}
 
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
-	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean): Promise<MiNote[]> {
+	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
 		const query = this.notesRepository.createQueryBuilder('note')
 			.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 			.innerJoinAndSelect('note.user', 'user')
@@ -163,7 +179,7 @@ export class FanoutTimelineEndpointService {
 
 		const notes = (await query.getMany()).filter(noteFilter);
 
-		notes.sort((a, b) => a.id > b.id ? -1 : 1);
+		notes.sort((a, b) => idCompare(a.id, b.id));
 
 		return notes;
 	}
