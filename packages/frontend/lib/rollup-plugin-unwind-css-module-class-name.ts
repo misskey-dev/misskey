@@ -13,13 +13,13 @@ function isFalsyIdentifier(identifier: estree.Identifier): boolean {
 	return identifier.name === 'undefined' || identifier.name === 'NaN';
 }
 
-function normalizeClassWalker(tree: estree.Node): string | null {
+function normalizeClassWalker(tree: estree.Node, stack: string | undefined): string | null {
 	if (tree.type === 'Identifier') return isFalsyIdentifier(tree) ? '' : null;
 	if (tree.type === 'Literal') return typeof tree.value === 'string' ? tree.value : '';
 	if (tree.type === 'BinaryExpression') {
 		if (tree.operator !== '+') return null;
-		const left = normalizeClassWalker(tree.left);
-		const right = normalizeClassWalker(tree.right);
+		const left = normalizeClassWalker(tree.left, stack);
+		const right = normalizeClassWalker(tree.right, stack);
 		if (left === null || right === null) return null;
 		return `${left}${right}`;
 	}
@@ -33,15 +33,15 @@ function normalizeClassWalker(tree: estree.Node): string | null {
 	if (tree.type === 'ArrayExpression') {
 		const values = tree.elements.map((treeNode) => {
 			if (treeNode === null) return '';
-			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument);
-			return normalizeClassWalker(treeNode);
+			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument, stack);
+			return normalizeClassWalker(treeNode, stack);
 		});
 		if (values.some((x) => x === null)) return null;
 		return values.join(' ');
 	}
 	if (tree.type === 'ObjectExpression') {
 		const values = tree.properties.map((treeNode) => {
-			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument);
+			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument, stack);
 			let x = treeNode.value;
 			let inveted = false;
 			while (x.type === 'UnaryExpression' && x.operator === '!') {
@@ -67,18 +67,26 @@ function normalizeClassWalker(tree: estree.Node): string | null {
 		if (values.some((x) => x === null)) return null;
 		return values.join(' ');
 	}
-	console.error(`Unexpected node type: ${tree.type}`);
+	if (
+		tree.type !== 'CallExpression' &&
+		tree.type !== 'ChainExpression' &&
+		tree.type !== 'ConditionalExpression' &&
+		tree.type !== 'LogicalExpression' &&
+		tree.type !== 'MemberExpression') {
+		console.error(stack ? `Unexpected node type: ${tree.type} (in ${stack})` : `Unexpected node type: ${tree.type}`);
+	}
 	return null;
 }
 
-export function normalizeClass(tree: estree.Node): string | null {
-	const walked = normalizeClassWalker(tree);
+export function normalizeClass(tree: estree.Node, stack?: string): string | null {
+	const walked = normalizeClassWalker(tree, stack);
 	return walked && walked.replace(/^\s+|\s+(?=\s)|\s+$/g, '');
 }
 
 export function unwindCssModuleClassName(ast: estree.Node): void {
 	(walk as typeof estreeWalker.walk)(ast, {
 		enter(node, parent): void {
+			//#region
 			if (parent?.type !== 'Program') return;
 			if (node.type !== 'VariableDeclaration') return;
 			if (node.declarations.length !== 1) return;
@@ -102,6 +110,14 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				return true;
 			});
 			if (!~__cssModulesIndex) return;
+			/* This region assumeed that the entered node looks like the following code.
+			 *
+			 * ```ts
+			 * const SomeComponent = _export_sfc(_sfc_main, [["foo", bar], ["__cssModules", cssModules]]);
+			 * ```
+			 */
+			//#endregion
+			//#region
 			const cssModuleForestName = ((node.declarations[0].init.arguments[1].elements[__cssModulesIndex] as estree.ArrayExpression).elements[1] as estree.Identifier).name;
 			const cssModuleForestNode = parent.body.find((x) => {
 				if (x.type !== 'VariableDeclaration') return false;
@@ -117,6 +133,16 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				if (property.value.type !== 'Identifier') return [];
 				return [[property.key.value as string, property.value.name as string]];
 			}));
+			/* This region collected a VariableDeclaration node in the module that looks like the following code.
+			 *
+			 * ```ts
+			 * const cssModules = {
+			 *   "$style": style0,
+			 * };
+			 * ```
+			 */
+			//#endregion
+			//#region
 			const sfcMain = parent.body.find((x) => {
 				if (x.type !== 'VariableDeclaration') return false;
 				if (x.declarations.length !== 1) return false;
@@ -146,7 +172,22 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 			if (ctx.type !== 'Identifier') return;
 			if (ctx.name !== '_ctx') return;
 			if (render.argument.body.type !== 'BlockStatement') return;
+			/* This region assumed that `sfcMain` looks like the following code.
+			 *
+			 * ```ts
+			 * const _sfc_main = defineComponent({
+			 *   setup(_props) {
+			 *     ...
+			 *     return (_ctx, _cache) => {
+			 *       ...
+			 *     };
+			 *   },
+			 * });
+			 * ```
+			 */
+			//#endregion
 			for (const [key, value] of moduleForest) {
+				//#region
 				const cssModuleTreeNode = parent.body.find((x) => {
 					if (x.type !== 'VariableDeclaration') return false;
 					if (x.declarations.length !== 1) return false;
@@ -172,6 +213,19 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 					if (actualValue.declarations[0].init?.type !== 'Literal') return [];
 					return [[actualKey, actualValue.declarations[0].init.value as string]];
 				}));
+				/* This region collected VariableDeclaration nodes in the module that looks like the following code.
+				 *
+				 * ```ts
+				 * const foo = "bar";
+				 * const baz = "qux";
+				 * const style0 = {
+				 *   foo: foo,
+				 *   baz: baz,
+				 * };
+				 * ```
+				 */
+				//#endregion
+				//#region
 				(walk as typeof estreeWalker.walk)(render.argument.body, {
 					enter(childNode) {
 						if (childNode.type !== 'MemberExpression') return;
@@ -189,6 +243,39 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						});
 					},
 				});
+				/* This region inlined the reference identifier of the class name in the render function into the actual literal, as in the following code.
+				 *
+				 * ```ts
+				 * const _sfc_main = defineComponent({
+				 *   setup(_props) {
+				 *     ...
+				 *     return (_ctx, _cache) => {
+				 *       ...
+				 *       return openBlock(), createElementBlock("div", {
+				 *         class: normalizeClass(_ctx.$style.foo),
+				 *       }, null);
+				 *     };
+				 *   },
+				 * });
+				 * ```
+				 *
+				 * ↓
+				 *
+				 * ```ts
+				 * const _sfc_main = defineComponent({
+				 *   setup(_props) {
+				 *     ...
+				 *     return (_ctx, _cache) => {
+				 *       ...
+				 *       return openBlock(), createElementBlock("div", {
+				 *         class: normalizeClass("bar"),
+				 *       }, null);
+				 *     };
+				 *   },
+				 * });
+				 */
+				//#endregion
+				//#region
 				(walk as typeof estreeWalker.walk)(render.argument.body, {
 					enter(childNode) {
 						if (childNode.type !== 'MemberExpression') return;
@@ -205,13 +292,47 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						});
 					},
 				});
+				/* This region replaced the reference identifier of missing class names in the render function with `undefined`, as in the following code.
+				 *
+				 * ```ts
+				 * const _sfc_main = defineComponent({
+				 *   setup(_props) {
+				 *     ...
+				 *     return (_ctx, _cache) => {
+				 *       ...
+				 *       return openBlock(), createElementBlock("div", {
+				 *         class: normalizeClass(_ctx.$style.hoge),
+				 *       }, null);
+				 *     };
+				 *   },
+				 * });
+				 * ```
+				 *
+				 * ↓
+				 *
+				 * ```ts
+				 * const _sfc_main = defineComponent({
+				 *   setup(_props) {
+				 *     ...
+				 *     return (_ctx, _cache) => {
+				 *       ...
+				 *       return openBlock(), createElementBlock("div", {
+				 *         class: normalizeClass(undefined),
+				 *       }, null);
+				 *     };
+				 *   },
+				 * });
+				 * ```
+				 */
+				//#endregion
+				//#region
 				(walk as typeof estreeWalker.walk)(render.argument.body, {
 					enter(childNode) {
 						if (childNode.type !== 'CallExpression') return;
 						if (childNode.callee.type !== 'Identifier') return;
 						if (childNode.callee.name !== 'normalizeClass') return;
 						if (childNode.arguments.length !== 1) return;
-						const normalized = normalizeClass(childNode.arguments[0]);
+						const normalized = normalizeClass(childNode.arguments[0], name);
 						if (normalized === null) return;
 						this.replace({
 							type: 'Literal',
@@ -219,8 +340,60 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						});
 					},
 				});
+				/* This region compiled the `normalizeClass` call into a pseudo-AOT compilation, as in the following code.
+				 *
+				 * ```ts
+				 * const _sfc_main = defineComponent({
+				 *   setup(_props) {
+				 *     ...
+				 *     return (_ctx, _cache) => {
+				 *       ...
+				 *       return openBlock(), createElementBlock("div", {
+				 *         class: normalizeClass("bar"),
+				 *       }, null);
+				 *     };
+				 *   },
+				 * });
+				 * ```
+				 *
+				 * ↓
+				 *
+				 * ```ts
+				 * const _sfc_main = defineComponent({
+				 *   setup(_props) {
+				 *     ...
+				 *     return (_ctx, _cache) => {
+				 *       ...
+				 *       return openBlock(), createElementBlock("div", {
+				 *         class: "bar",
+				 *       }, null);
+				 *     };
+				 *   },
+				 * });
+				 * ```
+				 */
+				//#endregion
 			}
+			//#region
 			if (node.declarations[0].init.arguments[1].elements.length === 1) {
+				(walk as typeof estreeWalker.walk)(ast, {
+					enter(childNode) {
+						if (childNode.type !== 'Identifier') return;
+						if (childNode.name !== ident) return;
+						this.replace({
+							type: 'Identifier',
+							name: node.declarations[0].id.name,
+						});
+					},
+				});
+				this.remove();
+				/* NOTE: The above logic is valid as long as the following two conditions are met.
+				 *
+				 * - the uniqueness of `ident` is kept throughout the module
+				 * - `_export_sfc` is noop when the second argument is an empty array
+				 *
+				 * Otherwise, the below logic should be used instead.
+
 				this.replace({
 					type: 'VariableDeclaration',
 					declarations: [{
@@ -236,6 +409,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 					}],
 					kind: 'const',
 				});
+				 */
 			} else {
 				this.replace({
 					type: 'VariableDeclaration',
@@ -263,6 +437,35 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 					kind: 'const',
 				});
 			}
+			/* This region removed the `__cssModules` reference from the second argument of `_export_sfc`, as in the following code.
+			 *
+			 * ```ts
+			 * const SomeComponent = _export_sfc(_sfc_main, [["foo", bar], ["__cssModules", cssModules]]);
+			 * ```
+			 *
+			 * ↓
+			 *
+			 * ```ts
+			 * const SomeComponent = _export_sfc(_sfc_main, [["foo", bar]]);
+			 * ```
+			 *
+			 * When the declaration becomes noop, it is removed as follows.
+			 *
+			 * ```ts
+			 * const _sfc_main = defineComponent({
+			 *   ...
+			 * });
+			 * const SomeComponent = _export_sfc(_sfc_main, []);
+			 * ```
+			 *
+			 * ↓
+			 *
+			 * ```ts
+			 * const SomeComponent = defineComponent({
+			 *   ...
+			 * });
+			 */
+			//#endregion
 		},
 	});
 }
