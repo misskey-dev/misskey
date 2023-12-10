@@ -134,10 +134,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'roles'" class="_gaps">
 				<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-				<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
+				<div v-for="role in info.roles" :key="role.id">
 					<div :class="$style.roleItemMain">
 						<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
-						<button class="_button" :class="$style.roleToggle" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
+						<button class="_button" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
 						<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
 						<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 					</div>
@@ -619,9 +619,6 @@ definePageMetadata(computed(() => ({
 	> :global(.ip) {
 		margin-left: auto;
 	}
-}
-
-.roleItem {
 }
 
 .roleItemMain {

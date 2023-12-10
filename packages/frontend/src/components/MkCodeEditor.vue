@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.codeEditorRoot, { [$style.disabled]: disabled, [$style.focused]: focused }]">
+<div :class="[$style.codeEditorRoot, { [$style.focused]: focused }]">
 	<div :class="$style.codeEditorScroller">
 		<textarea
 			ref="inputEl"
