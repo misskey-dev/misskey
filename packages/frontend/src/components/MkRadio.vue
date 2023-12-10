@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
 	modelValue: any;
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-let checked = $computed(() => props.modelValue === props.value);
+const checked = computed(() => props.modelValue === props.value);
 
 function toggle(): void {
 	if (props.disabled) return;

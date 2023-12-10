@@ -21,7 +21,17 @@ vi.stubGlobal('WebSocket', class WebSocket extends EventTarget { static CLOSING 
 vi.mock('@/store.js', () => {
 	return {
 		defaultStore: {
-			state: {},
+			state: {
+
+				// なんかtestがうまいこと動かないのでここに書く
+				dataSaver: {
+					media: false,
+					avatar: false,
+					urlPreview: false,
+					code: false,		
+				},
+
+			},
 		},
 	};
 });

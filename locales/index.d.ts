@@ -314,6 +314,7 @@ export interface Locale {
     "createFolder": string;
     "renameFolder": string;
     "deleteFolder": string;
+    "folder": string;
     "addFile": string;
     "emptyDrive": string;
     "emptyFolder": string;
@@ -440,7 +441,6 @@ export interface Locale {
     "notFound": string;
     "notFoundDescription": string;
     "uploadFolder": string;
-    "cacheClear": string;
     "markAsReadAllNotifications": string;
     "markAsReadAllUnreadNotes": string;
     "markAsReadAllTalkMessages": string;
@@ -1030,6 +1030,8 @@ export interface Locale {
     "sensitiveWords": string;
     "sensitiveWordsDescription": string;
     "sensitiveWordsDescription2": string;
+    "hiddenTags": string;
+    "hiddenTagsDescription": string;
     "notesSearchNotAvailable": string;
     "license": string;
     "unfavoriteConfirm": string;
@@ -1169,6 +1171,8 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "code": string;
+    "reloadRequiredToApplySettings": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2108,6 +2112,7 @@ export interface Locale {
             "chooseList": string;
         };
         "clicker": string;
+        "birthdayFollowings": string;
     };
     "_cw": {
         "hide": string;
@@ -2499,8 +2504,27 @@ export interface Locale {
             };
         };
     };
+    "_dataSaver": {
+        "_media": {
+            "title": string;
+            "description": string;
+        };
+        "_avatar": {
+            "title": string;
+            "description": string;
+        };
+        "_urlPreview": {
+            "title": string;
+            "description": string;
+        };
+        "_code": {
+            "title": string;
+            "description": string;
+        };
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
 };
+export function build(): Locale;
 export default locales;

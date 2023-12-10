@@ -50,6 +50,7 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		/* セキュリティ上の問題があるため無効化
 		'Mk:apiExternal': values.FN_NATIVE(async ([host, ep, param, token]) => {
 			utils.assertString(host);
 			utils.assertString(ep);
@@ -60,6 +61,7 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		*/
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
 			utils.assertString(key);
 			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));

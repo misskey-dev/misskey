@@ -370,8 +370,9 @@ export class ActivityPubServerService {
 			order: { id: 'DESC' },
 		});
 
-		const pinnedNotes = await Promise.all(pinings.map(pining =>
-			this.notesRepository.findOneByOrFail({ id: pining.noteId })));
+		const pinnedNotes = (await Promise.all(pinings.map(pining =>
+			this.notesRepository.findOneByOrFail({ id: pining.noteId }))))
+			.filter(note => !note.localOnly && ['public', 'home'].includes(note.visibility));
 
 		const renderedNotes = await Promise.all(pinnedNotes.map(note => this.apRendererService.renderNote(note)));
 
