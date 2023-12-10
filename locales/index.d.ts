@@ -682,6 +682,7 @@ export interface Locale {
     "forwardReport": string;
     "forwardReportIsAnonymous": string;
     "send": string;
+    "reportedNote": string;
     "abuseMarkAsResolved": string;
     "openInNewTab": string;
     "openInSideView": string;

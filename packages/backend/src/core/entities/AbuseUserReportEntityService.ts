@@ -33,6 +33,7 @@ export class AbuseUserReportEntityService {
 			id: report.id,
 			createdAt: this.idService.parse(report.id).date.toISOString(),
 			comment: report.comment,
+			notes: report.notes,
 			resolved: report.resolved,
 			reporterId: report.reporterId,
 			targetUserId: report.targetUserId,
