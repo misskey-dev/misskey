@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormSection first="true">
+	<FormSection :first="true">
 		<template #label>{{ i18n.ts.reactionDeckSettingTitle }}</template>
 		<template #description>{{ i18n.ts.reactionDeckSettingDescription }}</template>
 

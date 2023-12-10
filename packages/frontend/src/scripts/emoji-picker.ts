@@ -24,20 +24,23 @@ class EmojiPicker {
 		// nop
 	}
 
+	/**
+	 * リアクションデッキ・絵文字デッキを動的に切り替えるための{@link ComputedRef}を作成する。
+	 */
 	private createDeckItemCompute(): ComputedRef<string[]> {
-		const itemPresetType = this.itemPresetType;
-		const useReactionDeckItems = defaultStore.reactiveState.useReactionDeckItems;
+		const itemPresetTypeRef = this.itemPresetType;
+		const useReactionDeckItemsRef = defaultStore.reactiveState.useReactionDeckItems;
 		const reactionsRef = defaultStore.reactiveState.reactions;
 		const emojisRef = defaultStore.reactiveState.emojiDeckItems;
 
 		return computed(() => {
-			switch (itemPresetType.value) {
+			switch (itemPresetTypeRef.value) {
 				case 'reactions':
 					return reactionsRef.value;
 				case 'emojis':
 					return emojisRef.value;
 				default:
-					return useReactionDeckItems.value ? reactionsRef.value : emojisRef.value;
+					return useReactionDeckItemsRef.value ? reactionsRef.value : emojisRef.value;
 			}
 		});
 	}
