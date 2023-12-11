@@ -48,7 +48,6 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { MenuDivider } from '@/types/menu.js';
 
 provide('shouldOmitHeaderTitle', true);
 
