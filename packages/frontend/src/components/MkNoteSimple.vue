@@ -39,17 +39,24 @@ import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import { $i } from '@/account.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
-import { deepClone } from '@/scripts/clone.js';
 import { userPage } from '@/filters/user.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const showContent = ref(false);
+const note = ref(deepClone(props.note));
 
-let note = ref(deepClone(props.note));
-const muted = ref(checkWordMute(note, $i, $i?.mutedWords));
+const showContent = ref(false);
+const muted = ref(checkMute(note.value, $i?.mutedWords));
+
+function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null): boolean {
+	if (mutedWords == null) return false;
+
+	if (checkWordMute(note, $i, mutedWords)) return true;
+	return false;
+}
 </script>
 
 <style lang="scss" module>
