@@ -43,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			fixed
 			:instant="true"
 			:initialText="c.form.text"
+			:initialCw="c.form.cw"
 		/>
 	</div>
 	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
@@ -97,6 +98,7 @@ function onSwitchUpdate(v) {
 function openPostForm() {
 	os.post({
 		initialText: c.form.text,
+		initialCw: c.form.cw,
 		instant: true,
 	});
 }
