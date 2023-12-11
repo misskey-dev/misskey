@@ -104,7 +104,7 @@ async function onClick() {
 				});
 				emit('update:user', {
 					...props.user,
-					withReplies: defaultStore.state.defaultWithReplies
+					withReplies: defaultStore.state.defaultWithReplies,
 				});
 				hasPendingFollowRequestFromYou.value = true;
 
