@@ -28,7 +28,6 @@ import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
 
-
 const props = defineProps<{
 	name: string;
 	normal?: boolean;
