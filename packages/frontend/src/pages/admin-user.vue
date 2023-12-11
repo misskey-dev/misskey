@@ -122,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 						</MkFolder>
 
-                        <div>
+						<div>
 							<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 							<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
 						</div>
@@ -134,10 +134,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'roles'" class="_gaps">
 				<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-				<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
+				<div v-for="role in info.roles" :key="role.id">
 					<div :class="$style.roleItemMain">
 						<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
-						<button class="_button" :class="$style.roleToggle" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
+						<button class="_button" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
 						<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
 						<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 					</div>
@@ -325,41 +325,41 @@ async function toggleSuspend(v) {
 }
 
 async function unsetUserAvatar() {
-  const confirm = await os.confirm({
-    type: 'warning',
-    text: i18n.ts.unsetUserAvatarConfirm,
-  });
-  if (confirm.canceled) return;
-  const process = async () => {
-    await os.api('admin/unset-user-avatar', { userId: user.value.id });
-    os.success();
-  };
-  await process().catch(err => {
-    os.alert({
-      type: 'error',
-      text: err.toString(),
-    });
-  });
-  refreshUser();
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unsetUserAvatarConfirm,
+	});
+	if (confirm.canceled) return;
+	const process = async () => {
+		await os.api('admin/unset-user-avatar', { userId: user.value.id });
+		os.success();
+	};
+	await process().catch(err => {
+		os.alert({
+			type: 'error',
+			text: err.toString(),
+		});
+	});
+	refreshUser();
 }
 
 async function unsetUserBanner() {
-  const confirm = await os.confirm({
-    type: 'warning',
-    text: i18n.ts.unsetUserBannerConfirm,
-  });
-  if (confirm.canceled) return;
-  const process = async () => {
-    await os.api('admin/unset-user-banner', { userId: user.value.id });
-    os.success();
-  };
-  await process().catch(err => {
-    os.alert({
-      type: 'error',
-      text: err.toString(),
-    });
-  });
-  refreshUser();
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unsetUserBannerConfirm,
+	});
+	if (confirm.canceled) return;
+	const process = async () => {
+		await os.api('admin/unset-user-banner', { userId: user.value.id });
+		os.success();
+	};
+	await process().catch(err => {
+		os.alert({
+			type: 'error',
+			text: err.toString(),
+		});
+	});
+	refreshUser();
 }
 
 async function deleteAllFiles() {
@@ -619,9 +619,6 @@ definePageMetadata(computed(() => ({
 	> :global(.ip) {
 		margin-left: auto;
 	}
-}
-
-.roleItem {
 }
 
 .roleItemMain {

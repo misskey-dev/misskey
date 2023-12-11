@@ -22,6 +22,7 @@ const props = defineProps<{
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.User;
 	initialText?: string;
+	initialCw?: string;
 	initialVisibility?: typeof Misskey.noteVisibilities;
 	initialFiles?: Misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
