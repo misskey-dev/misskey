@@ -89,7 +89,7 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 			text: list.name,
 			to: `/timeline/list/${list.id}`,
 		})),
-		null,
+		(lists.length === 0 ? undefined : null),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
@@ -109,7 +109,7 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 			indicate: antenna.hasUnreadNote,
 			to: `/timeline/antenna/${antenna.id}`,
 		})),
-		null,
+		(lists.length === 0 ? undefined : null),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
@@ -131,7 +131,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 			indicate: channel.hasUnreadNote,
 			to: `/channels/${channel.id}`,
 		})),
-		null,
+		(lists.length === 0 ? undefined : null),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
