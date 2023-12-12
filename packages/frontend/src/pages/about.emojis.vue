@@ -76,69 +76,67 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 let tab = $ref('emojis');
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => [{
-	key: 'emojis',
-	title: i18n.ts.list,
+const customEmojiTags = getCustomEmojiTags();
+const q = ref('');
+const searchEmojis = ref<Misskey.entities.EmojiSimple[]>(null);
+const selectedTags = ref(new Set());
+const headerTabs = computed(() => [{
+    key: 'emojis',
+    title: i18n.ts.list,
 }, {
-	key: 'draft',
-	title: i18n.ts.draftEmojis,
+    key: 'draft',
+    title: i18n.ts.draftEmojis,
 }]);
 const filteredCategories = computed(() => {
-	return customEmojiCategories.value.filter((category: any) => {
-		return customEmojis.value.some((em: any) => em.category === category && !em.draft);
-	});
+    return customEmojiCategories.value.filter((category: any) => {
+        return customEmojis.value.some((em: any) => em.category === category && !em.draft);
+    });
 });
 definePageMetadata(ref({}));
-
-let q = $ref('');
-let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
-let selectedTags = $ref(new Set());
 const draftEmojis = customEmojis.value.filter(emoji => emoji.draft);
 
 function search() {
-	if ((q === '' || q == null) && selectedTags.size === 0) {
-		searchEmojis = null;
+	if ((q.value === '' || q.value == null) && selectedTags.value.size === 0) {
+		searchEmojis.value = null;
 		return;
 	}
 
-	if (selectedTags.size === 0) {
-		const queryarry = q.match(/\:([a-z0-9_]*)\:/g);
+	if (selectedTags.value.size === 0) {
+		const queryarry = q.value.match(/\:([a-z0-9_]*)\:/g);
 
 		if (queryarry) {
-			searchEmojis = customEmojis.value.filter(emoji =>
+			searchEmojis.value = customEmojis.value.filter(emoji =>
 				queryarry.includes(`:${emoji.name}:`),
 			);
 		} else {
-			searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+			searchEmojis.value = customEmojis.value.filter(emoji => emoji.name.includes(q.value) || emoji.aliases.includes(q.value));
 		}
 	} else {
-		searchEmojis = customEmojis.value.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
+		searchEmojis.value = customEmojis.value.filter(emoji => (emoji.name.includes(q.value) || emoji.aliases.includes(q.value)) && [...selectedTags.value].every(t => emoji.aliases.includes(t)));
 	}
 }
 
 function toggleTag(tag) {
-	if (selectedTags.has(tag)) {
-		selectedTags.delete(tag);
+	if (selectedTags.value.has(tag)) {
+		selectedTags.value.delete(tag);
 	} else {
-		selectedTags.add(tag);
+		selectedTags.value.add(tag);
 	}
 }
 
-const edit = () => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
-		isRequest: true,
-	}, {
-		done: result => {
-			window.location.reload();
-		},
-	}, 'closed');
-};
-
-watch($$(q), () => {
+watch(q, () => {
 	search();
 });
-
-watch($$(selectedTags), () => {
+const edit = () => {
+    os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
+        isRequest: true,
+    }, {
+        done: result => {
+            window.location.reload();
+        },
+    }, 'closed');
+};
+watch(selectedTags, () => {
 	search();
 }, { deep: true });
 

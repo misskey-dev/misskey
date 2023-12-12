@@ -9,9 +9,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
-import {isUserRelated} from "@/misc/is-user-related.js";
-import {CacheService} from "@/core/CacheService.js";
-
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { CacheService } from '@/core/CacheService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -67,11 +66,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					this.globalNotesRankingCacheLastFetchedAt = Date.now();
 				}
 			}
-			const [
-				userIdsWhoMeMuting,
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-			]) : [new Set<string>()];
 
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			if (ps.untilId) {
@@ -83,6 +77,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>()];
+
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
@@ -92,12 +94,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			let notes = await query.getMany();
-			notes.sort((a, b) => a.id > b.id ? -1 : 1);
-			notes = notes.filter(note => {
-				return !isUserRelated(note, userIdsWhoMeMuting);
+			const notes = (await query.getMany()).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+
+				return true;
 			});
+
+			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 			// TODO: ミュート等考慮
+
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

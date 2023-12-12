@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -99,24 +99,24 @@ const props = defineProps<{
 	username: string;
 }>();
 
-let page = $ref(null);
-let error = $ref(null);
+const page = ref(null);
+const error = ref(null);
 const otherPostsPagination = {
 	endpoint: 'users/pages' as const,
 	limit: 6,
 	params: computed(() => ({
-		userId: page.user.id,
+		userId: page.value.user.id,
 	})),
 };
-const path = $computed(() => props.username + '/' + props.pageName);
+const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
-	page = null;
+	page.value = null;
 	os.api('pages/show', {
 		name: props.pageName,
 		username: props.username,
 	}).then(async _page => {
-		page = _page;
+		page.value = _page;
 
 		// plugin
 		if (pageViewInterruptors.length > 0) {
@@ -124,38 +124,38 @@ function fetchPage() {
 			for (const interruptor of pageViewInterruptors) {
 				result = await interruptor.handler(result);
 			}
-			page = result;
+			page.value = result;
 		}
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
 function share() {
 	navigator.share({
-		title: page.title ?? page.name,
-		text: page.summary,
-		url: `${url}/@${page.user.username}/pages/${page.name}`,
+		title: page.value.title ?? page.value.name,
+		text: page.value.summary,
+		url: `${url}/@${page.value.user.username}/pages/${page.value.name}`,
 	});
 }
 
 function copyLink() {
-	copyToClipboard(`${url}/@${page.user.username}/pages/${page.name}`);
+	copyToClipboard(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
 	os.success();
 }
 
 function shareWithNote() {
 	os.post({
-		initialText: `${page.title || page.name} ${url}/@${page.user.username}/pages/${page.name}`,
+		initialText: `${page.value.title || page.value.name} ${url}/@${page.value.user.username}/pages/${page.value.name}`,
 	});
 }
 
 function like() {
 	os.apiWithDialog('pages/like', {
-		pageId: page.id,
+		pageId: page.value.id,
 	}).then(() => {
-		page.isLiked = true;
-		page.likedCount++;
+		page.value.isLiked = true;
+		page.value.likedCount++;
 	});
 }
 
@@ -166,32 +166,32 @@ async function unlike() {
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('pages/unlike', {
-		pageId: page.id,
+		pageId: page.value.id,
 	}).then(() => {
-		page.isLiked = false;
-		page.likedCount--;
+		page.value.isLiked = false;
+		page.value.likedCount--;
 	});
 }
 
 function pin(pin) {
 	os.apiWithDialog('i/update', {
-		pinnedPageId: pin ? page.id : null,
+		pinnedPageId: pin ? page.value.id : null,
 	});
 }
 
-watch(() => path, fetchPage, { immediate: true });
+watch(() => path.value, fetchPage, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => page ? {
-	title: page.title || page.name,
-	avatar: page.user,
-	path: `/@${page.user.username}/pages/${page.name}`,
+definePageMetadata(computed(() => page.value ? {
+	title: page.value.title || page.value.name,
+	avatar: page.value.user,
+	path: `/@${page.value.user.username}/pages/${page.value.name}`,
 	share: {
-		title: page.title || page.name,
-		text: page.summary,
+		title: page.value.title || page.value.name,
+		text: page.value.summary,
 	},
 } : null));
 </script>

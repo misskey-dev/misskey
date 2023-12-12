@@ -4,101 +4,73 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-    <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
-    <section>
-
-
-        <header v-if="!category" class="_acrylic" @click="shown = !shown">
-            <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
-            <slot></slot>
-            ({{ emojis.length }})
-        </header>
-        <header v-else-if="category.length === 1" class="_acrylic" @click="shown = !shown">
-            <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
-            {{ category[0] }}
-            ({{
-                emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category[0]).length
-            }})
-        </header>
-        <header v-else class="_acrylic" style="top:unset;" @click="toggleShown_fol">
-            <i class="toggle ti-fw" :class="shown_fol? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
-            {{ category[0] || i18n.ts.other }}
-            <template v-if="category.length !== 1">
-                ({{ i18n.ts.Folder }})
-            </template>
-            <template v-else>
-                ({{
-                    emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category[0]).length
-                }}) 2
-            </template>
-        </header>
-        <template v-for="(n, index) in category" v-if="shown_fol">
-            <header
-                    v-if="emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category[0]).length !== 0 || index!==0"
-                    style="top:unset;padding-left: 18px;"
-                    class="_acrylic"
-                    @click="toggleShown(index)"
-            >
-                <i class="toggle ti-fw" :class="shown_fold[index] ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i>
-                {{ n || i18n.ts.other }}
-                ({{
-                    emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === (index === 0 && category !== undefined ? category[0] : `${category[0]}/${n}`)).length
-                }})
-            </header>
-            <div v-if="shown_fold[index]" class="body">
-                <button
-                        v-for="emoji in emojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category ===( index === 0 && category !== undefined ? category[0] : `${category[0]}/${n}`)).map(e => `:${e.name}:`)"
-                        :key="emoji"
-                        :data-emoji="emoji"
-                        class="_button item"
-                        @pointerenter="computeButtonTitle"
-                        @click="emit('chosen', emoji, $event)"
-                >
-                    <MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-                    <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-                </button>
-            </div>
-        </template>
-
-        <div v-if="shown && category" class="body">
-            <button
-                    v-for="emoji in emojis.filter(e => e.category === category[0]).map(e => `:${e.name}:`)"
-                    :key="emoji"
-                    :data-emoji="emoji"
-                    class="_button item"
-                    @pointerenter="computeButtonTitle"
-                    @click="emit('chosen', emoji, $event)"
-            >
-                <MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-                <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-            </button>
-        </div>
-        <div v-else-if="shown && !category" class="body">
-            <button
-                    v-for="emoji in emojis"
-                    :key="emoji"
-                    :data-emoji="emoji"
-                    class="_button item"
-                    @pointerenter="computeButtonTitle"
-                    @click="emit('chosen', emoji, $event)"
-            >
-                <MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-                <MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-            </button>
-        </div>
-
-    </section>
+<!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
+<!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
+<section v-if="!hasChildSection" v-panel style="border-radius: 6px; border-bottom: 0.5px solid var(--divider);">
+	<header class="_acrylic" @click="shown = !shown">
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-icons"></i>:{{ emojis.length }})
+	</header>
+	<div v-if="shown" class="body">
+		<button
+			v-for="emoji in emojis"
+			:key="emoji"
+			:data-emoji="emoji"
+			class="_button item"
+			@pointerenter="computeButtonTitle"
+			@click="emit('chosen', emoji, $event)"
+		>
+			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+		</button>
+	</div>
+</section>
+<!-- フォルダの中にはカスタム絵文字やフォルダがある -->
+<section v-else v-panel style="border-radius: 6px; border-bottom: 0.5px solid var(--divider);">
+	<header class="_acrylic" @click="shown = !shown">
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> (<i class="ti ti-folder ti-fw"></i>:{{ customEmojiTree.length }} <i class="ti ti-icons ti-fw"></i>:{{ emojis.length }})
+	</header>
+	<div v-if="shown" style="padding-left: 9px;">
+		<MkEmojiPickerSection
+			v-for="child in customEmojiTree"
+			:key="`custom:${child.value}`"
+			:initialShown="initialShown"
+			:emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
+			:hasChildSection="child.children.length !== 0"
+			:customEmojiTree="child.children"
+			@chosen="nestedChosen"
+		>
+			{{ child.value || i18n.ts.other }}
+		</MkEmojiPickerSection>
+	</div>
+	<div v-if="shown" class="body">
+		<button
+			v-for="emoji in emojis"
+			:key="emoji"
+			:data-emoji="emoji"
+			class="_button item"
+			@pointerenter="computeButtonTitle"
+			@click="emit('chosen', emoji, $event)"
+		>
+			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+		</button>
+	</div>
+</section>
 </template>
 
 <script lang="ts" setup>
-import {ref, computed, Ref} from 'vue';
-import {getEmojiName} from '@/scripts/emojilist.js';
-import {i18n} from "../i18n.js";
+import { ref, computed, Ref } from 'vue';
+import { CustomEmojiFolderTree, getEmojiName } from '@/scripts/emojilist.js';
+import { i18n } from '../i18n.js';
+import { customEmojis } from '@/custom-emojis.js';
+import MkEmojiPickerSection from '@/components/MkEmojiPicker.section.vue';
 
 const props = defineProps<{
-    emojis: string[] | Ref<string[]>;
-    initialShown?: boolean;
     category?: string[];
+	emojis: string[] | Ref<string[]>;
+	initialShown?: boolean;
+	hasChildSection?: boolean;
+	customEmojiTree?: CustomEmojiFolderTree[];
 }>();
 
 const emit = defineEmits<{
@@ -129,4 +101,7 @@ function computeButtonTitle(ev: MouseEvent): void {
     elm.title = getEmojiName(emoji) ?? emoji;
 }
 
+function nestedChosen(emoji: any, ev?: MouseEvent) {
+	emit('chosen', emoji, ev);
+}
 </script>

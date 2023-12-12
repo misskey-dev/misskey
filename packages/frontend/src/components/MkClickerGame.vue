@@ -23,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, onUnmounted} from 'vue';
+import {computed, onMounted, onUnmounted, ref } from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
-import {useInterval} from '@/scripts/use-interval.js';
+import { useInterval } from '@/scripts/use-interval.js';
 import * as game from '@/scripts/clicker-game.js';
 import number from '@/filters/number.js';
 import {claimAchievement} from '@/scripts/achievements.js';
@@ -35,13 +35,13 @@ import {defaultStore} from "@/store.js";
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);
-let cps = $ref(0);
-let prevCookies = $ref(0);
+const cps = ref(0);
+const prevCookies = ref(0);
 
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
 	const y = ev.clientY;
-	os.popup(MkPlusOneEffect, {x, y}, {}, 'end');
+	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
 
 	saveData.value!.cookies++;
 	saveData.value!.totalCookies++;
@@ -54,9 +54,9 @@ function onClick(ev: MouseEvent) {
 }
 
 useInterval(() => {
-	const diff = saveData.value!.cookies - prevCookies;
-	cps = diff;
-	prevCookies = saveData.value!.cookies;
+	const diff = saveData.value!.cookies - prevCookies.value;
+	cps.value = diff;
+	prevCookies.value = saveData.value!.cookies;
 }, 1000, {
 	immediate: false,
 	afterMounted: true,
@@ -69,7 +69,7 @@ useInterval(game.save, 1000 * 5, {
 
 onMounted(async () => {
 	await game.load();
-	prevCookies = saveData.value!.cookies;
+	prevCookies.value = saveData.value!.cookies;
 });
 
 onUnmounted(() => {

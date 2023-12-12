@@ -91,7 +91,7 @@ const menu = (ev: MouseEvent) => {
 	}], ev.currentTarget ?? ev.target);
 };
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
@@ -101,7 +101,7 @@ const headerActions = $computed(() => [{
 	handler: menu,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'draft',
 	title: i18n.ts.draftEmojis,
 }, {

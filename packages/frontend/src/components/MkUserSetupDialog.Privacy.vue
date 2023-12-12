@@ -53,10 +53,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 
-let isLocked = ref(false);
-let hideOnlineStatus = ref(false);
-let noCrawle = ref(false);
-let preventAiLearning = ref(true);
+const isLocked = ref(false);
+const hideOnlineStatus = ref(false);
+const noCrawle = ref(false);
+const preventAiLearning = ref(true);
 
 watch([isLocked, hideOnlineStatus, noCrawle, preventAiLearning], () => {
 	os.api('i/update', {

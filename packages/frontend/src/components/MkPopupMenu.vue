@@ -10,10 +10,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu';
+import { MenuItem } from '@/types/menu.js';
 
 defineProps<{
 	items: MenuItem[];
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-let modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 const manualShowing = ref(true);
 const hiding = ref(false);
 
@@ -60,14 +60,14 @@ function hide() {
 	hiding.value = true;
 
 	// closeは呼ぶ必要がある
-	modal?.close();
+	modal.value?.close();
 }
 
 function close() {
 	manualShowing.value = false;
 
 	// closeは呼ぶ必要がある
-	modal?.close();
+	modal.value?.close();
 }
 </script>
 

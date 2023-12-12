@@ -89,7 +89,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</div>
 	</MkSpacer>
-	<XEmojis v-else-if="tab === 'emojis'"/>
+	<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
+		<XEmojis/>
+	</MkSpacer>
 	<MkSpacer v-else-if="tab === 'federation'" :contentMax="1000" :marginMin="20">
 		<XFederation/>
 	</MkSpacer>
@@ -100,10 +102,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, ref, watch} from 'vue';
+import {computed, ref, watch, ref } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, host } from '@/config';
+import { version, host } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -111,12 +113,12 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
-import * as os from '@/os';
-import number from '@/filters/number';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { claimAchievement } from '@/scripts/achievements';
-import { instance } from '@/instance';
+import * as os from '@/os.js';
+import number from '@/filters/number.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { instance } from '@/instance.js';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store";
 
 const props = withDefaults(defineProps<{
@@ -125,11 +127,11 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
-let stats = $ref(null);
-let tab = $ref(props.initialTab);
+const stats = ref(null);
+const tab = ref(props.initialTab);
 
-watch($$(tab), () => {
-	if (tab === 'charts') {
+watch(tab, () => {
+	if (tab.value === 'charts') {
 		claimAchievement('viewInstanceChart');
 	}
 });
@@ -154,12 +156,12 @@ watch(darkMode, () => {
 })
 const initStats = () => os.api('stats', {
 }).then((res) => {
-	stats = res;
+	stats.value = res;
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 }, {

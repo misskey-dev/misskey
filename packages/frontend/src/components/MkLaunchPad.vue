@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref , computed , watch} from 'vue';
+import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar.js';
 import { defaultStore } from '@/store.js';
@@ -51,7 +52,7 @@ const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'pop
 	deviceKind === 'smartphone' ? 'drawer' :
 	'dialog';
 
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
@@ -66,7 +67,7 @@ const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k =>
 }));
 
 function close() {
-	modal.close();
+	modal.value.close();
 }
 </script>
 
@@ -118,6 +119,9 @@ function close() {
         animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
         color: white;
       }
+			padding: 10px;
+			box-sizing: border-box;
+
 			&:hover {
 				color: var(--accent);
 				background: var(--accentedBg);

@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import { i18n } from '../i18n.js';
@@ -82,7 +83,7 @@ async function editScheduleNote() {
 	emit('editScheduleNote');
 }
 
-const showContent = $ref(false);
+const showContent = ref(false);
 </script>
 
 <style lang="scss" module>
