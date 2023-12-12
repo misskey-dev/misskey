@@ -8,7 +8,7 @@ import { Ref } from 'vue';
 
 export type MenuAction = (ev: MouseEvent) => void;
 
-export type MenuDivider = null;
+export type MenuDivider = { type: 'divider' };
 export type MenuNull = undefined;
 export type MenuLabel = { type: 'label', text: string };
 export type MenuLink = { type: 'link', to: string, text: string, icon?: string, indicate?: boolean, avatar?: Misskey.entities.User };

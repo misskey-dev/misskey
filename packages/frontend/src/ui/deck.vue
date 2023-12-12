@@ -236,7 +236,7 @@ function changeProfile(ev: MouseEvent) {
 				deckStore.set('profile', k);
 				unisonReload();
 			},
-		}))), null, {
+		}))), { type: 'divider' }, {
 			text: i18n.ts._deck.newProfile,
 			icon: 'ti ti-plus',
 			action: async () => {

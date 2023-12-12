@@ -232,7 +232,7 @@ const age = computed(() => {
 	return calcAge(props.user.birthday);
 });
 
-function menu(ev) {
+function menu(ev: MouseEvent) {
 	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }

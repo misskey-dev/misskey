@@ -60,7 +60,7 @@ function setFilter(ev) {
 		action: () => {
 			includeTypes.value = null;
 		},
-	}, null, ...typeItems] : typeItems;
+	}, { type: 'divider' }, ...typeItems] : typeItems;
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
