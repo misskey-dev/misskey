@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
-					<MkTextarea v-model="announcement.text">
+					<MkTextarea v-model="announcement.text" rich-autocomplete>
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
 					<MkInput v-model="announcement.imageUrl" type="url">

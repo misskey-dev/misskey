@@ -36,6 +36,7 @@ import { onMounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'v
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { Autocomplete } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -46,6 +47,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	richAutocomplete?: boolean | string,
 	spellcheck?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
@@ -111,6 +113,10 @@ onMounted(() => {
 	nextTick(() => {
 		if (autofocus.value) {
 			focus();
+		}
+
+		if (props.richAutocomplete) {
+			new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
 		}
 	});
 });

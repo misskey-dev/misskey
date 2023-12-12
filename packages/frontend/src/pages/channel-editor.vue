@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description">
+			<MkTextarea v-model="description" rich-autocomplete>
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 

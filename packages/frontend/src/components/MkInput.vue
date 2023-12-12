@@ -48,6 +48,7 @@ import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
+import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | number | null;
@@ -59,6 +60,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	richAutocomplete?: boolean | SuggestionType[],
 	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;
@@ -158,6 +160,10 @@ onMounted(() => {
 	nextTick(() => {
 		if (autofocus.value) {
 			focus();
+		}
+
+		if (props.richAutocomplete) {
+			new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
 		}
 	});
 });
