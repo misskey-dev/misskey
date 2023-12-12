@@ -36,7 +36,7 @@ import { onMounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'v
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { Autocomplete } from '@/scripts/autocomplete.js';
+import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -47,7 +47,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
-	richAutocomplete?: boolean | string,
+	richAutocomplete?: boolean | SuggestionType[],
 	spellcheck?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
