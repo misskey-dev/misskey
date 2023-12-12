@@ -178,7 +178,7 @@ async function copyFromEmojiDeckItems() {
 		return;
 	}
 
-	reactionDeckItems.value = emojiDeckItems.value;
+	reactionDeckItems.value = [...emojiDeckItems.value];
 }
 
 async function copyFromReactionDeckItems() {
@@ -191,7 +191,7 @@ async function copyFromReactionDeckItems() {
 		return;
 	}
 
-	emojiDeckItems.value = reactionDeckItems.value;
+	emojiDeckItems.value = [...reactionDeckItems.value];
 }
 
 function remove(itemsRef: Ref<string[]>, reaction: string, ev: MouseEvent) {
