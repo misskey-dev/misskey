@@ -343,10 +343,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	useReactionDeckItems: {
-		where: 'device',
-		default: true,
-	},
 	reactionsDisplaySize: {
 		where: 'device',
 		default: 'medium' as 'small' | 'medium' | 'large',

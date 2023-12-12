@@ -16,7 +16,6 @@ import { defaultStore } from '@/store.js';
 class EmojiPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
-	private itemPresetType = ref<DeckItemPresetType>('auto');
 	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
 
@@ -24,32 +23,11 @@ class EmojiPicker {
 		// nop
 	}
 
-	/**
-	 * リアクションデッキ・絵文字デッキを動的に切り替えるための{@link ComputedRef}を作成する。
-	 */
-	private createDeckItemCompute(): ComputedRef<string[]> {
-		const itemPresetTypeRef = this.itemPresetType;
-		const useReactionDeckItemsRef = defaultStore.reactiveState.useReactionDeckItems;
-		const reactionsRef = defaultStore.reactiveState.reactions;
-		const emojisRef = defaultStore.reactiveState.emojiDeckItems;
-
-		return computed(() => {
-			switch (itemPresetTypeRef.value) {
-				case 'reactions':
-					return reactionsRef.value;
-				case 'emojis':
-					return emojisRef.value;
-				default:
-					return useReactionDeckItemsRef.value ? reactionsRef.value : emojisRef.value;
-			}
-		});
-	}
-
 	public async init() {
-		const emojisComputed = this.createDeckItemCompute();
+		const emojisRef = defaultStore.reactiveState.emojiDeckItems;
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
-			pinnedEmojis: emojisComputed,
+			pinnedEmojis: emojisRef,
 			asReactionPicker: true,
 			manualShowing: this.manualShowing,
 			choseAndClose: false,
@@ -71,16 +49,12 @@ class EmojiPicker {
 		src: HTMLElement,
 		onChosen?: EmojiPicker['onChosen'],
 		onClosed?: EmojiPicker['onClosed'],
-		itemPresetType: DeckItemPresetType = 'auto',
 	) {
 		this.src.value = src;
-		this.itemPresetType.value = itemPresetType;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;
 		this.onClosed = onClosed;
 	}
 }
-
-export type DeckItemPresetType = 'reactions' | 'emojis' | 'auto';
 
 export const emojiPicker = new EmojiPicker();

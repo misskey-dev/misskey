@@ -5,11 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormSection :first="true">
-		<template #label>{{ i18n.ts.reactionDeckSettingTitle }}</template>
-		<template #description>{{ i18n.ts.reactionDeckSettingDescription }}</template>
+	<div>
+		<MkTab v-model="tabSelection" :class="$style.tab">
+			<option value="reactionDeck">{{ i18n.ts.reactionDeckSettingTitle }}</option>
+			<option value="emojiDeck">{{ i18n.ts.emojiDeckSettingTitle }}</option>
+		</MkTab>
 
-		<div class="_gaps_m">
+		<div v-if="tabSelection === 'reactionDeck'" class="_gaps_m">
+			<div class="description">{{ i18n.ts.reactionDeckSettingDescription }}</div>
+
 			<div>
 				<div v-panel style="border-radius: 6px;">
 					<Sortable
@@ -39,52 +43,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_buttons">
 				<MkButton inline @click="previewReaction"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
 				<MkButton inline danger @click="setDefaultReaction"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+				<MkButton inline danger @click="copyFromEmojiDeckItems"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromEmojiDeckItems }}</MkButton>
 			</div>
 		</div>
-	</FormSection>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.emojiDeckSettingTitle }}</template>
-		<template #description>{{ i18n.ts.emojiDeckSettingDescription }}</template>
+		<div v-if="tabSelection === 'emojiDeck'" class="_gaps_m">
+			<div class="description">{{ i18n.ts.emojiDeckSettingDescription }}</div>
 
-		<div class="_gaps_m">
-			<MkSwitch v-model="useReactionDeckItems">
-				{{ i18n.ts.diversionReactionDeckSettingCaption }}
-				<template #caption>{{ i18n.ts.diversionReactionDeckSettingDescription }}</template>
-			</MkSwitch>
-
-			<div v-if="!useReactionDeckItems">
-				<div v-panel style="border-radius: 6px;">
-					<Sortable
-						v-model="emojiDeckItems"
-						:class="$style.reactions"
-						:itemKey="item => item"
-						:animation="150"
-						:delay="100"
-						:delayOnTouchOnly="true"
-					>
-						<template #item="{element}">
-							<button class="_button" :class="$style.reactionsItem" @click="removeEmoji(element, $event)">
-								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
-								<MkEmoji v-else :emoji="element" :normal="true"/>
-							</button>
-						</template>
-						<template #footer>
-							<button class="_button" :class="$style.reactionsAdd" @click="chooseEmoji">
-								<i class="ti ti-plus"></i>
-							</button>
-						</template>
-					</Sortable>
+			<div class="_gaps_m">
+				<div>
+					<div v-panel style="border-radius: 6px;">
+						<Sortable
+							v-model="emojiDeckItems"
+							:class="$style.reactions"
+							:itemKey="item => item"
+							:animation="150"
+							:delay="100"
+							:delayOnTouchOnly="true"
+						>
+							<template #item="{element}">
+								<button class="_button" :class="$style.reactionsItem" @click="removeEmoji(element, $event)">
+									<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+									<MkEmoji v-else :emoji="element" :normal="true"/>
+								</button>
+							</template>
+							<template #footer>
+								<button class="_button" :class="$style.reactionsAdd" @click="chooseEmoji">
+									<i class="ti ti-plus"></i>
+								</button>
+							</template>
+						</Sortable>
+					</div>
+					<span class="description">{{ i18n.ts.reactionSettingDescription2 }}</span>
 				</div>
-				<span class="description">{{ i18n.ts.reactionSettingDescription2 }}</span>
-			</div>
 
-			<div v-if="!useReactionDeckItems" class="_buttons">
-				<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-				<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+				<div class="_buttons">
+					<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+					<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+					<MkButton inline danger @click="copyFromReactionDeckItems"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromReactionDeckItems }}</MkButton>
+				</div>
 			</div>
 		</div>
-	</FormSection>
+	</div>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.diversionReactionDeckEmojisTitle }}</template>
@@ -140,11 +140,13 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
+import MkTab from "@/components/MkTab.vue";
+
+const tabSelection = ref<'reactionDeck' | 'emojiDeck'>('reactionDeck');
 
 const reactionDeckItems: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const emojiDeckItems: Ref<string[]> = ref(deepClone(defaultStore.state.emojiDeckItems));
 
-const useReactionDeckItems = computed(defaultStore.makeGetterSetter('useReactionDeckItems'));
 const reactionPickerSize = computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
@@ -163,7 +165,33 @@ function previewReaction(ev: MouseEvent) {
 }
 
 function previewEmoji(ev: MouseEvent) {
-	emojiPicker.show(getHTMLElement(ev), undefined, undefined, 'emojis');
+	emojiPicker.show(getHTMLElement(ev));
+}
+
+async function copyFromEmojiDeckItems() {
+  const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.copyFromEmojiDeckItemsConfirm,
+	});
+
+	if (canceled) {
+		return;
+	}
+
+	reactionDeckItems.value = emojiDeckItems.value;
+}
+
+async function copyFromReactionDeckItems() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.copyFromReactionDeckItemsConfirm,
+	});
+
+	if (canceled) {
+		return;
+	}
+
+	emojiDeckItems.value = reactionDeckItems.value;
 }
 
 function remove(itemsRef: Ref<string[]>, reaction: string, ev: MouseEvent) {
@@ -227,6 +255,12 @@ definePageMetadata({
 </style>
 
 <style lang="scss" module>
+.tab {
+	margin: calc(var(--margin) / 2) 0;
+	padding: calc(var(--margin) / 2) 0;
+	background: var(--bg);
+}
+
 .reactions {
   padding: 12px;
   font-size: 1.1em;

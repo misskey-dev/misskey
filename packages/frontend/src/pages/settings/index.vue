@@ -74,7 +74,7 @@ const menuDef = computed(() => [{
 		active: currentPage.value?.route.name === 'privacy',
 	}, {
 		icon: 'ti ti-mood-happy',
-		text: i18n.ts.reaction,
+		text: i18n.ts.reactionAndEmoji,
 		to: '/settings/reaction',
 		active: currentPage.value?.route.name === 'reaction',
 	}, {
