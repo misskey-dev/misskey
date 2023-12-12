@@ -43,6 +43,12 @@ execa('pnpm', ['--filter', 'backend', 'watch'], {
 	stderr: process.stderr,
 });
 
+execa('pnpm', ['--filter', 'frontend', 'watch', ...vitePort], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 execa('pnpm', ['--filter', 'sw', 'watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
