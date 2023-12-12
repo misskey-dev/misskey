@@ -161,11 +161,11 @@ onMounted(() => {
 		if (autofocus.value) {
 			focus();
 		}
-
-		if (props.richAutocomplete) {
-			new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
-		}
 	});
+	
+	if (props.richAutocomplete) {
+		new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
+	}
 });
 
 defineExpose({

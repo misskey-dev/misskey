@@ -25,9 +25,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
-					<MkTextarea v-model="announcement.text" rich-autocomplete>
+					<FormSlot>
 						<template #label>{{ i18n.ts.text }}</template>
-					</MkTextarea>
+						<MkTab v-model="tab" style="margin-bottom: var(--margin);">
+							<option value="edit">{{ i18n.ts.edit }}</option>
+							<option value="preview">{{ i18n.ts.preview }}</option>
+						</MkTab>
+						<MkTextarea v-show="tab === 'edit'" v-model="announcement.text" rich-autocomplete />
+						<div v-show="tab === 'preview'" class="_panel" :class="$style.mfmPreview">
+							<Mfm :text="announcement.text || ''" :nyaize="false"></Mfm>
+						</div>
+					</FormSlot>
 					<MkInput v-model="announcement.imageUrl" type="url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
@@ -83,8 +91,11 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
+import FormSlot from '@/components/form/slot.vue';
+import MkTab from '@/components/MkTab.vue';
 
 const announcements = ref<any[]>([]);
+const tab = ref('edit');
 
 os.api('admin/announcements/list').then(announcementResponse => {
 	announcements.value = announcementResponse;
@@ -161,3 +172,13 @@ definePageMetadata({
 	icon: 'ti ti-speakerphone',
 });
 </script>
+
+<style lang="scss" module>
+.mfmPreview {
+	padding: 12px;
+	border-radius: 6px;
+	border: solid 1px var(--divider);
+	box-sizing: border-box;
+	min-height: 130px;
+}
+</style>

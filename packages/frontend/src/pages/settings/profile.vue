@@ -17,10 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave rich-autocomplete>
+	<FormSlot>
 		<template #label>{{ i18n.ts._profile.description }}</template>
-		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</MkTextarea>
+		<MkTab v-model="tab" style="margin-bottom: var(--margin)">
+			<option value="edit">{{ i18n.ts.edit }}</option>
+			<option value="preview">{{ i18n.ts.preview }}</option>
+		</MkTab>
+		<MkTextarea v-show="tab === 'edit'" v-model="profile.description" :max="500" tall manualSave rich-autocomplete />
+		<div v-show="tab === 'preview'" class="_panel" :class="$style.mfmPreview">
+			<Mfm :text="profile.description || ''" :nyaize="$i?.isCat || false"/>	
+		</div>
+		<template #caption v-show="tab === 'edit'">{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
+	</FormSlot>
 
 	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
@@ -140,11 +148,13 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
+import MkTab from '@/components/MkTab.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 const avatarDecorations = ref<any[]>([]);
+const tab = ref<string>("edit");
 
 const profile = reactive({
 	name: $i.name,
@@ -284,6 +294,13 @@ definePageMetadata({
 </script>
 
 <style lang="scss" module>
+.mfmPreview {
+	padding: 12px;
+	border-radius: 6px;
+	box-sizing: border-box;
+	min-height: 200px;
+}
+
 .avatarAndBanner {
 	position: relative;
 	background-size: cover;
