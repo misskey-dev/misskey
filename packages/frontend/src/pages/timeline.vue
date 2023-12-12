@@ -48,6 +48,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
+import { MenuItem } from '@/types/menu.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -83,13 +84,13 @@ function top(): void {
 
 async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
-	const items = [
+	const items: MenuItem[] = [
 		...lists.map(list => ({
 			type: 'link' as const,
 			text: list.name,
 			to: `/timeline/list/${list.id}`,
 		})),
-		(lists.length === 0 ? undefined : null),
+		(lists.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
@@ -102,14 +103,14 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	const antennas = await antennasCache.fetch();
-	const items = [
+	const items: MenuItem[] = [
 		...antennas.map(antenna => ({
 			type: 'link' as const,
 			text: antenna.name,
 			indicate: antenna.hasUnreadNote,
 			to: `/timeline/antenna/${antenna.id}`,
 		})),
-		(antennas.length === 0 ? undefined : null),
+		(antennas.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
