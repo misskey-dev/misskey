@@ -233,18 +233,18 @@ onMounted(() => {
 		gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 	} else {
 		function render(timeStamp: number) {
-			let isSizeChanged = false;
+			let sizeChanged = false;
 			if (Math.abs(height - canvas.offsetHeight) > 2) {
 				height = canvas.offsetHeight;
 				canvas.height = height;
-				isSizeChanged = true;
+				sizeChanged = true;
 			}
 			if (Math.abs(width - canvas.offsetWidth) > 2) {
 				width = canvas.offsetWidth;
 				canvas.width = width;
-				isSizeChanged = true;
+				sizeChanged = true;
 			}
-			if (isSizeChanged && gl) {
+			if (sizeChanged && gl) {
 				gl.uniform2fv(u_resolution, [width, height]);
 				gl.viewport(0, 0, width, height);
 			}
