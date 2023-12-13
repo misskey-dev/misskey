@@ -49,7 +49,7 @@ export class Autocomplete {
 		this.textarea = textarea;
 		this.textRef = textRef;
 		this.opening = false;
-		this.onlyType = onlyType || ['user', 'hashtag', 'emoji', 'mfmTag'];
+		this.onlyType = onlyType ?? ['user', 'hashtag', 'emoji', 'mfmTag'];
 
 		this.attach();
 	}
