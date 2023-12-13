@@ -34,10 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkTextarea>
-				<MkTextareaWithMFMPreview v-else-if="form[item].type === 'string' && form[item].multiline && form[item].richSyntax" v-model="values[item]">
+				<MkTextareaWithMfmPreview v-else-if="form[item].type === 'string' && form[item].multiline && form[item].richSyntax" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</MkTextareaWithMFMPreview>
+				</MkTextareaWithMfmPreview>
 				<MkSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
 					<span v-text="form[item].label || item"></span>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
@@ -73,7 +73,7 @@ import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkTextareaWithMFMPreview from './MkTextareaWithMFMPreview.vue';
+import MkTextareaWithMfmPreview from './MkTextareaWithMfmPreview.vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{

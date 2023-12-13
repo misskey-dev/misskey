@@ -25,9 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
-					<MkTextareaWithMFMPreview v-model="announcement.text">
+					<MkTextareaWithMfmPreview v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
-					</MkTextareaWithMFMPreview>
+					</MkTextareaWithMfmPreview>
 					<MkInput v-model="announcement.imageUrl" type="url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
@@ -75,7 +75,7 @@ import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextareaWithMFMPreview from '@/components/MkTextareaWithMFMPreview.vue';
+import MkTextareaWithMfmPreview from '@/components/MkTextareaWithMfmPreview.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';

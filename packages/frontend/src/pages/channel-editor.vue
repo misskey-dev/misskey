@@ -12,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextareaWithMFMPreview v-model="description" :tall="true">
+			<MkTextareaWithMfmPreview v-model="description" :tall="true">
 				<template #label>{{ i18n.ts.description }}</template>
-			</MkTextareaWithMFMPreview>
+			</MkTextareaWithMfmPreview>
 
 			<MkColorInput v-model="color">
 				<template #label>{{ i18n.ts.color }}</template>
@@ -80,7 +80,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkTextareaWithMFMPreview from '@/components/MkTextareaWithMFMPreview.vue';
+import MkTextareaWithMfmPreview from '@/components/MkTextareaWithMfmPreview.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
