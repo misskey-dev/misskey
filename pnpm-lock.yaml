@@ -1126,6 +1126,9 @@ importers:
       eslint-plugin-import:
         specifier: 2.29.0
         version: 2.29.0(@typescript-eslint/parser@6.13.2)(eslint@8.55.0)
+      nodemon:
+        specifier: 3.0.2
+        version: 3.0.2
       typescript:
         specifier: 5.3.3
         version: 5.3.3

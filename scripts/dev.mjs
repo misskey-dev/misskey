@@ -28,6 +28,12 @@ await execa('pnpm', ['build-assets'], {
 	stderr: process.stderr,
 });
 
+execa('pnpm', ['build-pre', '--watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 execa('pnpm', ['build-assets', '--watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
