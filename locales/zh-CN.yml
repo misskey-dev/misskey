@@ -311,6 +311,7 @@ folderName: "文件夹名称"
 createFolder: "创建文件夹"
 renameFolder: "重命名文件夹"
 deleteFolder: "删除文件夹"
+folder: "文件夹"
 addFile: "添加文件"
 emptyDrive: "网盘中无文件"
 emptyFolder: "此文件夹中无文件"
@@ -2126,3 +2127,7 @@ _moderationLogTypes:
 _fileViewer:
   url: "URL"
   uploadedAt: "添加日期"
+_externalResourceInstaller:
+  _errors:
+    _pluginParseFailed:
+      title: "AiScript 错误"
