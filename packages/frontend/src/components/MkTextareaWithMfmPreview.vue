@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       :code="code"
       :tall="tall"
       :pre="pre"
-      richAutocomplete
+      mfmAutocomplete
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"

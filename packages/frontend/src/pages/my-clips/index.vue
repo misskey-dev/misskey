@@ -60,7 +60,7 @@ async function create() {
 			type: 'string',
 			required: false,
 			multiline: true,
-			richSyntax: true,
+			isMfmAvailable: true,
 			label: i18n.ts.description,
 		},
 		isPublic: {

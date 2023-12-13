@@ -47,7 +47,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
-	richAutocomplete?: boolean | SuggestionType[],
+	mfmAutocomplete?: boolean | SuggestionType[],
 	spellcheck?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
@@ -117,8 +117,8 @@ onMounted(() => {
 		}
 	});
 
-	if (props.richAutocomplete) {
-		autocomplete = new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
+	if (props.mfmAutocomplete) {
+		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
 	}
 });
 
