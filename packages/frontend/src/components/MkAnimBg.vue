@@ -67,9 +67,9 @@ let handle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 onMounted(() => {
 	const canvas = canvasEl.value!;
 	let width = canvas.offsetWidth;
-  let height = canvas.offsetHeight;
-  canvas.width = width;
-  canvas.height = height;
+	let height = canvas.offsetHeight;
+	canvas.width = width;
+	canvas.height = height;
 
 	const gl = canvas.getContext('webgl', { premultipliedAlpha: true });
 	if (gl == null) return;
