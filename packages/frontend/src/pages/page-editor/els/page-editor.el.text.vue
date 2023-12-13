@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { watch, ref, shallowRef, onMounted } from 'vue';
+import { watch, ref, shallowRef, onMounted, onUnmounted } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/scripts/autocomplete.js';
@@ -29,6 +29,8 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
+let autocomplete: Autocomplete;
+
 const text = ref(props.modelValue.text ?? '');
 const inputEl = shallowRef<HTMLTextAreaElement | null>(null);
 
@@ -40,7 +42,11 @@ watch(text, () => {
 });
 
 onMounted(() => {
-	new Autocomplete(inputEl.value, text);
+	autocomplete = new Autocomplete(inputEl.value, text);
+});
+
+onUnmounted(() => {
+	autocomplete.detach();
 });
 </script>
 

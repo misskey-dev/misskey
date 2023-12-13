@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -70,6 +70,7 @@ const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
 const inputEl = shallowRef<HTMLTextAreaElement>();
+let autocomplete: Autocomplete;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev) => {
@@ -117,7 +118,13 @@ onMounted(() => {
 	});
 
 	if (props.richAutocomplete) {
-		new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
+		autocomplete = new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
+	}
+});
+
+onUnmounted(() => {
+	if (props.richAutocomplete) {
+		autocomplete.detach();
 	}
 });
 </script>

@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval.js';
@@ -95,6 +95,7 @@ const height =
 	props.small ? 33 :
 	props.large ? 39 :
 	36;
+let autocomplete: Autocomplete;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev: KeyboardEvent) => {
@@ -164,7 +165,13 @@ onMounted(() => {
 	});
 	
 	if (props.richAutocomplete) {
-		new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
+		autocomplete = new Autocomplete(inputEl.value, v, props.richAutocomplete === true ? null : props.richAutocomplete);
+	}
+});
+
+onUnmounted(() => {
+	if (props.richAutocomplete) {
+		autocomplete.detach();
 	}
 });
 
