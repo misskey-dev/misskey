@@ -123,7 +123,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (props.richAutocomplete) {
+	if (autocomplete) {
 		autocomplete.detach();
 	}
 });
