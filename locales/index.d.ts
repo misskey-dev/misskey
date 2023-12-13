@@ -2256,6 +2256,10 @@ export interface Locale extends ILocale {
      * 絵文字を選択
      */
     "chooseEmoji": string;
+		/**
+		 * リノート元詳細
+		 */
+    "renoteFromDetails": string;
     /**
      * 操作を完了できません
      */
