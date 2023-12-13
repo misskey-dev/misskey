@@ -132,7 +132,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 			indicate: channel.hasUnreadNote,
 			to: `/channels/${channel.id}`,
 		})),
-		(channels.length === 0 ? undefined : null),
+		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
