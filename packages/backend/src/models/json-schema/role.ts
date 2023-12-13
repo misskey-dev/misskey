@@ -145,6 +145,7 @@ export const packedRoleSchema = {
 						userEachUserListsLimit: rolePolicyValue,
 						canManageAvatarDecorations: rolePolicyValue,
 						canUseTranslator: rolePolicyValue,
+						avatarDecorationLimit: rolePolicyValue,
 					},
 				},
 				usersCount: {
