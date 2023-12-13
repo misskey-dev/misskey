@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
     <option value="preview">{{ i18n.ts.preview }}</option>
   </MkTab>
   <MkTextarea
-			ref="inputEl"
       v-show="tab === 'edit'"
+			ref="inputEl"
 			v-model="v"
       :required="required"
       :readonly="readonly"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
       :code="code"
       :tall="tall"
       :pre="pre"
-      rich-autocomplete
+      richAutocomplete
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"

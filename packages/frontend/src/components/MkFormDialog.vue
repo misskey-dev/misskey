@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
-				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text" :rich-autocomplete="form[item].richSyntax">
+				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text" :richAutocomplete="form[item].richSyntax">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
