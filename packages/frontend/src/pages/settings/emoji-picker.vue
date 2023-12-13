@@ -5,90 +5,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<div>
-		<MkTab v-model="tabSelection" :class="$style.tab">
-			<option value="reactionDeck">{{ i18n.ts.reactionDeckSettingTitle }}</option>
-			<option value="emojiDeck">{{ i18n.ts.emojiDeckSettingTitle }}</option>
-		</MkTab>
+	<MkFolder :defaultOpen="true">
+		<template #icon><i class="ti ti-pin"></i></template>
+		<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.reaction }})</template>
+		<template #caption>{{ i18n.ts.pinnedEmojisForReactionSettingDescription }}</template>
 
-		<div v-if="tabSelection === 'reactionDeck'" class="_gaps_m">
-			<div class="description">{{ i18n.ts.reactionDeckSettingDescription }}</div>
-
+		<div class="_gaps">
 			<div>
 				<div v-panel style="border-radius: 6px;">
 					<Sortable
-						v-model="reactionDeckItems"
-						:class="$style.reactions"
+						v-model="pinnedEmojisForReaction"
+						:class="$style.emojis"
 						:itemKey="item => item"
 						:animation="150"
 						:delay="100"
 						:delayOnTouchOnly="true"
 					>
 						<template #item="{element}">
-							<button class="_button" :class="$style.reactionsItem" @click="removeReaction(element, $event)">
+							<button class="_button" :class="$style.emojisItem" @click="removeReaction(element, $event)">
 								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
 								<MkEmoji v-else :emoji="element" :normal="true"/>
 							</button>
 						</template>
 						<template #footer>
-							<button class="_button" :class="$style.reactionsAdd" @click="chooseReaction">
+							<button class="_button" :class="$style.emojisAdd" @click="chooseReaction">
 								<i class="ti ti-plus"></i>
 							</button>
 						</template>
 					</Sortable>
 				</div>
-				<span class="description">{{ i18n.ts.reactionSettingDescription2 }}</span>
+				<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
 			</div>
 
 			<div class="_buttons">
 				<MkButton inline @click="previewReaction"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
 				<MkButton inline danger @click="setDefaultReaction"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-				<MkButton inline danger @click="copyFromEmojiDeckItems"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromEmojiDeckItems }}</MkButton>
+				<MkButton inline danger @click="copyFromPinnedEmojis"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromPinnedEmojis }}</MkButton>
 			</div>
 		</div>
+	</MkFolder>
 
-		<div v-if="tabSelection === 'emojiDeck'" class="_gaps_m">
-			<div class="description">{{ i18n.ts.emojiDeckSettingDescription }}</div>
+	<MkFolder>
+		<template #icon><i class="ti ti-pin"></i></template>
+		<template #label>{{ i18n.ts.pinned }} ({{ i18n.ts.general }})</template>
+		<template #caption>{{ i18n.ts.pinnedEmojisSettingDescription }}</template>
 
-			<div class="_gaps_m">
-				<div>
-					<div v-panel style="border-radius: 6px;">
-						<Sortable
-							v-model="emojiDeckItems"
-							:class="$style.reactions"
-							:itemKey="item => item"
-							:animation="150"
-							:delay="100"
-							:delayOnTouchOnly="true"
-						>
-							<template #item="{element}">
-								<button class="_button" :class="$style.reactionsItem" @click="removeEmoji(element, $event)">
-									<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
-									<MkEmoji v-else :emoji="element" :normal="true"/>
-								</button>
-							</template>
-							<template #footer>
-								<button class="_button" :class="$style.reactionsAdd" @click="chooseEmoji">
-									<i class="ti ti-plus"></i>
-								</button>
-							</template>
-						</Sortable>
-					</div>
-					<span class="description">{{ i18n.ts.reactionSettingDescription2 }}</span>
+		<div class="_gaps">
+			<div>
+				<div v-panel style="border-radius: 6px;">
+					<Sortable
+						v-model="pinnedEmojis"
+						:class="$style.emojis"
+						:itemKey="item => item"
+						:animation="150"
+						:delay="100"
+						:delayOnTouchOnly="true"
+					>
+						<template #item="{element}">
+							<button class="_button" :class="$style.emojisItem" @click="removeEmoji(element, $event)">
+								<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+								<MkEmoji v-else :emoji="element" :normal="true"/>
+							</button>
+						</template>
+						<template #footer>
+							<button class="_button" :class="$style.emojisAdd" @click="chooseEmoji">
+								<i class="ti ti-plus"></i>
+							</button>
+						</template>
+					</Sortable>
 				</div>
+				<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
+			</div>
 
-				<div class="_buttons">
-					<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-					<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-					<MkButton inline danger @click="copyFromReactionDeckItems"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromReactionDeckItems }}</MkButton>
-				</div>
+			<div class="_buttons">
+				<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+				<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+				<MkButton inline danger @click="copyFromPinnedEmojisForReaction"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromPinnedEmojisForReaction }}</MkButton>
 			</div>
 		</div>
-	</div>
+	</MkFolder>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.diversionReactionDeckEmojisTitle }}</template>
-		<template #description>{{ i18n.ts.diversionReactionDeckEmojisDescription }}</template>
+		<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
 
 		<div class="_gaps_m">
 			<MkRadios v-model="reactionPickerSize">
@@ -140,25 +138,23 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
-import MkTab from "@/components/MkTab.vue";
+import MkFolder from '@/components/MkFolder.vue';
 
-const tabSelection = ref<'reactionDeck' | 'emojiDeck'>('reactionDeck');
-
-const reactionDeckItems: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
-const emojiDeckItems: Ref<string[]> = ref(deepClone(defaultStore.state.emojiDeckItems));
+const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
+const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
 
 const reactionPickerSize = computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
 
-const removeReaction = (reaction: string, ev: MouseEvent) => remove(reactionDeckItems, reaction, ev);
-const chooseReaction = (ev: MouseEvent) => pickEmoji(reactionDeckItems, ev);
-const setDefaultReaction = () => setDefault(reactionDeckItems);
+const removeReaction = (reaction: string, ev: MouseEvent) => remove(pinnedEmojisForReaction, reaction, ev);
+const chooseReaction = (ev: MouseEvent) => pickEmoji(pinnedEmojisForReaction, ev);
+const setDefaultReaction = () => setDefault(pinnedEmojisForReaction);
 
-const removeEmoji = (reaction: string, ev: MouseEvent) => remove(emojiDeckItems, reaction, ev);
-const chooseEmoji = (ev: MouseEvent) => pickEmoji(emojiDeckItems, ev);
-const setDefaultEmoji = () => setDefault(emojiDeckItems);
+const removeEmoji = (reaction: string, ev: MouseEvent) => remove(pinnedEmojis, reaction, ev);
+const chooseEmoji = (ev: MouseEvent) => pickEmoji(pinnedEmojis, ev);
+const setDefaultEmoji = () => setDefault(pinnedEmojis);
 
 function previewReaction(ev: MouseEvent) {
 	reactionPicker.show(getHTMLElement(ev));
@@ -168,30 +164,30 @@ function previewEmoji(ev: MouseEvent) {
 	emojiPicker.show(getHTMLElement(ev));
 }
 
-async function copyFromEmojiDeckItems() {
-  const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.ts.copyFromEmojiDeckItemsConfirm,
-	});
-
-	if (canceled) {
-		return;
-	}
-
-	reactionDeckItems.value = [...emojiDeckItems.value];
-}
-
-async function copyFromReactionDeckItems() {
+async function copyFromPinnedEmojis() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.copyFromReactionDeckItemsConfirm,
+		text: 'a',
 	});
 
 	if (canceled) {
 		return;
 	}
 
-	emojiDeckItems.value = [...reactionDeckItems.value];
+	pinnedEmojisForReaction.value = [...pinnedEmojis.value];
+}
+
+async function copyFromPinnedEmojisForReaction() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: 'a',
+	});
+
+	if (canceled) {
+		return;
+	}
+
+	pinnedEmojis.value = [...pinnedEmojisForReaction.value];
 }
 
 function remove(itemsRef: Ref<string[]>, reaction: string, ev: MouseEvent) {
@@ -229,30 +225,23 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 	return target as HTMLElement;
 }
 
-watch(reactionDeckItems, () => {
-	defaultStore.set('reactions', reactionDeckItems.value);
+watch(pinnedEmojisForReaction, () => {
+	defaultStore.set('reactions', pinnedEmojisForReaction.value);
 }, {
 	deep: true,
 });
 
-watch(emojiDeckItems, () => {
-	defaultStore.set('emojiDeckItems', emojiDeckItems.value);
+watch(pinnedEmojis, () => {
+	defaultStore.set('pinnedEmojis', pinnedEmojis.value);
 }, {
 	deep: true,
 });
 
 definePageMetadata({
-	title: i18n.ts.reaction,
+	title: i18n.ts.emojiPicker,
 	icon: 'ti ti-mood-happy',
 });
 </script>
-
-<style lang="scss">
-.description {
-  font-size: 0.85em;
-  color: var(--fgTransparentWeak);
-}
-</style>
 
 <style lang="scss" module>
 .tab {
@@ -261,19 +250,25 @@ definePageMetadata({
 	background: var(--bg);
 }
 
-.reactions {
+.emojis {
   padding: 12px;
   font-size: 1.1em;
 }
 
-.reactionsItem {
+.emojisItem {
   display: inline-block;
   padding: 8px;
   cursor: move;
 }
 
-.reactionsAdd {
+.emojisAdd {
   display: inline-block;
   padding: 8px;
+}
+
+.editorCaption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
 }
 </style>
