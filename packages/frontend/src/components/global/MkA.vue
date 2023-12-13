@@ -57,7 +57,7 @@ function onContextmenu(ev) {
 		action: () => {
 			router.push(props.to, 'forcePage');
 		},
-	}, null, {
+	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {

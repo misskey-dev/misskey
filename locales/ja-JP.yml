@@ -261,6 +261,7 @@ removed: "削除しました"
 removeAreYouSure: "「{x}」を削除しますか？"
 deleteAreYouSure: "「{x}」を削除しますか？"
 resetAreYouSure: "リセットしますか？"
+areYouSure: "よろしいですか？"
 saved: "保存しました"
 messaging: "チャット"
 upload: "アップロード"
@@ -1157,6 +1158,7 @@ tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
 attach: "付ける"
 detach: "外す"
+detachAll: "全て外す"
 angle: "角度"
 flip: "反転"
 showAvatarDecorations: "アイコンのデコレーションを表示"
@@ -1170,6 +1172,7 @@ cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述�
 doReaction: "リアクションする"
 code: "コード"
 reloadRequiredToApplySettings: "設定の反映にはリロードが必要です。"
+remainingN: "残り: {n}"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1610,6 +1613,7 @@ _role:
     canHideAds: "広告の非表示"
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
+    avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
@@ -2084,6 +2088,7 @@ _profile:
   changeAvatar: "アイコン画像を変更"
   changeBanner: "バナー画像を変更"
   verifiedLinkDescription: "内容にURLを設定すると、リンク先のWebサイトに自分のプロフィールへのリンクが含まれている場合に所有者確認済みアイコンを表示させることができます。"
+  avatarDecorationMax: "最大{max}つまでデコレーションを付けられます。"
 
 _exportOrImport:
   allNotes: "全てのノート"

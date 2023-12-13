@@ -87,16 +87,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-sparkles"></i></template>
 		<template #label>{{ i18n.ts.avatarDecorations }}</template>
 
-		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-gap: 12px;">
-			<div
-				v-for="avatarDecoration in avatarDecorations"
-				:key="avatarDecoration.id"
-				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
-				@click="openDecoration(avatarDecoration)"
-			>
-				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
-				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
-				<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
+		<div class="_gaps">
+			<MkInfo>{{ i18n.t('_profile.avatarDecorationMax', { max: $i?.policies.avatarDecorationLimit }) }} ({{ i18n.t('remainingN', { n: $i?.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
+
+			<MkButton v-if="$i.avatarDecorations.length > 0" danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
+
+			<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-gap: 12px;">
+				<div
+					v-for="avatarDecoration in avatarDecorations"
+					:key="avatarDecoration.id"
+					:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
+					@click="openDecoration(avatarDecoration)"
+				>
+					<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
+					<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: avatarDecoration.url }]" forceShowDecoration/>
+					<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
+				</div>
 			</div>
 		</div>
 	</MkFolder>
@@ -271,6 +277,19 @@ function openDecoration(avatarDecoration) {
 	os.popup(defineAsyncComponent(() => import('./profile.avatar-decoration-dialog.vue')), {
 		decoration: avatarDecoration,
 	}, {}, 'closed');
+}
+
+function detachAllDecorations() {
+	os.confirm({
+		type: 'warning',
+		text: i18n.ts.areYouSure,
+	}).then(async ({ canceled }) => {
+		if (canceled) return;
+		await os.apiWithDialog('i/update', {
+			avatarDecorations: [],
+		});
+		$i.avatarDecorations = [];
+	});
 }
 
 const headerActions = computed(() => []);
