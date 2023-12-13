@@ -1829,6 +1829,7 @@ _soundSettings:
   driveFileTypeWarn: "This file is not supported"
   driveFileTypeWarnDescription: "Select an audio file"
   driveFileDurationWarn: "The audio is too long."
+  driveFileDurationWarnDescription: "Long audio may disrupt using Misskey. Still continue?"
 _ago:
   future: "Future"
   justNow: "Just now"
@@ -2323,6 +2324,8 @@ _externalResourceInstaller:
       title: "Failed to install theme"
       description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."
 _dataSaver:
+  _media:
+    title: "Loading Media"
   _avatar:
     title: "Avatar image"
     description: "Stop avatar image animation. Animated images can be larger in file size than normal  images, potentially leading to further reductions in data traffic."
