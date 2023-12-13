@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextareaWithMfmPreview v-model="description" :tall="true">
+			<MkTextareaWithMfmPreview v-model="description">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextareaWithMfmPreview>
 
@@ -210,13 +210,6 @@ definePageMetadata(computed(() => props.channelId ? {
 </script>
 
 <style lang="scss" module>
-.mfmPreview {
-	padding: 12px;
-	border-radius: 6px;
-	box-sizing: border-box;
-	min-height: 130px;
-}
-
 .pinnedNote {
 	position: relative;
 	display: block;

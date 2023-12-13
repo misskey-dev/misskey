@@ -109,13 +109,3 @@ function cancel() {
 	dialog.value.close();
 }
 </script>
-
-<style lang="scss" module>
-.mfmPreview {
-	padding: 12px;
-	border-radius: 6px;
-	border: solid 1px var(--divider);
-	box-sizing: border-box;
-	min-height: 200px;
-}
-</style>

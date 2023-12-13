@@ -285,13 +285,6 @@ definePageMetadata({
 </script>
 
 <style lang="scss" module>
-.mfmPreview {
-	padding: 12px;
-	border-radius: 6px;
-	box-sizing: border-box;
-	min-height: 200px;
-}
-
 .avatarAndBanner {
 	position: relative;
 	background-size: cover;
