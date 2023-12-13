@@ -1594,6 +1594,14 @@ _ago:
   monthsAgo: "{n} мес. назад"
   yearsAgo: "{n} г. назад"
   invalid: "Ничего нет"
+_timeIn:
+  seconds: "Через {n} с"
+  minutes: "Через {n} мин"
+  hours: "Через {n} ч"
+  days: "Через {n} сут"
+  weeks: "Через {n} нед."
+  months: "Через {n} мес."
+  years: "Через {n} г."
 _time:
   second: "с"
   minute: "мин"
