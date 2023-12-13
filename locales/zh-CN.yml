@@ -1130,6 +1130,7 @@ mutualFollow: "互相关注"
 fileAttachedOnly: "仅限媒体"
 showRepliesToOthersInTimeline: "在时间线上显示给其他人的回复"
 hideRepliesToOthersInTimeline: "在时间线上隐藏给其他人的回复"
+avatarDecorations: "头像挂件"
 flip: "翻转"
 _announcement:
   forExistingUsers: "仅限现有用户"
@@ -1705,6 +1706,9 @@ _ago:
   monthsAgo: "{n} 月前"
   yearsAgo: "{n} 年前"
   invalid: "没有"
+_timeIn:
+  seconds: "{n}秒后"
+  days: "{n}天后"
 _time:
   second: "秒"
   minute: "分"
