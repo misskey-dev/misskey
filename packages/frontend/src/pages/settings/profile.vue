@@ -17,18 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<FormSlot>
+	<MkTextareaWithMFMPreview v-model="profile.description" :max="500" tall manualSave :nyaize="$i?.isCat">
 		<template #label>{{ i18n.ts._profile.description }}</template>
-		<MkTab v-model="tab" style="margin-bottom: var(--margin)">
-			<option value="edit">{{ i18n.ts.edit }}</option>
-			<option value="preview">{{ i18n.ts.preview }}</option>
-		</MkTab>
-		<MkTextarea v-show="tab === 'edit'" v-model="profile.description" :max="500" tall manualSave rich-autocomplete />
-		<div v-show="tab === 'preview'" class="_panel" :class="$style.mfmPreview">
-			<Mfm :text="profile.description || ''" :nyaize="$i?.isCat || false"/>	
-		</div>
-		<template #caption v-show="tab === 'edit'">{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</FormSlot>
+		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
+	</MkTextareaWithMFMPreview>
 
 	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
@@ -130,10 +122,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -148,13 +139,12 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
-import MkTab from '@/components/MkTab.vue';
+import MkTextareaWithMFMPreview from '@/components/MkTextareaWithMFMPreview.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 const avatarDecorations = ref<any[]>([]);
-const tab = ref<string>("edit");
 
 const profile = reactive({
 	name: $i.name,

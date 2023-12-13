@@ -12,17 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<FormSlot>
+			<MkTextareaWithMFMPreview v-model="description" :tall="true">
 				<template #label>{{ i18n.ts.description }}</template>
-				<MkTab v-model="tab" style="margin-bottom: var(--margin);">
-					<option value="edit">{{ i18n.ts.edit }}</option>
-					<option value="preview">{{ i18n.ts.preview }}</option>
-				</MkTab>
-				<MkTextarea v-show="tab === 'edit'" v-model="description" rich-autocomplete />
-				<div v-show="tab === 'preview'" class="_panel" :class="$style.mfmPreview">
-					<Mfm :text="description || ''" :nyaize="false"></Mfm>
-				</div>
-			</FormSlot>
+			</MkTextareaWithMFMPreview>
 
 			<MkColorInput v-model="color">
 				<template #label>{{ i18n.ts.color }}</template>
@@ -78,10 +70,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch, defineAsyncComponent } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import FormSlot from '@/components/form/slot.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
@@ -90,8 +80,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkTab from '@/components/MkTab.vue';
-const tab = ref('edit');
+import MkTextareaWithMFMPreview from '@/components/MkTextareaWithMFMPreview.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
