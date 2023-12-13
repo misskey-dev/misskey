@@ -14,34 +14,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="inputEl"
       v-show="tab === 'edit'"
 			v-model="v"
-			v-adaptive-border
-			:class="[{ _monospace: code }]"
-			:disabled="disabled"
-			:required="required"
-			:readonly="readonly"
-			:placeholder="placeholder"
-			:pattern="pattern"
-			:autocomplete="autocomplete"
+      :required="required"
+      :readonly="readonly"
+      :disabled="disabled"
+      :pattern="pattern"
+      :placeholder="placeholder"
+      :autofocus="autofocus"
+      :autocomplete="autocomplete"
+      :spellcheck="spellcheck"
+      :debounce="props.debounce"
+      :manualSave="manualSave"
+      :code="code"
+      :tall="tall"
+      :pre="pre"
       rich-autocomplete
-			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
 			@input="onInput" />
-  <div v-show="tab === 'preview'" class="_panel" :class="[$style.mfmPreview, {_tall: tall}]">
-    <Mfm :text="v" :nyaize="nyaize || false" />
+  <div v-show="tab === 'preview'" class="_panel" :class="{ [$style.mfmPreview]: true, [$style.tall]: tall }">
+    <Mfm :text="v" :nyaize="nyaize ?? false" :author="author" />
   </div>
   <template #caption><slot name="caption"></slot></template>
 </FormSlot>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed, toRefs, shallowRef } from 'vue';
+import { ref, watch, toRefs, shallowRef } from 'vue';
 import { debounce } from 'throttle-debounce';
 import { i18n } from '@/i18n.js';
 import FormSlot from '@/components/form/slot.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import Misskey from 'misskey-js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -58,7 +63,8 @@ const props = defineProps<{
 	code?: boolean;
 	tall?: boolean;
 	pre?: boolean;
-  nyaize?: boolean;
+  author?: Misskey.entities.UserLite;
+  nyaize?: "respect" | boolean;
 }>();
 
 const emit = defineEmits<{
@@ -121,7 +127,7 @@ watch(v, newValue => {
   min-height: 130px;
 }
 
-_tall {
+.tall {
   min-height: 200px;
 }
 </style>

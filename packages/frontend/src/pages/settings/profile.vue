@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextareaWithMFMPreview v-model="profile.description" :max="500" tall manualSave :nyaize="$i?.isCat">
+	<MkTextareaWithMFMPreview v-model="profile.description" :max="500" tall manualSave :nyaize="$i?.isCat ? 'respect' : undefined" :author="($i as Misskey.entities.UserLite)">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextareaWithMFMPreview>
@@ -123,6 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
