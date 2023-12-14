@@ -72,5 +72,6 @@ defineExpose<WidgetComponentExpose>({
 	height: 350px;
 	border: none;
 	pointer-events: none;
+	color-scheme: light;
 }
 </style>

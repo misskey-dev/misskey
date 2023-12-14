@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTime :time="log.createdAt"/>
 	</template>
 
-	<div :class="$style.root">
+	<div>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 			<div style="flex: 1;">{{ i18n.ts.moderator }}: <MkA :to="`/admin/user/${log.userId}`" class="_link">@{{ log.user?.username }}</MkA></div>
 			<div style="flex: 1;">{{ i18n.ts.dateAndTime }}: <MkTime :time="log.createdAt" mode="detail"/></div>
@@ -134,9 +134,6 @@ const props = defineProps<{
 </script>
 
 <style lang="scss" module>
-.root {
-}
-
 .avatar {
 	width: 18px;
 	height: 18px;

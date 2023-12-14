@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@contextmenu.self="e => e.preventDefault()"
 	>
 		<template v-for="(item, i) in items2">
-			<div v-if="item === null" role="separator" :class="$style.divider"></div>
+			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
 			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
 				<span>{{ item.text }}</span>
 			</span>

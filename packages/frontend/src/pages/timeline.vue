@@ -48,6 +48,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
+import { MenuItem } from '@/types/menu.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -83,22 +84,40 @@ function top(): void {
 
 async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
-	const items = lists.map(list => ({
-		type: 'link' as const,
-		text: list.name,
-		to: `/timeline/list/${list.id}`,
-	}));
+	const items: MenuItem[] = [
+		...lists.map(list => ({
+			type: 'link' as const,
+			text: list.name,
+			to: `/timeline/list/${list.id}`,
+		})),
+		(lists.length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link' as const,
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			to: '/my/lists',
+		},
+	];
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	const antennas = await antennasCache.fetch();
-	const items = antennas.map(antenna => ({
-		type: 'link' as const,
-		text: antenna.name,
-		indicate: antenna.hasUnreadNote,
-		to: `/timeline/antenna/${antenna.id}`,
-	}));
+	const items: MenuItem[] = [
+		...antennas.map(antenna => ({
+			type: 'link' as const,
+			text: antenna.name,
+			indicate: antenna.hasUnreadNote,
+			to: `/timeline/antenna/${antenna.id}`,
+		})),
+		(antennas.length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link' as const,
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			to: '/my/antennas',
+		},
+	];
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
@@ -106,12 +125,21 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	const channels = await os.api('channels/my-favorites', {
 		limit: 100,
 	});
-	const items = channels.map(channel => ({
-		type: 'link' as const,
-		text: channel.name,
-		indicate: channel.hasUnreadNote,
-		to: `/channels/${channel.id}`,
-	}));
+	const items: MenuItem[] = [
+		...channels.map(channel => ({
+			type: 'link' as const,
+			text: channel.name,
+			indicate: channel.hasUnreadNote,
+			to: `/channels/${channel.id}`,
+		})),
+		(channels.length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link' as const,
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			to: '/channels',
+		},
+	];
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
