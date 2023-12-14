@@ -103,10 +103,10 @@ importers:
         version: 8.2.0
       '@nestjs/common':
         specifier: 10.2.10
-        version: 10.2.10(reflect-metadata@0.2.0)(rxjs@7.8.1)
+        version: 10.2.10(reflect-metadata@0.1.14)(rxjs@7.8.1)
       '@nestjs/core':
         specifier: 10.2.10
-        version: 10.2.10(@nestjs/common@10.2.10)(reflect-metadata@0.2.0)(rxjs@7.8.1)
+        version: 10.2.10(@nestjs/common@10.2.10)(reflect-metadata@0.1.14)(rxjs@7.8.1)
       '@nestjs/testing':
         specifier: 10.2.10
         version: 10.2.10(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)
@@ -183,8 +183,8 @@ importers:
         specifier: 0.1.21
         version: 0.1.21
       fastify:
-        specifier: 4.25.0
-        version: 4.25.0
+        specifier: 4.24.3
+        version: 4.24.3
       fastify-raw-body:
         specifier: 4.3.0
         version: 4.3.0
@@ -327,8 +327,8 @@ importers:
         specifier: 0.1.4
         version: 0.1.4
       reflect-metadata:
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.1.14
+        version: 0.1.14
       rename:
         specifier: 1.0.4
         version: 1.0.4
@@ -4818,7 +4818,7 @@ packages:
       tar-fs: 2.1.1
     dev: true
 
-  /@nestjs/common@10.2.10(reflect-metadata@0.2.0)(rxjs@7.8.1):
+  /@nestjs/common@10.2.10(reflect-metadata@0.1.14)(rxjs@7.8.1):
     resolution: {integrity: sha512-fwAk931rjW8CNH2Mgwawq/7HWHH1dxkOLdcgs7U52ddLk8CtHXjejm1cbNahewlSbNhvlOl7y1STLHutE6sUqw==}
     peerDependencies:
       class-transformer: '*'
@@ -4832,13 +4832,13 @@ packages:
         optional: true
     dependencies:
       iterare: 1.2.1
-      reflect-metadata: 0.2.0
+      reflect-metadata: 0.1.14
       rxjs: 7.8.1
       tslib: 2.6.2
       uid: 2.0.2
     dev: false
 
-  /@nestjs/core@10.2.10(@nestjs/common@10.2.10)(reflect-metadata@0.2.0)(rxjs@7.8.1):
+  /@nestjs/core@10.2.10(@nestjs/common@10.2.10)(reflect-metadata@0.1.14)(rxjs@7.8.1):
     resolution: {integrity: sha512-+ckOI6BPi2ZMHikT9MCG4ctHDc4OnjhoIytrn7f2AYMMXI4bnutJhqyQKc30VDka5x3Wq6QAD57pgSP7y+JjJg==}
     requiresBuild: true
     peerDependencies:
@@ -4856,12 +4856,12 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 10.2.10(reflect-metadata@0.2.0)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(reflect-metadata@0.1.14)(rxjs@7.8.1)
       '@nuxtjs/opencollective': 0.3.2
       fast-safe-stringify: 2.1.1
       iterare: 1.2.1
       path-to-regexp: 3.2.0
-      reflect-metadata: 0.2.0
+      reflect-metadata: 0.1.14
       rxjs: 7.8.1
       tslib: 2.6.2
       uid: 2.0.2
@@ -4882,8 +4882,8 @@ packages:
       '@nestjs/platform-express':
         optional: true
     dependencies:
-      '@nestjs/common': 10.2.10(reflect-metadata@0.2.0)(rxjs@7.8.1)
-      '@nestjs/core': 10.2.10(@nestjs/common@10.2.10)(reflect-metadata@0.2.0)(rxjs@7.8.1)
+      '@nestjs/common': 10.2.10(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      '@nestjs/core': 10.2.10(@nestjs/common@10.2.10)(reflect-metadata@0.1.14)(rxjs@7.8.1)
       tslib: 2.6.2
     dev: false
 
@@ -11848,8 +11848,8 @@ packages:
       secure-json-parse: 2.7.0
     dev: false
 
-  /fastify@4.25.0:
-    resolution: {integrity: sha512-2XANZZDadl/PccnVbmrIC8BmUtb16MO5Hyfnqv1cZIslvf7GYTVwlPuVxLKL23NNxWRc5BikY8HyhWj+NJvokA==}
+  /fastify@4.24.3:
+    resolution: {integrity: sha512-6HHJ+R2x2LS3y1PqxnwEIjOTZxFl+8h4kSC/TuDPXtA+v2JnV9yEtOsNSKK1RMD7sIR2y1ZsA4BEFaid/cK5pg==}
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
       '@fastify/error': 3.4.0
@@ -11861,7 +11861,7 @@ packages:
       find-my-way: 7.7.0
       light-my-request: 5.11.0
       pino: 8.17.0
-      process-warning: 3.0.0
+      process-warning: 2.2.0
       proxy-addr: 2.0.7
       rfdc: 1.3.0
       secure-json-parse: 2.7.0
@@ -16493,10 +16493,6 @@ packages:
     resolution: {integrity: sha512-/1WZ8+VQjR6avWOgHeEPd7SDQmFQ1B5mC1eRXsCm5TarlNmx/wCsa5GEaxGm05BORRtyG/Ex/3xq3TuRvq57qg==}
     dev: false
 
-  /process-warning@3.0.0:
-    resolution: {integrity: sha512-mqn0kFRl0EoqhnL0GQ0veqFHyIN1yig9RHh/InzORTUiZHFRAur+aMtRkELNwGs9aNwKS6tg/An4NYBPGwvtzQ==}
-    dev: false
-
   /process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
     engines: {node: '>= 0.6.0'}
@@ -17131,10 +17127,6 @@ packages:
 
   /reflect-metadata@0.1.14:
     resolution: {integrity: sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==}
-    dev: false
-
-  /reflect-metadata@0.2.0:
-    resolution: {integrity: sha512-vUN0wuk3MuhSVMfU/ImnPQAK8QZcXJ339DtVsP3jDscxCe6dT+PsOe3J1BYS9Ec2Fd4oC6ry6bCBebzTya0IYw==}
     dev: false
 
   /regenerate-unicode-properties@10.1.0:
