@@ -1181,6 +1181,7 @@ export interface Locale {
     "code": string;
     "reloadRequiredToApplySettings": string;
     "remainingN": string;
+    "overwriteContentConfirm": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

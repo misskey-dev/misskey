@@ -167,7 +167,7 @@ function previewEmoji(ev: MouseEvent) {
 async function copyFromPinnedEmojis() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: 'a',
+		text: i18n.ts.overwriteContentConfirm,
 	});
 
 	if (canceled) {
@@ -180,7 +180,7 @@ async function copyFromPinnedEmojis() {
 async function copyFromPinnedEmojisForReaction() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: 'a',
+		text: i18n.ts.overwriteContentConfirm,
 	});
 
 	if (canceled) {
