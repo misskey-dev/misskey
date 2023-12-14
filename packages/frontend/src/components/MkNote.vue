@@ -205,12 +205,12 @@ const emit = defineEmits<{
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
-let note = $ref(deepClone(props.note));
+const note = ref(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note);
+		let result: Misskey.entities.Note | null = deepClone(note.value);
 		for (const interruptor of noteViewInterruptors) {
 			try {
 				result = await interruptor.handler(result);
@@ -222,15 +222,15 @@ if (noteViewInterruptors.length > 0) {
 				console.error(err);
 			}
 		}
-		note = result;
+		note.value = result;
 	});
 }
 
 const isRenote = (
-	note.renote != null &&
-	note.text == null &&
-	note.fileIds.length === 0 &&
-	note.poll == null
+	note.value.renote != null &&
+	note.value.text == null &&
+	note.value.fileIds.length === 0 &&
+	note.value.poll == null
 );
 
 const el = shallowRef<HTMLElement>();
@@ -239,21 +239,21 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
-const isMyRenote = $i && ($i.id === note.userId);
+const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entities.Note : note.value);
+const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
-const parsed = $computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
-const urls = $computed(() => parsed ? extractUrlFromMfm(parsed) : null);
-const isLong = shouldCollapsed(appearNote, urls ?? []);
-const collapsed = ref(appearNote.cw == null && isLong);
+const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
+const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value) : null);
+const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
+const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
-const muted = ref(checkMute(appearNote, $i?.mutedWords));
-const hardMuted = ref(props.withHardMute && checkMute(appearNote, $i?.hardMutedWords));
+const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
+const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords));
 const translation = ref<any>(null);
 const translating = ref(false);
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i.id));
-let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
+const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
+const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i.id));
+const renoteCollapsed = ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || (appearNote.value.myReaction != null)));
 
 function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null): boolean {
 	if (mutedWords == null) return false;
@@ -277,20 +277,20 @@ const keymap = {
 
 provide('react', (reaction: string) => {
 	os.api('notes/reactions/create', {
-		noteId: appearNote.id,
+		noteId: appearNote.value.id,
 		reaction: reaction,
 	});
 });
 
 if (props.mock) {
 	watch(() => props.note, (to) => {
-		note = deepClone(to);
+		note.value = deepClone(to);
 	}, { deep: true });
 } else {
 	useNoteCapture({
 		rootEl: el,
-		note: $$(appearNote),
-		pureNote: $$(note),
+		note: appearNote,
+		pureNote: note,
 		isDeletedRef: isDeleted,
 	});
 }
@@ -298,7 +298,7 @@ if (props.mock) {
 if (!props.mock) {
 	useTooltip(renoteButton, async (showing) => {
 		const renotes = await os.api('notes/renotes', {
-			noteId: appearNote.id,
+			noteId: appearNote.value.id,
 			limit: 11,
 		});
 
@@ -309,7 +309,7 @@ if (!props.mock) {
 		os.popup(MkUsersTooltip, {
 			showing,
 			users,
-			count: appearNote.renoteCount,
+			count: appearNote.value.renoteCount,
 			targetElement: renoteButton.value,
 		}, {}, 'closed');
 	});
@@ -319,7 +319,7 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
+	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
@@ -331,8 +331,8 @@ function reply(viaKeyboard = false): void {
 		return;
 	}
 	os.post({
-		reply: appearNote,
-		channel: appearNote.channel,
+		reply: appearNote.value,
+		channel: appearNote.value.channel,
 		animation: !viaKeyboard,
 	}, () => {
 		focus();
@@ -342,7 +342,7 @@ function reply(viaKeyboard = false): void {
 function react(viaKeyboard = false): void {
 	pleaseLogin();
 	showMovedDialog();
-	if (appearNote.reactionAcceptance === 'likeOnly') {
+	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.play('reaction');
 
 		if (props.mock) {
@@ -350,7 +350,7 @@ function react(viaKeyboard = false): void {
 		}
 
 		os.api('notes/reactions/create', {
-			noteId: appearNote.id,
+			noteId: appearNote.value.id,
 			reaction: '❤️',
 		});
 		const el = reactButton.value as HTMLElement | null | undefined;
@@ -371,10 +371,10 @@ function react(viaKeyboard = false): void {
 			}
 
 			os.api('notes/reactions/create', {
-				noteId: appearNote.id,
+				noteId: appearNote.value.id,
 				reaction: reaction,
 			});
-			if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+			if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
 				claimAchievement('reactWithoutRead');
 			}
 		}, () => {
@@ -417,7 +417,7 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
@@ -427,7 +427,7 @@ function menu(viaKeyboard = false): void {
 		return;
 	}
 
-	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
 	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
 	}).then(focus).finally(cleanup);
@@ -438,7 +438,7 @@ async function clip() {
 		return;
 	}
 
-	os.popupMenu(await getNoteClipMenu({ note: note, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
+	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
@@ -453,7 +453,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 			danger: true,
 			action: () => {
 				os.api('notes/delete', {
-					noteId: note.id,
+					noteId: note.value.id,
 				});
 				isDeleted.value = true;
 			},
@@ -463,17 +463,17 @@ function showRenoteMenu(viaKeyboard = false): void {
 	if (isMyRenote) {
 		pleaseLogin();
 		os.popupMenu([
-			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
-			null,
+			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
+			{ type: 'divider' },
 			getUnrenote(),
 		], renoteTime.value, {
 			viaKeyboard: viaKeyboard,
 		});
 	} else {
 		os.popupMenu([
-			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
-			null,
-			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
+			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
+			{ type: 'divider' },
+			getAbuseNoteMenu(note.value, i18n.ts.reportAbuseRenote),
 			$i.isModerator || $i.isAdmin ? getUnrenote() : undefined,
 		], renoteTime.value, {
 			viaKeyboard: viaKeyboard,
@@ -499,7 +499,7 @@ function focusAfter() {
 
 function readPromo() {
 	os.api('promo/read', {
-		noteId: appearNote.id,
+		noteId: appearNote.value.id,
 	});
 	isDeleted.value = true;
 }

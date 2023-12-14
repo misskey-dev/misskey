@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
@@ -67,37 +67,37 @@ const emit = defineEmits<{
 	(ev: 'done', result: { name: string | null, permissions: string[] }): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
-let name = $ref(props.initialName);
-let permissions = $ref({});
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const name = ref(props.initialName);
+const permissions = ref({});
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {
-		permissions[kind] = true;
+		permissions.value[kind] = true;
 	}
 } else {
 	for (const kind of Misskey.permissions) {
-		permissions[kind] = false;
+		permissions.value[kind] = false;
 	}
 }
 
 function ok(): void {
 	emit('done', {
-		name: name,
-		permissions: Object.keys(permissions).filter(p => permissions[p]),
+		name: name.value,
+		permissions: Object.keys(permissions.value).filter(p => permissions.value[p]),
 	});
-	dialog.close();
+	dialog.value.close();
 }
 
 function disableAll(): void {
-	for (const p in permissions) {
-		permissions[p] = false;
+	for (const p in permissions.value) {
+		permissions.value[p] = false;
 	}
 }
 
 function enableAll(): void {
-	for (const p in permissions) {
-		permissions[p] = true;
+	for (const p in permissions.value) {
+		permissions.value[p] = true;
 	}
 }
 </script>

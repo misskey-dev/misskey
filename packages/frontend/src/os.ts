@@ -5,8 +5,8 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { pendingApiRequestsCount, api, apiExternal, apiGet } from '@/scripts/api.js';
-export { pendingApiRequestsCount, api, apiExternal, apiGet };
+import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api.js';
+export { pendingApiRequestsCount, api, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -546,7 +546,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
-export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement, options?: {
+export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement | EventTarget | null, options?: {
 	align?: string;
 	width?: number;
 	viaKeyboard?: boolean;

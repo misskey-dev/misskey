@@ -1,5 +1,6 @@
-import { ModerationLogPayloads, notificationTypes } from './consts.js';
-import { Page, User, UserDetailed } from './autogen/models';
+import { ModerationLogPayloads } from './consts.js';
+import { Announcement, EmojiDetailed, Page, User, UserDetailed } from './autogen/models';
+
 export * from './autogen/entities';
 export * from './autogen/models';
 
@@ -131,3 +132,54 @@ export type ModerationLog = {
 	type: 'unsetUserBanner';
 	info: ModerationLogPayloads['unsetUserBanner'];
 });
+
+export type ServerStats = {
+	cpu: number;
+	mem: {
+		used: number;
+		active: number;
+	};
+	net: {
+		rx: number;
+		tx: number;
+	};
+	fs: {
+		r: number;
+		w: number;
+	}
+};
+
+export type ServerStatsLog = string[];
+
+export type QueueStats = {
+	deliver: {
+		activeSincePrevTick: number;
+		active: number;
+		waiting: number;
+		delayed: number;
+	};
+	inbox: {
+		activeSincePrevTick: number;
+		active: number;
+		waiting: number;
+		delayed: number;
+	};
+};
+
+export type QueueStatsLog = string[];
+
+export type EmojiAdded = {
+	emoji: EmojiDetailed
+};
+
+export type EmojiUpdated = {
+	emojis: EmojiDetailed[]
+};
+
+export type EmojiDeleted = {
+	emojis: EmojiDetailed[]
+};
+
+export type AnnouncementCreated = {
+	announcement: Announcement;
+};

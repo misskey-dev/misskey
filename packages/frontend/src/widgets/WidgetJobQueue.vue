@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, reactive } from 'vue';
+import { onUnmounted, reactive, ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { useStream } from '@/stream.js';
@@ -100,8 +100,8 @@ const current = reactive({
 	},
 });
 const prev = reactive({} as typeof current);
-let jammedAudioBuffer: AudioBuffer | null = $ref(null);
-let jammedSoundNodePlaying: boolean = $ref(false);
+const jammedAudioBuffer = ref<AudioBuffer | null>(null);
+const jammedSoundNodePlaying = ref<boolean>(false);
 
 if (defaultStore.state.sound_masterVolume) {
 	sound.loadAudio({
@@ -109,7 +109,7 @@ if (defaultStore.state.sound_masterVolume) {
 		volume: 1,
 	}).then(buf => {
 		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
-		jammedAudioBuffer = buf;
+		jammedAudioBuffer.value = buf;
 	});
 }
 
@@ -125,11 +125,11 @@ const onStats = (stats) => {
 		current[domain].waiting = stats[domain].waiting;
 		current[domain].delayed = stats[domain].delayed;
 
-		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer && !jammedSoundNodePlaying) {
-			const soundNode = sound.createSourceNode(jammedAudioBuffer, 1);
+		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
+			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, 1);
 			if (soundNode) {
-				jammedSoundNodePlaying = true;
-				soundNode.onended = () => jammedSoundNodePlaying = false;
+				jammedSoundNodePlaying.value = true;
+				soundNode.onended = () => jammedSoundNodePlaying.value = false;
 				soundNode.start();
 			}
 		}

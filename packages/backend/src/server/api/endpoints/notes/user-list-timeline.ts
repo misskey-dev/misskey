@@ -5,20 +5,17 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { MiNote, MiUserList, NotesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { MiUserList, NotesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
-import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -84,7 +81,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private cacheService: CacheService,
 		private idService: IdService,
-		private fanoutTimelineService: FanoutTimelineService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 		private queryService: QueryService,
 		private metaService: MetaService,
@@ -121,18 +117,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.noteEntityService.packMany(timeline, me);
 			}
 
-			const [
-				userIdsWhoMeMuting,
-				userIdsWhoMeMutingRenotes,
-				userIdsWhoBlockingMe,
-				userMutedInstances,
-			] = await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.renoteMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
-			]);
-
 			const timeline = await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
@@ -141,22 +125,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
 				redisTimelines: ps.withFiles ? [`userListTimelineWithFiles:${list.id}`] : [`userListTimeline:${list.id}`],
-				noteFilter: note => {
-					if (note.userId === me.id) {
-						return true;
-					}
-					if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
-					if (isUserRelated(note, userIdsWhoMeMuting)) return false;
-					if (note.renoteId) {
-						if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-							if (isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-							if (ps.withRenotes === false) return false;
-						}
-					}
-					if (isInstanceMuted(note, userMutedInstances)) return false;
-
-					return true;
-				},
+				alwaysIncludeMyNotes: true,
+				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb(list, {
 					untilId,
 					sinceId,

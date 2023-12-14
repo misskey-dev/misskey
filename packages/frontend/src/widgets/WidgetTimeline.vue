@@ -130,7 +130,7 @@ const choose = async (ev) => {
 		text: i18n.ts._timelines.global,
 		icon: 'ti ti-whirl',
 		action: () => { setSrc('global'); },
-	}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
+	}, antennaItems.length > 0 ? { type: 'divider' } : undefined, ...antennaItems, listItems.length > 0 ? { type: 'divider' } : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;
 	});
 };

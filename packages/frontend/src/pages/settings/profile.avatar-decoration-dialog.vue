@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :marginMin="20" :marginMax="28">
 			<div style="text-align: center;">
 				<div :class="$style.name">{{ decoration.name }}</div>
-				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decoration="{ url: decoration.url, angle, flipH }" forceShowDecoration/>
+				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decorations="[...$i.avatarDecorations, { url: decoration.url, angle, flipH }]" forceShowDecoration/>
 			</div>
 			<div class="_gaps_s">
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
@@ -54,6 +54,7 @@ const props = defineProps<{
 	decoration: {
 		id: string;
 		url: string;
+		name: string;
 	}
 }>();
 
@@ -76,19 +77,21 @@ async function attach() {
 		angle: angle.value,
 		flipH: flipH.value,
 	};
+	const update = [...$i.avatarDecorations, decoration];
 	await os.apiWithDialog('i/update', {
-		avatarDecorations: [decoration],
+		avatarDecorations: update,
 	});
-	$i.avatarDecorations = [decoration];
+	$i.avatarDecorations = update;
 
 	dialog.value.close();
 }
 
 async function detach() {
+	const update = $i.avatarDecorations.filter(x => x.id !== props.decoration.id);
 	await os.apiWithDialog('i/update', {
-		avatarDecorations: [],
+		avatarDecorations: update,
 	});
-	$i.avatarDecorations = [];
+	$i.avatarDecorations = update;
 
 	dialog.value.close();
 }

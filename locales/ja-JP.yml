@@ -261,6 +261,7 @@ removed: "削除しました"
 removeAreYouSure: "「{x}」を削除しますか？"
 deleteAreYouSure: "「{x}」を削除しますか？"
 resetAreYouSure: "リセットしますか？"
+areYouSure: "よろしいですか？"
 saved: "保存しました"
 messaging: "チャット"
 upload: "アップロード"
@@ -1157,6 +1158,7 @@ tosAndPrivacyPolicy: "利用規約・プライバシーポリシー"
 avatarDecorations: "アイコンデコレーション"
 attach: "付ける"
 detach: "外す"
+detachAll: "全て外す"
 angle: "角度"
 flip: "反転"
 showAvatarDecorations: "アイコンのデコレーションを表示"
@@ -1168,6 +1170,9 @@ useGroupedNotifications: "通知をグルーピングして表示する"
 signupPendingError: "メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。"
 cwNotationRequired: "「内容を隠す」がオンの場合は注釈の記述が必要です。"
 doReaction: "リアクションする"
+code: "コード"
+reloadRequiredToApplySettings: "設定の反映にはリロードが必要です。"
+remainingN: "残り: {n}"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1608,6 +1613,7 @@ _role:
     canHideAds: "広告の非表示"
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
+    avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
@@ -2082,6 +2088,7 @@ _profile:
   changeAvatar: "アイコン画像を変更"
   changeBanner: "バナー画像を変更"
   verifiedLinkDescription: "内容にURLを設定すると、リンク先のWebサイトに自分のプロフィールへのリンクが含まれている場合に所有者確認済みアイコンを表示させることができます。"
+  avatarDecorationMax: "最大{max}つまでデコレーションを付けられます。"
 
 _exportOrImport:
   allNotes: "全てのノート"
@@ -2389,3 +2396,17 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "テーマのインストールに失敗しました"
       description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+
+_dataSaver:
+  _media:
+    title: "メディアの読み込み"
+    description: "画像・動画が自動で読み込まれるのを防止します。隠れている画像・動画はタップすると読み込まれます。"
+  _avatar:
+    title: "アイコン画像"
+    description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
+  _urlPreview:
+    title: "URLプレビューのサムネイル"
+    description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
+  _code:
+    title: "コードハイライト"
+    description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"

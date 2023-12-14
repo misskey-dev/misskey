@@ -126,6 +126,9 @@ type AdminEmojiDeleteBulkRequest = operations['admin/emoji/delete-bulk']['reques
 type AdminEmojiDeleteRequest = operations['admin/emoji/delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiImportZipRequest = operations['admin/emoji/import-zip']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminEmojiListRemoteRequest = operations['admin/emoji/list-remote']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -228,10 +231,19 @@ type AdminRolesAssignRequest = operations['admin/roles/assign']['requestBody']['
 type AdminRolesCreateRequest = operations['admin/roles/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesCreateResponse = operations['admin/roles/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminRolesDeleteRequest = operations['admin/roles/delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesListResponse = operations['admin/roles/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminRolesShowRequest = operations['admin/roles/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesShowResponse = operations['admin/roles/show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminRolesUnassignRequest = operations['admin/roles/unassign']['requestBody']['content']['application/json'];
@@ -291,6 +303,11 @@ type AdminUpdateUserNoteRequest = operations['admin/update-user-note']['requestB
 //
 // @public (undocumented)
 type Announcement = components['schemas']['Announcement'];
+
+// @public (undocumented)
+type AnnouncementCreated = {
+    announcement: Announcement;
+};
 
 // @public (undocumented)
 type AnnouncementsRequest = operations['announcements']['requestBody']['content']['application/json'];
@@ -361,8 +378,6 @@ class APIClient {
     fetch: FetchLike;
     // (undocumented)
     origin: string;
-    // (undocumented)
-    request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, params?: P, credential?: string | null): Promise<SwitchCaseResponseType<E, P>>;
 }
 
 // @public (undocumented)
@@ -394,6 +409,9 @@ type ApShowRequest = operations['ap/show']['requestBody']['content']['applicatio
 
 // @public (undocumented)
 type ApShowResponse = operations['ap/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AuthAcceptRequest = operations['auth/accept']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AuthSessionGenerateRequest = operations['auth/session/generate']['requestBody']['content']['application/json'];
@@ -488,9 +506,7 @@ export type Channels = {
             unreadAntenna: (payload: Antenna) => void;
             readAllAnnouncements: () => void;
             myTokenRegenerated: () => void;
-            reversiNoInvites: () => void;
-            reversiInvited: (payload: FIXME) => void;
-            signin: (payload: FIXME) => void;
+            signin: (payload: Signin) => void;
             registryUpdated: (payload: {
                 scope?: string[];
                 key: string;
@@ -498,41 +514,116 @@ export type Channels = {
             }) => void;
             driveFileCreated: (payload: DriveFile) => void;
             readAntenna: (payload: Antenna) => void;
+            receiveFollowRequest: (payload: User) => void;
+            announcementCreated: (payload: AnnouncementCreated) => void;
         };
         receives: null;
     };
     homeTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     localTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     hybridTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     globalTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    userList: {
+        params: {
+            listId: string;
+            withFiles?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    hashtag: {
+        params: {
+            q?: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    roleTimeline: {
+        params: {
+            roleId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    antenna: {
+        params: {
+            antennaId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    channel: {
+        params: {
+            channelId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    drive: {
+        params: null;
+        events: {
+            fileCreated: (payload: DriveFile) => void;
+            fileDeleted: (payload: DriveFile['id']) => void;
+            fileUpdated: (payload: DriveFile) => void;
+            folderCreated: (payload: DriveFolder) => void;
+            folderDeleted: (payload: DriveFolder['id']) => void;
+            folderUpdated: (payload: DriveFile) => void;
         };
         receives: null;
     };
     serverStats: {
         params: null;
         events: {
-            stats: (payload: FIXME) => void;
+            stats: (payload: ServerStats) => void;
+            statsLog: (payload: ServerStatsLog) => void;
         };
         receives: {
             requestLog: {
@@ -544,7 +635,8 @@ export type Channels = {
     queueStats: {
         params: null;
         events: {
-            stats: (payload: FIXME) => void;
+            stats: (payload: QueueStats) => void;
+            statsLog: (payload: QueueStatsLog) => void;
         };
         receives: {
             requestLog: {
@@ -552,6 +644,18 @@ export type Channels = {
                 length: number;
             };
         };
+    };
+    admin: {
+        params: null;
+        events: {
+            newAbuseUserReport: {
+                id: string;
+                targetUserId: string;
+                reporterId: string;
+                comment: string;
+            };
+        };
+        receives: null;
     };
 };
 
@@ -847,6 +951,16 @@ type EmailAddressAvailableRequest = operations['email-address/available']['reque
 type EmailAddressAvailableResponse = operations['email-address/available']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type EmojiAdded = {
+    emoji: EmojiDetailed;
+};
+
+// @public (undocumented)
+type EmojiDeleted = {
+    emojis: EmojiDetailed[];
+};
+
+// @public (undocumented)
 type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
@@ -860,6 +974,11 @@ type EmojiSimple = components['schemas']['EmojiSimple'];
 
 // @public (undocumented)
 type EmojisResponse = operations['emojis']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiUpdated = {
+    emojis: EmojiDetailed[];
+};
 
 // @public (undocumented)
 type EmptyRequest = Record<string, unknown> | undefined;
@@ -902,6 +1021,14 @@ declare namespace entities {
         DateString,
         PageEvent,
         ModerationLog,
+        ServerStats,
+        ServerStatsLog,
+        QueueStats,
+        QueueStatsLog,
+        EmojiAdded,
+        EmojiUpdated,
+        EmojiDeleted,
+        AnnouncementCreated,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -939,6 +1066,7 @@ declare namespace entities {
         AdminEmojiCopyResponse,
         AdminEmojiDeleteBulkRequest,
         AdminEmojiDeleteRequest,
+        AdminEmojiImportZipRequest,
         AdminEmojiListRemoteRequest,
         AdminEmojiListRemoteResponse,
         AdminEmojiListRequest,
@@ -985,8 +1113,11 @@ declare namespace entities {
         AdminDeleteAccountResponse,
         AdminUpdateUserNoteRequest,
         AdminRolesCreateRequest,
+        AdminRolesCreateResponse,
         AdminRolesDeleteRequest,
+        AdminRolesListResponse,
         AdminRolesShowRequest,
+        AdminRolesShowResponse,
         AdminRolesUpdateRequest,
         AdminRolesAssignRequest,
         AdminRolesUnassignRequest,
@@ -1012,6 +1143,7 @@ declare namespace entities {
         AppCreateResponse,
         AppShowRequest,
         AppShowResponse,
+        AuthAcceptRequest,
         AuthSessionGenerateRequest,
         AuthSessionGenerateResponse,
         AuthSessionShowRequest,
@@ -1171,13 +1303,31 @@ declare namespace entities {
         HashtagsUsersRequest,
         HashtagsUsersResponse,
         IResponse,
+        I2faDoneRequest,
+        I2faKeyDoneRequest,
+        I2faPasswordLessRequest,
+        I2faRegisterKeyRequest,
+        I2faRegisterRequest,
+        I2faUpdateKeyRequest,
+        I2faRemoveKeyRequest,
+        I2faUnregisterRequest,
+        IAppsRequest,
+        IAuthorizedAppsRequest,
         IClaimAchievementRequest,
+        IChangePasswordRequest,
+        IDeleteAccountRequest,
+        IExportFollowingRequest,
         IFavoritesRequest,
         IFavoritesResponse,
         IGalleryLikesRequest,
         IGalleryLikesResponse,
         IGalleryPostsRequest,
         IGalleryPostsResponse,
+        IImportBlockingRequest,
+        IImportFollowingRequest,
+        IImportMutingRequest,
+        IImportUserListsRequest,
+        IImportAntennasRequest,
         INotificationsRequest,
         INotificationsResponse,
         INotificationsGroupedRequest,
@@ -1189,6 +1339,7 @@ declare namespace entities {
         IPinRequest,
         IPinResponse,
         IReadAnnouncementRequest,
+        IRegenerateTokenRequest,
         IRegistryGetAllRequest,
         IRegistryGetDetailRequest,
         IRegistryGetRequest,
@@ -1196,10 +1347,15 @@ declare namespace entities {
         IRegistryKeysRequest,
         IRegistryRemoveRequest,
         IRegistrySetRequest,
+        IRevokeTokenRequest,
+        ISigninHistoryRequest,
+        ISigninHistoryResponse,
         IUnpinRequest,
         IUnpinResponse,
+        IUpdateEmailRequest,
         IUpdateRequest,
         IUpdateResponse,
+        IMoveRequest,
         IWebhooksCreateRequest,
         IWebhooksShowRequest,
         IWebhooksUpdateRequest,
@@ -1214,6 +1370,8 @@ declare namespace entities {
         EmojisResponse,
         EmojiRequest,
         EmojiResponse,
+        MiauthGenTokenRequest,
+        MiauthGenTokenResponse,
         MuteCreateRequest,
         MuteDeleteRequest,
         MuteListRequest,
@@ -1276,6 +1434,7 @@ declare namespace entities {
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
         NotificationsCreateRequest,
+        PagePushRequest,
         PagesCreateRequest,
         PagesCreateResponse,
         PagesDeleteRequest,
@@ -1300,7 +1459,9 @@ declare namespace entities {
         PingResponse,
         PinnedUsersResponse,
         PromoReadRequest,
+        RolesListResponse,
         RolesShowRequest,
+        RolesShowResponse,
         RolesUsersRequest,
         RolesNotesRequest,
         RolesNotesResponse,
@@ -1404,7 +1565,10 @@ declare namespace entities {
         GalleryPost,
         EmojiSimple,
         EmojiDetailed,
-        Flash
+        Flash,
+        Signin,
+        RoleLite,
+        Role
     }
 }
 export { entities }
@@ -1640,10 +1804,49 @@ type HashtagsUsersRequest = operations['hashtags/users']['requestBody']['content
 type HashtagsUsersResponse = operations['hashtags/users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type I2faDoneRequest = operations['i/2fa/done']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faKeyDoneRequest = operations['i/2fa/key-done']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faPasswordLessRequest = operations['i/2fa/password-less']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRegisterKeyRequest = operations['i/2fa/register-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRegisterRequest = operations['i/2fa/register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRemoveKeyRequest = operations['i/2fa/remove-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faUnregisterRequest = operations['i/2fa/unregister']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faUpdateKeyRequest = operations['i/2fa/update-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IAppsRequest = operations['i/apps']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IAuthorizedAppsRequest = operations['i/authorized-apps']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IChangePasswordRequest = operations['i/change-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type IClaimAchievementRequest = operations['i/claim-achievement']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ID = string;
+
+// @public (undocumented)
+type IDeleteAccountRequest = operations['i/delete-account']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IExportFollowingRequest = operations['i/export-following']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IFavoritesRequest = operations['i/favorites']['requestBody']['content']['application/json'];
@@ -1662,6 +1865,24 @@ type IGalleryPostsRequest = operations['i/gallery/posts']['requestBody']['conten
 
 // @public (undocumented)
 type IGalleryPostsResponse = operations['i/gallery/posts']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IImportAntennasRequest = operations['i/import-antennas']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportBlockingRequest = operations['i/import-blocking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportFollowingRequest = operations['i/import-following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportMutingRequest = operations['i/import-muting']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportUserListsRequest = operations['i/import-user-lists']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IMoveRequest = operations['i/move']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type INotificationsGroupedRequest = operations['i/notifications-grouped']['requestBody']['content']['application/json'];
@@ -1715,6 +1936,9 @@ type IPinResponse = operations['i/pin']['responses']['200']['content']['applicat
 type IReadAnnouncementRequest = operations['i/read-announcement']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IRegenerateTokenRequest = operations['i/regenerate-token']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type IRegistryGetAllRequest = operations['i/registry/get-all']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1739,13 +1963,25 @@ type IRegistrySetRequest = operations['i/registry/set']['requestBody']['content'
 type IResponse = operations['i']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IRevokeTokenRequest = operations['i/revoke-token']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 function isAPIError(reason: any): reason is APIError;
+
+// @public (undocumented)
+type ISigninHistoryRequest = operations['i/signin-history']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ISigninHistoryResponse = operations['i/signin-history']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type IUnpinRequest = operations['i/unpin']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IUnpinResponse = operations['i/unpin']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IUpdateEmailRequest = operations['i/update-email']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IUpdateRequest = operations['i/update']['requestBody']['content']['application/json'];
@@ -1776,6 +2012,12 @@ type MetaRequest = operations['meta']['requestBody']['content']['application/jso
 
 // @public (undocumented)
 type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MiauthGenTokenRequest = operations['miauth/gen-token']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MiauthGenTokenResponse = operations['miauth/gen-token']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ModerationLog = {
@@ -2110,6 +2352,9 @@ type PageEvent = {
 };
 
 // @public (undocumented)
+type PagePushRequest = operations['page-push']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type PagesCreateRequest = operations['pages/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2155,6 +2400,25 @@ type PromoReadRequest = operations['promo/read']['requestBody']['content']['appl
 type QueueCount = components['schemas']['QueueCount'];
 
 // @public (undocumented)
+type QueueStats = {
+    deliver: {
+        activeSincePrevTick: number;
+        active: number;
+        waiting: number;
+        delayed: number;
+    };
+    inbox: {
+        activeSincePrevTick: number;
+        active: number;
+        waiting: number;
+        delayed: number;
+    };
+};
+
+// @public (undocumented)
+type QueueStatsLog = string[];
+
+// @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2179,6 +2443,15 @@ type ResetPasswordRequest = operations['reset-password']['requestBody']['content
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type Role = components['schemas']['Role'];
+
+// @public (undocumented)
+type RoleLite = components['schemas']['RoleLite'];
+
+// @public (undocumented)
+type RolesListResponse = operations['roles/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type RolesNotesRequest = operations['roles/notes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2188,7 +2461,33 @@ type RolesNotesResponse = operations['roles/notes']['responses']['200']['content
 type RolesShowRequest = operations['roles/show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type RolesShowResponse = operations['roles/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type RolesUsersRequest = operations['roles/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ServerStats = {
+    cpu: number;
+    mem: {
+        used: number;
+        active: number;
+    };
+    net: {
+        rx: number;
+        tx: number;
+    };
+    fs: {
+        r: number;
+        w: number;
+    };
+};
+
+// @public (undocumented)
+type ServerStatsLog = string[];
+
+// @public (undocumented)
+type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
@@ -2448,8 +2747,7 @@ type UsersUpdateMemoRequest = operations['users/update-memo']['requestBody']['co
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:24:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:31:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
+// src/entities.ts:25:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
