@@ -4,18 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.wrapper">
-	<button
-		ref="buttonEl"
-		v-ripple="canToggle"
-		class="_button"
-		:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
-		@click="toggleReaction()"
-	>
-		<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
-		<span :class="$style.count">{{ count }}</span>
-	</button>
-</div>
+<button
+	ref="buttonEl"
+	v-ripple="canToggle"
+	class="_button"
+	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	@click="toggleReaction()"
+>
+	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<span :class="$style.count">{{ count }}</span>
+</button>
 </template>
 
 <script lang="ts" setup>
@@ -141,7 +139,7 @@ if (!mock) {
 
 <style lang="scss" module>
 .root {
-	display: flex;
+	display: inline-flex;
 	height: 42px;
 	margin: 2px;
 	padding: 0 6px;
@@ -197,10 +195,6 @@ if (!mock) {
 			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 		}
 	}
-}
-
-.wrapper {
-	display: inline-block;
 }
 
 .limitWidth {
