@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, Ref, ref } from 'vue';
+import { defineAsyncComponent, Ref, ref, computed, ComputedRef } from 'vue';
 import { popup } from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 /**
  * 絵文字ピッカーを表示する。
@@ -23,8 +24,10 @@ class EmojiPicker {
 	}
 
 	public async init() {
+		const emojisRef = defaultStore.reactiveState.pinnedEmojis;
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
+			pinnedEmojis: emojisRef,
 			asReactionPicker: false,
 			manualShowing: this.manualShowing,
 			choseAndClose: false,
@@ -44,8 +47,8 @@ class EmojiPicker {
 
 	public show(
 		src: HTMLElement,
-		onChosen: EmojiPicker['onChosen'],
-		onClosed: EmojiPicker['onClosed'],
+		onChosen?: EmojiPicker['onChosen'],
+		onClosed?: EmojiPicker['onClosed'],
 	) {
 		this.src.value = src;
 		this.manualShowing.value = true;
