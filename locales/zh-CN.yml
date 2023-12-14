@@ -311,6 +311,7 @@ folderName: "文件夹名称"
 createFolder: "创建文件夹"
 renameFolder: "重命名文件夹"
 deleteFolder: "删除文件夹"
+folder: "文件夹"
 addFile: "添加文件"
 emptyDrive: "网盘中无文件"
 emptyFolder: "此文件夹中无文件"
@@ -437,7 +438,6 @@ share: "分享"
 notFound: "未找到"
 notFoundDescription: "没有与指定 URL 对应的页面。"
 uploadFolder: "默认上传文件夹"
-cacheClear: "清空缓存"
 markAsReadAllNotifications: "将所有通知标为已读"
 markAsReadAllUnreadNotes: "将所有帖子标记为已读"
 markAsReadAllTalkMessages: "将所有聊天标记为已读"
@@ -1131,6 +1131,7 @@ mutualFollow: "互相关注"
 fileAttachedOnly: "仅限媒体"
 showRepliesToOthersInTimeline: "在时间线上显示给其他人的回复"
 hideRepliesToOthersInTimeline: "在时间线上隐藏给其他人的回复"
+avatarDecorations: "头像挂件"
 flip: "翻转"
 _announcement:
   forExistingUsers: "仅限现有用户"
@@ -1706,6 +1707,9 @@ _ago:
   monthsAgo: "{n} 月前"
   yearsAgo: "{n} 年前"
   invalid: "没有"
+_timeIn:
+  seconds: "{n}秒后"
+  days: "{n}天后"
 _time:
   second: "秒"
   minute: "分"
@@ -2123,3 +2127,7 @@ _moderationLogTypes:
 _fileViewer:
   url: "URL"
   uploadedAt: "添加日期"
+_externalResourceInstaller:
+  _errors:
+    _pluginParseFailed:
+      title: "AiScript 错误"

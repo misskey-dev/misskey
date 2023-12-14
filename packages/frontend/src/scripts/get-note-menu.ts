@@ -398,7 +398,7 @@ export function getNoteMenu(props: {
 	}
 
 	if (noteActions.length > 0) {
-		menu = menu.concat([null, ...noteActions.map(action => ({
+		menu = menu.concat([{ type: "divider" }, ...noteActions.map(action => ({
 			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
@@ -408,7 +408,7 @@ export function getNoteMenu(props: {
 	}
 
 	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
+		menu = menu.concat([{ type: "divider" }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
 			action: () => {

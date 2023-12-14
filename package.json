@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.12.0-beta.3",
+	"version": "2023.12.0-beta.4",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -27,7 +27,7 @@
 		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
-		"dev": "pnpm -r dev",
+		"dev": "node scripts/dev.mjs",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
@@ -53,8 +53,8 @@
 		"typescript": "5.3.3"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.13.2",
-		"@typescript-eslint/parser": "6.13.2",
+		"@typescript-eslint/eslint-plugin": "6.14.0",
+		"@typescript-eslint/parser": "6.14.0",
 		"cross-env": "7.0.3",
 		"cypress": "13.6.1",
 		"eslint": "8.55.0",

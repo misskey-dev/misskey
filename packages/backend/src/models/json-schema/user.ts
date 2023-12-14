@@ -681,6 +681,10 @@ export const packedMeDetailedOnlySchema = {
 					type: 'number',
 					nullable: false, optional: false,
 				},
+				avatarDecorationLimit: {
+					type: 'number',
+					nullable: false, optional: false,
+				},
 			},
 		},
 		//#region secrets

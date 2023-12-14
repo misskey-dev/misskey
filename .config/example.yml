@@ -166,7 +166,7 @@ id: 'aidx'
 
 # Job rate limiter
 #deliverJobPerSec: 128
-#inboxJobPerSec: 16
+#inboxJobPerSec: 32
 #relashionshipJobPerSec: 64
 
 # Job attempts
