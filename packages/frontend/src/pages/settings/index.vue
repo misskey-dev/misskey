@@ -74,9 +74,9 @@ const menuDef = computed(() => [{
 		active: currentPage.value?.route.name === 'privacy',
 	}, {
 		icon: 'ti ti-mood-happy',
-		text: i18n.ts.reaction,
-		to: '/settings/reaction',
-		active: currentPage.value?.route.name === 'reaction',
+		text: i18n.ts.emojiPicker,
+		to: '/settings/emoji-picker',
+		active: currentPage.value?.route.name === 'emojiPicker',
 	}, {
 		icon: 'ti ti-cloud',
 		text: i18n.ts.drive,
@@ -236,7 +236,7 @@ provideMetadataReceiver((info) => {
 		childInfo.value = null;
 	} else {
 		childInfo.value = info;
-		INFO.value.needWideArea = info.value?.needWideArea ?? undefined;
+		INFO.value.needWideArea = info.value.needWideArea ?? undefined;
 	}
 });
 
