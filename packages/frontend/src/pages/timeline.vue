@@ -125,14 +125,14 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	const channels = await os.api('channels/my-favorites', {
 		limit: 100,
 	});
-	const items = [
+	const items: MenuItem[] = [
 		...channels.map(channel => ({
 			type: 'link' as const,
 			text: channel.name,
 			indicate: channel.hasUnreadNote,
 			to: `/channels/${channel.id}`,
 		})),
-		(channels.length === 0 ? undefined : null),
+		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',

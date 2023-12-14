@@ -87,18 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-sparkles"></i></template>
 		<template #label>{{ i18n.ts.avatarDecorations }}</template>
 
-		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-gap: 12px;">
-			<div
-				v-for="avatarDecoration in avatarDecorations"
-				:key="avatarDecoration.id"
-				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
-				@click="openDecoration(avatarDecoration)"
-			>
-				<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
-				<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
-				<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
-			</div>
-		</div>
+		<XAvatarDecoration/>
 	</MkFolder>
 
 	<MkFolder>
@@ -124,6 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
 import Misskey from 'misskey-js';
+import XAvatarDecoration from './profile.avatar-decoration.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -145,7 +135,6 @@ import MkTextareaWithMfmPreview from '@/components/MkTextareaWithMfmPreview.vue'
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
-const avatarDecorations = ref<any[]>([]);
 
 const profile = reactive({
 	name: $i.name,
@@ -165,10 +154,6 @@ watch(() => profile, () => {
 
 const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
-
-os.api('get-avatar-decorations').then(_avatarDecorations => {
-	avatarDecorations.value = _avatarDecorations;
-});
 
 function addField() {
 	fields.value.push({
@@ -268,12 +253,6 @@ function changeBanner(ev) {
 	});
 }
 
-function openDecoration(avatarDecoration) {
-	os.popup(defineAsyncComponent(() => import('./profile.avatar-decoration-dialog.vue')), {
-		decoration: avatarDecoration,
-	}, {}, 'closed');
-}
-
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
@@ -367,34 +346,5 @@ definePageMetadata({
 
 .dragItemForm {
 	flex-grow: 1;
-}
-
-.avatarDecoration {
-	cursor: pointer;
-	padding: 16px 16px 28px 16px;
-	border: solid 2px var(--divider);
-	border-radius: 8px;
-	text-align: center;
-	font-size: 90%;
-	overflow: clip;
-	contain: content;
-}
-
-.avatarDecorationActive {
-	background-color: var(--accentedBg);
-	border-color: var(--accent);
-}
-
-.avatarDecorationName {
-	position: relative;
-	z-index: 10;
-	font-weight: bold;
-	margin-bottom: 20px;
-}
-
-.avatarDecorationLock {
-	position: absolute;
-	bottom: 12px;
-	right: 12px;
 }
 </style>
