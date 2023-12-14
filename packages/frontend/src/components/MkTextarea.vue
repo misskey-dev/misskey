@@ -26,6 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></textarea>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<button style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
+	<div v-show="preview" v-panel :class="$style.mfmPreview">
+		<Mfm :text="v"/>
+	</div>
 
 	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
@@ -48,6 +52,7 @@ const props = defineProps<{
 	autofocus?: boolean;
 	autocomplete?: string;
 	mfmAutocomplete?: boolean | SuggestionType[],
+	mfmPreview?: boolean;
 	spellcheck?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
@@ -70,6 +75,7 @@ const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
 const inputEl = shallowRef<HTMLTextAreaElement>();
+const preview = ref(false);
 let autocomplete: Autocomplete;
 
 const focus = () => inputEl.value.focus();
@@ -206,5 +212,13 @@ onUnmounted(() => {
 
 .save {
 	margin: 8px 0 0 0;
+}
+
+.mfmPreview {
+  padding: 12px;
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  min-height: 130px;
+	pointer-events: none;
 }
 </style>

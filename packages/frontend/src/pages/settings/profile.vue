@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextareaWithMfmPreview v-model="profile.description" :max="500" tall manualSave :nyaize="$i?.isCat ? 'respect' : undefined" :author="($i as Misskey.entities.UserLite)">
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true" :nyaize="$i?.isCat ? 'respect' : undefined" :author="($i as Misskey.entities.UserLite)">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</MkTextareaWithMfmPreview>
+	</MkTextarea>
 
 	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
@@ -130,7 +130,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
-import MkTextareaWithMfmPreview from '@/components/MkTextareaWithMfmPreview.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

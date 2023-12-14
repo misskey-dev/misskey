@@ -37,7 +37,7 @@ type MfmProps = {
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-	nyaize: boolean | 'respect';
+	nyaize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
