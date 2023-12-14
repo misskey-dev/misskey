@@ -89,14 +89,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
 
 		<div class="_gaps_m">
-			<MkRadios v-model="reactionPickerSize">
+			<MkRadios v-model="emojiPickerScale">
 				<template #label>{{ i18n.ts.size }}</template>
 				<option :value="1">{{ i18n.ts.small }}</option>
 				<option :value="2">{{ i18n.ts.medium }}</option>
 				<option :value="3">{{ i18n.ts.large }}</option>
 			</MkRadios>
 
-			<MkRadios v-model="reactionPickerWidth">
+			<MkRadios v-model="emojiPickerWidth">
 				<template #label>{{ i18n.ts.numberOfColumn }}</template>
 				<option :value="1">5</option>
 				<option :value="2">6</option>
@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option :value="5">9</option>
 			</MkRadios>
 
-			<MkRadios v-model="reactionPickerHeight">
+			<MkRadios v-model="emojiPickerHeight">
 				<template #label>{{ i18n.ts.height }}</template>
 				<option :value="1">{{ i18n.ts.small }}</option>
 				<option :value="2">{{ i18n.ts.medium }}</option>
@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option :value="4">{{ i18n.ts.large }}+</option>
 			</MkRadios>
 
-			<MkSwitch v-model="reactionPickerUseDrawerForMobile">
+			<MkSwitch v-model="emojiPickerUseDrawerForMobile">
 				{{ i18n.ts.useDrawerReactionPickerForMobile }}
 				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 			</MkSwitch>
@@ -143,10 +143,10 @@ import MkFolder from '@/components/MkFolder.vue';
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
 
-const reactionPickerSize = computed(defaultStore.makeGetterSetter('reactionPickerSize'));
-const reactionPickerWidth = computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
-const reactionPickerHeight = computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
-const reactionPickerUseDrawerForMobile = computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
+const emojiPickerScale = computed(defaultStore.makeGetterSetter('emojiPickerScale'));
+const emojiPickerWidth = computed(defaultStore.makeGetterSetter('emojiPickerWidth'));
+const emojiPickerHeight = computed(defaultStore.makeGetterSetter('emojiPickerHeight'));
+const emojiPickerUseDrawerForMobile = computed(defaultStore.makeGetterSetter('emojiPickerUseDrawerForMobile'));
 
 const removeReaction = (reaction: string, ev: MouseEvent) => remove(pinnedEmojisForReaction, reaction, ev);
 const chooseReaction = (ev: MouseEvent) => pickEmoji(pinnedEmojisForReaction, ev);

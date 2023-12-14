@@ -275,19 +275,19 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
-	reactionPickerSize: {
+	emojiPickerScale: {
 		where: 'device',
 		default: 1,
 	},
-	reactionPickerWidth: {
+	emojiPickerWidth: {
 		where: 'device',
 		default: 1,
 	},
-	reactionPickerHeight: {
+	emojiPickerHeight: {
 		where: 'device',
 		default: 2,
 	},
-	reactionPickerUseDrawerForMobile: {
+	emojiPickerUseDrawerForMobile: {
 		where: 'device',
 		default: true,
 	},
