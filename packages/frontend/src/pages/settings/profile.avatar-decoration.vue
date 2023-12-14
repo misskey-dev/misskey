@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="!loading" class="_gaps">
-	<MkInfo>{{ i18n.t('_profile.avatarDecorationMax', { max: $i?.policies.avatarDecorationLimit }) }} ({{ i18n.t('remainingN', { n: $i?.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
+	<MkInfo>{{ i18n.t('_profile.avatarDecorationMax', { max: $i.policies.avatarDecorationLimit }) }} ({{ i18n.t('remainingN', { n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
 
 	<div v-if="$i.avatarDecorations.length > 0" v-panel :class="$style.current" class="_gaps_s">
 		<div>{{ i18n.ts.inUse }}</div>
