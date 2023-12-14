@@ -101,7 +101,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 				type: 'string',
 				required: false,
 				multiline: true,
-				isMfmAvailable: true,
+				treatAsMfm: true,
 				label: i18n.ts.description,
 				default: clip.value.description,
 			},
