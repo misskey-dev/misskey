@@ -15,7 +15,7 @@ gotIt: "알것어예"
 cancel: "아이예"
 noThankYou: "뎃어예"
 enterUsername: "사용자 이럼 서기"
-renotedBy: "{user}님이 리노트햇십니다"
+renotedBy: "{user}님이 리노트햇어예"
 noNotes: "노트가 없십니다"
 noNotifications: "알림이 없십니다"
 instance: "서버"
@@ -113,7 +113,7 @@ cantReRenote: "리노트넌 지럴 리노트 몬 합니다."
 quote: "따오기"
 inChannelRenote: "채널 안 리노트"
 inChannelQuote: "채널 안 따오기"
-pinnedNote: "프로필에 붙인 노트"
+pinnedNote: "붙인 노트"
 pinned: "프로필에 붙이기"
 you: "나"
 clickToShow: "누질라서 보기"
@@ -367,7 +367,7 @@ pinnedUsersDescription: "‘살펴보기’서 붙일라넌 사용자럴 줄 바
 pinnedPages: "붙인 바닥"
 pinnedPagesDescription: "서버으 대문서 붙일라넌 바닥으 겡로럴 줄 바꿈해서로 적십니다."
 pinnedClipId: "붙일 클립으 아이디"
-pinnedNotes: "프로필에 붙인 노트"
+pinnedNotes: "붙인 노트"
 hcaptcha: "에이치캡차"
 enableHcaptcha: "에이치캡차 키기"
 hcaptchaSiteKey: "사이트키"
@@ -412,7 +412,7 @@ userList: "리스트"
 about: "정보"
 aboutMisskey: "Misskey넌예"
 administrator: "간리자"
-token: "학인 코드"
+token: "학인 기호"
 2fa: "두 단게 정멩"
 setupOf2fa: "두 단게 정멩 설정"
 totp: "정멩 앱"
@@ -431,10 +431,20 @@ notFound: "몬 찾앗십니다"
 help: "도움말"
 invites: "초대하기"
 retype: "다시 서기"
+noteOf: "{user}님으 노트"
 invitations: "초대하기"
+checking: "학인하고 잇십니다"
+passwordMatched: "맞십니다"
+passwordNotMatched: "안 맞십니다"
 language: "언어"
+remote: "웬겍"
+script: "스크립트"
 manage: "간리"
+emailServer: "전자우펜 서버"
+email: "전자우펜"
+emailAddress: "전자우펜 주소"
 smtpHost: "호스트 이럼"
+smtpPort: "포트"
 smtpUser: "사용자 이럼"
 smtpPass: "비밀번호"
 clearCache: "캐시 비우기"
@@ -444,6 +454,7 @@ user: "사용자"
 administration: "간리"
 on: "킴"
 off: "껌"
+clickToFinishEmailVerification: "[{ok}]럴 누질라서 전자우펜 정멩얼 껕내이소."
 searchByGoogle: "찾기"
 tenMinutes: "십 분"
 oneHour: "한 시간"
@@ -463,6 +474,20 @@ likeOnly: "좋네예마"
 icon: "아바타"
 replies: "답하기"
 renotes: "리노트"
+_initialAccountSetting:
+  startTutorial: "길라잡이 하기"
+_initialTutorial:
+  launchTutorial: "길라잡이 보기"
+  title: "길라잡이"
+  skipAreYouSure: "길라잡이럴 껕냅니까?"
+  _landing:
+    title: "길라잡이에 어서 오이소"
+  _done:
+    title: "길라잡이가 껕낫십니다!🎉"
+_achievements:
+  _types:
+    _tutorialCompleted:
+      description: "길라잡이럴 껕냇십니다"
 _gallery:
   liked: "좋네예한 걸"
   like: "좋네예!"
@@ -470,6 +495,8 @@ _gallery:
 _email:
   _follow:
     title: "새 팔로워가 잇십니다"
+_channel:
+  removeBanner: "배너 뭉캐기"
 _theme:
   keys:
     mention: "멘션"
@@ -477,6 +504,7 @@ _sfx:
   note: "새 노트"
   notification: "알림"
 _2fa:
+  step3Title: "학인 기호럴 서기"
   renewTOTPCancel: "뎃어예"
 _widgets:
   profile: "프로필"
@@ -505,11 +533,15 @@ _charts:
   federation: "옌합"
 _timelines:
   home: "덜머리"
+_play:
+  script: "스크립트"
 _pages:
   like: "좋네예"
   unlike: "좋네예 무루기"
   blocks:
     image: "이미지"
+    _note:
+      id: "노트 아이디"
 _notification:
   youWereFollowed: "새 팔로워가 잇십니다"
   _types:
@@ -530,3 +562,5 @@ _webhookSettings:
   name: "이럼"
 _moderationLogTypes:
   suspend: "얼우기"
+  deleteNote: "노트 뭉캐기"
+  deleteUserAnnouncement: "사용자 공지 걸 뭉캐기"
