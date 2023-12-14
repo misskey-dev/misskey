@@ -62,8 +62,8 @@ const props = withDefaults(defineProps<{
   large: false,
 });
 
-let isFollowing = $ref(props.user.isFollowing);
-let notify = $ref(props.user.notify);
+let isFollowing = ref(props.user.isFollowing);
+let notify = ref(props.user.notify);
 const connection = useStream().useChannel('main');
 
 if (props.user.isFollowing == null) {
@@ -80,12 +80,12 @@ if (props.user.notify == null) {
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
   if (user.id === props.user.id) {
-    isFollowing = user.isFollowing;
+    isFollowing.value = user.isFollowing;
   }
 }
 function onNotifyChange(user: Misskey.entities.UserDetailed) {
   if (user.id === props.user.id) {
-    notify = user.notify;
+    notify.value = user.notify;
     console.log(props.user.notify)
   }
 }

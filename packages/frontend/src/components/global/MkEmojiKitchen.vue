@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import {computed, ref} from 'vue';
 
 const props = defineProps<{
 	name: string;
@@ -17,7 +17,7 @@ const rawUrl = computed(() => props.url);
 const url = computed(() => rawUrl.value);
 
 const alt = computed(() => props.name);
-let errored = $ref(url.value == null);
+let errored = ref(url.value == null);
 </script>
 
 <style lang="scss" module>

@@ -51,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@pointerenter="computeButtonTitle"
 			@click="emit('chosen', emoji, $event)"
 		>
+            jhkjh
 			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
 			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 		</button>

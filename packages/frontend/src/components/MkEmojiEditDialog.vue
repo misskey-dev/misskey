@@ -148,11 +148,11 @@ function ok() {
 async function add() {
 	const ret = await os.api('admin/emoji/add-draft', {
 		name: name,
-		category: category,
+		category: category.value,
 		aliases: aliases.value.split(' '),
 		license: license.value === '' ? null : license.value,
 		fileId: chooseFile.value.id,
-		isNotifyIsHome: isNotifyIsHome,
+		isNotifyIsHome: isNotifyIsHome.value,
 	});
 
 	emit('done', {
@@ -199,7 +199,7 @@ async function update() {
         aliases: aliases.value.split(' ').filter(x => x !== ''),
         license: license.value === '' ? null : license.value,
 		fileId: chooseFile.value?.id,
-		draft: draft,
+		draft: draft.value,
 	});
 
 	emit('done', {
@@ -222,10 +222,10 @@ async function done() {
 		aliases: aliases.value.split(' ').filter(x => x !== ''),
 		license: license.value === '' ? null : license.value,
 		isSensitive: isSensitive.value,
-        draft: draft,
+        draft: draft.value,
 		localOnly: localOnly.value,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
-        isNotifyIsHome,
+        isNotifyIsHome: isNotifyIsHome.value,
     };
 
 	if (file.value) {

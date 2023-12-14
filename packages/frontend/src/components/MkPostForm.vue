@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent , computed, ref , provide, shallowRef, ref, computed } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent , provide, shallowRef, ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -891,10 +891,10 @@ async function insertEmoji(ev: MouseEvent) {
 	);
 }
 function insertMfm(){
-  insertTextAtCursor(textareaEl, '$');
+  insertTextAtCursor(textareaEl.value, '$');
 }
 function insertRuby() {
-    insertTextAtCursor(textareaEl, '$[ruby 本文 上につくやつ]');
+    insertTextAtCursor(textareaEl.value, '$[ruby 本文 上につくやつ]');
 }
 function showActions(ev) {
   os.popupMenu(postFormActions.map(action => ({
@@ -953,7 +953,7 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 		icon: 'ti ti-calendar-time',
 		indicate: (schedule != null),
 		action: toggleSchedule,
-	} : undefined, ...(($i.policies?.canScheduleNote) ? [null, {
+	} : undefined, ...(($i.policies?.canScheduleNote) ? [{ type: 'divider' }, {
 		type: 'button',
 		text: i18n.ts._schedulePost.list,
 		icon: 'ti ti-calendar-event',

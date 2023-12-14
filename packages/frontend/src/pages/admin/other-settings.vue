@@ -69,18 +69,18 @@ const enableServerMachineStats = ref<boolean>(false);
 const enableIdenticonGeneration = ref<boolean>(false);
 const enableChartsForRemoteUser = ref<boolean>(false);
 const enableChartsForFederatedInstances = ref<boolean>(false);
-let DiscordWebhookUrl: string | null = $ref(null);
-let EmojiBotToken: string | null = $ref(null);
-let ApiBase:string | null = $ref(null)
+let DiscordWebhookUrl = ref(null);
+let EmojiBotToken= ref(null);
+let ApiBase= ref(null)
 async function init() {
 	const meta = await os.api('admin/meta');
 	enableServerMachineStats.value = meta.enableServerMachineStats;
 	enableIdenticonGeneration.value = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser.value = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances.value = meta.enableChartsForFederatedInstances;
-    DiscordWebhookUrl = meta.DiscordWebhookUrl;
-    EmojiBotToken = meta.EmojiBotToken;
-    ApiBase = meta.ApiBase;
+    DiscordWebhookUrl.value = meta.DiscordWebhookUrl;
+    EmojiBotToken.value = meta.EmojiBotToken;
+    ApiBase.value = meta.ApiBase;
 }
 
 function save() {
@@ -89,9 +89,9 @@ function save() {
 		enableIdenticonGeneration: enableIdenticonGeneration.value,
 		enableChartsForRemoteUser: enableChartsForRemoteUser.value,
 		enableChartsForFederatedInstances: enableChartsForFederatedInstances.value,
-        DiscordWebhookUrl,
-        EmojiBotToken,
-        ApiBase
+        DiscordWebhookUrl:DiscordWebhookUrl.value,
+        EmojiBotToken:EmojiBotToken.value,
+        ApiBase:ApiBase.value
 	}).then(() => {
 		fetchInstance();
 	});

@@ -67,14 +67,14 @@ import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories } from '@/custom-emojis.js';
+import {customEmojis, customEmojiCategories, getCustomEmojiTags} from '@/custom-emojis.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-let tab = $ref('emojis');
-const headerActions = $computed(() => []);
+let tab = ref('emojis');
+const headerActions = computed(() => []);
 
 const customEmojiTags = getCustomEmojiTags();
 const q = ref('');

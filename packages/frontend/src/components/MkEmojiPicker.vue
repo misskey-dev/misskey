@@ -327,7 +327,7 @@ watch(q, () => {
 	searchResultUnicode.value = Array.from(searchUnicode());
 });
 
-function filterAvailable(emoji: Misskey.entities.EmojiSimple): boolean {
+function filterAvailable(emoji: Misskey.entities.EmojiSimple): null | boolean {
 	return (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction == null || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)));
 }
 

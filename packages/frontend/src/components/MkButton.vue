@@ -65,7 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, shallowRef } from 'vue';
+import { nextTick, onMounted, shallowRef, computed, ref, watch } from 'vue';
+import {defaultStore} from "@/store.js";
 
 const props = defineProps<{
   type?: 'button' | 'submit' | 'reset';
@@ -92,8 +93,8 @@ const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 // gamingをrefで初期化する
 let gaming = ref(''); // 0-off , 1-dark , 2-light
-
 // gaming.valueに新しい値を代入する
+
 if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
   gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
@@ -113,7 +114,7 @@ watch(darkMode, () => {
 })
 
 watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary|| darkMode.value && gamingMode.value && props.gradate ) {
+  if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
     gaming.value = 'dark';
   } else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
     gaming.value = 'light';
@@ -121,7 +122,6 @@ watch(gamingMode, () => {
     gaming.value = '';
   }
 })
-
 const emit = defineEmits<{
   (ev: 'click', payload: MouseEvent): void;
 }>();
@@ -228,7 +228,59 @@ function onMousedown(evt: MouseEvent): void {
 		font-weight: bold;
 		color: var(--fgOnAccent) !important;
 		background: var(--accent);
+      &.gamingLight {
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+        background-size: 1800% 1800%;
+        color: white !important;
+        -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+        -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+        animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
 
+        &:not(:disabled):hover {
+          background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+          background-size: 1800% 1800%;
+          color: white !important;
+          -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+          -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+          animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+        }
+
+        &:not(:disabled):active {
+          background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+          background-size: 1800% 1800% !important;
+          color: white !important;
+          -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+          -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite ;
+          animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite ;
+        }
+      }
+
+      &.gamingDark {
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+        background-size: 1800% 1800%;
+        color: black;
+        -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+        -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+        animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+
+        &:not(:disabled):hover {
+          background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+          background-size: 1800% 1800% ;
+          color: black;
+          -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+          -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+          animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+        }
+
+        &:not(:disabled):active {
+          background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+          background-size: 1800% 1800% !important;
+          color: black;
+          -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+          -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+          animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+        }
+      }
 		&:not(:disabled):hover {
 			background: var(--X8);
 		}
@@ -285,6 +337,59 @@ function onMousedown(evt: MouseEvent): void {
 		&:not(:disabled):active {
 			background: linear-gradient(90deg, var(--X8), var(--X8));
 		}
+      &.gamingLight {
+        background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+        background-size: 1800% 1800%;
+        color: white !important;
+        -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+        -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+        animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+
+        &:not(:disabled):hover {
+          background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+          background-size: 1800% 1800%;
+          color: white !important;
+          -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+          -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+          animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+        }
+
+        &:not(:disabled):active {
+          background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+          background-size: 1800% 1800% !important;
+          color: white !important;
+          -webkit-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite;
+          -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite ;
+          animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite ;
+        }
+      }
+
+      &.gamingDark {
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+        background-size: 1800% 1800%;
+        color: black;
+        -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+        -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+        animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+
+        &:not(:disabled):hover {
+          background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+          background-size: 1800% 1800% ;
+          color: black;
+          -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+          -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+          animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+        }
+
+        &:not(:disabled):active {
+          background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+          background-size: 1800% 1800% !important;
+          color: black;
+          -webkit-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite ;
+          -moz-animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+          animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.45, 0.30, 1) infinite;
+        }
+      }
 	}
 
 	&.danger {
@@ -351,5 +456,35 @@ function onMousedown(evt: MouseEvent): void {
 	position: relative;
 	z-index: 1;
 	pointer-events: none;
+}
+@-webkit-keyframes AnimationLight {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@-moz-keyframes AnimationLight {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes AnimationLight {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@-webkit-keyframes AnimationDark {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@-moz-keyframes AnimationDark {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes AnimationDark {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 </style>

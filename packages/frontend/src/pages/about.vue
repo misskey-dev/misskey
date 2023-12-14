@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, ref, watch, ref } from 'vue';
+import {computed, ref, watch } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
 import { version, host } from '@/config.js';

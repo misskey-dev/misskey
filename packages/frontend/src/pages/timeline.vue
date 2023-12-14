@@ -67,7 +67,7 @@ const src = computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src 
 const withRenotes = ref(true);
 const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);
 const onlyFiles = ref(false);
-const isShowMediaTimeline = $ref(defaultStore.state.showMediaTimeline)
+const isShowMediaTimeline = ref(defaultStore.state.showMediaTimeline)
 
 watch(src, () => queue.value = 0);
 
@@ -226,7 +226,7 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
     title: i18n.ts._timelines.local,
     icon: 'ti ti-planet',
     iconOnly: true,
-}, ...(isShowMediaTimeline ? [{
+}, ...(isShowMediaTimeline.value ? [{
     key: 'media',
     title: i18n.ts._timelines.media,
     icon: 'ti ti-photo',

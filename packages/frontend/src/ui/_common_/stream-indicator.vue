@@ -27,7 +27,6 @@ const hasDisconnected = ref(false);
 let timeoutId = ref<number>();
 
 function onDisconnected() {
-	if (isReloading) return;
 	window.clearTimeout(timeoutId.value);
 	timeoutId.value = window.setTimeout(() => {
 		hasDisconnected.value = true;

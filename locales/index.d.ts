@@ -2563,6 +2563,16 @@ export interface Locale {
             };
         };
     };
+    "_schedulePost": {
+        "list": string;
+        "postDate": string;
+        "postTime": string;
+        "localTime": string;
+        "addSchedule": string;
+        "willBePostedAtX": string;
+        "deleteAreYouSure": string;
+        "deleteAndEditConfirm": string;
+    };
     "_dataSaver": {
         "_media": {
             "title": string;
@@ -2580,16 +2590,6 @@ export interface Locale {
             "title": string;
             "description": string;
         };
-    };
-    "_schedulePost": {
-        "list": string;
-        "postDate": string;
-        "postTime": string;
-        "localTime": string;
-        "addSchedule": string;
-        "willBePostedAtX": string;
-        "deleteAreYouSure": string;
-        "deleteAndEditConfirm": string;
     };
 }
 declare const locales: {
