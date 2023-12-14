@@ -119,7 +119,7 @@ export const defaultStore = markRaw(new Storage('base', {
 			'announcements',
 			'search',
 			'-',
-			'ui',
+			'reload',
 		],
 	},
 	visibility: {
@@ -176,7 +176,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animatedMfm: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	advancedMfm: {
 		where: 'device',
@@ -208,7 +208,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffectForModal: {
 		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		default: false, // なんとなく無効化
 	},
 	useBlurEffect: {
 		where: 'device',
@@ -320,11 +320,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	devMode: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	mediaListWithOneImageAppearance: {
 		where: 'device',
-		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+		default: '16_9' as 'expand' | '16_9' | '1_1' | '2_3',
 	},
 	notificationPosition: {
 		where: 'device',
