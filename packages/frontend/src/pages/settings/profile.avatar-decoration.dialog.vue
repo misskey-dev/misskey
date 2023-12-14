@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :marginMin="20" :marginMax="28">
 			<div style="text-align: center;">
 				<div :class="$style.name">{{ decoration.name }}</div>
-				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decoration="{ url: decoration.url, angle, flipH }" forceShowDecoration/>
+				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decorations="decorationsForPreview" forceShowDecoration/>
 			</div>
 			<div class="_gaps_s">
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 
 		<div :class="$style.footer" class="_buttonsCenter">
-			<MkButton v-if="using" primary rounded @click="attach"><i class="ti ti-check"></i> {{ i18n.ts.update }}</MkButton>
-			<MkButton v-if="using" rounded @click="detach"><i class="ti ti-x"></i> {{ i18n.ts.detach }}</MkButton>
+			<MkButton v-if="usingIndex != null" primary rounded @click="update"><i class="ti ti-check"></i> {{ i18n.ts.update }}</MkButton>
+			<MkButton v-if="usingIndex != null" rounded @click="detach"><i class="ti ti-x"></i> {{ i18n.ts.detach }}</MkButton>
 			<MkButton v-else primary rounded @click="attach"><i class="ti ti-check"></i> {{ i18n.ts.attach }}</MkButton>
 		</div>
 	</div>
@@ -51,45 +51,69 @@ import MkRange from '@/components/MkRange.vue';
 import { $i } from '@/account.js';
 
 const props = defineProps<{
+	usingIndex: number | null;
 	decoration: {
 		id: string;
 		url: string;
-	}
+		name: string;
+	};
 }>();
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
+	(ev: 'attach', payload: {
+		angle: number;
+		flipH: boolean;
+	}): void;
+	(ev: 'update', payload: {
+		angle: number;
+		flipH: boolean;
+	}): void;
+	(ev: 'detach'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
-const using = computed(() => $i.avatarDecorations.some(x => x.id === props.decoration.id));
-const angle = ref(using.value ? $i.avatarDecorations.find(x => x.id === props.decoration.id).angle ?? 0 : 0);
-const flipH = ref(using.value ? $i.avatarDecorations.find(x => x.id === props.decoration.id).flipH ?? false : false);
+const angle = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].angle : null) ?? 0);
+const flipH = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].flipH : null) ?? false);
+
+const decorationsForPreview = computed(() => {
+	const decoration = {
+		id: props.decoration.id,
+		url: props.decoration.url,
+		angle: angle.value,
+		flipH: flipH.value,
+	};
+	const decorations = [...$i.avatarDecorations];
+	if (props.usingIndex != null) {
+		decorations[props.usingIndex] = decoration;
+	} else {
+		decorations.push(decoration);
+	}
+	return decorations;
+});
 
 function cancel() {
 	dialog.value.close();
 }
 
-async function attach() {
-	const decoration = {
-		id: props.decoration.id,
+async function update() {
+	emit('update', {
 		angle: angle.value,
 		flipH: flipH.value,
-	};
-	await os.apiWithDialog('i/update', {
-		avatarDecorations: [decoration],
 	});
-	$i.avatarDecorations = [decoration];
+	dialog.value.close();
+}
 
+async function attach() {
+	emit('attach', {
+		angle: angle.value,
+		flipH: flipH.value,
+	});
 	dialog.value.close();
 }
 
 async function detach() {
-	await os.apiWithDialog('i/update', {
-		avatarDecorations: [],
-	});
-	$i.avatarDecorations = [];
-
+	emit('detach');
 	dialog.value.close();
 }
 </script>
