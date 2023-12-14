@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
@@ -67,16 +67,15 @@ import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
-let meta = $ref<Misskey.entities.Instance>();
-let stats = $ref(null);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
 os.api('meta', { detail: true }).then(_meta => {
-	meta = _meta;
+	meta.value = _meta;
 });
 
-os.api('stats', {
-}).then((res) => {
-	stats = res;
+os.api('stats', {}).then((res) => {
+	stats.value = res;
 });
 
 function signin() {
@@ -104,35 +103,35 @@ function showMenu(ev) {
 		action: () => {
 			os.pageWindow('/about-misskey');
 		},
-	}, null, (instance.impressumUrl) ? {
+	}, { type: 'divider' }, (instance.impressumUrl) ? {
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
 		action: () => {
-			window.open(instance.impressumUrl, '_blank');
+			window.open(instance.impressumUrl, '_blank', 'noopener');
 		},
 	} : undefined, (instance.tosUrl) ? {
 		text: i18n.ts.termsOfService,
 		icon: 'ti ti-notebook',
 		action: () => {
-			window.open(instance.tosUrl, '_blank');
+			window.open(instance.tosUrl, '_blank', 'noopener');
 		},
 	} : undefined, (instance.privacyPolicyUrl) ? {
 		text: i18n.ts.privacyPolicy,
 		icon: 'ti ti-shield-lock',
 		action: () => {
-			window.open(instance.privacyPolicyUrl, '_blank');
+			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
 		},
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : null, {
+	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.md', '_blank');
+			window.open('https://misskey-hub.net/help.md', '_blank', 'noopener');
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function exploreOtherServers() {
-	window.open('https://join.misskey.page/instances', '_blank');
+	window.open('https://join.misskey.page/instances', '_blank', 'noopener');
 }
 </script>
 

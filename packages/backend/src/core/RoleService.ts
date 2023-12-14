@@ -20,7 +20,7 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -47,6 +47,7 @@ export type RolePolicies = {
 	userListLimit: number;
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
+	avatarDecorationLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -73,6 +74,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userListLimit: 10,
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
+	avatarDecorationLimit: 1,
 };
 
 @Injectable()
@@ -86,6 +88,9 @@ export class RoleService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
+
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
@@ -105,7 +110,7 @@ export class RoleService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -323,6 +328,7 @@ export class RoleService implements OnApplicationShutdown {
 			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
+			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
 		};
 	}
 
@@ -476,10 +482,10 @@ export class RoleService implements OnApplicationShutdown {
 	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
 		const roles = await this.getUserRoles(note.userId);
 
-		const redisPipeline = this.redisClient.pipeline();
+		const redisPipeline = this.redisForTimelines.pipeline();
 
 		for (const role of roles) {
-			this.funoutTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
+			this.fanoutTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
 			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
 		}
 

@@ -192,19 +192,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.avatarDecorationLimit, 'avatarDecorationLimit'])">
+							<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
+							<template #suffix>{{ policies.avatarDecorationLimit }}</template>
+							<MkInput v-model="policies.avatarDecorationLimit" type="number" :min="0">
+							</MkInput>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
 				<div class="_gaps_s">
 					<MkFoldableSection>
-						<template #header>Manual roles</template>
+						<template #header>{{ i18n.ts._role.manualRoles }}</template>
 						<div class="_gaps_s">
 							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 					<MkFoldableSection>
-						<template #header>Conditional roles</template>
+						<template #header>{{ i18n.ts._role.conditionalRoles }}</template>
 						<div class="_gaps_s">
 							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
@@ -258,9 +265,9 @@ function create() {
 	router.push('/admin/roles/new');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.roles,

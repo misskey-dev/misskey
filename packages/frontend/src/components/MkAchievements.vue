@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { onMounted } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements.js';
@@ -67,15 +67,15 @@ const props = withDefaults(defineProps<{
 	withDescription: true,
 });
 
-let achievements = $ref();
-const lockedAchievements = $computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements ?? []).some(a => a.name === x)));
+const achievements = ref();
+const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {
 	os.api('users/achievements', { userId: props.user.id }).then(res => {
-		achievements = [];
+		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
 			const a = res.find(x => x.name === t);
-			if (a) achievements.push(a);
+			if (a) achievements.value.push(a);
 		}
 		//achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
 	});

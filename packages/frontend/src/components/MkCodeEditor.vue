@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.codeEditorRoot, { [$style.disabled]: disabled, [$style.focused]: focused }]">
+<div :class="[$style.codeEditorRoot, { [$style.focused]: focused }]">
 	<div :class="$style.codeEditorScroller">
 		<textarea
 			ref="inputEl"
@@ -139,6 +139,10 @@ watch(v, () => {
 	height: 100%;
 }
 
+.textarea, .codeEditorHighlighter {
+	margin: 0;
+}
+
 .textarea {
 	position: absolute;
 	top: 0;
@@ -154,6 +158,8 @@ watch(v, () => {
 	background-color: transparent;
 	border: 0;
 	outline: 0;
+	min-width: calc(100% - 24px);
+	height: calc(100% - 24px);
 	padding: 12px;
 	line-height: 1.5em;
 	font-size: 1em;
