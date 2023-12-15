@@ -8,7 +8,7 @@ import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { QueryService } from '@/core/QueryService.js';
-import type { AbuseReportResolversRepository } from '@/models/index.js';
+import type { AbuseReportResolversRepository } from '@/models/_.js';
 
 export const meta = {
 	requireCredential: true,

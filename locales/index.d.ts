@@ -1182,6 +1182,9 @@ export interface Locale {
     "reloadRequiredToApplySettings": string;
     "remainingN": string;
     "overwriteContentConfirm": string;
+    "doNotSendNotificationEmailsForAbuseReport": string;
+    "emailToReceiveAbuseReport": string;
+    "emailToReceiveAbuseReportCaption": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

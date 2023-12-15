@@ -203,7 +203,7 @@ async function init(): Promise<void> {
 	description.value = meta.description;
 	maintainerName.value = meta.maintainerName;
 	maintainerEmail.value = meta.maintainerEmail;
-	emailToReceiveAbuseReport = meta.emailToReceiveAbuseReport;
+	emailToReceiveAbuseReport.value = meta.emailToReceiveAbuseReport;
 	impressumUrl.value = meta.impressumUrl;
 	pinnedUsers.value = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles.value = meta.cacheRemoteFiles;

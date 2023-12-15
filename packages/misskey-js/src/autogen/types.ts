@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.11.0-beta.3
- * generatedAt: 2023-12-08T04:57:48.142Z
+ * version: 2023.12.0-beta.4
+ * generatedAt: 2023-12-15T10:19:10.945Z
  */
 
 /**
@@ -133,6 +133,42 @@ export type paths = {
      * **Credential required**: *Yes*
      */
     post: operations['admin/announcements/update'];
+  };
+  '/admin/abuse-report-resolver/create': {
+    /**
+     * admin/abuse-report-resolver/create
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['admin/abuse-report-resolver/create'];
+  };
+  '/admin/abuse-report-resolver/list': {
+    /**
+     * admin/abuse-report-resolver/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['admin/abuse-report-resolver/list'];
+  };
+  '/admin/abuse-report-resolver/delete': {
+    /**
+     * admin/abuse-report-resolver/delete
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['admin/abuse-report-resolver/delete'];
+  };
+  '/admin/abuse-report-resolver/update': {
+    /**
+     * admin/abuse-report-resolver/update
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['admin/abuse-report-resolver/update'];
   };
   '/admin/avatar-decorations/create': {
     /**
@@ -3670,6 +3706,7 @@ export type components = {
         userListLimit: number;
         userEachUserListsLimit: number;
         rateLimitFactor: number;
+        avatarDecorationLimit: number;
       };
       email?: string | null;
       emailVerified?: boolean | null;
@@ -4341,6 +4378,11 @@ export type components = {
           priority: number;
           useDefault: boolean;
         };
+        avatarDecorationLimit: {
+          value: number | boolean;
+          priority: number;
+          useDefault: boolean;
+        };
       };
       usersCount: number;
     });
@@ -4434,6 +4476,8 @@ export type operations = {
             enableChartsForFederatedInstances: boolean;
             enableServerMachineStats: boolean;
             enableIdenticonGeneration: boolean;
+            doNotSendNotificationEmailsForAbuseReport: boolean;
+            emailToReceiveAbuseReport: string | null;
             manifestJsonOverride: string;
             policies: Record<string, never>;
             enableFanoutTimeline: boolean;
@@ -5214,6 +5258,248 @@ export type operations = {
           silence?: boolean;
           needConfirmationToRead?: boolean;
           isActive?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/create
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'admin/abuse-report-resolver/create': {
+    requestBody: {
+      content: {
+        'application/json': {
+          name: string;
+          targetUserPattern: string | null;
+          reporterPattern: string | null;
+          reportContentPattern: string | null;
+          /** @enum {string} */
+          expiresAt: '1hour' | '12hours' | '1day' | '1week' | '1month' | '3months' | '6months' | '1year' | 'indefinitely';
+          forward: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            name: string;
+            targetUserPattern: string | null;
+            reporterPattern: string | null;
+            reportContentPattern: string | null;
+            expiresAt: string;
+            forward: boolean;
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'admin/abuse-report-resolver/list': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': ({
+              name: string;
+              targetUserPattern: string | null;
+              reporterPattern: string | null;
+              reportContentPattern: string | null;
+              expiresAt: string;
+              forward: boolean;
+            })[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/delete
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'admin/abuse-report-resolver/delete': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          resolverId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/abuse-report-resolver/update
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'admin/abuse-report-resolver/update': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          resolverId: string;
+          name?: string;
+          targetUserPattern?: string | null;
+          reporterPattern?: string | null;
+          reportContentPattern?: string | null;
+          /** @enum {string} */
+          expiresAt?: '1hour' | '12hours' | '1day' | '1week' | '1month' | '3months' | '6months' | '1year' | 'indefinitely';
+          forward?: boolean;
         };
       };
     };
@@ -8206,6 +8492,8 @@ export type operations = {
           enableChartsForFederatedInstances?: boolean;
           enableServerMachineStats?: boolean;
           enableIdenticonGeneration?: boolean;
+          doNotSendNotificationEmailsForAbuseReport?: boolean;
+          emailToReceiveAbuseReport?: string | null;
           serverRules?: string[];
           preservedUsernames?: string[];
           manifestJsonOverride?: string;
@@ -17839,6 +18127,8 @@ export type operations = {
               id: string;
               angle?: number | null;
               flipH?: boolean | null;
+              offsetX?: number | null;
+              offsetY?: number | null;
             })[];
           /** Format: misskey:id */
           bannerId?: string | null;

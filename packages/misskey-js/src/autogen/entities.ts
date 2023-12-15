@@ -1,6 +1,6 @@
 /*
- * version: 2023.11.0-beta.3
- * generatedAt: 2023-12-08T04:57:48.409Z
+ * version: 2023.12.0-beta.4
+ * generatedAt: 2023-12-15T10:19:11.047Z
  */
 
 import { operations } from './types.js';
@@ -25,6 +25,12 @@ export type AdminAnnouncementsDeleteRequest = operations['admin/announcements/de
 export type AdminAnnouncementsListRequest = operations['admin/announcements/list']['requestBody']['content']['application/json'];
 export type AdminAnnouncementsListResponse = operations['admin/announcements/list']['responses']['200']['content']['application/json'];
 export type AdminAnnouncementsUpdateRequest = operations['admin/announcements/update']['requestBody']['content']['application/json'];
+export type AdminAbuseReportResolverCreateRequest = operations['admin/abuse-report-resolver/create']['requestBody']['content']['application/json'];
+export type AdminAbuseReportResolverCreateResponse = operations['admin/abuse-report-resolver/create']['responses']['200']['content']['application/json'];
+export type AdminAbuseReportResolverListRequest = operations['admin/abuse-report-resolver/list']['requestBody']['content']['application/json'];
+export type AdminAbuseReportResolverListResponse = operations['admin/abuse-report-resolver/list']['responses']['200']['content']['application/json'];
+export type AdminAbuseReportResolverDeleteRequest = operations['admin/abuse-report-resolver/delete']['requestBody']['content']['application/json'];
+export type AdminAbuseReportResolverUpdateRequest = operations['admin/abuse-report-resolver/update']['requestBody']['content']['application/json'];
 export type AdminAvatarDecorationsCreateRequest = operations['admin/avatar-decorations/create']['requestBody']['content']['application/json'];
 export type AdminAvatarDecorationsDeleteRequest = operations['admin/avatar-decorations/delete']['requestBody']['content']['application/json'];
 export type AdminAvatarDecorationsListRequest = operations['admin/avatar-decorations/list']['requestBody']['content']['application/json'];

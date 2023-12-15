@@ -14,7 +14,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { AbuseReportResolversRepository, AbuseUserReportsRepository, UsersRepository } from '@/models/index.js';
+import type { AbuseReportResolversRepository, AbuseUserReportsRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -73,6 +73,7 @@ export class ReportAbuseProcessorService {
 		const reporterAcct = reporter.host ? `${reporter.username.toLowerCase()}@${reporter.host}` : reporter.username.toLowerCase();
 
 		for (const resolver of resolvers) {
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			if (!(resolver.targetUserPattern || resolver.reporterPattern || resolver.reportContentPattern)) {
 				continue;
 			}

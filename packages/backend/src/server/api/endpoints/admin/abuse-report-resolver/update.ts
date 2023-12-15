@@ -7,7 +7,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import type { AbuseReportResolversRepository, AbuseReportResolver } from '@/models/index.js';
+import type { AbuseReportResolversRepository, MiAbuseReportResolver } from '@/models/_.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private abuseReportResolversRepository: AbuseReportResolversRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const properties: Partial<Omit<AbuseReportResolver, 'id'>> = {};
+			const properties: Partial<Omit<MiAbuseReportResolver, 'id'>> = {};
 			const resolver = await this.abuseReportResolversRepository.findOneBy({
 				id: ps.resolverId,
 			});

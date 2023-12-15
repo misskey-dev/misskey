@@ -66,11 +66,11 @@ const doNotSendNotificationEmailsForAbuseReport = ref<boolean>(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	enableServerMachineStats = meta.enableServerMachineStats;
-	enableIdenticonGeneration = meta.enableIdenticonGeneration;
-	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
-	enableChartsForFederatedInstances = meta.enableChartsForFederatedInstances;
-	doNotSendNotificationEmailsForAbuseReport = meta.doNotSendNotificationEmailsForAbuseReport;
+	enableServerMachineStats.value = meta.enableServerMachineStats;
+	enableIdenticonGeneration.value = meta.enableIdenticonGeneration;
+	enableChartsForRemoteUser.value = meta.enableChartsForRemoteUser;
+	enableChartsForFederatedInstances.value = meta.enableChartsForFederatedInstances;
+	doNotSendNotificationEmailsForAbuseReport.value = meta.doNotSendNotificationEmailsForAbuseReport;
 }
 
 function save() {
