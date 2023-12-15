@@ -76,11 +76,11 @@ export const packedUserLiteSchema = {
 					},
 					offsetX: {
 						type: 'number',
-						nullable: true, optional: true,
+						nullable: false, optional: true,
 					},
 					offsetY: {
 						type: 'number',
-						nullable: true, optional: true,
+						nullable: false, optional: true,
 					},
 				},
 			},
