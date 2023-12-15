@@ -2317,3 +2317,105 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+
+_moderationLogTypes:
+  createRole: "ロールを作成"
+  deleteRole: "ロールを削除"
+  updateRole: "ロールを更新"
+  assignRole: "ロールへアサイン"
+  unassignRole: "ロールのアサイン解除"
+  suspend: "凍結"
+  unsuspend: "凍結解除"
+  addCustomEmoji: "カスタム絵文字追加"
+  updateCustomEmoji: "カスタム絵文字更新"
+  deleteCustomEmoji: "カスタム絵文字削除"
+  updateServerSettings: "サーバー設定更新"
+  updateUserNote: "モデレーションノート更新"
+  deleteDriveFile: "ファイルを削除"
+  deleteNote: "ノートを削除"
+  createGlobalAnnouncement: "全体のお知らせを作成"
+  createUserAnnouncement: "ユーザーへお知らせを作成"
+  updateGlobalAnnouncement: "全体のお知らせを更新"
+  updateUserAnnouncement: "ユーザーのお知らせを更新"
+  deleteGlobalAnnouncement: "全体のお知らせを削除"
+  deleteUserAnnouncement: "ユーザーのお知らせを削除"
+  resetPassword: "パスワードをリセット"
+  suspendRemoteInstance: "リモートサーバーを停止"
+  unsuspendRemoteInstance: "リモートサーバーを再開"
+  markSensitiveDriveFile: "ファイルをセンシティブ付与"
+  unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
+  resolveAbuseReport: "通報を解決"
+  createInvitation: "招待コードを作成"
+  createAd: "広告を作成"
+  deleteAd: "広告を削除"
+  updateAd: "広告を更新"
+  createAvatarDecoration: "アイコンデコレーションを作成"
+  updateAvatarDecoration: "アイコンデコレーションを更新"
+  deleteAvatarDecoration: "アイコンデコレーションを削除"
+  unsetUserAvatar: "ユーザーのアイコンを解除"
+  unsetUserBanner: "ユーザーのバナーを解除"
+
+_fileViewer:
+  title: "ファイルの詳細"
+  type: "ファイルタイプ"
+  size: "ファイルサイズ"
+  url: "URL"
+  uploadedAt: "追加日"
+  attachedNotes: "添付されているノート"
+  thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
+
+_externalResourceInstaller:
+  title: "外部サイトからインストール"
+  checkVendorBeforeInstall: "配布元が信頼できるかを確認した上でインストールしてください。"
+  _plugin:
+    title: "このプラグインをインストールしますか？"
+    metaTitle: "プラグイン情報"
+  _theme:
+    title: "このテーマをインストールしますか？"
+    metaTitle: "テーマ情報"
+  _meta:
+    base: "基本のカラースキーム"
+  _vendorInfo:
+    title: "配布元情報"
+    endpoint: "参照したエンドポイント"
+    hashVerify: "ファイル整合性の確認"
+  _errors:
+    _invalidParams:
+      title: "パラメータが不足しています"
+      description: "外部サイトからデータを取得するために必要な情報が不足しています。URLをお確かめください。"
+    _resourceTypeNotSupported:
+      title: "この外部リソースには対応していません"
+      description: "この外部サイトから取得したリソースの種別には対応していません。サイト管理者にお問い合わせください。"
+    _failedToFetch:
+      title: "データの取得に失敗しました"
+      fetchErrorDescription: "外部サイトとの通信に失敗しました。もう一度試しても改善しない場合、サイト管理者にお問い合わせください。"
+      parseErrorDescription: "外部サイトから取得したデータが読み取れませんでした。サイト管理者にお問い合わせください。"
+    _hashUnmatched:
+      title: "正しいデータが取得できませんでした"
+      description: "提供されたデータの整合性の確認に失敗しました。セキュリティ上、インストールは続行できません。サイト管理者にお問い合わせください。"
+    _pluginParseFailed:
+      title: "AiScript エラー"
+      description: "データは取得できたものの、AiScriptの解析時にエラーがあったため読み込めませんでした。プラグインの作者にお問い合わせください。エラーの詳細はJavascriptコンソールをご確認ください。"
+    _pluginInstallFailed:
+      title: "プラグインのインストールに失敗しました"
+      description: "プラグインのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+    _themeParseFailed:
+      title: "テーマ解析エラー"
+      description: "データは取得できたものの、テーマファイルの解析時にエラーがあったため読み込めませんでした。テーマの作者にお問い合わせください。エラーの詳細はJavascriptコンソールをご確認ください。"
+    _themeInstallFailed:
+      title: "テーマのインストールに失敗しました"
+      description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+
+_dataSaver:
+  _media:
+    title: "メディアの読み込み"
+    description: "画像・動画が自動で読み込まれるのを防止します。隠れている画像・動画はタップすると読み込まれます。"
+  _avatar:
+    title: "アイコン画像"
+    description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
+  _urlPreview:
+    title: "URLプレビューのサムネイル"
+    description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
+  _code:
+    title: "コードハイライト"
+    description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
