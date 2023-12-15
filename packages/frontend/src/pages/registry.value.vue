@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkKeyValue>
 				</FormSplit>
 
-				<MkTextarea v-model="valueForEditor" tall class="_monospace">
+				<MkTextarea v-model="valueForEditor" tall code>
 					<template #label>{{ i18n.ts.value }} (JSON)</template>
 				</MkTextarea>
 
