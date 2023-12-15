@@ -46,24 +46,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<XProfile/>
-						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<XProfile/>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<XPrivacy/>
-						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+							<XPrivacy/>
+						</MkSpacer>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 3">
@@ -102,16 +110,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
-							<I18n :src="i18n.ts._initialAccountSetting.ifYouNeedLearnMore" tag="div" style="padding: 0 16px;">
-								<template #name>{{ instance.name ?? host }}</template>
-								<template #link>
-									<a href="https://misskey-hub.net/help.html" target="_blank" class="_link">{{ i18n.ts.help }}</a>
-								</template>
-							</I18n>
-							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
+							<div>{{ i18n.t('_initialAccountSetting.youCanContinueTutorial', { name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
+								<MkButton rounded primary gradate data-cy-user-setup-continue @click="launchTutorial()">{{ i18n.ts._initialAccountSetting.startTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
+							<div class="_buttonsCenter">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton primary rounded gradate data-cy-user-setup-continue @click="close(false)">{{ i18n.ts.close }}</MkButton>
+								<MkButton rounded primary data-cy-user-setup-continue @click="setupComplete()">{{ i18n.ts.close }}</MkButton>
 							</div>
 						</div>
 					</MkSpacer>
@@ -123,19 +128,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, watch } from 'vue';
+import { ref, shallowRef, watch, nextTick, defineAsyncComponent } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { host } from '@/config';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { host } from '@/config.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -143,6 +148,7 @@ const emit = defineEmits<{
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
+// eslint-disable-next-line vue/no-setup-props-destructure
 const page = ref(defaultStore.state.accountSetupWizard);
 
 watch(page, () => {
@@ -158,8 +164,22 @@ async function close(skip: boolean) {
 		if (canceled) return;
 	}
 
-	dialog.value.close();
+	dialog.value?.close();
 	defaultStore.set('accountSetupWizard', -1);
+}
+
+function setupComplete() {
+	defaultStore.set('accountSetupWizard', -1);
+	dialog.value?.close();
+}
+
+function launchTutorial() {
+	setupComplete();
+	nextTick(() => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {
+			initialPage: 1,
+		}, {}, 'closed');
+	});
 }
 
 async function later(later: boolean) {
@@ -171,7 +191,7 @@ async function later(later: boolean) {
 		if (canceled) return;
 	}
 
-	dialog.value.close();
+	dialog.value?.close();
 	defaultStore.set('accountSetupWizard', 0);
 }
 </script>
@@ -214,10 +234,21 @@ async function later(later: boolean) {
 	box-sizing: border-box;
 }
 
+.pageRoot {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+.pageMain {
+	flex-grow: 1;
+}
+
 .pageFooter {
 	position: sticky;
 	bottom: 0;
 	left: 0;
+	flex-shrink: 0;
 	padding: 12px;
 	border-top: solid 0.5px var(--divider);
 	-webkit-backdrop-filter: blur(15px);

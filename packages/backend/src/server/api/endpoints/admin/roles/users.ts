@@ -5,11 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
+import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -38,9 +39,8 @@ export const paramDef = {
 	required: ['roleId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
@@ -50,6 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private queryService: QueryService,
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({
@@ -62,9 +63,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId)
 				.andWhere('assign.roleId = :roleId', { roleId: role.id })
-				.andWhere(new Brackets(qb => { qb
-					.where('assign.expiresAt IS NULL')
-					.orWhere('assign.expiresAt > :now', { now: new Date() });
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('assign.expiresAt IS NULL')
+						.orWhere('assign.expiresAt > :now', { now: new Date() });
 				}))
 				.innerJoinAndSelect('assign.user', 'user');
 
@@ -74,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
-				createdAt: assign.createdAt,
+				createdAt: this.idService.parse(assign.id).date.toISOString(),
 				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
 				expiresAt: assign.expiresAt,
 			})));

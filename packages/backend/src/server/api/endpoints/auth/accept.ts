@@ -6,7 +6,7 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
+import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
@@ -36,9 +36,8 @@ export const paramDef = {
 	required: ['token'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
@@ -81,8 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const now = new Date();
 
 				await this.accessTokensRepository.insert({
-					id: this.idService.genId(),
-					createdAt: now,
+					id: this.idService.gen(now.getTime()),
 					lastUsedAt: now,
 					appId: session.appId,
 					userId: me.id,

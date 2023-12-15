@@ -64,20 +64,20 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSplit from '@/components/form/split.vue';
-import * as os from '@/os';
-import bytes from '@/filters/bytes';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import bytes from '@/filters/bytes.js';
+import { defaultStore } from '@/store.js';
 import MkChart from '@/components/MkChart.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
 
 const fetching = ref(true);
 const usage = ref<any>(null);
 const capacity = ref<any>(null);
 const uploadFolder = ref<any>(null);
-let alwaysMarkNsfw = $ref($i.alwaysMarkNsfw);
-let autoSensitive = $ref($i.autoSensitive);
+const alwaysMarkNsfw = ref($i.alwaysMarkNsfw);
+const autoSensitive = ref($i.autoSensitive);
 
 const meterStyle = computed(() => {
 	return {
@@ -122,21 +122,21 @@ function chooseUploadFolder() {
 
 function saveProfile() {
 	os.api('i/update', {
-		alwaysMarkNsfw: !!alwaysMarkNsfw,
-		autoSensitive: !!autoSensitive,
+		alwaysMarkNsfw: !!alwaysMarkNsfw.value,
+		autoSensitive: !!autoSensitive.value,
 	}).catch(err => {
 		os.alert({
 			type: 'error',
 			title: i18n.ts.error,
 			text: err.message,
 		});
-		alwaysMarkNsfw = true;
+		alwaysMarkNsfw.value = true;
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.drive,

@@ -53,12 +53,14 @@ export class HttpRequestService {
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup as unknown as net.LookupFunction,
+			localAddress: config.outgoingAddress,
 		});
 
 		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup as unknown as net.LookupFunction,
+			localAddress: config.outgoingAddress,
 		});
 
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
@@ -71,6 +73,7 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
+				localAddress: config.outgoingAddress,
 			})
 			: this.http;
 
@@ -82,6 +85,7 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
+				localAddress: config.outgoingAddress,
 			})
 			: this.https;
 	}

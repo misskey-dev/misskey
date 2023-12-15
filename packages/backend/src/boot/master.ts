@@ -63,26 +63,40 @@ export async function masterMain() {
 		showNodejsVersion();
 		config = loadConfigBoot();
 		//await connectDb();
+		if (config.pidFile) fs.writeFileSync(config.pidFile, process.pid.toString());
 	} catch (e) {
 		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
 	}
 
-	if (envOption.onlyServer) {
-		await server();
-	} else if (envOption.onlyQueue) {
-		await jobQueue();
-	} else {
-		await server();
-	}
-
 	bootLogger.succ('Misskey initialized');
 
-	if (!envOption.disableClustering) {
+	if (envOption.disableClustering) {
+		if (envOption.onlyServer) {
+			await server();
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
+	} else {
+		if (envOption.onlyServer) {
+			// nop
+		} else if (envOption.onlyQueue) {
+			// nop
+		} else {
+			await server();
+		}
+
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	bootLogger.succ(config.socket ? `Now listening on socket ${config.socket} on ${config.url}` : `Now listening on port ${config.port} on ${config.url}`, null, true);
+	if (envOption.onlyQueue) {
+		bootLogger.succ('Queue started', null, true);
+	} else {
+		bootLogger.succ(config.socket ? `Now listening on socket ${config.socket} on ${config.url}` : `Now listening on port ${config.port} on ${config.url}`, null, true);
+	}
 }
 
 function showEnvironment(): void {

@@ -57,8 +57,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, shallowRef } from 'vue';
 import XHeader from './_header_.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -66,12 +66,12 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-let type = ref('all');
-let sort = ref('+createdAt');
+const type = ref('all');
+const sort = ref('+createdAt');
 
 const pagination: Paging = {
 	endpoint: 'admin/invite/list' as const,
@@ -109,8 +109,8 @@ function deleted(id: string) {
 	}
 }
 
-const headerActions = $computed(() => []);
-const headerTabs = $computed(() => []);
+const headerActions = computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.invite,

@@ -32,12 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { getNoteSummary } from '@/scripts/get-note-summary';
-import { notePage } from '@/filters/note';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { notePage } from '@/filters/note.js';
 
 const props = defineProps<{
 	userListId?: string;
@@ -48,9 +48,9 @@ const props = defineProps<{
 	refreshIntervalSec?: number;
 }>();
 
-const notes = ref<misskey.entities.Note[]>([]);
+const notes = ref<Misskey.entities.Note[]>([]);
 const fetching = ref(true);
-let key = $ref(0);
+const key = ref(0);
 
 const tick = () => {
 	if (props.userListId == null) return;
@@ -59,7 +59,7 @@ const tick = () => {
 	}).then(res => {
 		notes.value = res;
 		fetching.value = false;
-		key++;
+		key.value++;
 	});
 };
 

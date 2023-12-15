@@ -8,12 +8,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
-import { User } from '@/models/entities/User.js';
-import { UserProfile } from '@/models/entities/UserProfile.js';
+import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
+import { MiUser } from '@/models/User.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
-import { UserKeypair } from '@/models/entities/UserKeypair.js';
-import { UsedUsername } from '@/models/entities/UsedUsername.js';
+import { MiUserKeypair } from '@/models/UserKeypair.js';
+import { MiUsedUsername } from '@/models/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -43,9 +43,9 @@ export class SignupService {
 
 	@bindThis
 	public async signup(opts: {
-		username: User['username'];
+		username: MiUser['username'];
 		password?: string | null;
-		passwordHash?: UserProfile['password'] | null;
+		passwordHash?: MiUserProfile['password'] | null;
 		host?: string | null;
 		ignorePreservedUsernames?: boolean;
 	}) {
@@ -108,20 +108,19 @@ export class SignupService {
 				err ? rej(err) : res([publicKey, privateKey]),
 			));
 
-		let account!: User;
+		let account!: MiUser;
 
 		// Start transaction
 		await this.db.transaction(async transactionalEntityManager => {
-			const exist = await transactionalEntityManager.findOneBy(User, {
+			const exist = await transactionalEntityManager.findOneBy(MiUser, {
 				usernameLower: username.toLowerCase(),
 				host: IsNull(),
 			});
 
 			if (exist) throw new Error(' the username is already used');
 
-			account = await transactionalEntityManager.save(new User({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+			account = await transactionalEntityManager.save(new MiUser({
+				id: this.idService.gen(),
 				username: username,
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),
@@ -129,19 +128,19 @@ export class SignupService {
 				isRoot: isTheFirstUser,
 			}));
 
-			await transactionalEntityManager.save(new UserKeypair({
+			await transactionalEntityManager.save(new MiUserKeypair({
 				publicKey: keyPair[0],
 				privateKey: keyPair[1],
 				userId: account.id,
 			}));
 
-			await transactionalEntityManager.save(new UserProfile({
+			await transactionalEntityManager.save(new MiUserProfile({
 				userId: account.id,
 				autoAcceptFollowed: true,
 				password: hash,
 			}));
 
-			await transactionalEntityManager.save(new UsedUsername({
+			await transactionalEntityManager.save(new MiUsedUsername({
 				createdAt: new Date(),
 				username: username.toLowerCase(),
 			}));

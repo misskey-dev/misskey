@@ -26,9 +26,8 @@ export const paramDef = {
 	required: ['required'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 	) {
 		super(meta, paramDef, async (ps, me) => {

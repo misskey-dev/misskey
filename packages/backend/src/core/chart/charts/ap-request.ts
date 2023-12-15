@@ -16,9 +16,8 @@ import type { KVs } from '../core.js';
 /**
  * Chart about ActivityPub requests
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class ApRequestChart extends Chart<typeof schema> {
+export default class ApRequestChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

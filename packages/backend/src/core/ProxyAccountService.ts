@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/index.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
@@ -21,9 +21,9 @@ export class ProxyAccountService {
 	}
 
 	@bindThis
-	public async fetch(): Promise<LocalUser | null> {
+	public async fetch(): Promise<MiLocalUser | null> {
 		const meta = await this.metaService.fetch();
 		if (meta.proxyAccountId == null) return null;
-		return await this.usersRepository.findOneByOrFail({ id: meta.proxyAccountId }) as LocalUser;
+		return await this.usersRepository.findOneByOrFail({ id: meta.proxyAccountId }) as MiLocalUser;
 	}
 }

@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 
 const name = 'ai';
 
@@ -72,5 +72,6 @@ defineExpose<WidgetComponentExpose>({
 	height: 350px;
 	border: none;
 	pointer-events: none;
+	color-scheme: light;
 }
 </style>

@@ -6,13 +6,13 @@
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
-import type * as misskey from 'misskey-js';
-import { directives } from '@/directives';
-import { components } from '@/components/index';
+import type * as Misskey from 'misskey-js';
+import { directives } from '@/directives/index.js';
+import { components } from '@/components/index.js';
 import XHome from '@/pages/user/home.vue';
 
 describe('XHome', () => {
-	const renderHome = (user: Partial<misskey.entities.UserDetailed>): RenderResult => {
+	const renderHome = (user: Partial<Misskey.entities.UserDetailed>): RenderResult => {
 		return render(XHome, {
 			props: { user, disableNotes: true },
 			global: { directives, components },
@@ -34,6 +34,8 @@ describe('XHome', () => {
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
+			avatarUrl: 'https://example.com',
+			avatarDecorations: [],
 		});
 
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');
@@ -54,6 +56,8 @@ describe('XHome', () => {
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
+			avatarUrl: 'https://example.com',
+			avatarDecorations: [],
 		});
 
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');

@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@contextmenu.self="e => e.preventDefault()"
 	>
 		<template v-for="(item, i) in items2">
-			<div v-if="item === null" role="separator" :class="$style.divider"></div>
+			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
 			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
 				<span>{{ item.text }}</span>
 			</span>
@@ -36,13 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
+				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
-			<button v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
-				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
-				<span>{{ item.text }}</span>
-				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
+			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
+				<span style="pointer-events: none;">{{ item.text }}</span>
+				<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 			</button>
 			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
@@ -56,19 +56,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</span>
 	</div>
 	<div v-if="childMenu">
-		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned"/>
+		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned" @close="close(false)"/>
 	</div>
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { focusPrev, focusNext } from '@/scripts/focus';
+<script lang="ts">
+import { Ref, computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
+import { focusPrev, focusNext } from '@/scripts/focus.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
-import { MenuItem, InnerMenuItem, OuterMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { isTouchUsing } from '@/scripts/touch.js';
 
+const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
+</script>
+
+<script lang="ts" setup>
 const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{
@@ -82,21 +87,24 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'close', actioned?: boolean): void;
+	(ev: 'hide'): void;
 }>();
 
-let itemsEl = $shallowRef<HTMLDivElement>();
+const itemsEl = shallowRef<HTMLDivElement>();
 
-let items2: InnerMenuItem[] = $ref([]);
+const items2 = ref<InnerMenuItem[]>([]);
 
-let child = $shallowRef<InstanceType<typeof XChild>>();
+const child = shallowRef<InstanceType<typeof XChild>>();
 
-let keymap = $computed(() => ({
+const keymap = computed(() => ({
 	'up|k|shift+tab': focusUp,
 	'down|j|tab': focusDown,
 	'esc': close,
 }));
 
-let childShowingItem = $ref<MenuItem | null>();
+const childShowingItem = ref<MenuItem | null>();
+
+let preferClick = isTouchUsing || props.asDrawer;
 
 watch(() => props.items, () => {
 	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
@@ -107,22 +115,22 @@ watch(() => props.items, () => {
 		if (item && 'then' in item) { // if item is Promise
 			items[i] = { type: 'pending' };
 			item.then(actualItem => {
-				items2[i] = actualItem;
+				items2.value[i] = actualItem;
 			});
 		}
 	}
 
-	items2 = items as InnerMenuItem[];
+	items2.value = items as InnerMenuItem[];
 }, {
 	immediate: true,
 });
 
-let childMenu = ref<MenuItem[] | null>();
-let childTarget = $shallowRef<HTMLElement | null>();
+const childMenu = ref<MenuItem[] | null>();
+const childTarget = shallowRef<HTMLElement | null>();
 
 function closeChild() {
 	childMenu.value = null;
-	childShowingItem = null;
+	childShowingItem.value = null;
 }
 
 function childActioned() {
@@ -130,48 +138,49 @@ function childActioned() {
 	close(true);
 }
 
-function onGlobalMousedown(event: MouseEvent) {
-	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
-	if (child && child.checkHit(event)) return;
+const onGlobalMousedown = (event: MouseEvent) => {
+	if (childTarget.value && (event.target === childTarget.value || childTarget.value.contains(event.target))) return;
+	if (child.value && child.value.checkHit(event)) return;
 	closeChild();
-}
+};
 
 let childCloseTimer: null | number = null;
+
 function onItemMouseEnter(item) {
 	childCloseTimer = window.setTimeout(() => {
 		closeChild();
 	}, 300);
 }
+
 function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-let childrenCache = new WeakMap<MenuParent, OuterMenuItem[]>();
 async function showChildren(item: MenuParent, ev: MouseEvent) {
-	const children = ref<OuterMenuItem[]>([]);
-	if (childrenCache.has(item)) {
-		children.value = childrenCache.get(item)!;
-	} else {
-		if (typeof item.children === 'function') {
-			children.value = [{
-				type: 'pending',
-			}];
-			Promise.resolve(item.children()).then(x => {
-				children.value = x;
-				childrenCache.set(item, x);
-			});
+	const children = await (async () => {
+		if (childrenCache.has(item)) {
+			return childrenCache.get(item)!;
 		} else {
-			children.value = item.children;
+			if (typeof item.children === 'function') {
+				return Promise.resolve(item.children());
+			} else {
+				return item.children;
+			}
 		}
-	}
+	})();
+
+	childrenCache.set(item, children);
 
 	if (props.asDrawer) {
-		os.popupMenu(children, ev.currentTarget ?? ev.target);
-		close();
+		os.popupMenu(children, ev.currentTarget ?? ev.target).finally(() => {
+			emit('close');
+		});
+		emit('hide');
 	} else {
-		childTarget = ev.currentTarget ?? ev.target;
-		childMenu = children;
-		childShowingItem = item;
+		childTarget.value = ev.currentTarget ?? ev.target;
+		// これでもリアクティビティは保たれる
+		childMenu.value = children;
+		childShowingItem.value = item;
 	}
 }
 
@@ -193,14 +202,14 @@ function focusDown() {
 }
 
 function switchItem(item: MenuSwitch & { ref: any }) {
-	if (item.disabled) return;
+	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
 	item.ref = !item.ref;
 }
 
 onMounted(() => {
 	if (props.viaKeyboard) {
 		nextTick(() => {
-			focusNext(itemsEl.children[0], true, false);
+			if (itemsEl.value) focusNext(itemsEl.value.children[0], true, false);
 		});
 	}
 
@@ -348,6 +357,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.parent {
+		pointer-events: auto;
 		display: flex;
 		align-items: center;
 		cursor: default;

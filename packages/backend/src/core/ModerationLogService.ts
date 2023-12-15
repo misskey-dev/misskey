@@ -5,10 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ModerationLogsRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { ModerationLogsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
+import { ModerationLogPayloads, moderationLogTypes } from '@/types.js';
 
 @Injectable()
 export class ModerationLogService {
@@ -21,13 +22,12 @@ export class ModerationLogService {
 	}
 
 	@bindThis
-	public async insertModerationLog(moderator: { id: User['id'] }, type: string, info?: Record<string, any>) {
+	public async log<T extends typeof moderationLogTypes[number]>(moderator: { id: MiUser['id'] }, type: T, info?: ModerationLogPayloads[T]) {
 		await this.moderationLogsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			userId: moderator.id,
 			type: type,
-			info: info ?? {},
+			info: (info as any) ?? {},
 		});
 	}
 }

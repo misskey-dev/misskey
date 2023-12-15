@@ -4,12 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { UserListService } from '@/core/UserListService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -47,19 +46,14 @@ export const paramDef = {
 	required: ['listId', 'userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
-
-		private userEntityService: UserEntityService,
+		private userListService: UserListService,
 		private getterService: GetterService,
-		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the list
@@ -78,10 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			// Pull the user
-			await this.userListJoiningsRepository.delete({ userListId: userList.id, userId: user.id });
-
-			this.globalEventService.publishUserListStream(userList.id, 'userRemoved', await this.userEntityService.pack(user));
+			await this.userListService.removeMember(user, userList);
 		});
 	}
 }

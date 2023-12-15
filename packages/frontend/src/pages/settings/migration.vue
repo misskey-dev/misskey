@@ -59,21 +59,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { toString } from 'misskey-js/built/acct';
-import { UserDetailed } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
-import { unisonReload } from '@/scripts/unison-reload';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 
 const moveToAccount = ref('');
-const movedTo = ref<UserDetailed>();
+const movedTo = ref<Misskey.entities.UserDetailed>();
 const accountAliases = ref(['']);
 
 async function init() {
@@ -85,7 +84,7 @@ async function init() {
 
 	if ($i?.alsoKnownAs && $i.alsoKnownAs.length > 0) {
 		const alsoKnownAs = await os.api('users/show', { userIds: $i.alsoKnownAs });
-		accountAliases.value = (alsoKnownAs && alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${toString(user)}`) : [''];
+		accountAliases.value = (alsoKnownAs && alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${Misskey.acct.toString(user)}`) : [''];
 	} else {
 		accountAliases.value = [''];
 	}

@@ -17,10 +17,12 @@ export const notificationTypes = consts.notificationTypes;
 export const noteVisibilities = consts.noteVisibilities;
 export const mutedNoteReasons = consts.mutedNoteReasons;
 export const ffVisibility = consts.ffVisibility;
+export const moderationLogTypes = consts.moderationLogTypes;
 
 // api extractor not supported yet
 //export * as api from './api.js';
 //export * as entities from './entities.js';
 import * as api from './api.js';
 import * as entities from './entities.js';
-export { api, entities };
+import * as acct from './acct.js';
+export { api, entities, acct };

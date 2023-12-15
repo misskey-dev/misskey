@@ -4,7 +4,9 @@
  */
 
 const canvas = globalThis.OffscreenCanvas && new OffscreenCanvas(1, 1);
-const gl = canvas.getContext('webgl2');
+// 環境によってはOffscreenCanvasが存在しないため
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const gl = canvas?.getContext('webgl2');
 if (gl) {
 	postMessage({ result: true });
 } else {

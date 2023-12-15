@@ -17,7 +17,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:title="media.name"
 			controls
 			preload="metadata"
-			@volumechange="volumechange"
 		/>
 	</div>
 	<a
@@ -33,25 +32,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
-import { soundConfigStore } from '@/scripts/sound';
-import { i18n } from '@/i18n';
+import { onMounted, shallowRef, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	media: misskey.entities.DriveFile;
+	media: Misskey.entities.DriveFile;
 }>(), {
 });
 
-const audioEl = $shallowRef<HTMLAudioElement | null>();
-let hide = $ref(true);
+const audioEl = shallowRef<HTMLAudioElement>();
+const hide = ref(true);
 
-function volumechange() {
-	if (audioEl) soundConfigStore.set('mediaVolume', audioEl.volume);
-}
-
-onMounted(() => {
-	if (audioEl) audioEl.volume = soundConfigStore.state.mediaVolume;
+watch(audioEl, () => {
+	if (audioEl.value) {
+		audioEl.value.volume = 0.3;
+	}
 });
 </script>
 

@@ -337,7 +337,6 @@ registration: "Registrera"
 enableRegistration: "Aktivera registrering av nya användare"
 invite: "Inbjudan"
 inMb: "I megabyte"
-iconUrl: "URL till profilbilden"
 bannerUrl: "URL till banner-bilden"
 basicInfo: "Grundläggande info"
 pinnedUsers: "Fästa användare"
@@ -485,6 +484,9 @@ windowRestore: "Återställ"
 pleaseDonate: "Misskey är en gratis programvara som används på {host}. Donera gärna för att göra utvecklingen ständigt, tack!"
 resetPasswordConfirm: "Återställ verkligen ditt lösenord?"
 dataSaver: "Databesparing"
+icon: "Profilbild"
+replies: "Svara"
+renotes: "Omnotera"
 _achievements:
   _types:
     _open3windows:
@@ -505,10 +507,8 @@ _theme:
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
-  chat: "Chatt"
   antenna: "Antenner"
 _2fa:
-  passwordToTOTP: "Skriv in ditt lösenord"
   renewTOTPCancel: "Nej tack"
 _antennaSources:
   all: "Alla noter"
@@ -572,3 +572,6 @@ _deck:
 _webhookSettings:
   name: "Namn"
   active: "Aktiverad"
+_moderationLogTypes:
+  suspend: "Suspendera"
+  resetPassword: "Återställ Lösenord"

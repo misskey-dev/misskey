@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, User } from '@/models/index.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, MiUser } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -42,7 +42,7 @@ export class PollService {
 	}
 
 	@bindThis
-	public async vote(user: User, note: Note, choice: number) {
+	public async vote(user: MiUser, note: MiNote, choice: number) {
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 
 		if (poll == null) throw new Error('poll not found');
@@ -72,10 +72,8 @@ export class PollService {
 			throw new Error('already voted');
 		}
 
-		// Create vote
 		await this.pollVotesRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			noteId: note.id,
 			userId: user.id,
 			choice: choice,
@@ -92,9 +90,11 @@ export class PollService {
 	}
 
 	@bindThis
-	public async deliverQuestionUpdate(noteId: Note['id']) {
+	public async deliverQuestionUpdate(noteId: MiNote['id']) {
 		const note = await this.notesRepository.findOneBy({ id: noteId });
 		if (note == null) throw new Error('note not found');
+
+		if (note.localOnly) return;
 
 		const user = await this.usersRepository.findOneBy({ id: note.userId });
 		if (user == null) throw new Error('note not found');

@@ -5,11 +5,11 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
-import type { LocalUser } from '@/models/entities/User.js';
-import type { AccessToken } from '@/models/entities/AccessToken.js';
+import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import type { App } from '@/models/entities/App.js';
+import type { MiApp } from '@/models/App.js';
 import { CacheService } from '@/core/CacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 import { bindThis } from '@/decorators.js';
@@ -23,7 +23,7 @@ export class AuthenticationError extends Error {
 
 @Injectable()
 export class AuthenticateService implements OnApplicationShutdown {
-	private appCache: MemoryKVCache<App>;
+	private appCache: MemoryKVCache<MiApp>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -37,18 +37,18 @@ export class AuthenticateService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 	) {
-		this.appCache = new MemoryKVCache<App>(Infinity);
+		this.appCache = new MemoryKVCache<MiApp>(Infinity);
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, AccessToken | null]> {
+	public async authenticate(token: string | null | undefined): Promise<[MiLocalUser | null, MiAccessToken | null]> {
 		if (token == null) {
 			return [null, null];
 		}
 
 		if (isNativeToken(token)) {
 			const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
-				() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
+				() => this.usersRepository.findOneBy({ token }) as Promise<MiLocalUser | null>);
 
 			if (user == null) {
 				throw new AuthenticationError('user not found');
@@ -75,7 +75,7 @@ export class AuthenticateService implements OnApplicationShutdown {
 			const user = await this.cacheService.localUserByIdCache.fetch(accessToken.userId,
 				() => this.usersRepository.findOneBy({
 					id: accessToken.userId,
-				}) as Promise<LocalUser>);
+				}) as Promise<MiLocalUser>);
 
 			if (accessToken.appId) {
 				const app = await this.appCache.fetch(accessToken.appId,
@@ -84,7 +84,7 @@ export class AuthenticateService implements OnApplicationShutdown {
 				return [user, {
 					id: accessToken.id,
 					permission: app.permission,
-				} as AccessToken];
+				} as MiAccessToken];
 			} else {
 				return [user, accessToken];
 			}

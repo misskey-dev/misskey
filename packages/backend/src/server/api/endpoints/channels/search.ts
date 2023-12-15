@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
-import type { ChannelsRepository } from '@/models/index.js';
+import type { ChannelsRepository } from '@/models/_.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
@@ -40,9 +40,8 @@ export const paramDef = {
 	required: ['query'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
@@ -56,9 +55,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.query !== '') {
 				if (ps.type === 'nameAndDescription') {
-					query.andWhere(new Brackets(qb => { qb
-						.where('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })
-						.orWhere('channel.description ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
+					query.andWhere(new Brackets(qb => {
+						qb
+							.where('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })
+							.orWhere('channel.description ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
 					}));
 				} else {
 					query.andWhere('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });

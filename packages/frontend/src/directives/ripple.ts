@@ -4,7 +4,7 @@
  */
 
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { popup } from '@/os';
+import { popup } from '@/os.js';
 
 export default {
 	mounted(el, binding, vn) {

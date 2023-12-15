@@ -5,8 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { Instance } from '@/models/entities/Instance.js';
+import type { MiInstance } from '@/models/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 import { UtilityService } from '../UtilityService.js';
@@ -22,7 +21,7 @@ export class InstanceEntityService {
 
 	@bindThis
 	public async pack(
-		instance: Instance,
+		instance: MiInstance,
 	): Promise<Packed<'FederationInstance'>> {
 		const meta = await this.metaService.fetch();
 		return {
@@ -43,16 +42,18 @@ export class InstanceEntityService {
 			description: instance.description,
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
+			isSilenced: this.utilityService.isSilencedHost(meta.silencedHosts, instance.host),
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
+			latestRequestReceivedAt: instance.latestRequestReceivedAt ? instance.latestRequestReceivedAt.toISOString() : null,
 		};
 	}
 
 	@bindThis
 	public packMany(
-		instances: Instance[],
+		instances: MiInstance[],
 	) {
 		return Promise.all(instances.map(x => this.pack(x)));
 	}

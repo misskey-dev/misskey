@@ -15,7 +15,7 @@ import type { LoggerService } from '@/core/LoggerService.js';
 import type { MetaService } from '@/core/MetaService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import type { NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
+import type { NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
 
 type MockResponse = {
 	type: string;
@@ -33,6 +33,7 @@ export class MockResolver extends Resolver {
 			{} as NotesRepository,
 			{} as PollsRepository,
 			{} as NoteReactionsRepository,
+			{} as FollowRequestsRepository,
 			{} as UtilityService,
 			{} as InstanceActorService,
 			{} as MetaService,

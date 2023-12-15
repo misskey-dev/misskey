@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { appendQuery } from './url';
-import * as config from '@/config';
+import { appendQuery } from './url.js';
+import * as config from '@/config.js';
 
 export function popout(path: string, w?: HTMLElement) {
 	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;

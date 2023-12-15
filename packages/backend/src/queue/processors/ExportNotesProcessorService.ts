@@ -8,15 +8,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
+import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { Poll } from '@/models/entities/Poll.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { Packed } from '@/misc/json-schema.js';
+import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
@@ -37,8 +38,8 @@ export class ExportNotesProcessorService {
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
-
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-notes');
 	}
@@ -76,7 +77,7 @@ export class ExportNotesProcessorService {
 			await write('[');
 
 			let exportedNotesCount = 0;
-			let cursor: Note['id'] | null = null;
+			let cursor: MiNote['id'] | null = null;
 
 			while (true) {
 				const notes = await this.notesRepository.find({
@@ -88,7 +89,7 @@ export class ExportNotesProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as Note[];
+				}) as MiNote[];
 
 				if (notes.length === 0) {
 					job.updateProgress(100);
@@ -98,12 +99,12 @@ export class ExportNotesProcessorService {
 				cursor = notes.at(-1)?.id ?? null;
 
 				for (const note of notes) {
-					let poll: Poll | undefined;
+					let poll: MiPoll | undefined;
 					if (note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 					}
 					const files = await this.driveFileEntityService.packManyByIds(note.fileIds);
-					const content = JSON.stringify(serialize(note, poll, files));
+					const content = JSON.stringify(this.serialize(note, poll, files));
 					const isFirst = exportedNotesCount === 0;
 					await write(isFirst ? content : ',\n' + content);
 					exportedNotesCount++;
@@ -129,22 +130,22 @@ export class ExportNotesProcessorService {
 			cleanup();
 		}
 	}
-}
 
-function serialize(note: Note, poll: Poll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
-	return {
-		id: note.id,
-		text: note.text,
-		createdAt: note.createdAt,
-		fileIds: note.fileIds,
-		files: files,
-		replyId: note.replyId,
-		renoteId: note.renoteId,
-		poll: poll,
-		cw: note.cw,
-		visibility: note.visibility,
-		visibleUserIds: note.visibleUserIds,
-		localOnly: note.localOnly,
-		reactionAcceptance: note.reactionAcceptance,
-	};
+	private serialize(note: MiNote, poll: MiPoll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
+		return {
+			id: note.id,
+			text: note.text,
+			createdAt: this.idService.parse(note.id).date.toISOString(),
+			fileIds: note.fileIds,
+			files: files,
+			replyId: note.replyId,
+			renoteId: note.renoteId,
+			poll: poll,
+			cw: note.cw,
+			visibility: note.visibility,
+			visibleUserIds: note.visibleUserIds,
+			localOnly: note.localOnly,
+			reactionAcceptance: note.reactionAcceptance,
+		};
+	}
 }

@@ -31,16 +31,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { chooseFileFromPc } from '@/scripts/select-file';
-import * as os from '@/os';
-import { $i } from '@/account';
+import { chooseFileFromPc } from '@/scripts/select-file.js';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
 
 const name = ref($i.name ?? '');
 const description = ref($i.description ?? '');

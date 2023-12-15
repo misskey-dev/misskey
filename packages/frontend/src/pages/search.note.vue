@@ -12,18 +12,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkFolder>
 			<template #label>{{ i18n.ts.options }}</template>
 
-			<MkFolder>
-				<template #label>{{ i18n.ts.specifyUser }}</template>
-				<template v-if="user" #suffix>@{{ user.username }}</template>
+			<div class="_gaps_m">
+				<MkSwitch v-model="isLocalOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 
-				<div style="text-align: center;" class="_gaps">
-					<div v-if="user">@{{ user.username }}</div>
-					<div>
-						<MkButton v-if="user == null" primary rounded inline @click="selectUser">{{ i18n.ts.selectUser }}</MkButton>
-						<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
+				<MkFolder>
+					<template #label>{{ i18n.ts.specifyUser }}</template>
+					<template v-if="user" #suffix>@{{ user.username }}</template>
+
+					<div style="text-align: center;" class="_gaps">
+						<div v-if="user">@{{ user.username }}</div>
+						<div>
+							<MkButton v-if="user == null" primary rounded inline @click="selectUser">{{ i18n.ts.selectUser }}</MkButton>
+							<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
+						</div>
 					</div>
-				</div>
-			</MkFolder>
+				</MkFolder>
+			</div>
 		</MkFolder>
 		<div>
 			<MkButton large primary gradate rounded style="margin: 0 auto;" @click="search">{{ i18n.ts.search }}</MkButton>
@@ -38,36 +42,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import MkSwitch from '@/components/MkSwitch.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { $i } from '@/account';
-import { instance } from '@/instance';
+import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import MkInfo from '@/components/MkInfo.vue';
-import { useRouter } from '@/router';
+import { useRouter } from '@/router.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const router = useRouter();
 
-let key = $ref(0);
-let searchQuery = $ref('');
-let searchOrigin = $ref('combined');
-let notePagination = $ref();
-let user = $ref(null);
+const key = ref(0);
+const searchQuery = ref('');
+const searchOrigin = ref('combined');
+const notePagination = ref();
+const user = ref(null);
+const isLocalOnly = ref(false);
 
 function selectUser() {
 	os.selectUser().then(_user => {
-		user = _user;
+		user.value = _user;
 	});
 }
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	const query = searchQuery.value.toString().trim();
 
 	if (query == null || query === '') return;
 
@@ -89,15 +95,17 @@ async function search() {
 		return;
 	}
 
-	notePagination = {
+	notePagination.value = {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
-			query: searchQuery,
-			userId: user ? user.id : null,
+			query: searchQuery.value,
+			userId: user.value ? user.value.id : null,
 		},
 	};
 
-	key++;
+	if (isLocalOnly.value) notePagination.value.params.host = '.';
+
+	key.value++;
 }
 </script>

@@ -7,17 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
+			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
 			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave>
+	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true" :nyaize="$i?.isCat ? 'respect' : undefined" :author="($i as Misskey.entities.UserLite)">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
@@ -76,10 +76,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</template>
 				</Sortable>
+
+				<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 			</div>
 		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-sparkles"></i></template>
+		<template #label>{{ i18n.ts.avatarDecorations }}</template>
+
+		<XAvatarDecoration/>
+	</MkFolder>
 
 	<MkFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
@@ -102,23 +111,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import Misskey from 'misskey-js';
+import XAvatarDecoration from './profile.avatar-decoration.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { langmap } from '@/scripts/langmap';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { claimAchievement } from '@/scripts/achievements';
-import { defaultStore } from '@/store';
+import { selectFile } from '@/scripts/select-file.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { langmap } from '@/scripts/langmap.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { defaultStore } from '@/store.js';
+import MkInfo from '@/components/MkInfo.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -241,9 +253,9 @@ function changeBanner(ev) {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.profile,

@@ -9,10 +9,10 @@ import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
-import type { AccessToken } from '@/models/entities/AccessToken.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
 import type Logger from '@/logger.js';
-import type { UserIpsRepository } from '@/models/index.js';
+import type { UserIpsRepository } from '@/models/_.js';
 import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
@@ -34,8 +34,8 @@ const accessDenied = {
 @Injectable()
 export class ApiCallService implements OnApplicationShutdown {
 	private logger: Logger;
-	private userIpHistories: Map<User['id'], Set<string>>;
-	private userIpHistoriesClearIntervalId: NodeJS.Timer;
+	private userIpHistories: Map<MiUser['id'], Set<string>>;
+	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
 
 	constructor(
 		@Inject(DI.userIpsRepository)
@@ -48,7 +48,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		private apiLoggerService: ApiLoggerService,
 	) {
 		this.logger = this.apiLoggerService.logger;
-		this.userIpHistories = new Map<User['id'], Set<string>>();
+		this.userIpHistories = new Map<MiUser['id'], Set<string>>();
 
 		this.userIpHistoriesClearIntervalId = setInterval(() => {
 			this.userIpHistories.clear();
@@ -196,7 +196,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async logIp(request: FastifyRequest, user: LocalUser) {
+	private async logIp(request: FastifyRequest, user: MiLocalUser) {
 		const meta = await this.metaService.fetch();
 		if (!meta.enableIpLogging) return;
 		const ip = request.ip;
@@ -222,8 +222,8 @@ export class ApiCallService implements OnApplicationShutdown {
 	@bindThis
 	private async call(
 		ep: IEndpoint & { exec: any },
-		user: LocalUser | null | undefined,
-		token: AccessToken | null | undefined,
+		user: MiLocalUser | null | undefined,
+		token: MiAccessToken | null | undefined,
 		data: any,
 		file: {
 			name: string;
@@ -318,8 +318,9 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+			const myRoles = await this.roleService.getUserRoles(user!.id);
 			const policies = await this.roleService.getUserPolicies(user!.id);
-			if (!policies[ep.meta.requireRolePolicy]) {
+			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
 					code: 'ROLE_PERMISSION_DENIED',

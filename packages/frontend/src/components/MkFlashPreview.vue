@@ -20,10 +20,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { userName } from '@/filters/user';
+import { userName } from '@/filters/user.js';
 
 const props = defineProps<{
-	//flash: misskey.entities.Flash;
+	//flash: Misskey.entities.Flash;
 	flash: any;
 }>();
 </script>

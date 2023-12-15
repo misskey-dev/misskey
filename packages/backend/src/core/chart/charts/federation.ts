@@ -5,7 +5,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -18,9 +18,8 @@ import type { KVs } from '../core.js';
 /**
  * フェデレーションに関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class FederationChart extends Chart<typeof schema> {
+export default class FederationChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

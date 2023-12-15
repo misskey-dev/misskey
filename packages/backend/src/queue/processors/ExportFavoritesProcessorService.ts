@@ -8,13 +8,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { NoteFavorite, NoteFavoritesRepository, PollsRepository, User, UsersRepository } from '@/models/index.js';
+import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { Poll } from '@/models/entities/Poll.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
@@ -35,6 +36,7 @@ export class ExportFavoritesProcessorService {
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
+		private idService: IdService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-favorites');
 	}
@@ -72,7 +74,7 @@ export class ExportFavoritesProcessorService {
 			await write('[');
 
 			let exportedFavoritesCount = 0;
-			let cursor: NoteFavorite['id'] | null = null;
+			let cursor: MiNoteFavorite['id'] | null = null;
 
 			while (true) {
 				const favorites = await this.noteFavoritesRepository.find({
@@ -85,7 +87,7 @@ export class ExportFavoritesProcessorService {
 						id: 1,
 					},
 					relations: ['note', 'note.user'],
-				}) as (NoteFavorite & { note: Note & { user: User } })[];
+				}) as (MiNoteFavorite & { note: MiNote & { user: MiUser } })[];
 
 				if (favorites.length === 0) {
 					job.updateProgress(100);
@@ -95,11 +97,11 @@ export class ExportFavoritesProcessorService {
 				cursor = favorites.at(-1)?.id ?? null;
 
 				for (const favorite of favorites) {
-					let poll: Poll | undefined;
+					let poll: MiPoll | undefined;
 					if (favorite.note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: favorite.note.id });
 					}
-					const content = JSON.stringify(serialize(favorite, poll));
+					const content = JSON.stringify(this.serialize(favorite, poll));
 					const isFirst = exportedFavoritesCount === 0;
 					await write(isFirst ? content : ',\n' + content);
 					exportedFavoritesCount++;
@@ -125,34 +127,34 @@ export class ExportFavoritesProcessorService {
 			cleanup();
 		}
 	}
-}
 
-function serialize(favorite: NoteFavorite & { note: Note & { user: User } }, poll: Poll | null = null): Record<string, unknown> {
-	return {
-		id: favorite.id,
-		createdAt: favorite.createdAt,
-		note: {
-			id: favorite.note.id,
-			text: favorite.note.text,
-			createdAt: favorite.note.createdAt,
-			fileIds: favorite.note.fileIds,
-			replyId: favorite.note.replyId,
-			renoteId: favorite.note.renoteId,
-			poll: poll,
-			cw: favorite.note.cw,
-			visibility: favorite.note.visibility,
-			visibleUserIds: favorite.note.visibleUserIds,
-			localOnly: favorite.note.localOnly,
-			reactionAcceptance: favorite.note.reactionAcceptance,
-			uri: favorite.note.uri,
-			url: favorite.note.url,
-			user: {
-				id: favorite.note.user.id,
-				name: favorite.note.user.name,
-				username: favorite.note.user.username,
-				host: favorite.note.user.host,
-				uri: favorite.note.user.uri,
+	private serialize(favorite: MiNoteFavorite & { note: MiNote & { user: MiUser } }, poll: MiPoll | null = null): Record<string, unknown> {
+		return {
+			id: favorite.id,
+			createdAt: this.idService.parse(favorite.id).date.toISOString(),
+			note: {
+				id: favorite.note.id,
+				text: favorite.note.text,
+				createdAt: this.idService.parse(favorite.note.id).date.toISOString(),
+				fileIds: favorite.note.fileIds,
+				replyId: favorite.note.replyId,
+				renoteId: favorite.note.renoteId,
+				poll: poll,
+				cw: favorite.note.cw,
+				visibility: favorite.note.visibility,
+				visibleUserIds: favorite.note.visibleUserIds,
+				localOnly: favorite.note.localOnly,
+				reactionAcceptance: favorite.note.reactionAcceptance,
+				uri: favorite.note.uri,
+				url: favorite.note.url,
+				user: {
+					id: favorite.note.user.id,
+					name: favorite.note.user.name,
+					username: favorite.note.user.username,
+					host: favorite.note.user.host,
+					uri: favorite.note.user.uri,
+				},
 			},
-		},
-	};
+		};
+	}
 }

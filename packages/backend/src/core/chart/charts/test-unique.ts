@@ -16,9 +16,8 @@ import type { KVs } from '../core.js';
 /**
  * For testing
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class TestUniqueChart extends Chart<typeof schema> {
+export default class TestUniqueChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

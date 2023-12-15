@@ -1,0 +1,91 @@
+name: 🐛 Bug Report
+description: Create a report to help us improve
+labels: ["⚠️bug?"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting!
+        First, in order to avoid duplicate Issues, please search to see if the problem you found has already been reported.
+        Also, If you are NOT owner/admin of server, PLEASE DONT REPORT SERVER SPECIFIC ISSUES TO HERE! (e.g. feature XXX is not working in misskey.example) Please try with another misskey servers, and if your issue is only reproducible with specific server, contact your server's owner/admin first.
+
+  - type: textarea
+    attributes:
+      label: 💡 Summary
+      description: Tell us what the bug is
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🥰 Expected Behavior
+      description: Tell us what should happen
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🤬 Actual Behavior
+      description: |
+        Tell us what happens instead of the expected behavior.
+        Please include errors from the developer console and/or server log files if you have access to them.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 📝 Steps to Reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 💻 Frontend Environment
+      description: |
+        Tell us where on the platform it happens
+        DO NOT WRITE "latest". Please provide the specific version.
+
+        Examples:
+          * Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
+          * Browser: Chrome 113.0.5672.126
+          * Server URL: misskey.io
+          * Misskey: 13.x.x
+      value: |
+        * Model and OS of the device(s):
+        * Browser:
+        * Server URL:
+        * Misskey:
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 🛰 Backend Environment (for server admin)
+      description: |
+        Tell us where on the platform it happens
+        DO NOT WRITE "latest". Please provide the specific version.
+        If you are using a managed service, put that after the version.
+
+        Examples:
+          * Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
+          * Misskey: 13.x.x
+          * Node: 20.x.x
+          * PostgreSQL: 15.x.x
+          * Redis: 7.x.x
+          * OS and Architecture: Ubuntu 22.04.2 LTS aarch64
+      value: |
+        * Installation Method or Hosting Service:
+        * Misskey:
+        * Node:
+        * PostgreSQL:
+        * Redis:
+        * OS and Architecture:
+      render: markdown
+    validations:
+      required: false

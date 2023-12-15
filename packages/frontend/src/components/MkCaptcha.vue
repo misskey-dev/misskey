@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch } from 'vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 // APIs provided by Captcha services
 export type Captcha = {

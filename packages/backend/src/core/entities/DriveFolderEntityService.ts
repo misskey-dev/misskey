@@ -5,12 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/index.js';
+import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { DriveFolder } from '@/models/entities/DriveFolder.js';
+import type { } from '@/models/Blocking.js';
+import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class DriveFolderEntityService {
@@ -20,12 +21,14 @@ export class DriveFolderEntityService {
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		private idService: IdService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: DriveFolder['id'] | DriveFolder,
+		src: MiDriveFolder['id'] | MiDriveFolder,
 		options?: {
 			detail: boolean
 		},
@@ -38,7 +41,7 @@ export class DriveFolderEntityService {
 
 		return await awaitAll({
 			id: folder.id,
-			createdAt: folder.createdAt.toISOString(),
+			createdAt: this.idService.parse(folder.id).date.toISOString(),
 			name: folder.name,
 			parentId: folder.parentId,
 

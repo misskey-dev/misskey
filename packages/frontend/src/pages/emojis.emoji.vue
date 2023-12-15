@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	emoji: {
@@ -46,7 +46,7 @@ function menu(ev) {
 			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
-					text: `License: ${res.license}`,
+					text: `Name: ${res.name}\nAliases: ${res.aliases.join(' ')}\nCategory: ${res.category}\nisSensitive: ${res.isSensitive}\nlocalOnly: ${res.localOnly}\nLicense: ${res.license}\nURL: ${res.url}`,
 				});
 			});
 		},

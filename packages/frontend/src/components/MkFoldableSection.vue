@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import tinycolor from 'tinycolor2';
-import { miLocalStorage } from '@/local-storage';
-import { defaultStore } from '@/store';
+import { miLocalStorage } from '@/local-storage.js';
+import { defaultStore } from '@/store.js';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
 
@@ -84,6 +84,7 @@ onMounted(() => {
 			return getParentBg(el.parentElement);
 		}
 	}
+
 	const rawBg = getParentBg(el.value);
 	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	_bg.setAlpha(0.85);

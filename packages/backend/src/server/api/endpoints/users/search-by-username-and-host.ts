@@ -5,9 +5,9 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -46,9 +46,8 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -82,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
-			let users: User[] = [];
+			let users: MiUser[] = [];
 
 			if (me) {
 				const followingQuery = this.followingsRepository.createQueryBuilder('following')
@@ -93,9 +92,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.andWhere(`user.id IN (${ followingQuery.getQuery() })`)
 					.andWhere('user.id != :meId', { meId: me.id })
 					.andWhere('user.isSuspended = FALSE')
-					.andWhere(new Brackets(qb => { qb
-						.where('user.updatedAt IS NULL')
-						.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+					.andWhere(new Brackets(qb => {
+						qb
+							.where('user.updatedAt IS NULL')
+							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 					}));
 
 				query.setParameters(followingQuery.getParameters());

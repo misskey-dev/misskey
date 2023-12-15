@@ -41,4 +41,12 @@ export const miLocalStorage = {
 	getItem: (key: Keys): string | null => window.localStorage.getItem(key),
 	setItem: (key: Keys, value: string): void => window.localStorage.setItem(key, value),
 	removeItem: (key: Keys): void => window.localStorage.removeItem(key),
+	getItemAsJson: (key: Keys): any | undefined => {
+		const item = miLocalStorage.getItem(key);
+		if (item === null) {
+			return undefined;
+		}
+		return JSON.parse(item);
+	},
+	setItemAsJson: (key: Keys, value: any): void => window.localStorage.setItem(key, JSON.stringify(value)),
 };

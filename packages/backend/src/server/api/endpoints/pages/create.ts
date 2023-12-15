@@ -5,9 +5,9 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, PagesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, PagesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { Page } from '@/models/entities/Page.js';
+import { MiPage } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -68,9 +68,8 @@ export const paramDef = {
 	required: ['title', 'name', 'content', 'variables', 'script'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
@@ -103,9 +102,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			});
 
-			const page = await this.pagesRepository.insert(new Page({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+			const page = await this.pagesRepository.insert(new MiPage({
+				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
 				name: ps.name,

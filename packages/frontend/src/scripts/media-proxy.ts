@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { query } from '@/scripts/url';
-import { url } from '@/config';
-import { instance } from '@/instance';
+import { query } from '@/scripts/url.js';
+import { url } from '@/config.js';
+import { instance } from '@/instance.js';
 
 export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', mustOrigin = false, noFallback = false): string {
 	const localProxy = `${url}/proxy`;

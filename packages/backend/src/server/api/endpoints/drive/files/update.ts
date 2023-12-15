@@ -4,12 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -71,23 +70,17 @@ export const paramDef = {
 	required: ['fileId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.driveFoldersRepository)
-		private driveFoldersRepository: DriveFoldersRepository,
-
-		private driveFileEntityService: DriveFileEntityService,
+		private driveService: DriveService,
 		private roleService: RoleService,
-		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-			const alwaysMarkNsfw = (await this.roleService.getUserPolicies(me.id)).alwaysMarkNsfw;
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
@@ -96,49 +89,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			if (ps.name) file.name = ps.name;
-			if (!this.driveFileEntityService.validateFileName(file.name)) {
-				throw new ApiError(meta.errors.invalidFileName);
-			}
+			let packedFile;
 
-			if (ps.comment !== undefined) file.comment = ps.comment;
-
-			if (ps.isSensitive !== undefined && ps.isSensitive !== file.isSensitive && alwaysMarkNsfw && !ps.isSensitive) {
-				throw new ApiError(meta.errors.restrictedByRole);
-			}
-
-			if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
-
-			if (ps.folderId !== undefined) {
-				if (ps.folderId === null) {
-					file.folderId = null;
+			try {
+				packedFile = await this.driveService.updateFile(file, {
+					folderId: ps.folderId,
+					name: ps.name,
+					isSensitive: ps.isSensitive,
+					comment: ps.comment,
+				}, me);
+			} catch (e) {
+				if (e instanceof DriveService.InvalidFileNameError) {
+					throw new ApiError(meta.errors.invalidFileName);
+				} else if (e instanceof DriveService.NoSuchFolderError) {
+					throw new ApiError(meta.errors.noSuchFolder);
+				} else if (e instanceof DriveService.CannotUnmarkSensitiveError) {
+					throw new ApiError(meta.errors.restrictedByRole);
 				} else {
-					const folder = await this.driveFoldersRepository.findOneBy({
-						id: ps.folderId,
-						userId: me.id,
-					});
-
-					if (folder == null) {
-						throw new ApiError(meta.errors.noSuchFolder);
-					}
-
-					file.folderId = folder.id;
+					throw e;
 				}
 			}
 
-			await this.driveFilesRepository.update(file.id, {
-				name: file.name,
-				comment: file.comment,
-				folderId: file.folderId,
-				isSensitive: file.isSensitive,
-			});
-
-			const fileObj = await this.driveFileEntityService.pack(file, { self: true });
-
-			// Publish fileUpdated event
-			this.globalEventService.publishDriveStream(me.id, 'fileUpdated', fileObj);
-
-			return fileObj;
+			return packedFile;
 		});
 	}
 }

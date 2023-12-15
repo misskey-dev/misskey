@@ -8,8 +8,8 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -42,8 +42,8 @@ export class AccountMoveService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -71,12 +71,12 @@ export class AccountMoveService {
 	 * After delivering Move activity, its local followers unfollow the old account and then follow the new one.
 	 */
 	@bindThis
-	public async moveFromLocal(src: LocalUser, dst: LocalUser | RemoteUser): Promise<unknown> {
+	public async moveFromLocal(src: MiLocalUser, dst: MiLocalUser | MiRemoteUser): Promise<unknown> {
 		const srcUri = this.userEntityService.getUserUri(src);
 		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
-		const update = {} as Partial<LocalUser>;
+		const update = {} as Partial<MiLocalUser>;
 		update.alsoKnownAs = src.alsoKnownAs?.includes(dstUri) ? src.alsoKnownAs : src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
 		update.movedToUri = dstUri;
 		update.movedAt = new Date();
@@ -114,7 +114,7 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	public async postMoveProcess(src: User, dst: User): Promise<void> {
+	public async postMoveProcess(src: MiUser, dst: MiUser): Promise<void> {
 		// Copy blockings and mutings, and update lists
 		try {
 			await Promise.all([
@@ -180,13 +180,13 @@ export class AccountMoveService {
 			{ muteeId: dst.id, expiresAt: IsNull() },
 		).then(mutings => mutings.map(muting => muting.muterId));
 
-		const newMutings: Map<string, { muterId: string; muteeId: string; createdAt: Date; expiresAt: Date | null; }> = new Map();
+		const newMutings: Map<string, { muterId: string; muteeId: string; expiresAt: Date | null; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
 			let id: string;
 			do {
-				id = this.idService.genId();
+				id = this.idService.gen();
 			} while (newMutings.has(id));
 			return id;
 		};
@@ -194,7 +194,6 @@ export class AccountMoveService {
 			if (existingMutingsMuterUserIds.includes(muting.muterId)) continue; // skip if already muted indefinitely
 			newMutings.set(genId(), {
 				...muting,
-				createdAt: new Date(),
 				muteeId: dst.id,
 			});
 		}
@@ -213,42 +212,42 @@ export class AccountMoveService {
 	 * @returns Promise<void>
 	 */
 	@bindThis
-	public async updateLists(src: ThinUser, dst: User): Promise<void> {
+	public async updateLists(src: ThinUser, dst: MiUser): Promise<void> {
 		// Return if there is no list to be updated.
-		const oldJoinings = await this.userListJoiningsRepository.find({
+		const oldMemberships = await this.userListMembershipsRepository.find({
 			where: {
 				userId: src.id,
 			},
 		});
-		if (oldJoinings.length === 0) return;
+		if (oldMemberships.length === 0) return;
 
-		const existingUserListIds = await this.userListJoiningsRepository.find({
+		const existingUserListIds = await this.userListMembershipsRepository.find({
 			where: {
 				userId: dst.id,
 			},
-		}).then(joinings => joinings.map(joining => joining.userListId));
+		}).then(memberships => memberships.map(membership => membership.userListId));
 
-		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; }> = new Map();
+		const newMemberships: Map<string, { userId: string; userListId: string; userListUserId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
 		const genId = (): string => {
 			let id: string;
 			do {
-				id = this.idService.genId();
-			} while (newJoinings.has(id));
+				id = this.idService.gen();
+			} while (newMemberships.has(id));
 			return id;
 		};
-		for (const joining of oldJoinings) {
-			if (existingUserListIds.includes(joining.userListId)) continue; // skip if dst exists in this user's list
-			newJoinings.set(genId(), {
-				createdAt: new Date(),
+		for (const membership of oldMemberships) {
+			if (existingUserListIds.includes(membership.userListId)) continue; // skip if dst exists in this user's list
+			newMemberships.set(genId(), {
 				userId: dst.id,
-				userListId: joining.userListId,
+				userListId: membership.userListId,
+				userListUserId: membership.userListUserId,
 			});
 		}
 
-		const arrayToInsert = Array.from(newJoinings.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
-		await this.userListJoiningsRepository.insert(arrayToInsert);
+		const arrayToInsert = Array.from(newMemberships.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
+		await this.userListMembershipsRepository.insert(arrayToInsert);
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
 		if (this.userEntityService.isRemoteUser(dst)) {
@@ -260,7 +259,7 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: User): Promise<void> {
+	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: MiUser): Promise<void> {
 		if (localFollowerIds.length === 0) return;
 
 		// Set the old account's following and followers counts to 0.
@@ -301,11 +300,11 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async validateAlsoKnownAs(
-		dst: LocalUser | RemoteUser,
-		check: (oldUser: LocalUser | RemoteUser | null, newUser: LocalUser | RemoteUser) => boolean | Promise<boolean> = () => true,
+		dst: MiLocalUser | MiRemoteUser,
+		check: (oldUser: MiLocalUser | MiRemoteUser | null, newUser: MiLocalUser | MiRemoteUser) => boolean | Promise<boolean> = () => true,
 		instant = false,
-	): Promise<LocalUser | RemoteUser | null> {
-		let resultUser: LocalUser | RemoteUser | null = null;
+	): Promise<MiLocalUser | MiRemoteUser | null> {
+		let resultUser: MiLocalUser | MiRemoteUser | null = null;
 
 		if (this.userEntityService.isRemoteUser(dst)) {
 			if ((new Date()).getTime() - (dst.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {

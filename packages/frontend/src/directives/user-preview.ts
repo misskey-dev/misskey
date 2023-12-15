@@ -4,7 +4,7 @@
  */
 
 import { defineAsyncComponent, Directive, ref } from 'vue';
-import { popup } from '@/os';
+import { popup } from '@/os.js';
 
 export class UserPreview {
 	private el;

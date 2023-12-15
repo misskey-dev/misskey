@@ -10,16 +10,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import XAntenna from './editor.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { useRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache';
 
 const router = useRouter();
 
-let antenna: any = $ref(null);
+const antenna = ref<any>(null);
 
 const props = defineProps<{
 	antennaId: string
@@ -31,7 +32,7 @@ function onAntennaUpdated() {
 }
 
 os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
-	antenna = antennaResponse;
+	antenna.value = antennaResponse;
 });
 
 definePageMetadata({

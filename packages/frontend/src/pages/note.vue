@@ -11,11 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note">
 					<div v-if="showNext" class="_margin">
-						<MkNotes class="" :pagination="nextPagination" :noGap="true"/>
+						<MkNotes class="" :pagination="nextPagination" :noGap="true" :disableAutoLoad="true"/>
 					</div>
 
 					<div class="_margin">
-						<MkButton v-if="!showNext && hasNext" :class="$style.loadNext" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
+						<MkButton v-if="!showNext" :class="$style.loadNext" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
 						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
 							<MkNoteDetailed :key="note.id" v-model:note="note" :class="$style.note"/>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkA>
 							</div>
 						</div>
-						<MkButton v-if="!showPrev && hasPrev" :class="$style.loadPrev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
+						<MkButton v-if="!showPrev" :class="$style.loadPrev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
 					</div>
 
 					<div v-if="showPrev" class="_margin">
@@ -44,37 +44,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { dateString } from '@/filters/date';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	noteId: string;
 }>();
 
-let note = $ref<null | misskey.entities.Note>();
-let clips = $ref();
-let hasPrev = $ref(false);
-let hasNext = $ref(false);
-let showPrev = $ref(false);
-let showNext = $ref(false);
-let error = $ref();
+const note = ref<null | Misskey.entities.Note>();
+const clips = ref();
+const showPrev = ref(false);
+const showNext = ref(false);
+const error = ref();
 
 const prevPagination = {
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => note ? ({
-		userId: note.userId,
-		untilId: note.id,
+	params: computed(() => note.value ? ({
+		userId: note.value.userId,
+		untilId: note.value.id,
 	}) : null),
 };
 
@@ -82,43 +80,30 @@ const nextPagination = {
 	reversed: true,
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => note ? ({
-		userId: note.userId,
-		sinceId: note.id,
+	params: computed(() => note.value ? ({
+		userId: note.value.userId,
+		sinceId: note.value.id,
 	}) : null),
 };
 
 function fetchNote() {
-	hasPrev = false;
-	hasNext = false;
-	showPrev = false;
-	showNext = false;
-	note = null;
+	showPrev.value = false;
+	showNext.value = false;
+	note.value = null;
 	os.api('notes/show', {
 		noteId: props.noteId,
 	}).then(res => {
-		note = res;
-		Promise.all([
+		note.value = res;
+		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
+		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			os.api('notes/clips', {
-				noteId: note.id,
-			}),
-			os.api('users/notes', {
-				userId: note.userId,
-				untilId: note.id,
-				limit: 1,
-			}),
-			os.api('users/notes', {
-				userId: note.userId,
-				sinceId: note.id,
-				limit: 1,
-			}),
-		]).then(([_clips, prev, next]) => {
-			clips = _clips;
-			hasPrev = prev.length !== 0;
-			hasNext = next.length !== 0;
-		});
+				noteId: note.value.id,
+			}).then((_clips) => {
+				clips.value = _clips;
+			});
+		}
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
@@ -126,18 +111,18 @@ watch(() => props.noteId, fetchNote, {
 	immediate: true,
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => note ? {
+definePageMetadata(computed(() => note.value ? {
 	title: i18n.ts.note,
-	subtitle: dateString(note.createdAt),
-	avatar: note.user,
-	path: `/notes/${note.id}`,
+	subtitle: dateString(note.value.createdAt),
+	avatar: note.value.user,
+	path: `/notes/${note.value.id}`,
 	share: {
-		title: i18n.t('noteOf', { user: note.user.name }),
-		text: note.text,
+		title: i18n.t('noteOf', { user: note.value.user.name }),
+		text: note.value.text,
 	},
 } : null));
 </script>

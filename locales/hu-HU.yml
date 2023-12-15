@@ -77,6 +77,7 @@ smtpUser: "Felhasználónév"
 smtpPass: "Jelszó"
 user: "Felhasználók"
 searchByGoogle: "Keresés"
+renotes: "Renote"
 _theme:
   keys:
     renote: "Renote"

@@ -5,8 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ClipsRepository } from '@/models/index.js';
-import { DI } from '@/di-symbols.js';
+import { ClipService } from '@/core/ClipService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -33,24 +32,20 @@ export const paramDef = {
 	required: ['clipId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.clipsRepository)
-		private clipsRepository: ClipsRepository,
+		private clipService: ClipService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clip = await this.clipsRepository.findOneBy({
-				id: ps.clipId,
-				userId: me.id,
-			});
-
-			if (clip == null) {
-				throw new ApiError(meta.errors.noSuchClip);
+			try {
+				await this.clipService.delete(me, ps.clipId);
+			} catch (e) {
+				if (e instanceof ClipService.NoSuchClipError) {
+					throw new ApiError(meta.errors.noSuchClip);
+				}
+				throw e;
 			}
-
-			await this.clipsRepository.delete(clip.id);
 		});
 	}
 }

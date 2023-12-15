@@ -28,8 +28,8 @@ import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import number from '@/filters/number';
-import { i18n } from '@/i18n';
+import number from '@/filters/number.js';
+import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	type?: 'file' | 'folder';

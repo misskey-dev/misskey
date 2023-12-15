@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/_.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
@@ -36,19 +36,38 @@ export const paramDef = {
 		blocked: { type: 'boolean', nullable: true },
 		notResponding: { type: 'boolean', nullable: true },
 		suspended: { type: 'boolean', nullable: true },
+		silenced: { type: 'boolean', nullable: true },
 		federating: { type: 'boolean', nullable: true },
 		subscribing: { type: 'boolean', nullable: true },
 		publishing: { type: 'boolean', nullable: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
 		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string' },
+		sort: {
+			type: 'string',
+			nullable: true,
+			enum: [
+				'+pubSub',
+				'-pubSub',
+				'+notes',
+				'-notes',
+				'+users',
+				'-users',
+				'+following',
+				'-following',
+				'+followers',
+				'-followers',
+				'+firstRetrievedAt',
+				'-firstRetrievedAt',
+				'+latestRequestReceivedAt',
+				'-latestRequestReceivedAt',
+			],
+		},
 	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -100,6 +119,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					query.andWhere('instance.isSuspended = TRUE');
 				} else {
 					query.andWhere('instance.isSuspended = FALSE');
+				}
+			}
+
+			if (typeof ps.silenced === 'boolean') {
+				const meta = await this.metaService.fetch(true);
+
+				if (ps.silenced) {
+					if (meta.silencedHosts.length === 0) {
+						return [];
+					}
+					query.andWhere('instance.host IN (:...silences)', {
+						silences: meta.silencedHosts,
+					});
+				} else if (meta.silencedHosts.length > 0) {
+					query.andWhere('instance.host NOT IN (:...silences)', {
+						silences: meta.silencedHosts,
+					});
 				}
 			}
 

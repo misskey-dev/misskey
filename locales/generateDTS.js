@@ -1,6 +1,11 @@
 import * as fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import * as yaml from 'js-yaml';
-import * as ts from 'typescript';
+import ts from 'typescript';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function createMembers(record) {
 	return Object.entries(record)
@@ -50,6 +55,18 @@ export default function generateDTS() {
 				)],
 				ts.NodeFlags.Const | ts.NodeFlags.Ambient | ts.NodeFlags.ContextFlags,
 			),
+		),
+		ts.factory.createFunctionDeclaration(
+			[ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)],
+			undefined,
+			ts.factory.createIdentifier('build'),
+			undefined,
+			[],
+			ts.factory.createTypeReferenceNode(
+				ts.factory.createIdentifier('Locale'),
+				undefined,
+			),
+			undefined,
 		),
 		ts.factory.createExportDefault(ts.factory.createIdentifier('locales')),
 	];

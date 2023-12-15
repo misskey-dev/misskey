@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as misskey from 'misskey-js';
-import { $i } from '@/account';
+import * as Misskey from 'misskey-js';
+import { $i } from '@/account.js';
 
-export function isFfVisibleForMe(user: misskey.entities.UserDetailed): boolean {
+export function isFfVisibleForMe(user: Misskey.entities.UserDetailed): boolean {
 	if ($i && $i.id === user.id) return true;
 
 	if (user.ffVisibility === 'private') return false;

@@ -23,14 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { useStream } from '@/stream';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
-import * as os from '@/os';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { useStream } from '@/stream.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'photos';
 

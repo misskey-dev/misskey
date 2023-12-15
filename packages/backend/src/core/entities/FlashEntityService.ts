@@ -5,13 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
+import type { FlashsRepository, FlashLikesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { Flash } from '@/models/entities/Flash.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiFlash } from '@/models/Flash.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -24,20 +25,21 @@ export class FlashEntityService {
 		private flashLikesRepository: FlashLikesRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: Flash['id'] | Flash,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiFlash['id'] | MiFlash,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Flash'>> {
 		const meId = me ? me.id : null;
 		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: flash.id,
-			createdAt: flash.createdAt.toISOString(),
+			createdAt: this.idService.parse(flash.id).date.toISOString(),
 			updatedAt: flash.updatedAt.toISOString(),
 			userId: flash.userId,
 			user: this.userEntityService.pack(flash.user ?? flash.userId, me), // { detail: true } すると無限ループするので注意
@@ -51,8 +53,8 @@ export class FlashEntityService {
 
 	@bindThis
 	public packMany(
-		flashs: Flash[],
-		me?: { id: User['id'] } | null | undefined,
+		flashs: MiFlash[],
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		return Promise.all(flashs.map(x => this.pack(x, me)));
 	}

@@ -5,12 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { User } from '@/models/entities/User.js';
-import type { RegistrationTicket } from '@/models/entities/RegistrationTicket.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiRegistrationTicket } from '@/models/RegistrationTicket.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -20,13 +21,14 @@ export class InviteCodeEntityService {
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: RegistrationTicket['id'] | RegistrationTicket,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'InviteCode'>> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
 			where: {
@@ -39,7 +41,7 @@ export class InviteCodeEntityService {
 			id: target.id,
 			code: target.code,
 			expiresAt: target.expiresAt ? target.expiresAt.toISOString() : null,
-			createdAt: target.createdAt.toISOString(),
+			createdAt: this.idService.parse(target.id).date.toISOString(),
 			createdBy: target.createdBy ? await this.userEntityService.pack(target.createdBy, me) : null,
 			usedBy: target.usedBy ? await this.userEntityService.pack(target.usedBy, me) : null,
 			usedAt: target.usedAt ? target.usedAt.toISOString() : null,
@@ -50,7 +52,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public packMany(
 		targets: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(targets.map(x => this.pack(x, me)));
 	}

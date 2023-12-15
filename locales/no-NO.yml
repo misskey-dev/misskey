@@ -461,6 +461,9 @@ videos: "Videoer"
 continue: "Fortsett"
 youFollowing: "Følger"
 options: "Alternativ"
+icon: "Avatar"
+replies: "Svar"
+renotes: "Renote"
 _initialAccountSetting:
   theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
@@ -572,9 +575,6 @@ _channel:
   nameAndDescription: "Navn og beskrivelse"
 _menuDisplay:
   hide: "Skjul"
-_wordMute:
-  soft: "Myk"
-  hard: "Hard"
 _theme:
   description: "Beskrivelse"
   color: "Farge"
@@ -601,9 +601,6 @@ _time:
   minute: "Minutter"
   hour: "Timer"
   day: "Dager"
-_timelineTutorial:
-  title: "Hvordan bruke Misskey"
-  step2_2: "Hva med å skrive en selvpresentasjon, eller bare \"Hei {name}!\" hvis du ikke har lyst?"
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:
@@ -722,3 +719,5 @@ _deck:
     direct: "Direkte"
 _webhookSettings:
   name: "Navn"
+_moderationLogTypes:
+  suspend: "Suspender"

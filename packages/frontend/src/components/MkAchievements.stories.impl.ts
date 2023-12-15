@@ -9,7 +9,7 @@ import { rest } from 'msw';
 import { userDetailed } from '../../.storybook/fakes';
 import { commonHandlers } from '../../.storybook/mocks';
 import MkAchievements from './MkAchievements.vue';
-import { ACHIEVEMENT_TYPES } from '@/scripts/achievements';
+import { ACHIEVEMENT_TYPES } from '@/scripts/achievements.js';
 export const Empty = {
 	render(args) {
 		return {

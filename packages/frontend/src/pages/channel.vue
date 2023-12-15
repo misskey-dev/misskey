@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.bannerFade"></div>
 				</div>
 				<div v-if="channel.description" :class="$style.description">
-					<Mfm :text="channel.description" :isNote="false" :i="$i"/>
+					<Mfm :text="channel.description" :isNote="false"/>
 				</div>
 			</div>
 
@@ -68,24 +68,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { $i, iAmModerator } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { deviceKind } from '@/scripts/device-kind';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { $i, iAmModerator } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { url } from '@/config';
+import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { PageHeaderItem } from '@/types/page-header.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const router = useRouter();
 
@@ -93,46 +96,45 @@ const props = defineProps<{
 	channelId: string;
 }>();
 
-let tab = $ref('overview');
-let channel = $ref(null);
-let favorited = $ref(false);
-let searchQuery = $ref('');
-let searchPagination = $ref();
-let searchKey = $ref('');
-const featuredPagination = $computed(() => ({
+const tab = ref('overview');
+const channel = ref(null);
+const favorited = ref(false);
+const searchQuery = ref('');
+const searchPagination = ref();
+const searchKey = ref('');
+const featuredPagination = computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
-	offsetMode: true,
 	params: {
 		channelId: props.channelId,
 	},
 }));
 
 watch(() => props.channelId, async () => {
-	channel = await os.api('channels/show', {
+	channel.value = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
-	favorited = channel.isFavorited;
-	if (favorited || channel.isFollowing) {
-		tab = 'timeline';
+	favorited.value = channel.value.isFavorited;
+	if (favorited.value || channel.value.isFollowing) {
+		tab.value = 'timeline';
 	}
 }, { immediate: true });
 
 function edit() {
-	router.push(`/channels/${channel.id}/edit`);
+	router.push(`/channels/${channel.value.id}/edit`);
 }
 
 function openPostForm() {
 	os.post({
-		channel,
+		channel: channel.value,
 	});
 }
 
 function favorite() {
 	os.apiWithDialog('channels/favorite', {
-		channelId: channel.id,
+		channelId: channel.value.id,
 	}).then(() => {
-		favorited = true;
+		favorited.value = true;
 	});
 }
 
@@ -143,55 +145,71 @@ async function unfavorite() {
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('channels/unfavorite', {
-		channelId: channel.id,
+		channelId: channel.value.id,
 	}).then(() => {
-		favorited = false;
+		favorited.value = false;
 	});
 }
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	const query = searchQuery.value.toString().trim();
 
 	if (query == null) return;
 
-	searchPagination = {
+	searchPagination.value = {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
 			query: query,
-			channelId: channel.id,
+			channelId: channel.value.id,
 		},
 	};
 
-	searchKey = query;
+	searchKey.value = query;
 }
 
-const headerActions = $computed(() => {
-	if (channel && channel.userId) {
-		const share = {
-			icon: 'ti ti-share',
-			text: i18n.ts.share,
-			handler: async (): Promise<void> => {
-				navigator.share({
-					title: channel.name,
-					text: channel.description,
-					url: `${url}/channels/${channel.id}`,
-				});
-			},
-		};
+const headerActions = computed(() => {
+	if (channel.value && channel.value.userId) {
+		const headerItems: PageHeaderItem[] = [];
 
-		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
-		return canEdit ? [share, {
-			icon: 'ti ti-settings',
-			text: i18n.ts.edit,
-			handler: edit,
-		}] : [share];
+		headerItems.push({
+			icon: 'ti ti-link',
+			text: i18n.ts.copyUrl,
+			handler: async (): Promise<void> => {
+				copyToClipboard(`${url}/channels/${channel.value.id}`);
+				os.success();
+			},
+		});
+
+		if (isSupportShare()) {
+			headerItems.push({
+				icon: 'ti ti-share',
+				text: i18n.ts.share,
+				handler: async (): Promise<void> => {
+					navigator.share({
+						title: channel.value.name,
+						text: channel.value.description,
+						url: `${url}/channels/${channel.value.id}`,
+					});
+				},
+			});
+		}
+
+		if (($i && $i.id === channel.value.userId) || iAmModerator) {
+			headerItems.push({
+				icon: 'ti ti-settings',
+				text: i18n.ts.edit,
+				handler: edit,
+			});
+		}
+
+		return headerItems.length > 0 ? headerItems : null;
 	} else {
 		return null;
 	}
 });
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
@@ -209,8 +227,8 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-search',
 }]);
 
-definePageMetadata(computed(() => channel ? {
-	title: channel.name,
+definePageMetadata(computed(() => channel.value ? {
+	title: channel.value.name,
 	icon: 'ti ti-device-tv',
 } : null));
 </script>

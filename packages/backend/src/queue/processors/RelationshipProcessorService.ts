@@ -10,9 +10,9 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { RelationshipJobData } from '../types.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
@@ -34,8 +34,12 @@ export class RelationshipProcessorService {
 
 	@bindThis
 	public async processFollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
-		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id}`);
-		await this.userFollowingService.follow(job.data.from, job.data.to, job.data.requestId, job.data.silent);
+		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id} ${job.data.withReplies ? "with replies" : "without replies"}`);
+		await this.userFollowingService.follow(job.data.from, job.data.to, {
+			requestId: job.data.requestId,
+			silent: job.data.silent,
+			withReplies: job.data.withReplies,
+		});
 		return 'ok';
 	}
 
@@ -45,7 +49,7 @@ export class RelationshipProcessorService {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
 			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
-		]) as [LocalUser | RemoteUser, LocalUser | RemoteUser];
+		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
 		await this.userFollowingService.unfollow(follower, followee, job.data.silent);
 		return 'ok';
 	}

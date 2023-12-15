@@ -34,6 +34,8 @@ describe('Webリソース', () => {
 	let aliceGalleryPost: any;
 	let aliceChannel: any;
 
+	let bob: misskey.entities.MeSignup;
+
 	type Request = {
 		path: string,
 		accept?: string,
@@ -90,6 +92,8 @@ describe('Webリソース', () => {
 			fileIds: [aliceUploadedFile.body.id],
 		});
 		aliceChannel = await channel(alice, {});
+
+		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
@@ -148,6 +152,11 @@ describe('Webリソース', () => {
 			type,
 		}));
 
+		test('がGETできる。(ノートが存在しない場合でも。)', async () => await ok({
+			path: path(bob.username),
+			type,
+		}));
+
 		test('は存在しないユーザーはGETできない。', async () => await notOk({
 			path: path('nonexisting'),
 			status: 404,
@@ -163,9 +172,15 @@ describe('Webリソース', () => {
 	});
 
 	describe.each([{ path: '/queue' }])('$path', ({ path }) => {
+		test('はログインしないとGETできない。', async () => await notOk({
+			path,
+			status: 401,
+		}));
+
 		test('はadminでなければGETできない。', async () => await notOk({
 			path,
-			status: 500, // FIXME? 403ではない。
+			cookie: cookie(bob),
+			status: 403,
 		}));
 
 		test('はadminならGETできる。', async () => await ok({

@@ -4,11 +4,12 @@
  */
 
 import { bindThis } from '@/decorators.js';
-import type Connection from './index.js';
+import type Connection from './Connection.js';
 
 /**
  * Stream channel
  */
+// eslint-disable-next-line import/no-default-export
 export default abstract class Channel {
 	protected connection: Connection;
 	public id: string;
@@ -40,6 +41,10 @@ export default abstract class Channel {
 		return this.connection.userIdsWhoBlockingMe;
 	}
 
+	protected get userMutedInstances() {
+		return this.connection.userMutedInstances;
+	}
+
 	protected get followingChannels() {
 		return this.connection.followingChannels;
 	}
@@ -66,6 +71,8 @@ export default abstract class Channel {
 	}
 
 	public abstract init(params: any): void;
+
 	public dispose?(): void;
+
 	public onMessage?(type: string, body: any): void;
 }

@@ -12,6 +12,7 @@ export interface IObject {
 	id?: string;
 	name?: string | null;
 	summary?: string;
+	_misskey_summary?: string;
 	published?: string;
 	cc?: ApObject;
 	to?: ApObject;

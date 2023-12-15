@@ -7,8 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import type { RenoteMutingsRepository } from '@/models/index.js';
-import type { RenoteMuting } from '@/models/entities/RenoteMuting.js';
+import type { RenoteMutingsRepository } from '@/models/_.js';
+import type { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -55,9 +55,8 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
@@ -91,11 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Create mute
 			await this.renoteMutingsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				muterId: muter.id,
 				muteeId: mutee.id,
-			} as RenoteMuting);
+			} as MiRenoteMuting);
 		});
 	}
 }

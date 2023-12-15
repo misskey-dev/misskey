@@ -6,16 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <form :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="_gaps_m">
-		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null, marginBottom: message ? '1.5em' : null }"></div>
+		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : undefined, marginBottom: message ? '1.5em' : undefined }"></div>
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
 		<div v-if="!totpLogin" class="normal-signin _gaps_m">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
+			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password" :withPasswordToggle="true" required data-cy-signin-password>
+			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
-				<p>{{ i18n.ts.tapSecurityKey }}</p>
+				<p>{{ i18n.ts.useSecurityKey }}</p>
 				<MkButton v-if="!queryingKey" @click="queryKey">
 					{{ i18n.ts.retry }}
 				</MkButton>
@@ -32,12 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<p class="or-msg">{{ i18n.ts.or }}</p>
 			</div>
 			<div class="twofa-group totp-group">
-				<p style="margin-bottom:0;">{{ i18n.ts.twoStepAuthentication }}</p>
+				<p style="margin-bottom:0;">{{ i18n.ts['2fa'] }}</p>
 				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" autocomplete="current-password" :withPasswordToggle="true" required>
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
-				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="one-time-code" :spellcheck="false" required>
+				<MkInput v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.token }}</template>
 					<template #prefix><i class="ti ti-123"></i></template>
 				</MkInput>
@@ -49,33 +49,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
-import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
+import * as Misskey from 'misskey-js';
+import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { host as configHost } from '@/config';
-import { byteify, hexify } from '@/scripts/2fa';
-import * as os from '@/os';
-import { login } from '@/account';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import { host as configHost } from '@/config.js';
+import * as os from '@/os.js';
+import { login } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
-let signing = $ref(false);
-let user = $ref(null);
-let username = $ref('');
-let password = $ref('');
-let token = $ref('');
-let host = $ref(toUnicode(configHost));
-let totpLogin = $ref(false);
-let credential = $ref(null);
-let challengeData = $ref(null);
-let queryingKey = $ref(false);
-let hCaptchaResponse = $ref(null);
-let reCaptchaResponse = $ref(null);
-
-const meta = $computed(() => instance);
+const signing = ref(false);
+const user = ref<Misskey.entities.UserDetailed | null>(null);
+const username = ref('');
+const password = ref('');
+const token = ref('');
+const host = ref(toUnicode(configHost));
+const totpLogin = ref(false);
+const queryingKey = ref(false);
+const credentialRequest = ref<CredentialRequestOptions | null>(null);
+const hCaptchaResponse = ref(null);
+const reCaptchaResponse = ref(null);
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -99,90 +96,81 @@ const props = defineProps({
 	},
 });
 
-function onUsernameChange() {
+function onUsernameChange(): void {
 	os.api('users/show', {
-		username: username,
+		username: username.value,
 	}).then(userResponse => {
-		user = userResponse;
+		user.value = userResponse;
 	}, () => {
-		user = null;
+		user.value = null;
 	});
 }
 
-function onLogin(res) {
+function onLogin(res: any): Promise<void> | void {
 	if (props.autoSet) {
 		return login(res.i);
 	}
 }
 
-function queryKey() {
-	queryingKey = true;
-	return navigator.credentials.get({
-		publicKey: {
-			challenge: byteify(challengeData.challenge, 'base64'),
-			allowCredentials: challengeData.securityKeys.map(key => ({
-				id: byteify(key.id, 'hex'),
-				type: 'public-key',
-				transports: ['usb', 'nfc', 'ble', 'internal'],
-			})),
-			timeout: 60 * 1000,
-		},
-	}).catch(() => {
-		queryingKey = false;
-		return Promise.reject(null);
-	}).then(credential => {
-		queryingKey = false;
-		signing = true;
-		return os.api('signin', {
-			username,
-			password,
-			signature: hexify(credential.response.signature),
-			authenticatorData: hexify(credential.response.authenticatorData),
-			clientDataJSON: hexify(credential.response.clientDataJSON),
-			credentialId: credential.id,
-			challengeId: challengeData.challengeId,
-			'hcaptcha-response': hCaptchaResponse,
-			'g-recaptcha-response': reCaptchaResponse,
+async function queryKey(): Promise<void> {
+	queryingKey.value = true;
+	await webAuthnRequest(credentialRequest.value)
+		.catch(() => {
+			queryingKey.value = false;
+			return Promise.reject(null);
+		}).then(credential => {
+			credentialRequest.value = null;
+			queryingKey.value = false;
+			signing.value = true;
+			return os.api('signin', {
+				username: username.value,
+				password: password.value,
+				credential: credential.toJSON(),
+				'hcaptcha-response': hCaptchaResponse.value,
+				'g-recaptcha-response': reCaptchaResponse.value,
+			});
+		}).then(res => {
+			emit('login', res);
+			return onLogin(res);
+		}).catch(err => {
+			if (err === null) return;
+			os.alert({
+				type: 'error',
+				text: i18n.ts.signinFailed,
+			});
+			signing.value = false;
 		});
-	}).then(res => {
-		emit('login', res);
-		return onLogin(res);
-	}).catch(err => {
-		if (err === null) return;
-		os.alert({
-			type: 'error',
-			text: i18n.ts.signinFailed,
-		});
-		signing = false;
-	});
 }
 
-function onSubmit() {
-	signing = true;
-	if (!totpLogin && user && user.twoFactorEnabled) {
-		if (window.PublicKeyCredential && user.securityKeys) {
+function onSubmit(): void {
+	signing.value = true;
+	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
+		if (webAuthnSupported() && user.value.securityKeys) {
 			os.api('signin', {
-				username,
-				password,
-				'hcaptcha-response': hCaptchaResponse,
-				'g-recaptcha-response': reCaptchaResponse,
+				username: username.value,
+				password: password.value,
+				'hcaptcha-response': hCaptchaResponse.value,
+				'g-recaptcha-response': reCaptchaResponse.value,
 			}).then(res => {
-				totpLogin = true;
-				signing = false;
-				challengeData = res;
-				return queryKey();
-			}).catch(loginFailed);
+				totpLogin.value = true;
+				signing.value = false;
+				credentialRequest.value = parseRequestOptionsFromJSON({
+					publicKey: res,
+				});
+			})
+				.then(() => queryKey())
+				.catch(loginFailed);
 		} else {
-			totpLogin = true;
-			signing = false;
+			totpLogin.value = true;
+			signing.value = false;
 		}
 	} else {
 		os.api('signin', {
-			username,
-			password,
-			'hcaptcha-response': hCaptchaResponse,
-			'g-recaptcha-response': reCaptchaResponse,
-			token: user && user.twoFactorEnabled ? token : undefined,
+			username: username.value,
+			password: password.value,
+			'hcaptcha-response': hCaptchaResponse.value,
+			'g-recaptcha-response': reCaptchaResponse.value,
+			token: user.value?.twoFactorEnabled ? token.value : undefined,
 		}).then(res => {
 			emit('login', res);
 			onLogin(res);
@@ -190,7 +178,7 @@ function onSubmit() {
 	}
 }
 
-function loginFailed(err) {
+function loginFailed(err: any): void {
 	switch (err.id) {
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({
@@ -221,7 +209,7 @@ function loginFailed(err) {
 			break;
 		}
 		default: {
-			console.log(err);
+			console.error(err);
 			os.alert({
 				type: 'error',
 				title: i18n.ts.loginFailed,
@@ -230,12 +218,11 @@ function loginFailed(err) {
 		}
 	}
 
-	challengeData = null;
-	totpLogin = false;
-	signing = false;
+	totpLogin.value = false;
+	signing.value = false;
 }
 
-function resetPassword() {
+function resetPassword(): void {
 	os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
 	}, 'closed');
 }

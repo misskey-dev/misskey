@@ -15,14 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const paginationForNotes = {
 	endpoint: 'notes/featured' as const,
 	limit: 10,
-	offsetMode: true,
 };
 
 const paginationForPolls = {
@@ -31,5 +31,5 @@ const paginationForPolls = {
 	offsetMode: true,
 };
 
-let tab = $ref('notes');
+const tab = ref('notes');
 </script>

@@ -21,14 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'activity';
 

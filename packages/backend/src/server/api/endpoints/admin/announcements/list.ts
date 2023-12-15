@@ -4,11 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/index.js';
-import type { Announcement } from '@/models/entities/Announcement.js';
+import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
+import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -66,13 +67,13 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
@@ -81,13 +82,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private announcementReadsRepository: AnnouncementReadsRepository,
 
 		private queryService: QueryService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			query.andWhere('announcement.isActive = true');
+			if (ps.userId) {
+				query.andWhere('announcement.userId = :userId', { userId: ps.userId });
+			} else {
+				query.andWhere('announcement.userId IS NULL');
+			}
 
 			const announcements = await query.limit(ps.limit).getMany();
 
-			const reads = new Map<Announcement, number>();
+			const reads = new Map<MiAnnouncement, number>();
 
 			for (const announcement of announcements) {
 				reads.set(announcement, await this.announcementReadsRepository.countBy({
@@ -97,11 +105,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			return announcements.map(announcement => ({
 				id: announcement.id,
-				createdAt: announcement.createdAt.toISOString(),
+				createdAt: this.idService.parse(announcement.id).date.toISOString(),
 				updatedAt: announcement.updatedAt?.toISOString() ?? null,
 				title: announcement.title,
 				text: announcement.text,
 				imageUrl: announcement.imageUrl,
+				icon: announcement.icon,
+				display: announcement.display,
+				isActive: announcement.isActive,
+				forExistingUsers: announcement.forExistingUsers,
+				silence: announcement.silence,
+				needConfirmationToRead: announcement.needConfirmationToRead,
+				userId: announcement.userId,
 				reads: reads.get(announcement)!,
 			}));
 		});

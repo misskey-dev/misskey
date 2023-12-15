@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import type { entities } from 'misskey-js'
 
 export function abuseUserReport() {
@@ -69,6 +74,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		onlineStatus: 'unknown',
 		avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
 		avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',
+		avatarDecorations: [],
 		emojis: [],
 		bannerBlurhash: 'eQA^IW^-MH8w9tE8I=S^o{$*R4RikXtSxutRozjEnNR.RQadoyozog',
 		bannerColor: '#000000',
@@ -84,6 +90,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 				value: 'https://misskey-hub.net',
 			},
 		],
+		verifiedLinks: [],
 		followersCount: 1024,
 		followingCount: 16,
 		hasPendingFollowRequestFromYou: false,
@@ -110,9 +117,11 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		publicReactions: false,
 		securityKeys: false,
 		twoFactorEnabled: false,
+		twoFactorBackupCodesStock: 'none',
 		updatedAt: null,
 		uri: null,
 		url: null,
+		notify: 'none',
 	};
 }
 

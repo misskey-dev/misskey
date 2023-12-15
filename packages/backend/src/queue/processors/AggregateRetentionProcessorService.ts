@@ -8,7 +8,7 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { RetentionAggregationsRepository, UsersRepository } from '@/models/index.js';
+import type { RetentionAggregationsRepository, UsersRepository } from '@/models/_.js';
 import { deepClone } from '@/misc/clone.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -47,13 +47,13 @@ export class AggregateRetentionProcessorService {
 		// 今日登録したユーザーを全て取得
 		const targetUsers = await this.usersRepository.findBy({
 			host: IsNull(),
-			createdAt: MoreThan(new Date(Date.now() - (1000 * 60 * 60 * 24))),
+			id: MoreThan(this.idService.gen(Date.now() - (1000 * 60 * 60 * 24))),
 		});
 		const targetUserIds = targetUsers.map(u => u.id);
 
 		try {
 			await this.retentionAggregationsRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				createdAt: now,
 				updatedAt: now,
 				dateKey,
