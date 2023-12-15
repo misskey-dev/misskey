@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._play.summary }}</template>
 			</MkTextarea>
 			<MkButton primary @click="selectPreset">{{ i18n.ts.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
-			<MkTextarea v-model="script" class="_monospace" tall spellcheck="false">
+			<MkTextarea v-model="script" code tall spellcheck="false">
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkTextarea>
 			<div class="_buttons">

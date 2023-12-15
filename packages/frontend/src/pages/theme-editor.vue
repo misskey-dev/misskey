@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.editCode }}</template>
 
 				<div class="_gaps_m">
-					<MkTextarea v-model="themeCode" tall>
+					<MkTextarea v-model="themeCode" tall code>
 						<template #label>{{ i18n.ts._theme.code }}</template>
 					</MkTextarea>
 					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
