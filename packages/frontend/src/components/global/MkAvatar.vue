@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:style="{
 				rotate: getDecorationAngle(decoration),
 				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
 			}"
 			alt=""
 		>
@@ -97,6 +98,12 @@ function getDecorationAngle(decoration: Omit<Misskey.entities.UserDetailed['avat
 function getDecorationScale(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
 	const scaleX = decoration.flipH ? -1 : 1;
 	return scaleX === 1 ? undefined : `${scaleX} 1`;
+}
+
+function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const offsetX = decoration.offsetX ?? 0;
+	const offsetY = decoration.offsetY ?? 0;
+	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
 }
 
 const color = ref<string | undefined>();

@@ -493,8 +493,7 @@ export class ActivityPubServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		// addConstraintStrategy の型定義がおかしいため
-		(fastify.addConstraintStrategy as any)({
+		fastify.addConstraintStrategy({
 			name: 'apOrHtml',
 			storage() {
 				const store = {} as any;

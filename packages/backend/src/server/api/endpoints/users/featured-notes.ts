@@ -51,6 +51,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const userIdsWhoBlockingMe = me ? await this.cacheService.userBlockedCache.fetch(me.id) : new Set<string>();
+
+			// early return if me is blocked by requesting user
+			if (userIdsWhoBlockingMe.has(ps.userId)) {
+				return [];
+			}
+
 			let noteIds = await this.featuredService.getPerUserNotesRanking(ps.userId, 50);
 
 			noteIds.sort((a, b) => a > b ? -1 : 1);
@@ -65,11 +72,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const [
 				userIdsWhoMeMuting,
-				userIdsWhoBlockingMe,
 			] = me ? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-			]) : [new Set<string>(), new Set<string>()];
+			]) : [new Set<string>()];
 
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
