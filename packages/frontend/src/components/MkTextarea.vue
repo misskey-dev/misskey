@@ -91,6 +91,16 @@ const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.code === 'Enter') {
 		emit('enter');
 	}
+
+	if (props.code && ev.key === 'Tab') {
+		const pos = inputEl.value?.selectionStart ?? 0;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
+		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		nextTick(() => {
+			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		});
+		ev.preventDefault();
+	}
 };
 
 const updated = () => {
