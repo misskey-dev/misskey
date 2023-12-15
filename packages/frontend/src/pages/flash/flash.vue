@@ -165,12 +165,8 @@ async function run() {
 			return new Promise(ok => {
 				os.inputText({
 					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
+				}).then(({ result: a }) => {
+					ok(a ?? '');
 				});
 			});
 		},
