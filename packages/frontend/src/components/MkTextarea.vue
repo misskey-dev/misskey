@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:readonly="readonly"
 			:placeholder="placeholder"
 			:pattern="pattern"
-			:autocomplete="autocomplete"
+			:autocomplete="props.autocomplete"
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
