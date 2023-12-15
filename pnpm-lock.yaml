@@ -944,6 +944,9 @@ importers:
       happy-dom:
         specifier: 10.0.3
         version: 10.0.3
+      intersection-observer:
+        specifier: 0.12.2
+        version: 0.12.2
       micromatch:
         specifier: 4.0.5
         version: 4.0.5
@@ -12994,6 +12997,10 @@ packages:
       get-intrinsic: 1.2.0
       has: 1.0.3
       side-channel: 1.0.4
+    dev: true
+
+  /intersection-observer@0.12.2:
+    resolution: {integrity: sha512-7m1vEcPCxXYI8HqnL8CKI6siDyD+eIWSwgB3DZA+ZTogxk9I4CDnj4wilt9x/+/QbHI4YG5YZNmC6458/e9Ktg==}
     dev: true
 
   /invariant@2.2.4:
