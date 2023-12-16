@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 
 const meta = ref<Misskey.entities.MetaResponse>();
 
-os.api('meta', { detail: true }).then(gotMeta => {
+api('meta', { detail: true }).then(gotMeta => {
 	meta.value = gotMeta;
 });
 </script>

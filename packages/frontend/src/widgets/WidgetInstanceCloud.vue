@@ -24,6 +24,7 @@ import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
@@ -55,7 +56,7 @@ function onInstanceClick(i) {
 }
 
 useInterval(() => {
-	os.api('federation/instances', {
+	api('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {

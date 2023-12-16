@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref, shallowRef } from 'vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -44,7 +44,7 @@ const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {
-	list.value = await os.api('users/lists/show', {
+	list.value = await api('users/lists/show', {
 		listId: props.listId,
 	});
 }, { immediate: true });

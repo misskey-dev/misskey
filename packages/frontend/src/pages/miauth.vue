@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { $i, login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -65,7 +65,7 @@ const state = ref<string | null>(null);
 
 async function accept(): Promise<void> {
 	state.value = 'waiting';
-	await os.api('miauth/gen-token', {
+	await api('miauth/gen-token', {
 		session: props.session,
 		name: props.name,
 		iconUrl: props.icon,

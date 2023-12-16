@@ -28,6 +28,7 @@ import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -40,7 +41,7 @@ async function addRelay() {
 		placeholder: i18n.ts.inboxUrl,
 	});
 	if (canceled) return;
-	os.api('admin/relays/add', {
+	api('admin/relays/add', {
 		inbox,
 	}).then((relay: any) => {
 		refresh();
@@ -53,7 +54,7 @@ async function addRelay() {
 }
 
 function remove(inbox: string) {
-	os.api('admin/relays/remove', {
+	api('admin/relays/remove', {
 		inbox,
 	}).then(() => {
 		refresh();
@@ -66,7 +67,7 @@ function remove(inbox: string) {
 }
 
 function refresh() {
-	os.api('admin/relays/list').then((relayList: any) => {
+	api('admin/relays/list').then((relayList: any) => {
 		relays.value = relayList;
 	});
 }

@@ -25,6 +25,7 @@ import { onMounted, ref } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -51,7 +52,7 @@ onMounted(async () => {
 	if (props.modelValue.fileId == null) {
 		await choose();
 	} else {
-		os.api('drive/files/show', {
+		api('drive/files/show', {
 			fileId: props.modelValue.fileId,
 		}).then(fileResponse => {
 			file.value = fileResponse;

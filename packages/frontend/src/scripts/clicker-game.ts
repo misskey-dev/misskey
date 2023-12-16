@@ -4,7 +4,7 @@
  */
 
 import { ref, computed } from 'vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 
 type SaveData = {
 	gameVersion: number;
@@ -23,7 +23,7 @@ let prev = '';
 
 export async function load() {
 	try {
-		saveData.value = await os.api('i/registry/get', {
+		saveData.value = await api('i/registry/get', {
 			scope: ['clickerGame'],
 			key: 'saveData',
 		});
@@ -63,7 +63,7 @@ export async function save() {
 	const current = JSON.stringify(saveData.value);
 	if (current === prev) return;
 
-	await os.api('i/registry/set', {
+	await api('i/registry/set', {
 		scope: ['clickerGame'],
 		key: 'saveData',
 		value: saveData.value,

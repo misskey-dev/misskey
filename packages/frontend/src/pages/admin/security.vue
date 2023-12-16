@@ -125,6 +125,7 @@ import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -143,7 +144,7 @@ const enableVerifymailApi = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await api('admin/meta');
 	summalyProxy.value = meta.summalyProxy;
 	enableHcaptcha.value = meta.enableHcaptcha;
 	enableRecaptcha.value = meta.enableRecaptcha;

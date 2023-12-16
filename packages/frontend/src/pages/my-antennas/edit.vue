@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import XAntenna from './editor.vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -31,7 +31,7 @@ function onAntennaUpdated() {
 	router.push('/my/antennas');
 }
 
-os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
 	antenna.value = antennaResponse;
 });
 

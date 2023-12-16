@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormLink from '@/components/form/link.vue';
@@ -34,7 +35,7 @@ import MkButton from '@/components/MkButton.vue';
 const scopesWithDomain = ref(null);
 
 function fetchScopes() {
-	os.api('i/registry/scopes-with-domain').then(res => {
+	api('i/registry/scopes-with-domain').then(res => {
 		scopesWithDomain.value = res;
 	});
 }

@@ -29,7 +29,7 @@ import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, Wid
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import * as os from '@/os.js';
+import { apiGet } from '@/scripts/api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
@@ -58,7 +58,7 @@ const stats = ref([]);
 const fetching = ref(true);
 
 const fetch = () => {
-	os.apiGet('hashtags/trend').then(res => {
+	apiGet('hashtags/trend').then(res => {
 		stats.value = res;
 		fetching.value = false;
 	});

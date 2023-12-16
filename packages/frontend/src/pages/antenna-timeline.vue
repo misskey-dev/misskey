@@ -28,6 +28,7 @@ import { computed, watch, ref, shallowRef } from 'vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -72,7 +73,7 @@ function focus() {
 }
 
 watch(() => props.antennaId, async () => {
-	antenna.value = await os.api('antennas/show', {
+	antenna.value = await api('antennas/show', {
 		antennaId: props.antennaId,
 	});
 }, { immediate: true });

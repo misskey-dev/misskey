@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, nextTick, watch, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { alpha } from '@/scripts/color.js';
@@ -72,19 +72,19 @@ async function renderChart() {
 	let values;
 
 	if (props.src === 'active-users') {
-		const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+		const raw = await api('charts/active-users', { limit: chartLimit, span: 'day' });
 		values = raw.readWrite;
 	} else if (props.src === 'notes') {
-		const raw = await os.api('charts/notes', { limit: chartLimit, span: 'day' });
+		const raw = await api('charts/notes', { limit: chartLimit, span: 'day' });
 		values = raw.local.inc;
 	} else if (props.src === 'ap-requests-inbox-received') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		const raw = await api('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.inboxReceived;
 	} else if (props.src === 'ap-requests-deliver-succeeded') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		const raw = await api('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.deliverSucceeded;
 	} else if (props.src === 'ap-requests-deliver-failed') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		const raw = await api('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.deliverFailed;
 	}
 

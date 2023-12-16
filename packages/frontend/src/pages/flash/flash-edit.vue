@@ -37,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -368,7 +369,7 @@ const flash = ref(null);
 const visibility = ref('public');
 
 if (props.id) {
-	flash.value = await os.api('flash/show', {
+	flash.value = await api('flash/show', {
 		flashId: props.id,
 	});
 }

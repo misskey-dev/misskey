@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import * as os from '@/os.js';
+import { api, apiGet } from '@/scripts/api.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n.js';
@@ -77,17 +77,17 @@ const fetching = ref(true);
 
 onMounted(async () => {
 	const [_stats, _onlineUsersCount] = await Promise.all([
-		os.api('stats', {}),
-		os.apiGet('get-online-users-count').then(res => res.count),
+		api('stats', {}),
+		apiGet('get-online-users-count').then(res => res.count),
 	]);
 	stats.value = _stats;
 	onlineUsersCount.value = _onlineUsersCount;
 
-	os.apiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
+	apiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
 		usersComparedToThePrevDay.value = stats.value.originalUsersCount - chart.local.total[1];
 	});
 
-	os.apiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
+	apiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
 		notesComparedToThePrevDay.value = stats.value.originalNotesCount - chart.local.total[1];
 	});
 

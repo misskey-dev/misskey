@@ -48,6 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -68,7 +69,7 @@ const value = ref(null);
 const valueForEditor = ref(null);
 
 function fetchValue() {
-	os.api('i/registry/get-detail', {
+	api('i/registry/get-detail', {
 		scope: scope.value,
 		key: key.value,
 		domain: props.domain === '@' ? null : props.domain,

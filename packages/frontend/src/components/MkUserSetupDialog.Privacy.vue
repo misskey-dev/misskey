@@ -49,7 +49,7 @@ import { i18n } from '@/i18n.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 
 const isLocked = ref(false);
 const hideOnlineStatus = ref(false);
@@ -57,7 +57,7 @@ const noCrawle = ref(false);
 const preventAiLearning = ref(true);
 
 watch([isLocked, hideOnlineStatus, noCrawle, preventAiLearning], () => {
-	os.api('i/update', {
+	api('i/update', {
 		isLocked: !!isLocked.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		noCrawle: !!noCrawle.value,

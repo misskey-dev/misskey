@@ -4,6 +4,7 @@
  */
 
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
 import { Router } from '@/nirax.js';
@@ -28,7 +29,7 @@ export async function lookup(router?: Router) {
 	}
 
 	if (query.startsWith('https://')) {
-		const promise = os.api('ap/show', {
+		const promise = api('ap/show', {
 			uri: query,
 		});
 

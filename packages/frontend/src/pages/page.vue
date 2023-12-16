@@ -80,6 +80,7 @@ import { computed, watch, ref } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { url } from '@/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -112,7 +113,7 @@ const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
 	page.value = null;
-	os.api('pages/show', {
+	api('pages/show', {
 		name: props.pageName,
 		username: props.username,
 	}).then(async _page => {

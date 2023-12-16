@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -52,12 +53,12 @@ const error = ref();
 const users = ref([]);
 
 function fetchList(): void {
-	os.api('users/lists/show', {
+	api('users/lists/show', {
 		listId: props.listId,
 		forPublic: true,
 	}).then(_list => {
 		list.value = _list;
-		os.api('users/show', {
+		api('users/show', {
 			userIds: list.value.userIds,
 		}).then(_users => {
 			users.value = _users;

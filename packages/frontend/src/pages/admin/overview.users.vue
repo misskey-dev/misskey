@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { defaultStore } from '@/store.js';
@@ -27,7 +27,7 @@ const newUsers = ref(null);
 const fetching = ref(true);
 
 const fetch = async () => {
-	const _newUsers = await os.api('admin/show-users', {
+	const _newUsers = await api('admin/show-users', {
 		limit: 5,
 		sort: '+createdAt',
 		origin: 'local',

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { api, post } from '@/os.js';
+import { post } from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { $i, login } from '@/account.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { mainRouter } from '@/router.js';

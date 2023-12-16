@@ -5,7 +5,7 @@
 
 import { Theme, getBuiltinThemes } from '@/scripts/theme.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { api } from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { $i } from '@/account.js';
 
 const lsCacheKey = $i ? `themes:${$i.id}` as const : null;

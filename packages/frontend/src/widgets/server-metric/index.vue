@@ -29,7 +29,7 @@ import XMemory from './mem.vue';
 import XDisk from './disk.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import { GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
+import { apiGet } from '@/scripts/api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 
@@ -67,7 +67,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 const meta = ref(null);
 
-os.apiGet('server-info', {}).then(res => {
+apiGet('server-info', {}).then(res => {
 	meta.value = res;
 });
 

@@ -65,6 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
@@ -96,7 +97,7 @@ const otherPostsPagination = {
 
 function fetchPost() {
 	post.value = null;
-	os.api('gallery/posts/show', {
+	api('gallery/posts/show', {
 		postId: props.postId,
 	}).then(_post => {
 		post.value = _post;

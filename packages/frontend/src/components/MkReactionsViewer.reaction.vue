@@ -22,6 +22,7 @@ import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os.js';
+import { api, apiGet } from '@/scripts/api.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { $i } from '@/account.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
@@ -69,11 +70,11 @@ async function toggleReaction() {
 			return;
 		}
 
-		os.api('notes/reactions/delete', {
+		api('notes/reactions/delete', {
 			noteId: props.note.id,
 		}).then(() => {
 			if (oldReaction !== props.reaction) {
-				os.api('notes/reactions/create', {
+				api('notes/reactions/create', {
 					noteId: props.note.id,
 					reaction: props.reaction,
 				});
@@ -87,7 +88,7 @@ async function toggleReaction() {
 			return;
 		}
 
-		os.api('notes/reactions/create', {
+		api('notes/reactions/create', {
 			noteId: props.note.id,
 			reaction: props.reaction,
 		});
@@ -117,7 +118,7 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
-		const reactions = await os.apiGet('notes/reactions', {
+		const reactions = await apiGet('notes/reactions', {
 			noteId: props.note.id,
 			type: props.reaction,
 			limit: 10,

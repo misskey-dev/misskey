@@ -12,9 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { mainRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from "@/store.js";
+import { defaultStore } from '@/store.js';
 
 async function follow(user): Promise<void> {
 	const { canceled } = await os.confirm({
@@ -42,7 +43,7 @@ if (acct == null) {
 let promise;
 
 if (acct.startsWith('https://')) {
-	promise = os.api('ap/show', {
+	promise = api('ap/show', {
 		uri: acct,
 	});
 	promise.then(res => {
@@ -60,7 +61,7 @@ if (acct.startsWith('https://')) {
 		}
 	});
 } else {
-	promise = os.api('users/show', Misskey.acct.parse(acct));
+	promise = api('users/show', Misskey.acct.parse(acct));
 	promise.then(user => {
 		follow(user);
 	});

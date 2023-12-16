@@ -61,6 +61,7 @@ import { computed, onDeactivated, onUnmounted, Ref, ref, watch, shallowRef } fro
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -83,7 +84,7 @@ const error = ref(null);
 
 function fetchFlash() {
 	flash.value = null;
-	os.api('flash/show', {
+	api('flash/show', {
 		flashId: props.id,
 	}).then(_flash => {
 		flash.value = _flash;

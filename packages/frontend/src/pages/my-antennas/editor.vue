@@ -57,6 +57,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -84,7 +85,7 @@ const userLists = ref<any>(null);
 
 watch(() => src.value, async () => {
 	if (src.value === 'list' && userLists.value === null) {
-		userLists.value = await os.api('users/lists/list');
+		userLists.value = await api('users/lists/list');
 	}
 });
 
@@ -120,7 +121,7 @@ async function deleteAntenna() {
 	});
 	if (canceled) return;
 
-	await os.api('antennas/delete', {
+	await api('antennas/delete', {
 		antennaId: props.antenna.id,
 	});
 

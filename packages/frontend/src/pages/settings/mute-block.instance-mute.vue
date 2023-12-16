@@ -19,7 +19,7 @@ import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
@@ -32,7 +32,7 @@ async function save() {
 		.map(el => el.trim())
 		.filter(el => el);
 
-	await os.api('i/update', {
+	await api('i/update', {
 		mutedInstances: mutes,
 	});
 

@@ -31,6 +31,7 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 
 const submitting = ref(false);
 
@@ -42,7 +43,7 @@ function submit() {
 	if (submitting.value) return;
 	submitting.value = true;
 
-	os.api('signup-pending', {
+	api('signup-pending', {
 		code: props.code,
 	}).then(res => {
 		return login(res.i, '/');

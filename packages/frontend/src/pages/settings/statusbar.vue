@@ -20,7 +20,7 @@ import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -30,7 +30,7 @@ const statusbars = defaultStore.reactiveState.statusbars;
 const userLists = ref();
 
 onMounted(() => {
-	os.api('users/lists/list').then(res => {
+	api('users/lists/list').then(res => {
 		userLists.value = res;
 	});
 });

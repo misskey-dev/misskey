@@ -11,7 +11,8 @@ import { miLocalStorage } from '@/local-storage.js';
 import { MenuButton } from '@/types/menu.js';
 import { del, get, set } from '@/scripts/idb-proxy.js';
 import { apiUrl } from '@/config.js';
-import { waiting, api, popup, popupMenu, success, alert } from '@/os.js';
+import { waiting, popup, popupMenu, success, alert } from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期

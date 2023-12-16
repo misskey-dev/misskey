@@ -93,6 +93,7 @@ import FormInfo from '@/components/MkInfo.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { defaultStore } from '@/store.js';
 import { signout, $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -106,7 +107,7 @@ const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 function onChangeInjectFeaturedNote(v) {
-	os.api('i/update', {
+	api('i/update', {
 		injectFeaturedNote: v,
 	}).then((i) => {
 		$i!.injectFeaturedNote = i.injectFeaturedNote;
@@ -154,7 +155,7 @@ async function updateRepliesAll(withReplies: boolean) {
 	});
 	if (canceled) return;
 
-	os.api('following/update-all', { withReplies });
+	api('following/update-all', { withReplies });
 }
 
 watch([

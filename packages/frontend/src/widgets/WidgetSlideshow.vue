@@ -21,6 +21,7 @@ import { onMounted, ref, shallowRef } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 
@@ -76,7 +77,7 @@ const change = () => {
 const fetch = () => {
 	fetching.value = true;
 
-	os.api('drive/files', {
+	api('drive/files', {
 		folderId: widgetProps.folderId,
 		type: 'image/*',
 		limit: 100,

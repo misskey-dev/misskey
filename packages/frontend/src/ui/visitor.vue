@@ -73,6 +73,7 @@ import { ComputedRef, onMounted, provide, ref, computed } from 'vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
@@ -120,7 +121,7 @@ const keymap = computed(() => {
 
 const root = computed(() => mainRouter.currentRoute.value.name === 'index');
 
-os.api('meta', { detail: true }).then(res => {
+api('meta', { detail: true }).then(res => {
 	meta.value = res;
 });
 

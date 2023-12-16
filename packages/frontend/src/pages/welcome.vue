@@ -15,12 +15,12 @@ import { computed, ref } from 'vue';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
-import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const meta = ref(null);
 
-os.api('meta', { detail: true }).then(res => {
+api('meta', { detail: true }).then(res => {
 	meta.value = res;
 });
 

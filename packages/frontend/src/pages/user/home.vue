@@ -171,7 +171,7 @@ import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import { api } from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
 function calcAge(birthdate: string): number {
@@ -215,7 +215,7 @@ const moderationNote = ref(props.user.moderationNote);
 const editModerationNote = ref(false);
 
 watch(moderationNote, async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
+	await api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
 
 const style = computed(() => {

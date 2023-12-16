@@ -32,6 +32,7 @@ import * as Misskey from 'misskey-js';
 import { sum } from '@/scripts/array.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 
@@ -83,7 +84,7 @@ const vote = async (id) => {
 	});
 	if (canceled) return;
 
-	await os.api('notes/polls/vote', {
+	await api('notes/polls/vote', {
 		noteId: props.note.id,
 		choice: id,
 	});

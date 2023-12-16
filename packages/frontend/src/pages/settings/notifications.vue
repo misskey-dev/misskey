@@ -62,6 +62,7 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -73,7 +74,7 @@ const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequest
 const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
-const userLists = await os.api('users/lists/list');
+const userLists = await api('users/lists/list');
 
 async function readAllUnreadNotes() {
 	await os.apiWithDialog('i/read-all-unread-notes');
@@ -107,7 +108,7 @@ function onChangeSendReadMessage(v: boolean) {
 }
 
 function testNotification(): void {
-	os.api('notifications/test-notification');
+	api('notifications/test-notification');
 }
 
 const headerActions = computed(() => []);

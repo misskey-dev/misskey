@@ -77,6 +77,7 @@ import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import * as os from '@/os.js';
+import { api, apiGet } from '@/scripts/api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -115,14 +116,14 @@ onMounted(async () => {
 	magicGrid.listen();
 	*/
 
-	os.apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
+	apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
 		federationPubActive.value = chart.pubActive[0];
 		federationPubActiveDiff.value = chart.pubActive[0] - chart.pubActive[1];
 		federationSubActive.value = chart.subActive[0];
 		federationSubActiveDiff.value = chart.subActive[0] - chart.subActive[1];
 	});
 
-	os.apiGet('federation/stats', { limit: 10 }).then(res => {
+	apiGet('federation/stats', { limit: 10 }).then(res => {
 		topSubInstancesForPie.value = res.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
@@ -141,18 +142,18 @@ onMounted(async () => {
 		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
 	});
 
-	os.api('admin/server-info').then(serverInfoResponse => {
+	api('admin/server-info').then(serverInfoResponse => {
 		serverInfo.value = serverInfoResponse;
 	});
 
-	os.api('admin/show-users', {
+	api('admin/show-users', {
 		limit: 5,
 		sort: '+createdAt',
 	}).then(res => {
 		newUsers.value = res;
 	});
 
-	os.api('federation/instances', {
+	api('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {

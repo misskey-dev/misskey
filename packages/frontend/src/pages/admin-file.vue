@@ -78,6 +78,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { iAmAdmin, iAmModerator } from '@/account.js';
@@ -92,8 +93,8 @@ const props = defineProps<{
 }>();
 
 async function fetch() {
-	file.value = await os.api('drive/files/show', { fileId: props.fileId });
-	info.value = await os.api('admin/drive/show-file', { fileId: props.fileId });
+	file.value = await api('drive/files/show', { fileId: props.fileId });
+	info.value = await api('admin/drive/show-file', { fileId: props.fileId });
 	isSensitive.value = file.value.isSensitive;
 }
 
@@ -112,7 +113,7 @@ async function del() {
 }
 
 async function toggleIsSensitive(v) {
-	await os.api('drive/files/update', { fileId: props.fileId, isSensitive: v });
+	await api('drive/files/update', { fileId: props.fileId, isSensitive: v });
 	isSensitive.value = v;
 }
 

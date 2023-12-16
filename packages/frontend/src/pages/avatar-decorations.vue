@@ -39,6 +39,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
+import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -62,7 +63,7 @@ function del(avatarDecoration) {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		avatarDecorations.value = avatarDecorations.value.filter(x => x !== avatarDecoration);
-		os.api('admin/avatar-decorations/delete', avatarDecoration);
+		api('admin/avatar-decorations/delete', avatarDecoration);
 	});
 }
 
@@ -76,7 +77,7 @@ async function save(avatarDecoration) {
 }
 
 function load() {
-	os.api('admin/avatar-decorations/list').then(_avatarDecorations => {
+	api('admin/avatar-decorations/list').then(_avatarDecorations => {
 		avatarDecorations.value = _avatarDecorations;
 	});
 }
