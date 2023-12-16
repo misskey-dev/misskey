@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<template #default="{ items }">
-		<MkChannelPreview v-for="item in items" :key="item.id" class="_margin" :channel="extractor(item)" :lastReadedAt="miLocalStorage.getItemAsJson(`channelLastReadedAt:${item.id}`) ?? undefined"/>
+		<MkChannelPreview v-for="item in items" :key="item.id" class="_margin" :channel="extractor(item)"/>
 	</template>
 </MkPagination>
 </template>
