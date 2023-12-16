@@ -19,19 +19,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<template v-if="!(postChannel != null && fixed)">
-				<button v-if="postChannel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+			<button ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+				<template v-if="postChannel">
+					<span><i class="ti ti-device-tv"></i></span>
+					<span v-if="postChannel" :class="$style.headerRightButtonText">{{ postChannel.name }}</span>
+				</template>
+				<template v-else>
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
-				</button>
-				<button v-else v-tooltip="i18n.ts.visibility" v-click-anime class="_button" :class="[$style.headerRightItem, $style.visibility]" @click="setVisibility">
-					<span><i class="ti ti-device-tv"></i></span>
-					<span :class="$style.headerRightButtonText">{{ postChannel.name }}</span>
-				</button>
-			</template>
+				</template>
+			</button>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="postChannel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
@@ -154,7 +154,7 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
-let postChannel = ref(props.channel)
+let postChannel = ref<Misskey.entities.Channel | null>(props.channel);
 
 provide('mock', props.mock);
 
@@ -456,9 +456,11 @@ function setVisibility() {
 		isSilenced: $i?.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
+    currentChannel: postChannel.value,
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
+			postChannel.value = null;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('visibility', visibility.value);
 			}
