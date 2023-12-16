@@ -23,7 +23,6 @@ import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { miLocalStorage } from '@/local-storage.js';
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
