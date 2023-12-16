@@ -4,48 +4,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
-	<div class="banner" :style="bannerStyle">
-		<div class="fade"></div>
-		<div class="name"><i class="ti ti-device-tv"></i> {{ channel.name }}</div>
-		<div v-if="channel.isSensitive" class="sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
-		<div class="status">
-			<div>
-				<i class="ti ti-users ti-fw"></i>
-				<I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;">
-					<template #n>
-						<b>{{ channel.usersCount }}</b>
-					</template>
-				</I18n>
-			</div>
-			<div>
-				<i class="ti ti-pencil ti-fw"></i>
-				<I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;">
-					<template #n>
-						<b>{{ channel.notesCount }}</b>
-					</template>
-				</I18n>
+<div style="margin: 0; display: flex;">
+	<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1" @click="updateLastReadedAt">
+		<div class="banner" :style="bannerStyle">
+			<div class="fade"></div>
+			<div class="name"><i class="ti ti-device-tv"></i> {{ channel.name }}</div>
+			<div v-if="channel.isSensitive" class="sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
+			<div class="status">
+				<div>
+					<i class="ti ti-users ti-fw"></i>
+					<I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;">
+						<template #n>
+							<b>{{ channel.usersCount }}</b>
+						</template>
+					</I18n>
+				</div>
+				<div>
+					<i class="ti ti-pencil ti-fw"></i>
+					<I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;">
+						<template #n>
+							<b>{{ channel.notesCount }}</b>
+						</template>
+					</I18n>
+				</div>
 			</div>
 		</div>
-	</div>
-	<article v-if="channel.description">
-		<p :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
-	</article>
-	<footer>
-		<span v-if="channel.lastNotedAt">
-			{{ i18n.ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
-		</span>
-	</footer>
-</MkA>
+		<article v-if="channel.description">
+			<p :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
+		</article>
+		<footer>
+			<span v-if="channel.lastNotedAt">
+				{{ i18n.ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
+			</span>
+		</footer>
+	</MkA>
+	<div v-if="lastReadedAt && channel.isFavorited && channel.lastNotedAt && Date.parse(channel.lastNotedAt) > lastReadedAt" style="position: absolute; top: -0.5rem; right: -0.5rem; background-color: var(--accent); border-radius: 100%; aspect-ratio: 1 / 1; width: 1.5rem;"></div>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 const props = defineProps<{
 	channel: Record<string, any>;
 }>();
+
+const getLastReadedAt = (): number | null => {
+	return miLocalStorage.getItemAsJson(`channelLastReadedAt:${props.channel.id}`) ?? null;
+};
+
+const lastReadedAt = ref(getLastReadedAt());
+
+watch(() => props.channel.id, () => {
+	lastReadedAt.value = getLastReadedAt();
+});
+
+const updateLastReadedAt = () => {
+	lastReadedAt.value = props.channel.lastNotedAt ? Date.parse(props.channel.lastNotedAt) : Date.now();
+};
 
 const bannerStyle = computed(() => {
 	if (props.channel.bannerUrl) {
