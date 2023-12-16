@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</button>
 		<button v-for="channel in channels" :class="$style.item" class="_button" @click="chooseChannel(channel)">
-			<div :class="$style.body" :style="{borderLeft: `solid 2px ${channel.color}`}">
+			<div :class="$style.body" :style="{borderLeft: `solid 2px ${channel.color}`, paddingLeft: '8px'}">
 				<span :class="$style.itemTitle">{{ channel.name }}</span>
 			</div>
 		</button>
