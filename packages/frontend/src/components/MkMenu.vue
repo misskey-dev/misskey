@@ -23,32 +23,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-else-if="item.type === 'link'" role="menuitem" :to="item.to" :tabindex="i" class="_button" :class="$style.item" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
-				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span>{{ item.text }}</span>
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</MkA>
 			<a v-else-if="item.type === 'a'" role="menuitem" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button" :class="$style.item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
-				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span>{{ item.text }}</span>
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</a>
 			<button v-else-if="item.type === 'user'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
-				<span :class="$style.switchText">{{ item.text }}</span>
+				<div :class="$style.item_content">
+					<span :class="$style.switchText">{{ item.text }}</span>
+				</div>
 			</button>
 			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
-				<span style="pointer-events: none;">{{ item.text }}</span>
-				<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
+				<div :class="$style.item_content">
+					<span style="pointer-events: none;">{{ item.text }}</span>
+					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
+				</div>
 			</button>
 			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
-				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span>{{ item.text }}</span>
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</button>
 		</template>
 		<span v-if="items2.length === 0" :class="[$style.none, $style.item]">
@@ -228,6 +240,7 @@ onBeforeUnmount(() => {
 .root {
 	padding: 8px 0;
 	box-sizing: border-box;
+	max-width: 100vw;
 	min-width: 200px;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -266,8 +279,25 @@ onBeforeUnmount(() => {
 	}
 }
 
+.item_content {
+	width: 100%;
+	max-width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	text-overflow: ellipsis;
+
+	span {
+		max-width: calc(100vw - 4rem);
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+}
+
 .item {
-	display: block;
+	display: flex;
+	align-items: center;
 	position: relative;
 	padding: 5px 16px;
 	width: 100%;
@@ -419,9 +449,8 @@ onBeforeUnmount(() => {
 }
 
 .indicator {
-	position: absolute;
-	top: 5px;
-	left: 13px;
+	display: flex;
+	align-items: center;
 	color: var(--indicator);
 	font-size: 12px;
 	animation: blink 1s infinite;
