@@ -25,7 +25,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import {mainRouter} from "@/router.js";
+import { mainRouter } from '@/router.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -603,16 +603,14 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 
-
-		const route = mainRouter.getCurrentPath().split("/")
-		if(route[1] === "channels")
-		props = {
+		const route = mainRouter.getCurrentPath().split('/');
+		if (route[1] === 'channels') props = {
 			...props,
 			// 本当はチャンネル名や色もほしいけどどっからとってこよう
 			channel: {
-				id: route[2]
-			}
-		}
+				id: route[2],
+			},
+		};
 
 		let dispose;
 		popup(MkPostFormDialog, props, {
