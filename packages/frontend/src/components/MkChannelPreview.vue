@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div style="margin: 0; display: flex;">
+<div style="position: relative;">
 	<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1" @click="updateLastReadedAt">
 		<div class="banner" :style="bannerStyle">
 			<div class="fade"></div>
@@ -42,8 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-if="lastReadedAt && channel.isFavorited && channel.lastNotedAt && Date.parse(channel.lastNotedAt) > lastReadedAt"
 		style="
 			position: absolute;
-			top: -0.5rem;
-			right: -0.5rem;
+			top: 0;
+			right: 0;
+			transform: translate(50%, -50%);
 			background-color: var(--accent);
 			border: solid var(--bg) 4px;
 			border-radius: 100%;
