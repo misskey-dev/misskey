@@ -39,12 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</footer>
 	</MkA>
 	<div
-		v-if="lastReadedAt && channel.isFavorited && channel.lastNotedAt && Date.parse(channel.lastNotedAt) > lastReadedAt"
+		v-if="lastReadedAt && (channel.isFavorited || channel.isFollowing) && channel.lastNotedAt && Date.parse(channel.lastNotedAt) > lastReadedAt"
 		style="
 			position: absolute;
 			top: 0;
 			right: 0;
-			transform: translate(50%, -50%);
+			transform: translate(25%, -25%);
 			background-color: var(--accent);
 			border: solid var(--bg) 4px;
 			border-radius: 100%;
