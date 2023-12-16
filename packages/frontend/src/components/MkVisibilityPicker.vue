@@ -37,11 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
-    <button v-for="channel in channels" :class="$style.item" class="_button" @click="chooseChannel(channel)" >
-      <div :class="$style.body" :style="{borderLeft: `solid 2px ${channel.color}`}">
-        <span :class="$style.itemTitle">{{ channel.name }}</span>
-      </div>
-    </button>
+		<button v-for="channel in channels" :class="$style.item" class="_button" @click="chooseChannel(channel)">
+			<div :class="$style.body" :style="{borderLeft: `solid 2px ${channel.color}`}">
+				<span :class="$style.itemTitle">{{ channel.name }}</span>
+			</div>
+		</button>
 	</div>
 </MkModal>
 </template>
@@ -51,7 +51,7 @@ import { nextTick, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
-import * as os from "@/os.js";
+import * as os from '@/os.js';
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
@@ -82,18 +82,20 @@ const v = ref(props.currentVisibility);
 
  */
 const channels = ref([]);
-async function getChannel(){
-  const res = await os.api('channels/my-favorites', {
-    limit: 100,
-  });
-  channels.value.splice(0, 0, ...res);
+
+async function getChannel() {
+	const res = await os.api('channels/my-favorites', {
+		limit: 100,
+	});
+	channels.value.splice(0, 0, ...res);
 }
+
 getChannel();
 
-async function chooseChannel(channel: string ){
-  emit("changeChannel", channel);
-  await nextTick();
-  if (modal.value) modal.value.close();
+async function chooseChannel(channel: string ) {
+	emit('changeChannel', channel);
+	await nextTick();
+	if (modal.value) modal.value.close();
 }
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
