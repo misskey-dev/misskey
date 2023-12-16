@@ -1182,6 +1182,7 @@ export interface Locale {
     "reloadRequiredToApplySettings": string;
     "remainingN": string;
     "overwriteContentConfirm": string;
+    "seasonalScreenEffect": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
