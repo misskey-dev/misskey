@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:readonly="readonly"
 			:placeholder="placeholder"
 			:pattern="pattern"
-			:autocomplete="autocomplete"
+			:autocomplete="props.autocomplete"
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
@@ -26,8 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></textarea>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
-	<button style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
-	<div v-show="preview" v-panel :class="$style.mfmPreview">
+	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
+	<div v-if="mfmPreview" v-show="preview" v-panel :class="$style.mfmPreview">
 		<Mfm :text="v"/>
 	</div>
 
@@ -90,6 +90,16 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	if (ev.code === 'Enter') {
 		emit('enter');
+	}
+
+	if (props.code && ev.key === 'Tab') {
+		const pos = inputEl.value?.selectionStart ?? 0;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
+		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		nextTick(() => {
+			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		});
+		ev.preventDefault();
 	}
 };
 

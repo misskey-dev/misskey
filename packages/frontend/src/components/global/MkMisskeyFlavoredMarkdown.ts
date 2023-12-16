@@ -107,22 +107,26 @@ export default function(props: MfmProps) {
 				switch (token.props.name) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both;` : '');
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'jelly': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'twitch': {
 						const speed = validTime(token.props.args.speed) ?? '0.5s';
-						style = useAnim ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-twitch ${speed} ease infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'shake': {
 						const speed = validTime(token.props.args.speed) ?? '0.5s';
-						style = useAnim ? `animation: mfm-shake ${speed} ease infinite;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-shake ${speed} ease infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'spin': {
@@ -135,17 +139,20 @@ export default function(props: MfmProps) {
 							token.props.args.y ? 'mfm-spinY' :
 							'mfm-spin';
 						const speed = validTime(token.props.args.speed) ?? '1.5s';
-						style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction}; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'jump': {
 						const speed = validTime(token.props.args.speed) ?? '0.75s';
-						style = useAnim ? `animation: mfm-jump ${speed} linear infinite;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-jump ${speed} linear infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'bounce': {
 						const speed = validTime(token.props.args.speed) ?? '0.75s';
-						style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'flip': {
@@ -195,7 +202,8 @@ export default function(props: MfmProps) {
 							}, genEl(token.children, scale));
 						}
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = `animation: mfm-rainbow ${speed} linear infinite;`;
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = `animation: mfm-rainbow ${speed} linear infinite; animation-delay: ${delay};`;
 						break;
 					}
 					case 'sparkle': {

@@ -1,5 +1,6 @@
 import dns from 'dns';
 import { defineConfig } from 'vite';
+import locales from '../../locales';
 import { getConfig } from './vite.config.js';
 
 dns.setDefaultResultOrder('ipv4first');
@@ -48,6 +49,11 @@ const devConfig = {
 			...defaultConfig.build?.rollupOptions,
 			input: 'index.html',
 		},
+	},
+
+	define: {
+		...defaultConfig.define,
+		_LANGS_FULL_: JSON.stringify(Object.entries(locales)),
 	},
 };
 

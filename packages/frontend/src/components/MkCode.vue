@@ -9,7 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="!inline ?? true"/>
 	</template>
 	<code v-if="inline" :class="$style.codeInlineRoot">{{ code }}</code>
-	<XCode v-else-if="show" :code="code" :lang="lang"/>
+	<XCode v-else-if="show && lang" :code="code" :lang="lang"/>
+	<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 	<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
 		<div :class="$style.codePlaceholderContainer">
 			<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
@@ -45,6 +46,21 @@ const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'))
 	background: #1E1E1E;
 	padding: .1em;
 	border-radius: .3em;
+}
+
+.codeBlockFallbackRoot {
+	display: block;
+	overflow-wrap: anywhere;
+	color: #D4D4D4;
+	background: #1E1E1E;
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 8px;
+}
+
+.codeBlockFallbackCode {
+	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 }
 
 .codePlaceholderRoot {

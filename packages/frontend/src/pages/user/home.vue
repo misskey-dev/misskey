@@ -128,12 +128,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
-					<XFiles :key="user.id" :user="user"/>
-					<XActivity :key="user.id" :user="user"/>
+					<MkLazy>
+						<XFiles :key="user.id" :user="user"/>
+					</MkLazy>
+					<MkLazy>
+						<XActivity :key="user.id" :user="user"/>
+					</MkLazy>
 				</template>
 				<div v-if="!disableNotes">
-					<div style="margin-bottom: 8px;">{{ i18n.ts.featured }}</div>
-					<MkNotes :class="$style.tl" :noGap="true" :pagination="pagination"/>
+					<MkLazy>
+						<XTimeline :user="user"/>
+					</MkLazy>
 				</div>
 			</div>
 		</div>
@@ -187,6 +192,7 @@ function calcAge(birthdate: string): number {
 
 const XFiles = defineAsyncComponent(() => import('./index.files.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
+const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -212,14 +218,6 @@ const editModerationNote = ref(false);
 watch(moderationNote, async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
-
-const pagination = {
-	endpoint: 'users/featured-notes' as const,
-	limit: 10,
-	params: computed(() => ({
-		userId: props.user.id,
-	})),
-};
 
 const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
