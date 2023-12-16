@@ -52,7 +52,6 @@ import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import {Channel} from "misskey-js/built/autogen/models.js";
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
@@ -61,7 +60,7 @@ const props = withDefaults(defineProps<{
 	isSilenced: boolean;
 	localOnly: boolean;
 	src?: HTMLElement;
-  currentChannel?: Channel
+  currentChannel?: Misskey.entities.Channel
 }>(), {
 });
 
