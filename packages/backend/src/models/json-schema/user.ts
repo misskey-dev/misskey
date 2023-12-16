@@ -74,6 +74,14 @@ export const packedUserLiteSchema = {
 						format: 'url',
 						nullable: false, optional: false,
 					},
+					offsetX: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
+					offsetY: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
 				},
 			},
 		},
