@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<MkTextarea v-model="code" tall code>
+	<MkCodeEditor v-model="code" lang="is">
 		<template #label>{{ i18n.ts.code }}</template>
-	</MkTextarea>
+	</MkCodeEditor>
 
 	<div>
 		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, ref, computed } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
