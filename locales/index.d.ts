@@ -1183,6 +1183,7 @@ export interface Locale {
     "remainingN": string;
     "overwriteContentConfirm": string;
     "seasonalScreenEffect": string;
+    "decorate": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
