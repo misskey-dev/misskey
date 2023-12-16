@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
-  (ev: 'changeChannel', v: Channel) : void
+  (ev: 'changeChannel', v: Misskey.entities.Channel) : void
 	(ev: 'closed'): void;
 }>();
 

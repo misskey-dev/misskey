@@ -128,8 +128,6 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 
 const modal = inject('modal');
 
-
-
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
 	renote?: Misskey.entities.Note;
