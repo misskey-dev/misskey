@@ -1163,7 +1163,7 @@ _serverSettings:
   appIconUsageExample: "例如：作为书签添加到 PWA 或手机主屏幕的时候"
   appIconStyleRecommendation: "因为有可能会被裁切为圆形或者圆角矩形，建议使用边缘带有留白背景的图标。"
   appIconResolutionMustBe: "分辨率必须为 {resolution}。"
-  manifestJsonOverride: "覆盖 mainfest.json"
+  manifestJsonOverride: "覆盖 manifest.json"
   shortName: "简称"
   shortNameDescription: "如果服务器的正式名称很长，可以用简称或者別名来替代。"
 _accountMigration:
