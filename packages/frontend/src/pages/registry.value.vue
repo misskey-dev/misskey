@@ -26,9 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkKeyValue>
 				</FormSplit>
 
-				<MkTextarea v-model="valueForEditor" tall code>
+				<MkCodeEditor v-model="valueForEditor" lang="json5">
 					<template #label>{{ i18n.ts.value }} (JSON)</template>
-				</MkTextarea>
+				</MkCodeEditor>
 
 				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 
@@ -52,7 +52,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormInfo from '@/components/MkInfo.vue';
 

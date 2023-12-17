@@ -12,16 +12,17 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>misskey</title>
+	<title>[DEV] Loading...</title>
 	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
 	<meta
 		http-equiv="Content-Security-Policy"
 		content="default-src 'self';
 			worker-src 'self';
-			script-src 'self';
+			script-src 'self' 'unsafe-eval';
 			style-src 'self' 'unsafe-inline';
 			img-src 'self' data: www.google.com xn--931a.moe localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
-			media-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;"
+			media-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
+			connect-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;"
 	/>
 	<meta property="og:site_name" content="[DEV BUILD] Misskey" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">

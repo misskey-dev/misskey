@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_buttons">
 				<MkButton inline @click="previewReaction"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
 				<MkButton inline danger @click="setDefaultReaction"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-				<MkButton inline danger @click="copyFromPinnedEmojis"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromPinnedEmojis }}</MkButton>
+				<MkButton inline danger @click="overwriteFromPinnedEmojis"><i class="ti ti-copy"></i> {{ i18n.ts.overwriteFromPinnedEmojis }}</MkButton>
 			</div>
 		</div>
 	</MkFolder>
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_buttons">
 				<MkButton inline @click="previewEmoji"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
 				<MkButton inline danger @click="setDefaultEmoji"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-				<MkButton inline danger @click="copyFromPinnedEmojisForReaction"><i class="ti ti-copy"></i> {{ i18n.ts.copyFromPinnedEmojisForReaction }}</MkButton>
+				<MkButton inline danger @click="overwriteFromPinnedEmojisForReaction"><i class="ti ti-copy"></i> {{ i18n.ts.overwriteFromPinnedEmojisForReaction }}</MkButton>
 			</div>
 		</div>
 	</MkFolder>
@@ -164,7 +164,7 @@ function previewEmoji(ev: MouseEvent) {
 	emojiPicker.show(getHTMLElement(ev));
 }
 
-async function copyFromPinnedEmojis() {
+async function overwriteFromPinnedEmojis() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.overwriteContentConfirm,
@@ -177,7 +177,7 @@ async function copyFromPinnedEmojis() {
 	pinnedEmojisForReaction.value = [...pinnedEmojis.value];
 }
 
-async function copyFromPinnedEmojisForReaction() {
+async function overwriteFromPinnedEmojisForReaction() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.overwriteContentConfirm,
