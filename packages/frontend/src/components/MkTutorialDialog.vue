@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._done.title }}</div>
 							<I18n :src="i18n.ts._initialTutorial._done.description" tag="div" style="padding: 0 16px;">
 								<template #link>
-									<a href="https://misskey-hub.net/help.html" target="_blank" class="_link">{{ i18n.ts.help }}</a>
+									<a href="https://misskey-hub.net/docs/for-users/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 								</template>
 							</I18n>
 							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
