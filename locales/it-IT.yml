@@ -875,8 +875,6 @@ makeReactionsPublicDescription: "La lista delle reazioni che avete fatto è a di
 classic: "Classico"
 muteThread: "Silenzia conversazione"
 unmuteThread: "Riattiva la conversazione"
-ffVisibility: "Visibilità delle connessioni"
-ffVisibilityDescription: "Puoi scegliere a chi mostrare le tue relazioni con altri profili nel fediverso."
 continueThread: "Altre conversazioni"
 deleteAccountConfirm: "Così verrà eliminato il profilo. Vuoi procedere?"
 incorrectPassword: "La password è errata."

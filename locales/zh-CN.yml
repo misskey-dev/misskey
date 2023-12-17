@@ -867,8 +867,6 @@ makeReactionsPublicDescription: "将您发表过的回应设置成公开可见�
 classic: "经典"
 muteThread: "屏蔽帖子列表"
 unmuteThread: "取消屏蔽帖子列表"
-ffVisibility: "关注关系的可见范围"
-ffVisibilityDescription: "您可以设置您的关注/关注者信息的公开范围"
 continueThread: "查看更多帖子"
 deleteAccountConfirm: "将要删除账户。是否确认？"
 incorrectPassword: "密码错误"

@@ -874,8 +874,6 @@ makeReactionsPublicDescription: "Jeder wird die Liste deiner gesendeten Reaktion
 classic: "Classic"
 muteThread: "Thread stummschalten"
 unmuteThread: "Threadstummschaltung aufheben"
-ffVisibility: "Sichtbarkeit von Gefolgten/Followern"
-ffVisibilityDescription: "Konfiguriere wer sehen kann, wem du folgst sowie wer dir folgt."
 continueThread: "Weiteren Threadverlauf anzeigen"
 deleteAccountConfirm: "Dein Benutzerkonto wird unwiderruflich gelöscht. Trotzdem fortfahren?"
 incorrectPassword: "Falsches Passwort."

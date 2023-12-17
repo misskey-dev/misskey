@@ -871,8 +871,6 @@ makeReactionsPublicDescription: "Pengaturan ini akan membuat daftar dari semua r
 classic: "Klasik"
 muteThread: "Bisukan thread"
 unmuteThread: "Suarakan thread"
-ffVisibility: "Visibilitas Mengikuti/Pengikut"
-ffVisibilityDescription: "Mengatur siapa yang dapat melihat pengikutmu dan yang kamu ikuti."
 continueThread: "Lihat lanjutan thread"
 deleteAccountConfirm: "Akun akan dihapus. Apakah kamu yakin?"
 incorrectPassword: "Kata sandi salah."

@@ -26,9 +26,10 @@ describe('FF visibility', () => {
 		await app.close();
 	});
 
-	test('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
+	test('followingVisibility, followerVisibility がともに public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
 		await api('/i/update', {
-			ffVisibility: 'public',
+			followingVisibility: 'public',
+			followerVisibility: 'public',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -44,9 +45,88 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('ffVisibility が followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
+	test('followingVisibility が public であれば followerVisibility の設定に関わらずユーザーのフォローを誰でも見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+	});
+
+	test('followerVisibility が public であれば followingVisibility の設定に関わらずユーザーのフォロワーを誰でも見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+	});
+
+	test('followingVisibility, followerVisibility がともに followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await api('/i/update', {
-			ffVisibility: 'followers',
+			followingVisibility: 'followers',
+			followerVisibility: 'followers',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -62,9 +142,88 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('ffVisibility が followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
+	test('followingVisibility が followers なユーザーのフォローを followerVisibility の設定に関わらず自分で見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+	});
+
+	test('followerVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらず自分で見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+	});
+
+	test('followingVisibility, followerVisibility がともに followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
 		await api('/i/update', {
-			ffVisibility: 'followers',
+			followingVisibility: 'followers',
+			followerVisibility: 'followers',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -78,9 +237,82 @@ describe('FF visibility', () => {
 		assert.strictEqual(followersRes.status, 400);
 	});
 
-	test('ffVisibility が followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
+	test('followingVisibility が followers なユーザーのフォローを followerVisibility の設定に関わらず非フォロワーが見れない', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 400);
+		}
+	});
+
+	test('followerVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらず非フォロワーが見れない', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 400);
+		}
+	});
+
+	test('followingVisibility, followerVisibility がともに followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
 		await api('/i/update', {
-			ffVisibility: 'followers',
+			followingVisibility: 'followers',
+			followerVisibility: 'followers',
 		}, alice);
 
 		await api('/following/create', {
@@ -100,9 +332,106 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('ffVisibility が private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
+	test('followingVisibility が followers なユーザーのフォローを followerVisibility の設定に関わらずフォロワーが見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'public',
+			}, alice);
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'followers',
+			}, alice);
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'private',
+			}, alice);
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+	});
+
+	test('followerVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらずフォロワーが見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'followers',
+			}, alice);
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'followers',
+			}, alice);
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'followers',
+			}, alice);
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+	});
+
+	test('followingVisibility, followerVisibility がともに private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await api('/i/update', {
-			ffVisibility: 'private',
+			followingVisibility: 'private',
+			followerVisibility: 'private',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -118,9 +447,88 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('ffVisibility が private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
+	test('followingVisibility が private なユーザーのフォローを followerVisibility の設定に関わらず自分で見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followingRes.status, 200);
+			assert.strictEqual(Array.isArray(followingRes.body), true);
+		}
+	});
+
+	test('followerVisibility が private なユーザーのフォロワーを followingVisibility の設定に関わらず自分で見れる', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(followersRes.status, 200);
+			assert.strictEqual(Array.isArray(followersRes.body), true);
+		}
+	});
+
+	test('followingVisibility, followerVisibility がともに private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
 		await api('/i/update', {
-			ffVisibility: 'private',
+			followingVisibility: 'private',
+			followerVisibility: 'private',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -134,36 +542,129 @@ describe('FF visibility', () => {
 		assert.strictEqual(followersRes.status, 400);
 	});
 
+	test('followingVisibility が private なユーザーのフォローを followerVisibility の設定に関わらず他人が見れない', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'public',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'followers',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followingRes = await api('/users/following', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followingRes.status, 400);
+		}
+	});
+
+	test('followerVisibility が private なユーザーのフォロワーを followingVisibility の設定に関わらず他人が見れない', async () => {
+		{
+			await api('/i/update', {
+				followingVisibility: 'public',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'followers',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 400);
+		}
+		{
+			await api('/i/update', {
+				followingVisibility: 'private',
+				followerVisibility: 'private',
+			}, alice);
+
+			const followersRes = await api('/users/followers', {
+				userId: alice.id,
+			}, bob);
+			assert.strictEqual(followersRes.status, 400);
+		}
+	});
+
 	describe('AP', () => {
-		test('ffVisibility が public 以外ならばAPからは取得できない', async () => {
+		test('followingVisibility が public 以外ならばAPからはフォローを取得できない', async () => {
 			{
 				await api('/i/update', {
-					ffVisibility: 'public',
+					followingVisibility: 'public',
 				}, alice);
 
 				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
-				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
 				assert.strictEqual(followingRes.status, 200);
+			}
+			{
+				await api('/i/update', {
+					followingVisibility: 'followers',
+				}, alice);
+
+				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
+				assert.strictEqual(followingRes.status, 403);
+			}
+			{
+				await api('/i/update', {
+					followingVisibility: 'private',
+				}, alice);
+
+				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
+				assert.strictEqual(followingRes.status, 403);
+			}
+		});
+
+		test('followerVisibility が public 以外ならばAPからはフォロワーを取得できない', async () => {
+			{
+				await api('/i/update', {
+					followerVisibility: 'public',
+				}, alice);
+
+				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
 				assert.strictEqual(followersRes.status, 200);
 			}
 			{
 				await api('/i/update', {
-					ffVisibility: 'followers',
+					followerVisibility: 'followers',
 				}, alice);
 
-				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
 				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
-				assert.strictEqual(followingRes.status, 403);
 				assert.strictEqual(followersRes.status, 403);
 			}
 			{
 				await api('/i/update', {
-					ffVisibility: 'private',
+					followerVisibility: 'private',
 				}, alice);
 
-				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
 				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
-				assert.strictEqual(followingRes.status, 403);
 				assert.strictEqual(followersRes.status, 403);
 			}
 		});
