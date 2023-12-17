@@ -55,6 +55,10 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/profile.vue')),
 	}, {
+		path: '/avatar-decoration',
+		name: 'avatarDecoration',
+		component: page(() => import('./pages/settings/avatar-decoration.vue')),
+	}, {
 		path: '/roles',
 		name: 'roles',
 		component: page(() => import('./pages/settings/roles.vue')),
