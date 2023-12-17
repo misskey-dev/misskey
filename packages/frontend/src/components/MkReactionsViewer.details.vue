@@ -29,7 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
 import { EmojiDetailed } from 'misskey-js/built/autogen/models.js';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -39,9 +38,8 @@ import { get } from '@/scripts/idb-proxy.js';
 const emojiMeta = ref <Record<string, EmojiDetailed>>({});
 
 get('emojis').then(emojis => {
-	console.log(emojis);
-	emojis.forEach((e) => {
-		emojiMeta.value[`:${e.name + '@' + ( e?.host ?? '.')}:`] = e;
+	emojis.forEach((emoji: EmojiDetailed) => {
+		emojiMeta.value[`:${emoji.name + '@' + ( emoji.host ?? '.')}:`] = emoji;
 	});
 });
 
