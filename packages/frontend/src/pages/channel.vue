@@ -121,7 +121,7 @@ watch(() => props.channelId, async () => {
 		tab.value = 'timeline';
 	}
 
-	if (favorited.value && channel.value.lastNotedAt) {
+	if ((favorited.value || channel.value.isFollowing) && channel.value.lastNotedAt) {
 		const lastReadedAt: number = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.value.id}`) ?? 0;
 		const lastNotedAt = Date.parse(channel.value.lastNotedAt);
 
