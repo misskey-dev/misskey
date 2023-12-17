@@ -108,12 +108,12 @@ jobs:
         wait-on: 'http://localhost:61812'
         headed: true
         browser: ${{ matrix.browser }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: ${{ matrix.browser }}-cypress-screenshots
         path: cypress/screenshots
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ matrix.browser }}-cypress-videos

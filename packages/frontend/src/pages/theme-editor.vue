@@ -51,9 +51,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.editCode }}</template>
 
 				<div class="_gaps_m">
-					<MkTextarea v-model="themeCode" tall code>
+					<MkCodeEditor v-model="themeCode" lang="json5">
 						<template #label>{{ i18n.ts._theme.code }}</template>
-					</MkTextarea>
+					</MkCodeEditor>
 					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
 				</div>
 			</MkFolder>
@@ -80,6 +80,7 @@ import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
 import MkButton from '@/components/MkButton.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 

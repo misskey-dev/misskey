@@ -4,18 +4,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800" style="padding-top: 0">
-	<MkStickyContainer>
-		<template #header>
-			<MkTab v-model="include" :class="$style.tab">
-				<option :value="null">{{ i18n.ts.notes }}</option>
-				<option value="all">{{ i18n.ts.all }}</option>
-				<option value="files">{{ i18n.ts.withFiles }}</option>
-			</MkTab>
-		</template>
-		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl"/>
-	</MkStickyContainer>
-</MkSpacer>
+<MkStickyContainer>
+	<template #header>
+		<MkTab v-model="tab" :class="$style.tab">
+			<option value="featured">{{ i18n.ts.featured }}</option>
+			<option :value="null">{{ i18n.ts.notes }}</option>
+			<option value="all">{{ i18n.ts.all }}</option>
+			<option value="files">{{ i18n.ts.withFiles }}</option>
+		</MkTab>
+	</template>
+	<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl"/>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -29,24 +28,29 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-const include = ref<string | null>('all');
+const tab = ref<string | null>('all');
 
-const pagination = {
+const pagination = computed(() => tab.value === 'featured' ? {
+	endpoint: 'users/featured-notes' as const,
+	limit: 10,
+	params: {
+		userId: props.user.id,
+	},
+} : {
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => ({
+	params: {
 		userId: props.user.id,
-		withRenotes: include.value === 'all',
-		withReplies: include.value === 'all',
-		withChannelNotes: include.value === 'all',
-		withFiles: include.value === 'files',
-	})),
-};
+		withRenotes: tab.value === 'all',
+		withReplies: tab.value === 'all',
+		withChannelNotes: tab.value === 'all',
+		withFiles: tab.value === 'files',
+	},
+});
 </script>
 
 <style lang="scss" module>
 .tab {
-	margin: calc(var(--margin) / 2) 0;
 	padding: calc(var(--margin) / 2) 0;
 	background: var(--bg);
 }

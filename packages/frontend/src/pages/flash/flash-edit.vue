@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._play.summary }}</template>
 			</MkTextarea>
 			<MkButton primary @click="selectPreset">{{ i18n.ts.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
-			<MkTextarea v-model="script" code tall spellcheck="false">
+			<MkCodeEditor v-model="script" lang="is">
 				<template #label>{{ i18n.ts._play.script }}</template>
-			</MkTextarea>
+			</MkCodeEditor>
 			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
@@ -40,6 +40,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { useRouter } from '@/router.js';

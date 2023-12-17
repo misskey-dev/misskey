@@ -138,7 +138,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const algo = match[1];
+			const algo = match[1].toUpperCase();
 			const digestValue = match[2];
 
 			if (algo !== 'SHA-256') {
