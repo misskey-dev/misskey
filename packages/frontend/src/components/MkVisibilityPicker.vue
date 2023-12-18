@@ -9,37 +9,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts.visibility }}
 		</div>
-		<button key="public" :disabled="isSilenced" class="_button" :class="[$style.item, { [$style.active]: v === 'public' && currentChannel == null }]" data-index="1" @click="choose('public')">
+		<button key="public" :disabled="isSilenced" class="_button" :class="[$style.item, { [$style.active]: v === 'public' &&!currentChannel }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
-		<button key="home" class="_button" :class="[$style.item, { [$style.active]: v === 'home' && currentChannel == null }]" data-index="2" @click="choose('home')">
+		<button key="home" class="_button" :class="[$style.item, { [$style.active]: v === 'home' && !currentChannel }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
-		<button key="followers" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' && currentChannel == null }]" data-index="3" @click="choose('followers')">
+		<button key="followers" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' && !currentChannel }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
-		<button key="specified" :disabled="localOnly" class="_button" :class="[$style.item, { [$style.active]: v === 'specified'&& currentChannel == null }]" data-index="4" @click="choose('specified')">
+		<button key="specified" :disabled="localOnly" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' && !currentChannel }]" data-index="4" @click="choose('specified')">
 			<div :class="$style.icon"><i class="ti ti-mail"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
-		<button v-for="channel in channels" :class="[$style.item, {[$style.active]: channel.id == currentChannel?.id}]" class="_button" @click="chooseChannel(channel)">
-			<div :class="$style.body" :style="{borderLeft: `solid 2px ${channel.color}`, paddingLeft: '8px'}">
-				<span :class="$style.itemTitle">{{ channel.name }}</span>
+		<button ref="channelsButton" class="_button" :class="[$style.item, { [$style.active]: currentChannel }]" data-index="5" @click="chooseChannel">
+			<div :class="$style.channelWrapper" :style="[currentChannel ? {borderLeftColor: `${currentChannel.color}`} : {}]">
+				<div :class="$style.icon">
+					<i class="ti ti-device-tv"></i>
+				</div>
+				<div :class="$style.body">
+					<span :class="$style.itemTitle">{{ i18n.ts._visibility.channel }}</span>
+					<span :class="$style.itemDescription">
+						<span v-if="currentChannelName">{{ i18n.t('_visibility.channelSelected', { name: currentChannelName }) }}</span>
+						<span v-else>{{ i18n.ts._visibility.channelDescription }}</span>
+					</span>
+				</div>
 			</div>
 		</button>
 	</div>
@@ -47,13 +56,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, shallowRef, ref } from 'vue';
+import { nextTick, shallowRef, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
+const channelsButton = shallowRef<InstanceType<typeof HTMLButtonElement>>();
 
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
@@ -83,19 +93,28 @@ const v = ref(props.currentVisibility);
  }
 
  */
-const channels = ref([]);
+const channels = ref<Misskey.entities.Channel[]>([]);
+const currentChannel = ref<Misskey.entities.Channel | undefined>(props.currentChannel);
+const currentChannelName = computed<string | null>(() => currentChannel.value?.name ?? null);
 
-async function getChannel() {
+async function fetchChannels() {
 	const res = await os.api('channels/my-favorites', {
 		limit: 100,
 	});
 	channels.value.splice(0, 0, ...res);
 }
 
-getChannel();
+async function chooseChannel() {
+	let selectedChannel: Misskey.entities.Channel | null = null;
+	await os.popupMenu(
+		channels.value.map(it => ({ type: 'button', text: it.name, action: (_) => selectedChannel = it })),
+		channelsButton.value,
+	);
 
-async function chooseChannel(channel: string ) {
-	emit('changeChannel', channel);
+	if (selectedChannel) {
+		emit('changeChannel', selectedChannel);
+	}
+
 	await nextTick();
 	if (modal.value) modal.value.close();
 }
@@ -107,6 +126,8 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 		if (modal.value) modal.value.close();
 	});
 }
+
+fetchChannels();
 </script>
 
 <style lang="scss" module>
@@ -189,5 +210,14 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 
 .itemDescription {
 	opacity: 0.6;
+}
+
+.channelWrapper {
+	display: flex;
+	margin-left: -6px;
+	padding-left: 4px;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: transparent;
 }
 </style>
