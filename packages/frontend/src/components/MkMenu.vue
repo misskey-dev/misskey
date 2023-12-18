@@ -37,8 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</a>
 			<button v-else-if="item.type === 'user'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
-				<div :class="$style.item_content">
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div v-if="item.indicate" :class="$style.item_content">
+					<span :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
