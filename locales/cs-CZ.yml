@@ -854,8 +854,6 @@ makeReactionsPublicDescription: "Tohle zviditelný seznam vašich předchozích 
 classic: "Klasický"
 muteThread: "Ztlumit vlákno"
 unmuteThread: "Zrušit ztlumení vlákna"
-ffVisibility: "Viditelnost Sledovaných/Sledujících"
-ffVisibilityDescription: "Umožní vám nastavit kdo uvidí koho sledujete a kdo vás sleduje."
 continueThread: "Zobrazit pokračování vlákna"
 deleteAccountConfirm: "Tohle nenávratně smaže váš účet, chcete pokračovat?"
 incorrectPassword: "Nesprávné heslo."
