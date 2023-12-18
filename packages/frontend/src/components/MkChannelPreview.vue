@@ -40,18 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkA>
 	<div
 		v-if="channel.lastNotedAt && (channel.isFavorited || channel.isFollowing) && (!lastReadedAt || Date.parse(channel.lastNotedAt) > lastReadedAt)"
-		style="
-			position: absolute;
-			top: 0;
-			right: 0;
-			transform: translate(25%, -25%);
-			background-color: var(--accent);
-			border: solid var(--bg) 4px;
-			border-radius: 100%;
-			width: 1.5rem;
-			height: 1.5rem;
-			aspect-ratio: 1 / 1;
-		"
+		class="indicator"
 	></div>
 </div>
 </template>
@@ -200,6 +189,19 @@ const bannerStyle = computed(() => {
 			padding: 8px;
 		}
 	}
+}
+
+.indicator {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(25%, -25%);
+	background-color: var(--accent);
+	border: solid var(--bg) 4px;
+	border-radius: 100%;
+	width: 1.5rem;
+	height: 1.5rem;
+	aspect-ratio: 1 / 1;
 }
 
 </style>
