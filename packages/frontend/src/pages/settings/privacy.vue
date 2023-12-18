@@ -18,7 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-		<template #caption>{{ i18n.ts.followingVisibilityDescription }}</template>
 	</MkSelect>
 
 	<MkSelect v-model="followersVisibility" @update:modelValue="save()">
@@ -26,7 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-		<template #caption>{{ i18n.ts.followersVisibilityDescription }}</template>
 	</MkSelect>
 
 	<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
