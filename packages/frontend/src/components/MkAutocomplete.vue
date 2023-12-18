@@ -359,10 +359,23 @@ function onKeydown(event: KeyboardEvent) {
 			}
 			break;
 
-		case 'Tab':
 		case 'ArrowDown':
 			cancel();
 			selectNext();
+			break;
+
+		case 'Tab':
+			if (event.shiftKey) {
+				if (select.value !== -1) {
+					cancel();
+					selectPrev();
+				} else {
+					props.close();
+				}
+			} else {
+				cancel();
+				selectNext();
+			}
 			break;
 
 		default:
