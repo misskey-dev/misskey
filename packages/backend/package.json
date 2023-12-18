@@ -121,7 +121,7 @@
 		"jsonld": "8.3.2",
 		"jsrsasign": "10.9.0",
 		"meilisearch": "0.36.0",
-		"mfm-js": "0.23.3",
+		"mfm-js": "0.24.0",
 		"microformats-parser": "2.0.2",
 		"mime-types": "2.1.35",
 		"misskey-js": "workspace:*",
