@@ -878,6 +878,8 @@ makeReactionsPublicDescription: "Ceci rendra la liste de toutes vos réactions d
 classic: "Classique"
 muteThread: "Masquer cette discussion"
 unmuteThread: "Ne plus masquer le fil"
+followingVisibility: "Visibilité des abonnements"
+followersVisibility: "Visibilité des abonnés"
 continueThread: "Afficher la suite du fil"
 deleteAccountConfirm: "Votre compte sera supprimé. Êtes vous certain ?"
 incorrectPassword: "Le mot de passe est incorrect."
@@ -1137,6 +1139,7 @@ reloadRequiredToApplySettings: "Le rafraîchissement est nécessaire pour que le
 remainingN: "Restants : {n}"
 overwriteContentConfirm: "Voulez-vous remplacer le contenu actuel ?"
 seasonalScreenEffect: "Effet d'écran saisonnier"
+decorate: "Décorer"
 _announcement:
   readConfirmTitle: "Marquer comme lu ?"
   shouldNotBeUsedToPresentPermanentInfo: "Puisque cela pourrait nuire considérablement à l'expérience utilisateur pour les nouveaux utilisateurs, il est recommandé d'utiliser les annonces pour afficher des informations temporaires plutôt que des informations persistantes."
