@@ -731,7 +731,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private isQuote(note: Option): boolean {
-		return !!note.text || !!note.cw || (note.files != null || note.files.length !== 0) || !!note.poll;
+		return !!note.text || !!note.cw || !!note.files || !!note.poll;
 	}
 
 	@bindThis
