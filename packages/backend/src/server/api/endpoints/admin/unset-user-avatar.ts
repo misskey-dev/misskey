@@ -12,6 +12,8 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 } as const;
@@ -39,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (user == null) {
 				throw new Error('user not found');
 			}
-	
+
 			if (user.avatarId == null) return;
 
 			await this.usersRepository.update(user.id, {

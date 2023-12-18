@@ -7,15 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
-	<MkTextarea v-model="localCustomCss" manualSave tall code style="tab-size: 2;">
+	<MkCodeEditor v-model="localCustomCss" manualSave lang="css">
 		<template #label>CSS</template>
-	</MkTextarea>
+	</MkCodeEditor>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { unisonReload } from '@/scripts/unison-reload.js';

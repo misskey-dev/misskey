@@ -128,8 +128,8 @@ export interface Locale {
     "pinnedEmojisForReactionSettingDescription": string;
     "pinnedEmojisSettingDescription": string;
     "emojiPickerDisplay": string;
-    "copyFromPinnedEmojisForReaction": string;
-    "copyFromPinnedEmojis": string;
+    "overwriteFromPinnedEmojisForReaction": string;
+    "overwriteFromPinnedEmojis": string;
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
     "attachCancel": string;
@@ -1182,6 +1182,8 @@ export interface Locale {
     "reloadRequiredToApplySettings": string;
     "remainingN": string;
     "overwriteContentConfirm": string;
+    "seasonalScreenEffect": string;
+    "decorate": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

@@ -20,6 +20,7 @@ import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { SnowfallEffect } from '@/scripts/snowfall-effect.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -74,6 +75,13 @@ export async function mainBoot() {
 			mainRouter.push('/search');
 		},
 	};
+
+	if (defaultStore.state.enableSeasonalScreenEffect) {
+		const month = new Date().getMonth() + 1;
+		if (month === 12 || month === 1) {
+			new SnowfallEffect().render();
+		}
+	}
 
 	if ($i) {
 		// only add post shortcuts if logged in
