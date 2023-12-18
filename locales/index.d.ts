@@ -2164,6 +2164,9 @@ export interface Locale {
         "followersDescription": string;
         "specified": string;
         "specifiedDescription": string;
+        "channel": string;
+        "channelDescription": string;
+        "channelSelected": string;
         "disableFederation": string;
         "disableFederationDescription": string;
     };
