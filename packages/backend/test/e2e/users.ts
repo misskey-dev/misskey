@@ -113,7 +113,7 @@ describe('ユーザー', () => {
 			pinnedPage: user.pinnedPage,
 			publicReactions: user.publicReactions,
 			followingVisibility: user.followingVisibility,
-			followerVisibility: user.followerVisibility,
+			followersVisibility: user.followersVisibility,
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
@@ -388,7 +388,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.pinnedPage, null);
 		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.followingVisibility, 'public');
-		assert.strictEqual(response.followerVisibility, 'public');
+		assert.strictEqual(response.followersVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
 		assert.strictEqual(response.securityKeys, false);
@@ -500,9 +500,9 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ followingVisibility: 'private' }) },
 		{ parameters: (): object => ({ followingVisibility: 'followers' }) },
 		{ parameters: (): object => ({ followingVisibility: 'public' }) },
-		{ parameters: (): object => ({ followerVisibility: 'private' }) },
-		{ parameters: (): object => ({ followerVisibility: 'followers' }) },
-		{ parameters: (): object => ({ followerVisibility: 'public' }) },
+		{ parameters: (): object => ({ followersVisibility: 'private' }) },
+		{ parameters: (): object => ({ followersVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followersVisibility: 'public' }) },
 		{ parameters: (): object => ({ mutedWords: Array(19).fill(['xxxxx']) }) },
 		{ parameters: (): object => ({ mutedWords: [['x'.repeat(194)]] }) },
 		{ parameters: (): object => ({ mutedWords: [] }) },

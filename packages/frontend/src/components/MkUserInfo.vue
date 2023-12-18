@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
 		</div>
-		<div v-if="isFollowerVisibleForMe(user)" :class="$style.statusItem">
+		<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</div>
 	</div>
@@ -40,7 +40,7 @@ import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { isFollowingVisibleForMe, isFollowerVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

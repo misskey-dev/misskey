@@ -886,8 +886,8 @@ export interface Locale {
     "unmuteThread": string;
     "followingVisibility": string;
     "followingVisibilityDescription": string;
-    "followerVisibility": string;
-    "followerVisibilityDescription": string;
+    "followersVisibility": string;
+    "followersVisibilityDescription": string;
     "continueThread": string;
     "deleteAccountConfirm": string;
     "incorrectPassword": string;

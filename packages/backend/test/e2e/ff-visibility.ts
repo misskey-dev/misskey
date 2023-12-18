@@ -26,10 +26,10 @@ describe('FF visibility', () => {
 		await app.close();
 	});
 
-	test('followingVisibility, followerVisibility がともに public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
+	test('followingVisibility, followersVisibility がともに public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
 		await api('/i/update', {
 			followingVisibility: 'public',
-			followerVisibility: 'public',
+			followersVisibility: 'public',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -45,11 +45,11 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('followingVisibility が public であれば followerVisibility の設定に関わらずユーザーのフォローを誰でも見れる', async () => {
+	test('followingVisibility が public であれば followersVisibility の設定に関わらずユーザーのフォローを誰でも見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -61,7 +61,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -73,7 +73,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -84,11 +84,11 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followerVisibility が public であれば followingVisibility の設定に関わらずユーザーのフォロワーを誰でも見れる', async () => {
+	test('followersVisibility が public であれば followingVisibility の設定に関わらずユーザーのフォロワーを誰でも見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -100,7 +100,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -112,7 +112,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -123,10 +123,10 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followingVisibility, followerVisibility がともに followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
+	test('followingVisibility, followersVisibility がともに followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await api('/i/update', {
 			followingVisibility: 'followers',
-			followerVisibility: 'followers',
+			followersVisibility: 'followers',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -142,11 +142,11 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('followingVisibility が followers なユーザーのフォローを followerVisibility の設定に関わらず自分で見れる', async () => {
+	test('followingVisibility が followers なユーザーのフォローを followersVisibility の設定に関わらず自分で見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -158,7 +158,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -170,7 +170,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -181,11 +181,11 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followerVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらず自分で見れる', async () => {
+	test('followersVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらず自分で見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -197,7 +197,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -209,7 +209,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -220,10 +220,10 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followingVisibility, followerVisibility がともに followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
+	test('followingVisibility, followersVisibility がともに followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
 		await api('/i/update', {
 			followingVisibility: 'followers',
-			followerVisibility: 'followers',
+			followersVisibility: 'followers',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -237,11 +237,11 @@ describe('FF visibility', () => {
 		assert.strictEqual(followersRes.status, 400);
 	});
 
-	test('followingVisibility が followers なユーザーのフォローを followerVisibility の設定に関わらず非フォロワーが見れない', async () => {
+	test('followingVisibility が followers なユーザーのフォローを followersVisibility の設定に関わらず非フォロワーが見れない', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -252,7 +252,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -263,7 +263,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -273,11 +273,11 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followerVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらず非フォロワーが見れない', async () => {
+	test('followersVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらず非フォロワーが見れない', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -288,7 +288,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -299,7 +299,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -309,10 +309,10 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followingVisibility, followerVisibility がともに followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
+	test('followingVisibility, followersVisibility がともに followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
 		await api('/i/update', {
 			followingVisibility: 'followers',
-			followerVisibility: 'followers',
+			followersVisibility: 'followers',
 		}, alice);
 
 		await api('/following/create', {
@@ -332,11 +332,11 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('followingVisibility が followers なユーザーのフォローを followerVisibility の設定に関わらずフォロワーが見れる', async () => {
+	test('followingVisibility が followers なユーザーのフォローを followersVisibility の設定に関わらずフォロワーが見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 			await api('/following/create', {
 				userId: alice.id,
@@ -351,7 +351,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 			await api('/following/create', {
 				userId: alice.id,
@@ -366,7 +366,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 			await api('/following/create', {
 				userId: alice.id,
@@ -380,11 +380,11 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followerVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらずフォロワーが見れる', async () => {
+	test('followersVisibility が followers なユーザーのフォロワーを followingVisibility の設定に関わらずフォロワーが見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 			await api('/following/create', {
 				userId: alice.id,
@@ -399,7 +399,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 			await api('/following/create', {
 				userId: alice.id,
@@ -414,7 +414,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 			await api('/following/create', {
 				userId: alice.id,
@@ -428,10 +428,10 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followingVisibility, followerVisibility がともに private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
+	test('followingVisibility, followersVisibility がともに private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await api('/i/update', {
 			followingVisibility: 'private',
-			followerVisibility: 'private',
+			followersVisibility: 'private',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -447,11 +447,11 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	test('followingVisibility が private なユーザーのフォローを followerVisibility の設定に関わらず自分で見れる', async () => {
+	test('followingVisibility が private なユーザーのフォローを followersVisibility の設定に関わらず自分で見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -463,7 +463,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -475,7 +475,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -486,11 +486,11 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followerVisibility が private なユーザーのフォロワーを followingVisibility の設定に関わらず自分で見れる', async () => {
+	test('followersVisibility が private なユーザーのフォロワーを followingVisibility の設定に関わらず自分で見れる', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -502,7 +502,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -514,7 +514,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -525,10 +525,10 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followingVisibility, followerVisibility がともに private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
+	test('followingVisibility, followersVisibility がともに private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
 		await api('/i/update', {
 			followingVisibility: 'private',
-			followerVisibility: 'private',
+			followersVisibility: 'private',
 		}, alice);
 
 		const followingRes = await api('/users/following', {
@@ -542,11 +542,11 @@ describe('FF visibility', () => {
 		assert.strictEqual(followersRes.status, 400);
 	});
 
-	test('followingVisibility が private なユーザーのフォローを followerVisibility の設定に関わらず他人が見れない', async () => {
+	test('followingVisibility が private なユーザーのフォローを followersVisibility の設定に関わらず他人が見れない', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'public',
+				followersVisibility: 'public',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -557,7 +557,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'followers',
+				followersVisibility: 'followers',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -568,7 +568,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followingRes = await api('/users/following', {
@@ -578,11 +578,11 @@ describe('FF visibility', () => {
 		}
 	});
 
-	test('followerVisibility が private なユーザーのフォロワーを followingVisibility の設定に関わらず他人が見れない', async () => {
+	test('followersVisibility が private なユーザーのフォロワーを followingVisibility の設定に関わらず他人が見れない', async () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'public',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -593,7 +593,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'followers',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -604,7 +604,7 @@ describe('FF visibility', () => {
 		{
 			await api('/i/update', {
 				followingVisibility: 'private',
-				followerVisibility: 'private',
+				followersVisibility: 'private',
 			}, alice);
 
 			const followersRes = await api('/users/followers', {
@@ -642,10 +642,10 @@ describe('FF visibility', () => {
 			}
 		});
 
-		test('followerVisibility が public 以外ならばAPからはフォロワーを取得できない', async () => {
+		test('followersVisibility が public 以外ならばAPからはフォロワーを取得できない', async () => {
 			{
 				await api('/i/update', {
-					followerVisibility: 'public',
+					followersVisibility: 'public',
 				}, alice);
 
 				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
@@ -653,7 +653,7 @@ describe('FF visibility', () => {
 			}
 			{
 				await api('/i/update', {
-					followerVisibility: 'followers',
+					followersVisibility: 'followers',
 				}, alice);
 
 				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
@@ -661,7 +661,7 @@ describe('FF visibility', () => {
 			}
 			{
 				await api('/i/update', {
-					followerVisibility: 'private',
+					followersVisibility: 'private',
 				}, alice);
 
 				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');

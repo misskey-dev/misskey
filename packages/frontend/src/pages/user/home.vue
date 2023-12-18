@@ -114,7 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<b>{{ number(user.followingCount) }}</b>
 							<span>{{ i18n.ts.following }}</span>
 						</MkA>
-						<MkA v-if="isFollowerVisibleForMe(user)" :to="userPage(user, 'followers')">
+						<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
 						</MkA>
@@ -173,7 +173,7 @@ import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os.js';
-import { isFollowingVisibleForMe, isFollowerVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

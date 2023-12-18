@@ -337,8 +337,8 @@ export class UserEntityService implements OnModuleInit {
 			null;
 
 		const followersCount = profile == null ? null :
-			(profile.followerVisibility === 'public') || isMe ? user.followersCount :
-			(profile.followerVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
+			(profile.followersVisibility === 'public') || isMe ? user.followersCount :
+			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
 		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
@@ -417,7 +417,7 @@ export class UserEntityService implements OnModuleInit {
 				pinnedPageId: profile!.pinnedPageId,
 				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,
 				publicReactions: profile!.publicReactions,
-				followerVisibility: profile!.followerVisibility,
+				followersVisibility: profile!.followersVisibility,
 				followingVisibility: profile!.followingVisibility,
 				twoFactorEnabled: profile!.twoFactorEnabled,
 				usePasswordLessLogin: profile!.usePasswordLessLogin,

@@ -14,11 +14,11 @@ export function isFollowingVisibleForMe(user: Misskey.entities.UserDetailed): bo
 
 	return true;
 }
-export function isFollowerVisibleForMe(user: Misskey.entities.UserDetailed): boolean {
+export function isFollowersVisibleForMe(user: Misskey.entities.UserDetailed): boolean {
 	if ($i && $i.id === user.id) return true;
 
-	if (user.followerVisibility === 'private') return false;
-	if (user.followerVisibility === 'followers' && !user.isFollowing) return false;
+	if (user.followersVisibility === 'private') return false;
+	if (user.followersVisibility === 'followers' && !user.isFollowing) return false;
 
 	return true;
 }

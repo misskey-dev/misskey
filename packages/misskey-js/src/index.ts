@@ -17,7 +17,7 @@ export const notificationTypes = consts.notificationTypes;
 export const noteVisibilities = consts.noteVisibilities;
 export const mutedNoteReasons = consts.mutedNoteReasons;
 export const followingVisibilities = consts.followingVisibilities;
-export const followerVisibilities = consts.followerVisibilities;
+export const followersVisibilities = consts.followersVisibilities;
 export const moderationLogTypes = consts.moderationLogTypes;
 
 // api extractor not supported yet

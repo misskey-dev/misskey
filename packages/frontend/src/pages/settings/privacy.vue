@@ -21,12 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.followingVisibilityDescription }}</template>
 	</MkSelect>
 
-	<MkSelect v-model="followerVisibility" @update:modelValue="save()">
-		<template #label>{{ i18n.ts.followerVisibility }}</template>
+	<MkSelect v-model="followersVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followersVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-		<template #caption>{{ i18n.ts.followerVisibilityDescription }}</template>
+		<template #caption>{{ i18n.ts.followersVisibilityDescription }}</template>
 	</MkSelect>
 
 	<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
@@ -93,7 +93,7 @@ const isExplorable = ref($i.isExplorable);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i?.followingVisibility);
-const followerVisibility = ref($i?.followerVisibility);
+const followersVisibility = ref($i?.followersVisibility);
 
 const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
@@ -110,7 +110,7 @@ function save() {
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		publicReactions: !!publicReactions.value,
 		followingVisibility: followingVisibility.value,
-		followerVisibility: followerVisibility.value,
+		followersVisibility: followersVisibility.value,
 	});
 }
 

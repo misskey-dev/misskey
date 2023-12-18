@@ -195,11 +195,11 @@ export class ActivityPubServerService {
 		//#region Check ff visibility
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-		if (profile.followerVisibility === 'private') {
+		if (profile.followersVisibility === 'private') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
-		} else if (profile.followerVisibility === 'followers') {
+		} else if (profile.followersVisibility === 'followers') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
