@@ -857,8 +857,6 @@ makeReactionsPublicDescription: "Điều này sẽ hiển thị công khai danh 
 classic: "Cổ điển"
 muteThread: "Không quan tâm nữa"
 unmuteThread: "Quan tâm tút này"
-ffVisibility: "Hiển thị Theo dõi/Người theo dõi"
-ffVisibilityDescription: "Quyết định ai có thể xem những người bạn theo dõi và những người theo dõi bạn."
 continueThread: "Tiếp tục xem chuỗi tút"
 deleteAccountConfirm: "Điều này sẽ khiến tài khoản bị xóa vĩnh viễn. Vẫn tiếp tục?"
 incorrectPassword: "Sai mật khẩu."
