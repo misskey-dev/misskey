@@ -794,6 +794,8 @@ makeReactionsPublicDescription: "আপনার পূর্ববর্তী 
 classic: "ক্লাসিক"
 muteThread: "থ্রেড মিউট করুন"
 unmuteThread: "থ্রেড আনমিউট করুন"
+ffVisibility: "অনুসরণ/অনুসরণকারীদের দৃশ্যমান্যতা"
+ffVisibilityDescription: "আপনি কাকে অনুসরণ করেন এবং কে আপনাকে অনুসরণ করে, সেটা কারা দেখতে পাবে তা নির্ধারণ করে।"
 continueThread: "আরো থ্রেড দেখুন"
 deleteAccountConfirm: "আপনার অ্যাকাউন্ট মুছে ফেলা হবে। ঠিক আছে?"
 incorrectPassword: "আপনার দেওয়া পাসওয়ার্ডটি ভুল।"

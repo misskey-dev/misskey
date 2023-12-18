@@ -874,6 +874,8 @@ makeReactionsPublicDescription: "Todas las reacciones que hayas hecho serán pú
 classic: "Clásico"
 muteThread: "Silenciar hilo"
 unmuteThread: "Mostrar hilo"
+ffVisibility: "Visibilidad de seguidores y seguidos"
+ffVisibilityDescription: "Puedes configurar quien puede ver a quienes sigues y quienes te siguen"
 continueThread: "Ver la continuación del hilo"
 deleteAccountConfirm: "La cuenta será borrada. ¿Está seguro?"
 incorrectPassword: "La contraseña es incorrecta"
