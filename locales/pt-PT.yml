@@ -858,8 +858,6 @@ makeReactionsPublicDescription: "Isto vai deixar o histórico de todas as suas r
 classic: "Clássico"
 muteThread: "Silenciar esta conversa"
 unmuteThread: "Desativar silêncio desta conversa"
-ffVisibility: "Visibilidade de Seguidos/Seguidores"
-ffVisibilityDescription: "Permite configurar quem pode ver quem lhe segue e quem você está seguindo."
 continueThread: "Ver mais desta conversa"
 deleteAccountConfirm: "Deseja realmente excluir a conta?"
 incorrectPassword: "Senha inválida."
