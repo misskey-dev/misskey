@@ -856,8 +856,6 @@ makeReactionsPublicDescription: "Список сделанных вами реа
 classic: "Классика"
 muteThread: "Скрыть цепочку"
 unmuteThread: "Отменить сокрытие цепочки"
-ffVisibility: "Видимость подписок и подписчиков"
-ffVisibilityDescription: "Здесь можно настроить, кто будет видеть ваши подписки и подписчиков."
 continueThread: "Показать следующие ответы"
 deleteAccountConfirm: "Учётная запись будет безвозвратно удалена. Подтверждаете?"
 incorrectPassword: "Пароль неверен."
