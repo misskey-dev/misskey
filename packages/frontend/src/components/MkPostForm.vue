@@ -22,18 +22,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 				<template v-if="postChannel">
 					<span><i class="ti ti-device-tv"></i></span>
-					<span v-if="postChannel" :class="$style.headerRightButtonText">{{ postChannel.name }}</span>
+					<span v-if="postChannel" :class="$style.headerRightButtonText">{{ postChannelName }}</span>
 				</template>
 				<template v-else>
-					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+					<span v-if="actualVisibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="actualVisibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="actualVisibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="actualVisibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[actualVisibility] }}</span>
 				</template>
 			</button>
-			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="postChannel != null || visibility === 'specified'" @click="toggleLocalOnly">
-				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: actualLocalOnly }]" :disabled="postChannel != null || actualVisibility === 'specified'" @click="toggleLocalOnly">
+				<span v-if="!actualLocalOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
 			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
 	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
-	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
+	<div v-if="actualVisibility === 'specified'" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
 			<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
-		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
+		<div v-if="postChannel" :class="$style.colorBar" :style="{ background: postChannel.color }"></div>
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
@@ -132,7 +132,7 @@ const modal = inject('modal');
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
 	renote?: Misskey.entities.Note;
-	channel?: Misskey.entities.Channel; // TODO
+	channel?: Misskey.entities.Channel;
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.User;
 	initialText?: string;
@@ -152,8 +152,6 @@ const props = withDefaults(defineProps<{
 	autofocus: true,
 	mock: false,
 });
-
-let postChannel = ref<Misskey.entities.Channel | null>(props.channel);
 
 provide('mock', props.mock);
 
@@ -200,6 +198,20 @@ const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'
 const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
+
+const postChannel = ref<Misskey.entities.Channel | null>(props.channel ?? null);
+const postChannelName = computed<string>(() => postChannel.value?.name ?? '');
+
+/**
+ * {@link localOnly}が持つ値にチャンネル選択有無を加味した値を計算する（チャンネル選択時は強制的にfalse）
+ * チャンネル選択有無を考慮する必要がある場面では{@link localOnly}ではなくこの値を使用する。
+ */
+const actualLocalOnly = computed<boolean>(() => postChannel.value ? true : localOnly.value);
+/**
+ * {@link visibility}が持つ値にチャンネル選択有無を加味した値を計算する（チャンネル選択時は強制的にpublic）。
+ * チャンネル選択有無を考慮する必要がある場面では{@link actualVisibility}ではなくこの値を使用する。
+ */
+const actualVisibility = computed<typeof Misskey.noteVisibilities[number]>(() => postChannel.value ? 'public' : visibility.value);
 
 const draftKey = computed((): string => {
 	let key = postChannel.value ? `channel:${postChannel.value.id}` : '';
@@ -265,7 +277,7 @@ watch(text, () => {
 	checkMissingMention();
 }, { immediate: true });
 
-watch(visibility, () => {
+watch(actualVisibility, () => {
 	checkMissingMention();
 }, { immediate: true });
 
@@ -307,11 +319,6 @@ if (props.reply && props.reply.text != null) {
 
 if ($i?.isSilenced && visibility.value === 'public') {
 	visibility.value = 'home';
-}
-
-if (postChannel.value) {
-	visibility.value = 'public';
-	localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 }
 
 // 公開以外へのリプライ時は元の公開範囲を引き継ぐ
@@ -363,7 +370,7 @@ function watchForDraft() {
 }
 
 function checkMissingMention() {
-	if (visibility.value === 'specified') {
+	if (actualVisibility.value === 'specified') {
 		const ast = mfm.parse(text.value);
 
 		for (const x of extractMentions(ast)) {
@@ -451,11 +458,12 @@ function upload(file: File, name?: string): void {
 
 function setVisibility() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
-		currentVisibility: visibility.value,
+		currentVisibility: actualVisibility.value,
 		isSilenced: $i?.isSilenced,
-		localOnly: localOnly.value,
+		// チャンネル→ダイレクトの選択変更ができなくなるので、チャンネル選択中の場合は意図的にfalseを渡すようにする
+		localOnly: postChannel.value ? false : actualLocalOnly.value,
 		src: visibilityButton.value,
-    currentChannel: postChannel.value,
+		currentChannel: postChannel.value,
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
@@ -464,21 +472,14 @@ function setVisibility() {
 				defaultStore.set('visibility', visibility.value);
 			}
 		},
-    changeChannel: channel => {
-      postChannel.value = channel;
-      visibility.value = 'public';
-      localOnly.value = true;
-    }
+		changeChannel: channel => {
+			// computedで読み替えをするので、localOnlyとvisibilityの変更はしない
+			postChannel.value = channel;
+		},
 	}, 'closed');
 }
 
 async function toggleLocalOnly() {
-	if (postChannel.value) {
-		visibility.value = 'public';
-		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
-		return;
-	}
-
 	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
 
 	if (!localOnly.value && neverShowInfo !== 'true') {
@@ -711,7 +712,8 @@ async function post(ev?: MouseEvent) {
 		text.value.includes('$[scale') ||
 		text.value.includes('$[position');
 
-	if (annoying && visibility.value === 'public') {
+	// チャンネル投稿時はサーバサイド側でpublicに変更されているため警告を出す意味がない
+	if (annoying && actualVisibility.value === 'public' && !postChannel.value) {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,
@@ -743,9 +745,9 @@ async function post(ev?: MouseEvent) {
 		channelId: postChannel.value ? postChannel.value.id : undefined,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
-		localOnly: localOnly.value,
-		visibility: visibility.value,
-		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
+		localOnly: actualLocalOnly.value,
+		visibility: actualVisibility.value,
+		visibleUserIds: actualVisibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
 		reactionAcceptance: reactionAcceptance.value,
 	};
 
