@@ -436,6 +436,7 @@ onBeforeUnmount(() => {
 
 .icon {
 	margin-right: 8px;
+	line-height: 1;
 }
 
 .caret {
