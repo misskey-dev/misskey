@@ -124,7 +124,12 @@ export interface Locale {
     "add": string;
     "reaction": string;
     "reactions": string;
-    "reactionSetting": string;
+    "emojiPicker": string;
+    "pinnedEmojisForReactionSettingDescription": string;
+    "pinnedEmojisSettingDescription": string;
+    "emojiPickerDisplay": string;
+    "overwriteFromPinnedEmojisForReaction": string;
+    "overwriteFromPinnedEmojis": string;
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
     "attachCancel": string;
@@ -264,6 +269,7 @@ export interface Locale {
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
     "resetAreYouSure": string;
+    "areYouSure": string;
     "saved": string;
     "messaging": string;
     "upload": string;
@@ -878,8 +884,8 @@ export interface Locale {
     "classic": string;
     "muteThread": string;
     "unmuteThread": string;
-    "ffVisibility": string;
-    "ffVisibilityDescription": string;
+    "followingVisibility": string;
+    "followersVisibility": string;
     "continueThread": string;
     "deleteAccountConfirm": string;
     "incorrectPassword": string;
@@ -1160,6 +1166,7 @@ export interface Locale {
     "avatarDecorations": string;
     "attach": string;
     "detach": string;
+    "detachAll": string;
     "angle": string;
     "flip": string;
     "showAvatarDecorations": string;
@@ -1173,6 +1180,10 @@ export interface Locale {
     "doReaction": string;
     "code": string;
     "reloadRequiredToApplySettings": string;
+    "remainingN": string;
+    "overwriteContentConfirm": string;
+    "seasonalScreenEffect": string;
+    "decorate": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1701,6 +1712,7 @@ export interface Locale {
             "canHideAds": string;
             "canSearchNotes": string;
             "canUseTranslator": string;
+            "avatarDecorationLimit": string;
         };
         "_condition": {
             "isLocal": string;
@@ -2181,6 +2193,7 @@ export interface Locale {
         "changeAvatar": string;
         "changeBanner": string;
         "verifiedLinkDescription": string;
+        "avatarDecorationMax": string;
     };
     "_exportOrImport": {
         "allNotes": string;

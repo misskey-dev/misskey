@@ -95,6 +95,7 @@ if (process.argv.includes("--watch")) {
 	for await (const event of watcher) {
 		const filename = event.filename?.replaceAll('\\', '/');
 		if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
+			console.log(`update ${filename} ...`)
 			locales = buildLocales();
 			await copyFrontendLocales()
 		}

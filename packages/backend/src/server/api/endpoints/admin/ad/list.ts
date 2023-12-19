@@ -12,6 +12,8 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'read:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 } as const;

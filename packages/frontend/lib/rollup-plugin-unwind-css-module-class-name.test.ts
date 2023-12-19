@@ -180,7 +180,7 @@ import './photoswipe-!~{003}~.js';
 const _hoisted_1 = createBaseVNode("i", {
   class: "ti ti-photo"
 }, null, -1);
-const _sfc_main = defineComponent({
+const index_photos = defineComponent({
   __name: "index.photos",
   props: {
     user: {}
@@ -261,7 +261,6 @@ const style0 = {
 const cssModules = {
   "$style": style0
 };
-const index_photos = _sfc_main;
 export {index_photos as default};
 `.slice(1));
 });

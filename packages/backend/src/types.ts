@@ -40,7 +40,8 @@ export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as 
 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
-export const ffVisibility = ['public', 'followers', 'private'] as const;
+export const followingVisibilities = ['public', 'followers', 'private'] as const;
+export const followersVisibilities = ['public', 'followers', 'private'] as const;
 
 export const moderationLogTypes = [
 	'updateServerSettings',
