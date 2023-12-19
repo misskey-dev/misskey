@@ -23,6 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
 					<template #label>{{ i18n.ts.angle }}</template>
 				</MkRange>
+				<MkRange v-model="offsetX" continuousUpdate :min="-0.25" :max="0.25" :step="0.025" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+					<template #label>X {{ i18n.ts.position }}</template>
+				</MkRange>
+				<MkRange v-model="offsetY" continuousUpdate :min="-0.25" :max="0.25" :step="0.025" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+					<template #label>Y {{ i18n.ts.position }}</template>
+				</MkRange>
 				<MkSwitch v-model="flipH">
 					<template #label>{{ i18n.ts.flip }}</template>
 				</MkSwitch>
@@ -32,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer" class="_buttonsCenter">
 			<MkButton v-if="usingIndex != null" primary rounded @click="update"><i class="ti ti-check"></i> {{ i18n.ts.update }}</MkButton>
 			<MkButton v-if="usingIndex != null" rounded @click="detach"><i class="ti ti-x"></i> {{ i18n.ts.detach }}</MkButton>
-			<MkButton v-else primary rounded @click="attach"><i class="ti ti-check"></i> {{ i18n.ts.attach }}</MkButton>
+			<MkButton v-else :disabled="exceeded" primary rounded @click="attach"><i class="ti ti-check"></i> {{ i18n.ts.attach }}</MkButton>
 		</div>
 	</div>
 </MkModalWindow>
@@ -64,17 +70,24 @@ const emit = defineEmits<{
 	(ev: 'attach', payload: {
 		angle: number;
 		flipH: boolean;
+		offsetX: number;
+		offsetY: number;
 	}): void;
 	(ev: 'update', payload: {
 		angle: number;
 		flipH: boolean;
+		offsetX: number;
+		offsetY: number;
 	}): void;
 	(ev: 'detach'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const exceeded = computed(() => ($i.policies.avatarDecorationLimit - $i.avatarDecorations.length) <= 0);
 const angle = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].angle : null) ?? 0);
 const flipH = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].flipH : null) ?? false);
+const offsetX = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].offsetX : null) ?? 0);
+const offsetY = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].offsetY : null) ?? 0);
 
 const decorationsForPreview = computed(() => {
 	const decoration = {
@@ -82,6 +95,8 @@ const decorationsForPreview = computed(() => {
 		url: props.decoration.url,
 		angle: angle.value,
 		flipH: flipH.value,
+		offsetX: offsetX.value,
+		offsetY: offsetY.value,
 	};
 	const decorations = [...$i.avatarDecorations];
 	if (props.usingIndex != null) {
@@ -100,6 +115,8 @@ async function update() {
 	emit('update', {
 		angle: angle.value,
 		flipH: flipH.value,
+		offsetX: offsetX.value,
+		offsetY: offsetY.value,
 	});
 	dialog.value.close();
 }
@@ -108,6 +125,8 @@ async function attach() {
 	emit('attach', {
 		angle: angle.value,
 		flipH: flipH.value,
+		offsetX: offsetX.value,
+		offsetY: offsetY.value,
 	});
 	dialog.value.close();
 }

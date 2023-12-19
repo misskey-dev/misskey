@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true" :nyaize="$i?.isCat ? 'respect' : undefined" :author="($i as Misskey.entities.UserLite)">
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>

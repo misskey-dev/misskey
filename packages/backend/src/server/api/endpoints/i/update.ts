@@ -143,6 +143,8 @@ export const paramDef = {
 				id: { type: 'string', format: 'misskey:id' },
 				angle: { type: 'number', nullable: true, maximum: 0.5, minimum: -0.5 },
 				flipH: { type: 'boolean', nullable: true },
+				offsetX: { type: 'number', nullable: true, maximum: 0.25, minimum: -0.25 },
+				offsetY: { type: 'number', nullable: true, maximum: 0.25, minimum: -0.25 },
 			},
 			required: ['id'],
 		} },
@@ -341,6 +343,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: d.id,
 					angle: d.angle ?? 0,
 					flipH: d.flipH ?? false,
+					offsetX: d.offsetX ?? 0,
+					offsetY: d.offsetY ?? 0,
 				}));
 			}
 
