@@ -1636,9 +1636,6 @@ type FetchLike = (input: string, init?: {
 type FetchRssRequest = operations['fetch-rss']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export const ffVisibility: readonly ["public", "followers", "private"];
-
-// @public (undocumented)
 type Flash = components['schemas']['Flash'];
 
 // @public (undocumented)
@@ -1676,6 +1673,9 @@ type FlashUnlikeRequest = operations['flash/unlike']['requestBody']['content']['
 
 // @public (undocumented)
 type FlashUpdateRequest = operations['flash/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+export const followersVisibilities: readonly ["public", "followers", "private"];
 
 // @public (undocumented)
 type Following = components['schemas']['Following'];
@@ -1724,6 +1724,9 @@ type FollowingUpdateRequest = operations['following/update']['requestBody']['con
 
 // @public (undocumented)
 type FollowingUpdateResponse = operations['following/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+export const followingVisibilities: readonly ["public", "followers", "private"];
 
 // @public (undocumented)
 type GalleryFeaturedRequest = operations['gallery/featured']['requestBody']['content']['application/json'];
