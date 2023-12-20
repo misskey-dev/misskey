@@ -10,6 +10,7 @@ import type { MiUser } from '@/models/User.js';
 import type { MiUserList } from '@/models/UserList.js';
 import type { MiUserListMembership } from '@/models/UserListMembership.js';
 import { IdService } from '@/core/IdService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -17,7 +18,7 @@ import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RedisKVCache } from '@/misc/cache.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class UserListService implements OnApplicationShutdown {
@@ -37,7 +38,7 @@ export class UserListService implements OnApplicationShutdown {
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		//private roleService: RoleService,
+		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
 		private proxyAccountService: ProxyAccountService,
 		private queueService: QueueService,
@@ -84,13 +85,12 @@ export class UserListService implements OnApplicationShutdown {
 
 	@bindThis
 	public async addMember(target: MiUser, list: MiUserList, me: MiUser) {
-		// 循環参照するからRoleServiceを使えない
-		//const currentCount = await this.userListMembershipsRepository.countBy({
-		//	userListId: list.id,
-		//});
-		//if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
-		//	throw new UserListService.TooManyUsersError();
-		//}
+		const currentCount = await this.userListMembershipsRepository.countBy({
+			userListId: list.id,
+		});
+		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
+			throw new UserListService.TooManyUsersError();
+		}
 
 		await this.userListMembershipsRepository.insert({
 			id: this.idService.gen(),
