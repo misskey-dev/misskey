@@ -65,8 +65,8 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 
 	const validColor = (c: string | null | undefined): string | null => {
 		if (c == null) return null;
-		// https://www.debuggex.com/r/Bb7wXENuNZZzUb2G
-		const rgbaPattern = /^([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+		// https://www.debuggex.com/r/rm2GyVlKprvXbs35
+		const rgbaPattern = /^([\da-f]{3}|([\da-f]{2}){2,4})$/i;
 		return c.match(rgbaPattern) ? c : null;
 	};
 
