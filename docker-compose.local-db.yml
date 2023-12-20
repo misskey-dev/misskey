@@ -3,15 +3,15 @@ version: "3"
 # このconfigは、 dockerでMisskey本体を起動せず、 redisとpostgresql などだけを起動します
 
 services:
-  redis:
+  keydb:
     restart: always
-    image: redis:7-alpine
+    image: eqalpha/keydb:latest
     ports:
       - "6379:6379"
     volumes:
-      - ./redis:/data
+      - ./keydb:/data
     healthcheck:
-      test: "redis-cli ping"
+      test: "keydb-cli ping"
       interval: 5s
       retries: 20
 
