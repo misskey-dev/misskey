@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput ref="announceTitleEl" v-model="announcement.title" :large="false">
 						<template #label>{{ i18n.ts.title }}&nbsp;<button v-tooltip="i18n.ts.emoji" :class="['_button']" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button></template>
 					</MkInput>
-					<MkTextarea v-model="announcement.text">
+					<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
 					<MkInput v-model="announcement.imageUrl" type="url">
@@ -100,7 +100,6 @@ import * as misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -114,6 +113,7 @@ const announceTitleEl = shallowRef<HTMLInputElement | null>(null);
 const user = ref<misskey.entities.UserLite | null>(null);
 const offset = ref(0);
 const hasMore = ref(false);
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const announcements = ref<any[]>([]);
 

@@ -54,7 +54,7 @@ watch(() => props.lang, (to) => {
 	return new Promise((resolve) => {
 		fetchLanguage(to).then(() => resolve);
 	});
-}, { immediate: true, });
+}, { immediate: true });
 </script>
 
 <style scoped lang="scss">

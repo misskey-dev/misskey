@@ -16,7 +16,7 @@ import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-type Account = Misskey.entities.MeDetailed;
+type Account = Misskey.entities.MeDetailed & { token: string };
 
 const accountData = miLocalStorage.getItem('account');
 
@@ -284,7 +284,7 @@ export async function openAccountMenu(opts: {
 			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,
 			avatar: $i,
-		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+		}, { type: 'divider' }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent' as const,
 			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,

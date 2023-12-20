@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
 		<template #header>
 			<div>
-				<XAnnouncements v-if="$i" :class="$style.announcements"/>
+				<XAnnouncements v-if="$i"/>
 				<XStatusBars :class="$style.statusbars"/>
 			</div>
 		</template>

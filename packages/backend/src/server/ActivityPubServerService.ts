@@ -138,7 +138,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const algo = match[1];
+			const algo = match[1].toUpperCase();
 			const digestValue = match[2];
 
 			if (algo !== 'SHA-256') {
@@ -493,8 +493,7 @@ export class ActivityPubServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		// addConstraintStrategy の型定義がおかしいため
-		(fastify.addConstraintStrategy as any)({
+		fastify.addConstraintStrategy({
 			name: 'apOrHtml',
 			storage() {
 				const store = {} as any;

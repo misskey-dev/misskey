@@ -77,8 +77,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:key="`custom:${child.category}`"
 				:initialShown="false"
 				:emojis="computed(() => customEmojis.filter(e => child.category === '' ? (e.category === 'null' || !e.category) : e.category === child.category).filter(filterAvailable).map(e => `:${e.name}:`))"
-        :hasChildSection="child.children.length !== 0"
-        :customEmojiTree="child.children"
+				:hasChildSection="child.children.length !== 0"
+				:customEmojiTree="child.children"
 				@chosen="chosen"
 			>
 				{{ child.category || i18n.ts.other }}
@@ -103,12 +103,12 @@ import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
-  emojilist,
-  emojiCharByCategory,
-  UnicodeEmojiDef,
-  unicodeEmojiCategories as categories,
-  getEmojiName,
-  CustomEmojiFolderTree
+	emojilist,
+	emojiCharByCategory,
+	UnicodeEmojiDef,
+	unicodeEmojiCategories as categories,
+	getEmojiName,
+	CustomEmojiFolderTree,
 } from '@/scripts/emojilist.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
@@ -121,10 +121,11 @@ import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
-	asReactionPicker?: boolean;
+  pinnedEmojis?: string[];
 	maxHeight?: number;
 	asDrawer?: boolean;
 	asWindow?: boolean;
+	asReactionPicker?: boolean; // 今は使われてないが将来的に使いそう
 }>(), {
 	showPinned: true,
 });
@@ -137,24 +138,22 @@ const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 
 const {
-	reactions: pinnedReactions,
-	reactionPickerSize,
-	reactionPickerWidth,
-	reactionPickerHeight,
-	disableShowingAnimatedImages,
+	emojiPickerScale,
+	emojiPickerWidth,
+	emojiPickerHeight,
 	recentlyUsedEmojis,
 } = defaultStore.reactiveState;
 
-const pinned = computed(() => props.asReactionPicker ? pinnedReactions.value : []); // TODO: 非リアクションの絵文字ピッカー用のpinned絵文字を設定可能にする？
-const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
-const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
-const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
+const pinned = computed(() => props.pinnedEmojis);
+const size = computed(() => emojiPickerScale.value);
+const width = computed(() => emojiPickerWidth.value);
+const height = computed(() => emojiPickerHeight.value);
 const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.EmojiSimple[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
-const customEmojiFolderRoot: CustomEmojiFolderTree = { category: "", children: [] };
+const customEmojiFolderRoot: CustomEmojiFolderTree = { category: '', children: [] };
 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
 	const parts = (input && input !== 'null' ? input : '').split(' / ');
@@ -180,9 +179,9 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
 }
 
 customEmojiCategories.value.forEach(ec => {
-  if (ec !== null) {
-    parseAndMergeCategories(ec, customEmojiFolderRoot);
-  }
+	if (ec !== null) {
+		parseAndMergeCategories(ec, customEmojiFolderRoot);
+	}
 });
 
 parseAndMergeCategories('', customEmojiFolderRoot);
@@ -332,8 +331,8 @@ watch(q, () => {
 });
 
 function filterAvailable(emoji: Misskey.entities.EmojiSimple): boolean {
-	return ((emoji.roleIdsThatCanBeUsedThisEmojiAsReaction === undefined || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)))) &&
-		((emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction === undefined || emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.length === 0) || ($i && !$i.roles.some(r => emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.includes(r.id))));
+	return ((emoji.roleIdsThatCanBeUsedThisEmojiAsReaction === undefined || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || (!!$i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction?.includes(r.id)))) &&
+		((emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction === undefined || emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.length === 0) || (!!$i && !$i.roles.some(r => emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction?.includes(r.id))));
 }
 
 function focus() {
@@ -373,7 +372,7 @@ function chosen(emoji: any, ev?: MouseEvent) {
 	emit('chosen', key);
 
 	// 最近使った絵文字更新
-	if (!pinned.value.includes(key)) {
+	if (!pinned.value?.includes(key)) {
 		let recents = defaultStore.state.recentlyUsedEmojis;
 		recents = recents.filter((emoji: any) => emoji !== key);
 		recents.unshift(key);

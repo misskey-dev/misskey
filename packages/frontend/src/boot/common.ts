@@ -8,23 +8,20 @@ import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, ui, lang, updateLocale } from '@/config.js';
+import { version, ui, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { i18n, updateI18n } from '@/i18n.js';
-import { confirm, alert, post, popup, toast } from '@/os.js';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { mainRouter } from '@/router.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -88,7 +85,7 @@ export async function common(createVue: () => App<Element>) {
 
 	//#region Detect language & fetch translations
 	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
 	if (localeOutdated) {
 		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
 		if (res.status === 200) {
