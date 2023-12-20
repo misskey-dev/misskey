@@ -881,6 +881,8 @@ makeReactionsPublicDescription: "나의 리액션을 누구나 볼 수 있게 �
 classic: "클래식"
 muteThread: "글타래 뮤트"
 unmuteThread: "글타래 뮤트 해제"
+followingVisibility: "팔로우의 공개 범위"
+followersVisibility: "팔로워의 공개 범위"
 continueThread: "글타래 더 보기"
 deleteAccountConfirm: "계정이 삭제되고 되돌릴 수 없게 됩니다. 계속하시겠습니까? "
 incorrectPassword: "비밀번호가 올바르지 않습니다."
@@ -1178,6 +1180,7 @@ reloadRequiredToApplySettings: "설정을 적용하려면 새로고침을 해야
 remainingN: "나머지: {n}"
 overwriteContentConfirm: "현재 내용을 덮어쓰기 합니다. 계속 진행하시겠습니까?"
 seasonalScreenEffect: "철에 맞는 화면으로 꾸미기"
+decorate: "장식하기"
 _announcement:
   forExistingUsers: "기존 유저에게만 알림"
   forExistingUsersDescription: "활성화하면 이 공지사항을 게시한 시점에서 이미 가입한 유저에게만 표시합니다. 비활성화하면 게시 후에 가입한 유저에게도 표시합니다."
@@ -1837,8 +1840,8 @@ _soundSettings:
   driveFileWarn: "드라이브에 있는 파일을 선택하세요."
   driveFileTypeWarn: "이 파일은 지원되지 않습니다."
   driveFileTypeWarnDescription: "오디오 파일을 선택하세요."
-  driveFileDurationWarn: "오디오가 너무 길어요."
-  driveFileDurationWarnDescription: "길은 오디오를 사용하시는 경우 미스키 사용에 지장이 갈 수도 있습니다. 그래도 괜찮습니까?"
+  driveFileDurationWarn: "오디오가 너무 깁니다"
+  driveFileDurationWarnDescription: "긴 오디오로 설정할 경우 미스키 사용에 지장이 갈 수도 있습니다. 그래도 괜찮습니까?"
 _ago:
   future: "미래"
   justNow: "방금 전"
