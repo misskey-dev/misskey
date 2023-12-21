@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
+import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, ui, lang, updateLocale, locale } from '@/config.js';
+import { version, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { i18n, updateI18n } from '@/i18n.js';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { updateI18n } from '@/i18n.js';
+import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';

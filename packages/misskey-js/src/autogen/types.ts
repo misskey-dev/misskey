@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.11.1-io.3a
- * generatedAt: 2023-12-09T22:43:31.064Z
+ * version: 2023.12.0-beta.5-io
+ * generatedAt: 2023-12-21T02:55:40.633Z
  */
 
 /**
@@ -3523,6 +3523,8 @@ export type components = {
           flipH?: boolean;
           /** Format: url */
           url: string;
+          offsetX?: number;
+          offsetY?: number;
         }[];
       isBot?: boolean;
       isCat?: boolean;
@@ -3715,6 +3717,7 @@ export type components = {
         userListLimit: number;
         userEachUserListsLimit: number;
         rateLimitFactor: number;
+        avatarDecorationLimit: number;
       };
       email?: string | null;
       emailVerified?: boolean | null;
@@ -4435,6 +4438,11 @@ export type components = {
           useDefault: boolean;
         };
         canUseTranslator: {
+          value: number | boolean;
+          priority: number;
+          useDefault: boolean;
+        };
+        avatarDecorationLimit: {
           value: number | boolean;
           priority: number;
           useDefault: boolean;
@@ -18243,6 +18251,8 @@ export type operations = {
               id: string;
               angle?: number | null;
               flipH?: boolean | null;
+              offsetX?: number | null;
+              offsetY?: number | null;
             })[];
           /** Format: misskey:id */
           bannerId?: string | null;

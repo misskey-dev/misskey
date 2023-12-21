@@ -195,11 +195,11 @@ export class ActivityPubServerService {
 		//#region Check ff visibility
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-		if (profile.ffVisibility === 'private') {
+		if (profile.followersVisibility === 'private') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
-		} else if (profile.ffVisibility === 'followers') {
+		} else if (profile.followersVisibility === 'followers') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
@@ -287,11 +287,11 @@ export class ActivityPubServerService {
 		//#region Check ff visibility
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-		if (profile.ffVisibility === 'private') {
+		if (profile.followingVisibility === 'private') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
-		} else if (profile.ffVisibility === 'followers') {
+		} else if (profile.followingVisibility === 'followers') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;

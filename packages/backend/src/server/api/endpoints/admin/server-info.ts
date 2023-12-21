@@ -17,6 +17,8 @@ export const meta = {
 
 	tags: ['admin', 'meta'],
 
+	kind: 'read:admin',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

@@ -13,12 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
 	</MkSwitch>
 
-	<MkSelect v-model="ffVisibility" @update:modelValue="save()">
-		<template #label>{{ i18n.ts.ffVisibility }}</template>
+	<MkSelect v-model="followingVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followingVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-		<template #caption>{{ i18n.ts.ffVisibilityDescription }}</template>
+	</MkSelect>
+
+	<MkSelect v-model="followersVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followersVisibility }}</template>
+		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
+		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
+		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 	</MkSelect>
 
 	<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
@@ -84,7 +90,8 @@ const preventAiLearning = ref($i.preventAiLearning);
 const isExplorable = ref($i.isExplorable);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
-const ffVisibility = ref($i.ffVisibility);
+const followingVisibility = ref($i?.followingVisibility);
+const followersVisibility = ref($i?.followersVisibility);
 
 const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
@@ -100,7 +107,8 @@ function save() {
 		isExplorable: !!isExplorable.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		publicReactions: !!publicReactions.value,
-		ffVisibility: ffVisibility.value,
+		followingVisibility: followingVisibility.value,
+		followersVisibility: followersVisibility.value,
 	});
 }
 

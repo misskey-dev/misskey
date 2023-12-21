@@ -78,6 +78,17 @@ export class FeaturedService {
 	}
 
 	@bindThis
+	private async removeFromRanking(name: string, windowRange: number, element: string): Promise<void> {
+		const currentWindow = this.getCurrentWindow(windowRange);
+		const previousWindow = currentWindow - 1;
+
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.zrem(`${name}:${currentWindow}`, element);
+		redisPipeline.zrem(`${name}:${previousWindow}`, element);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
 	public updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
 	}
@@ -125,5 +136,10 @@ export class FeaturedService {
 	@bindThis
 	public getHashtagsRanking(threshold: number): Promise<string[]> {
 		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, threshold);
+	}
+
+	@bindThis
+	public removeHashtagsFromRanking(hashtag: string): Promise<void> {
+		return this.removeFromRanking('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, hashtag);
 	}
 }
