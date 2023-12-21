@@ -97,8 +97,6 @@ describe('RoleService', () => {
 			})
 			.compile();
 
-		await app.init();
-
 		app.enableShutdownHooks();
 
 		roleService = app.get<RoleService>(RoleService);
@@ -108,6 +106,8 @@ describe('RoleService', () => {
 
 		metaService = app.get<MetaService>(MetaService) as jest.Mocked<MetaService>;
 		notificationService = app.get<NotificationService>(NotificationService) as jest.Mocked<NotificationService>;
+
+		await roleService.onModuleInit();
 	});
 
 	afterEach(async () => {
