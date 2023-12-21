@@ -73,13 +73,21 @@ describe('RoleService', () => {
 				CacheService,
 				IdService,
 				GlobalEventService,
+				{
+					provide: NotificationService,
+					useFactory: () => ({
+						createNotification: jest.fn(),
+					}),
+				},
+				{
+					provide: NotificationService.name,
+					useExisting: NotificationService,
+				},
 			],
 		})
 			.useMocker((token) => {
 				if (token === MetaService) {
 					return { fetch: jest.fn() };
-				} else if (token === NotificationService) {
-					return { createNotification: jest.fn() };
 				}
 				if (typeof token === 'function') {
 					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
@@ -88,6 +96,8 @@ describe('RoleService', () => {
 				}
 			})
 			.compile();
+
+		await app.init();
 
 		app.enableShutdownHooks();
 
@@ -284,6 +294,7 @@ describe('RoleService', () => {
 			const user = await createUser();
 			const role = await createRole({
 				isPublic: true,
+				name: 'a',
 			});
 
 			await roleService.assign(user.id, role.id);
@@ -310,6 +321,7 @@ describe('RoleService', () => {
 			const user = await createUser();
 			const role = await createRole({
 				isPublic: false,
+				name: 'a',
 			});
 
 			await roleService.assign(user.id, role.id);
