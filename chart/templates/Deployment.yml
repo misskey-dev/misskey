@@ -27,7 +27,7 @@ spec:
           ports:
             - containerPort: 3000
         - name: postgres
-          image: postgres:14-alpine
+          image: postgres:15-alpine
           env:
             - name: POSTGRES_USER
               value: "example-misskey-user"
@@ -38,7 +38,7 @@ spec:
           ports:
             - containerPort: 5432
         - name: redis
-          image: redis:alpine
+          image: redis:7-alpine
           ports:
             - containerPort: 6379
       volumes:

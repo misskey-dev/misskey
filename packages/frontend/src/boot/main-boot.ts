@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
+import { createApp, markRaw, defineAsyncComponent } from 'vue';
 import { common } from './common.js';
-import { version, ui, lang, updateLocale } from '@/config.js';
-import { i18n, updateI18n } from '@/i18n.js';
+import { ui } from '@/config.js';
+import { i18n } from '@/i18n.js';
 import { confirm, alert, post, popup, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { $i, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -20,7 +20,6 @@ import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
-import { SnowfallEffect } from '@/scripts/snowfall-effect.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -79,6 +78,7 @@ export async function mainBoot() {
 	if (defaultStore.state.enableSeasonalScreenEffect) {
 		const month = new Date().getMonth() + 1;
 		if (month === 12 || month === 1) {
+			const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
 			new SnowfallEffect().render();
 		}
 	}

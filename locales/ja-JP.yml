@@ -881,8 +881,8 @@ makeReactionsPublicDescription: "あなたがしたリアクション一覧を�
 classic: "クラシック"
 muteThread: "スレッドをミュート"
 unmuteThread: "スレッドのミュートを解除"
-ffVisibility: "つながりの公開範囲"
-ffVisibilityDescription: "自分のフォロー/フォロワー情報の公開範囲を設定できます。"
+followingVisibility: "フォローの公開範囲"
+followersVisibility: "フォロワーの公開範囲"
 continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
 incorrectPassword: "パスワードが間違っています。"
@@ -1180,6 +1180,7 @@ reloadRequiredToApplySettings: "設定の反映にはリロードが必要です
 remainingN: "残り: {n}"
 overwriteContentConfirm: "現在の内容に上書きされますがよろしいですか？"
 seasonalScreenEffect: "季節に応じた画面の演出"
+decorate: "デコる"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2226,6 +2227,7 @@ _notification:
   pollEnded: "アンケートの結果が出ました"
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
+  roleAssigned: "ロールが付与されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
   testNotification: "通知テスト"
