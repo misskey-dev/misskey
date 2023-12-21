@@ -68,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const {
 	enableInfiniteScroll,

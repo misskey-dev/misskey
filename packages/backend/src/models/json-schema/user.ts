@@ -554,9 +554,7 @@ export const packedMeDetailedOnlySchema = {
 				mention: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
-				achievementEarned: notificationRecieveConfig,
 				receiveFollowRequest: notificationRecieveConfig,
-				followRequestAccepted: notificationRecieveConfig,
 			},
 		},
 		emailNotificationTypes: {

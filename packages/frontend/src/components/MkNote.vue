@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
-					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
+					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
@@ -151,7 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';

@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
 import { GetFormResultType } from '@/scripts/form.js';

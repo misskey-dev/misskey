@@ -25,6 +25,11 @@ export const meta = {
 			id: 'cb865949-8af5-4062-a88c-ef55e8786d1d',
 		},
 	},
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'User',
+	},
 } as const;
 
 export const paramDef = {

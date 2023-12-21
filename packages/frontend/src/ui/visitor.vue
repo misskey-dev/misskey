@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ComputedRef, onMounted, provide, ref, computed } from 'vue';
 import XCommon from './_common_/common.vue';
-import { host, instanceName } from '@/config.js';
+import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';

@@ -27,6 +27,12 @@ export const meta = {
 
 	errors: {
 	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Flash',
+	},
 } as const;
 
 export const paramDef = {

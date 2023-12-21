@@ -23,8 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch, ref, shallowRef } from 'vue';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
