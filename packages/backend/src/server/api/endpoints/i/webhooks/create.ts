@@ -29,33 +29,31 @@ export const meta = {
 	},
 
 	res: {
-		items: {
-			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					format: 'misskey:id'
-				},
-				userId: {
-					type: 'string',
-					format: 'misskey:id',
-				},
-				name: { type: 'string' },
-				on: {
-					type: 'array',
-					items: {
-						type: 'string',
-						enum: webhookEventTypes,
-					}
-				},
-				url: { type: 'string' },
-				secret: { type: 'string' },
-				active: { type: 'boolean' },
-				latestSentAt: { type: 'string', format: 'date-time', nullable: true },
-				latestStatus: { type: 'integer', nullable: true },
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'misskey:id'
 			},
+			userId: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+			name: { type: 'string' },
+			on: {
+				type: 'array',
+				items: {
+					type: 'string',
+					enum: webhookEventTypes,
+				}
+			},
+			url: { type: 'string' },
+			secret: { type: 'string' },
+			active: { type: 'boolean' },
+			latestSentAt: { type: 'string', format: 'date-time', nullable: true },
+			latestStatus: { type: 'integer', nullable: true },
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
@@ -102,7 +100,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.globalEventService.publishInternalEvent('webhookCreated', webhook);
 
-			return webhook;
+			return {
+				id: webhook.id,
+				userId: webhook.userId,
+				name: webhook.name,
+				on: webhook.on,
+				url: webhook.url,
+				secret: webhook.secret,
+				active: webhook.active,
+				latestSentAt: webhook.latestSentAt?.toISOString(),
+				latestStatus: webhook.latestStatus,
+			};
 		});
 	}
 }
