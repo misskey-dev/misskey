@@ -30,8 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { instance } from '@/instance.js';
+import { ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';

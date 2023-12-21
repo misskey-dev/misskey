@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
+import { createApp, markRaw, defineAsyncComponent } from 'vue';
 import { common } from './common.js';
-import { version, ui, lang, updateLocale } from '@/config.js';
-import { i18n, updateI18n } from '@/i18n.js';
+import { ui } from '@/config.js';
+import { i18n } from '@/i18n.js';
 import { confirm, alert, post, popup, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { $i, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
