@@ -219,6 +219,8 @@ export class NotificationEntityService implements OnModuleInit {
 			});
 		}
 
+		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
+
 		return await awaitAll({
 			id: notification.id,
 			createdAt: new Date(notification.createdAt).toISOString(),
@@ -228,6 +230,9 @@ export class NotificationEntityService implements OnModuleInit {
 			...(noteIfNeed != null ? { note: noteIfNeed } : {}),
 			...(notification.type === 'reaction' ? {
 				reaction: notification.reaction,
+			} : {}),
+			...(notification.type === 'roleAssigned' ? {
+				role: role,
 			} : {}),
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,
