@@ -27,6 +27,35 @@ export const meta = {
 			id: '87a9bb19-111e-4e37-81d3-a3e7426453b0',
 		},
 	},
+
+	res: {
+		items: {
+			type: 'object',
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id'
+				},
+				userId: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+				name: { type: 'string' },
+				on: {
+					type: 'array',
+					items: {
+						type: 'string',
+						enum: webhookEventTypes,
+					}
+				},
+				url: { type: 'string' },
+				secret: { type: 'string' },
+				active: { type: 'boolean' },
+				latestSentAt: { type: 'string', format: 'date-time', nullable: true },
+				latestStatus: { type: 'integer', nullable: true },
+			},
+		},
+	}
 } as const;
 
 export const paramDef = {
