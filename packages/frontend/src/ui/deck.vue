@@ -99,7 +99,6 @@ import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, delete
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollContainer } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i } from '@/account.js';

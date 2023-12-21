@@ -45,7 +45,6 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { MenuItem } from '@/types/menu.js';
