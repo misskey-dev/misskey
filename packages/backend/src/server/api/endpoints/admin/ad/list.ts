@@ -59,8 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return ads.map(ad => ({
 				id: ad.id,
-				expiresAt: ad.expiresAt,
-				startsAt: ad.startsAt,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
 				dayOfWeek: ad.dayOfWeek,
 				url: ad.url,
 				imageUrl: ad.imageUrl,
