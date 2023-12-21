@@ -31,6 +31,7 @@
 - Feat: メールアドレスの認証にverifymail.ioを使えるように (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/971ba07a44550f68d2ba31c62066db2d43a0caed)
 - Feat: モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能を追加 (cherry-pick from https://github.com/TeamNijimiss/misskey/commit/e0eb5a752f6e5616d6312bb7c9790302f9dbff83)
 - Feat: TL上からノートが見えなくなるワードミュートであるハードミュートを追加
+- Enhance: 公開ロールにアサインされたときに通知が作成されるように
 - Enhance: アイコンデコレーションを複数設定できるように
 - Enhance: アイコンデコレーションの位置を微調整できるように
 - Enhance: つながりの公開範囲をフォロー/フォロワーで個別に設定可能に #12072
