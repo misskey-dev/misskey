@@ -299,6 +299,7 @@ describe('RoleService', () => {
 
 			await roleService.assign(user.id, role.id);
 
+			clock.uninstall();
 			await sleep(100);
 
 			const assignments = await roleAssignmentsRepository.find({
@@ -312,7 +313,7 @@ describe('RoleService', () => {
 			expect(notificationService.createNotification).toHaveBeenCalled();
 			expect(notificationService.createNotification.mock.lastCall![0]).toBe(user.id);
 			expect(notificationService.createNotification.mock.lastCall![1]).toBe('roleAssigned');
-			expect(notificationService.createNotification.mock.lastCall![2]).toBe({
+			expect(notificationService.createNotification.mock.lastCall![2]).toEqual({
 				roleId: role.id,
 			});
 		});
@@ -326,6 +327,7 @@ describe('RoleService', () => {
 
 			await roleService.assign(user.id, role.id);
 
+			clock.uninstall();
 			await sleep(100);
 
 			const assignments = await roleAssignmentsRepository.find({
