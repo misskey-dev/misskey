@@ -2325,6 +2325,7 @@ export interface Locale {
         "pollEnded": string;
         "newNote": string;
         "unreadAntennaNote": string;
+        "roleAssigned": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
         "testNotification": string;

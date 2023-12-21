@@ -19,6 +19,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { sleep } from '../utils.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
@@ -32,6 +33,7 @@ describe('RoleService', () => {
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let metaService: jest.Mocked<MetaService>;
+	let notificationService: jest.Mocked<NotificationService>;
 	let clock: lolex.InstalledClock;
 
 	function createUser(data: Partial<MiUser> = {}) {
@@ -76,6 +78,8 @@ describe('RoleService', () => {
 			.useMocker((token) => {
 				if (token === MetaService) {
 					return { fetch: jest.fn() };
+				} else if (token === NotificationService) {
+					return { createNotification: jest.fn() };
 				}
 				if (typeof token === 'function') {
 					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
@@ -93,6 +97,7 @@ describe('RoleService', () => {
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
 
 		metaService = app.get<MetaService>(MetaService) as jest.Mocked<MetaService>;
+		notificationService = app.get<NotificationService>(NotificationService) as jest.Mocked<NotificationService>;
 	});
 
 	afterEach(async () => {
@@ -271,6 +276,55 @@ describe('RoleService', () => {
 
 			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
+		});
+	});
+
+	describe('assign', () => {
+		test('公開ロールの場合は通知される', async () => {
+			const user = await createUser();
+			const role = await createRole({
+				isPublic: true,
+			});
+
+			await roleService.assign(user.id, role.id);
+
+			await sleep(100);
+
+			const assignments = await roleAssignmentsRepository.find({
+				where: {
+					userId: user.id,
+					roleId: role.id,
+				},
+			});
+			expect(assignments).toHaveLength(1);
+
+			expect(notificationService.createNotification).toHaveBeenCalled();
+			expect(notificationService.createNotification.mock.lastCall![0]).toBe(user.id);
+			expect(notificationService.createNotification.mock.lastCall![1]).toBe('roleAssigned');
+			expect(notificationService.createNotification.mock.lastCall![2]).toBe({
+				roleId: role.id,
+			});
+		});
+
+		test('非公開ロールの場合は通知されない', async () => {
+			const user = await createUser();
+			const role = await createRole({
+				isPublic: false,
+			});
+
+			await roleService.assign(user.id, role.id);
+
+			await sleep(100);
+
+			const assignments = await roleAssignmentsRepository.find({
+				where: {
+					userId: user.id,
+					roleId: role.id,
+				},
+			});
+			expect(assignments).toHaveLength(1);
+
+			expect(notificationService.createNotification).not.toHaveBeenCalled();
 		});
 	});
 });

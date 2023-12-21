@@ -21,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
