@@ -75,6 +75,14 @@ export async function mainBoot() {
 		},
 	};
 
+	if (defaultStore.state.enableSeasonalScreenEffect) {
+		const month = new Date().getMonth() + 1;
+		if (month === 12 || month === 1) {
+			const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+			new SnowfallEffect().render();
+		}
+	}
+
 	if ($i) {
 		// only add post shortcuts if logged in
 		hotkeys['p|n'] = post;
