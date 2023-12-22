@@ -84,11 +84,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 
 				<MkFolder>
-					<template #label>Disposable Email Domains</template>
+					<template #label>Banned Email Domains</template>
 
 					<div class="_gaps_m">
-						<MkTextarea v-model="disposableEmailDomains">
-							<template #label>Disposable Email Domains List</template>
+						<MkTextarea v-model="bannedEmailDomains">
+							<template #label>Banned Email Domains List</template>
 						</MkTextarea>
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
@@ -153,7 +153,7 @@ const enableIpLogging = ref<boolean>(false);
 const enableActiveEmailValidation = ref<boolean>(false);
 const enableVerifymailApi = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
-const disposableEmailDomains = ref<string>('');
+const bannedEmailDomains = ref<string>('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -174,7 +174,7 @@ async function init() {
 	enableActiveEmailValidation.value = meta.enableActiveEmailValidation;
 	enableVerifymailApi.value = meta.enableVerifymailApi;
 	verifymailAuthKey.value = meta.verifymailAuthKey;
-	disposableEmailDomains.value = meta.disposableEmailDomains.join('\n');
+	bannedEmailDomains.value = meta.bannedEmailDomains.join('\n');
 }
 
 function save() {
@@ -194,7 +194,7 @@ function save() {
 		enableActiveEmailValidation: enableActiveEmailValidation.value,
 		enableVerifymailApi: enableVerifymailApi.value,
 		verifymailAuthKey: verifymailAuthKey.value,
-		disposableEmailDomains: disposableEmailDomains.value.split('\n'),
+		bannedEmailDomains: bannedEmailDomains.value.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

@@ -155,7 +155,7 @@ export class EmailService {
 	@bindThis
 	public async validateEmailForAccount(emailAddress: string): Promise<{
 		available: boolean;
-		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp';
+		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned';
 	}> {
 		const meta = await this.metaService.fetch();
 
@@ -185,18 +185,18 @@ export class EmailService {
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
-		let manualDisposable = false;
-		manualDisposable = meta.disposableEmailDomains.some(el => {
+		let isBanned = false;
+		isBanned = meta.bannedEmailDomains.some(el => {
 			return (emailDomain.endsWith(el) || emailDomain === el);
 		});
 
-		const available = exist === 0 && validated.valid && !manualDisposable;
+		const available = exist === 0 && validated.valid && !isBanned;
 
 		return {
 			available,
 			reason: available ? null :
 			exist !== 0 ? 'used' :
-			manualDisposable ? 'disposable' :
+			isBanned ? 'banned' :
 			validated.reason === 'regex' ? 'format' :
 			validated.reason === 'disposable' ? 'disposable' :
 			validated.reason === 'mx' ? 'mx' :
