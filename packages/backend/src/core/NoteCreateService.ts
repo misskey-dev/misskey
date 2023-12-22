@@ -293,7 +293,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Check blocking
-		if (data.renote && this.isQuote(data)) {
+		if (this.isQuote(data)) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
@@ -730,9 +730,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private isQuote(note: Option): boolean {
-		// sync with misc/is-quote
-		return !!note.text || !!note.cw || (!!note.files && !!note.files.length) || !!note.poll;
+	private isQuote(note: Option): note is Option & { renote: MiNote } {
+		// sync with misc/is-quote.ts
+		return !!note.renote && (!!note.text || !!note.cw || (!!note.files && !!note.files.length) || !!note.poll);
 	}
 
 	@bindThis
