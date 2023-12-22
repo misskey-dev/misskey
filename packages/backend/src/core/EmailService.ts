@@ -9,6 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
 import { SubOutputFormat } from 'deep-email-validator/dist/output/output.js';
 import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
@@ -30,6 +31,7 @@ export class EmailService {
 
 		private metaService: MetaService,
 		private loggerService: LoggerService,
+		private utilityService: UtilityService,
 		private httpRequestService: HttpRequestService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
@@ -185,10 +187,7 @@ export class EmailService {
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
-		let isBanned = false;
-		isBanned = meta.bannedEmailDomains.some(el => {
-			return (emailDomain.endsWith(el) || emailDomain === el);
-		});
+		const isBanned = this.utilityService.isBlockedHost(meta.bannedEmailDomains, emailDomain);
 
 		const available = exist === 0 && validated.valid && !isBanned;
 
