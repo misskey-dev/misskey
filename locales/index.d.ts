@@ -2347,6 +2347,7 @@ export interface Locale {
             "pollEnded": string;
             "receiveFollowRequest": string;
             "followRequestAccepted": string;
+            "roleAssigned": string;
             "achievementEarned": string;
             "app": string;
         };
