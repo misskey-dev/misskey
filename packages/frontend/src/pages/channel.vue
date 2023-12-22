@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
-import { entities } from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
@@ -99,7 +99,7 @@ const props = defineProps<{
 }>();
 
 const tab = ref('overview');
-const channel = ref<entities.Channel | null>(null);
+const channel = ref<Misskey.entities.Channel | null>(null);
 const favorited = ref(false);
 const searchQuery = ref('');
 const searchPagination = ref();
