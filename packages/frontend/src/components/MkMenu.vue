@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-for="(item, i) in items2">
 			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
 			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
-				<span :class="$style.item_content_text">{{ item.text }}</span>
+				<span style="opacity: 0.7;">{{ item.text }}</span>
 			</span>
 			<span v-else-if="item.type === 'pending'" role="menuitem" :tabindex="i" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
@@ -279,22 +279,6 @@ onBeforeUnmount(() => {
 	}
 }
 
-.item_content {
-	width: 100%;
-	max-width: 100vw;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	text-overflow: ellipsis;
-
-	> .item_content_text {
-		max-width: calc(100vw - 4rem);
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
-}
-
 .item {
 	display: flex;
 	align-items: center;
@@ -370,10 +354,6 @@ onBeforeUnmount(() => {
 		pointer-events: none;
 		font-size: 0.7em;
 		padding-bottom: 4px;
-
-		> span {
-			opacity: 0.7;
-		}
 	}
 
 	&.pending {
@@ -401,6 +381,22 @@ onBeforeUnmount(() => {
 			}
 		}
 	}
+}
+
+.item_content {
+	width: 100%;
+	max-width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	text-overflow: ellipsis;
+}
+
+.item_content_text {
+	max-width: calc(100vw - 4rem);
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .switch {
