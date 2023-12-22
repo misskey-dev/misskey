@@ -74,11 +74,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>Enable</template>
 						</MkSwitch>
 						<MkSwitch v-model="enableVerifymailApi" @update:modelValue="save">
-							<template #label>Use Verifymail API</template>
+							<template #label>Use Verifymail.io API</template>
 						</MkSwitch>
 						<MkInput v-model="verifymailAuthKey" @update:modelValue="save">
 							<template #prefix><i class="ti ti-key"></i></template>
-							<template #label>Verifymail API Auth Key</template>
+							<template #label>Verifymail.io API Auth Key</template>
 						</MkInput>
 					</div>
 				</MkFolder>
