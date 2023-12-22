@@ -152,7 +152,7 @@
 ### General
 - Feat: アイコンデコレーション機能
 	- サーバーで用意された画像をアイコンに重ねることができます
-	- 画像のテンプレートはこちらです: https://misskey-hub.net/avatar-decoration-template.png
+	- 画像のテンプレートはこちらです: https://misskey-hub.net/brand-assets/
 		- 最大でも黄色いエリア内にデコレーションを収めることを推奨します。
 		- 画像は512x512pxを推奨します。
 - Feat: チャンネル設定にリノート／引用リノートの可否を設定できる項目を追加
@@ -169,7 +169,7 @@
 ### Client
 - Feat: プラグイン・テーマを外部サイトから直接インストールできるようになりました
 	- 外部サイトでの実装が必要です。詳細は Misskey Hub をご覧ください
-	  https://misskey-hub.net/docs/advanced/publish-on-your-website.html
+	  https://misskey-hub.net/docs/for-developers/publish-on-your-website/
 - Feat: 通知をグルーピングして表示するオプション(オプトアウト)
 - Feat: Misskeyの基本的なチュートリアルを実装
 - Feat: スワイプしてタイムラインを再読込できるように
