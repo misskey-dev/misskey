@@ -293,7 +293,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Check blocking
-		if (data.renote && this.isQuote(data)) {
+		if (this.isQuote(data)) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
@@ -730,8 +730,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private isQuote(note: Option): boolean {
-		return !!note.text || !!note.cw || !!note.files || !!note.poll;
+	private isQuote(note: Option): note is Option & { renote: MiNote } {
+		// sync with misc/is-quote.ts
+		return !!note.renote && (!!note.text || !!note.cw || (!!note.files && !!note.files.length) || !!note.poll);
 	}
 
 	@bindThis
@@ -799,7 +800,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
 		if (data.localOnly) return null;
 
-		const content = data.renote && this.isQuote(data)
+		const content = data.renote && !this.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 
