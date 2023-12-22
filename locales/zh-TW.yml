@@ -1217,7 +1217,7 @@ _initialTutorial:
   skipAreYouSure: "結束教學模式？"
   _landing:
     title: "歡迎使用本教學課程"
-    description: "在這裡您可以查看Misskey的基本使用方法和功能。"
+    description: "在這裡您可以查看 Misskey 的基本使用方法和功能。"
   _note:
     title: "什麼是貼文？"
     description: "在Misskey上發布的內容稱為「貼文」。貼文在時間軸上按時間順序排列，並即時更新。"
@@ -2171,6 +2171,7 @@ _notification:
   pollEnded: "問卷調查已產生結果"
   newNote: "新的貼文"
   unreadAntennaNote: "天線 {name}"
+  roleAssigned: "已授予角色"
   emptyPushNotificationMessage: "推送通知已更新"
   achievementEarned: "獲得成就"
   testNotification: "通知測試"

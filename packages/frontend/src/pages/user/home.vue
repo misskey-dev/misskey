@@ -171,7 +171,6 @@ import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 

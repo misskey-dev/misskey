@@ -85,7 +85,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { selectFile, selectFiles } from '@/scripts/select-file.js';
+import { selectFile } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{

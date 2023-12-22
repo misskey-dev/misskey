@@ -15,6 +15,16 @@ export const meta = {
 	kind: 'read:admin',
 
 	tags: ['admin'],
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				tablename: { type: 'string' },
+				indexname: { type: 'string' },
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

@@ -2227,6 +2227,7 @@ _notification:
   pollEnded: "アンケートの結果が出ました"
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
+  roleAssigned: "ロールが付与されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
   testNotification: "通知テスト"
@@ -2249,6 +2250,7 @@ _notification:
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
+    roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
     app: "連携アプリからの通知"
 

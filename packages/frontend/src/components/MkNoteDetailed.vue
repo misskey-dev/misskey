@@ -221,11 +221,10 @@ import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 
