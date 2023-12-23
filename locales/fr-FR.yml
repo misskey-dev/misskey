@@ -1917,6 +1917,7 @@ _notification:
     pollEnded: "Sondages se cloturant"
     receiveFollowRequest: "Demande d'abonnement reçue"
     followRequestAccepted: "Demande d'abonnement acceptée"
+    roleAssigned: "Rôle reçu"
     achievementEarned: "Accomplissement"
     app: "Notifications provenant des apps"
   _actions:

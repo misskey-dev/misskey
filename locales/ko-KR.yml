@@ -2193,6 +2193,7 @@ _notification:
     pollEnded: "투표가 종료됨"
     receiveFollowRequest: "팔로우 요청을 받았을 때"
     followRequestAccepted: "팔로우 요청이 승인되었을 때"
+    roleAssigned: "역할이 부여 됨"
     achievementEarned: "도전 과제 획득"
     app: "연동된 앱을 통한 알림"
   _actions:
