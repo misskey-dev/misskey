@@ -14,7 +14,7 @@ export class Autocomplete {
 	private suggestion: {
 		x: Ref<number>;
 		y: Ref<number>;
-		q: Ref<any>;
+		q: Ref<string | Record<string, any> | null>;
 		close: () => void;
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;
@@ -95,7 +95,7 @@ export class Autocomplete {
 
 		const isMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
-		const isMfmParam = mfmParamIndex !== -1 && !text.split(/\$\[[a-zA-Z]+\./).pop()!.includes(']');
+		const isMfmParam = mfmParamIndex !== -1 && text.split(/\$\[[a-zA-Z]+\.[a-zA-Z,=]*/).pop() === "";
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 
@@ -156,7 +156,7 @@ export class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private async open(type: string, q: any) {
+	private async open(type: string, q: string | Record<string, any> | null) {
 		if (type !== this.currentType) {
 			this.close();
 		}
