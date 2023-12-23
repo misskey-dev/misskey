@@ -276,23 +276,24 @@ export class ApiCallService implements OnApplicationShutdown {
 					id: '1384574d-a912-4b81-8601-c7b1c4085df1',
 					httpStatusCode: 401,
 				});
-			} else if (user!.isSuspended) {
-				throw new ApiError({
-					message: 'Your account has been suspended.',
-					code: 'YOUR_ACCOUNT_SUSPENDED',
-					kind: 'permission',
-					id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
-				});
 			}
 		}
 
-		if (ep.meta.prohibitMoved) {
+		if (ep.meta.prohibitDeactivated) {
 			if (user?.movedToUri) {
 				throw new ApiError({
 					message: 'You have moved your account.',
 					code: 'YOUR_ACCOUNT_MOVED',
 					kind: 'permission',
 					id: '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31',
+				});
+			}
+			if (user?.isSuspended) {
+				throw new ApiError({
+					message: 'Your account has been suspended.',
+					code: 'YOUR_ACCOUNT_SUSPENDED',
+					kind: 'permission',
+					id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
 				});
 			}
 		}

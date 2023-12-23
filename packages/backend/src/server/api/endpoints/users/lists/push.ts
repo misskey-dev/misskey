@@ -17,7 +17,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	prohibitMoved: true,
+	prohibitDeactivated: true,
 
 	kind: 'write:account',
 

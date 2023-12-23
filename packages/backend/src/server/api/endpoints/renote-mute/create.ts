@@ -17,7 +17,7 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
-	prohibitMoved: true,
+	prohibitDeactivated: true,
 
 	kind: 'write:mutes',
 

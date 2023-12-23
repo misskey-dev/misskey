@@ -17,7 +17,7 @@ import { UserListService } from '@/core/UserListService.js';
 
 export const meta = {
 	requireCredential: true,
-	prohibitMoved: true,
+	prohibitDeactivated: true,
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
