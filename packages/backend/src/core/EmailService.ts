@@ -166,11 +166,10 @@ export class EmailService {
 			email: emailAddress,
 		});
 
-		const verifymailApi = meta.enableVerifymailApi && meta.verifymailAuthKey != null;
 		let validated;
 
 		if (meta.enableActiveEmailValidation) {
-			if (verifymailApi) {
+			if (meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
 				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
 			} else {
 				validated = await validateEmail({
