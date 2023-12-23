@@ -64,6 +64,10 @@ export const meta = {
 			id: 'b234a14e-9ebe-4581-8000-074b3c215962',
 		},
 	},
+
+	res: {
+		type: 'object',
+	},
 } as const;
 
 export const paramDef = {

@@ -9,16 +9,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
-		<textarea v-model="text" :class="$style.textarea"></textarea>
+		<textarea ref="inputEl" v-model="text" :class="$style.textarea"></textarea>
 	</section>
 </XContainer>
 </template>
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { watch } from 'vue';
+import { watch, ref, shallowRef, onMounted, onUnmounted } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
+import { Autocomplete } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: any
@@ -28,13 +29,24 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-const text = $ref(props.modelValue.text ?? '');
+let autocomplete: Autocomplete;
 
-watch($$(text), () => {
+const text = ref(props.modelValue.text ?? '');
+const inputEl = shallowRef<HTMLTextAreaElement | null>(null);
+
+watch(text, () => {
 	emit('update:modelValue', {
 		...props.modelValue,
-		text,
+		text: text.value,
 	});
+});
+
+onMounted(() => {
+	autocomplete = new Autocomplete(inputEl.value, text);
+});
+
+onUnmounted(() => {
+	autocomplete.detach();
 });
 </script>
 

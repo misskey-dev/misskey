@@ -42,38 +42,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { $i } from '@/account.js';
-import { instance } from '@/instance.js';
-import MkInfo from '@/components/MkInfo.vue';
 import { useRouter } from '@/router.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const router = useRouter();
 
-let key = $ref(0);
-let searchQuery = $ref('');
-let searchOrigin = $ref('combined');
-let notePagination = $ref();
-let user = $ref(null);
-let isLocalOnly = $ref(false);
+const key = ref(0);
+const searchQuery = ref('');
+const searchOrigin = ref('combined');
+const notePagination = ref();
+const user = ref(null);
+const isLocalOnly = ref(false);
 
 function selectUser() {
 	os.selectUser().then(_user => {
-		user = _user;
+		user.value = _user;
 	});
 }
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	const query = searchQuery.value.toString().trim();
 
 	if (query == null || query === '') return;
 
@@ -95,17 +91,17 @@ async function search() {
 		return;
 	}
 
-	notePagination = {
+	notePagination.value = {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
-			query: searchQuery,
-			userId: user ? user.id : null,
+			query: searchQuery.value,
+			userId: user.value ? user.value.id : null,
 		},
 	};
 
-	if (isLocalOnly) notePagination.params.host = '.';
+	if (isLocalOnly.value) notePagination.value.params.host = '.';
 
-	key++;
+	key.value++;
 }
 </script>

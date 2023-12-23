@@ -11,8 +11,16 @@ import { RoleService } from '@/core/RoleService.js';
 export const meta = {
 	tags: ['admin', 'role'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireAdmin: true,
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Role',
+	},
 } as const;
 
 export const paramDef = {

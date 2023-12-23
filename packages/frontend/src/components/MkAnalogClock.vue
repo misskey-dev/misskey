@@ -138,45 +138,45 @@ const texts = computed(() => {
 });
 
 let enabled = true;
-let majorGraduationColor = $ref<string>();
+const majorGraduationColor = ref<string>();
 //let minorGraduationColor = $ref<string>();
-let sHandColor = $ref<string>();
-let mHandColor = $ref<string>();
-let hHandColor = $ref<string>();
-let nowColor = $ref<string>();
-let h = $ref<number>(0);
-let m = $ref<number>(0);
-let s = $ref<number>(0);
-let hAngle = $ref<number>(0);
-let mAngle = $ref<number>(0);
-let sAngle = $ref<number>(0);
-let disableSAnimate = $ref(false);
+const sHandColor = ref<string>();
+const mHandColor = ref<string>();
+const hHandColor = ref<string>();
+const nowColor = ref<string>();
+const h = ref<number>(0);
+const m = ref<number>(0);
+const s = ref<number>(0);
+const hAngle = ref<number>(0);
+const mAngle = ref<number>(0);
+const sAngle = ref<number>(0);
+const disableSAnimate = ref(false);
 let sOneRound = false;
 const sLine = ref<SVGPathElement>();
 
 function tick() {
 	const now = props.now();
 	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
-	const previousS = s;
-	const previousM = m;
-	const previousH = h;
-	s = now.getSeconds();
-	m = now.getMinutes();
-	h = now.getHours();
-	if (previousS === s && previousM === m && previousH === h) {
+	const previousS = s.value;
+	const previousM = m.value;
+	const previousH = h.value;
+	s.value = now.getSeconds();
+	m.value = now.getMinutes();
+	h.value = now.getHours();
+	if (previousS === s.value && previousM === m.value && previousH === h.value) {
 		return;
 	}
-	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
-	mAngle = Math.PI * (m + s / 60) / 30;
+	hAngle.value = Math.PI * (h.value % (props.twentyfour ? 24 : 12) + (m.value + s.value / 60) / 60) / (props.twentyfour ? 12 : 6);
+	mAngle.value = Math.PI * (m.value + s.value / 60) / 30;
 	if (sOneRound && sLine.value) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
-		sAngle = Math.PI * 60 / 30;
+		sAngle.value = Math.PI * 60 / 30;
 		defaultIdlingRenderScheduler.delete(tick);
 		sLine.value.addEventListener('transitionend', () => {
-			disableSAnimate = true;
+			disableSAnimate.value = true;
 			requestAnimationFrame(() => {
-				sAngle = 0;
+				sAngle.value = 0;
 				requestAnimationFrame(() => {
-					disableSAnimate = false;
+					disableSAnimate.value = false;
 					if (enabled) {
 						defaultIdlingRenderScheduler.add(tick);
 					}
@@ -184,9 +184,9 @@ function tick() {
 			});
 		}, { once: true });
 	} else {
-		sAngle = Math.PI * s / 30;
+		sAngle.value = Math.PI * s.value / 30;
 	}
-	sOneRound = s === 59;
+	sOneRound = s.value === 59;
 }
 
 tick();
@@ -195,12 +195,12 @@ function calcColors() {
 	const computedStyle = getComputedStyle(document.documentElement);
 	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
-	majorGraduationColor = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
+	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-	sHandColor = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
-	mHandColor = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
-	hHandColor = accent;
-	nowColor = accent;
+	sHandColor.value = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
+	mHandColor.value = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
+	hHandColor.value = accent;
+	nowColor.value = accent;
 }
 
 calcColors();

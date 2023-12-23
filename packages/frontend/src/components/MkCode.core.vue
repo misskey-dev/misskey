@@ -54,7 +54,7 @@ watch(() => props.lang, (to) => {
 	return new Promise((resolve) => {
 		fetchLanguage(to).then(() => resolve);
 	});
-}, { immediate: true, });
+}, { immediate: true });
 </script>
 
 <style scoped lang="scss">
@@ -62,7 +62,7 @@ watch(() => props.lang, (to) => {
 	padding: 1em;
 	margin: .5em 0;
 	overflow: auto;
-	border-radius: .3em;
+	border-radius: 8px;
 
 	& pre,
 	& code {

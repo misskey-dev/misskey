@@ -33,13 +33,11 @@ import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { clearCache } from '@/scripts/clear-cache.js';
 import { instance } from '@/instance.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { fetchCustomEmojis } from '@/custom-emojis.js';
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -52,14 +50,14 @@ const childInfo = ref(null);
 
 const router = useRouter();
 
-let narrow = $ref(false);
+const narrow = ref(false);
 const NARROW_THRESHOLD = 600;
 
-let currentPage = $computed(() => router.currentRef.value.child);
+const currentPage = computed(() => router.currentRef.value.child);
 
 const ro = new ResizeObserver((entries, observer) => {
 	if (entries.length === 0) return;
-	narrow = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
 });
 
 const menuDef = computed(() => [{
@@ -68,37 +66,37 @@ const menuDef = computed(() => [{
 		icon: 'ti ti-user',
 		text: i18n.ts.profile,
 		to: '/settings/profile',
-		active: currentPage?.route.name === 'profile',
+		active: currentPage.value?.route.name === 'profile',
 	}, {
 		icon: 'ti ti-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
-		active: currentPage?.route.name === 'privacy',
+		active: currentPage.value?.route.name === 'privacy',
 	}, {
 		icon: 'ti ti-mood-happy',
-		text: i18n.ts.reaction,
-		to: '/settings/reaction',
-		active: currentPage?.route.name === 'reaction',
+		text: i18n.ts.emojiPicker,
+		to: '/settings/emoji-picker',
+		active: currentPage.value?.route.name === 'emojiPicker',
 	}, {
 		icon: 'ti ti-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
-		active: currentPage?.route.name === 'drive',
+		active: currentPage.value?.route.name === 'drive',
 	}, {
 		icon: 'ti ti-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
-		active: currentPage?.route.name === 'notifications',
+		active: currentPage.value?.route.name === 'notifications',
 	}, {
 		icon: 'ti ti-mail',
 		text: i18n.ts.email,
 		to: '/settings/email',
-		active: currentPage?.route.name === 'email',
+		active: currentPage.value?.route.name === 'email',
 	}, {
 		icon: 'ti ti-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
-		active: currentPage?.route.name === 'security',
+		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
 	title: i18n.ts.clientSettings,
@@ -106,32 +104,32 @@ const menuDef = computed(() => [{
 		icon: 'ti ti-adjustments',
 		text: i18n.ts.general,
 		to: '/settings/general',
-		active: currentPage?.route.name === 'general',
+		active: currentPage.value?.route.name === 'general',
 	}, {
 		icon: 'ti ti-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
-		active: currentPage?.route.name === 'theme',
+		active: currentPage.value?.route.name === 'theme',
 	}, {
 		icon: 'ti ti-menu-2',
 		text: i18n.ts.navbar,
 		to: '/settings/navbar',
-		active: currentPage?.route.name === 'navbar',
+		active: currentPage.value?.route.name === 'navbar',
 	}, {
 		icon: 'ti ti-equal-double',
 		text: i18n.ts.statusbar,
 		to: '/settings/statusbar',
-		active: currentPage?.route.name === 'statusbar',
+		active: currentPage.value?.route.name === 'statusbar',
 	}, {
 		icon: 'ti ti-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
-		active: currentPage?.route.name === 'sounds',
+		active: currentPage.value?.route.name === 'sounds',
 	}, {
 		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
-		active: currentPage?.route.name === 'plugin',
+		active: currentPage.value?.route.name === 'plugin',
 	}],
 }, {
 	title: i18n.ts.otherSettings,
@@ -139,56 +137,50 @@ const menuDef = computed(() => [{
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,
 		to: '/settings/roles',
-		active: currentPage?.route.name === 'roles',
+		active: currentPage.value?.route.name === 'roles',
 	}, {
 		icon: 'ti ti-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
-		active: currentPage?.route.name === 'mute-block',
+		active: currentPage.value?.route.name === 'mute-block',
 	}, {
 		icon: 'ti ti-api',
 		text: 'API',
 		to: '/settings/api',
-		active: currentPage?.route.name === 'api',
+		active: currentPage.value?.route.name === 'api',
 	}, {
 		icon: 'ti ti-webhook',
 		text: 'Webhook',
 		to: '/settings/webhook',
-		active: currentPage?.route.name === 'webhook',
+		active: currentPage.value?.route.name === 'webhook',
 	}, {
 		icon: 'ti ti-package',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
-		active: currentPage?.route.name === 'import-export',
+		active: currentPage.value?.route.name === 'import-export',
 	}, {
 		icon: 'ti ti-plane',
 		text: `${i18n.ts.accountMigration}`,
 		to: '/settings/migration',
-		active: currentPage?.route.name === 'migration',
+		active: currentPage.value?.route.name === 'migration',
 	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',
-		active: currentPage?.route.name === 'other',
+		active: currentPage.value?.route.name === 'other',
 	}],
 }, {
 	items: [{
 		icon: 'ti ti-device-floppy',
 		text: i18n.ts.preferencesBackups,
 		to: '/settings/preferences-backups',
-		active: currentPage?.route.name === 'preferences-backups',
+		active: currentPage.value?.route.name === 'preferences-backups',
 	}, {
 		type: 'button',
 		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
 		action: async () => {
-			os.waiting();
-			miLocalStorage.removeItem('locale');
-			miLocalStorage.removeItem('theme');
-			miLocalStorage.removeItem('emojis');
-			miLocalStorage.removeItem('lastEmojisFetchedAt');
-			await fetchCustomEmojis(true);
-			unisonReload();
+			await clearCache();
 		},
 	}, {
 		type: 'button',
@@ -206,23 +198,23 @@ const menuDef = computed(() => [{
 	}],
 }]);
 
-watch($$(narrow), () => {
+watch(narrow, () => {
 });
 
 onMounted(() => {
 	ro.observe(el.value);
 
-	narrow = el.value.offsetWidth < NARROW_THRESHOLD;
+	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 
-	if (!narrow && currentPage?.route.name == null) {
+	if (!narrow.value && currentPage.value?.route.name == null) {
 		router.replace('/settings/profile');
 	}
 });
 
 onActivated(() => {
-	narrow = el.value.offsetWidth < NARROW_THRESHOLD;
+	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 
-	if (!narrow && currentPage?.route.name == null) {
+	if (!narrow.value && currentPage.value?.route.name == null) {
 		router.replace('/settings/profile');
 	}
 });
@@ -232,7 +224,7 @@ onUnmounted(() => {
 });
 
 watch(router.currentRef, (to) => {
-	if (to.route.name === 'settings' && to.child?.route.name == null && !narrow) {
+	if (to.route.name === 'settings' && to.child?.route.name == null && !narrow.value) {
 		router.replace('/settings/profile');
 	}
 });
@@ -244,12 +236,13 @@ provideMetadataReceiver((info) => {
 		childInfo.value = null;
 	} else {
 		childInfo.value = info;
+		INFO.value.needWideArea = info.value.needWideArea ?? undefined;
 	}
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(INFO);
 // w 890

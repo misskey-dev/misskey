@@ -12,6 +12,8 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -21,6 +23,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
+			ref: 'InviteCode',
 		},
 	},
 } as const;

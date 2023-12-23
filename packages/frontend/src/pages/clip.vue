@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide } from 'vue';
+import { computed, watch, provide, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account.js';
@@ -36,13 +36,15 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	clipId: string,
 }>();
 
-let clip: Misskey.entities.Clip = $ref<Misskey.entities.Clip>();
-let favorited = $ref(false);
+const clip = ref<Misskey.entities.Clip | null>(null);
+const favorited = ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,
 	limit: 10,
@@ -51,24 +53,24 @@ const pagination = {
 	})),
 };
 
-const isOwned: boolean | null = $computed<boolean | null>(() => $i && clip && ($i.id === clip.userId));
+const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
 watch(() => props.clipId, async () => {
-	clip = await os.api('clips/show', {
+	clip.value = await os.api('clips/show', {
 		clipId: props.clipId,
 	});
-	favorited = clip.isFavorited;
+	favorited.value = clip.value.isFavorited;
 }, {
 	immediate: true,
 });
 
-provide('currentClip', $$(clip));
+provide('currentClip', clip);
 
 function favorite() {
 	os.apiWithDialog('clips/favorite', {
 		clipId: props.clipId,
 	}).then(() => {
-		favorited = true;
+		favorited.value = true;
 	});
 }
 
@@ -81,50 +83,58 @@ async function unfavorite() {
 	os.apiWithDialog('clips/unfavorite', {
 		clipId: props.clipId,
 	}).then(() => {
-		favorited = false;
+		favorited.value = false;
 	});
 }
 
-const headerActions = $computed(() => clip && isOwned ? [{
+const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
-		const { canceled, result } = await os.form(clip.name, {
+		const { canceled, result } = await os.form(clip.value.name, {
 			name: {
 				type: 'string',
 				label: i18n.ts.name,
-				default: clip.name,
+				default: clip.value.name,
 			},
 			description: {
 				type: 'string',
 				required: false,
 				multiline: true,
+				treatAsMfm: true,
 				label: i18n.ts.description,
-				default: clip.description,
+				default: clip.value.description,
 			},
 			isPublic: {
 				type: 'boolean',
 				label: i18n.ts.public,
-				default: clip.isPublic,
+				default: clip.value.isPublic,
 			},
 		});
 		if (canceled) return;
 
 		os.apiWithDialog('clips/update', {
-			clipId: clip.id,
+			clipId: clip.value.id,
 			...result,
 		});
 
 		clipsCache.delete();
 	},
-}, ...(clip.isPublic ? [{
+}, ...(clip.value.isPublic ? [{
+	icon: 'ti ti-link',
+	text: i18n.ts.copyUrl,
+	handler: async (): Promise<void> => {
+		copyToClipboard(`${url}/clips/${clip.value.id}`);
+		os.success();
+	},
+}] : []), ...(clip.value.isPublic && isSupportShare() ? [{
 	icon: 'ti ti-share',
 	text: i18n.ts.share,
 	handler: async (): Promise<void> => {
 		navigator.share({
-			title: clip.name,
-			text: clip.description,
-			url: `${url}/clips/${clip.id}`,
+			title: clip.value.name,
+			text: clip.value.description,
+			url: `${url}/clips/${clip.value.id}`,
 		});
 	},
 }] : []), {
@@ -134,20 +144,20 @@ const headerActions = $computed(() => clip && isOwned ? [{
 	handler: async (): Promise<void> => {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.t('deleteAreYouSure', { x: clip.name }),
+			text: i18n.t('deleteAreYouSure', { x: clip.value.name }),
 		});
 		if (canceled) return;
 
 		await os.apiWithDialog('clips/delete', {
-			clipId: clip.id,
+			clipId: clip.value.id,
 		});
 
 		clipsCache.delete();
 	},
 }] : null);
 
-definePageMetadata(computed(() => clip ? {
-	title: clip.name,
+definePageMetadata(computed(() => clip.value ? {
+	title: clip.value.name,
 	icon: 'ti ti-paperclip',
 } : null));
 </script>
