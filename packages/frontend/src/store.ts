@@ -526,6 +526,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
+	disableNoteNyaize: {
+		where: 'device',
+		default: false,
+	},
 	hideLocalTimeLine: {
 		where: 'device',
 		default: false,

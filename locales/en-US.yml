@@ -1342,6 +1342,7 @@ _bubbleGame:
     section1: "Adjust the position and drop the object into the box."
     section2: "When two objects of the same type touch each other, they will change into a different object and you score points."
     section3: "The game is over when objects overflow from the box. Aim for a high score by fusing objects together while you avoid overflowing the box!"
+disableNoteNyaize: "Disable nyaize"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
