@@ -293,7 +293,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Check blocking
-		if (this.isQuote(data)) {
+		if (data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
