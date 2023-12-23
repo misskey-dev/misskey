@@ -168,7 +168,7 @@ async function done() {
         params.fileId = file.value.id;
     }
 	if (props.emoji) {
-		if (isRequest) {
+		if (isRequest.value) {
 			await os.apiWithDialog('admin/emoji/update-request', {
 				id: props.emoji.id,
 				...params,
