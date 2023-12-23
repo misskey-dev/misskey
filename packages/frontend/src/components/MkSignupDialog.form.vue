@@ -115,7 +115,6 @@ import { computed, ref, watch } from 'vue';
 import { toUnicode } from 'punycode/';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
-import MkSwitch from './MkSwitch.vue';
 import MkCaptcha, {type Captcha} from '@/components/MkCaptcha.vue';
 import * as config from '@/config.js';
 import * as os from '@/os.js';

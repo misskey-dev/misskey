@@ -24,13 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated, watch } from 'vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';

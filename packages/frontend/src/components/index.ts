@@ -24,6 +24,7 @@ import MkAd from './global/MkAd.vue';
 import MkPageHeader from './global/MkPageHeader.vue';
 import MkSpacer from './global/MkSpacer.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
+import MkLazy from './global/MkLazy.vue';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(components)) {
@@ -51,6 +52,7 @@ export const components = {
 	MkPageHeader: MkPageHeader,
 	MkSpacer: MkSpacer,
 	MkStickyContainer: MkStickyContainer,
+	MkLazy: MkLazy,
 };
 
 declare module '@vue/runtime-core' {
@@ -74,5 +76,6 @@ declare module '@vue/runtime-core' {
 		MkPageHeader: typeof MkPageHeader;
 		MkSpacer: typeof MkSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
+		MkLazy: typeof MkLazy;
 	}
 }

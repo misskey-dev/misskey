@@ -141,8 +141,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
                 <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
                 <MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
-                <MkSwitch v-model="indicatorCounterToggle">{{ i18n.ts.notificationIndicator }}</MkSwitch>
-            </div>
+				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
+			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
 					<template #label>{{ i18n.ts.emojiStyle }}</template>
@@ -326,8 +326,7 @@ const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibili
 const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
-const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
-
+const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
@@ -394,6 +393,7 @@ watch([
   FeaturedOrNote,
   showGlobalTimeline,
 	disableStreamingTimeline,
+	enableSeasonalScreenEffect,
 ], async () => {
 	await reloadAsk();
 });

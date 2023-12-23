@@ -40,11 +40,9 @@ const add = async (ev: MouseEvent) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
 	}, {
 		done: result => {
-			//TODO: emitにして追加を反映
-			// if (result.created) {
-			// 	emojisPaginationComponent.value.prepend(result.created);
-			// 	emojisPaginationComponent.value.reload();
-			// }
+			if (result.created) {
+				emojisPaginationComponent.value.prepend(result.created);
+			}
 		},
 	}, 'closed');
 };

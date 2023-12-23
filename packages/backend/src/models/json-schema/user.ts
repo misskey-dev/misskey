@@ -74,6 +74,14 @@ export const packedUserLiteSchema = {
 						format: 'url',
 						nullable: false, optional: false,
 					},
+					offsetX: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
+					offsetY: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
 				},
 			},
 		},
@@ -312,7 +320,12 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		ffVisibility: {
+		followingVisibility: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['public', 'followers', 'private'],
+		},
+		followersVisibility: {
 			type: 'string',
 			nullable: false, optional: false,
 			enum: ['public', 'followers', 'private'],
@@ -550,9 +563,7 @@ export const packedMeDetailedOnlySchema = {
 				mention: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
-				achievementEarned: notificationRecieveConfig,
 				receiveFollowRequest: notificationRecieveConfig,
-				followRequestAccepted: notificationRecieveConfig,
 			},
 		},
 		emailNotificationTypes: {
