@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                         v-for="child in customEmojiFolderRoot.children"
                         :key="`custom:${child.value}`"
                         :initialShown="false"
-                        :emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value && !customEmojis.some(emoji => emoji.category.includes(e.category+'/')) || e.category === child.category+'/'+child.category && !e.category).filter(filterAvailable).map(e => `:${e.name}:`))"
+                        :emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value &&  !customEmojis.some(emoji => emoji.category !== null && emoji.category.includes(e.category+'/')) || e.category === child.category+'/'+child.category && !e.category).filter(filterAvailable).map(e => `:${e.name}:`))"
                         :hasChildSection="child.children.length !== 0"
                         :customEmojiTree="child.children"
                         @chosen="chosen"
