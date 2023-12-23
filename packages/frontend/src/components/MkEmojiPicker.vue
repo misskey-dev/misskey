@@ -158,7 +158,7 @@ const customEmojiFolderRoot: CustomEmojiFolderTree = { value: '', category: '', 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
     const parts = input.split('/').map(p => p.trim()); // スラッシュで区切って配列にしてる
     let currentNode: CustomEmojiFolderTree = root; // currentNode は root
-    let includesPart = customEmojis.value.some(emoji => emoji.category.includes(parts[0]+'/')) ;
+    let includesPart = customEmojis.value.some(emoji => emoji.category !== null && emoji.category.includes(parts[0]+'/')) ;
     console.log(includesPart)
    if (parts.length === 1 && parts[0] !== '' && includesPart) { // parts が 1 つで空じゃなかったら
        parts.push(parts[0]) // parts に parts[0] を追加 (test category だったら test/test category になる)
