@@ -884,8 +884,8 @@ export interface Locale {
     "classic": string;
     "muteThread": string;
     "unmuteThread": string;
-    "ffVisibility": string;
-    "ffVisibilityDescription": string;
+    "followingVisibility": string;
+    "followersVisibility": string;
     "continueThread": string;
     "deleteAccountConfirm": string;
     "incorrectPassword": string;
@@ -1184,6 +1184,7 @@ export interface Locale {
     "remainingN": string;
     "overwriteContentConfirm": string;
     "seasonalScreenEffect": string;
+    "decorate": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1746,6 +1747,7 @@ export interface Locale {
         "disposable": string;
         "mx": string;
         "smtp": string;
+        "banned": string;
     };
     "_ffVisibility": {
         "public": string;
@@ -2326,6 +2328,7 @@ export interface Locale {
         "pollEnded": string;
         "newNote": string;
         "unreadAntennaNote": string;
+        "roleAssigned": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
         "testNotification": string;
@@ -2347,6 +2350,7 @@ export interface Locale {
             "pollEnded": string;
             "receiveFollowRequest": string;
             "followRequestAccepted": string;
+            "roleAssigned": string;
             "achievementEarned": string;
             "app": string;
         };

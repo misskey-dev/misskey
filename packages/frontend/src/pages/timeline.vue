@@ -45,10 +45,10 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { antennasCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { MenuItem } from '@/types/menu.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -126,12 +126,17 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 		limit: 100,
 	});
 	const items: MenuItem[] = [
-		...channels.map(channel => ({
-			type: 'link' as const,
-			text: channel.name,
-			indicate: channel.hasUnreadNote,
-			to: `/channels/${channel.id}`,
-		})),
+		...channels.map(channel => {
+			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
+			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
+
+			return {
+				type: 'link' as const,
+				text: channel.name,
+				indicate: hasUnreadNote,
+				to: `/channels/${channel.id}`,
+			};
+		}),
 		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,

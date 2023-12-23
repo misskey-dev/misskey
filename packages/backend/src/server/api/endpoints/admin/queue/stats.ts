@@ -10,6 +10,8 @@ import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, Obj
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'read:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 
