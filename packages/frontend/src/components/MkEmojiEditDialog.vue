@@ -189,7 +189,7 @@ async function done() {
 
 		dialog.value.close();
 	} else {
-		const created = isRequest
+		const created = isRequest.value
 			? await os.apiWithDialog('admin/emoji/add-request', params)
 			: await os.apiWithDialog('admin/emoji/add', params);
 

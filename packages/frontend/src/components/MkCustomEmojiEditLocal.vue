@@ -13,7 +13,7 @@
 	<MkButton inline @click="addTagBulk">Add tag</MkButton>
 	<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
 	<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
-	<MkButton inline @click="setisSensitiveBulk">Set isSensitive</MkButton>
+	<MkButton inline @click="isSensitiveBulk">Set isSensitive</MkButton>
 	<MkButton inline @click="setlocalOnlyBulk">Set localOnly</MkButton>
 	<MkButton inline danger @click="delBulk">Delete</MkButton>
 </div>
@@ -22,14 +22,14 @@
 	<template #default="{items}">
 		<div :class="$style.root">
 			<div v-for="emoji in items" :key="emoji.id">
-				<button v-if="emoji.request" class="_panel _button" :class="[{ selected: selectedEmojis.includes(emoji.id) },$style.emoji,$style.emojirequest]" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+				<button v-if="emoji.request" class="_panel _button" :class="[{ [$style.selected]: selectedEmojis.includes(emoji.id) },$style.emoji,$style.emojirequest]" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 					<img :src="emoji.url" class="img" :alt="emoji.name"/>
 					<div class="body">
 						<div class="name _monospace">{{ emoji.name }}</div>
 						<div class="info">{{ emoji.category }}</div>
 					</div>
 				</button>
-				<button v-else class="_panel _button" :class="[{ selected: selectedEmojis.includes(emoji.id) },$style.emoji]" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+				<button v-else class="_panel _button" :class="[{ [$style.selected]: selectedEmojis.includes(emoji.id) },$style.emoji]" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 					<img :src="emoji.url" :class="$style.img" :alt="emoji.name"/>
 					<div :class="$style.body">
 						<div :class="$style.name" class="_monospace">{{ emoji.name }}</div>
@@ -66,11 +66,12 @@ const pagination = {
 };
 
 const selectAll = () => {
-	if (selectedEmojis.value.length > 0) {
-		selectedEmojis.value = [];
-	} else {
-		selectedEmojis.value = emojisPaginationComponent.value.items.map(item => item.id);
-	}
+
+    if (selectedEmojis.value.length > 0) {
+        selectedEmojis.value = [];
+    } else {
+        selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values(), item => item.id);
+    }
 };
 const setisSensitiveBulk = async () => {
 	const { canceled, result } = await os.switch1({
@@ -99,6 +100,7 @@ const setlocalOnlyBulk = async () => {
 
 
 const toggleSelect = (emoji) => {
+    console.log(selectedEmojis.value)
 	if (selectedEmojis.value.includes(emoji.id)) {
 		selectedEmojis.value = selectedEmojis.value.filter(x => x !== emoji.id);
 	} else {
@@ -145,18 +147,6 @@ const setLisenceBulk = async () => {
 	await os.apiWithDialog('admin/emoji/set-license-bulk', {
 		ids: selectedEmojis.value,
 		license: result,
-	});
-	emojisPaginationComponent.value.reload();
-};
-
-const isLocalBulk = async () => {
-	const { canceled, result } = await os.inputText({
-		title: 'License',
-	});
-	if (canceled) return;
-	await os.apiWithDialog('admin/emoji/set-islocal-bulk', {
-		ids: selectedEmojis.value,
-		isLocal: result,
 	});
 	emojisPaginationComponent.value.reload();
 };
@@ -240,9 +230,10 @@ const delBulk = async () => {
     border-color: var(--inputBorderHover);
   }
 
-  &.selected {
-    border-color: var(--accent);
-  }
+
+}
+.selected {
+  border-color: var(--accent);
 }
 .img {
   width: 42px;

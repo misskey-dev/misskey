@@ -50,7 +50,7 @@ function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: () => {
-			os.apiGet('emoji-requests', { name: props.emoji.name }).then(res => {
+			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
 					text: `License: ${res.license}`,
