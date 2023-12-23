@@ -140,10 +140,9 @@ export class Autocomplete {
 			const mfmParam = text.substring(mfmParamIndex + 1);
 			if (!mfmParam.includes(' ')) {
 				this.open('mfmParam', {
-					tag: text.substring(mfmTagIndex + 1, mfmParamIndex).replace('[', ''),
+					tag: text.substring(mfmTagIndex + 2, mfmParamIndex),
 					params: mfmParam.split(','),
 				});
-				console.log(text.substring(mfmTagIndex + 1, mfmParamIndex));
 				opened = true;
 			}
 		}

@@ -187,7 +187,6 @@ function setPosition() {
 }
 
 function exec() {
-	console.log(props);
 	select.value = -1;
 	if (suggests.value) {
 		for (const el of Array.from(items.value)) {
