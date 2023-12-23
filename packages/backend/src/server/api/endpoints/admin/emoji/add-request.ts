@@ -67,9 +67,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (isDuplicate || isRequestDuplicate) throw new ApiError(meta.errors.duplicateName);
 			let driveFile;
-		 driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
+			let tmp = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			if (tmp == null) throw new ApiError(meta.errors.noSuchFile);
 
+			try {
+				driveFile = await this.driveService.uploadFromUrl({ url: tmp.url , user: null, force: true });
+			} catch (e) {
+				throw new ApiError();
+			}
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			const {ApiBase,EmojiBotToken,DiscordWebhookUrl,requestEmojiAllOk} = (await this.metaService.fetch())
 			let emoji;
