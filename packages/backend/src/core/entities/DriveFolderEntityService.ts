@@ -11,6 +11,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class DriveFolderEntityService {
@@ -20,6 +21,8 @@ export class DriveFolderEntityService {
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		private idService: IdService,
 	) {
 	}
 
@@ -38,7 +41,7 @@ export class DriveFolderEntityService {
 
 		return await awaitAll({
 			id: folder.id,
-			createdAt: folder.createdAt.toISOString(),
+			createdAt: this.idService.parse(folder.id).date.toISOString(),
 			name: folder.name,
 			parentId: folder.parentId,
 

@@ -104,8 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const userList = await this.userListsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
 			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));

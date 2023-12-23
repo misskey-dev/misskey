@@ -13,12 +13,6 @@ export class MiAd {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Ad.',
-	})
-	public createdAt: Date;
-
-	@Index()
-	@Column('timestamp with time zone', {
 		comment: 'The expired date of the Ad.',
 	})
 	public expiresAt: Date;

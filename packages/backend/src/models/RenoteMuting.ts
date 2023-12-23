@@ -14,12 +14,6 @@ export class MiRenoteMuting {
 	public id: string;
 
 	@Index()
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the Muting.',
-	})
-	public createdAt: Date;
-
-	@Index()
 	@Column({
 		...id(),
 		comment: 'The mutee user ID.',

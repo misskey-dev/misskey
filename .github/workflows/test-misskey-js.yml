@@ -16,17 +16,17 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.5.1]
+        node-version: [20.10.0]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
 
       - run: corepack enable
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3.8.1
+        uses: actions/setup-node@v4.0.1
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'

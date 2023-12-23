@@ -10,6 +10,7 @@ import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class NoteFavoriteEntityService {
 		private noteFavoritesRepository: NoteFavoritesRepository,
 
 		private noteEntityService: NoteEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -31,7 +33,7 @@ export class NoteFavoriteEntityService {
 
 		return {
 			id: favorite.id,
-			createdAt: favorite.createdAt.toISOString(),
+			createdAt: this.idService.parse(favorite.id).date.toISOString(),
 			noteId: favorite.noteId,
 			note: await this.noteEntityService.pack(favorite.note ?? favorite.noteId, me),
 		};

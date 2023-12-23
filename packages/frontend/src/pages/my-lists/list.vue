@@ -68,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const {
 	enableInfiniteScroll,
@@ -79,7 +79,7 @@ const props = defineProps<{
 }>();
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
-let list = $ref<Misskey.entities.UserList | null>(null);
+const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
 const membershipsPagination = {
@@ -94,17 +94,17 @@ function fetchList() {
 	os.api('users/lists/show', {
 		listId: props.listId,
 	}).then(_list => {
-		list = _list;
-		name.value = list.name;
-		isPublic.value = list.isPublic;
+		list.value = _list;
+		name.value = list.value.name;
+		isPublic.value = list.value.isPublic;
 	});
 }
 
 function addUser() {
 	os.selectUser().then(user => {
-		if (!list) return;
+		if (!list.value) return;
 		os.apiWithDialog('users/lists/push', {
-			listId: list.id,
+			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
 			paginationEl.value.reload();
@@ -118,9 +118,9 @@ async function removeUser(item, ev) {
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
-			if (!list) return;
+			if (!list.value) return;
 			os.api('users/lists/pull', {
-				listId: list.id,
+				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
 				paginationEl.value.removeItem(item.id);
@@ -135,7 +135,7 @@ async function showMembershipMenu(item, ev) {
 		icon: item.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
 		action: async () => {
 			os.api('users/lists/update-membership', {
-				listId: list.id,
+				listId: list.value.id,
 				userId: item.userId,
 				withReplies: !item.withReplies,
 			}).then(() => {
@@ -149,42 +149,42 @@ async function showMembershipMenu(item, ev) {
 }
 
 async function deleteList() {
-	if (!list) return;
+	if (!list.value) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: list.name }),
+		text: i18n.t('removeAreYouSure', { x: list.value.name }),
 	});
 	if (canceled) return;
 
 	await os.apiWithDialog('users/lists/delete', {
-		listId: list.id,
+		listId: list.value.id,
 	});
 	userListsCache.delete();
 	mainRouter.push('/my/lists');
 }
 
 async function updateSettings() {
-	if (!list) return;
+	if (!list.value) return;
 	await os.apiWithDialog('users/lists/update', {
-		listId: list.id,
+		listId: list.value.id,
 		name: name.value,
 		isPublic: isPublic.value,
 	});
 
 	userListsCache.delete();
 
-	list.name = name.value;
-	list.isPublic = isPublic.value;
+	list.value.name = name.value;
+	list.value.isPublic = isPublic.value;
 }
 
 watch(() => props.listId, fetchList, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => list ? {
-	title: list.name,
+definePageMetadata(computed(() => list.value ? {
+	title: list.value.name,
 	icon: 'ti ti-list',
 } : null));
 </script>

@@ -505,6 +505,7 @@ function appendFile(file: Misskey.entities.DriveFile) {
 function appendFolder(folderToAppend: Misskey.entities.DriveFolder) {
 	addFolder(folderToAppend);
 }
+
 /*
 function prependFile(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
@@ -615,7 +616,7 @@ function getMenu() {
 		type: 'switch',
 		text: i18n.ts.keepOriginalUploading,
 		ref: keepOriginal,
-	}, null, {
+	}, { type: 'divider' }, {
 		text: i18n.ts.addFile,
 		type: 'label',
 	}, {
@@ -626,7 +627,7 @@ function getMenu() {
 		text: i18n.ts.fromUrl,
 		icon: 'ti ti-link',
 		action: () => { urlUpload(); },
-	}, null, {
+	}, { type: 'divider' }, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
 	}, folder.value ? {

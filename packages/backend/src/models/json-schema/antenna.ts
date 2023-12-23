@@ -67,6 +67,11 @@ export const packedAntennaSchema = {
 			optional: false, nullable: false,
 			default: false,
 		},
+		localOnly: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			default: false,
+		},
 		notify: {
 			type: 'boolean',
 			optional: false, nullable: false,

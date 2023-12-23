@@ -12,8 +12,21 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'read:admin',
+
 	requireCredential: true,
 	requireModerator: true,
+	res: {
+		type: 'array',
+		optional: false,
+		nullable: false,
+		items: {
+			type: 'object',
+			optional: false,
+			nullable: false,
+			ref: 'Ad',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -22,7 +35,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
-		publishing: { type: 'boolean', default: false },
+		publishing: { type: 'boolean', default: null, nullable: true },
 	},
 	required: [],
 } as const;
@@ -37,12 +50,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.adsRepository.createQueryBuilder('ad'), ps.sinceId, ps.untilId);
-			if (ps.publishing) {
+			if (ps.publishing === true) {
 				query.andWhere('ad.expiresAt > :now', { now: new Date() }).andWhere('ad.startsAt <= :now', { now: new Date() });
+			} else if (ps.publishing === false) {
+				query.andWhere('ad.expiresAt <= :now', { now: new Date() }).orWhere('ad.startsAt > :now', { now: new Date() });
 			}
 			const ads = await query.limit(ps.limit).getMany();
 
-			return ads;
+			return ads.map(ad => ({
+				id: ad.id,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
+				dayOfWeek: ad.dayOfWeek,
+				url: ad.url,
+				imageUrl: ad.imageUrl,
+				memo: ad.memo,
+				place: ad.place,
+				priority: ad.priority,
+				ratio: ad.ratio,
+			}));
 		});
 	}
 }

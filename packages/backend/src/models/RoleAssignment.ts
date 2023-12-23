@@ -14,11 +14,6 @@ export class MiRoleAssignment {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the RoleAssignment.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column({
 		...id(),

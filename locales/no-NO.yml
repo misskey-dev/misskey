@@ -102,7 +102,6 @@ clickToShow: "Klikk for å vise"
 add: "Legg til"
 reaction: "Reaksjon"
 reactions: "Reaksjoner"
-reactionSetting: "Reaksjoner som vises i reaksjonsvelgeren"
 reactionSettingDescription2: "Dra for å endre rekkefølgen, klikk for å slette, trykk \"+\" for å legge til."
 rememberNoteVisibility: "Husk innstillingene for synlighet av Notes"
 attachCancel: "Fjern vedlegg"
@@ -601,9 +600,6 @@ _time:
   minute: "Minutter"
   hour: "Timer"
   day: "Dager"
-_timelineTutorial:
-  title: "Hvordan bruke Misskey"
-  step2_2: "Hva med å skrive en selvpresentasjon, eller bare \"Hei {name}!\" hvis du ikke har lyst?"
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:

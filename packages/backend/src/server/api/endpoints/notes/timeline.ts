@@ -5,8 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { NotesRepository, FollowingsRepository, MiNote } from '@/models/_.js';
+import type { NotesRepository, ChannelFollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -14,7 +13,10 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { MiLocalUser } from '@/models/User.js';
+import { MetaService } from '@/core/MetaService.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -40,6 +42,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 		includeMyRenotes: { type: 'boolean', default: true },
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
@@ -52,84 +55,193 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		private noteEntityService: NoteEntityService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
+		private userFollowingService: UserFollowingService,
+		private queryService: QueryService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const [
-				followings,
-				userIdsWhoMeMuting,
-				userIdsWhoMeMutingRenotes,
-				userIdsWhoBlockingMe,
-			] = await Promise.all([
-				this.cacheService.userFollowingsCache.fetch(me.id),
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.renoteMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-			]);
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 
-			let timeline: MiNote[] = [];
+			const serverSettings = await this.metaService.fetch();
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			if (!serverSettings.enableFanoutTimeline) {
+				const timeline = await this.getFromDb({
+					untilId,
+					sinceId,
+					limit: ps.limit,
+					includeMyRenotes: ps.includeMyRenotes,
+					includeRenotedMyNotes: ps.includeRenotedMyNotes,
+					includeLocalRenotes: ps.includeLocalRenotes,
+					withFiles: ps.withFiles,
+					withRenotes: ps.withRenotes,
+				}, me);
 
-			const noteIds = await this.redisForTimelines.xrevrange(
-				ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit,
-			).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId));
+				process.nextTick(() => {
+					this.activeUsersChart.read(me);
+				});
 
-			if (noteIds.length === 0) {
-				return [];
+				return await this.noteEntityService.packMany(timeline, me);
 			}
 
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
+			const [
+				followings,
+			] = await Promise.all([
+				this.cacheService.userFollowingsCache.fetch(me.id),
+			]);
 
-			timeline = await query.getMany();
-
-			timeline = timeline.filter(note => {
-				if (note.userId === me.id) {
-					return true;
-				}
-				if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
-				if (isUserRelated(note, userIdsWhoMeMuting)) return false;
-				if (note.renoteId) {
-					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
-						if (isUserRelated(note, userIdsWhoMeMutingRenotes)) return false;
-						if (ps.withRenotes === false) return false;
+			const timeline = this.fanoutTimelineEndpointService.timeline({
+				untilId,
+				sinceId,
+				limit: ps.limit,
+				allowPartial: ps.allowPartial,
+				me,
+				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
+				redisTimelines: ps.withFiles ? [`homeTimelineWithFiles:${me.id}`] : [`homeTimeline:${me.id}`],
+				alwaysIncludeMyNotes: true,
+				excludePureRenotes: !ps.withRenotes,
+				noteFilter: note => {
+					if (note.reply && note.reply.visibility === 'followers') {
+						if (!Object.hasOwn(followings, note.reply.userId)) return false;
 					}
-				}
-				if (note.reply && note.reply.visibility === 'followers') {
-					if (!Object.hasOwn(followings, note.reply.userId)) return false;
-				}
 
-				return true;
+					return true;
+				},
+				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
+					untilId,
+					sinceId,
+					limit,
+					includeMyRenotes: ps.includeMyRenotes,
+					includeRenotedMyNotes: ps.includeRenotedMyNotes,
+					includeLocalRenotes: ps.includeLocalRenotes,
+					withFiles: ps.withFiles,
+					withRenotes: ps.withRenotes,
+				}, me),
 			});
-
-			// TODO: フィルタした結果件数が足りなかった場合の対応
-
-			timeline.sort((a, b) => a.id > b.id ? -1 : 1);
 
 			process.nextTick(() => {
 				this.activeUsersChart.read(me);
 			});
 
-			return await this.noteEntityService.packMany(timeline, me);
+			return timeline;
 		});
+	}
+
+	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser) {
+		const followees = await this.userFollowingService.getFollowees(me.id);
+		const followingChannels = await this.channelFollowingsRepository.find({
+			where: {
+				followerId: me.id,
+			},
+		});
+
+		//#region Construct query
+		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
+
+		if (followees.length > 0 && followingChannels.length > 0) {
+			// ユーザー・チャンネルともにフォローあり
+			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
+			const followingChannelIds = followingChannels.map(x => x.followeeId);
+			query.andWhere(new Brackets(qb => {
+				qb
+					.where(new Brackets(qb2 => {
+						qb2
+							.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds })
+							.andWhere('note.channelId IS NULL');
+					}))
+					.orWhere('note.channelId IN (:...followingChannelIds)', { followingChannelIds });
+			}));
+		} else if (followees.length > 0) {
+			// ユーザーフォローのみ（チャンネルフォローなし）
+			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
+			query
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+		} else if (followingChannels.length > 0) {
+			// チャンネルフォローのみ（ユーザーフォローなし）
+			const followingChannelIds = followingChannels.map(x => x.followeeId);
+			query.andWhere(new Brackets(qb => {
+				qb
+					.where('note.channelId IN (:...followingChannelIds)', { followingChannelIds })
+					.orWhere('note.userId = :meId', { meId: me.id });
+			}));
+		} else {
+			// フォローなし
+			query
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.userId = :meId', { meId: me.id });
+		}
+
+		query.andWhere(new Brackets(qb => {
+			qb
+				.where('note.replyId IS NULL') // 返信ではない
+				.orWhere(new Brackets(qb => {
+					qb // 返信だけど投稿者自身への返信
+						.where('note.replyId IS NOT NULL')
+						.andWhere('note.replyUserId = note.userId');
+				}));
+		}));
+
+		this.queryService.generateVisibilityQuery(query, me);
+		this.queryService.generateMutedUserQuery(query, me);
+		this.queryService.generateBlockedUserQuery(query, me);
+		this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+		if (ps.includeMyRenotes === false) {
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.userId != :meId', { meId: me.id });
+				qb.orWhere('note.renoteId IS NULL');
+				qb.orWhere('note.text IS NOT NULL');
+				qb.orWhere('note.fileIds != \'{}\'');
+				qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+			}));
+		}
+
+		if (ps.includeRenotedMyNotes === false) {
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.renoteUserId != :meId', { meId: me.id });
+				qb.orWhere('note.renoteId IS NULL');
+				qb.orWhere('note.text IS NOT NULL');
+				qb.orWhere('note.fileIds != \'{}\'');
+				qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+			}));
+		}
+
+		if (ps.includeLocalRenotes === false) {
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.renoteUserHost IS NOT NULL');
+				qb.orWhere('note.renoteId IS NULL');
+				qb.orWhere('note.text IS NOT NULL');
+				qb.orWhere('note.fileIds != \'{}\'');
+				qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+			}));
+		}
+
+		if (ps.withFiles) {
+			query.andWhere('note.fileIds != \'{}\'');
+		}
+
+		if (ps.withRenotes === false) {
+			query.andWhere('note.renoteId IS NULL');
+		}
+		//#endregion
+
+		return await query.limit(ps.limit).getMany();
 	}
 }

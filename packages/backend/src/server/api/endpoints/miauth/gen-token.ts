@@ -59,8 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Insert access token doc
 			await this.accessTokensRepository.insert({
-				id: this.idService.genId(),
-				createdAt: now,
+				id: this.idService.gen(now.getTime()),
 				lastUsedAt: now,
 				session: ps.session,
 				userId: me.id,

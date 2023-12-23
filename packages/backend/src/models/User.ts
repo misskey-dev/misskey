@@ -15,12 +15,6 @@ export class MiUser {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the User.',
-	})
-	public createdAt: Date;
-
-	@Index()
-	@Column('timestamp with time zone', {
 		nullable: true,
 		comment: 'The updated date of the User.',
 	})
@@ -143,6 +137,17 @@ export class MiUser {
 		length: 128, nullable: true,
 	})
 	public bannerBlurhash: string | null;
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public avatarDecorations: {
+		id: string;
+		angle?: number;
+		flipH?: boolean;
+		offsetX?: number;
+		offsetY?: number;
+	}[];
 
 	@Index()
 	@Column('varchar', {

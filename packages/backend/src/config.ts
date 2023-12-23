@@ -263,7 +263,7 @@ export function loadConfig(): Config {
 		clientEmbedEntry: clientManifest['src/embed/init.ts'],
 		clientManifestExists: clientManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
-		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 300,
+		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
 	};

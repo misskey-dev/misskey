@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_panel" :class="$style.content">
 				<div>
 					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i"/>
+					<Mfm v-if="note.text" :text="note.text" :author="note.user"/>
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
 				<div v-if="note.files.length > 0" :class="$style.richcontent">
@@ -28,28 +28,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { onUpdated } from 'vue';
+import { onUpdated, ref, shallowRef } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import * as os from '@/os.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
-import { $i } from '@/account.js';
 
-let notes = $ref<Misskey.entities.Note[]>([]);
-let isScrolling = $ref(false);
-let scrollEl = $shallowRef<HTMLElement>();
+const notes = ref<Misskey.entities.Note[]>([]);
+const isScrolling = ref(false);
+const scrollEl = shallowRef<HTMLElement>();
 
 os.apiGet('notes/featured').then(_notes => {
-	notes = _notes;
+	notes.value = _notes;
 });
 
 onUpdated(() => {
-	if (!scrollEl) return;
-	const container = getScrollContainer(scrollEl);
+	if (!scrollEl.value) return;
+	const container = getScrollContainer(scrollEl.value);
 	const containerHeight = container ? container.clientHeight : window.innerHeight;
-	if (scrollEl.offsetHeight > containerHeight) {
-		isScrolling = true;
+	if (scrollEl.value.offsetHeight > containerHeight) {
+		isScrolling.value = true;
 	}
 });
 </script>

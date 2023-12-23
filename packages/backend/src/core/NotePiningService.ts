@@ -71,14 +71,13 @@ export class NotePiningService {
 		}
 
 		await this.userNotePiningsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			userId: user.id,
 			noteId: note.id,
 		} as MiUserNotePining);
 
 		// Deliver to remote followers
-		if (this.userEntityService.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user) && !note.localOnly && ['public', 'home'].includes(note.visibility)) {
 			this.deliverPinnedChange(user.id, note.id, true);
 		}
 	}
@@ -106,7 +105,7 @@ export class NotePiningService {
 		});
 
 		// Deliver to remote followers
-		if (this.userEntityService.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user) && !note.localOnly && ['public', 'home'].includes(note.visibility)) {
 			this.deliverPinnedChange(user.id, noteId, false);
 		}
 	}

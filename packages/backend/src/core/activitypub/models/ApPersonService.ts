@@ -269,7 +269,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
-		const isBot = getApType(object) === 'Service';
+		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -295,10 +295,9 @@ export class ApPersonService implements OnModuleInit {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new MiUser({
-					id: this.idService.genId(),
+					id: this.idService.gen(),
 					avatarId: null,
 					bannerId: null,
-					createdAt: new Date(),
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
 					isLocked: person.manuallyApprovesFollowers,
@@ -320,9 +319,17 @@ export class ApPersonService implements OnModuleInit {
 					emojis,
 				})) as MiRemoteUser;
 
+				let _description: string | null = null;
+
+				if (person._misskey_summary) {
+					_description = truncate(person._misskey_summary, summaryLength);
+				} else if (person.summary) {
+					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+				}
+
 				await transactionalEntityManager.save(new MiUserProfile({
 					userId: user.id,
-					description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
+					description: _description,
 					url,
 					fields,
 					birthday: bday?.[0] ?? null,
@@ -449,7 +456,7 @@ export class ApPersonService implements OnModuleInit {
 			emojis: emojiNames,
 			name: truncate(person.name, nameLength),
 			tags,
-			isBot: getApType(object) === 'Service',
+			isBot: getApType(object) === 'Service' || getApType(object) === 'Application',
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
@@ -488,10 +495,18 @@ export class ApPersonService implements OnModuleInit {
 			});
 		}
 
+		let _description: string | null = null;
+
+		if (person._misskey_summary) {
+			_description = truncate(person._misskey_summary, summaryLength);
+		} else if (person.summary) {
+			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+		}
+
 		await this.userProfilesRepository.update({ userId: exist.id }, {
 			url,
 			fields,
-			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
+			description: _description,
 			birthday: bday?.[0] ?? null,
 			location: person['vcard:Address'] ?? null,
 		});
@@ -607,8 +622,7 @@ export class ApPersonService implements OnModuleInit {
 			for (const note of featuredNotes.filter((note): note is MiNote => note != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(MiUserNotePining, {
-					id: this.idService.genId(new Date(Date.now() + td)),
-					createdAt: new Date(),
+					id: this.idService.gen(Date.now() + td),
 					userId: user.id,
 					noteId: note.id,
 				});

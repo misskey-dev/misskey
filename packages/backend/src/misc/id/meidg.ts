@@ -29,12 +29,16 @@ function getRandom() {
 	return str;
 }
 
-export function genMeidg(date: Date): string {
-	return 'g' + getTime(date.getTime()) + getRandom();
+export function genMeidg(t: number): string {
+	return 'g' + getTime(t) + getRandom();
 }
 
 export function parseMeidg(id: string): { date: Date; } {
 	return {
 		date: new Date(parseInt(id.slice(1, 12), 16)),
 	};
+}
+
+export function isSafeMeidgT(t: number): boolean {
+	return t > 0;
 }

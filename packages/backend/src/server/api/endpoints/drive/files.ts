@@ -69,8 +69,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			switch (ps.sort) {
-				case '+createdAt': query.orderBy('file.createdAt', 'DESC'); break;
-				case '-createdAt': query.orderBy('file.createdAt', 'ASC'); break;
+				case '+createdAt': query.orderBy('file.id', 'DESC'); break;
+				case '-createdAt': query.orderBy('file.id', 'ASC'); break;
 				case '+name': query.orderBy('file.name', 'DESC'); break;
 				case '-name': query.orderBy('file.name', 'ASC'); break;
 				case '+size': query.orderBy('file.size', 'DESC'); break;

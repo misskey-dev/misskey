@@ -27,6 +27,12 @@ export const meta = {
 
 	errors: {
 	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Flash',
+	},
 } as const;
 
 export const paramDef = {
@@ -53,9 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const flash = await this.flashsRepository.insert({
-				id: this.idService.genId(),
+				id: this.idService.gen(),
 				userId: me.id,
-				createdAt: new Date(),
 				updatedAt: new Date(),
 				title: ps.title,
 				summary: ps.summary,

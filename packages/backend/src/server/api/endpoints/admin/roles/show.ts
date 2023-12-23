@@ -13,6 +13,8 @@ import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 export const meta = {
 	tags: ['admin', 'role'],
 
+	kind: 'read:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -22,6 +24,12 @@ export const meta = {
 			code: 'NO_SUCH_ROLE',
 			id: '07dc7d34-c0d8-49b7-96c6-db3ce64ee0b3',
 		},
+	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Role',
 	},
 } as const;
 

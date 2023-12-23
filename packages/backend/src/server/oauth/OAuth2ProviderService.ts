@@ -325,8 +325,7 @@ export class OAuth2ProviderService {
 
 				// NOTE: we don't have a setup for automatic token expiration
 				await accessTokensRepository.insert({
-					id: idService.genId(),
-					createdAt: now,
+					id: idService.gen(now.getTime()),
 					lastUsedAt: now,
 					userId: granted.userId,
 					token: accessToken,

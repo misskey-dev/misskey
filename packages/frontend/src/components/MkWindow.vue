@@ -53,10 +53,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide } from 'vue';
+import { onBeforeUnmount, onMounted, provide, shallowRef, ref } from 'vue';
 import contains from '@/scripts/contains.js';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu';
+import { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 
@@ -107,18 +107,18 @@ const emit = defineEmits<{
 
 provide('inWindow', true);
 
-let rootEl = $shallowRef<HTMLElement | null>();
-let showing = $ref(true);
+const rootEl = shallowRef<HTMLElement | null>();
+const showing = ref(true);
 let beforeClickedAt = 0;
-let maximized = $ref(false);
-let minimized = $ref(false);
+const maximized = ref(false);
+const minimized = ref(false);
 let unResizedTop = '';
 let unResizedLeft = '';
 let unResizedWidth = '';
 let unResizedHeight = '';
 
 function close() {
-	showing = false;
+	showing.value = false;
 }
 
 function onKeydown(evt) {
@@ -137,46 +137,46 @@ function onContextmenu(ev: MouseEvent) {
 
 // 最前面へ移動
 function top() {
-	if (rootEl) {
-		rootEl.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low');
+	if (rootEl.value) {
+		rootEl.value.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low');
 	}
 }
 
 function maximize() {
-	maximized = true;
-	unResizedTop = rootEl.style.top;
-	unResizedLeft = rootEl.style.left;
-	unResizedWidth = rootEl.style.width;
-	unResizedHeight = rootEl.style.height;
-	rootEl.style.top = '0';
-	rootEl.style.left = '0';
-	rootEl.style.width = '100%';
-	rootEl.style.height = '100%';
+	maximized.value = true;
+	unResizedTop = rootEl.value.style.top;
+	unResizedLeft = rootEl.value.style.left;
+	unResizedWidth = rootEl.value.style.width;
+	unResizedHeight = rootEl.value.style.height;
+	rootEl.value.style.top = '0';
+	rootEl.value.style.left = '0';
+	rootEl.value.style.width = '100%';
+	rootEl.value.style.height = '100%';
 }
 
 function unMaximize() {
-	maximized = false;
-	rootEl.style.top = unResizedTop;
-	rootEl.style.left = unResizedLeft;
-	rootEl.style.width = unResizedWidth;
-	rootEl.style.height = unResizedHeight;
+	maximized.value = false;
+	rootEl.value.style.top = unResizedTop;
+	rootEl.value.style.left = unResizedLeft;
+	rootEl.value.style.width = unResizedWidth;
+	rootEl.value.style.height = unResizedHeight;
 }
 
 function minimize() {
-	minimized = true;
-	unResizedWidth = rootEl.style.width;
-	unResizedHeight = rootEl.style.height;
-	rootEl.style.width = minWidth + 'px';
-	rootEl.style.height = props.mini ? '32px' : '39px';
+	minimized.value = true;
+	unResizedWidth = rootEl.value.style.width;
+	unResizedHeight = rootEl.value.style.height;
+	rootEl.value.style.width = minWidth + 'px';
+	rootEl.value.style.height = props.mini ? '32px' : '39px';
 }
 
 function unMinimize() {
-	const main = rootEl;
+	const main = rootEl.value;
 	if (main == null) return;
 
-	minimized = false;
-	rootEl.style.width = unResizedWidth;
-	rootEl.style.height = unResizedHeight;
+	minimized.value = false;
+	rootEl.value.style.width = unResizedWidth;
+	rootEl.value.style.height = unResizedHeight;
 	const browserWidth = window.innerWidth;
 	const browserHeight = window.innerHeight;
 	const windowWidth = main.offsetWidth;
@@ -192,7 +192,7 @@ function onBodyMousedown() {
 }
 
 function onDblClick() {
-	if (minimized) {
+	if (minimized.value) {
 		unMinimize();
 	} else {
 		maximize();
@@ -205,7 +205,7 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 	let beforeMaximized = false;
 
-	if (maximized) {
+	if (maximized.value) {
 		beforeMaximized = true;
 		unMaximize();
 	}
@@ -219,7 +219,7 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 	beforeClickedAt = Date.now();
 
-	const main = rootEl;
+	const main = rootEl.value;
 	if (main == null) return;
 
 	if (!contains(main, document.activeElement)) main.focus();
@@ -251,8 +251,8 @@ function onHeaderMousedown(evt: MouseEvent) {
 		// 右はみ出し
 		if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
 
-		rootEl.style.left = moveLeft + 'px';
-		rootEl.style.top = moveTop + 'px';
+		rootEl.value.style.left = moveLeft + 'px';
+		rootEl.value.style.top = moveTop + 'px';
 	}
 
 	if (beforeMaximized) {
@@ -270,7 +270,7 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 // 上ハンドル掴み時
 function onTopHandleMousedown(evt) {
-	const main = rootEl;
+	const main = rootEl.value;
 	// どういうわけかnullになることがある
 	if (main == null) return;
 
@@ -298,7 +298,7 @@ function onTopHandleMousedown(evt) {
 
 // 右ハンドル掴み時
 function onRightHandleMousedown(evt) {
-	const main = rootEl;
+	const main = rootEl.value;
 	if (main == null) return;
 
 	const base = evt.clientX;
@@ -323,7 +323,7 @@ function onRightHandleMousedown(evt) {
 
 // 下ハンドル掴み時
 function onBottomHandleMousedown(evt) {
-	const main = rootEl;
+	const main = rootEl.value;
 	if (main == null) return;
 
 	const base = evt.clientY;
@@ -348,7 +348,7 @@ function onBottomHandleMousedown(evt) {
 
 // 左ハンドル掴み時
 function onLeftHandleMousedown(evt) {
-	const main = rootEl;
+	const main = rootEl.value;
 	if (main == null) return;
 
 	const base = evt.clientX;
@@ -400,27 +400,27 @@ function onBottomLeftHandleMousedown(evt) {
 // 高さを適用
 function applyTransformHeight(height) {
 	if (height > window.innerHeight) height = window.innerHeight;
-	rootEl.style.height = height + 'px';
+	rootEl.value.style.height = height + 'px';
 }
 
 // 幅を適用
 function applyTransformWidth(width) {
 	if (width > window.innerWidth) width = window.innerWidth;
-	rootEl.style.width = width + 'px';
+	rootEl.value.style.width = width + 'px';
 }
 
 // Y座標を適用
 function applyTransformTop(top) {
-	rootEl.style.top = top + 'px';
+	rootEl.value.style.top = top + 'px';
 }
 
 // X座標を適用
 function applyTransformLeft(left) {
-	rootEl.style.left = left + 'px';
+	rootEl.value.style.left = left + 'px';
 }
 
 function onBrowserResize() {
-	const main = rootEl;
+	const main = rootEl.value;
 	if (main == null) return;
 
 	const position = main.getBoundingClientRect();
@@ -438,8 +438,8 @@ onMounted(() => {
 	applyTransformWidth(props.initialWidth);
 	if (props.initialHeight) applyTransformHeight(props.initialHeight);
 
-	applyTransformTop((window.innerHeight / 2) - (rootEl.offsetHeight / 2));
-	applyTransformLeft((window.innerWidth / 2) - (rootEl.offsetWidth / 2));
+	applyTransformTop((window.innerHeight / 2) - (rootEl.value.offsetHeight / 2));
+	applyTransformLeft((window.innerWidth / 2) - (rootEl.value.offsetWidth / 2));
 
 	// 他のウィンドウ内のボタンなどを押してこのウィンドウが開かれた場合、親が最前面になろうとするのでそれに隠されないようにする
 	top();

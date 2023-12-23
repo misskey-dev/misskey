@@ -12,6 +12,8 @@ import { MetaService } from '@/core/MetaService.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireAdmin: true,
 } as const;
@@ -20,18 +22,26 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		pinnedUsers: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		hiddenTags: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		blockedHosts: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
-		sensitiveWords: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
+		pinnedUsers: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		hiddenTags: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		blockedHosts: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		sensitiveWords: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -67,9 +77,11 @@ export const paramDef = {
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
-		langs: { type: 'array', items: {
-			type: 'string',
-		} },
+		langs: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		summalyProxy: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
@@ -86,8 +98,8 @@ export const paramDef = {
 		tosUrl: { type: 'string', nullable: true },
 		repositoryUrl: { type: 'string' },
 		feedbackUrl: { type: 'string' },
-		impressumUrl: { type: 'string' },
-		privacyPolicyUrl: { type: 'string' },
+		impressumUrl: { type: 'string', nullable: true },
+		privacyPolicyUrl: { type: 'string', nullable: true },
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
@@ -103,17 +115,30 @@ export const paramDef = {
 		objectStorageS3ForcePathStyle: { type: 'boolean' },
 		enableIpLogging: { type: 'boolean' },
 		enableActiveEmailValidation: { type: 'boolean' },
+		enableVerifymailApi: { type: 'boolean' },
+		verifymailAuthKey: { type: 'string', nullable: true },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
+		bannedEmailDomains: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
+		enableFanoutTimeline: { type: 'boolean' },
+		enableFanoutTimelineDbFallback: { type: 'boolean' },
 		perLocalUserUserTimelineCacheMax: { type: 'integer' },
 		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
 		perUserHomeTimelineCacheMax: { type: 'integer' },
 		perUserListTimelineCacheMax: { type: 'integer' },
+		notesPerOneAd: { type: 'integer' },
+		silencedHosts: {
+			type: 'array',
+			nullable: true,
+			items: {
+				type: 'string',
+			},
+		},
 	},
 	required: [],
 } as const;
@@ -146,7 +171,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
-
+			if (Array.isArray(ps.silencedHosts)) {
+				let lastValue = '';
+				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
+				});
+			}
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
@@ -427,6 +459,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 			}
 
+			if (ps.enableVerifymailApi !== undefined) {
+				set.enableVerifymailApi = ps.enableVerifymailApi;
+			}
+
+			if (ps.verifymailAuthKey !== undefined) {
+				if (ps.verifymailAuthKey === '') {
+					set.verifymailAuthKey = null;
+				} else {
+					set.verifymailAuthKey = ps.verifymailAuthKey;
+				}
+			}
+
 			if (ps.enableChartsForRemoteUser !== undefined) {
 				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
 			}
@@ -455,6 +499,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.manifestJsonOverride = ps.manifestJsonOverride;
 			}
 
+			if (ps.enableFanoutTimeline !== undefined) {
+				set.enableFanoutTimeline = ps.enableFanoutTimeline;
+			}
+
+			if (ps.enableFanoutTimelineDbFallback !== undefined) {
+				set.enableFanoutTimelineDbFallback = ps.enableFanoutTimelineDbFallback;
+			}
+
 			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
 				set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
 			}
@@ -469,6 +521,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.perUserListTimelineCacheMax !== undefined) {
 				set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
+			}
+
+			if (ps.notesPerOneAd !== undefined) {
+				set.notesPerOneAd = ps.notesPerOneAd;
+			}
+
+			if (ps.bannedEmailDomains !== undefined) {
+				set.bannedEmailDomains = ps.bannedEmailDomains;
 			}
 
 			const before = await this.metaService.fetch(true);

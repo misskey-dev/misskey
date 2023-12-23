@@ -13,11 +13,6 @@ export class MiFollowRequest {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the FollowRequest.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column({
 		...id(),
@@ -49,6 +44,11 @@ export class MiFollowRequest {
 		comment: 'id of Follow Activity.',
 	})
 	public requestId: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public withReplies: boolean;
 
 	//#region Denormalized fields
 	@Column('varchar', {

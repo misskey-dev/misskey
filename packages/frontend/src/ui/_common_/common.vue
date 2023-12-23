@@ -63,21 +63,22 @@ const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = $ref<Misskey.entities.Notification[]>([]);
+const notifications = ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
 	if (document.visibilityState === 'visible') {
-		if (!isClient) {
+		if (!isClient && notification.type !== 'test') {
+			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
 			useStream().send('readNotification');
 		}
 
-		notifications.unshift(notification);
+		notifications.value.unshift(notification);
 		window.setTimeout(() => {
-			if (notifications.length > 3) notifications.pop();
+			if (notifications.value.length > 3) notifications.value.pop();
 		}, 500);
 
 		window.setTimeout(() => {
-			notifications = notifications.filter(x => x.id !== notification.id);
+			notifications.value = notifications.value.filter(x => x.id !== notification.id);
 		}, 6000);
 	}
 

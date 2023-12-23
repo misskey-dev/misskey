@@ -12,11 +12,6 @@ export class MiModerationLog {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the ModerationLog.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column(id())
 	public userId: MiUser['id'];

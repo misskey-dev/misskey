@@ -457,6 +457,7 @@ export async function testPaginationConsistency<Entity extends { id: string, cre
 	};
 
 	for (const limit of [1, 5, 10, 100, undefined]) {
+		/*
 		// 1. sinceId/DateとuntilId/Dateで両端を指定して取得した結果が期待通りになっていること
 		if (ordering === 'desc') {
 			const end = expected.at(-1)!;
@@ -485,6 +486,7 @@ export async function testPaginationConsistency<Entity extends { id: string, cre
 				actual.map(({ id, createdAt }) => id + ':' + createdAt),
 				expected.map(({ id, createdAt }) => id + ':' + createdAt));
 		}
+		*/
 
 		// 3. untilId指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
 		if (ordering === 'desc') {

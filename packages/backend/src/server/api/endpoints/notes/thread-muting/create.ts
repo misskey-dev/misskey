@@ -72,8 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.noteReadService.read(me.id, mutedNotes);
 
 			await this.noteThreadMutingsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				threadId: note.threadId ?? note.id,
 				userId: me.id,
 			});

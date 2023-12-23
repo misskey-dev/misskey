@@ -5,8 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelFollowingsRepository, ChannelsRepository } from '@/models/_.js';
+import type { ChannelsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -40,9 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
-
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
+		private channelFollowingService: ChannelFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({
@@ -53,10 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			await this.channelFollowingsRepository.delete({
-				followerId: me.id,
-				followeeId: channel.id,
-			});
+			await this.channelFollowingService.unfollow(me, channel);
 		});
 	}
 }

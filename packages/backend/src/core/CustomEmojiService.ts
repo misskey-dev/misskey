@@ -69,7 +69,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,
@@ -331,7 +331,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		const queryOrNull = async () => (await this.emojisRepository.findOneBy({
 			name,
-			host: host ?? IsNull(),
+			host,
 		})) ?? null;
 
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);

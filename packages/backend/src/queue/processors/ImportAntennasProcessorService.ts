@@ -43,6 +43,7 @@ const validate = new Ajv().compile({
 			type: 'string',
 		} },
 		caseSensitive: { type: 'boolean' },
+		localOnly: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 		notify: { type: 'boolean' },
@@ -76,8 +77,7 @@ export class ImportAntennasProcessorService {
 					continue;
 				}
 				const result = await this.antennasRepository.insert({
-					id: this.idService.genId(),
-					createdAt: now,
+					id: this.idService.gen(now.getTime()),
 					lastUsedAt: now,
 					userId: job.data.user.id,
 					name: antenna.name,
@@ -87,6 +87,7 @@ export class ImportAntennasProcessorService {
 					excludeKeywords: antenna.excludeKeywords,
 					users: (antenna.src === 'list' && antenna.userListAccts !== null ? antenna.userListAccts : antenna.users).filter(Boolean),
 					caseSensitive: antenna.caseSensitive,
+					localOnly: antenna.localOnly,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
 					notify: antenna.notify,

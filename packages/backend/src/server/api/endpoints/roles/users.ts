@@ -24,6 +24,25 @@ export const meta = {
 			id: '30aaaee3-4792-48dc-ab0d-cf501a575ac5',
 		},
 	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			nullable: false,
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id'
+				},
+				user: {
+					type: 'object',
+					ref: 'User'
+				},
+			},
+			required: ['id', 'user'],
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -62,9 +81,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId)
 				.andWhere('assign.roleId = :roleId', { roleId: role.id })
-				.andWhere(new Brackets(qb => { qb
-					.where('assign.expiresAt IS NULL')
-					.orWhere('assign.expiresAt > :now', { now: new Date() });
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('assign.expiresAt IS NULL')
+						.orWhere('assign.expiresAt > :now', { now: new Date() });
 				}))
 				.innerJoinAndSelect('assign.user', 'user');
 

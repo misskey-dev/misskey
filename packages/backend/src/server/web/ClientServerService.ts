@@ -175,6 +175,7 @@ export class ClientServerService {
 			serverErrorImageUrl: meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
 			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
 			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
+			instanceUrl: this.config.url,
 		};
 	}
 
@@ -253,8 +254,9 @@ export class ClientServerService {
 				decorateReply: false,
 			});
 		} else {
+			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:5173', // TODO: port configuration
+				upstream: 'http://localhost:' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});

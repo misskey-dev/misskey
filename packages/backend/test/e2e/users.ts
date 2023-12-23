@@ -68,6 +68,7 @@ describe('ユーザー', () => {
 			host: user.host,
 			avatarUrl: user.avatarUrl,
 			avatarBlurhash: user.avatarBlurhash,
+			avatarDecorations: user.avatarDecorations,
 			isBot: user.isBot,
 			isCat: user.isCat,
 			instance: user.instance,
@@ -111,7 +112,8 @@ describe('ユーザー', () => {
 			pinnedPageId: user.pinnedPageId,
 			pinnedPage: user.pinnedPage,
 			publicReactions: user.publicReactions,
-			ffVisibility: user.ffVisibility,
+			followingVisibility: user.followingVisibility,
+			followersVisibility: user.followersVisibility,
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
@@ -163,9 +165,11 @@ describe('ユーザー', () => {
 			hasUnreadAntenna: user.hasUnreadAntenna,
 			hasUnreadChannel: user.hasUnreadChannel,
 			hasUnreadNotification: user.hasUnreadNotification,
+			unreadNotificationsCount: user.unreadNotificationsCount,
 			hasPendingReceivedFollowRequest: user.hasPendingReceivedFollowRequest,
 			unreadAnnouncements: user.unreadAnnouncements,
 			mutedWords: user.mutedWords,
+			hardMutedWords: user.hardMutedWords,
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
 			notificationRecieveConfig: user.notificationRecieveConfig,
@@ -349,6 +353,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.host, null);
 		assert.match(response.avatarUrl, /^[-a-zA-Z0-9@:%._\+~#&?=\/]+$/);
 		assert.strictEqual(response.avatarBlurhash, null);
+		assert.deepStrictEqual(response.avatarDecorations, []);
 		assert.strictEqual(response.isBot, false);
 		assert.strictEqual(response.isCat, false);
 		assert.strictEqual(response.instance, undefined);
@@ -382,7 +387,8 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.pinnedPageId, null);
 		assert.strictEqual(response.pinnedPage, null);
 		assert.strictEqual(response.publicReactions, true);
-		assert.strictEqual(response.ffVisibility, 'public');
+		assert.strictEqual(response.followingVisibility, 'public');
+		assert.strictEqual(response.followersVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
 		assert.strictEqual(response.securityKeys, false);
@@ -412,6 +418,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.hasUnreadAntenna, false);
 		assert.strictEqual(response.hasUnreadChannel, false);
 		assert.strictEqual(response.hasUnreadNotification, false);
+		assert.strictEqual(response.unreadNotificationsCount, 0);
 		assert.strictEqual(response.hasPendingReceivedFollowRequest, false);
 		assert.deepStrictEqual(response.unreadAnnouncements, []);
 		assert.deepStrictEqual(response.mutedWords, []);
@@ -490,9 +497,12 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ alwaysMarkNsfw: false }) },
 		{ parameters: (): object => ({ autoSensitive: true }) },
 		{ parameters: (): object => ({ autoSensitive: false }) },
-		{ parameters: (): object => ({ ffVisibility: 'private' }) },
-		{ parameters: (): object => ({ ffVisibility: 'followers' }) },
-		{ parameters: (): object => ({ ffVisibility: 'public' }) },
+		{ parameters: (): object => ({ followingVisibility: 'private' }) },
+		{ parameters: (): object => ({ followingVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followingVisibility: 'public' }) },
+		{ parameters: (): object => ({ followersVisibility: 'private' }) },
+		{ parameters: (): object => ({ followersVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followersVisibility: 'public' }) },
 		{ parameters: (): object => ({ mutedWords: Array(19).fill(['xxxxx']) }) },
 		{ parameters: (): object => ({ mutedWords: [['x'.repeat(194)]] }) },
 		{ parameters: (): object => ({ mutedWords: [] }) },

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -41,10 +41,10 @@ const emit = defineEmits<{
 	(ev: 'update', result: any): void;
 }>();
 
-let type = $ref(props.value.type);
-let userListId = $ref(props.value.userListId);
+const type = ref(props.value.type);
+const userListId = ref(props.value.userListId);
 
 function save() {
-	emit('update', { type, userListId });
+	emit('update', { type: type.value, userListId: userListId.value });
 }
 </script>

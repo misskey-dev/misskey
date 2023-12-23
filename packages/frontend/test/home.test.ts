@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, test, assert, afterEach } from 'vitest';
-import { render, cleanup, type RenderResult } from '@testing-library/vue';
+import { afterEach, assert, describe, test } from 'vitest';
+import { cleanup, render, type RenderResult } from '@testing-library/vue';
 import './init';
 import type * as Misskey from 'misskey-js';
-import { directives } from '@/directives';
-import { components } from '@/components/index';
+import { directives } from '@/directives/index.js';
+import { components } from '@/components/index.js';
 import XHome from '@/pages/user/home.vue';
+import 'intersection-observer';
 
 describe('XHome', () => {
 	const renderHome = (user: Partial<Misskey.entities.UserDetailed>): RenderResult => {
@@ -34,6 +35,8 @@ describe('XHome', () => {
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
+			avatarUrl: 'https://example.com',
+			avatarDecorations: [],
 		});
 
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');
@@ -54,6 +57,8 @@ describe('XHome', () => {
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
+			avatarUrl: 'https://example.com',
+			avatarDecorations: [],
 		});
 
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');

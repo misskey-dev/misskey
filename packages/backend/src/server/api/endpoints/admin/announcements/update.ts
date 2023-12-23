@@ -13,6 +13,8 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -35,6 +37,7 @@ export const paramDef = {
 		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'] },
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
 		forExistingUsers: { type: 'boolean' },
+		silence: { type: 'boolean' },
 		needConfirmationToRead: { type: 'boolean' },
 		isActive: { type: 'boolean' },
 	},
@@ -63,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				display: ps.display,
 				icon: ps.icon,
 				forExistingUsers: ps.forExistingUsers,
+				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				isActive: ps.isActive,
 			}, me);

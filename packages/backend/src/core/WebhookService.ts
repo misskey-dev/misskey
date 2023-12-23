@@ -51,7 +51,6 @@ export class WebhookService implements OnApplicationShutdown {
 					if (body.active) {
 						this.webhooks.push({
 							...body,
-							createdAt: new Date(body.createdAt),
 							latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
 						});
 					}
@@ -62,13 +61,11 @@ export class WebhookService implements OnApplicationShutdown {
 						if (i > -1) {
 							this.webhooks[i] = {
 								...body,
-								createdAt: new Date(body.createdAt),
 								latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
 							};
 						} else {
 							this.webhooks.push({
 								...body,
-								createdAt: new Date(body.createdAt),
 								latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
 							});
 						}

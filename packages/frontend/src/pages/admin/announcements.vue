@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps">
+			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
 			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
 			<MkFolder v-for="announcement in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
@@ -24,10 +25,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
-					<MkTextarea v-model="announcement.text">
+					<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
-					<MkInput v-model="announcement.imageUrl">
+					<MkInput v-model="announcement.imageUrl" type="url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<MkRadios v-model="announcement.icon">
@@ -43,8 +44,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
 					</MkRadios>
+					<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
+					</MkSwitch>
+					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
+						{{ i18n.ts._announcement.silence }}
 					</MkSwitch>
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
@@ -66,11 +71,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -78,15 +82,16 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
-let announcements: any[] = $ref([]);
+const announcements = ref<any[]>([]);
 
 os.api('admin/announcements/list').then(announcementResponse => {
-	announcements = announcementResponse;
+	announcements.value = announcementResponse;
 });
 
 function add() {
-	announcements.unshift({
+	announcements.value.unshift({
 		_id: Math.random().toString(36),
 		id: null,
 		title: 'New announcement',
@@ -95,6 +100,7 @@ function add() {
 		icon: 'info',
 		display: 'normal',
 		forExistingUsers: false,
+		silence: false,
 		needConfirmationToRead: false,
 	});
 }
@@ -105,7 +111,7 @@ function del(announcement) {
 		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		announcements = announcements.filter(x => x !== announcement);
+		announcements.value = announcements.value.filter(x => x !== announcement);
 		os.api('admin/announcements/delete', announcement);
 	});
 }
@@ -128,27 +134,27 @@ async function save(announcement) {
 }
 
 function more() {
-	os.api('admin/announcements/list', { untilId: announcements.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
-		announcements = announcements.concat(announcementResponse);
+	os.api('admin/announcements/list', { untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
+		announcements.value = announcements.value.concat(announcementResponse);
 	});
 }
 
 function refresh() {
 	os.api('admin/announcements/list').then(announcementResponse => {
-		announcements = announcementResponse;
+		announcements.value = announcementResponse;
 	});
 }
 
 refresh();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.announcements,

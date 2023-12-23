@@ -6,8 +6,6 @@
 	props: {
 		bg: '#232125',
 		fg: '#efdab9',
-		cwBg: '#687390',
-		cwFg: '#393f4f',
 		link: '#78b0a0',
 		warn: '#ecb637',
 		badge: '#31b1ce',
@@ -29,7 +27,6 @@
 		success: '#86b300',
 		buttonBg: 'rgba(255, 255, 255, 0.05)',
 		acrylicBg: ':alpha<0.5<@bg',
-		cwHoverBg: '#707b97',
 		indicator: '@accent',
 		mentionMe: '#fb5d38',
 		messageBg: '@bg',

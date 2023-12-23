@@ -80,6 +80,7 @@ export class ExportAntennasProcessorService {
 						return this.utilityService.getFullApAccount(u.username, u.host); // acct
 					}) : null,
 					caseSensitive: antenna.caseSensitive,
+					localOnly: antenna.localOnly,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
 					notify: antenna.notify,

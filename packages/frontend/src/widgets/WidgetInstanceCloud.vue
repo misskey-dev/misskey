@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { shallowRef } from 'vue';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
@@ -47,8 +47,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let cloud = $shallowRef<InstanceType<typeof MkTagCloud> | null>();
-let activeInstances = $shallowRef(null);
+const cloud = shallowRef<InstanceType<typeof MkTagCloud> | null>();
+const activeInstances = shallowRef(null);
 
 function onInstanceClick(i) {
 	os.pageWindow(`/instance-info/${i.host}`);
@@ -59,8 +59,8 @@ useInterval(() => {
 		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {
-		activeInstances = res;
-		if (cloud) cloud.update();
+		activeInstances.value = res;
+		if (cloud.value) cloud.value.update();
 	});
 }, 1000 * 60 * 3, {
 	immediate: true,

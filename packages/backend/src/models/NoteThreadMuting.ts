@@ -13,10 +13,6 @@ export class MiNoteThreadMuting {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column({
 		...id(),

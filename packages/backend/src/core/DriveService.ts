@@ -564,8 +564,7 @@ export class DriveService {
 		const folder = await fetchFolder();
 
 		let file = new MiDriveFile();
-		file.id = this.idService.genId();
-		file.createdAt = new Date();
+		file.id = this.idService.gen();
 		file.userId = user ? user.id : null;
 		file.userHost = user ? user.host : null;
 		file.folderId = folder !== null ? folder.id : null;

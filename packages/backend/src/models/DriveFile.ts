@@ -15,12 +15,6 @@ export class MiDriveFile {
 	public id: string;
 
 	@Index()
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the DriveFile.',
-	})
-	public createdAt: Date;
-
-	@Index()
 	@Column({
 		...id(),
 		nullable: true,

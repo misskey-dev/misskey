@@ -5,19 +5,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
-			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+	<div class="_panel">
+		<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+			<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 		</div>
-		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+		<div :class="$style.avatarContainer">
+			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
+			<div class="_buttonsCenter">
+				<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+				<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+			</div>
+		</div>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave>
+	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
@@ -104,10 +109,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -122,6 +126,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -244,9 +249,9 @@ function changeBanner(ev) {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.profile,
@@ -255,19 +260,19 @@ definePageMetadata({
 </script>
 
 <style lang="scss" module>
-.avatarAndBanner {
+.banner {
 	position: relative;
+	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border: solid 1px var(--divider);
-	border-radius: 10px;
+	border-bottom: solid 1px var(--divider);
 	overflow: clip;
 }
 
 .avatarContainer {
-	display: inline-block;
+	margin-top: -50px;
+	padding-bottom: 16px;
 	text-align: center;
-	padding: 16px;
 }
 
 .avatar {

@@ -15,7 +15,7 @@ Before creating an issue, please check the following:
 - To avoid duplication, please search for similar issues before creating a new issue.
 - Do not use Issues to ask questions or troubleshooting.
 	- Issues should only be used to feature requests, suggestions, and bug tracking.
-	- Please ask questions or troubleshooting in ~~the [Misskey Forum](https://forum.misskey.io/)~~ [GitHub Discussions](https://github.com/misskey-dev/misskey/discussions) or [Discord](https://discord.gg/Wp8gVStHW3).
+	- Please ask questions or troubleshooting in [GitHub Discussions](https://github.com/misskey-dev/misskey/discussions) or [Discord](https://discord.gg/Wp8gVStHW3).
 
 > **Warning**
 > Do not close issues that are about to be resolved. It should remain open until a commit that actually resolves it is merged.
@@ -117,6 +117,10 @@ command.
 - Server-side source files and automatically builds them if they are modified. Automatically start the server process(es).
 - Vite HMR (just the `vite` command) is available. The behavior may be different from production.
 - Service Worker is watched by esbuild.
+- The front end can be viewed by accessing `http://localhost:5173`.
+- The backend listens on the port configured with `port` in .config/default.yml.
+If you have not changed it from the default, it will be "http://localhost:3000".
+If "port" in .config/default.yml is set to something other than 3000, you need to change the proxy settings in packages/frontend/vite.config.local-dev.ts.
 
 ### Dev Container
 Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.

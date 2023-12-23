@@ -7,13 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="hide" :class="[$style.hidden, (video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitiveContainer]" @click="hide = false">
 	<!-- 【注意】dataSaverMode が有効になっている際には、hide が false になるまでサムネイルや動画を読み込まないようにすること -->
 	<div :class="$style.sensitive">
-		<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
-		<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.enableDataSaverMode && video.size ? bytes(video.size) : i18n.ts.video }}</b>
+		<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
+		<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
 <div v-else :class="[$style.visible, (video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitiveContainer]">
 	<video
+		ref="videoEl"
 		:class="$style.video"
 		:poster="video.thumbnailUrl"
 		:title="video.comment"
@@ -31,17 +32,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import bytes from '@/filters/bytes.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import hasAudio from '@/scripts/media-has-audio.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
 }>();
 
-const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.enableDataSaverMode) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+
+const videoEl = shallowRef<HTMLVideoElement>();
+
+watch(videoEl, () => {
+	if (videoEl.value) {
+		videoEl.value.volume = 0.3;
+		hasAudio(videoEl.value).then(had => {
+			if (!had) {
+				videoEl.value.loop = videoEl.value.muted = true;
+				videoEl.value.play();
+			}
+		});
+	}
+});
 </script>
 
 <style lang="scss" module>

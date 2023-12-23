@@ -13,6 +13,7 @@ import type { MiUser } from '@/models/User.js';
 import type { MiPage } from '@/models/Page.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -30,6 +31,7 @@ export class PageEntityService {
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -85,7 +87,7 @@ export class PageEntityService {
 
 		return await awaitAll({
 			id: page.id,
-			createdAt: page.createdAt.toISOString(),
+			createdAt: this.idService.parse(page.id).date.toISOString(),
 			updatedAt: page.updatedAt.toISOString(),
 			userId: page.userId,
 			user: this.userEntityService.pack(page.user ?? page.userId, me), // { detail: true } すると無限ループするので注意

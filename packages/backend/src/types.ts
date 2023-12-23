@@ -14,18 +14,34 @@
  * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
  * receiveFollowRequest - フォローリクエストされた
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
+ * roleAssigned - ロールが付与された
  * achievementEarned - 実績を獲得
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
-export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app', 'test'] as const;
+export const notificationTypes = [
+	'note',
+	'follow',
+	'mention',
+	'reply',
+	'renote',
+	'quote',
+	'reaction',
+	'pollEnded',
+	'receiveFollowRequest',
+	'followRequestAccepted',
+	'roleAssigned',
+	'achievementEarned',
+	'app',
+	'test'] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
-export const ffVisibility = ['public', 'followers', 'private'] as const;
+export const followingVisibilities = ['public', 'followers', 'private'] as const;
+export const followersVisibilities = ['public', 'followers', 'private'] as const;
 
 export const moderationLogTypes = [
 	'updateServerSettings',
@@ -60,6 +76,11 @@ export const moderationLogTypes = [
 	'createAd',
 	'updateAd',
 	'deleteAd',
+	'createAvatarDecoration',
+	'updateAvatarDecoration',
+	'deleteAvatarDecoration',
+	'unsetUserAvatar',
+	'unsetUserBanner',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -221,6 +242,31 @@ export type ModerationLogPayloads = {
 		adId: string;
 		ad: any;
 	};
+	createAvatarDecoration: {
+		avatarDecorationId: string;
+		avatarDecoration: any;
+	};
+	updateAvatarDecoration: {
+		avatarDecorationId: string;
+		before: any;
+		after: any;
+	};
+	deleteAvatarDecoration: {
+		avatarDecorationId: string;
+		avatarDecoration: any;
+	};
+	unsetUserAvatar: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+		fileId: string;
+	};
+	unsetUserBanner: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+		fileId: string;
+	};
 };
 
 export type Serialized<T> = {
@@ -233,3 +279,9 @@ export type Serialized<T> = {
 					? Serialized<T[K]>
 					: T[K];
 };
+
+export type FilterUnionByProperty<
+  Union,
+  Property extends string | number | symbol,
+  Condition
+> = Union extends Record<Property, Condition> ? Union : never;

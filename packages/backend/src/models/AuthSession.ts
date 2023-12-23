@@ -13,11 +13,6 @@ export class MiAuthSession {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('timestamp with time zone', {
-		comment: 'The created date of the AuthSession.',
-	})
-	public createdAt: Date;
-
 	@Index()
 	@Column('varchar', {
 		length: 128,

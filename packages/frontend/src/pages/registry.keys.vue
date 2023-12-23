@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<FormSplit>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._registry.domain }}</template>
-					<template #value>{{ i18n.ts.system }}</template>
+					<template #value>{{ props.domain === '@' ? i18n.ts.system : props.domain.toUpperCase() }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._registry.scope }}</template>
@@ -23,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<FormSection v-if="keys">
 				<template #label>{{ i18n.ts.keys }}</template>
-				<div class="_formLinks">
-					<FormLink v-for="key in keys" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
+				<div class="_gaps_s">
+					<FormLink v-for="key in keys" :to="`/registry/value/${props.domain}/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 				</div>
 			</FormSection>
 		</div>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -46,17 +46,19 @@ import FormSplit from '@/components/form/split.vue';
 
 const props = defineProps<{
 	path: string;
+	domain: string;
 }>();
 
-const scope = $computed(() => props.path.split('/'));
+const scope = computed(() => props.path ? props.path.split('/') : []);
 
-let keys = $ref(null);
+const keys = ref(null);
 
 function fetchKeys() {
 	os.api('i/registry/keys-with-type', {
-		scope: scope,
+		scope: scope.value,
+		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
-		keys = Object.entries(res).sort((a, b) => a[0].localeCompare(b[0]));
+		keys.value = Object.entries(res).sort((a, b) => a[0].localeCompare(b[0]));
 	});
 }
 
@@ -74,7 +76,7 @@ async function createKey() {
 		scope: {
 			type: 'string',
 			label: i18n.ts._registry.scope,
-			default: scope.join('/'),
+			default: scope.value.join('/'),
 		},
 	});
 	if (canceled) return;
@@ -89,9 +91,9 @@ async function createKey() {
 
 watch(() => props.path, fetchKeys, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.registry,

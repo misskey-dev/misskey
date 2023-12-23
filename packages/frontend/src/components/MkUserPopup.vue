@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.username"><MkAcct :user="user"/></div>
 			</div>
 			<div :class="$style.description">
-				<Mfm v-if="user.description" :class="$style.mfm" :text="user.description" :author="user" :i="$i"/>
+				<Mfm v-if="user.description" :class="$style.mfm" :text="user.description" :author="user"/>
 				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
@@ -35,17 +35,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+				<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
 				</div>
-				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+				<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
 				</div>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
-			<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
+			<MkFollowButton v-if="$i && user.id != $i.id" v-model:user="user" :class="$style.follow" mini/>
 		</div>
 		<div v-else>
 			<MkLoading/>
@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user.js';
@@ -65,7 +65,7 @@ import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
 const props = defineProps<{
 	showing: boolean;
@@ -80,18 +80,18 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let user = $ref<Misskey.entities.UserDetailed | null>(null);
-let top = $ref(0);
-let left = $ref(0);
+const user = ref<Misskey.entities.UserDetailed | null>(null);
+const top = ref(0);
+const left = ref(0);
 
 function showMenu(ev: MouseEvent) {
-	const { menu, cleanup } = getUserMenu(user);
+	const { menu, cleanup } = getUserMenu(user.value);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 onMounted(() => {
 	if (typeof props.q === 'object') {
-		user = props.q;
+		user.value = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
 			Misskey.acct.parse(props.q.substring(1)) :
@@ -99,7 +99,7 @@ onMounted(() => {
 
 		os.api('users/show', query).then(res => {
 			if (!props.showing) return;
-			user = res;
+			user.value = res;
 		});
 	}
 
@@ -107,8 +107,8 @@ onMounted(() => {
 	const x = ((rect.left + (props.source.offsetWidth / 2)) - (300 / 2)) + window.pageXOffset;
 	const y = rect.top + props.source.offsetHeight + window.pageYOffset;
 
-	top = y;
-	left = x;
+	top.value = y;
+	left.value = x;
 });
 </script>
 

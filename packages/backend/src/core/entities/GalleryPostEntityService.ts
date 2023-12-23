@@ -12,6 +12,7 @@ import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiGalleryPost } from '@/models/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -26,6 +27,7 @@ export class GalleryPostEntityService {
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -39,7 +41,7 @@ export class GalleryPostEntityService {
 
 		return await awaitAll({
 			id: post.id,
-			createdAt: post.createdAt.toISOString(),
+			createdAt: this.idService.parse(post.id).date.toISOString(),
 			updatedAt: post.updatedAt.toISOString(),
 			userId: post.userId,
 			user: this.userEntityService.pack(post.user ?? post.userId, me),

@@ -6,14 +6,14 @@
 import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
 import { $i } from '@/account.js';
-import { url } from '@/config.js';
+import { wsOrigin } from '@/config.js';
 
 let stream: Misskey.Stream | null = null;
 
 export function useStream(): Misskey.Stream {
 	if (stream) return stream;
 
-	stream = markRaw(new Misskey.Stream(url, $i ? {
+	stream = markRaw(new Misskey.Stream(wsOrigin, $i ? {
 		token: $i.token,
 	} : null));
 

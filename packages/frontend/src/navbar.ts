@@ -6,12 +6,13 @@
 import { computed, reactive } from 'vue';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { openInstanceMenu } from '@/ui/_common_/common.js';
+import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
 import { lookup } from '@/scripts/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
+import { clearCache } from './scripts/clear-cache.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -19,6 +20,15 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-bell',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
+		indicateValue: computed(() => {
+			if (!$i || $i.unreadNotificationsCount === 0) return '';
+
+			if ($i.unreadNotificationsCount > 99) {
+				return '99+';
+			} else {
+				return $i.unreadNotificationsCount.toString();
+			}
+		}),
 		to: '/my/notifications',
 	},
 	drive: {
@@ -142,6 +152,13 @@ export const navbarItemDef = reactive({
 			openInstanceMenu(ev);
 		},
 	},
+	tools: {
+		title: i18n.ts.tools,
+		icon: 'ti ti-tool',
+		action: (ev) => {
+			openToolsMenu(ev);
+		},
+	},
 	reload: {
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
@@ -154,5 +171,12 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-user',
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
+	},
+	cacheClear: {
+		title: i18n.ts.clearCache,
+		icon: 'ti ti-trash',
+		action: (ev) => {
+			clearCache();
+		},
 	},
 });

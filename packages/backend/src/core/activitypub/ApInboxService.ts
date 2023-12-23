@@ -164,7 +164,7 @@ export class ApInboxService {
 		}
 
 		// don't queue because the sender may attempt again when timeout
-		await this.userFollowingService.follow(actor, followee, activity.id);
+		await this.userFollowingService.follow(actor, followee, { requestId: activity.id });
 		return 'ok';
 	}
 
@@ -306,9 +306,15 @@ export class ApInboxService {
 			this.logger.info(`Creating the (Re)Note: ${uri}`);
 
 			const activityAudience = await this.apAudienceService.parseAudience(actor, activity.to, activity.cc);
+			const createdAt = activity.published ? new Date(activity.published) : null;
+
+			if (createdAt && createdAt < this.idService.parse(renote.id).date) {
+				this.logger.warn('skip: malformed createdAt');
+				return;
+			}
 
 			await this.noteCreateService.create(actor, {
-				createdAt: activity.published ? new Date(activity.published) : null,
+				createdAt,
 				renote,
 				visibility: activityAudience.visibility,
 				visibleUsers: activityAudience.visibleUsers,
@@ -514,8 +520,7 @@ export class ApInboxService {
 		if (users.length < 1) return 'skip';
 
 		await this.abuseUserReportsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			targetUserId: users[0].id,
 			targetUserHost: users[0].host,
 			reporterId: actor.id,

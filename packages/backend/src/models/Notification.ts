@@ -3,37 +3,84 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { notificationTypes } from '@/types.js';
 import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
-import { MiFollowRequest } from './FollowRequest.js';
 import { MiAccessToken } from './AccessToken.js';
+import { MiRole } from './Role.js';
 
 export type MiNotification = {
+	type: 'note';
 	id: string;
-
-	// RedisのためDateではなくstring
 	createdAt: string;
-
-	/**
-	 * 通知の送信者(initiator)
-	 */
-	notifierId: MiUser['id'] | null;
-
-	/**
-	 * 通知の種類。
-	 */
-	type: typeof notificationTypes[number];
-
-	noteId: MiNote['id'] | null;
-
-	followRequestId: MiFollowRequest['id'] | null;
-
-	reaction: string | null;
-
-	choice: number | null;
-
-	achievement: string | null;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+} | {
+	type: 'follow';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+} | {
+	type: 'mention';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+} | {
+	type: 'reply';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+} | {
+	type: 'renote';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+	targetNoteId: MiNote['id'];
+} | {
+	type: 'quote';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+} | {
+	type: 'reaction';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+	reaction: string;
+} | {
+	type: 'pollEnded';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+} | {
+	type: 'receiveFollowRequest';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+} | {
+	type: 'followRequestAccepted';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+} | {
+	type: 'roleAssigned';
+	id: string;
+	createdAt: string;
+	roleId: MiRole['id'];
+} | {
+	type: 'achievementEarned';
+	id: string;
+	createdAt: string;
+	achievement: string;
+} | {
+	type: 'app';
+	id: string;
+	createdAt: string;
 
 	/**
 	 * アプリ通知のbody
@@ -56,4 +103,25 @@ export type MiNotification = {
 	 * アプリ通知のアプリ(のトークン)
 	 */
 	appAccessTokenId: MiAccessToken['id'] | null;
-}
+} | {
+	type: 'test';
+	id: string;
+	createdAt: string;
+};
+
+export type MiGroupedNotification = MiNotification | {
+	type: 'reaction:grouped';
+	id: string;
+	createdAt: string;
+	noteId: MiNote['id'];
+	reactions: {
+		userId: string;
+		reaction: string;
+	}[];
+} | {
+	type: 'renote:grouped';
+	id: string;
+	createdAt: string;
+	noteId: MiNote['id'];
+	userIds: string[];
+};

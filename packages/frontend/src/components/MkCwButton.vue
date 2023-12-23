@@ -4,10 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<button class="_button" :class="$style.root" @mousedown="toggle">
-	<b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b>
-	<span v-if="!modelValue" :class="$style.label">{{ label }}</span>
-</button>
+<MkButton rounded full small @click="toggle"><b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b><span v-if="!modelValue" :class="$style.label">{{ label }}</span></MkButton>
 </template>
 
 <script lang="ts" setup>
@@ -15,10 +12,27 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { concat } from '@/scripts/array.js';
 import { i18n } from '@/i18n.js';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
 	modelValue: boolean;
-	note: Misskey.entities.Note;
+	text: string | null;
+	renote: Misskey.entities.Note | null;
+	files: Misskey.entities.DriveFile[];
+	poll?: {
+		expiresAt: string | null;
+		multiple: boolean;
+		choices: {
+			isVoted: boolean;
+			text: string;
+			votes: number;
+		}[];
+	} | {
+		choices: string[];
+		multiple: boolean;
+		expiresAt: string | null;
+		expiredAfter: string | null;
+	};
 }>();
 
 const emit = defineEmits<{
@@ -27,31 +41,19 @@ const emit = defineEmits<{
 
 const label = computed(() => {
 	return concat([
-		props.note.text ? [i18n.t('_cw.chars', { count: props.note.text.length })] : [],
-		props.note.files && props.note.files.length !== 0 ? [i18n.t('_cw.files', { count: props.note.files.length })] : [],
-		props.note.poll != null ? [i18n.ts.poll] : [],
+		props.text ? [i18n.t('_cw.chars', { count: props.text.length })] : [],
+		props.renote ? [i18n.ts.quote] : [],
+		props.files.length !== 0 ? [i18n.t('_cw.files', { count: props.files.length })] : [],
+		props.poll != null ? [i18n.ts.poll] : [],
 	] as string[][]).join(' / ');
 });
 
-const toggle = () => {
+function toggle() {
 	emit('update:modelValue', !props.modelValue);
-};
+}
 </script>
 
 <style lang="scss" module>
-.root {
-	display: inline-block;
-	padding: 4px 8px;
-	font-size: 0.7em;
-	color: var(--cwFg);
-	background: var(--cwBg);
-	border-radius: 2px;
-
-	&:hover {
-		background: var(--cwHoverBg);
-	}
-}
-
 .label {
 	margin-left: 4px;
 

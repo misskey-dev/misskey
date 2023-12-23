@@ -34,8 +34,12 @@ export class RelationshipProcessorService {
 
 	@bindThis
 	public async processFollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
-		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id}`);
-		await this.userFollowingService.follow(job.data.from, job.data.to, job.data.requestId, job.data.silent);
+		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id} ${job.data.withReplies ? "with replies" : "without replies"}`);
+		await this.userFollowingService.follow(job.data.from, job.data.to, {
+			requestId: job.data.requestId,
+			silent: job.data.silent,
+			withReplies: job.data.withReplies,
+		});
 		return 'ok';
 	}
 

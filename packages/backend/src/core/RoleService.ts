@@ -6,7 +6,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import type { MiRole, MiRoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/_.js';
+import { ModuleRef } from '@nestjs/core';
+import type {
+	MiRole,
+	MiRoleAssignment,
+	RoleAssignmentsRepository,
+	RolesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
@@ -16,11 +23,13 @@ import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -31,6 +40,7 @@ export type RolePolicies = {
 	inviteLimitCycle: number;
 	inviteExpirationTime: number;
 	canManageCustomEmojis: boolean;
+	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
@@ -45,6 +55,7 @@ export type RolePolicies = {
 	userListLimit: number;
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
+	avatarDecorationLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -56,6 +67,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	inviteLimitCycle: 60 * 24 * 7,
 	inviteExpirationTime: 0,
 	canManageCustomEmojis: false,
+	canManageAvatarDecorations: false,
 	canSearchNotes: false,
 	canUseTranslator: true,
 	canHideAds: false,
@@ -70,19 +82,26 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userListLimit: 10,
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
+	avatarDecorationLimit: 1,
 };
 
 @Injectable()
-export class RoleService implements OnApplicationShutdown {
+export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	private rolesCache: MemorySingleCache<MiRole[]>;
 	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
+	private notificationService: NotificationService;
 
 	public static AlreadyAssignedError = class extends Error {};
 	public static NotAssignedError = class extends Error {};
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
+
+		@Inject(DI.redisForTimelines)
+		private redisForTimelines: Redis.Redis,
 
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
@@ -102,6 +121,7 @@ export class RoleService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
+		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -109,6 +129,10 @@ export class RoleService implements OnApplicationShutdown {
 		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(1000 * 60 * 60 * 1);
 
 		this.redisForSub.on('message', this.onMessage);
+	}
+
+	async onModuleInit() {
+		this.notificationService = this.moduleRef.get(NotificationService.name);
 	}
 
 	@bindThis
@@ -123,7 +147,6 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						cached.push({
 							...body,
-							createdAt: new Date(body.createdAt),
 							updatedAt: new Date(body.updatedAt),
 							lastUsedAt: new Date(body.lastUsedAt),
 						});
@@ -137,7 +160,6 @@ export class RoleService implements OnApplicationShutdown {
 						if (i > -1) {
 							cached[i] = {
 								...body,
-								createdAt: new Date(body.createdAt),
 								updatedAt: new Date(body.updatedAt),
 								lastUsedAt: new Date(body.lastUsedAt),
 							};
@@ -157,7 +179,6 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						cached.push({
 							...body,
-							createdAt: new Date(body.createdAt),
 							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
 						});
 					}
@@ -196,10 +217,10 @@ export class RoleService implements OnApplicationShutdown {
 					return this.userEntityService.isRemoteUser(user);
 				}
 				case 'createdLessThan': {
-					return user.createdAt.getTime() > (Date.now() - (value.sec * 1000));
+					return this.idService.parse(user.id).date.getTime() > (Date.now() - (value.sec * 1000));
 				}
 				case 'createdMoreThan': {
-					return user.createdAt.getTime() < (Date.now() - (value.sec * 1000));
+					return this.idService.parse(user.id).date.getTime() < (Date.now() - (value.sec * 1000));
 				}
 				case 'followersLessThanOrEq': {
 					return user.followersCount <= value.value;
@@ -226,6 +247,12 @@ export class RoleService implements OnApplicationShutdown {
 			// TODO: log error
 			return false;
 		}
+	}
+
+	@bindThis
+	public async getRoles() {
+		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
+		return roles;
 	}
 
 	@bindThis
@@ -301,6 +328,7 @@ export class RoleService implements OnApplicationShutdown {
 			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
 			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
@@ -315,6 +343,7 @@ export class RoleService implements OnApplicationShutdown {
 			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
+			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
 		};
 	}
 
@@ -380,7 +409,7 @@ export class RoleService implements OnApplicationShutdown {
 
 	@bindThis
 	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null, moderator?: MiUser): Promise<void> {
-		const now = new Date();
+		const now = Date.now();
 
 		const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
 
@@ -390,7 +419,7 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		if (existing) {
-			if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
+			if (existing.expiresAt && (existing.expiresAt.getTime() < now)) {
 				await this.roleAssignmentsRepository.delete({
 					roleId: roleId,
 					userId: userId,
@@ -401,8 +430,7 @@ export class RoleService implements OnApplicationShutdown {
 		}
 
 		const created = await this.roleAssignmentsRepository.insert({
-			id: this.idService.genId(),
-			createdAt: now,
+			id: this.idService.gen(now),
 			expiresAt: expiresAt,
 			roleId: roleId,
 			userId: userId,
@@ -413,6 +441,12 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+
+		if (role.isPublic) {
+			this.notificationService.createNotification(userId, 'roleAssigned', {
+				roleId: roleId,
+			});
+		}
 
 		if (moderator) {
 			const user = await this.usersRepository.findOneByOrFail({ id: userId });
@@ -469,15 +503,10 @@ export class RoleService implements OnApplicationShutdown {
 	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
 		const roles = await this.getUserRoles(note.userId);
 
-		const redisPipeline = this.redisClient.pipeline();
+		const redisPipeline = this.redisForTimelines.pipeline();
 
 		for (const role of roles) {
-			redisPipeline.xadd(
-				`roleTimeline:${role.id}`,
-				'MAXLEN', '~', '1000',
-				'*',
-				'note', note.id);
-
+			this.fanoutTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
 			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
 		}
 
@@ -488,8 +517,7 @@ export class RoleService implements OnApplicationShutdown {
 	public async create(values: Partial<MiRole>, moderator?: MiUser): Promise<MiRole> {
 		const date = new Date();
 		const created = await this.rolesRepository.insert({
-			id: this.idService.genId(),
-			createdAt: date,
+			id: this.idService.gen(date.getTime()),
 			updatedAt: date,
 			lastUsedAt: date,
 			name: values.name,

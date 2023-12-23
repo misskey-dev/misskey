@@ -134,9 +134,11 @@ async function enter(el: HTMLElement) {
 
 	setTimeout(renderTab, 170);
 }
+
 function afterEnter(el: HTMLElement) {
 	//el.style.width = '';
 }
+
 async function leave(el: HTMLElement) {
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = elementWidth + 'px';
@@ -145,6 +147,7 @@ async function leave(el: HTMLElement) {
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
 }
+
 function afterLeave(el: HTMLElement) {
 	el.style.width = '';
 }

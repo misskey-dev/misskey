@@ -9,6 +9,7 @@ import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
+import { nyaize } from '@/scripts/nyaize.js';
 
 export function createAiScriptEnv(opts) {
 	return {
@@ -49,6 +50,7 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		/* セキュリティ上の問題があるため無効化
 		'Mk:apiExternal': values.FN_NATIVE(async ([host, ep, param, token]) => {
 			utils.assertString(host);
 			utils.assertString(ep);
@@ -59,6 +61,7 @@ export function createAiScriptEnv(opts) {
 				return values.ERROR('request_failed', utils.jsToVal(err));
 			});
 		}),
+		*/
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
 			utils.assertString(key);
 			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));
@@ -70,6 +73,10 @@ export function createAiScriptEnv(opts) {
 		}),
 		'Mk:url': values.FN_NATIVE(() => {
 			return values.STR(window.location.href);
+		}),
+		'Mk:nyaize': values.FN_NATIVE(([text]) => {
+			utils.assertString(text);
+			return values.STR(nyaize(text.value));
 		}),
 	};
 }

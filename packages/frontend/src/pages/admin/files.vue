@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -45,19 +45,19 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let origin = $ref('local');
-let type = $ref(null);
-let searchHost = $ref('');
-let userId = $ref('');
-let viewMode = $ref('grid');
+const origin = ref('local');
+const type = ref(null);
+const searchHost = ref('');
+const userId = ref('');
+const viewMode = ref('grid');
 const pagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
 	params: computed(() => ({
-		type: (type && type !== '') ? type : null,
-		userId: (userId && userId !== '') ? userId : null,
-		origin: origin,
-		hostname: (searchHost && searchHost !== '') ? searchHost : null,
+		type: (type.value && type.value !== '') ? type.value : null,
+		userId: (userId.value && userId.value !== '') ? userId.value : null,
+		origin: origin.value,
+		hostname: (searchHost.value && searchHost.value !== '') ? searchHost.value : null,
 	})),
 };
 
@@ -95,7 +95,7 @@ async function find() {
 	});
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	text: i18n.ts.lookup,
 	icon: 'ti ti-search',
 	handler: find,
@@ -105,7 +105,7 @@ const headerActions = $computed(() => [{
 	handler: clear,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.files,

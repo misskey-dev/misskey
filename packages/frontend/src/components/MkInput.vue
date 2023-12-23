@@ -20,9 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:placeholder="placeholder"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
+			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
 			:step="step"
 			:list="id"
+			:min="min"
+			:max="max"
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
@@ -40,11 +43,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
+import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | number | null;
@@ -56,9 +60,13 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	mfmAutocomplete?: boolean | SuggestionType[],
+	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];
+	min?: number;
+	max?: number;
 	inline?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
@@ -87,6 +95,7 @@ const height =
 	props.small ? 33 :
 	props.large ? 39 :
 	36;
+let autocomplete: Autocomplete;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev: KeyboardEvent) => {
@@ -154,6 +163,16 @@ onMounted(() => {
 			focus();
 		}
 	});
+	
+	if (props.mfmAutocomplete) {
+		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
+	}
+});
+
+onUnmounted(() => {
+	if (autocomplete) {
+		autocomplete.detach();
+	}
 });
 
 defineExpose({
