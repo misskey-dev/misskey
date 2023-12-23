@@ -167,18 +167,18 @@ export class EmailService {
 		const verifymailApi = meta.enableVerifymailApi && meta.verifymailAuthKey != null;
 		let validated;
 
-		if (meta.enableActiveEmailValidation && meta.verifymailAuthKey) {
+		if (meta.enableActiveEmailValidation) {
 			if (verifymailApi) {
 				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
 			} else {
-				validated = meta.enableActiveEmailValidation ? await validateEmail({
+				validated = await validateEmail({
 					email: emailAddress,
 					validateRegex: true,
 					validateMx: true,
 					validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
 					validateDisposable: true, // 捨てアドかどうかチェック
 					validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
-				}) : { valid: true, reason: null };
+				});
 			}
 		} else {
 			validated = { valid: true, reason: null };
