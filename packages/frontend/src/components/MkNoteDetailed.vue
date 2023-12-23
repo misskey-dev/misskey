@@ -244,7 +244,6 @@ if (darkMode.value && gamingMode.value == true) {
 }
 
 watch(darkMode, () => {
-  console.log(gaming)
   if (darkMode.value && gamingMode.value == true) {
     gaming.value = 'dark';
   } else if (!darkMode.value && gamingMode.value == true) {

@@ -48,6 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
                     <template #prefix><i class="ti ti-key"></i></template>
                     <template #label>ApiBase</template>
                 </MkInput>
+                <MkSwitch v-model="requestEmojiAllOk">
+絵文字の申請全部許可
+                </MkSwitch>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -69,6 +72,7 @@ const enableServerMachineStats = ref<boolean>(false);
 const enableIdenticonGeneration = ref<boolean>(false);
 const enableChartsForRemoteUser = ref<boolean>(false);
 const enableChartsForFederatedInstances = ref<boolean>(false);
+const requestEmojiAllOk = ref(false)
 let DiscordWebhookUrl = ref(null);
 let EmojiBotToken= ref(null);
 let ApiBase= ref(null)
@@ -78,6 +82,7 @@ async function init() {
 	enableIdenticonGeneration.value = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser.value = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances.value = meta.enableChartsForFederatedInstances;
+    requestEmojiAllOk.value = meta.requestEmojiAllOk;
     DiscordWebhookUrl.value = meta.DiscordWebhookUrl;
     EmojiBotToken.value = meta.EmojiBotToken;
     ApiBase.value = meta.ApiBase;
@@ -88,6 +93,7 @@ function save() {
 		enableServerMachineStats: enableServerMachineStats.value,
 		enableIdenticonGeneration: enableIdenticonGeneration.value,
 		enableChartsForRemoteUser: enableChartsForRemoteUser.value,
+        requestEmojiAllOk: requestEmojiAllOk.value,
 		enableChartsForFederatedInstances: enableChartsForFederatedInstances.value,
         DiscordWebhookUrl:DiscordWebhookUrl.value,
         EmojiBotToken:EmojiBotToken.value,

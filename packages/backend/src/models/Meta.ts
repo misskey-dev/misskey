@@ -549,4 +549,9 @@ export class MiMeta {
 		default: 0,
 	})
 	public notesPerOneAd: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public requestEmojiAllOk: boolean;
 }

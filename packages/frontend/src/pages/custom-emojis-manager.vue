@@ -37,7 +37,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const tab = ref('request');
 
 const add = async (ev: MouseEvent) => {
-	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	os.popup(defineAsyncComponent(() => import('../components/MkEmojiEditDialog.vue')), {
 	}, {
 		done: result => {
 			//TODO: emitにして追加を反映
@@ -91,7 +91,7 @@ const menu = (ev: MouseEvent) => {
 	}], ev.currentTarget ?? ev.target);
 };
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
@@ -101,7 +101,7 @@ const headerActions = $computed(() => [{
 	handler: menu,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'request',
 	title: i18n.ts.requestingEmojis,
 }, {

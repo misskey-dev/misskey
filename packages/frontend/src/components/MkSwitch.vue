@@ -32,8 +32,6 @@ import XButton from '@/components/MkSwitch.button.vue';
 import {defaultStore} from "@/store.js";
 const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
-console.log(gamingType.value)
-
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
 	disabled?: boolean;

@@ -5,6 +5,8 @@ import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '../../../error.js';
+import {MetaService} from "@/core/MetaService.js";
+import {DriveService} from "@/core/DriveService.js";
 
 export const meta = {
 	tags: ['admin'],
@@ -54,9 +56,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-
+		private metaService: MetaService,
 		private customEmojiService: CustomEmojiService,
-
+		private driveService: DriveService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -64,25 +66,81 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const isRequestDuplicate = await this.customEmojiService.checkRequestDuplicate(ps.name);
 
 			if (isDuplicate || isRequestDuplicate) throw new ApiError(meta.errors.duplicateName);
-			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-
+			let driveFile;
+		 driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 
-			const emoji = await this.customEmojiService.request({
-				driveFile,
-				name: ps.name,
-				category: ps.category ?? null,
-				aliases: ps.aliases ?? [],
-				license: ps.license ?? null,
-				isSensitive: ps.isSensitive ?? false,
-				localOnly: ps.localOnly ?? false,
-			});
+			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
+			const {ApiBase,EmojiBotToken,DiscordWebhookUrl,requestEmojiAllOk} = (await this.metaService.fetch())
+			let emoji;
+			if (requestEmojiAllOk){
+				emoji = await this.customEmojiService.add({
+					driveFile,
+					name: ps.name,
+					category: ps.category ?? null,
+					aliases: ps.aliases ?? [],
+					license: ps.license ?? null,
+					host: null,
+					draft: false,
+					isSensitive: ps.isSensitive ?? false,
+					localOnly: ps.localOnly ?? false,
+					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+				});
+			}else{
+				emoji = await this.customEmojiService.request({
+					driveFile,
+					name: ps.name,
+					category: ps.category ?? null,
+					aliases: ps.aliases ?? [],
+					license: ps.license ?? null,
+					isSensitive: ps.isSensitive ?? false,
+					localOnly: ps.localOnly ?? false,
+				});
+			}
+
 
 			await this.moderationLogService.log(me, 'addCustomEmoji', {
 				emojiId: emoji.id,
 				emoji: emoji,
 			});
 
+			if (EmojiBotToken){
+				const data_Miss = {
+					'i': EmojiBotToken,
+					'visibility': ps.isNotifyIsHome ?  'home' : 'public',
+					'text':
+						'絵文字名 : :' + ps.name + ':\n' +
+						'カテゴリ : ' + ps.category + '\n' +
+						'ライセンス : ' + ps.license + '\n' +
+						'タグ : ' + ps.aliases + '\n' +
+						'追加したユーザー : ' + '@' + me.username + '\n'
+				};
+				await fetch(ApiBase+'/notes/create', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body:JSON.stringify( data_Miss)
+				})
+			}
+
+			if (DiscordWebhookUrl){
+				const data_disc = {"username": "絵文字追加通知ちゃん",
+					'content':
+						'絵文字名 : :'+ ps.name +':\n' +
+						'カテゴリ : ' + ps.category + '\n'+
+						'ライセンス : '+ ps.license + '\n'+
+						'タグ : '+ps.aliases+ '\n'+
+						'追加したユーザー : ' + '@'+me.username + '\n'
+				}
+				await fetch(DiscordWebhookUrl, {
+					'method':'post',
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(data_disc),
+				})
+			}
 			return {
 				id: emoji.id,
 			};

@@ -455,6 +455,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				turnstileSiteKey: instance.turnstileSiteKey,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
+				requestEmojiAllOk: instance.requestEmojiAllOk,
 				mascotImageUrl: instance.mascotImageUrl,
 				bannerUrl: instance.bannerUrl,
 				serverErrorImageUrl: instance.serverErrorImageUrl,

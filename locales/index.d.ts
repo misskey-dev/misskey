@@ -1076,11 +1076,11 @@ export interface Locale {
     "hiddenTagsDescription": string;
     "notesSearchNotAvailable": string;
     "license": string;
-    "draft": string;
-    "undrafted": string;
     "requestPending": string;
     "approval": string;
     "requestingEmojis": string;
+    "draft": string;
+    "undrafted": string;
     "unfavoriteConfirm": string;
     "myClips": string;
     "drivecleaner": string;

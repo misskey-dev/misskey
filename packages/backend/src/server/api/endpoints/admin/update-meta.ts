@@ -103,6 +103,7 @@ export const paramDef = {
 		privacyPolicyUrl: { type: 'string', nullable: true },
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
+		requestEmojiAllOk: { type: 'boolean', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
 		objectStoragePrefix: { type: 'string', nullable: true },
 		objectStorageEndpoint: { type: 'string', nullable: true },
@@ -221,6 +222,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.infoImageUrl = ps.infoImageUrl;
 			}
 
+			if (ps.requestEmojiAllOk !== undefined) {
+				set.requestEmojiAllOk = ps.requestEmojiAllOk;
+			}
 			if (ps.notFoundImageUrl !== undefined) {
 				set.notFoundImageUrl = ps.notFoundImageUrl;
 			}

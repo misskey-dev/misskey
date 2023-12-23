@@ -48,8 +48,8 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -95,13 +95,6 @@ const setlocalOnlyBulk = async () => {
 		localOnly: result
 	});
 	emojisPaginationComponent.value.reload();
-};
-const selectAll = () => {
-    if (selectedEmojis.value.length > 0) {
-        selectedEmojis.value = [];
-    } else {
-        selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values(), item => item.id);
-    }
 };
 
 

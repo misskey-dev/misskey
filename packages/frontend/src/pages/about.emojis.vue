@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
 		<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
-		<MkButton v-if="$i && (!$i.isModerator && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
+		<MkButton v-if="$i && (!$i.isModerator || $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
 
 		<div class="query" style="margin-top: 10px;">
 			<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, defineAsyncComponent, ref } from 'vue';
+import {watch, defineAsyncComponent, ref, computed} from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -57,10 +57,10 @@ import * as os from '@/os';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-let tab = $ref('emojis');
-const headerActions = $computed(() => []);
+let tab = ref('emojis');
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'emojis',
 	title: i18n.ts.list,
 }, {
@@ -70,29 +70,29 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(ref({}));
 
-let q = $ref('');
-let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
-let selectedTags = $ref(new Set());
+let q = ref('');
+let searchEmojis = ref<Misskey.entities.CustomEmoji[]>(null);
+let selectedTags = ref(new Set());
 const requestEmojis = await os.apiGet('emoji-requests');
 
 function search() {
-	if ((q === '' || q == null) && selectedTags.size === 0) {
-		searchEmojis = null;
+	if ((q.value === '' || q.value == null) && selectedTags.value.size === 0) {
+		searchEmojis.value = null;
 		return;
 	}
 
-	if (selectedTags.size === 0) {
-		const queryarry = q.match(/\:([a-z0-9_]*)\:/g);
+	if (selectedTags.value.size === 0) {
+		const queryarry = q.value.match(/\:([a-z0-9_]*)\:/g);
 
 		if (queryarry) {
-			searchEmojis = customEmojis.value.filter(emoji =>
+			searchEmojis.value = customEmojis.value.filter(emoji =>
 				queryarry.includes(`:${emoji.name}:`),
 			);
 		} else {
-			searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+			searchEmojis.value = customEmojis.value.filter(emoji => emoji.name.includes(q.value) || emoji.aliases.includes(q));
 		}
 	} else {
-		searchEmojis = customEmojis.value.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
+		searchEmojis.value = customEmojis.value.filter(emoji => (emoji.name.includes(q.value) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
 	}
 }
 
@@ -106,11 +106,11 @@ const edit = () => {
 	}, 'closed');
 };
 
-watch($$(q), () => {
+watch((q), () => {
 	search();
 });
 
-watch($$(selectedTags), () => {
+watch((selectedTags), () => {
 	search();
 }, { deep: true });
 
