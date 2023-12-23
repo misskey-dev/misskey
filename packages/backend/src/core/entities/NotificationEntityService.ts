@@ -80,7 +80,7 @@ export class NotificationEntityService implements OnModuleInit {
 					detail: false,
 				})
 		) : undefined;
-		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId, { id: meId }) : undefined;
 
 		return await awaitAll({
 			id: notification.id,
@@ -220,7 +220,7 @@ export class NotificationEntityService implements OnModuleInit {
 			});
 		}
 
-		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId, { id: meId }) : undefined;
 
 		return await awaitAll({
 			id: notification.id,
