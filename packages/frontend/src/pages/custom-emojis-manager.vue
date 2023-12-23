@@ -8,17 +8,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :contentMax="900">
-            <div class="ogwlenmc">
-                <div v-if="tab === 'local'" class="local">
-                    <MkCustomEmojiEditLocal/>
-                </div>
-                <div v-if="tab === 'request'" class="request">
-                    <MkCustomEmojiEditDraft/>
-                </div>
-                <div v-else-if="tab === 'remote'" class="remote">
-                    <MkCustomEmojiEditRemote/>
-                </div>
-            </div>
+			<div class="ogwlenmc">
+				<div v-if="tab === 'local'" class="local">
+					<MkCustomEmojiEditLocal/>
+				</div>
+				<div v-if="tab === 'request'" class="request">
+					<MkCustomEmojiEditRequest/>
+				</div>
+				<div v-else-if="tab === 'remote'" class="remote">
+					<MkCustomEmojiEditRemote/>
+				</div>
+			</div>
 		</MkSpacer>
 	</MkStickyContainer>
 </div>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
-import MkCustomEmojiEditDraft from '@/components/MkCustomEmojiEditDraft.vue';
+import MkCustomEmojiEditRequest from '@/components/MkCustomEmojiEditRequest.vue';
 import MkCustomEmojiEditLocal from '@/components/MkCustomEmojiEditLocal.vue';
 import MkCustomEmojiEditRemote from '@/components/MkCustomEmojiEditRemote.vue';
 import { selectFile } from '@/scripts/select-file';
@@ -34,15 +34,17 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const tab = ref('draft');
+const tab = ref('request');
 
 const add = async (ev: MouseEvent) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiEditDialog.vue')), {
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
 	}, {
 		done: result => {
-			if (result.created) {
-				emojisPaginationComponent.value.prepend(result.created);
-			}
+			//TODO: emitにして追加を反映
+			// if (result.created) {
+			// 	emojisPaginationComponent.value.prepend(result.created);
+			// 	emojisPaginationComponent.value.reload();
+			// }
 		},
 	}, 'closed');
 };
@@ -89,7 +91,7 @@ const menu = (ev: MouseEvent) => {
 	}], ev.currentTarget ?? ev.target);
 };
 
-const headerActions = computed(() => [{
+const headerActions = $computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
@@ -99,9 +101,9 @@ const headerActions = computed(() => [{
 	handler: menu,
 }]);
 
-const headerTabs = computed(() => [{
-	key: 'draft',
-	title: i18n.ts.draftEmojis,
+const headerTabs = $computed(() => [{
+	key: 'request',
+	title: i18n.ts.requestingEmojis,
 }, {
 	key: 'local',
 	title: i18n.ts.local,

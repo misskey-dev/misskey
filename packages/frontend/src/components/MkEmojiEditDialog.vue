@@ -7,12 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	:withOkButton="false "
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
-	<template v-else-if="isRequest" #header>{{ i18n.ts.requestCustomEmojis }}</template>
+	<template v-else-if="isRequest && !emoji" #header>{{ i18n.ts.requestCustomEmojis }}</template>
 	<template v-else #header>New emoji</template>
 
 	<div>
@@ -64,14 +63,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
 					</div>
 				</MkFolder>
+				<MkSwitch v-model="isSensitive">isSensitive</MkSwitch>
+				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 				<MkSwitch v-model="isSensitive">{{ i18n.ts.isSensitive }}</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
           <MkSwitch v-model="isNotifyIsHome">
               {{ i18n.ts.isNotifyIsHome }}
           </MkSwitch>
-				<MkSwitch v-if="!isRequest" v-model="draft" >
-					{{ i18n.ts.draft }}
-				</MkSwitch>
+
 
 			</div>
 		</MkSpacer>
@@ -87,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { DriveFile } from 'misskey-js/built/entities.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -99,144 +98,91 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
-	emoji?: any,
-	isRequest: boolean,
+  emoji?: any,
+  isRequest: boolean,
 }>();
 
-const dialog = ref(null);
-const name = ref<string>(props.emoji ? props.emoji.name : '');
-const category = ref<string>(props.emoji ? props.emoji.category : '');
-const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
-const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
-const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
-const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
-const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
-const rolesThatCanBeUsedThisEmojiAsReaction = ref([]);
-const file = ref<Misskey.entities.DriveFile>();
-let chooseFile = ref(null);
-let draft = ref(props.emoji ? props.emoji.draft : false);
-let isRequest = ref(props.isRequest);
-let isNotifyIsHome = ref(false);
-let url;
-watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
-	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
+let dialog = $ref(null);
+let name: string = $ref(props.emoji ? props.emoji.name : '');
+let category: string = $ref(props.emoji ? props.emoji.category : '');
+let aliases: string = $ref(props.emoji ? props.emoji.aliases.join(' ') : '');
+let license: string = $ref(props.emoji ? (props.emoji.license ?? '') : '');
+let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
+let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
+let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref((props.emoji && props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction) ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
+let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
+let file = $ref<Misskey.entities.DriveFile>();
+let chooseFile: DriveFile|null = $ref(null);
+let isRequest = $ref(props.isRequest ?? false);
+watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
+	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
+const imgUrl = computed(() => file ? file.url : props.emoji && !isRequest ? `/emoji/${props.emoji.name}.webp` : props.emoji && props.emoji.url ? props.emoji.url : null);
 const validation = computed(() => {
-    return name.value.match(/^[a-zA-Z0-9_]+$/) && imgUrl.value != null;
+	return name.match(/^[a-zA-Z0-9_]+$/) && imgUrl.value != null;
 });
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
-	(ev: 'closed'): void
+  (ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
+  (ev: 'closed'): void
 }>();
 
-function ok() {
-	if (isRequest) {
-		if (chooseFile.value !== null && name.value.match(/^[a-zA-Z0-9_]+$/)) {
-			add();
-		}
-	} else {
-		update();
-	}
-}
-
-async function add() {
-	const ret = await os.api('admin/emoji/add-draft', {
-		name: name,
-		category: category.value,
-		aliases: aliases.value.split(' '),
-		license: license.value === '' ? null : license.value,
-		fileId: chooseFile.value.id,
-		isNotifyIsHome: isNotifyIsHome.value,
-	});
-
-	emit('done', {
-		updated: {
-			id: ret.value.id,
-			name,
-			category,
-			aliases: aliases.value.split(' '),
-			license: license.value === '' ? null : license,
-			draft: true,
-		},
-	});
-
-	dialog.value.close();
-}
 async function changeImage(ev) {
-	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
-	const candidate = file.value.name.replace(/\.(.+)$/, '');
+	file = await selectFile(ev.currentTarget ?? ev.target, null);
+	const candidate = file.name.replace(/\.(.+)$/, '');
 	if (candidate.match(/^[a-z0-9_]+$/)) {
-		name.value = candidate;
+		name = candidate;
 	}
 }
 
 async function addRole() {
 	const roles = await os.api('admin/roles/list');
-	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id);
+	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id);
 
 	const { canceled, result: role } = await os.select({
 		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
 	});
 	if (canceled) return;
 
-	rolesThatCanBeUsedThisEmojiAsReaction.value.push(role);
+	rolesThatCanBeUsedThisEmojiAsReaction.push(role);
 }
 
 async function removeRole(role, ev) {
-	rolesThatCanBeUsedThisEmojiAsReaction.value = rolesThatCanBeUsedThisEmojiAsReaction.value.filter(x => x.id !== role.id);
+	rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
 }
-async function update() {
-	await os.apiWithDialog('admin/emoji/update', {
-		id: props.emoji.id,
-        name: name.value,
-        category: category.value === '' ? null : category.value,
-        aliases: aliases.value.split(' ').filter(x => x !== ''),
-        license: license.value === '' ? null : license.value,
-		fileId: chooseFile.value?.id,
-		draft: draft.value,
-	});
 
-	emit('done', {
-		updated: {
-			id: props.emoji.id,
-            name: name.value,
-            category: category.value === '' ? null : category.value,
-            aliases: aliases.value.split(' ').filter(x => x !== ''),
-            license: license.value === '' ? null : license.value,
-			draft: draft.value,
-		},
-	});
-
-	dialog.value.close();
-}
 async function done() {
 	const params = {
-		name: name.value,
-		category: category.value === '' ? null : category.value,
-		aliases: aliases.value.split(' ').filter(x => x !== ''),
-		license: license.value === '' ? null : license.value,
-		isSensitive: isSensitive.value,
-        draft: draft.value,
-		localOnly: localOnly.value,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
-        isNotifyIsHome: isNotifyIsHome.value,
-    };
+		name,
+		category: category === '' ? null : category,
+		aliases: aliases.replace('　', ' ').split(' ').filter(x => x !== ''),
+		license: license === '' ? null : license,
+		Request: isRequest,
+		isSensitive,
+		localOnly,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
+	};
 
-	if (file.value) {
-		params.fileId = file.value.id;
+	if (file) {
+		params.fileId = file.id;
 	}
-	console.log(props.emoji);
+
 	if (props.emoji) {
-		await os.apiWithDialog('admin/emoji/update', {
-			id: props.emoji.id,
-			...params,
-		});
+		if (isRequest) {
+			await os.apiWithDialog('admin/emoji/update-request', {
+				id: props.emoji.id,
+				...params,
+			});
+		} else {
+			await os.apiWithDialog('admin/emoji/update', {
+				id: props.emoji.id,
+				...params,
+			});
+		}
 
 		emit('done', {
 			updated: {
@@ -245,31 +191,24 @@ async function done() {
 			},
 		});
 
-		dialog.value.close();
+		dialog.close();
 	} else {
 		const created = isRequest
-			? await os.apiWithDialog('admin/emoji/add-draft', params)
+			? await os.apiWithDialog('admin/emoji/add-request', params)
 			: await os.apiWithDialog('admin/emoji/add', params);
 
 		emit('done', {
 			created: created,
 		});
 
-		dialog.value.close();
+		dialog.close();
 	}
-}
-
-function chooseFileFrom(ev) {
-	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
-		chooseFile.value = files_[0];
-		url = chooseFile.value.url;
-	});
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: name.value }),
+		text: i18n.t('removeAreYouSure', { x: name }),
 	});
 	if (canceled) return;
 
@@ -279,60 +218,60 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.value.close();
+		dialog.close();
 	});
 }
 </script>
 
 <style lang="scss" module>
 .imgs {
-	display: flex;
-	gap: 8px;
-	flex-wrap: wrap;
-	justify-content: center;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .imgContainer {
-	padding: 8px;
-	border-radius: 6px;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .img {
-	display: block;
-	height: 64px;
-	width: 64px;
-	object-fit: contain;
+  display: block;
+  height: 64px;
+  width: 64px;
+  object-fit: contain;
 }
 
 .roleItem {
-	display: flex;
+  display: flex;
 }
 
 .role {
-	flex: 1;
+  flex: 1;
 }
 
 .roleUnassign {
-	width: 32px;
-	height: 32px;
-	margin-left: 8px;
-	align-self: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  align-self: center;
 }
 
 .footer {
-	position: sticky;
-	bottom: 0;
-	left: 0;
-	padding: 12px;
-	border-top: solid 0.5px var(--divider);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  padding: 12px;
+  border-top: solid 0.5px var(--divider);
+  -webkit-backdrop-filter: var(--blur, blur(15px));
+  backdrop-filter: var(--blur, blur(15px));
 }
 
 .footerButtons {
-	display: flex;
-	gap: 8px;
-	flex-wrap: wrap;
-	justify-content: center;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 </style>

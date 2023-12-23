@@ -279,6 +279,7 @@ export interface Locale {
     "imageUrl": string;
     "remove": string;
     "removed": string;
+    "requestApprovalAreYouSure": string;
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
     "undraftAreYouSure": string;
@@ -869,9 +870,9 @@ export interface Locale {
     "high": string;
     "middle": string;
     "low": string;
+    "list": string;
     "GamingSpeedChange": string;
     "GamingSpeedChangeInfo": string;
-    "list": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
     "showVisibilityColor": string;
@@ -1077,6 +1078,9 @@ export interface Locale {
     "license": string;
     "draft": string;
     "undrafted": string;
+    "requestPending": string;
+    "approval": string;
+    "requestingEmojis": string;
     "unfavoriteConfirm": string;
     "myClips": string;
     "drivecleaner": string;

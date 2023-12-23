@@ -212,7 +212,6 @@ async function init(): Promise<void> {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
-
 		if (res.length === 0 || props.pagination.noPaging) {
 			concatItems(res);
 			more.value = false;
@@ -221,7 +220,6 @@ async function init(): Promise<void> {
 			concatItems(res);
 			more.value = true;
 		}
-
 		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;

@@ -7,14 +7,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository , EmojisRepository } from '@/models/_.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
-
-	kind: 'read:admin',
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
@@ -35,11 +33,6 @@ export const meta = {
 			code: 'SAME_NAME_EMOJI_EXISTS',
 			id: '7180fe9d-1ee3-bff9-647d-fe9896d2ffb8',
 		},
-		duplicationEmojiAdd: {
-			message: 'This emoji is already added.',
-			code: 'DUPLICATION_EMOJI_ADD',
-			id: 'mattyaski_emoji_duplication_error',
-		}
 	},
 } as const;
 
@@ -65,7 +58,7 @@ export const paramDef = {
 		} },
 		Request: { type: 'boolean' },
 	},
-	required: ['id', 'name', 'draft', 'aliases'],
+	required: ['id', 'name', 'aliases'],
 } as const;
 
 @Injectable()
@@ -73,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
 		private customEmojiService: CustomEmojiService,
 		private driveFileEntityService: DriveFileEntityService,
 	) {
@@ -83,31 +77,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
-			const emoji = await this.customEmojiService.getEmojiById(ps.id);
+
+			const emoji = await this.customEmojiService.getEmojiRequestById(ps.id);
 			if (emoji != null) {
 				if (ps.name !== emoji.name) {
-					const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
+					const isDuplicate = await this.customEmojiService.checkRequestDuplicate(ps.name);
 					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
 				}
 			} else {
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
-
-			if (!isRequest) {await this.customEmojiService.update(ps.id, {
-				driveFile,
-				name: ps.name,
-				category: ps.category ?? null,
-				aliases: ps.aliases,
-				license: ps.license ?? null,
-				isSensitive: ps.isSensitive,
-				localOnly: ps.localOnly,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
-				draft: ps.draft,
-			}, me);} else {
+			if (!isRequest) {
 				const file = await this.driveFileEntityService.getFromUrl(emoji.originalUrl);
 				if (file === null) throw new ApiError(meta.errors.noSuchFile);
-				await this.customEmojiService.request({
+				await this.customEmojiService.add({
 					driveFile: file,
+					name: ps.name,
+					category: ps.category ?? null,
+					aliases: ps.aliases ?? [],
+					host: null,
+					license: ps.license ?? null,
+					isSensitive: ps.isSensitive ?? false,
+					localOnly: ps.localOnly ?? false,
+					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+				}, me);
+				await this.customEmojiService.deleteRequest(ps.id);
+			} else {
+				await this.customEmojiService.updateRequest(ps.id, {
 					name: ps.name,
 					category: ps.category ?? null,
 					aliases: ps.aliases ?? [],
@@ -115,7 +111,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					isSensitive: ps.isSensitive ?? false,
 					localOnly: ps.localOnly ?? false,
 				}, me);
-				await this.customEmojiService.delete(ps.id);
 			}
 		});
 	}

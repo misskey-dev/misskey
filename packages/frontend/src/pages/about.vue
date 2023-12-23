@@ -89,9 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
-		<XEmojis/>
-	</MkSpacer>
+	<XEmojis v-else-if="tab === 'emojis'"/>
 	<MkSpacer v-else-if="tab === 'federation'" :contentMax="1000" :marginMin="20">
 		<XFederation/>
 	</MkSpacer>
