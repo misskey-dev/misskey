@@ -2171,6 +2171,7 @@ _notification:
   pollEnded: "투표 결과가 발표되었습니다"
   newNote: "새 게시물"
   unreadAntennaNote: "안테나 {name}"
+  roleAssigned: "역할이 부여 되었습니다."
   emptyPushNotificationMessage: "푸시 알림이 갱신되었습니다"
   achievementEarned: "도전 과제를 달성했습니다"
   testNotification: "알림 테스트"
@@ -2192,6 +2193,7 @@ _notification:
     pollEnded: "투표가 종료됨"
     receiveFollowRequest: "팔로우 요청을 받았을 때"
     followRequestAccepted: "팔로우 요청이 승인되었을 때"
+    roleAssigned: "역할이 부여 됨"
     achievementEarned: "도전 과제 획득"
     app: "연동된 앱을 통한 알림"
   _actions:

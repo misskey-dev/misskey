@@ -16,6 +16,16 @@ export const meta = {
 	requireCredential: false,
 	allowGet: true,
 	cacheSec: 60 * 1,
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			count: {
+				type: 'number',
+				nullable: false,
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
