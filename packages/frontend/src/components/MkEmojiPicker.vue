@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                         v-for="child in customEmojiFolderRoot.children"
                         :key="`custom:${child.value}`"
                         :initialShown="false"
-                        :emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value && !e.category || e.category === child.category+'/'+child.category && !e.category).filter(filterAvailable).map(e => `:${e.name}:`))"
+                        :emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value && !customEmojis.some(emoji => emoji.category.includes(e.category+'/')) || e.category === child.category+'/'+child.category && !e.category).filter(filterAvailable).map(e => `:${e.name}:`))"
                         :hasChildSection="child.children.length !== 0"
                         :customEmojiTree="child.children"
                         @chosen="chosen"
@@ -158,8 +158,9 @@ const customEmojiFolderRoot: CustomEmojiFolderTree = { value: '', category: '', 
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
     const parts = input.split('/').map(p => p.trim()); // スラッシュで区切って配列にしてる
     let currentNode: CustomEmojiFolderTree = root; // currentNode は root
-
-   if (parts.length === 1 && parts[0] !== '') { // parts が 1 つで空じゃなかったら
+    let includesPart = customEmojis.value.some(emoji => emoji.category.includes(parts[0]+'/')) ;
+    console.log(includesPart)
+   if (parts.length === 1 && parts[0] !== '' && includesPart) { // parts が 1 つで空じゃなかったら
        parts.push(parts[0]) // parts に parts[0] を追加 (test category だったら test/test category になる)
    }
 
