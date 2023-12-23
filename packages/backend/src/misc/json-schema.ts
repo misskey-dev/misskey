@@ -40,6 +40,7 @@ import { packedUserListMembershipSchema, packedUserListSchema } from '@/models/j
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
 import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
+import { packedAdSchema } from '@/models/json-schema/ad.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -52,6 +53,7 @@ export const refs = {
 
 	UserList: packedUserListSchema,
 	UserListMembership: packedUserListMembershipSchema,
+	Ad: packedAdSchema,
 	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,

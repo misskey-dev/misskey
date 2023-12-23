@@ -1899,6 +1899,7 @@ _notification:
   yourFollowRequestAccepted: "Votre demande d’abonnement a été accepté"
   pollEnded: "Les résultats du sondage sont disponibles"
   unreadAntennaNote: "Antenne {name}"
+  roleAssigned: "Rôle attribué"
   emptyPushNotificationMessage: "Les notifications push ont été mises à jour"
   achievementEarned: "Accomplissement"
   testNotification: "Tester la notification"
@@ -1916,6 +1917,7 @@ _notification:
     pollEnded: "Sondages se cloturant"
     receiveFollowRequest: "Demande d'abonnement reçue"
     followRequestAccepted: "Demande d'abonnement acceptée"
+    roleAssigned: "Rôle reçu"
     achievementEarned: "Accomplissement"
     app: "Notifications provenant des apps"
   _actions:

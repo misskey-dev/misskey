@@ -2171,6 +2171,7 @@ _notification:
   pollEnded: "問卷調查已產生結果"
   newNote: "新的貼文"
   unreadAntennaNote: "天線 {name}"
+  roleAssigned: "已授予角色"
   emptyPushNotificationMessage: "推送通知已更新"
   achievementEarned: "獲得成就"
   testNotification: "通知測試"
@@ -2192,6 +2193,7 @@ _notification:
     pollEnded: "問卷調查結束"
     receiveFollowRequest: "已收到追隨請求"
     followRequestAccepted: "追隨請求已接受"
+    roleAssigned: "已授予角色"
     achievementEarned: "獲得成就"
     app: "應用程式通知"
   _actions:

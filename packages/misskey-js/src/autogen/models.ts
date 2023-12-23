@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0-beta.5-io
- * generatedAt: 2023-12-21T02:55:40.802Z
+ * version: 2023.12.0-io
+ * generatedAt: 2023-12-23T11:38:40.627Z
  */
 
 import { components } from './types.js';
@@ -14,6 +14,7 @@ export type UserDetailed = components['schemas']['UserDetailed'];
 export type User = components['schemas']['User'];
 export type UserList = components['schemas']['UserList'];
 export type UserListMembership = components['schemas']['UserListMembership'];
+export type Ad = components['schemas']['Ad'];
 export type Announcement = components['schemas']['Announcement'];
 export type App = components['schemas']['App'];
 export type Note = components['schemas']['Note'];
