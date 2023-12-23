@@ -84,6 +84,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 
 				<MkFolder>
+					<template #label>Banned Email Domains</template>
+
+					<div class="_gaps_m">
+						<MkTextarea v-model="bannedEmailDomains">
+							<template #label>Banned Email Domains List</template>
+						</MkTextarea>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
 					<template #label>Log IP address</template>
 					<template v-if="enableIpLogging" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
@@ -124,6 +135,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -141,6 +153,7 @@ const enableIpLogging = ref<boolean>(false);
 const enableActiveEmailValidation = ref<boolean>(false);
 const enableVerifymailApi = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
+const bannedEmailDomains = ref<string>('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -161,6 +174,7 @@ async function init() {
 	enableActiveEmailValidation.value = meta.enableActiveEmailValidation;
 	enableVerifymailApi.value = meta.enableVerifymailApi;
 	verifymailAuthKey.value = meta.verifymailAuthKey;
+	bannedEmailDomains.value = meta.bannedEmailDomains.join('\n');
 }
 
 function save() {
@@ -180,6 +194,7 @@ function save() {
 		enableActiveEmailValidation: enableActiveEmailValidation.value,
 		enableVerifymailApi: enableVerifymailApi.value,
 		verifymailAuthKey: verifymailAuthKey.value,
+		bannedEmailDomains: bannedEmailDomains.value.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

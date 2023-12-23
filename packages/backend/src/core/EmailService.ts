@@ -9,6 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
 import { SubOutputFormat } from 'deep-email-validator/dist/output/output.js';
 import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
@@ -30,6 +31,7 @@ export class EmailService {
 
 		private metaService: MetaService,
 		private loggerService: LoggerService,
+		private utilityService: UtilityService,
 		private httpRequestService: HttpRequestService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
@@ -155,7 +157,7 @@ export class EmailService {
 	@bindThis
 	public async validateEmailForAccount(emailAddress: string): Promise<{
 		available: boolean;
-		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp';
+		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned';
 	}> {
 		const meta = await this.metaService.fetch();
 
@@ -184,12 +186,16 @@ export class EmailService {
 			validated = { valid: true, reason: null };
 		}
 
-		const available = exist === 0 && validated.valid;
+		const emailDomain: string = emailAddress.split('@')[1];
+		const isBanned = this.utilityService.isBlockedHost(meta.bannedEmailDomains, emailDomain);
+
+		const available = exist === 0 && validated.valid && !isBanned;
 
 		return {
 			available,
 			reason: available ? null :
 			exist !== 0 ? 'used' :
+			isBanned ? 'banned' :
 			validated.reason === 'regex' ? 'format' :
 			validated.reason === 'disposable' ? 'disposable' :
 			validated.reason === 'mx' ? 'mx' :

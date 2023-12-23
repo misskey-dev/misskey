@@ -1652,6 +1652,7 @@ _emailUnavailable:
   disposable: "恒久的に使用可能なアドレスではありません"
   mx: "正しいメールサーバーではありません"
   smtp: "メールサーバーが応答しません"
+  banned: "このメールアドレスでは登録できません"
 
 _ffVisibility:
   public: "公開"
