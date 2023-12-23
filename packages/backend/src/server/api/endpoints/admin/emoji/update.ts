@@ -65,7 +65,7 @@ export const paramDef = {
 		} },
 		Request: { type: 'boolean' },
 	},
-	required: ['id', 'name', 'draft', 'aliases'],
+	required: ['id', 'name', 'aliases'],
 } as const;
 
 @Injectable()
@@ -102,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
-				draft: ps.draft,
+				draft: false,
 			}, me);} else {
 				const file = await this.driveFileEntityService.getFromUrl(emoji.originalUrl);
 				if (file === null) throw new ApiError(meta.errors.noSuchFile);
