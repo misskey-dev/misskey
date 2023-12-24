@@ -15,6 +15,8 @@
 ## 2023.12.0-kinel.1 (unreleased)
 
 ### General
+- Fix: VRChatのワールドURLのサムネイルがfaviconになる問題を修正
+- `mixi:content-rating`が指定されているウェブサイト(DLSite等)のサムネイルが表示されなくなりました
 
 ### Client
 - Fix: パブリック投稿をホーム投稿に変更するモデレーション操作におけるモデログの内容と表示が不適切だった問題を修正

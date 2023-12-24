@@ -364,7 +364,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8
+        version: github.com/misskey-dev/summaly/1340c52cfef3434effe650940f9c1d2aaca7078b
       systeminformation:
         specifier: 5.21.20
         version: 5.21.20
@@ -979,7 +979,7 @@ importers:
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.5)(@storybook/components@7.6.5)(@storybook/core-events@7.6.5)(@storybook/manager-api@7.6.5)(@storybook/preview-api@7.6.5)(@storybook/theming@7.6.5)(@storybook/types@7.6.5)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8
+        version: github.com/misskey-dev/summaly/1340c52cfef3434effe650940f9c1d2aaca7078b
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -20369,8 +20369,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8}
+  github.com/misskey-dev/summaly/1340c52cfef3434effe650940f9c1d2aaca7078b:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/1340c52cfef3434effe650940f9c1d2aaca7078b}
     name: summaly
     version: 4.0.2
     dependencies:
