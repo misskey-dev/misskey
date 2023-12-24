@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as os from '@/os.js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
@@ -27,13 +27,13 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-let up = $ref(false);
+const up = ref(false);
 const zIndex = os.claimZIndex('middle');
 const angle = (90 - (Math.random() * 180)) + 'deg';
 
 onMounted(() => {
 	window.setTimeout(() => {
-		up = true;
+		up.value = true;
 	}, 10);
 
 	window.setTimeout(() => {

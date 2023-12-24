@@ -12,6 +12,30 @@ export const meta = {
 	description: 'Endpoint for testing input validation.',
 
 	requireCredential: false,
+
+	res: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'misskey:id'
+			},
+			required: {
+				type: 'boolean',
+			},
+			string: {
+				type: 'string',
+			},
+			default: {
+				type: 'string',
+			},
+			nullableDefault: {
+				type: 'string',
+				default: 'hello',
+				nullable: true,
+			},
+		}
+	}
 } as const;
 
 export const paramDef = {

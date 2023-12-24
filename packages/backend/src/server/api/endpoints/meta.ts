@@ -250,6 +250,33 @@ export const meta = {
 					},
 				},
 			},
+			backgroundImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			impressumUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			logoImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			privacyPolicyUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			serverRules: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
+			themeColor: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	},
 } as const;

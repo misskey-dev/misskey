@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, computed, watch, nextTick } from 'vue';
+import { defineAsyncComponent, computed, watch, ref, shallowRef } from 'vue';
 import { openInstanceMenu } from './_common_/common.js';
 // import { host } from '@/config.js';
 import * as os from '@/os.js';
@@ -65,24 +65,24 @@ import { i18n } from '@/i18n.js';
 
 const WINDOW_THRESHOLD = 1400;
 
-const menu = $ref(defaultStore.state.menu);
+const menu = ref(defaultStore.state.menu);
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {
-		if (menu.includes(def)) continue;
+		if (menu.value.includes(def)) continue;
 		if (navbarItemDef[def].indicated) return true;
 	}
 	return false;
 });
-let el = $shallowRef<HTMLElement>();
+const el = shallowRef<HTMLElement>();
 // let accounts = $ref([]);
 // let connection = $ref(null);
-let iconOnly = $ref(false);
-let settingsWindowed = $ref(false);
+const iconOnly = ref(false);
+const settingsWindowed = ref(false);
 
 function calcViewState() {
-	iconOnly = (window.innerWidth <= WINDOW_THRESHOLD) || (menuDisplay.value === 'sideIcon');
-	settingsWindowed = (window.innerWidth > WINDOW_THRESHOLD);
+	iconOnly.value = (window.innerWidth <= WINDOW_THRESHOLD) || (menuDisplay.value === 'sideIcon');
+	settingsWindowed.value = (window.innerWidth > WINDOW_THRESHOLD);
 }
 
 function more(ev: MouseEvent) {

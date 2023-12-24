@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, onUnmounted, provide, shallowRef } from 'vue';
+import { ComputedRef, onMounted, onUnmounted, provide, shallowRef, ref, computed } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
@@ -55,16 +55,16 @@ defineEmits<{
 const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
 
 const contents = shallowRef<HTMLElement>();
-let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-let windowEl = $shallowRef<InstanceType<typeof MkWindow>>();
-const history = $ref<{ path: string; key: any; }[]>([{
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
+const history = ref<{ path: string; key: any; }[]>([{
 	path: router.getCurrentPath(),
 	key: router.getCurrentKey(),
 }]);
-const buttonsLeft = $computed(() => {
+const buttonsLeft = computed(() => {
 	const buttons = [];
 
-	if (history.length > 1) {
+	if (history.value.length > 1) {
 		buttons.push({
 			icon: 'ti ti-arrow-left',
 			onClick: back,
@@ -73,7 +73,7 @@ const buttonsLeft = $computed(() => {
 
 	return buttons;
 });
-const buttonsRight = $computed(() => {
+const buttonsRight = computed(() => {
 	const buttons = [{
 		icon: 'ti ti-reload',
 		title: i18n.ts.reload,
@@ -86,21 +86,21 @@ const buttonsRight = $computed(() => {
 
 	return buttons;
 });
-let reloadCount = $ref(0);
+const reloadCount = ref(0);
 
 router.addListener('push', ctx => {
-	history.push({ path: ctx.path, key: ctx.key });
+	history.value.push({ path: ctx.path, key: ctx.key });
 });
 
 provide('router', router);
 provideMetadataReceiver((info) => {
-	pageMetadata = info;
+	pageMetadata.value = info;
 });
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 provide('forceSpacerMin', true);
 
-const contextmenu = $computed(() => ([{
+const contextmenu = computed(() => ([{
 	icon: 'ti ti-player-eject',
 	text: i18n.ts.showInPage,
 	action: expand,
@@ -112,8 +112,8 @@ const contextmenu = $computed(() => ([{
 	icon: 'ti ti-external-link',
 	text: i18n.ts.openInNewTab,
 	action: () => {
-		window.open(url + router.getCurrentPath(), '_blank');
-		windowEl.close();
+		window.open(url + router.getCurrentPath(), '_blank', 'noopener');
+		windowEl.value.close();
 	},
 }, {
 	icon: 'ti ti-link',
@@ -124,26 +124,26 @@ const contextmenu = $computed(() => ([{
 }]));
 
 function back() {
-	history.pop();
-	router.replace(history.at(-1)!.path, history.at(-1)!.key);
+	history.value.pop();
+	router.replace(history.value.at(-1)!.path, history.value.at(-1)!.key);
 }
 
 function reload() {
-	reloadCount++;
+	reloadCount.value++;
 }
 
 function close() {
-	windowEl.close();
+	windowEl.value.close();
 }
 
 function expand() {
 	mainRouter.push(router.getCurrentPath(), 'forcePage');
-	windowEl.close();
+	windowEl.value.close();
 }
 
 function popout() {
-	_popout(router.getCurrentPath(), windowEl.$el);
-	windowEl.close();
+	_popout(router.getCurrentPath(), windowEl.value.$el);
+	windowEl.value.close();
 }
 
 useScrollPositionManager(() => getScrollContainer(contents.value), router);

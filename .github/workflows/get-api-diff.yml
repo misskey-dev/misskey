@@ -6,37 +6,30 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/backend/**
+      - .github/workflows/get-api-diff.yml
 
 jobs:
-  get-base:
+  get-from-misskey:
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     strategy:
       matrix:
-        node-version: [20.5.1]
-
-    services:
-      db:
-        image: postgres:13
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: misskey
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_USER: example-misskey-user
-          POSTGRESS_PASS: example-misskey-pass
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
+        node-version: [20.10.0]
+        api-json-name: [api-base.json, api-head.json]
+        include:
+          - api-json-name: api-base.json
+            ref: ${{ github.base_ref }}
+          - api-json-name: api-head.json
+            ref: refs/pull/${{ github.event.number }}/merge
 
     steps:
     - uses: actions/checkout@v4.1.1
       with:
-        repository: ${{ github.event.pull_request.base.repo.full_name }}
-        ref: ${{ github.base_ref }}
+        ref: ${{ matrix.ref }}
         submodules: true
     - name: Install pnpm
       uses: pnpm/action-setup@v2
@@ -44,7 +37,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -56,121 +49,15 @@ jobs:
       run: cp .config/example.yml .config/default.yml
     - name: Build
       run: pnpm build
-    - name : Migrate
-      run: pnpm migrate
-    - name: Launch misskey
-      run: |
-        screen -S misskey -dm pnpm run dev
-        sleep 30s
-    - name: Wait for Misskey to be ready
-      run: |
-        MAX_RETRIES=12
-        RETRY_DELAY=5
-        count=0
-        until $(curl --output /dev/null --silent --head --fail http://localhost:3000) || [[ $count -eq $MAX_RETRIES ]]; do
-          printf '.'
-          sleep $RETRY_DELAY
-          count=$((count + 1))
-        done
-
-        if [[ $count -eq $MAX_RETRIES ]]; then
-          echo "Failed to connect to Misskey after $MAX_RETRIES attempts."
-          exit 1
-        fi
-    - id: fetch
-      name: Get api.json from Misskey
-      run: |
-        RESULT=$(curl --retry 5 --retry-delay 5 --retry-max-time 60 http://localhost:3000/api.json)
-        echo $RESULT > api-base.json
+    - name: Generate API JSON
+      run: pnpm --filter backend generate-api-json
+    - name: Copy API.json
+      run: cp packages/backend/built/api.json ${{ matrix.api-json-name }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: api-artifact
-        path: api-base.json
-    - name: Kill Misskey Job
-      run: screen -S misskey -X quit
-
-  get-head:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    strategy:
-      matrix:
-        node-version: [20.5.1]
-
-    services:
-      db:
-        image: postgres:13
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: misskey
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_USER: example-misskey-user
-          POSTGRESS_PASS: example-misskey-pass
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-
-    steps:
-    - uses: actions/checkout@v4.1.1
-      with:
-        repository: ${{ github.event.pull_request.head.repo.full_name }}
-        ref: ${{ github.head_ref }}
-        submodules: true
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-        run_install: false
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - run: corepack enable
-    - run: pnpm i --frozen-lockfile
-    - name: Check pnpm-lock.yaml
-      run: git diff --exit-code pnpm-lock.yaml
-    - name: Copy Configure
-      run: cp .config/example.yml .config/default.yml
-    - name: Build
-      run: pnpm build
-    - name : Migrate
-      run: pnpm migrate
-    - name: Launch misskey
-      run: |
-        screen -S misskey -dm pnpm run dev
-        sleep 30s
-    - name: Wait for Misskey to be ready
-      run: |
-        MAX_RETRIES=12
-        RETRY_DELAY=5
-        count=0
-        until $(curl --output /dev/null --silent --head --fail http://localhost:3000) || [[ $count -eq $MAX_RETRIES ]]; do
-          printf '.'
-          sleep $RETRY_DELAY
-          count=$((count + 1))
-        done
-
-        if [[ $count -eq $MAX_RETRIES ]]; then
-          echo "Failed to connect to Misskey after $MAX_RETRIES attempts."
-          exit 1
-        fi
-    - id: fetch
-      name: Get api.json from Misskey
-      run: |
-        RESULT=$(curl --retry 5 --retry-delay 5 --retry-max-time 60 http://localhost:3000/api.json)
-        echo $RESULT > api-head.json
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: api-artifact
-        path: api-head.json
-    - name: Kill Misskey Job
-      run: screen -S misskey -X quit
+        path: ${{ matrix.api-json-name }}
 
   save-pr-number:
     runs-on: ubuntu-latest
@@ -180,7 +67,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           echo "$PR_NUMBER" > ./pr_number
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: api-artifact
           path: pr_number

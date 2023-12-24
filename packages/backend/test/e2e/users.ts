@@ -112,7 +112,8 @@ describe('ユーザー', () => {
 			pinnedPageId: user.pinnedPageId,
 			pinnedPage: user.pinnedPage,
 			publicReactions: user.publicReactions,
-			ffVisibility: user.ffVisibility,
+			followingVisibility: user.followingVisibility,
+			followersVisibility: user.followersVisibility,
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
@@ -168,6 +169,7 @@ describe('ユーザー', () => {
 			hasPendingReceivedFollowRequest: user.hasPendingReceivedFollowRequest,
 			unreadAnnouncements: user.unreadAnnouncements,
 			mutedWords: user.mutedWords,
+			hardMutedWords: user.hardMutedWords,
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
 			notificationRecieveConfig: user.notificationRecieveConfig,
@@ -385,7 +387,8 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.pinnedPageId, null);
 		assert.strictEqual(response.pinnedPage, null);
 		assert.strictEqual(response.publicReactions, true);
-		assert.strictEqual(response.ffVisibility, 'public');
+		assert.strictEqual(response.followingVisibility, 'public');
+		assert.strictEqual(response.followersVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
 		assert.strictEqual(response.securityKeys, false);
@@ -494,9 +497,12 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ alwaysMarkNsfw: false }) },
 		{ parameters: (): object => ({ autoSensitive: true }) },
 		{ parameters: (): object => ({ autoSensitive: false }) },
-		{ parameters: (): object => ({ ffVisibility: 'private' }) },
-		{ parameters: (): object => ({ ffVisibility: 'followers' }) },
-		{ parameters: (): object => ({ ffVisibility: 'public' }) },
+		{ parameters: (): object => ({ followingVisibility: 'private' }) },
+		{ parameters: (): object => ({ followingVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followingVisibility: 'public' }) },
+		{ parameters: (): object => ({ followersVisibility: 'private' }) },
+		{ parameters: (): object => ({ followersVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followersVisibility: 'public' }) },
 		{ parameters: (): object => ({ mutedWords: Array(19).fill(['xxxxx']) }) },
 		{ parameters: (): object => ({ mutedWords: [['x'.repeat(194)]] }) },
 		{ parameters: (): object => ({ mutedWords: [] }) },

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="root">
+<div>
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
@@ -27,43 +27,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts">
-/**
- * アスペクト比算出のためにHTMLElement.clientWidthを使うが、
- * 大変重たいのでコンテナ要素とメディアリスト幅のペアをキャッシュする
- * （タイムラインごとにスクロールコンテナが存在する前提だが……）
- */
-const widthCache = new Map<Element, number>();
-
-/**
- * コンテナ要素がリサイズされたらキャッシュを削除する
- */
-const ro = new ResizeObserver(entries => {
-	for (const entry of entries) {
-		widthCache.delete(entry.target);
-	}
-});
-
-async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
-	if (_DEV_) console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
-	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
-
-	const width = targetEl.clientWidth;
-
-	if (count <= 10 && width < 64) {
-		// widthが64未満はおかしいのでリトライする
-		await new Promise(resolve => setTimeout(resolve, 50));
-		return getClientWidthWithCache(targetEl, containerEl, count + 1);
-	}
-
-	widthCache.set(containerEl, width);
-	ro.observe(containerEl);
-	return width;
-}
-</script>
-
 <script lang="ts" setup>
-import { onMounted, onUnmounted, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -74,19 +39,16 @@ import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
 import { defaultStore } from '@/store.js';
-import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
 
-const root = shallowRef<HTMLDivElement>();
-const container = shallowRef<HTMLElement | null | undefined>(undefined);
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
-const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
+const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
 let lightbox: PhotoSwipeLightbox | null;
 
 const popstateHandler = (): void => {
@@ -95,12 +57,8 @@ const popstateHandler = (): void => {
 	}
 };
 
-/**
- * アスペクト比をmediaListWithOneImageAppearanceに基づいていい感じに調整する
- * aspect-ratioではなくheightを使う
- */
 async function calcAspectRatio() {
-	if (!gallery.value || !root.value) return;
+	if (!gallery.value) return;
 
 	let img = props.mediaList[0];
 
@@ -109,41 +67,22 @@ async function calcAspectRatio() {
 		return;
 	}
 
-	if (!container.value) container.value = getScrollContainer(root.value);
-	const width = container.value ? await getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
-
-	const heightMin = (ratio: number) => {
-		const imgResizeRatio = width / img.properties.width;
-		const imgDrawHeight = img.properties.height * imgResizeRatio;
-		const maxHeight = width * ratio;
-		const height = Math.min(imgDrawHeight, maxHeight);
-		if (_DEV_) console.log('Image height calculated:', { width, properties: img.properties, imgResizeRatio, imgDrawHeight, maxHeight, height });
-		return `${height}px`;
-	};
+	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
 
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
 		case '16_9':
-			gallery.value.style.height = heightMin(9 / 16);
+			gallery.value.style.aspectRatio = ratioMax(16 / 9);
 			break;
 		case '1_1':
-			gallery.value.style.height = heightMin(1);
+			gallery.value.style.aspectRatio = ratioMax(1 / 1);
 			break;
 		case '2_3':
-			gallery.value.style.height = heightMin(3 / 2);
+			gallery.value.style.aspectRatio = ratioMax(2 / 3);
 			break;
-		default: {
-			const maxHeight = Math.max(64, (container.value ? container.value.clientHeight : getBodyScrollHeight()) * 0.5 || 360);
-			if (width === 0 || !maxHeight) return;
-			const imgResizeRatio = width / img.properties.width;
-			const imgDrawHeight = img.properties.height * imgResizeRatio;
-			gallery.value.style.height = `${Math.max(64, Math.min(imgDrawHeight, maxHeight))}px`;
-			gallery.value.style.minHeight = 'initial';
-			gallery.value.style.maxHeight = 'initial';
+		default:
+			gallery.value.style.aspectRatio = '';
 			break;
-		}
 	}
-
-	gallery.value.style.aspectRatio = 'initial';
 }
 
 onMounted(() => {

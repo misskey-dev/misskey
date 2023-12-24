@@ -24,6 +24,25 @@ export const meta = {
 			id: '30aaaee3-4792-48dc-ab0d-cf501a575ac5',
 		},
 	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			nullable: false,
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id'
+				},
+				user: {
+					type: 'object',
+					ref: 'User'
+				},
+			},
+			required: ['id', 'user'],
+		},
+	},
 } as const;
 
 export const paramDef = {

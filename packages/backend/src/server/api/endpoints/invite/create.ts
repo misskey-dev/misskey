@@ -31,13 +31,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		properties: {
-			code: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: 'GR6S02ERUA5VR',
-			},
-		},
+		ref: 'InviteCode',
 	},
 } as const;
 

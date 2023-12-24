@@ -74,7 +74,7 @@ const props = defineProps({
 	},
 });
 
-let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
+const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -268,7 +268,7 @@ const render = () => {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor), ...(props.detailed ? [chartLegend(legendEl)] : [])],
+		plugins: [chartVLine(vLineColor), ...(props.detailed ? [chartLegend(legendEl.value)] : [])],
 	});
 };
 

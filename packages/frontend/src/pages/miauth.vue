@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -64,10 +64,10 @@ const props = defineProps<{
 
 const _permissions = props.permission ? props.permission.split(',') : [];
 
-let state = $ref<string | null>(null);
+const state = ref<string | null>(null);
 
 async function accept(): Promise<void> {
-	state = 'waiting';
+	state.value = 'waiting';
 	await os.api('miauth/gen-token', {
 		session: props.session,
 		name: props.name,
@@ -75,7 +75,7 @@ async function accept(): Promise<void> {
 		permission: _permissions,
 	});
 
-	state = 'accepted';
+	state.value = 'accepted';
 	if (props.callback) {
 		const cbUrl = new URL(props.callback);
 		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(cbUrl.protocol)) throw new Error('invalid url');
@@ -85,16 +85,16 @@ async function accept(): Promise<void> {
 }
 
 function deny(): void {
-	state = 'denied';
+	state.value = 'denied';
 }
 
 function onLogin(res): void {
 	login(res.i);
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: 'MiAuth',
