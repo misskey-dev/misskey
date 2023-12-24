@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, onBeforeUnmount, provide } from 'vue';
+import { inject, onBeforeUnmount, provide, shallowRef, ref } from 'vue';
 import { Resolved, Router } from '@/nirax';
 import { defaultStore } from '@/store.js';
 
@@ -46,16 +46,16 @@ function resolveNested(current: Resolved, d = 0): Resolved | null {
 }
 
 const current = resolveNested(router.current)!;
-let currentPageComponent = $shallowRef(current.route.component);
-let currentPageProps = $ref(current.props);
-let key = $ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
+const currentPageComponent = shallowRef(current.route.component);
+const currentPageProps = ref(current.props);
+const key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
 
 function onChange({ resolved, key: newKey }) {
 	const current = resolveNested(resolved);
 	if (current == null) return;
-	currentPageComponent = current.route.component;
-	currentPageProps = current.props;
-	key = current.route.path + JSON.stringify(Object.fromEntries(current.props));
+	currentPageComponent.value = current.route.component;
+	currentPageProps.value = current.props;
+	key.value = current.route.path + JSON.stringify(Object.fromEntries(current.props));
 }
 
 router.addListener('change', onChange);

@@ -33,7 +33,6 @@
 		],
 		"types": [
 			"vite/client",
-			"reactivity-transform/macros-global"
 		],
 		"lib": [
 			"esnext",

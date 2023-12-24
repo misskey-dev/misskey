@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
+import { computed, onDeactivated, onUnmounted, Ref, ref, watch, shallowRef } from 'vue';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -78,45 +78,45 @@ const props = defineProps<{
 	id: string;
 }>();
 
-let flash = $ref(null);
-let error = $ref(null);
+const flash = ref(null);
+const error = ref(null);
 
 function fetchFlash() {
-	flash = null;
+	flash.value = null;
 	os.api('flash/show', {
 		flashId: props.id,
 	}).then(_flash => {
-		flash = _flash;
+		flash.value = _flash;
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
 function copyLink() {
-	copyToClipboard(`${url}/play/${flash.id}`);
+	copyToClipboard(`${url}/play/${flash.value.id}`);
 	os.success();
 }
 
 function share() {
 	navigator.share({
-		title: flash.title,
-		text: flash.summary,
-		url: `${url}/play/${flash.id}`,
+		title: flash.value.title,
+		text: flash.value.summary,
+		url: `${url}/play/${flash.value.id}`,
 	});
 }
 
 function shareWithNote() {
 	os.post({
-		initialText: `${flash.title} ${url}/play/${flash.id}`,
+		initialText: `${flash.value.title} ${url}/play/${flash.value.id}`,
 	});
 }
 
 function like() {
 	os.apiWithDialog('flash/like', {
-		flashId: flash.id,
+		flashId: flash.value.id,
 	}).then(() => {
-		flash.isLiked = true;
-		flash.likedCount++;
+		flash.value.isLiked = true;
+		flash.value.likedCount++;
 	});
 }
 
@@ -127,10 +127,10 @@ async function unlike() {
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('flash/unlike', {
-		flashId: flash.id,
+		flashId: flash.value.id,
 	}).then(() => {
-		flash.isLiked = false;
-		flash.likedCount--;
+		flash.value.isLiked = false;
+		flash.value.likedCount--;
 	});
 }
 
@@ -138,39 +138,35 @@ watch(() => props.id, fetchFlash, { immediate: true });
 
 const parser = new Parser();
 
-let started = $ref(false);
-let aiscript = $shallowRef<Interpreter | null>(null);
+const started = ref(false);
+const aiscript = shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
-const components: Ref<AsUiComponent>[] = $ref([]);
+const components = ref<Ref<AsUiComponent>[]>([]);
 
 function start() {
-	started = true;
+	started.value = true;
 	run();
 }
 
 async function run() {
-	if (aiscript) aiscript.abort();
+	if (aiscript.value) aiscript.value.abort();
 
-	aiscript = new Interpreter({
+	aiscript.value = new Interpreter({
 		...createAiScriptEnv({
-			storageKey: 'flash:' + flash.id,
+			storageKey: 'flash:' + flash.value.id,
 		}),
-		...registerAsUiLib(components, (_root) => {
+		...registerAsUiLib(components.value, (_root) => {
 			root.value = _root.value;
 		}),
-		THIS_ID: values.STR(flash.id),
-		THIS_URL: values.STR(`${url}/play/${flash.id}`),
+		THIS_ID: values.STR(flash.value.id),
+		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
 		in: (q) => {
 			return new Promise(ok => {
 				os.inputText({
 					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
+				}).then(({ result: a }) => {
+					ok(a ?? '');
 				});
 			});
 		},
@@ -184,7 +180,7 @@ async function run() {
 
 	let ast;
 	try {
-		ast = parser.parse(flash.script);
+		ast = parser.parse(flash.value.script);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -193,7 +189,7 @@ async function run() {
 		return;
 	}
 	try {
-		await aiscript.exec(ast);
+		await aiscript.value.exec(ast);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -204,24 +200,24 @@ async function run() {
 }
 
 onDeactivated(() => {
-	if (aiscript) aiscript.abort();
+	if (aiscript.value) aiscript.value.abort();
 });
 
 onUnmounted(() => {
-	if (aiscript) aiscript.abort();
+	if (aiscript.value) aiscript.value.abort();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash ? {
-	title: flash.title,
-	avatar: flash.user,
-	path: `/play/${flash.id}`,
+definePageMetadata(computed(() => flash.value ? {
+	title: flash.value.title,
+	avatar: flash.value.user,
+	path: `/play/${flash.value.id}`,
 	share: {
-		title: flash.title,
-		text: flash.summary,
+		title: flash.value.title,
+		text: flash.value.summary,
 	},
 } : null));
 </script>

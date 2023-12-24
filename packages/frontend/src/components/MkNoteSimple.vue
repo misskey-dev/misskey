@@ -22,18 +22,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { $i } from '@/account.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const showContent = $ref(false);
+const showContent = ref(false);
 </script>
 
 <style lang="scss" module>

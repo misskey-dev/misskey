@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTime :time="log.createdAt"/>
 	</template>
 
-	<div :class="$style.root">
+	<div>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 			<div style="flex: 1;">{{ i18n.ts.moderator }}: <MkA :to="`/admin/user/${log.userId}`" class="_link">@{{ log.user?.username }}</MkA></div>
 			<div style="flex: 1;">{{ i18n.ts.dateAndTime }}: <MkTime :time="log.createdAt" mode="detail"/></div>
@@ -123,9 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { CodeDiff } from 'v-code-diff';
 import JSON5 from 'json5';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { dateString } from '@/filters/date.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
@@ -134,9 +132,6 @@ const props = defineProps<{
 </script>
 
 <style lang="scss" module>
-.root {
-}
-
 .avatar {
 	width: 18px;
 	height: 18px;

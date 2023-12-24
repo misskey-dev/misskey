@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets } from 'typeorm';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -50,9 +49,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private cacheService: CacheService,
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
-		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let noteIds: string[];
@@ -78,6 +77,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>()];
+
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
@@ -87,24 +94,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			let notes = await query.getMany();
+			const notes = (await query.getMany()).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 
-			if (me != null) {
-				// user mute and blocking
-				const [
-					userIdsWhoMeMuting,
-				] = await Promise.all([
-					this.cacheService.userMutingsCache.fetch(me.id),
-				]);
-
-				notes = notes.filter(note => {
-					if (isUserRelated(note, userIdsWhoMeMuting)) return false;
-
-					return true;
-				});
-
-				// TODO: フィルタで件数が減った場合の埋め合わせ処理
-			}
+				return true;
+			});
 
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 

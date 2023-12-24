@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.used }}</span>
 					<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.format }}</span>
 					<span v-else-if="emailState === 'unavailable:disposable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.disposable }}</span>
+					<span v-else-if="emailState === 'unavailable:banned'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.banned }}</span>
 					<span v-else-if="emailState === 'unavailable:mx'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.mx }}</span>
 					<span v-else-if="emailState === 'unavailable:smtp'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.smtp }}</span>
 					<span v-else-if="emailState === 'unavailable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.unavailable }}</span>
@@ -76,11 +77,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import { toUnicode } from 'punycode/';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
-import MkSwitch from './MkSwitch.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 import * as config from '@/config.js';
 import * as os from '@/os.js';
@@ -101,34 +101,34 @@ const emit = defineEmits<{
 
 const host = toUnicode(config.host);
 
-let hcaptcha = $ref<Captcha | undefined>();
-let recaptcha = $ref<Captcha | undefined>();
-let turnstile = $ref<Captcha | undefined>();
+const hcaptcha = ref<Captcha | undefined>();
+const recaptcha = ref<Captcha | undefined>();
+const turnstile = ref<Captcha | undefined>();
 
-let username: string = $ref('');
-let password: string = $ref('');
-let retypedPassword: string = $ref('');
-let invitationCode: string = $ref('');
-let email = $ref('');
-let usernameState: null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range' = $ref(null);
-let emailState: null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error' = $ref(null);
-let passwordStrength: '' | 'low' | 'medium' | 'high' = $ref('');
-let passwordRetypeState: null | 'match' | 'not-match' = $ref(null);
-let submitting: boolean = $ref(false);
-let hCaptchaResponse = $ref(null);
-let reCaptchaResponse = $ref(null);
-let turnstileResponse = $ref(null);
-let usernameAbortController: null | AbortController = $ref(null);
-let emailAbortController: null | AbortController = $ref(null);
+const username = ref<string>('');
+const password = ref<string>('');
+const retypedPassword = ref<string>('');
+const invitationCode = ref<string>('');
+const email = ref('');
+const usernameState = ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
+const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:banned' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
+const passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
+const passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
+const submitting = ref<boolean>(false);
+const hCaptchaResponse = ref(null);
+const reCaptchaResponse = ref(null);
+const turnstileResponse = ref(null);
+const usernameAbortController = ref<null | AbortController>(null);
+const emailAbortController = ref<null | AbortController>(null);
 
-const shouldDisableSubmitting = $computed((): boolean => {
-	return submitting ||
-		instance.enableHcaptcha && !hCaptchaResponse ||
-		instance.enableRecaptcha && !reCaptchaResponse ||
-		instance.enableTurnstile && !turnstileResponse ||
-		instance.emailRequiredForSignup && emailState !== 'ok' ||
-		usernameState !== 'ok' ||
-		passwordRetypeState !== 'match';
+const shouldDisableSubmitting = computed((): boolean => {
+	return submitting.value ||
+		instance.enableHcaptcha && !hCaptchaResponse.value ||
+		instance.enableRecaptcha && !reCaptchaResponse.value ||
+		instance.enableTurnstile && !turnstileResponse.value ||
+		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
+		usernameState.value !== 'ok' ||
+		passwordRetypeState.value !== 'match';
 });
 
 function getPasswordStrength(source: string): number {
@@ -156,114 +156,115 @@ function getPasswordStrength(source: string): number {
 }
 
 function onChangeUsername(): void {
-	if (username === '') {
-		usernameState = null;
+	if (username.value === '') {
+		usernameState.value = null;
 		return;
 	}
 
 	{
 		const err =
-			!username.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
-			username.length < 1 ? 'min-range' :
-			username.length > 20 ? 'max-range' :
+			!username.value.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
+			username.value.length < 1 ? 'min-range' :
+			username.value.length > 20 ? 'max-range' :
 			null;
 
 		if (err) {
-			usernameState = err;
+			usernameState.value = err;
 			return;
 		}
 	}
 
-	if (usernameAbortController != null) {
-		usernameAbortController.abort();
+	if (usernameAbortController.value != null) {
+		usernameAbortController.value.abort();
 	}
-	usernameState = 'wait';
-	usernameAbortController = new AbortController();
+	usernameState.value = 'wait';
+	usernameAbortController.value = new AbortController();
 
 	os.api('username/available', {
-		username,
-	}, undefined, usernameAbortController.signal).then(result => {
-		usernameState = result.available ? 'ok' : 'unavailable';
+		username: username.value,
+	}, undefined, usernameAbortController.value.signal).then(result => {
+		usernameState.value = result.available ? 'ok' : 'unavailable';
 	}).catch((err) => {
 		if (err.name !== 'AbortError') {
-			usernameState = 'error';
+			usernameState.value = 'error';
 		}
 	});
 }
 
 function onChangeEmail(): void {
-	if (email === '') {
-		emailState = null;
+	if (email.value === '') {
+		emailState.value = null;
 		return;
 	}
 
-	if (emailAbortController != null) {
-		emailAbortController.abort();
+	if (emailAbortController.value != null) {
+		emailAbortController.value.abort();
 	}
-	emailState = 'wait';
-	emailAbortController = new AbortController();
+	emailState.value = 'wait';
+	emailAbortController.value = new AbortController();
 
 	os.api('email-address/available', {
-		emailAddress: email,
-	}, undefined, emailAbortController.signal).then(result => {
-		emailState = result.available ? 'ok' :
+		emailAddress: email.value,
+	}, undefined, emailAbortController.value.signal).then(result => {
+		emailState.value = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
 			result.reason === 'disposable' ? 'unavailable:disposable' :
+			result.reason === 'banned' ? 'unavailable:banned' :
 			result.reason === 'mx' ? 'unavailable:mx' :
 			result.reason === 'smtp' ? 'unavailable:smtp' :
 			'unavailable';
 	}).catch((err) => {
 		if (err.name !== 'AbortError') {
-			emailState = 'error';
+			emailState.value = 'error';
 		}
 	});
 }
 
 function onChangePassword(): void {
-	if (password === '') {
-		passwordStrength = '';
+	if (password.value === '') {
+		passwordStrength.value = '';
 		return;
 	}
 
-	const strength = getPasswordStrength(password);
-	passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
+	const strength = getPasswordStrength(password.value);
+	passwordStrength.value = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 }
 
 function onChangePasswordRetype(): void {
-	if (retypedPassword === '') {
-		passwordRetypeState = null;
+	if (retypedPassword.value === '') {
+		passwordRetypeState.value = null;
 		return;
 	}
 
-	passwordRetypeState = password === retypedPassword ? 'match' : 'not-match';
+	passwordRetypeState.value = password.value === retypedPassword.value ? 'match' : 'not-match';
 }
 
 async function onSubmit(): Promise<void> {
-	if (submitting) return;
-	submitting = true;
+	if (submitting.value) return;
+	submitting.value = true;
 
 	try {
 		await os.api('signup', {
-			username,
-			password,
-			emailAddress: email,
-			invitationCode,
-			'hcaptcha-response': hCaptchaResponse,
-			'g-recaptcha-response': reCaptchaResponse,
-			'turnstile-response': turnstileResponse,
+			username: username.value,
+			password: password.value,
+			emailAddress: email.value,
+			invitationCode: invitationCode.value,
+			'hcaptcha-response': hCaptchaResponse.value,
+			'g-recaptcha-response': reCaptchaResponse.value,
+			'turnstile-response': turnstileResponse.value,
 		});
 		if (instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
-				text: i18n.t('_signup.emailSent', { email }),
+				text: i18n.t('_signup.emailSent', { email: email.value }),
 			});
 			emit('signupEmailPending');
 		} else {
 			const res = await os.api('signin', {
-				username,
-				password,
+				username: username.value,
+				password: password.value,
 			});
 			emit('signup', res);
 
@@ -272,10 +273,10 @@ async function onSubmit(): Promise<void> {
 			}
 		}
 	} catch {
-		submitting = false;
-		hcaptcha?.reset?.();
-		recaptcha?.reset?.();
-		turnstile?.reset?.();
+		submitting.value = false;
+		hcaptcha.value?.reset?.();
+		recaptcha.value?.reset?.();
+		turnstile.value?.reset?.();
 
 		os.alert({
 			type: 'error',

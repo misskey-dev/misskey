@@ -10,6 +10,8 @@ import { EmailService } from '@/core/EmailService.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 } as const;

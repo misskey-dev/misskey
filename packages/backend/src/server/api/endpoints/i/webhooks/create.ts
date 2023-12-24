@@ -32,6 +32,35 @@ export const meta = {
 			id: '0d3321b1-6f66-41aa-9fbe-233c60ce19b0',
 		},
 	},
+
+	res: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'misskey:id'
+			},
+			userId: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+			name: { type: 'string' },
+			on: {
+				type: 'array',
+				items: {
+					oneOf: [
+						{ type: 'string', enum: webhookEventTypes },
+						{ type: 'string', pattern: '^note@[a-zA-Z0-9]{1,20}$' },
+					],
+				},
+			},
+			url: { type: 'string' },
+			secret: { type: 'string' },
+			active: { type: 'boolean' },
+			latestSentAt: { type: 'string', format: 'date-time', nullable: true },
+			latestStatus: { type: 'integer', nullable: true },
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -87,7 +116,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.globalEventService.publishInternalEvent('webhookCreated', webhook);
 
-			return webhook;
+			return {
+				id: webhook.id,
+				userId: webhook.userId,
+				name: webhook.name,
+				on: webhook.on,
+				url: webhook.url,
+				secret: webhook.secret,
+				active: webhook.active,
+				latestSentAt: webhook.latestSentAt?.toISOString(),
+				latestStatus: webhook.latestStatus,
+			};
 		});
 	}
 }

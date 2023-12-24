@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.head">
 		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="notification.type === 'note'" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-else-if="notification.type === 'roleAssigned'" :class="$style.icon" :user="$i" link preview/>
 		<MkAvatar v-else-if="notification.type === 'achievementEarned'" :class="$style.icon" :user="$i" link preview/>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
@@ -36,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<i v-else-if="notification.type === 'achievementEarned'" class="ti ti-medal"></i>
+			<img v-else-if="notification.type === 'roleAssigned'" :src="notification.role.iconUrl" alt=""/>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<MkReactionIcon
 				v-else-if="notification.type === 'reaction'"
@@ -50,6 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<header :class="$style.header">
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
 			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
+			<span v-else-if="notification.type === 'roleAssigned'">{{ i18n.ts._notification.roleAssigned }}</span>
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
@@ -86,6 +89,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
+			<div v-else-if="notification.type === 'roleAssigned'" :class="$style.text">
+				{{ notification.role.name }}
+			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
 			</MkA>
@@ -130,7 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';

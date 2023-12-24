@@ -10,10 +10,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
-import { popout as popout_ } from '@/scripts/popout.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-const active = $computed(() => {
+const active = computed(() => {
 	if (props.activeClass == null) return false;
 	const resolved = router.resolve(props.to);
 	if (resolved == null) return false;
@@ -56,11 +56,11 @@ function onContextmenu(ev) {
 		action: () => {
 			router.push(props.to, 'forcePage');
 		},
-	}, null, {
+	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {
-			window.open(props.to, '_blank');
+			window.open(props.to, '_blank', 'noopener');
 		},
 	}, {
 		icon: 'ti ti-link',

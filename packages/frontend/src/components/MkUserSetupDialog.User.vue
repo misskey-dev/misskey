@@ -29,7 +29,6 @@ import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{

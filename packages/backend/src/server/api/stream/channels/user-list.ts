@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import Channel from '../channel.js';
 
 class UserListChannel extends Channel {
@@ -80,6 +80,9 @@ class UserListChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		const isMe = this.user!.id === note.userId;
 
+		// チャンネル投稿は無視する
+		if (note.channelId) return;
+
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
@@ -114,6 +117,9 @@ class UserListChannel extends Channel {
 				note.renote.myReaction = myRenoteReaction;
 			}
 		}
+
+		// 流れてきたNoteがミュートしているインスタンスに関わるものだったら無視する
+		if (isInstanceMuted(note, this.userMutedInstances)) return;
 
 		this.connection.cacheNote(note);
 

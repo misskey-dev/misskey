@@ -13,7 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '@/server/api/error.js';
 import type { IEndpointMeta } from '@/server/api/endpoints.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 
 export const meta = {
@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private db: DataSource,
 
 		private moderationLogService: ModerationLogService,
-		private funoutTimelineService: FunoutTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 		private featuredService: FeaturedService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -106,12 +106,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// remove from funout local timeline
 			const redisPipeline = this.redisForTimelines.pipeline();
-			this.funoutTimelineService.remove('localTimeline', note.id, redisPipeline);
+			this.fanoutTimelineService.remove('localTimeline', note.id, redisPipeline);
 			if (note.fileIds.length > 0) {
-				this.funoutTimelineService.remove('localTimelineWithFiles', note.id, redisPipeline);
+				this.fanoutTimelineService.remove('localTimelineWithFiles', note.id, redisPipeline);
 			}
 			for (const renote of renotes) {
-				this.funoutTimelineService.remove('localTimeline', renote.id, redisPipeline);
+				this.fanoutTimelineService.remove('localTimeline', renote.id, redisPipeline);
 			}
 			await redisPipeline.exec();
 

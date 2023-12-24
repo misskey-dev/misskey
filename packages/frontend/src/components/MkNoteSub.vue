@@ -51,7 +51,6 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { userPage } from '@/filters/user.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
-import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -65,15 +64,15 @@ const props = withDefaults(defineProps<{
 
 const muted = ref($i ? checkWordMute(props.note, $i, $i.mutedWords) : false);
 
-let showContent = $ref(false);
-let replies: Misskey.entities.Note[] = $ref([]);
+const showContent = ref(false);
+const replies = ref<Misskey.entities.Note[]>([]);
 
 if (props.detail) {
 	os.api('notes/children', {
 		noteId: props.note.id,
 		limit: 5,
 	}).then(res => {
-		replies = res;
+		replies.value = res;
 	});
 }
 </script>

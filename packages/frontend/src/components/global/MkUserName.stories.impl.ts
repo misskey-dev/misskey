@@ -5,7 +5,6 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
-import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import { userDetailed } from '../../../.storybook/fakes';
 import MkUserName from './MkUserName.vue';

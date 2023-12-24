@@ -6,12 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
-		<slot name="empty">
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
-				<div>{{ i18n.ts.noNotes }}</div>
-			</div>
-		</slot>
+		<div class="_fullinfo">
+			<img :src="infoImageUrl" class="_ghost"/>
+			<div>{{ i18n.ts.noNotes }}</div>
+		</div>
 	</template>
 
 	<template #default="{ items: notes }">

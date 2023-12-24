@@ -16,6 +16,8 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -33,13 +35,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			properties: {
-				code: {
-					type: 'string',
-					optional: false, nullable: false,
-					example: 'GR6S02ERUA5VR',
-				},
-			},
+			ref: 'InviteCode',
 		},
 	},
 } as const;

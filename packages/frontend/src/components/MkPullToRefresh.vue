@@ -23,8 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch } from 'vue';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
@@ -35,15 +34,15 @@ const RELEASE_TRANSITION_DURATION = 200;
 const PULL_BRAKE_BASE = 1.5;
 const PULL_BRAKE_FACTOR = 170;
 
-let isPullStart = $ref(false);
-let isPullEnd = $ref(false);
-let isRefreshing = $ref(false);
-let pullDistance = $ref(0);
+const isPullStart = ref(false);
+const isPullEnd = ref(false);
+const isRefreshing = ref(false);
+const pullDistance = ref(0);
 
 let supportPointerDesktop = false;
 let startScreenY: number | null = null;
 
-const rootEl = $shallowRef<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 let scrollEl: HTMLElement | null = null;
 
 let disabled = false;
@@ -66,17 +65,17 @@ function getScreenY(event) {
 }
 
 function moveStart(event) {
-	if (!isPullStart && !isRefreshing && !disabled) {
-		isPullStart = true;
+	if (!isPullStart.value && !isRefreshing.value && !disabled) {
+		isPullStart.value = true;
 		startScreenY = getScreenY(event);
-		pullDistance = 0;
+		pullDistance.value = 0;
 	}
 }
 
 function moveBySystem(to: number): Promise<void> {
 	return new Promise(r => {
-		const startHeight = pullDistance;
-		const overHeight = pullDistance - to;
+		const startHeight = pullDistance.value;
+		const overHeight = pullDistance.value - to;
 		if (overHeight < 1) {
 			r();
 			return;
@@ -85,36 +84,36 @@ function moveBySystem(to: number): Promise<void> {
 		let intervalId = setInterval(() => {
 			const time = Date.now() - startTime;
 			if (time > RELEASE_TRANSITION_DURATION) {
-				pullDistance = to;
+				pullDistance.value = to;
 				clearInterval(intervalId);
 				r();
 				return;
 			}
 			const nextHeight = startHeight - (overHeight / RELEASE_TRANSITION_DURATION) * time;
-			if (pullDistance < nextHeight) return;
-			pullDistance = nextHeight;
+			if (pullDistance.value < nextHeight) return;
+			pullDistance.value = nextHeight;
 		}, 1);
 	});
 }
 
 async function fixOverContent() {
-	if (pullDistance > FIRE_THRESHOLD) {
+	if (pullDistance.value > FIRE_THRESHOLD) {
 		await moveBySystem(FIRE_THRESHOLD);
 	}
 }
 
 async function closeContent() {
-	if (pullDistance > 0) {
+	if (pullDistance.value > 0) {
 		await moveBySystem(0);
 	}
 }
 
 function moveEnd() {
-	if (isPullStart && !isRefreshing) {
+	if (isPullStart.value && !isRefreshing.value) {
 		startScreenY = null;
-		if (isPullEnd) {
-			isPullEnd = false;
-			isRefreshing = true;
+		if (isPullEnd.value) {
+			isPullEnd.value = false;
+			isRefreshing.value = true;
 			fixOverContent().then(() => {
 				emit('refresh');
 				props.refresher().then(() => {
@@ -122,17 +121,17 @@ function moveEnd() {
 				});
 			});
 		} else {
-			closeContent().then(() => isPullStart = false);
+			closeContent().then(() => isPullStart.value = false);
 		}
 	}
 }
 
 function moving(event: TouchEvent | PointerEvent) {
-	if (!isPullStart || isRefreshing || disabled) return;
+	if (!isPullStart.value || isRefreshing.value || disabled) return;
 
-	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance)) {
-		pullDistance = 0;
-		isPullEnd = false;
+	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance.value)) {
+		pullDistance.value = 0;
+		isPullEnd.value = false;
 		moveEnd();
 		return;
 	}
@@ -143,13 +142,13 @@ function moving(event: TouchEvent | PointerEvent) {
 	const moveScreenY = getScreenY(event);
 
 	const moveHeight = moveScreenY - startScreenY!;
-	pullDistance = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
+	pullDistance.value = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
 
-	if (pullDistance > 0) {
+	if (pullDistance.value > 0) {
 		if (event.cancelable) event.preventDefault();
 	}
 
-	isPullEnd = pullDistance >= FIRE_THRESHOLD;
+	isPullEnd.value = pullDistance.value >= FIRE_THRESHOLD;
 }
 
 /**
@@ -159,8 +158,8 @@ function moving(event: TouchEvent | PointerEvent) {
  */
 function refreshFinished() {
 	closeContent().then(() => {
-		isPullStart = false;
-		isRefreshing = false;
+		isPullStart.value = false;
+		isRefreshing.value = false;
 	});
 }
 
@@ -182,26 +181,26 @@ function onScrollContainerScroll() {
 }
 
 function registerEventListenersForReadyToPull() {
-	if (rootEl == null) return;
-	rootEl.addEventListener('touchstart', moveStart, { passive: true });
-	rootEl.addEventListener('touchmove', moving, { passive: false }); // passive: falseにしないとpreventDefaultが使えない
+	if (rootEl.value == null) return;
+	rootEl.value.addEventListener('touchstart', moveStart, { passive: true });
+	rootEl.value.addEventListener('touchmove', moving, { passive: false }); // passive: falseにしないとpreventDefaultが使えない
 }
 
 function unregisterEventListenersForReadyToPull() {
-	if (rootEl == null) return;
-	rootEl.removeEventListener('touchstart', moveStart);
-	rootEl.removeEventListener('touchmove', moving);
+	if (rootEl.value == null) return;
+	rootEl.value.removeEventListener('touchstart', moveStart);
+	rootEl.value.removeEventListener('touchmove', moving);
 }
 
 onMounted(() => {
-	if (rootEl == null) return;
+	if (rootEl.value == null) return;
 
-	scrollEl = getScrollContainer(rootEl);
+	scrollEl = getScrollContainer(rootEl.value);
 	if (scrollEl == null) return;
 
 	scrollEl.addEventListener('scroll', onScrollContainerScroll, { passive: true });
 
-	rootEl.addEventListener('touchend', moveEnd, { passive: true });
+	rootEl.value.addEventListener('touchend', moveEnd, { passive: true });
 
 	registerEventListenersForReadyToPull();
 });
