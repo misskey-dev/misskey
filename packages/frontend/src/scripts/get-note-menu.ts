@@ -141,7 +141,7 @@ export function getNoteMenu(props: {
 	function makeHome(): void {
 		os.confirm({
 			type: 'warning',
-			text: '本当にホーム投稿にしますか？',
+			text: i18n.ts.makeNoteHomeConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -378,7 +378,7 @@ export function getNoteMenu(props: {
 				},
 				$i.isModerator || $i.isAdmin ? {
 					icon: 'ti ti-home',
-					text: 'ホーム投稿にする', // めんどうなのでとりあえずハードコード
+					text: i18n.ts.makeNoteHome,
 					danger: true,
 					action: makeHome,
 				} : undefined]
