@@ -44,7 +44,7 @@ type MfmProps = {
 };
 
 type MfmEvents = {
-	click(e: MouseEvent): void;
+	click(ev: MouseEvent): void;
 };
 
 // eslint-disable-next-line import/no-default-export
@@ -437,6 +437,6 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 	return h('span', {
 		// https://codeday.me/jp/qa/20190424/690106.html
 		style: props.nowrap ? 'white-space: pre; word-wrap: normal; overflow: hidden; text-overflow: ellipsis;' : 'white-space: pre-wrap;',
-		onClick: (e) => context.emit('click', e),
+		onClick: (ev) => context.emit('click', ev),
 	}, genEl(rootAst, props.rootScale ?? 1));
 }
