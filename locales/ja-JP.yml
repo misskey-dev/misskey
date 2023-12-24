@@ -2371,6 +2371,7 @@ _moderationLogTypes:
   deleteAvatarDecoration: "アイコンデコレーションを削除"
   unsetUserAvatar: "ユーザーのアイコンを解除"
   unsetUserBanner: "ユーザーのバナーを解除"
+  makeNoteHome: "ノートをホーム投稿に変更"
 
 _fileViewer:
   title: "ファイルの詳細"

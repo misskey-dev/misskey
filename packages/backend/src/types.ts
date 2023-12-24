@@ -269,7 +269,11 @@ export type ModerationLogPayloads = {
 		fileId: string;
 	};
 	makeNoteHome: {
-		targetNoteId: string;
+		noteId: string;
+		noteUserId: string;
+		noteUserUsername: string;
+		noteUserHost: string | null;
+		note: any;
 	};
 };
 
