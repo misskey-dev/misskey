@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
+import { ref, shallowRef, toRefs } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;

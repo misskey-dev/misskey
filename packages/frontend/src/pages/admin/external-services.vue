@@ -34,10 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
@@ -45,27 +46,27 @@ import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let deeplAuthKey: string = $ref('');
-let deeplIsPro: boolean = $ref(false);
+const deeplAuthKey = ref<string>('');
+const deeplIsPro = ref<boolean>(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	deeplAuthKey = meta.deeplAuthKey;
-	deeplIsPro = meta.deeplIsPro;
+	deeplAuthKey.value = meta.deeplAuthKey;
+	deeplIsPro.value = meta.deeplIsPro;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		deeplAuthKey,
-		deeplIsPro,
+		deeplAuthKey: deeplAuthKey.value,
+		deeplIsPro: deeplIsPro.value,
 	}).then(() => {
 		fetchInstance();
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.externalServices,

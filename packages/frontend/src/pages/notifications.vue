@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import * as os from '@/os.js';
@@ -29,9 +29,9 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { notificationTypes } from '@/const.js';
 
-let tab = $ref('all');
-let includeTypes = $ref<string[] | null>(null);
-const excludeTypes = $computed(() => includeTypes ? notificationTypes.filter(t => !includeTypes.includes(t)) : null);
+const tab = ref('all');
+const includeTypes = ref<string[] | null>(null);
+const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value.includes(t)) : null);
 
 const mentionsPagination = {
 	endpoint: 'notes/mentions' as const,
@@ -49,27 +49,27 @@ const directNotesPagination = {
 function setFilter(ev) {
 	const typeItems = notificationTypes.map(t => ({
 		text: i18n.t(`_notification._types.${t}`),
-		active: includeTypes && includeTypes.includes(t),
+		active: includeTypes.value && includeTypes.value.includes(t),
 		action: () => {
-			includeTypes = [t];
+			includeTypes.value = [t];
 		},
 	}));
-	const items = includeTypes != null ? [{
+	const items = includeTypes.value != null ? [{
 		icon: 'ti ti-x',
 		text: i18n.ts.clear,
 		action: () => {
-			includeTypes = null;
+			includeTypes.value = null;
 		},
-	}, null, ...typeItems] : typeItems;
+	}, { type: 'divider' }, ...typeItems] : typeItems;
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-const headerActions = $computed(() => [tab === 'all' ? {
+const headerActions = computed(() => [tab.value === 'all' ? {
 	text: i18n.ts.filter,
 	icon: 'ti ti-filter',
-	highlighted: includeTypes != null,
+	highlighted: includeTypes.value != null,
 	handler: setFilter,
-} : undefined, tab === 'all' ? {
+} : undefined, tab.value === 'all' ? {
 	text: i18n.ts.markAllAsRead,
 	icon: 'ti ti-check',
 	handler: () => {
@@ -77,7 +77,7 @@ const headerActions = $computed(() => [tab === 'all' ? {
 	},
 } : undefined].filter(x => x !== undefined));
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'all',
 	title: i18n.ts.all,
 	icon: 'ti ti-point',

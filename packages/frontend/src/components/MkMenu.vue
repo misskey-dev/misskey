@@ -13,9 +13,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@contextmenu.self="e => e.preventDefault()"
 	>
 		<template v-for="(item, i) in items2">
-			<div v-if="item === null" role="separator" :class="$style.divider"></div>
+			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
 			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
-				<span>{{ item.text }}</span>
+				<span style="opacity: 0.7;">{{ item.text }}</span>
 			</span>
 			<span v-else-if="item.type === 'pending'" role="menuitem" :tabindex="i" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
@@ -23,32 +23,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-else-if="item.type === 'link'" role="menuitem" :to="item.to" :tabindex="i" class="_button" :class="$style.item" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
-				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</MkA>
 			<a v-else-if="item.type === 'a'" role="menuitem" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button" :class="$style.item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
-				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</a>
 			<button v-else-if="item.type === 'user'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div v-if="item.indicate" :class="$style.item_content">
+					<span :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
-				<span :class="$style.switchText">{{ item.text }}</span>
+				<div :class="$style.item_content">
+					<span :class="[$style.item_content_text, $style.switchText]">{{ item.text }}</span>
+				</div>
 			</button>
 			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
-				<span style="pointer-events: none;">{{ item.text }}</span>
-				<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
+				<div :class="$style.item_content">
+					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
+					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
+				</div>
 			</button>
 			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
-				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				<div :class="$style.item_content">
+					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+				</div>
 			</button>
 		</template>
 		<span v-if="items2.length === 0" :class="[$style.none, $style.item]">
@@ -62,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { Ref, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
@@ -90,19 +102,19 @@ const emit = defineEmits<{
 	(ev: 'hide'): void;
 }>();
 
-let itemsEl = $shallowRef<HTMLDivElement>();
+const itemsEl = shallowRef<HTMLDivElement>();
 
-let items2: InnerMenuItem[] = $ref([]);
+const items2 = ref<InnerMenuItem[]>([]);
 
-let child = $shallowRef<InstanceType<typeof XChild>>();
+const child = shallowRef<InstanceType<typeof XChild>>();
 
-let keymap = $computed(() => ({
+const keymap = computed(() => ({
 	'up|k|shift+tab': focusUp,
 	'down|j|tab': focusDown,
 	'esc': close,
 }));
 
-let childShowingItem = $ref<MenuItem | null>();
+const childShowingItem = ref<MenuItem | null>();
 
 let preferClick = isTouchUsing || props.asDrawer;
 
@@ -115,22 +127,22 @@ watch(() => props.items, () => {
 		if (item && 'then' in item) { // if item is Promise
 			items[i] = { type: 'pending' };
 			item.then(actualItem => {
-				items2[i] = actualItem;
+				items2.value[i] = actualItem;
 			});
 		}
 	}
 
-	items2 = items as InnerMenuItem[];
+	items2.value = items as InnerMenuItem[];
 }, {
 	immediate: true,
 });
 
 const childMenu = ref<MenuItem[] | null>();
-let childTarget = $shallowRef<HTMLElement | null>();
+const childTarget = shallowRef<HTMLElement | null>();
 
 function closeChild() {
 	childMenu.value = null;
-	childShowingItem = null;
+	childShowingItem.value = null;
 }
 
 function childActioned() {
@@ -139,8 +151,8 @@ function childActioned() {
 }
 
 const onGlobalMousedown = (event: MouseEvent) => {
-	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
-	if (child && child.checkHit(event)) return;
+	if (childTarget.value && (event.target === childTarget.value || childTarget.value.contains(event.target))) return;
+	if (child.value && child.value.checkHit(event)) return;
 	closeChild();
 };
 
@@ -177,10 +189,10 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 		});
 		emit('hide');
 	} else {
-		childTarget = ev.currentTarget ?? ev.target;
+		childTarget.value = ev.currentTarget ?? ev.target;
 		// これでもリアクティビティは保たれる
 		childMenu.value = children;
-		childShowingItem = item;
+		childShowingItem.value = item;
 	}
 }
 
@@ -202,14 +214,14 @@ function focusDown() {
 }
 
 function switchItem(item: MenuSwitch & { ref: any }) {
-	if (item.disabled) return;
+	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
 	item.ref = !item.ref;
 }
 
 onMounted(() => {
 	if (props.viaKeyboard) {
 		nextTick(() => {
-			if (itemsEl) focusNext(itemsEl.children[0], true, false);
+			if (itemsEl.value) focusNext(itemsEl.value.children[0], true, false);
 		});
 	}
 
@@ -228,6 +240,7 @@ onBeforeUnmount(() => {
 .root {
 	padding: 8px 0;
 	box-sizing: border-box;
+	max-width: 100vw;
 	min-width: 200px;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -267,7 +280,8 @@ onBeforeUnmount(() => {
 }
 
 .item {
-	display: block;
+	display: flex;
+	align-items: center;
 	position: relative;
 	padding: 5px 16px;
 	width: 100%;
@@ -340,10 +354,6 @@ onBeforeUnmount(() => {
 		pointer-events: none;
 		font-size: 0.7em;
 		padding-bottom: 4px;
-
-		> span {
-			opacity: 0.7;
-		}
 	}
 
 	&.pending {
@@ -371,6 +381,22 @@ onBeforeUnmount(() => {
 			}
 		}
 	}
+}
+
+.item_content {
+	width: 100%;
+	max-width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	text-overflow: ellipsis;
+}
+
+.item_content_text {
+	max-width: calc(100vw - 4rem);
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .switch {
@@ -406,6 +432,7 @@ onBeforeUnmount(() => {
 
 .icon {
 	margin-right: 8px;
+	line-height: 1;
 }
 
 .caret {
@@ -419,9 +446,8 @@ onBeforeUnmount(() => {
 }
 
 .indicator {
-	position: absolute;
-	top: 5px;
-	left: 13px;
+	display: flex;
+	align-items: center;
 	color: var(--indicator);
 	font-size: 12px;
 	animation: blink 1s infinite;

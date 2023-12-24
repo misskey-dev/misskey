@@ -117,7 +117,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
@@ -142,14 +142,14 @@ const props = defineProps<{
 	host: string;
 }>();
 
-let tab = $ref('overview');
-let chartSrc = $ref('instance-requests');
-let meta = $ref<Misskey.entities.AdminInstanceMetadata | null>(null);
-let instance = $ref<Misskey.entities.Instance | null>(null);
-let suspended = $ref(false);
-let isBlocked = $ref(false);
-let isSilenced = $ref(false);
-let faviconUrl = $ref<string | null>(null);
+const tab = ref('overview');
+const chartSrc = ref('instance-requests');
+const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
+const instance = ref<Misskey.entities.FederationInstance | null>(null);
+const suspended = ref(false);
+const isBlocked = ref(false);
+const isSilenced = ref(false);
+const faviconUrl = ref<string | null>(null);
 
 const usersPagination = {
 	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
@@ -164,47 +164,48 @@ const usersPagination = {
 
 async function fetch(): Promise<void> {
 	if (iAmAdmin) {
-		meta = await os.api('admin/meta');
+		meta.value = await os.api('admin/meta');
 	}
-	instance = await os.api('federation/show-instance', {
+	instance.value = await os.api('federation/show-instance', {
 		host: props.host,
 	});
-	suspended = instance.isSuspended;
-	isBlocked = instance.isBlocked;
-	isSilenced = instance.isSilenced;
-	faviconUrl = getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.iconUrl, 'preview');
+	suspended.value = instance.value?.isSuspended ?? false;
+	isBlocked.value = instance.value?.isBlocked ?? false;
+	isSilenced.value = instance.value?.isSilenced ?? false;
+	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
 }
 
 async function toggleBlock(): Promise<void> {
-	if (!meta) throw new Error('No meta?');
-	if (!instance) throw new Error('No instance?');
-	const { host } = instance;
+	if (!meta.value) throw new Error('No meta?');
+	if (!instance.value) throw new Error('No instance?');
+	const { host } = instance.value;
 	await os.api('admin/update-meta', {
-		blockedHosts: isBlocked ? meta.blockedHosts.concat([host]) : meta.blockedHosts.filter(x => x !== host),
+		blockedHosts: isBlocked.value ? meta.value.blockedHosts.concat([host]) : meta.value.blockedHosts.filter(x => x !== host),
 	});
 }
 
 async function toggleSilenced(): Promise<void> {
-	if (!meta) throw new Error('No meta?');
-	if (!instance) throw new Error('No instance?');
-	const { host } = instance;
+	if (!meta.value) throw new Error('No meta?');
+	if (!instance.value) throw new Error('No instance?');
+	const { host } = instance.value;
+	const silencedHosts = meta.value.silencedHosts ?? [];
 	await os.api('admin/update-meta', {
-		silencedHosts: isSilenced ? meta.silencedHosts.concat([host]) : meta.silencedHosts.filter(x => x !== host),
+		silencedHosts: isSilenced.value ? silencedHosts.concat([host]) : silencedHosts.filter(x => x !== host),
 	});
 }
 
 async function toggleSuspend(): Promise<void> {
-	if (!instance) throw new Error('No instance?');
+	if (!instance.value) throw new Error('No instance?');
 	await os.api('admin/federation/update-instance', {
-		host: instance.host,
-		isSuspended: suspended,
+		host: instance.value.host,
+		isSuspended: suspended.value,
 	});
 }
 
 function refreshMetadata(): void {
-	if (!instance) throw new Error('No instance?');
+	if (!instance.value) throw new Error('No instance?');
 	os.api('admin/federation/refresh-remote-instance-metadata', {
-		host: instance.host,
+		host: instance.value.host,
 	});
 	os.alert({
 		text: 'Refresh requested',
@@ -213,15 +214,15 @@ function refreshMetadata(): void {
 
 fetch();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	text: `https://${props.host}`,
 	icon: 'ti ti-external-link',
 	handler: () => {
-		window.open(`https://${props.host}`, '_blank');
+		window.open(`https://${props.host}`, '_blank', 'noopener');
 	},
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',

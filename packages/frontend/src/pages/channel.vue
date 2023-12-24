@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
 				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
 				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
-				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" :class="$style.banner">
+				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : undefined }" :class="$style.banner">
 					<div :class="$style.bannerStatus">
 						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
 						<div><i class="ti ti-pencil ti-fw"></i><I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFoldableSection>
 				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
-				<div v-if="channel.pinnedNotes.length > 0" class="_gaps">
+				<div v-if="channel.pinnedNotes && channel.pinnedNotes.length > 0" class="_gaps">
 					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
 				</div>
 			</MkFoldableSection>
@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 			<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
-			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after"/>
+			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
 		</div>
 		<div v-else-if="tab === 'featured'">
 			<MkNotes :pagination="featuredPagination"/>
@@ -68,7 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
@@ -86,6 +87,10 @@ import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { PageHeaderItem } from '@/types/page-header.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 const router = useRouter();
 
@@ -93,13 +98,13 @@ const props = defineProps<{
 	channelId: string;
 }>();
 
-let tab = $ref('overview');
-let channel = $ref(null);
-let favorited = $ref(false);
-let searchQuery = $ref('');
-let searchPagination = $ref();
-let searchKey = $ref('');
-const featuredPagination = $computed(() => ({
+const tab = ref('overview');
+const channel = ref<Misskey.entities.Channel | null>(null);
+const favorited = ref(false);
+const searchQuery = ref('');
+const searchPagination = ref();
+const searchKey = ref('');
+const featuredPagination = computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
 	params: {
@@ -108,89 +113,129 @@ const featuredPagination = $computed(() => ({
 }));
 
 watch(() => props.channelId, async () => {
-	channel = await os.api('channels/show', {
+	channel.value = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
-	favorited = channel.isFavorited;
-	if (favorited || channel.isFollowing) {
-		tab = 'timeline';
+	favorited.value = channel.value.isFavorited ?? false;
+	if (favorited.value || channel.value.isFollowing) {
+		tab.value = 'timeline';
+	}
+
+	if ((favorited.value || channel.value.isFollowing) && channel.value.lastNotedAt) {
+		const lastReadedAt: number = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.value.id}`) ?? 0;
+		const lastNotedAt = Date.parse(channel.value.lastNotedAt);
+
+		if (lastNotedAt > lastReadedAt) {
+			miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.value.id}`, lastNotedAt);
+		}
 	}
 }, { immediate: true });
 
 function edit() {
-	router.push(`/channels/${channel.id}/edit`);
+	router.push(`/channels/${channel.value?.id}/edit`);
 }
 
 function openPostForm() {
 	os.post({
-		channel,
+		channel: channel.value,
 	});
 }
 
 function favorite() {
+	if (!channel.value) return;
+
 	os.apiWithDialog('channels/favorite', {
-		channelId: channel.id,
+		channelId: channel.value.id,
 	}).then(() => {
-		favorited = true;
+		favorited.value = true;
 	});
 }
 
 async function unfavorite() {
+	if (!channel.value) return;
+
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.unfavoriteConfirm,
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('channels/unfavorite', {
-		channelId: channel.id,
+		channelId: channel.value.id,
 	}).then(() => {
-		favorited = false;
+		favorited.value = false;
 	});
 }
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	if (!channel.value) return;
+
+	const query = searchQuery.value.toString().trim();
 
 	if (query == null) return;
 
-	searchPagination = {
+	searchPagination.value = {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
 			query: query,
-			channelId: channel.id,
+			channelId: channel.value.id,
 		},
 	};
 
-	searchKey = query;
+	searchKey.value = query;
 }
 
-const headerActions = $computed(() => {
-	if (channel && channel.userId) {
-		const share = {
-			icon: 'ti ti-share',
-			text: i18n.ts.share,
-			handler: async (): Promise<void> => {
-				navigator.share({
-					title: channel.name,
-					text: channel.description,
-					url: `${url}/channels/${channel.id}`,
-				});
-			},
-		};
+const headerActions = computed(() => {
+	if (channel.value && channel.value.userId) {
+		const headerItems: PageHeaderItem[] = [];
 
-		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
-		return canEdit ? [share, {
-			icon: 'ti ti-settings',
-			text: i18n.ts.edit,
-			handler: edit,
-		}] : [share];
+		headerItems.push({
+			icon: 'ti ti-link',
+			text: i18n.ts.copyUrl,
+			handler: async (): Promise<void> => {
+				if (!channel.value) {
+					console.warn('failed to copy channel URL. channel.value is null.');
+					return;
+				}
+				copyToClipboard(`${url}/channels/${channel.value.id}`);
+				os.success();
+			},
+		});
+
+		if (isSupportShare()) {
+			headerItems.push({
+				icon: 'ti ti-share',
+				text: i18n.ts.share,
+				handler: async (): Promise<void> => {
+					if (!channel.value) {
+						console.warn('failed to share channel. channel.value is null.');
+						return;
+					}
+
+					navigator.share({
+						title: channel.value.name,
+						text: channel.value.description ?? undefined,
+						url: `${url}/channels/${channel.value.id}`,
+					});
+				},
+			});
+		}
+
+		if (($i && $i.id === channel.value.userId) || iAmModerator) {
+			headerItems.push({
+				icon: 'ti ti-settings',
+				text: i18n.ts.edit,
+				handler: edit,
+			});
+		}
+
+		return headerItems.length > 0 ? headerItems : null;
 	} else {
 		return null;
 	}
 });
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
@@ -208,8 +253,8 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-search',
 }]);
 
-definePageMetadata(computed(() => channel ? {
-	title: channel.name,
+definePageMetadata(computed(() => channel.value ? {
+	title: channel.value.name,
 	icon: 'ti ti-device-tv',
 } : null));
 </script>
