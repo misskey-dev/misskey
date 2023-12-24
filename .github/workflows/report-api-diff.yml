@@ -26,7 +26,7 @@ jobs:
                run_id: context.payload.workflow_run.id,
             });
             let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name.startsWith("api-artifact-")
+              return artifact.name.startsWith("api-artifact-") || artifact.name == "api-artifact"
             });
             await Promise.all(matchArtifacts.map(async (artifact) => {
               let download = await github.rest.actions.downloadArtifact({
