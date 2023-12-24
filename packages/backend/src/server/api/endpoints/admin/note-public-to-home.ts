@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
-import type { NotesRepository } from '@/models/_.js';
+import type { NotesRepository, UsersRepository } from '@/models/_.js';
 import { MiNote, MiPoll } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -47,6 +47,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -74,7 +77,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Note: by design, visibility of replies and quoted renotes are not changed
 			// replies and quoted renotes have their own text, so it's another moderation entity
 
-			await moderationLogService.log(me, 'makeNoteHome', { targetNoteId: note.id });
+			const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
+			await moderationLogService.log(me, 'makeNoteHome', {
+				noteId: note.id,
+				noteUserId: note.userId,
+				noteUserUsername: user.username,
+				noteUserHost: user.host,
+				note: note,
+			});
 
 			// update basic note info
 			await this.db.transaction(async transactionalEntityManager => {

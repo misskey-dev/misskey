@@ -52,6 +52,7 @@ export interface Locale {
     "delete": string;
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
+    "makeNoteHome": string;
     "addToList": string;
     "addToAntenna": string;
     "sendMessage": string;
@@ -232,6 +233,7 @@ export interface Locale {
     "noUsers": string;
     "editProfile": string;
     "noteDeleteConfirm": string;
+    "makeNoteHomeConfirm": string;
     "pinLimitExceeded": string;
     "intro": string;
     "done": string;
@@ -2470,6 +2472,7 @@ export interface Locale {
         "deleteAvatarDecoration": string;
         "unsetUserAvatar": string;
         "unsetUserBanner": string;
+        "makeNoteHome": string;
     };
     "_fileViewer": {
         "title": string;

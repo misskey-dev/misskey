@@ -131,6 +131,9 @@ export type ModerationLog = {
 } | {
 	type: 'unsetUserBanner';
 	info: ModerationLogPayloads['unsetUserBanner'];
+} | {
+	type: 'makeNoteHome';
+	info: ModerationLogPayloads['makeNoteHome'];
 });
 
 export type ServerStats = {
