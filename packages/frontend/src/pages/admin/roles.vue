@@ -238,7 +238,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
 import { useRouter } from '@/router.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { ROLE_POLICIES } from '@/const';
+import { ROLE_POLICIES } from '@/const.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');

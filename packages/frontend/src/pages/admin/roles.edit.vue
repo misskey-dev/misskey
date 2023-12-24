@@ -31,7 +31,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
-import { rolesCache } from '@/cache';
+import { rolesCache } from '@/cache.js';
 
 const router = useRouter();
 

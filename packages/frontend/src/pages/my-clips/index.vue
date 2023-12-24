@@ -33,7 +33,7 @@ import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { clipsCache } from '@/cache';
+import { clipsCache } from '@/cache.js';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
