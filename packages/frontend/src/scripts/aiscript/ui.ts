@@ -47,6 +47,7 @@ export type AsUiMfm = AsUiComponentBase & {
 	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
+	onClick?: ({ e: MouseEvent }) => void;
 };
 
 export type AsUiButton = AsUiComponentBase & {
@@ -230,6 +231,8 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	if (color) utils.assertString(color);
 	const font = def.value.get('font');
 	if (font) utils.assertString(font);
+	const onClick = def.value.get('onClick');
+	if (onClick) utils.assertFunction(onClick);
 
 	return {
 		text: text?.value,
@@ -237,6 +240,14 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 		bold: bold?.value,
 		color: color?.value,
 		font: font?.value,
+		onClick: (e: MouseEvent) => {
+			if (onClick) call(onClick, [
+				values.OBJ(new Map([
+					['localX', values.NUM(e.offsetX)],
+					['localY', values.NUM(e.offsetY)],
+				])),
+			]);
+		},
 	};
 }
 
