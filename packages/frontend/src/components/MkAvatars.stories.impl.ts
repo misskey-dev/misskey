@@ -6,8 +6,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
-import { userDetailed } from '../../.storybook/fakes';
-import { commonHandlers } from '../../.storybook/mocks';
+import { userDetailed } from '../../.storybook/fakes.js';
+import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAvatars from './MkAvatars.vue';
 export const Default = {
 	render(args) {

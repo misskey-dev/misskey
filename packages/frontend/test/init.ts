@@ -10,7 +10,7 @@ const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
 // Set i18n
-import locales from '../../../locales';
+import locales from '../../../locales/index.js';
 import { updateI18n } from '@/i18n.js';
 updateI18n(locales['en-US']);
 
@@ -28,7 +28,7 @@ vi.mock('@/store.js', () => {
 					media: false,
 					avatar: false,
 					urlPreview: false,
-					code: false,		
+					code: false,
 				},
 
 			},

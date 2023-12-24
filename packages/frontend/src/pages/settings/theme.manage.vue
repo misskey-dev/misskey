@@ -40,7 +40,7 @@ import MkButton from '@/components/MkButton.vue';
 import { Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { getThemes, removeTheme } from '@/theme-store';
+import { getThemes, removeTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 

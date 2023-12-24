@@ -6,8 +6,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
-import { commonHandlers } from '../../.storybook/mocks';
-import { userDetailed } from '../../.storybook/fakes';
+import { commonHandlers } from '../../.storybook/mocks.js';
+import { userDetailed } from '../../.storybook/fakes.js';
 import MkUserSetupDialog_Follow from './MkUserSetupDialog.Follow.vue';
 export const Default = {
 	render(args) {
