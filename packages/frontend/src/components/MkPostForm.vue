@@ -874,7 +874,6 @@ async function insertFunction(ev: MouseEvent) {
 	);
 }
 
-
 function showActions(ev) {
 	os.popupMenu(postFormActions.map(action => ({
 		text: action.title,
