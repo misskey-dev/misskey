@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, provide, shallowRef, ref } from 'vue';
-import { Resolved, Router } from '@/nirax';
+import { Resolved, Router } from '@/nirax.js';
 import { defaultStore } from '@/store.js';
 
 const props = defineProps<{

@@ -6,7 +6,7 @@
 import { parse } from 'acorn';
 import { generate } from 'astring';
 import { describe, expect, it } from 'vitest';
-import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name';
+import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name.js';
 import type * as estree from 'estree';
 
 function parseExpression(code: string): estree.Expression {

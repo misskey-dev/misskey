@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { swInject } from './sw-inject';
+import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups, pendingApiRequestsCount } from '@/os.js';
 import { uploads } from '@/scripts/upload.js';
@@ -56,7 +56,7 @@ import { $i } from '@/account.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
-import { globalEvents } from '@/events';
+import { globalEvents } from '@/events.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));

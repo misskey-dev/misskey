@@ -35,7 +35,7 @@ import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
-import { clipsCache } from '@/cache';
+import { clipsCache } from '@/cache.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
