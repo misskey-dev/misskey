@@ -12,7 +12,15 @@
 
 -->
 
-## 2023.12.0
+## 2023.12.0-kinel.1 (unreleased)
+
+### General
+
+### Client
+
+### Server
+
+## 2023.12.0 (merged to 2023.12.0-kinel.1)
 
 ### Note
 - 依存関係の更新に伴い、Node.js 20.10.0が最小要件になりました
