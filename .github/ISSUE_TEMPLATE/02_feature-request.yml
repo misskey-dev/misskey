@@ -1,17 +1,17 @@
-name: ✨ Feature Request
-description: Suggest an idea for this project
+name: ✨ 新機能の要望
+description: 新しい機能の提案
 labels: ["✨Feature"]
 
 body:
   - type: textarea
     attributes:
-      label: Summary
-      description: Tell us what the suggestion is
+      label: 概要
+      description: どんな提案ですか?
     validations:
       required: true
   - type: textarea
     attributes:
-      label: Purpose
-      description: Describe the specific problem or need you think this feature will solve, and who it will help.
+      label: 目的
+      description: その機能の追加によって、どんな問題やニーズが解決されそうですか? また、それはどんな人に役立ちそうですか?
     validations:
       required: true

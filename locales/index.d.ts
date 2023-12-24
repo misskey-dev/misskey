@@ -121,6 +121,7 @@ export interface Locale {
     "you": string;
     "clickToShow": string;
     "sensitive": string;
+    "sensitiveChannelAutoCW": string;
     "add": string;
     "reaction": string;
     "reactions": string;
@@ -791,6 +792,7 @@ export interface Locale {
     "publish": string;
     "inChannelSearch": string;
     "useReactionPickerForContextMenu": string;
+    "collapseSensitiveChannel": string;
     "typingUsers": string;
     "jumpToSpecifiedDate": string;
     "showingPastTimeline": string;
@@ -1836,6 +1838,9 @@ export interface Locale {
         "morePatrons": string;
         "patrons": string;
         "projectMembers": string;
+        "forkContributors": string;
+        "allForkContributors": string;
+        "forkSource": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;
@@ -2417,7 +2422,17 @@ export interface Locale {
             "renote": string;
             "reaction": string;
             "mention": string;
+            "usersLabel": string;
+            "usersCaption": string;
         };
+    };
+    "_imageCompressionMode": {
+        "title": string;
+        "description": string;
+        "resizeCompress": string;
+        "noResizeCompress": string;
+        "resizeCompressLossy": string;
+        "noResizeCompressLossy": string;
     };
     "_moderationLogTypes": {
         "createRole": string;

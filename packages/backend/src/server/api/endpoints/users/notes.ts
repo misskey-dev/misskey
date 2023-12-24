@@ -60,6 +60,7 @@ export const paramDef = {
 		untilDate: { type: 'integer' },
 		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 		withFiles: { type: 'boolean', default: false },
+		includeSensitiveChannel: { type: 'boolean' },
 	},
 	required: ['userId'],
 } as const;
@@ -81,6 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 			const isSelf = me && (me.id === ps.userId);
+			const includeSensitiveChannel = ps.includeSensitiveChannel ?? isSelf ?? false;
 
 			const serverSettings = await this.metaService.fetch();
 
@@ -98,6 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const timeline = await this.getFromDb({
 					untilId,
 					sinceId,
+					includeSensitiveChannel,
 					limit: ps.limit,
 					userId: ps.userId,
 					withChannelNotes: ps.withChannelNotes,
@@ -128,7 +131,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludeNoFiles: ps.withChannelNotes && ps.withFiles, // userTimelineWithChannel may include notes without files
 				excludePureRenotes: !ps.withRenotes,
 				noteFilter: note => {
-					if (note.channel?.isSensitive && !isSelf) return false;
+					if (note.channel?.isSensitive && !includeSensitiveChannel) return false;
 					if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
 					if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
 
@@ -138,6 +141,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					untilId,
 					sinceId,
 					limit,
+					includeSensitiveChannel,
 					userId: ps.userId,
 					withChannelNotes: ps.withChannelNotes,
 					withFiles: ps.withFiles,
@@ -155,6 +159,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		limit: number,
 		userId: string,
 		withChannelNotes: boolean,
+		includeSensitiveChannel: boolean,
 		withFiles: boolean,
 		withRenotes: boolean,
 	}, me: MiLocalUser | null) {
@@ -170,7 +175,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		if (ps.withChannelNotes) {
-			if (!isSelf) query.andWhere(new Brackets(qb => {
+			if (!ps.includeSensitiveChannel) query.andWhere(new Brackets(qb => {
 				qb.orWhere('note.channelId IS NULL');
 				qb.orWhere('channel.isSensitive = false');
 			}));

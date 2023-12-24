@@ -583,7 +583,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
-				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
+				const userNoteEvent = `note@${user.username}` as const;
+				webhooks = webhooks.filter(x => (x.userId === user.id && x.on.includes('note')) || x.on.includes(userNoteEvent));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'note', {
 						note: noteObj,
@@ -744,14 +745,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			.where('id = :id', { id: renote.id })
 			.execute();
 
-		// 30%の確率、3日以内に投稿されたノートの場合ハイライト用ランキング更新
-		if (Math.random() < 0.3 && (Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3) {
+		// ~~30%の確率、~~3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		if ((Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3) {
 			if (renote.channelId != null) {
 				if (renote.replyId == null) {
 					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
 				}
 			} else {
-				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
+				if (this.featuredService.shouldBeIncludedInGlobalOrUserFeatured(renote)) {
 					this.featuredService.updateGlobalNotesRanking(renote.id, 5);
 					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
 				}

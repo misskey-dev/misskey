@@ -91,6 +91,14 @@ type Source = {
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
 	pidFile: string;
+
+	nirila?: {
+		abuseDiscordHook?: string;
+		disableAbuseRepository?: boolean;
+		maxWebImageSize?: number;
+		withRepliesInHomeTL?: boolean;
+		withRepliesInUserList?: boolean;
+	}
 };
 
 export type Config = {
@@ -167,6 +175,14 @@ export type Config = {
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
 	pidFile: string;
+
+	nirila: {
+		abuseDiscordHook?: string;
+		disableAbuseRepository?: boolean;
+		maxWebImageSize?: number;
+		withRepliesInHomeTL?: boolean,
+		withRepliesInUserList: boolean,
+	}
 };
 
 const _filename = fileURLToPath(import.meta.url);
@@ -208,6 +224,10 @@ export function loadConfig(): Config {
 	const redis = convertRedisOptions(config.redis, host);
 
 	return {
+		// to avoid merge conflict in the future, this is at top
+		nirila: Object.assign({
+			withRepliesInUserList: true,
+		}, config.nirila ?? {}),
 		version,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
