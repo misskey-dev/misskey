@@ -1,5 +1,10 @@
 export class HardMuteAndSoftMuteFromRegistory1700906353915 {
     async up(queryRunner) {
+			// for servers start using this fork of misskey after 2023.11.1-kinel.1,
+			// This migration should not be run so opt in this migration by setting
+			// `MIGRATE_HARD_MUTE_AND_SOFT_MUTE_FROM_REGISTORY` to `true`
+			if (process.env.MIGRATE_HARD_MUTE_AND_SOFT_MUTE_FROM_REGISTORY !== 'true') return;
+
 			// until 2023.9.3-kinel.4, `mutedWords` means hard muted words
 			// since 2023.11.1-kinel.1, `mutedWords` means soft muted words and `hardMutedWords` means hard muted words
 			// so migrate hard muted words to `hardMutedWords`
@@ -20,6 +25,11 @@ export class HardMuteAndSoftMuteFromRegistory1700906353915 {
     }
 
     async down(queryRunner) {
+			// for servers start using this fork of misskey after 2023.11.1-kinel.1,
+			// This migration should not be run so opt in this migration by setting
+			// `MIGRATE_HARD_MUTE_AND_SOFT_MUTE_FROM_REGISTORY` to `true`
+			if (process.env.MIGRATE_HARD_MUTE_AND_SOFT_MUTE_FROM_REGISTORY !== 'true') return;
+
 			const entries = await queryRunner.query(`SELECT "userId", "mutedWords" FROM "user_profile";`);
 			for (let entry of entries) {
 				let existingEntry = await queryRunner.query(
