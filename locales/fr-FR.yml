@@ -1765,6 +1765,7 @@ _visibility:
   followersDescription: "Publier à vos abonné·e·s uniquement"
   specified: "Direct"
   specifiedDescription: "Publier uniquement aux utilisateur·rice·s mentionné·e·s"
+  disableFederation: "Défédérer"
 _postForm:
   replyPlaceholder: "Répondre à cette note ..."
   quotePlaceholder: "Citez cette note ..."
