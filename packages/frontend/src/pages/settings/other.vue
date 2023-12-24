@@ -148,12 +148,13 @@ async function reloadAsk() {
 }
 
 async function updateRepliesAll(withReplies: boolean) {
-	const { canceled } = os.confirm({
+	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: withReplies ? i18n.ts.confirmShowRepliesAll : i18n.ts.confirmHideRepliesAll,
 	});
 	if (canceled) return;
-	await os.api('following/update-all', { withReplies });
+
+	os.api('following/update-all', { withReplies });
 }
 
 watch([
@@ -162,9 +163,9 @@ watch([
 	await reloadAsk();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.other,

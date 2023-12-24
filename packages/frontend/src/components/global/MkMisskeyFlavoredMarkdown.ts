@@ -7,6 +7,7 @@ import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
+import MkTime from '@/components/global/MkTime.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
@@ -36,7 +37,7 @@ type MfmProps = {
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-	nyaize: boolean | 'account';
+	nyaize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
@@ -45,7 +46,7 @@ type MfmProps = {
 // eslint-disable-next-line import/no-default-export
 export default function(props: MfmProps) {
 	const isNote = props.isNote ?? true;
-	const shouldNyaize = props.nyaize ? props.nyaize === 'account' ? props.author?.isCat : false : false;
+	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
@@ -102,26 +103,30 @@ export default function(props: MfmProps) {
 
 			case 'fn': {
 				// TODO: CSSを文字列で組み立てていくと token.props.args.~~~ 経由でCSSインジェクションできるのでよしなにやる
-				let style;
+				let style: string | undefined;
 				switch (token.props.name) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both;` : '');
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'jelly': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'twitch': {
 						const speed = validTime(token.props.args.speed) ?? '0.5s';
-						style = useAnim ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-twitch ${speed} ease infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'shake': {
 						const speed = validTime(token.props.args.speed) ?? '0.5s';
-						style = useAnim ? `animation: mfm-shake ${speed} ease infinite;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-shake ${speed} ease infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'spin': {
@@ -134,17 +139,20 @@ export default function(props: MfmProps) {
 							token.props.args.y ? 'mfm-spinY' :
 							'mfm-spin';
 						const speed = validTime(token.props.args.speed) ?? '1.5s';
-						style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction}; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'jump': {
 						const speed = validTime(token.props.args.speed) ?? '0.75s';
-						style = useAnim ? `animation: mfm-jump ${speed} linear infinite;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-jump ${speed} linear infinite; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'bounce': {
 						const speed = validTime(token.props.args.speed) ?? '0.75s';
-						style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom; animation-delay: ${delay};` : '';
 						break;
 					}
 					case 'flip': {
@@ -194,7 +202,8 @@ export default function(props: MfmProps) {
 							}, genEl(token.children, scale));
 						}
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = `animation: mfm-rainbow ${speed} linear infinite;`;
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						style = `animation: mfm-rainbow ${speed} linear infinite; animation-delay: ${delay};`;
 						break;
 					}
 					case 'sparkle': {
@@ -238,8 +247,42 @@ export default function(props: MfmProps) {
 						style = `background-color: #${color};`;
 						break;
 					}
+					case 'ruby': {
+						if (token.children.length === 1) {
+							const child = token.children[0];
+							let text = child.type === 'text' ? child.props.text : '';
+							if (!disableNyaize && shouldNyaize) {
+								text = doNyaize(text);
+							}
+							return h('ruby', {}, [text.split(' ')[0], h('rt', text.split(' ')[1])]);
+						} else {
+							const rt = token.children.at(-1)!;
+							let text = rt.type === 'text' ? rt.props.text : '';
+							if (!disableNyaize && shouldNyaize) {
+								text = doNyaize(text);
+							}
+							return h('ruby', {}, [...genEl(token.children.slice(0, token.children.length - 1), scale), h('rt', text.trim())]);
+						}
+					}
+					case 'unixtime': {
+						const child = token.children[0];
+						const unixtime = parseInt(child.type === 'text' ? child.props.text : '');
+						return h('span', {
+							style: 'display: inline-block; font-size: 90%; border: solid 1px var(--divider); border-radius: 999px; padding: 4px 10px 4px 6px;',
+						}, [
+							h('i', {
+								class: 'ti ti-clock',
+								style: 'margin-right: 0.25em;',
+							}),
+							h(MkTime, {
+								key: Math.random(),
+								time: unixtime * 1000,
+								mode: 'detail',
+							}),
+						]);
+					}
 				}
-				if (style == null) {
+				if (style === undefined) {
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
 				} else {
 					return h('span', {

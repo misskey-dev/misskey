@@ -447,6 +447,17 @@ export class MiMeta {
 	public enableActiveEmailValidation: boolean;
 
 	@Column('boolean', {
+		default: false,
+	})
+	public enableVerifymailApi: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public verifymailAuthKey: string | null;
+
+	@Column('boolean', {
 		default: true,
 	})
 	public enableChartsForRemoteUser: boolean;
@@ -485,6 +496,13 @@ export class MiMeta {
 	public manifestJsonOverride: string;
 
 	@Column('varchar', {
+		length: 1024,
+		array: true,
+		default: '{}',
+	})
+	public bannedEmailDomains: string[];
+
+	@Column('varchar', {
 		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
 	})
 	public preservedUsernames: string[];
@@ -493,6 +511,11 @@ export class MiMeta {
 		default: true,
 	})
 	public enableFanoutTimeline: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableFanoutTimelineDbFallback: boolean;
 
 	@Column('integer', {
 		default: 300,

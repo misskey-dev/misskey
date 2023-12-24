@@ -94,14 +94,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import JSON5 from 'json5';
 import XHeader from './_header_.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import FormSection from '@/components/form/section.vue';
-import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { instance, fetchInstance } from '@/instance.js';
@@ -111,55 +108,55 @@ import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { host } from '@/config.js';
 
-let iconUrl: string | null = $ref(null);
-let app192IconUrl: string | null = $ref(null);
-let app512IconUrl: string | null = $ref(null);
-let bannerUrl: string | null = $ref(null);
-let backgroundImageUrl: string | null = $ref(null);
-let themeColor: any = $ref(null);
-let defaultLightTheme: any = $ref(null);
-let defaultDarkTheme: any = $ref(null);
-let serverErrorImageUrl: string | null = $ref(null);
-let infoImageUrl: string | null = $ref(null);
-let notFoundImageUrl: string | null = $ref(null);
-let manifestJsonOverride: string = $ref('{}');
+const iconUrl = ref<string | null>(null);
+const app192IconUrl = ref<string | null>(null);
+const app512IconUrl = ref<string | null>(null);
+const bannerUrl = ref<string | null>(null);
+const backgroundImageUrl = ref<string | null>(null);
+const themeColor = ref<any>(null);
+const defaultLightTheme = ref<any>(null);
+const defaultDarkTheme = ref<any>(null);
+const serverErrorImageUrl = ref<string | null>(null);
+const infoImageUrl = ref<string | null>(null);
+const notFoundImageUrl = ref<string | null>(null);
+const manifestJsonOverride = ref<string>('{}');
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	iconUrl = meta.iconUrl;
-	app192IconUrl = meta.app192IconUrl;
-	app512IconUrl = meta.app512IconUrl;
-	bannerUrl = meta.bannerUrl;
-	backgroundImageUrl = meta.backgroundImageUrl;
-	themeColor = meta.themeColor;
-	defaultLightTheme = meta.defaultLightTheme;
-	defaultDarkTheme = meta.defaultDarkTheme;
-	serverErrorImageUrl = meta.serverErrorImageUrl;
-	infoImageUrl = meta.infoImageUrl;
-	notFoundImageUrl = meta.notFoundImageUrl;
-	manifestJsonOverride = meta.manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON.parse(meta.manifestJsonOverride), null, '\t');
+	iconUrl.value = meta.iconUrl;
+	app192IconUrl.value = meta.app192IconUrl;
+	app512IconUrl.value = meta.app512IconUrl;
+	bannerUrl.value = meta.bannerUrl;
+	backgroundImageUrl.value = meta.backgroundImageUrl;
+	themeColor.value = meta.themeColor;
+	defaultLightTheme.value = meta.defaultLightTheme;
+	defaultDarkTheme.value = meta.defaultDarkTheme;
+	serverErrorImageUrl.value = meta.serverErrorImageUrl;
+	infoImageUrl.value = meta.infoImageUrl;
+	notFoundImageUrl.value = meta.notFoundImageUrl;
+	manifestJsonOverride.value = meta.manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON.parse(meta.manifestJsonOverride), null, '\t');
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		iconUrl,
-		app192IconUrl,
-		app512IconUrl,
-		bannerUrl,
-		backgroundImageUrl,
-		themeColor: themeColor === '' ? null : themeColor,
-		defaultLightTheme: defaultLightTheme === '' ? null : defaultLightTheme,
-		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
-		infoImageUrl,
-		notFoundImageUrl,
-		serverErrorImageUrl,
-		manifestJsonOverride: manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride)),
+		iconUrl: iconUrl.value,
+		app192IconUrl: app192IconUrl.value,
+		app512IconUrl: app512IconUrl.value,
+		bannerUrl: bannerUrl.value,
+		backgroundImageUrl: backgroundImageUrl.value,
+		themeColor: themeColor.value === '' ? null : themeColor.value,
+		defaultLightTheme: defaultLightTheme.value === '' ? null : defaultLightTheme.value,
+		defaultDarkTheme: defaultDarkTheme.value === '' ? null : defaultDarkTheme.value,
+		infoImageUrl: infoImageUrl.value,
+		notFoundImageUrl: notFoundImageUrl.value,
+		serverErrorImageUrl: serverErrorImageUrl.value,
+		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
 	}).then(() => {
 		fetchInstance();
 	});
 }
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.branding,

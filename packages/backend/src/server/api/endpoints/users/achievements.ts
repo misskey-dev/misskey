@@ -10,6 +10,21 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				name: {
+					type: 'string',
+				},
+				unlockedAt: {
+					type: 'number',
+				},
+			},
+		},
+	}
 } as const;
 
 export const paramDef = {

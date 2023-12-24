@@ -118,6 +118,9 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
+# You can set scope to local (default value) or global 
+# (include notes from remote).
+
 #meilisearch:
 #  host: localhost
 #  port: 7700
@@ -163,7 +166,7 @@ id: 'aidx'
 
 # Job rate limiter
 #deliverJobPerSec: 128
-#inboxJobPerSec: 16
+#inboxJobPerSec: 32
 #relashionshipJobPerSec: 64
 
 # Job attempts
@@ -210,6 +213,9 @@ proxyRemoteFiles: true
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
 
+# For security reasons, uploading attachments from the intranet is prohibited,
+# but exceptions can be made from the following settings. Default value is "undefined". 
+# Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]

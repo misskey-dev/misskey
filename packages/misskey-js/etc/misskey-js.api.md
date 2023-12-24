@@ -21,57 +21,343 @@ declare namespace acct {
 }
 export { acct }
 
-// Warning: (ae-forgotten-export) The symbol "TODO_2" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "operations" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-type Ad = TODO_2;
+type AdminAbuseUserReportsRequest = operations['admin/abuse-user-reports']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type AdminInstanceMetadata = DetailedInstanceMetadata & {
-    blockedHosts: string[];
-    silencedHosts: string[];
-    app192IconUrl: string | null;
-    app512IconUrl: string | null;
-    manifestJsonOverride: string;
+type AdminAbuseUserReportsResponse = operations['admin/abuse-user-reports']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAccountsCreateRequest = operations['admin/accounts/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAccountsCreateResponse = operations['admin/accounts/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAccountsDeleteRequest = operations['admin/accounts/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAccountsFindByEmailRequest = operations['admin/accounts/find-by-email']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAdCreateRequest = operations['admin/ad/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAdDeleteRequest = operations['admin/ad/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAdListRequest = operations['admin/ad/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAdUpdateRequest = operations['admin/ad/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsCreateRequest = operations['admin/announcements/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsCreateResponse = operations['admin/announcements/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsDeleteRequest = operations['admin/announcements/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsListRequest = operations['admin/announcements/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsListResponse = operations['admin/announcements/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsUpdateRequest = operations['admin/announcements/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsCreateRequest = operations['admin/avatar-decorations/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsDeleteRequest = operations['admin/avatar-decorations/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsListRequest = operations['admin/avatar-decorations/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsListResponse = operations['admin/avatar-decorations/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsUpdateRequest = operations['admin/avatar-decorations/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDeleteAccountRequest = operations['admin/delete-account']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDeleteAccountResponse = operations['admin/delete-account']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDeleteAllFilesOfAUserRequest = operations['admin/delete-all-files-of-a-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDriveFilesRequest = operations['admin/drive/files']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDriveFilesResponse = operations['admin/drive/files']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDriveShowFileRequest = operations['admin/drive/show-file']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDriveShowFileResponse = operations['admin/drive/show-file']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiAddAliasesBulkRequest = operations['admin/emoji/add-aliases-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiAddRequest = operations['admin/emoji/add']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiCopyRequest = operations['admin/emoji/copy']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiCopyResponse = operations['admin/emoji/copy']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiDeleteBulkRequest = operations['admin/emoji/delete-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiDeleteRequest = operations['admin/emoji/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiImportZipRequest = operations['admin/emoji/import-zip']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiListRemoteRequest = operations['admin/emoji/list-remote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiListRemoteResponse = operations['admin/emoji/list-remote']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiListRequest = operations['admin/emoji/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiListResponse = operations['admin/emoji/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiRemoveAliasesBulkRequest = operations['admin/emoji/remove-aliases-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiSetAliasesBulkRequest = operations['admin/emoji/set-aliases-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiSetCategoryBulkRequest = operations['admin/emoji/set-category-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiSetLicenseBulkRequest = operations['admin/emoji/set-license-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiUpdateRequest = operations['admin/emoji/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminFederationDeleteAllFilesRequest = operations['admin/federation/delete-all-files']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminFederationRefreshRemoteInstanceMetadataRequest = operations['admin/federation/refresh-remote-instance-metadata']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminFederationRemoveAllFollowingRequest = operations['admin/federation/remove-all-following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminFederationUpdateInstanceRequest = operations['admin/federation/update-instance']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminGetTableStatsResponse = operations['admin/get-table-stats']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminGetUserIpsRequest = operations['admin/get-user-ips']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminInviteCreateRequest = operations['admin/invite/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminInviteCreateResponse = operations['admin/invite/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminInviteListRequest = operations['admin/invite/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminInviteListResponse = operations['admin/invite/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminMetaResponse = operations['admin/meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminPromoCreateRequest = operations['admin/promo/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueDeliverDelayedResponse = operations['admin/queue/deliver-delayed']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueInboxDelayedResponse = operations['admin/queue/inbox-delayed']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueuePromoteRequest = operations['admin/queue/promote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueStatsResponse = operations['admin/queue/stats']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRelaysAddRequest = operations['admin/relays/add']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRelaysAddResponse = operations['admin/relays/add']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRelaysListResponse = operations['admin/relays/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRelaysRemoveRequest = operations['admin/relays/remove']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminResetPasswordRequest = operations['admin/reset-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminResetPasswordResponse = operations['admin/reset-password']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminResolveAbuseUserReportRequest = operations['admin/resolve-abuse-user-report']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesAssignRequest = operations['admin/roles/assign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesCreateRequest = operations['admin/roles/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesCreateResponse = operations['admin/roles/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesDeleteRequest = operations['admin/roles/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesListResponse = operations['admin/roles/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesShowRequest = operations['admin/roles/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesShowResponse = operations['admin/roles/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesUnassignRequest = operations['admin/roles/unassign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesUpdateDefaultPoliciesRequest = operations['admin/roles/update-default-policies']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesUpdateRequest = operations['admin/roles/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesUsersRequest = operations['admin/roles/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSendEmailRequest = operations['admin/send-email']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminServerInfoResponse = operations['admin/server-info']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowModerationLogsRequest = operations['admin/show-moderation-logs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowModerationLogsResponse = operations['admin/show-moderation-logs']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowUserRequest = operations['admin/show-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowUserResponse = operations['admin/show-user']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowUsersRequest = operations['admin/show-users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowUsersResponse = operations['admin/show-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSuspendUserRequest = operations['admin/suspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUnsetUserAvatarRequest = operations['admin/unset-user-avatar']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUnsetUserBannerRequest = operations['admin/unset-user-banner']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUnsuspendUserRequest = operations['admin/unsuspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateMetaRequest = operations['admin/update-meta']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateUserNoteRequest = operations['admin/update-user-note']['requestBody']['content']['application/json'];
+
+// Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type Announcement = components['schemas']['Announcement'];
+
+// @public (undocumented)
+type AnnouncementCreated = {
+    announcement: Announcement;
 };
 
 // @public (undocumented)
-type Announcement = {
-    id: ID;
-    createdAt: DateString;
-    updatedAt: DateString | null;
-    text: string;
-    title: string;
-    imageUrl: string | null;
-    display: 'normal' | 'banner' | 'dialog';
-    icon: 'info' | 'warning' | 'error' | 'success';
-    needConfirmationToRead: boolean;
-    forYou: boolean;
-    isRead?: boolean;
-};
+type AnnouncementsRequest = operations['announcements']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type Antenna = {
-    id: ID;
-    createdAt: DateString;
-    name: string;
-    keywords: string[][];
-    excludeKeywords: string[][];
-    src: 'home' | 'all' | 'users' | 'list' | 'group';
-    userListId: ID | null;
-    userGroupId: ID | null;
-    users: string[];
-    caseSensitive: boolean;
-    localOnly: boolean;
-    notify: boolean;
-    withReplies: boolean;
-    withFile: boolean;
-    hasUnreadNote: boolean;
-};
+type AnnouncementsResponse = operations['announcements']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Antenna = components['schemas']['Antenna'];
+
+// @public (undocumented)
+type AntennasCreateRequest = operations['antennas/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasCreateResponse = operations['antennas/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasDeleteRequest = operations['antennas/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasListResponse = operations['antennas/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasNotesRequest = operations['antennas/notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasNotesResponse = operations['antennas/notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasShowRequest = operations['antennas/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasShowResponse = operations['antennas/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasUpdateRequest = operations['antennas/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasUpdateResponse = operations['antennas/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ApGetRequest = operations['ap/get']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ApGetResponse = operations['ap/get']['responses']['200']['content']['application/json'];
 
 declare namespace api {
     export {
         isAPIError,
+        SwitchCaseResponseType,
         APIError,
         FetchLike,
         APIClient
@@ -92,16 +378,6 @@ class APIClient {
     fetch: FetchLike;
     // (undocumented)
     origin: string;
-    // Warning: (ae-forgotten-export) The symbol "IsCaseMatched" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "GetCaseResult" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, params?: P, credential?: string | null | undefined): Promise<Endpoints[E]['res'] extends {
-        $switch: {
-            $cases: [any, any][];
-            $default: any;
-        };
-    } ? IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> : IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1> : IsCaseMatched<E, P, 2> extends true ? GetCaseResult<E, P, 2> : IsCaseMatched<E, P, 3> extends true ? GetCaseResult<E, P, 3> : IsCaseMatched<E, P, 4> extends true ? GetCaseResult<E, P, 4> : IsCaseMatched<E, P, 5> extends true ? GetCaseResult<E, P, 5> : IsCaseMatched<E, P, 6> extends true ? GetCaseResult<E, P, 6> : IsCaseMatched<E, P, 7> extends true ? GetCaseResult<E, P, 7> : IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> : IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> : Endpoints[E]['res']['$switch']['$default'] : Endpoints[E]['res']>;
 }
 
 // @public (undocumented)
@@ -114,41 +390,70 @@ type APIError = {
 };
 
 // @public (undocumented)
-type App = TODO_2;
+type App = components['schemas']['App'];
 
 // @public (undocumented)
-type AuthSession = {
-    id: ID;
-    app: App;
-    token: string;
-};
+type AppCreateRequest = operations['app/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type Blocking = {
-    id: ID;
-    createdAt: DateString;
-    blockeeId: User['id'];
-    blockee: UserDetailed;
-};
+type AppCreateResponse = operations['app/create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type Channel = {
-    id: ID;
-    lastNotedAt: Date | null;
-    userId: User['id'] | null;
-    user: User | null;
-    name: string;
-    description: string | null;
-    bannerId: DriveFile['id'] | null;
-    banner: DriveFile | null;
-    pinnedNoteIds: string[];
-    color: string;
-    isArchived: boolean;
-    notesCount: number;
-    usersCount: number;
-    isSensitive: boolean;
-    allowRenoteToExternal: boolean;
-};
+type AppShowRequest = operations['app/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AppShowResponse = operations['app/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ApShowRequest = operations['ap/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ApShowResponse = operations['ap/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AuthAcceptRequest = operations['auth/accept']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionGenerateRequest = operations['auth/session/generate']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionGenerateResponse = operations['auth/session/generate']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionShowRequest = operations['auth/session/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionShowResponse = operations['auth/session/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionUserkeyRequest = operations['auth/session/userkey']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionUserkeyResponse = operations['auth/session/userkey']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Blocking = components['schemas']['Blocking'];
+
+// @public (undocumented)
+type BlockingCreateRequest = operations['blocking/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingCreateResponse = operations['blocking/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingDeleteRequest = operations['blocking/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingDeleteResponse = operations['blocking/delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingListRequest = operations['blocking/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingListResponse = operations['blocking/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Channel = components['schemas']['Channel'];
 
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
 //
@@ -197,16 +502,11 @@ export type Channels = {
             readAllUnreadMentions: () => void;
             unreadSpecifiedNote: (payload: Note['id']) => void;
             readAllUnreadSpecifiedNotes: () => void;
-            readAllMessagingMessages: () => void;
-            messagingMessage: (payload: MessagingMessage) => void;
-            unreadMessagingMessage: (payload: MessagingMessage) => void;
             readAllAntennas: () => void;
             unreadAntenna: (payload: Antenna) => void;
             readAllAnnouncements: () => void;
             myTokenRegenerated: () => void;
-            reversiNoInvites: () => void;
-            reversiInvited: (payload: FIXME) => void;
-            signin: (payload: FIXME) => void;
+            signin: (payload: Signin) => void;
             registryUpdated: (payload: {
                 scope?: string[];
                 key: string;
@@ -214,58 +514,116 @@ export type Channels = {
             }) => void;
             driveFileCreated: (payload: DriveFile) => void;
             readAntenna: (payload: Antenna) => void;
+            receiveFollowRequest: (payload: User) => void;
+            announcementCreated: (payload: AnnouncementCreated) => void;
         };
         receives: null;
     };
     homeTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     localTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     hybridTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
     globalTimeline: {
-        params: null;
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+        };
         events: {
             note: (payload: Note) => void;
         };
         receives: null;
     };
-    messaging: {
+    userList: {
         params: {
-            otherparty?: User['id'] | null;
-            group?: UserGroup['id'] | null;
+            listId: string;
+            withFiles?: boolean;
         };
         events: {
-            message: (payload: MessagingMessage) => void;
-            deleted: (payload: MessagingMessage['id']) => void;
-            read: (payload: MessagingMessage['id'][]) => void;
-            typers: (payload: User[]) => void;
+            note: (payload: Note) => void;
         };
-        receives: {
-            read: {
-                id: MessagingMessage['id'];
-            };
+        receives: null;
+    };
+    hashtag: {
+        params: {
+            q?: string;
         };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    roleTimeline: {
+        params: {
+            roleId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    antenna: {
+        params: {
+            antennaId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    channel: {
+        params: {
+            channelId: string;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    drive: {
+        params: null;
+        events: {
+            fileCreated: (payload: DriveFile) => void;
+            fileDeleted: (payload: DriveFile['id']) => void;
+            fileUpdated: (payload: DriveFile) => void;
+            folderCreated: (payload: DriveFolder) => void;
+            folderDeleted: (payload: DriveFolder['id']) => void;
+            folderUpdated: (payload: DriveFile) => void;
+        };
+        receives: null;
     };
     serverStats: {
         params: null;
         events: {
-            stats: (payload: FIXME) => void;
+            stats: (payload: ServerStats) => void;
+            statsLog: (payload: ServerStatsLog) => void;
         };
         receives: {
             requestLog: {
@@ -277,7 +635,8 @@ export type Channels = {
     queueStats: {
         params: null;
         events: {
-            stats: (payload: FIXME) => void;
+            stats: (payload: QueueStats) => void;
+            statsLog: (payload: QueueStatsLog) => void;
         };
         receives: {
             requestLog: {
@@ -286,1951 +645,363 @@ export type Channels = {
             };
         };
     };
+    admin: {
+        params: null;
+        events: {
+            newAbuseUserReport: {
+                id: string;
+                targetUserId: string;
+                reporterId: string;
+                comment: string;
+            };
+        };
+        receives: null;
+    };
 };
 
 // @public (undocumented)
-type Clip = TODO_2;
+type ChannelsCreateRequest = operations['channels/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type CustomEmoji = {
-    id: string;
-    name: string;
-    url: string;
-    category: string;
-    aliases: string[];
-};
+type ChannelsCreateResponse = operations['channels/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFavoriteRequest = operations['channels/favorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFeaturedResponse = operations['channels/featured']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFollowedRequest = operations['channels/followed']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFollowedResponse = operations['channels/followed']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFollowRequest = operations['channels/follow']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMyFavoritesResponse = operations['channels/my-favorites']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsOwnedRequest = operations['channels/owned']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsOwnedResponse = operations['channels/owned']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsSearchRequest = operations['channels/search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsSearchResponse = operations['channels/search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsShowRequest = operations['channels/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsShowResponse = operations['channels/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsTimelineRequest = operations['channels/timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsTimelineResponse = operations['channels/timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsUnfavoriteRequest = operations['channels/unfavorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsUnfollowRequest = operations['channels/unfollow']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsUpdateRequest = operations['channels/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsUpdateResponse = operations['channels/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsActiveUsersRequest = operations['charts/active-users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsActiveUsersResponse = operations['charts/active-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsApRequestRequest = operations['charts/ap-request']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsApRequestResponse = operations['charts/ap-request']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsDriveRequest = operations['charts/drive']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsDriveResponse = operations['charts/drive']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsFederationRequest = operations['charts/federation']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsFederationResponse = operations['charts/federation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsInstanceRequest = operations['charts/instance']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsInstanceResponse = operations['charts/instance']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsNotesRequest = operations['charts/notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsNotesResponse = operations['charts/notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserDriveRequest = operations['charts/user/drive']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserDriveResponse = operations['charts/user/drive']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserFollowingRequest = operations['charts/user/following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserFollowingResponse = operations['charts/user/following']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserNotesRequest = operations['charts/user/notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserNotesResponse = operations['charts/user/notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserPvRequest = operations['charts/user/pv']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserPvResponse = operations['charts/user/pv']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserReactionsRequest = operations['charts/user/reactions']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserReactionsResponse = operations['charts/user/reactions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUsersRequest = operations['charts/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUsersResponse = operations['charts/users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Clip = components['schemas']['Clip'];
+
+// @public (undocumented)
+type ClipsAddNoteRequest = operations['clips/add-note']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsCreateRequest = operations['clips/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsCreateResponse = operations['clips/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsDeleteRequest = operations['clips/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsFavoriteRequest = operations['clips/favorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsListResponse = operations['clips/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsMyFavoritesResponse = operations['clips/my-favorites']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsNotesRequest = operations['clips/notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsNotesResponse = operations['clips/notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsRemoveNoteRequest = operations['clips/remove-note']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsShowRequest = operations['clips/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsShowResponse = operations['clips/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsUnfavoriteRequest = operations['clips/unfavorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsUpdateRequest = operations['clips/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsUpdateResponse = operations['clips/update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type DateString = string;
 
 // @public (undocumented)
-type DetailedInstanceMetadata = LiteInstanceMetadata & {
-    pinnedPages: string[];
-    pinnedClipId: string | null;
-    cacheRemoteFiles: boolean;
-    cacheRemoteSensitiveFiles: boolean;
-    requireSetup: boolean;
-    proxyAccountName: string | null;
-    features: Record<string, any>;
+type DriveFile = components['schemas']['DriveFile'];
+
+// @public (undocumented)
+type DriveFilesAttachedNotesRequest = operations['drive/files/attached-notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesAttachedNotesResponse = operations['drive/files/attached-notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesCheckExistenceRequest = operations['drive/files/check-existence']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesCheckExistenceResponse = operations['drive/files/check-existence']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesCreateRequest = operations['drive/files/create']['requestBody']['content']['multipart/form-data'];
+
+// @public (undocumented)
+type DriveFilesCreateResponse = operations['drive/files/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesDeleteRequest = operations['drive/files/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesFindByHashRequest = operations['drive/files/find-by-hash']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesFindByHashResponse = operations['drive/files/find-by-hash']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesFindRequest = operations['drive/files/find']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesFindResponse = operations['drive/files/find']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesRequest = operations['drive/files']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesResponse = operations['drive/files']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesShowRequest = operations['drive/files/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesShowResponse = operations['drive/files/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesUpdateRequest = operations['drive/files/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesUpdateResponse = operations['drive/files/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesUploadFromUrlRequest = operations['drive/files/upload-from-url']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFolder = components['schemas']['DriveFolder'];
+
+// @public (undocumented)
+type DriveFoldersCreateRequest = operations['drive/folders/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersCreateResponse = operations['drive/folders/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersDeleteRequest = operations['drive/folders/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersFindRequest = operations['drive/folders/find']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersFindResponse = operations['drive/folders/find']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersRequest = operations['drive/folders']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersResponse = operations['drive/folders']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersShowRequest = operations['drive/folders/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersShowResponse = operations['drive/folders/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersUpdateRequest = operations['drive/folders/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersUpdateResponse = operations['drive/folders/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveResponse = operations['drive']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveStreamRequest = operations['drive/stream']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveStreamResponse = operations['drive/stream']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmailAddressAvailableRequest = operations['email-address/available']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type EmailAddressAvailableResponse = operations['email-address/available']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiAdded = {
+    emoji: EmojiDetailed;
 };
 
 // @public (undocumented)
-type DriveFile = {
-    id: ID;
-    createdAt: DateString;
-    isSensitive: boolean;
-    name: string;
-    thumbnailUrl: string;
-    url: string;
-    type: string;
-    size: number;
-    md5: string;
-    blurhash: string;
-    comment: string | null;
-    properties: Record<string, any>;
+type EmojiDeleted = {
+    emojis: EmojiDetailed[];
 };
 
 // @public (undocumented)
-type DriveFolder = TODO_2;
+type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
-export type Endpoints = {
-    'admin/abuse-user-reports': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/delete-all-files-of-a-user': {
-        req: {
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'admin/delete-logs': {
-        req: NoParams;
-        res: null;
-    };
-    'admin/get-index-stats': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/get-table-stats': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/invite': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/logs': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/meta': {
-        req: NoParams;
-        res: AdminInstanceMetadata;
-    };
-    'admin/reset-password': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/resolve-abuse-user-report': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/resync-chart': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/send-email': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/server-info': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/show-moderation-logs': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/show-user': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/show-users': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/silence-user': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/suspend-user': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/unsilence-user': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/unsuspend-user': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/update-meta': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/vacuum': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/accounts/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/ad/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/ad/delete': {
-        req: {
-            id: Ad['id'];
-        };
-        res: null;
-    };
-    'admin/ad/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/ad/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/announcements/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/announcements/delete': {
-        req: {
-            id: Announcement['id'];
-        };
-        res: null;
-    };
-    'admin/announcements/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/announcements/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/drive/clean-remote-files': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/drive/cleanup': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/drive/files': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/drive/show-file': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/emoji/add': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/emoji/copy': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/emoji/list-remote': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/emoji/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/emoji/remove': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/emoji/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/federation/delete-all-files': {
-        req: {
-            host: string;
-        };
-        res: null;
-    };
-    'admin/federation/refresh-remote-instance-metadata': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/federation/remove-all-following': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/federation/update-instance': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/invite/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/invite/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/moderators/add': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/moderators/remove': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/promo/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/queue/clear': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/queue/deliver-delayed': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/queue/inbox-delayed': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/queue/jobs': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/queue/stats': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/relays/add': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/relays/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'admin/relays/remove': {
-        req: TODO;
-        res: TODO;
-    };
-    'announcements': {
-        req: {
-            limit?: number;
-            withUnreads?: boolean;
-            sinceId?: Announcement['id'];
-            untilId?: Announcement['id'];
-        };
-        res: Announcement[];
-    };
-    'antennas/create': {
-        req: TODO;
-        res: Antenna;
-    };
-    'antennas/delete': {
-        req: {
-            antennaId: Antenna['id'];
-        };
-        res: null;
-    };
-    'antennas/list': {
-        req: NoParams;
-        res: Antenna[];
-    };
-    'antennas/notes': {
-        req: {
-            antennaId: Antenna['id'];
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-        };
-        res: Note[];
-    };
-    'antennas/show': {
-        req: {
-            antennaId: Antenna['id'];
-        };
-        res: Antenna;
-    };
-    'antennas/update': {
-        req: TODO;
-        res: Antenna;
-    };
-    'ap/get': {
-        req: {
-            uri: string;
-        };
-        res: Record<string, any>;
-    };
-    'ap/show': {
-        req: {
-            uri: string;
-        };
-        res: {
-            type: 'Note';
-            object: Note;
-        } | {
-            type: 'User';
-            object: UserDetailed;
-        };
-    };
-    'app/create': {
-        req: TODO;
-        res: App;
-    };
-    'app/show': {
-        req: {
-            appId: App['id'];
-        };
-        res: App;
-    };
-    'auth/accept': {
-        req: {
-            token: string;
-        };
-        res: null;
-    };
-    'auth/session/generate': {
-        req: {
-            appSecret: string;
-        };
-        res: {
-            token: string;
-            url: string;
-        };
-    };
-    'auth/session/show': {
-        req: {
-            token: string;
-        };
-        res: AuthSession;
-    };
-    'auth/session/userkey': {
-        req: {
-            appSecret: string;
-            token: string;
-        };
-        res: {
-            accessToken: string;
-            user: User;
-        };
-    };
-    'blocking/create': {
-        req: {
-            userId: User['id'];
-        };
-        res: UserDetailed;
-    };
-    'blocking/delete': {
-        req: {
-            userId: User['id'];
-        };
-        res: UserDetailed;
-    };
-    'blocking/list': {
-        req: {
-            limit?: number;
-            sinceId?: Blocking['id'];
-            untilId?: Blocking['id'];
-        };
-        res: Blocking[];
-    };
-    'channels/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/featured': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/follow': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/followed': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/owned': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/pin-note': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/show': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/timeline': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/unfollow': {
-        req: TODO;
-        res: TODO;
-    };
-    'channels/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'charts/active-users': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: {
-            local: {
-                users: number[];
-            };
-            remote: {
-                users: number[];
-            };
-        };
-    };
-    'charts/drive': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: {
-            local: {
-                decCount: number[];
-                decSize: number[];
-                incCount: number[];
-                incSize: number[];
-                totalCount: number[];
-                totalSize: number[];
-            };
-            remote: {
-                decCount: number[];
-                decSize: number[];
-                incCount: number[];
-                incSize: number[];
-                totalCount: number[];
-                totalSize: number[];
-            };
-        };
-    };
-    'charts/federation': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: {
-            instance: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-            };
-        };
-    };
-    'charts/hashtag': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: TODO;
-    };
-    'charts/instance': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-            host: string;
-        };
-        res: {
-            drive: {
-                decFiles: number[];
-                decUsage: number[];
-                incFiles: number[];
-                incUsage: number[];
-                totalFiles: number[];
-                totalUsage: number[];
-            };
-            followers: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-            };
-            following: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-            };
-            notes: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-                diffs: {
-                    normal: number[];
-                    renote: number[];
-                    reply: number[];
-                };
-            };
-            requests: {
-                failed: number[];
-                received: number[];
-                succeeded: number[];
-            };
-            users: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-            };
-        };
-    };
-    'charts/network': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: TODO;
-    };
-    'charts/notes': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: {
-            local: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-                diffs: {
-                    normal: number[];
-                    renote: number[];
-                    reply: number[];
-                };
-            };
-            remote: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-                diffs: {
-                    normal: number[];
-                    renote: number[];
-                    reply: number[];
-                };
-            };
-        };
-    };
-    'charts/user/drive': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-            userId: User['id'];
-        };
-        res: {
-            decCount: number[];
-            decSize: number[];
-            incCount: number[];
-            incSize: number[];
-            totalCount: number[];
-            totalSize: number[];
-        };
-    };
-    'charts/user/following': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-            userId: User['id'];
-        };
-        res: TODO;
-    };
-    'charts/user/notes': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-            userId: User['id'];
-        };
-        res: {
-            dec: number[];
-            inc: number[];
-            total: number[];
-            diffs: {
-                normal: number[];
-                renote: number[];
-                reply: number[];
-            };
-        };
-    };
-    'charts/user/reactions': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-            userId: User['id'];
-        };
-        res: TODO;
-    };
-    'charts/users': {
-        req: {
-            span: 'day' | 'hour';
-            limit?: number;
-            offset?: number | null;
-        };
-        res: {
-            local: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-            };
-            remote: {
-                dec: number[];
-                inc: number[];
-                total: number[];
-            };
-        };
-    };
-    'clips/add-note': {
-        req: TODO;
-        res: TODO;
-    };
-    'clips/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'clips/delete': {
-        req: {
-            clipId: Clip['id'];
-        };
-        res: null;
-    };
-    'clips/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'clips/notes': {
-        req: TODO;
-        res: TODO;
-    };
-    'clips/show': {
-        req: TODO;
-        res: TODO;
-    };
-    'clips/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'drive': {
-        req: NoParams;
-        res: {
-            capacity: number;
-            usage: number;
-        };
-    };
-    'drive/files': {
-        req: {
-            folderId?: DriveFolder['id'] | null;
-            type?: DriveFile['type'] | null;
-            limit?: number;
-            sinceId?: DriveFile['id'];
-            untilId?: DriveFile['id'];
-        };
-        res: DriveFile[];
-    };
-    'drive/files/attached-notes': {
-        req: TODO;
-        res: TODO;
-    };
-    'drive/files/check-existence': {
-        req: TODO;
-        res: TODO;
-    };
-    'drive/files/create': {
-        req: {
-            folderId?: string;
-            name?: string;
-            comment?: string;
-            isSentisive?: boolean;
-            force?: boolean;
-        };
-        res: DriveFile;
-    };
-    'drive/files/delete': {
-        req: {
-            fileId: DriveFile['id'];
-        };
-        res: null;
-    };
-    'drive/files/find-by-hash': {
-        req: TODO;
-        res: TODO;
-    };
-    'drive/files/find': {
-        req: {
-            name: string;
-            folderId?: DriveFolder['id'] | null;
-        };
-        res: DriveFile[];
-    };
-    'drive/files/show': {
-        req: {
-            fileId?: DriveFile['id'];
-            url?: string;
-        };
-        res: DriveFile;
-    };
-    'drive/files/update': {
-        req: {
-            fileId: DriveFile['id'];
-            folderId?: DriveFolder['id'] | null;
-            name?: string;
-            isSensitive?: boolean;
-            comment?: string | null;
-        };
-        res: DriveFile;
-    };
-    'drive/files/upload-from-url': {
-        req: {
-            url: string;
-            folderId?: DriveFolder['id'] | null;
-            isSensitive?: boolean;
-            comment?: string | null;
-            marker?: string | null;
-            force?: boolean;
-        };
-        res: null;
-    };
-    'drive/folders': {
-        req: {
-            folderId?: DriveFolder['id'] | null;
-            limit?: number;
-            sinceId?: DriveFile['id'];
-            untilId?: DriveFile['id'];
-        };
-        res: DriveFolder[];
-    };
-    'drive/folders/create': {
-        req: {
-            name?: string;
-            parentId?: DriveFolder['id'] | null;
-        };
-        res: DriveFolder;
-    };
-    'drive/folders/delete': {
-        req: {
-            folderId: DriveFolder['id'];
-        };
-        res: null;
-    };
-    'drive/folders/find': {
-        req: {
-            name: string;
-            parentId?: DriveFolder['id'] | null;
-        };
-        res: DriveFolder[];
-    };
-    'drive/folders/show': {
-        req: {
-            folderId: DriveFolder['id'];
-        };
-        res: DriveFolder;
-    };
-    'drive/folders/update': {
-        req: {
-            folderId: DriveFolder['id'];
-            name?: string;
-            parentId?: DriveFolder['id'] | null;
-        };
-        res: DriveFolder;
-    };
-    'drive/stream': {
-        req: {
-            type?: DriveFile['type'] | null;
-            limit?: number;
-            sinceId?: DriveFile['id'];
-            untilId?: DriveFile['id'];
-        };
-        res: DriveFile[];
-    };
-    'endpoint': {
-        req: {
-            endpoint: string;
-        };
-        res: {
-            params: {
-                name: string;
-                type: string;
-            }[];
-        };
-    };
-    'endpoints': {
-        req: NoParams;
-        res: string[];
-    };
-    'federation/dns': {
-        req: {
-            host: string;
-        };
-        res: {
-            a: string[];
-            aaaa: string[];
-            cname: string[];
-            txt: string[];
-        };
-    };
-    'federation/followers': {
-        req: {
-            host: string;
-            limit?: number;
-            sinceId?: Following['id'];
-            untilId?: Following['id'];
-        };
-        res: FollowingFolloweePopulated[];
-    };
-    'federation/following': {
-        req: {
-            host: string;
-            limit?: number;
-            sinceId?: Following['id'];
-            untilId?: Following['id'];
-        };
-        res: FollowingFolloweePopulated[];
-    };
-    'federation/instances': {
-        req: {
-            host?: string | null;
-            blocked?: boolean | null;
-            notResponding?: boolean | null;
-            suspended?: boolean | null;
-            federating?: boolean | null;
-            subscribing?: boolean | null;
-            publishing?: boolean | null;
-            limit?: number;
-            offset?: number;
-            sort?: '+pubSub' | '-pubSub' | '+notes' | '-notes' | '+users' | '-users' | '+following' | '-following' | '+followers' | '-followers' | '+caughtAt' | '-caughtAt' | '+lastCommunicatedAt' | '-lastCommunicatedAt' | '+driveUsage' | '-driveUsage' | '+driveFiles' | '-driveFiles';
-        };
-        res: Instance[];
-    };
-    'federation/show-instance': {
-        req: {
-            host: string;
-        };
-        res: Instance;
-    };
-    'federation/update-remote-user': {
-        req: {
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'federation/users': {
-        req: {
-            host: string;
-            limit?: number;
-            sinceId?: User['id'];
-            untilId?: User['id'];
-        };
-        res: UserDetailed[];
-    };
-    'following/create': {
-        req: {
-            userId: User['id'];
-            withReplies?: boolean;
-        };
-        res: User;
-    };
-    'following/delete': {
-        req: {
-            userId: User['id'];
-        };
-        res: User;
-    };
-    'following/requests/accept': {
-        req: {
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'following/requests/cancel': {
-        req: {
-            userId: User['id'];
-        };
-        res: User;
-    };
-    'following/requests/list': {
-        req: NoParams;
-        res: FollowRequest[];
-    };
-    'following/requests/reject': {
-        req: {
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'gallery/featured': {
-        req: null;
-        res: GalleryPost[];
-    };
-    'gallery/popular': {
-        req: null;
-        res: GalleryPost[];
-    };
-    'gallery/posts': {
-        req: {
-            limit?: number;
-            sinceId?: GalleryPost['id'];
-            untilId?: GalleryPost['id'];
-        };
-        res: GalleryPost[];
-    };
-    'gallery/posts/create': {
-        req: {
-            title: GalleryPost['title'];
-            description?: GalleryPost['description'];
-            fileIds: GalleryPost['fileIds'];
-            isSensitive?: GalleryPost['isSensitive'];
-        };
-        res: GalleryPost;
-    };
-    'gallery/posts/delete': {
-        req: {
-            postId: GalleryPost['id'];
-        };
-        res: null;
-    };
-    'gallery/posts/like': {
-        req: {
-            postId: GalleryPost['id'];
-        };
-        res: null;
-    };
-    'gallery/posts/show': {
-        req: {
-            postId: GalleryPost['id'];
-        };
-        res: GalleryPost;
-    };
-    'gallery/posts/unlike': {
-        req: {
-            postId: GalleryPost['id'];
-        };
-        res: null;
-    };
-    'gallery/posts/update': {
-        req: {
-            postId: GalleryPost['id'];
-            title: GalleryPost['title'];
-            description?: GalleryPost['description'];
-            fileIds: GalleryPost['fileIds'];
-            isSensitive?: GalleryPost['isSensitive'];
-        };
-        res: GalleryPost;
-    };
-    'games/reversi/games': {
-        req: TODO;
-        res: TODO;
-    };
-    'games/reversi/games/show': {
-        req: TODO;
-        res: TODO;
-    };
-    'games/reversi/games/surrender': {
-        req: TODO;
-        res: TODO;
-    };
-    'games/reversi/invitations': {
-        req: TODO;
-        res: TODO;
-    };
-    'games/reversi/match': {
-        req: TODO;
-        res: TODO;
-    };
-    'games/reversi/match/cancel': {
-        req: TODO;
-        res: TODO;
-    };
-    'get-online-users-count': {
-        req: NoParams;
-        res: {
-            count: number;
-        };
-    };
-    'hashtags/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'hashtags/search': {
-        req: TODO;
-        res: TODO;
-    };
-    'hashtags/show': {
-        req: TODO;
-        res: TODO;
-    };
-    'hashtags/trend': {
-        req: TODO;
-        res: TODO;
-    };
-    'hashtags/users': {
-        req: TODO;
-        res: TODO;
-    };
-    'i': {
-        req: NoParams;
-        res: User;
-    };
-    'i/apps': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/authorized-apps': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/change-password': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/delete-account': {
-        req: {
-            password: string;
-        };
-        res: null;
-    };
-    'i/export-blocking': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/export-following': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/export-mute': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/export-notes': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/export-user-lists': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/favorites': {
-        req: {
-            limit?: number;
-            sinceId?: NoteFavorite['id'];
-            untilId?: NoteFavorite['id'];
-        };
-        res: NoteFavorite[];
-    };
-    'i/gallery/likes': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/gallery/posts': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/import-following': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/import-user-lists': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/move': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/notifications': {
-        req: {
-            limit?: number;
-            sinceId?: Notification_2['id'];
-            untilId?: Notification_2['id'];
-            following?: boolean;
-            markAsRead?: boolean;
-            includeTypes?: Notification_2['type'][];
-            excludeTypes?: Notification_2['type'][];
-        };
-        res: Notification_2[];
-    };
-    'i/page-likes': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/pages': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/pin': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: MeDetailed;
-    };
-    'i/read-all-messaging-messages': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/read-all-unread-notes': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/read-announcement': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/regenerate-token': {
-        req: {
-            password: string;
-        };
-        res: null;
-    };
-    'i/registry/get-all': {
-        req: {
-            scope?: string[];
-        };
-        res: Record<string, any>;
-    };
-    'i/registry/get-detail': {
-        req: {
-            key: string;
-            scope?: string[];
-        };
-        res: {
-            updatedAt: DateString;
-            value: any;
-        };
-    };
-    'i/registry/get': {
-        req: {
-            key: string;
-            scope?: string[];
-        };
-        res: any;
-    };
-    'i/registry/keys-with-type': {
-        req: {
-            scope?: string[];
-        };
-        res: Record<string, 'null' | 'array' | 'number' | 'string' | 'boolean' | 'object'>;
-    };
-    'i/registry/keys': {
-        req: {
-            scope?: string[];
-        };
-        res: string[];
-    };
-    'i/registry/remove': {
-        req: {
-            key: string;
-            scope?: string[];
-        };
-        res: null;
-    };
-    'i/registry/set': {
-        req: {
-            key: string;
-            value: any;
-            scope?: string[];
-        };
-        res: null;
-    };
-    'i/revoke-token': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/signin-history': {
-        req: {
-            limit?: number;
-            sinceId?: Signin['id'];
-            untilId?: Signin['id'];
-        };
-        res: Signin[];
-    };
-    'i/unpin': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: MeDetailed;
-    };
-    'i/update-email': {
-        req: {
-            password: string;
-            email?: string | null;
-        };
-        res: MeDetailed;
-    };
-    'i/update': {
-        req: {
-            name?: string | null;
-            description?: string | null;
-            lang?: string | null;
-            location?: string | null;
-            birthday?: string | null;
-            avatarId?: DriveFile['id'] | null;
-            bannerId?: DriveFile['id'] | null;
-            fields?: {
-                name: string;
-                value: string;
-            }[];
-            isLocked?: boolean;
-            isExplorable?: boolean;
-            hideOnlineStatus?: boolean;
-            carefulBot?: boolean;
-            autoAcceptFollowed?: boolean;
-            noCrawle?: boolean;
-            isBot?: boolean;
-            isCat?: boolean;
-            injectFeaturedNote?: boolean;
-            receiveAnnouncementEmail?: boolean;
-            alwaysMarkNsfw?: boolean;
-            mutedWords?: string[][];
-            notificationRecieveConfig?: any;
-            emailNotificationTypes?: string[];
-            alsoKnownAs?: string[];
-        };
-        res: MeDetailed;
-    };
-    'i/user-group-invites': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/done': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/key-done': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/password-less': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/register-key': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/register': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/remove-key': {
-        req: TODO;
-        res: TODO;
-    };
-    'i/2fa/unregister': {
-        req: TODO;
-        res: TODO;
-    };
-    'invite/create': {
-        req: NoParams;
-        res: Invite;
-    };
-    'invite/delete': {
-        req: {
-            inviteId: Invite['id'];
-        };
-        res: null;
-    };
-    'invite/list': {
-        req: {
-            limit?: number;
-            sinceId?: Invite['id'];
-            untilId?: Invite['id'];
-        };
-        res: Invite[];
-    };
-    'invite/limit': {
-        req: NoParams;
-        res: InviteLimit;
-    };
-    'messaging/history': {
-        req: {
-            limit?: number;
-            group?: boolean;
-        };
-        res: MessagingMessage[];
-    };
-    'messaging/messages': {
-        req: {
-            userId?: User['id'];
-            groupId?: UserGroup['id'];
-            limit?: number;
-            sinceId?: MessagingMessage['id'];
-            untilId?: MessagingMessage['id'];
-            markAsRead?: boolean;
-        };
-        res: MessagingMessage[];
-    };
-    'messaging/messages/create': {
-        req: {
-            userId?: User['id'];
-            groupId?: UserGroup['id'];
-            text?: string;
-            fileId?: DriveFile['id'];
-        };
-        res: MessagingMessage;
-    };
-    'messaging/messages/delete': {
-        req: {
-            messageId: MessagingMessage['id'];
-        };
-        res: null;
-    };
-    'messaging/messages/read': {
-        req: {
-            messageId: MessagingMessage['id'];
-        };
-        res: null;
-    };
-    'meta': {
-        req: {
-            detail?: boolean;
-        };
-        res: {
-            $switch: {
-                $cases: [
-                [
-                    {
-                    detail: true;
-                },
-                DetailedInstanceMetadata
-                ],
-                [
-                    {
-                    detail: false;
-                },
-                LiteInstanceMetadata
-                ],
-                [
-                    {
-                    detail: boolean;
-                },
-                LiteInstanceMetadata | DetailedInstanceMetadata
-                ]
-                ];
-                $default: LiteInstanceMetadata;
-            };
-        };
-    };
-    'miauth/gen-token': {
-        req: TODO;
-        res: TODO;
-    };
-    'mute/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'mute/delete': {
-        req: {
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'mute/list': {
-        req: TODO;
-        res: TODO;
-    };
-    'my/apps': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-        };
-        res: Note[];
-    };
-    'notes/children': {
-        req: {
-            noteId: Note['id'];
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-        };
-        res: Note[];
-    };
-    'notes/clips': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/conversation': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/create': {
-        req: {
-            visibility?: 'public' | 'home' | 'followers' | 'specified';
-            visibleUserIds?: User['id'][];
-            text?: null | string;
-            cw?: null | string;
-            viaMobile?: boolean;
-            localOnly?: boolean;
-            fileIds?: DriveFile['id'][];
-            replyId?: null | Note['id'];
-            renoteId?: null | Note['id'];
-            channelId?: null | Channel['id'];
-            poll?: null | {
-                choices: string[];
-                multiple?: boolean;
-                expiresAt?: null | number;
-                expiredAfter?: null | number;
-            };
-        };
-        res: {
-            createdNote: Note;
-        };
-    };
-    'notes/delete': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: null;
-    };
-    'notes/favorites/create': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: null;
-    };
-    'notes/favorites/delete': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: null;
-    };
-    'notes/featured': {
-        req: TODO;
-        res: Note[];
-    };
-    'notes/global-timeline': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            sinceDate?: number;
-            untilDate?: number;
-        };
-        res: Note[];
-    };
-    'notes/hybrid-timeline': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            sinceDate?: number;
-            untilDate?: number;
-        };
-        res: Note[];
-    };
-    'notes/local-timeline': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            sinceDate?: number;
-            untilDate?: number;
-        };
-        res: Note[];
-    };
-    'notes/mentions': {
-        req: {
-            following?: boolean;
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-        };
-        res: Note[];
-    };
-    'notes/polls/recommendation': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/polls/vote': {
-        req: {
-            noteId: Note['id'];
-            choice: number;
-        };
-        res: null;
-    };
-    'notes/reactions': {
-        req: {
-            noteId: Note['id'];
-            type?: string | null;
-            limit?: number;
-        };
-        res: NoteReaction[];
-    };
-    'notes/reactions/create': {
-        req: {
-            noteId: Note['id'];
-            reaction: string;
-        };
-        res: null;
-    };
-    'notes/reactions/delete': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: null;
-    };
-    'notes/renotes': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            noteId: Note['id'];
-        };
-        res: Note[];
-    };
-    'notes/replies': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            noteId: Note['id'];
-        };
-        res: Note[];
-    };
-    'notes/search-by-tag': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/search': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/show': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: Note;
-    };
-    'notes/state': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/timeline': {
-        req: {
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            sinceDate?: number;
-            untilDate?: number;
-        };
-        res: Note[];
-    };
-    'notes/unrenote': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: null;
-    };
-    'notes/user-list-timeline': {
-        req: {
-            listId: UserList['id'];
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            sinceDate?: number;
-            untilDate?: number;
-        };
-        res: Note[];
-    };
-    'notes/watching/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'notes/watching/delete': {
-        req: {
-            noteId: Note['id'];
-        };
-        res: null;
-    };
-    'notifications/create': {
-        req: {
-            body: string;
-            header?: string | null;
-            icon?: string | null;
-        };
-        res: null;
-    };
-    'notifications/test-notification': {
-        req: NoParams;
-        res: null;
-    };
-    'notifications/mark-all-as-read': {
-        req: NoParams;
-        res: null;
-    };
-    'page-push': {
-        req: {
-            pageId: Page['id'];
-            event: string;
-            var?: any;
-        };
-        res: null;
-    };
-    'pages/create': {
-        req: TODO;
-        res: Page;
-    };
-    'pages/delete': {
-        req: {
-            pageId: Page['id'];
-        };
-        res: null;
-    };
-    'pages/featured': {
-        req: NoParams;
-        res: Page[];
-    };
-    'pages/like': {
-        req: {
-            pageId: Page['id'];
-        };
-        res: null;
-    };
-    'pages/show': {
-        req: {
-            pageId?: Page['id'];
-            name?: string;
-            username?: string;
-        };
-        res: Page;
-    };
-    'pages/unlike': {
-        req: {
-            pageId: Page['id'];
-        };
-        res: null;
-    };
-    'pages/update': {
-        req: TODO;
-        res: null;
-    };
-    'ping': {
-        req: NoParams;
-        res: {
-            pong: number;
-        };
-    };
-    'pinned-users': {
-        req: TODO;
-        res: TODO;
-    };
-    'promo/read': {
-        req: TODO;
-        res: TODO;
-    };
-    'request-reset-password': {
-        req: {
-            username: string;
-            email: string;
-        };
-        res: null;
-    };
-    'reset-password': {
-        req: {
-            token: string;
-            password: string;
-        };
-        res: null;
-    };
-    'room/show': {
-        req: TODO;
-        res: TODO;
-    };
-    'room/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'signup': {
-        req: {
-            username: string;
-            password: string;
-            host?: string;
-            invitationCode?: string;
-            emailAddress?: string;
-            'hcaptcha-response'?: string;
-            'g-recaptcha-response'?: string;
-            'turnstile-response'?: string;
-        };
-        res: MeSignup | null;
-    };
-    'stats': {
-        req: NoParams;
-        res: Stats;
-    };
-    'server-info': {
-        req: NoParams;
-        res: ServerInfo;
-    };
-    'sw/register': {
-        req: TODO;
-        res: TODO;
-    };
-    'username/available': {
-        req: {
-            username: string;
-        };
-        res: {
-            available: boolean;
-        };
-    };
-    'users': {
-        req: {
-            limit?: number;
-            offset?: number;
-            sort?: UserSorting;
-            origin?: OriginType;
-        };
-        res: User[];
-    };
-    'users/clips': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/followers': {
-        req: {
-            userId?: User['id'];
-            username?: User['username'];
-            host?: User['host'] | null;
-            limit?: number;
-            sinceId?: Following['id'];
-            untilId?: Following['id'];
-        };
-        res: FollowingFollowerPopulated[];
-    };
-    'users/following': {
-        req: {
-            userId?: User['id'];
-            username?: User['username'];
-            host?: User['host'] | null;
-            limit?: number;
-            sinceId?: Following['id'];
-            untilId?: Following['id'];
-        };
-        res: FollowingFolloweePopulated[];
-    };
-    'users/gallery/posts': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/get-frequently-replied-users': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/create': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/delete': {
-        req: {
-            groupId: UserGroup['id'];
-        };
-        res: null;
-    };
-    'users/groups/invitations/accept': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/invitations/reject': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/invite': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/joined': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/owned': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/pull': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/show': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/transfer': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/groups/update': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/lists/create': {
-        req: {
-            name: string;
-        };
-        res: UserList;
-    };
-    'users/lists/delete': {
-        req: {
-            listId: UserList['id'];
-        };
-        res: null;
-    };
-    'users/lists/list': {
-        req: NoParams;
-        res: UserList[];
-    };
-    'users/lists/pull': {
-        req: {
-            listId: UserList['id'];
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'users/lists/push': {
-        req: {
-            listId: UserList['id'];
-            userId: User['id'];
-        };
-        res: null;
-    };
-    'users/lists/show': {
-        req: {
-            listId: UserList['id'];
-        };
-        res: UserList;
-    };
-    'users/lists/update': {
-        req: {
-            listId: UserList['id'];
-            name: string;
-        };
-        res: UserList;
-    };
-    'users/notes': {
-        req: {
-            userId: User['id'];
-            limit?: number;
-            sinceId?: Note['id'];
-            untilId?: Note['id'];
-            sinceDate?: number;
-            untilDate?: number;
-        };
-        res: Note[];
-    };
-    'users/pages': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/flashs': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/recommendation': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/relation': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/report-abuse': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/search-by-username-and-host': {
-        req: TODO;
-        res: TODO;
-    };
-    'users/search': {
-        req: TODO;
-        res: TODO;
-    };
+type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiResponse = operations['emoji']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiSimple = components['schemas']['EmojiSimple'];
+
+// @public (undocumented)
+type EmojisResponse = operations['emojis']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiUpdated = {
+    emojis: EmojiDetailed[];
+};
+
+// @public (undocumented)
+type EmptyRequest = Record<string, unknown> | undefined;
+
+// @public (undocumented)
+type EmptyResponse = Record<string, unknown> | undefined;
+
+// @public (undocumented)
+type EndpointRequest = operations['endpoint']['requestBody']['content']['application/json'];
+
+// Warning: (ae-forgotten-export) The symbol "Overwrite" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "Endpoints_2" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type Endpoints = Overwrite<Endpoints_2, {
     'users/show': {
-        req: ShowUserReq | {
-            userIds: User['id'][];
-        };
+        req: UsersShowRequest;
         res: {
             $switch: {
                 $cases: [
                 [
                     {
-                    userIds: User['id'][];
+                    userIds?: string[];
                 },
                 UserDetailed[]
                 ]
@@ -2239,75 +1010,613 @@ export type Endpoints = {
             };
         };
     };
-    'fetch-rss': {
-        req: {
-            url: string;
-        };
-        res: TODO;
-    };
-    'fetch-external-resources': {
-        req: {
-            url: string;
-            hash: string;
-        };
-        res: {
-            type: string;
-            data: string;
-        };
-    };
-};
+}>;
+
+// @public (undocumented)
+type EndpointsResponse = operations['endpoints']['responses']['200']['content']['application/json'];
 
 declare namespace entities {
     export {
         ID,
         DateString,
-        User,
+        PageEvent,
+        ModerationLog,
+        ServerStats,
+        ServerStatsLog,
+        QueueStats,
+        QueueStatsLog,
+        EmojiAdded,
+        EmojiUpdated,
+        EmojiDeleted,
+        AnnouncementCreated,
+        EmptyRequest,
+        EmptyResponse,
+        AdminMetaResponse,
+        AdminAbuseUserReportsRequest,
+        AdminAbuseUserReportsResponse,
+        AdminAccountsCreateRequest,
+        AdminAccountsCreateResponse,
+        AdminAccountsDeleteRequest,
+        AdminAccountsFindByEmailRequest,
+        AdminAdCreateRequest,
+        AdminAdDeleteRequest,
+        AdminAdListRequest,
+        AdminAdUpdateRequest,
+        AdminAnnouncementsCreateRequest,
+        AdminAnnouncementsCreateResponse,
+        AdminAnnouncementsDeleteRequest,
+        AdminAnnouncementsListRequest,
+        AdminAnnouncementsListResponse,
+        AdminAnnouncementsUpdateRequest,
+        AdminAvatarDecorationsCreateRequest,
+        AdminAvatarDecorationsDeleteRequest,
+        AdminAvatarDecorationsListRequest,
+        AdminAvatarDecorationsListResponse,
+        AdminAvatarDecorationsUpdateRequest,
+        AdminDeleteAllFilesOfAUserRequest,
+        AdminUnsetUserAvatarRequest,
+        AdminUnsetUserBannerRequest,
+        AdminDriveFilesRequest,
+        AdminDriveFilesResponse,
+        AdminDriveShowFileRequest,
+        AdminDriveShowFileResponse,
+        AdminEmojiAddAliasesBulkRequest,
+        AdminEmojiAddRequest,
+        AdminEmojiCopyRequest,
+        AdminEmojiCopyResponse,
+        AdminEmojiDeleteBulkRequest,
+        AdminEmojiDeleteRequest,
+        AdminEmojiImportZipRequest,
+        AdminEmojiListRemoteRequest,
+        AdminEmojiListRemoteResponse,
+        AdminEmojiListRequest,
+        AdminEmojiListResponse,
+        AdminEmojiRemoveAliasesBulkRequest,
+        AdminEmojiSetAliasesBulkRequest,
+        AdminEmojiSetCategoryBulkRequest,
+        AdminEmojiSetLicenseBulkRequest,
+        AdminEmojiUpdateRequest,
+        AdminFederationDeleteAllFilesRequest,
+        AdminFederationRefreshRemoteInstanceMetadataRequest,
+        AdminFederationRemoveAllFollowingRequest,
+        AdminFederationUpdateInstanceRequest,
+        AdminGetTableStatsResponse,
+        AdminGetUserIpsRequest,
+        AdminInviteCreateRequest,
+        AdminInviteCreateResponse,
+        AdminInviteListRequest,
+        AdminInviteListResponse,
+        AdminPromoCreateRequest,
+        AdminQueueDeliverDelayedResponse,
+        AdminQueueInboxDelayedResponse,
+        AdminQueuePromoteRequest,
+        AdminQueueStatsResponse,
+        AdminRelaysAddRequest,
+        AdminRelaysAddResponse,
+        AdminRelaysListResponse,
+        AdminRelaysRemoveRequest,
+        AdminResetPasswordRequest,
+        AdminResetPasswordResponse,
+        AdminResolveAbuseUserReportRequest,
+        AdminSendEmailRequest,
+        AdminServerInfoResponse,
+        AdminShowModerationLogsRequest,
+        AdminShowModerationLogsResponse,
+        AdminShowUserRequest,
+        AdminShowUserResponse,
+        AdminShowUsersRequest,
+        AdminShowUsersResponse,
+        AdminSuspendUserRequest,
+        AdminUnsuspendUserRequest,
+        AdminUpdateMetaRequest,
+        AdminDeleteAccountRequest,
+        AdminDeleteAccountResponse,
+        AdminUpdateUserNoteRequest,
+        AdminRolesCreateRequest,
+        AdminRolesCreateResponse,
+        AdminRolesDeleteRequest,
+        AdminRolesListResponse,
+        AdminRolesShowRequest,
+        AdminRolesShowResponse,
+        AdminRolesUpdateRequest,
+        AdminRolesAssignRequest,
+        AdminRolesUnassignRequest,
+        AdminRolesUpdateDefaultPoliciesRequest,
+        AdminRolesUsersRequest,
+        AnnouncementsRequest,
+        AnnouncementsResponse,
+        AntennasCreateRequest,
+        AntennasCreateResponse,
+        AntennasDeleteRequest,
+        AntennasListResponse,
+        AntennasNotesRequest,
+        AntennasNotesResponse,
+        AntennasShowRequest,
+        AntennasShowResponse,
+        AntennasUpdateRequest,
+        AntennasUpdateResponse,
+        ApGetRequest,
+        ApGetResponse,
+        ApShowRequest,
+        ApShowResponse,
+        AppCreateRequest,
+        AppCreateResponse,
+        AppShowRequest,
+        AppShowResponse,
+        AuthAcceptRequest,
+        AuthSessionGenerateRequest,
+        AuthSessionGenerateResponse,
+        AuthSessionShowRequest,
+        AuthSessionShowResponse,
+        AuthSessionUserkeyRequest,
+        AuthSessionUserkeyResponse,
+        BlockingCreateRequest,
+        BlockingCreateResponse,
+        BlockingDeleteRequest,
+        BlockingDeleteResponse,
+        BlockingListRequest,
+        BlockingListResponse,
+        ChannelsCreateRequest,
+        ChannelsCreateResponse,
+        ChannelsFeaturedResponse,
+        ChannelsFollowRequest,
+        ChannelsFollowedRequest,
+        ChannelsFollowedResponse,
+        ChannelsOwnedRequest,
+        ChannelsOwnedResponse,
+        ChannelsShowRequest,
+        ChannelsShowResponse,
+        ChannelsTimelineRequest,
+        ChannelsTimelineResponse,
+        ChannelsUnfollowRequest,
+        ChannelsUpdateRequest,
+        ChannelsUpdateResponse,
+        ChannelsFavoriteRequest,
+        ChannelsUnfavoriteRequest,
+        ChannelsMyFavoritesResponse,
+        ChannelsSearchRequest,
+        ChannelsSearchResponse,
+        ChartsActiveUsersRequest,
+        ChartsActiveUsersResponse,
+        ChartsApRequestRequest,
+        ChartsApRequestResponse,
+        ChartsDriveRequest,
+        ChartsDriveResponse,
+        ChartsFederationRequest,
+        ChartsFederationResponse,
+        ChartsInstanceRequest,
+        ChartsInstanceResponse,
+        ChartsNotesRequest,
+        ChartsNotesResponse,
+        ChartsUserDriveRequest,
+        ChartsUserDriveResponse,
+        ChartsUserFollowingRequest,
+        ChartsUserFollowingResponse,
+        ChartsUserNotesRequest,
+        ChartsUserNotesResponse,
+        ChartsUserPvRequest,
+        ChartsUserPvResponse,
+        ChartsUserReactionsRequest,
+        ChartsUserReactionsResponse,
+        ChartsUsersRequest,
+        ChartsUsersResponse,
+        ClipsAddNoteRequest,
+        ClipsRemoveNoteRequest,
+        ClipsCreateRequest,
+        ClipsCreateResponse,
+        ClipsDeleteRequest,
+        ClipsListResponse,
+        ClipsNotesRequest,
+        ClipsNotesResponse,
+        ClipsShowRequest,
+        ClipsShowResponse,
+        ClipsUpdateRequest,
+        ClipsUpdateResponse,
+        ClipsFavoriteRequest,
+        ClipsUnfavoriteRequest,
+        ClipsMyFavoritesResponse,
+        DriveResponse,
+        DriveFilesRequest,
+        DriveFilesResponse,
+        DriveFilesAttachedNotesRequest,
+        DriveFilesAttachedNotesResponse,
+        DriveFilesCheckExistenceRequest,
+        DriveFilesCheckExistenceResponse,
+        DriveFilesCreateRequest,
+        DriveFilesCreateResponse,
+        DriveFilesDeleteRequest,
+        DriveFilesFindByHashRequest,
+        DriveFilesFindByHashResponse,
+        DriveFilesFindRequest,
+        DriveFilesFindResponse,
+        DriveFilesShowRequest,
+        DriveFilesShowResponse,
+        DriveFilesUpdateRequest,
+        DriveFilesUpdateResponse,
+        DriveFilesUploadFromUrlRequest,
+        DriveFoldersRequest,
+        DriveFoldersResponse,
+        DriveFoldersCreateRequest,
+        DriveFoldersCreateResponse,
+        DriveFoldersDeleteRequest,
+        DriveFoldersFindRequest,
+        DriveFoldersFindResponse,
+        DriveFoldersShowRequest,
+        DriveFoldersShowResponse,
+        DriveFoldersUpdateRequest,
+        DriveFoldersUpdateResponse,
+        DriveStreamRequest,
+        DriveStreamResponse,
+        EmailAddressAvailableRequest,
+        EmailAddressAvailableResponse,
+        EndpointRequest,
+        EndpointsResponse,
+        FederationFollowersRequest,
+        FederationFollowersResponse,
+        FederationFollowingRequest,
+        FederationFollowingResponse,
+        FederationInstancesRequest,
+        FederationInstancesResponse,
+        FederationShowInstanceRequest,
+        FederationShowInstanceResponse,
+        FederationUpdateRemoteUserRequest,
+        FederationUsersRequest,
+        FederationUsersResponse,
+        FederationStatsRequest,
+        FollowingCreateRequest,
+        FollowingCreateResponse,
+        FollowingDeleteRequest,
+        FollowingDeleteResponse,
+        FollowingUpdateRequest,
+        FollowingUpdateResponse,
+        FollowingUpdateAllRequest,
+        FollowingInvalidateRequest,
+        FollowingInvalidateResponse,
+        FollowingRequestsAcceptRequest,
+        FollowingRequestsCancelRequest,
+        FollowingRequestsCancelResponse,
+        FollowingRequestsListRequest,
+        FollowingRequestsListResponse,
+        FollowingRequestsRejectRequest,
+        GalleryFeaturedRequest,
+        GalleryFeaturedResponse,
+        GalleryPopularResponse,
+        GalleryPostsRequest,
+        GalleryPostsResponse,
+        GalleryPostsCreateRequest,
+        GalleryPostsCreateResponse,
+        GalleryPostsDeleteRequest,
+        GalleryPostsLikeRequest,
+        GalleryPostsShowRequest,
+        GalleryPostsShowResponse,
+        GalleryPostsUnlikeRequest,
+        GalleryPostsUpdateRequest,
+        GalleryPostsUpdateResponse,
+        GetAvatarDecorationsResponse,
+        HashtagsListRequest,
+        HashtagsListResponse,
+        HashtagsSearchRequest,
+        HashtagsSearchResponse,
+        HashtagsShowRequest,
+        HashtagsShowResponse,
+        HashtagsTrendResponse,
+        HashtagsUsersRequest,
+        HashtagsUsersResponse,
+        IResponse,
+        I2faDoneRequest,
+        I2faKeyDoneRequest,
+        I2faPasswordLessRequest,
+        I2faRegisterKeyRequest,
+        I2faRegisterRequest,
+        I2faUpdateKeyRequest,
+        I2faRemoveKeyRequest,
+        I2faUnregisterRequest,
+        IAppsRequest,
+        IAuthorizedAppsRequest,
+        IClaimAchievementRequest,
+        IChangePasswordRequest,
+        IDeleteAccountRequest,
+        IExportFollowingRequest,
+        IFavoritesRequest,
+        IFavoritesResponse,
+        IGalleryLikesRequest,
+        IGalleryLikesResponse,
+        IGalleryPostsRequest,
+        IGalleryPostsResponse,
+        IImportBlockingRequest,
+        IImportFollowingRequest,
+        IImportMutingRequest,
+        IImportUserListsRequest,
+        IImportAntennasRequest,
+        INotificationsRequest,
+        INotificationsResponse,
+        INotificationsGroupedRequest,
+        INotificationsGroupedResponse,
+        IPageLikesRequest,
+        IPageLikesResponse,
+        IPagesRequest,
+        IPagesResponse,
+        IPinRequest,
+        IPinResponse,
+        IReadAnnouncementRequest,
+        IRegenerateTokenRequest,
+        IRegistryGetAllRequest,
+        IRegistryGetDetailRequest,
+        IRegistryGetRequest,
+        IRegistryKeysWithTypeRequest,
+        IRegistryKeysRequest,
+        IRegistryRemoveRequest,
+        IRegistrySetRequest,
+        IRevokeTokenRequest,
+        ISigninHistoryRequest,
+        ISigninHistoryResponse,
+        IUnpinRequest,
+        IUnpinResponse,
+        IUpdateEmailRequest,
+        IUpdateRequest,
+        IUpdateResponse,
+        IMoveRequest,
+        IWebhooksCreateRequest,
+        IWebhooksShowRequest,
+        IWebhooksUpdateRequest,
+        IWebhooksDeleteRequest,
+        InviteCreateResponse,
+        InviteDeleteRequest,
+        InviteListRequest,
+        InviteListResponse,
+        InviteLimitResponse,
+        MetaRequest,
+        MetaResponse,
+        EmojisResponse,
+        EmojiRequest,
+        EmojiResponse,
+        MiauthGenTokenRequest,
+        MiauthGenTokenResponse,
+        MuteCreateRequest,
+        MuteDeleteRequest,
+        MuteListRequest,
+        MuteListResponse,
+        RenoteMuteCreateRequest,
+        RenoteMuteDeleteRequest,
+        RenoteMuteListRequest,
+        RenoteMuteListResponse,
+        MyAppsRequest,
+        MyAppsResponse,
+        NotesRequest,
+        NotesResponse,
+        NotesChildrenRequest,
+        NotesChildrenResponse,
+        NotesClipsRequest,
+        NotesClipsResponse,
+        NotesConversationRequest,
+        NotesConversationResponse,
+        NotesCreateRequest,
+        NotesCreateResponse,
+        NotesDeleteRequest,
+        NotesFavoritesCreateRequest,
+        NotesFavoritesDeleteRequest,
+        NotesFeaturedRequest,
+        NotesFeaturedResponse,
+        NotesGlobalTimelineRequest,
+        NotesGlobalTimelineResponse,
+        NotesHybridTimelineRequest,
+        NotesHybridTimelineResponse,
+        NotesLocalTimelineRequest,
+        NotesLocalTimelineResponse,
+        NotesMentionsRequest,
+        NotesMentionsResponse,
+        NotesPollsRecommendationRequest,
+        NotesPollsRecommendationResponse,
+        NotesPollsVoteRequest,
+        NotesReactionsRequest,
+        NotesReactionsResponse,
+        NotesReactionsCreateRequest,
+        NotesReactionsDeleteRequest,
+        NotesRenotesRequest,
+        NotesRenotesResponse,
+        NotesRepliesRequest,
+        NotesRepliesResponse,
+        NotesSearchByTagRequest,
+        NotesSearchByTagResponse,
+        NotesSearchRequest,
+        NotesSearchResponse,
+        NotesShowRequest,
+        NotesShowResponse,
+        NotesStateRequest,
+        NotesStateResponse,
+        NotesThreadMutingCreateRequest,
+        NotesThreadMutingDeleteRequest,
+        NotesTimelineRequest,
+        NotesTimelineResponse,
+        NotesTranslateRequest,
+        NotesTranslateResponse,
+        NotesUnrenoteRequest,
+        NotesUserListTimelineRequest,
+        NotesUserListTimelineResponse,
+        NotificationsCreateRequest,
+        PagePushRequest,
+        PagesCreateRequest,
+        PagesCreateResponse,
+        PagesDeleteRequest,
+        PagesFeaturedResponse,
+        PagesLikeRequest,
+        PagesShowRequest,
+        PagesShowResponse,
+        PagesUnlikeRequest,
+        PagesUpdateRequest,
+        FlashCreateRequest,
+        FlashDeleteRequest,
+        FlashFeaturedResponse,
+        FlashLikeRequest,
+        FlashShowRequest,
+        FlashShowResponse,
+        FlashUnlikeRequest,
+        FlashUpdateRequest,
+        FlashMyRequest,
+        FlashMyResponse,
+        FlashMyLikesRequest,
+        FlashMyLikesResponse,
+        PingResponse,
+        PinnedUsersResponse,
+        PromoReadRequest,
+        RolesListResponse,
+        RolesShowRequest,
+        RolesShowResponse,
+        RolesUsersRequest,
+        RolesNotesRequest,
+        RolesNotesResponse,
+        RequestResetPasswordRequest,
+        ResetPasswordRequest,
+        StatsResponse,
+        SwShowRegistrationRequest,
+        SwShowRegistrationResponse,
+        SwUpdateRegistrationRequest,
+        SwUpdateRegistrationResponse,
+        SwRegisterRequest,
+        SwRegisterResponse,
+        SwUnregisterRequest,
+        TestRequest,
+        UsernameAvailableRequest,
+        UsernameAvailableResponse,
+        UsersRequest,
+        UsersResponse,
+        UsersClipsRequest,
+        UsersClipsResponse,
+        UsersFollowersRequest,
+        UsersFollowersResponse,
+        UsersFollowingRequest,
+        UsersFollowingResponse,
+        UsersGalleryPostsRequest,
+        UsersGalleryPostsResponse,
+        UsersGetFrequentlyRepliedUsersRequest,
+        UsersGetFrequentlyRepliedUsersResponse,
+        UsersFeaturedNotesRequest,
+        UsersFeaturedNotesResponse,
+        UsersListsCreateRequest,
+        UsersListsCreateResponse,
+        UsersListsDeleteRequest,
+        UsersListsListRequest,
+        UsersListsListResponse,
+        UsersListsPullRequest,
+        UsersListsPushRequest,
+        UsersListsShowRequest,
+        UsersListsShowResponse,
+        UsersListsFavoriteRequest,
+        UsersListsUnfavoriteRequest,
+        UsersListsUpdateRequest,
+        UsersListsUpdateResponse,
+        UsersListsCreateFromPublicRequest,
+        UsersListsCreateFromPublicResponse,
+        UsersListsUpdateMembershipRequest,
+        UsersListsGetMembershipsRequest,
+        UsersNotesRequest,
+        UsersNotesResponse,
+        UsersPagesRequest,
+        UsersPagesResponse,
+        UsersFlashsRequest,
+        UsersFlashsResponse,
+        UsersReactionsRequest,
+        UsersReactionsResponse,
+        UsersRecommendationRequest,
+        UsersRecommendationResponse,
+        UsersRelationRequest,
+        UsersRelationResponse,
+        UsersReportAbuseRequest,
+        UsersSearchByUsernameAndHostRequest,
+        UsersSearchByUsernameAndHostResponse,
+        UsersSearchRequest,
+        UsersSearchResponse,
+        UsersShowRequest,
+        UsersShowResponse,
+        UsersAchievementsRequest,
+        UsersUpdateMemoRequest,
+        FetchRssRequest,
+        FetchExternalResourcesRequest,
+        RetentionResponse,
+        Error_2 as Error,
         UserLite,
-        UserDetailed,
-        UserGroup,
-        UserList,
+        UserDetailedNotMeOnly,
+        MeDetailedOnly,
+        UserDetailedNotMe,
         MeDetailed,
-        MeDetailedWithSecret,
-        MeSignup,
-        DriveFile,
-        DriveFolder,
-        GalleryPost,
+        UserDetailed,
+        User,
+        UserList,
+        Announcement,
+        App,
         Note,
         NoteReaction,
-        Notification_2 as Notification,
-        MessagingMessage,
-        CustomEmoji,
-        LiteInstanceMetadata,
-        DetailedInstanceMetadata,
-        InstanceMetadata,
-        AdminInstanceMetadata,
-        ServerInfo,
-        Stats,
-        Page,
-        PageEvent,
-        Announcement,
-        Antenna,
-        App,
-        AuthSession,
-        Ad,
-        Clip,
         NoteFavorite,
-        FollowRequest,
-        Channel,
+        Notification_2 as Notification,
+        DriveFile,
+        DriveFolder,
         Following,
-        FollowingFolloweePopulated,
-        FollowingFollowerPopulated,
+        Muting,
+        RenoteMuting,
         Blocking,
-        Instance,
+        Hashtag,
+        InviteCode,
+        Page,
+        Channel,
+        QueueCount,
+        Antenna,
+        Clip,
+        FederationInstance,
+        GalleryPost,
+        EmojiSimple,
+        EmojiDetailed,
+        Flash,
         Signin,
-        Invite,
-        InviteLimit,
-        UserSorting,
-        OriginType,
-        ModerationLog
+        RoleLite,
+        Role
     }
 }
 export { entities }
+
+// @public (undocumented)
+type Error_2 = components['schemas']['Error'];
+
+// @public (undocumented)
+type FederationFollowersRequest = operations['federation/followers']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationFollowersResponse = operations['federation/followers']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FederationFollowingRequest = operations['federation/following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationFollowingResponse = operations['federation/following']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FederationInstance = components['schemas']['FederationInstance'];
+
+// @public (undocumented)
+type FederationInstancesRequest = operations['federation/instances']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationInstancesResponse = operations['federation/instances']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FederationShowInstanceRequest = operations['federation/show-instance']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationShowInstanceResponse = operations['federation/show-instance']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FederationStatsRequest = operations['federation/stats']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationUpdateRemoteUserRequest = operations['federation/update-remote-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationUsersRequest = operations['federation/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationUsersResponse = operations['federation/users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FetchExternalResourcesRequest = operations['fetch-external-resources']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FetchLike = (input: string, init?: {
@@ -2324,243 +1633,394 @@ type FetchLike = (input: string, init?: {
 }>;
 
 // @public (undocumented)
-export const ffVisibility: readonly ["public", "followers", "private"];
+type FetchRssRequest = operations['fetch-rss']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type Following = {
-    id: ID;
-    createdAt: DateString;
-    followerId: User['id'];
-    followeeId: User['id'];
-};
+type Flash = components['schemas']['Flash'];
 
 // @public (undocumented)
-type FollowingFolloweePopulated = Following & {
-    followee: UserDetailed;
-};
+type FlashCreateRequest = operations['flash/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type FollowingFollowerPopulated = Following & {
-    follower: UserDetailed;
-};
+type FlashDeleteRequest = operations['flash/delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type FollowRequest = {
-    id: ID;
-    follower: User;
-    followee: User;
-};
+type FlashFeaturedResponse = operations['flash/featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type GalleryPost = {
-    id: ID;
-    createdAt: DateString;
-    updatedAt: DateString;
-    userId: User['id'];
-    user: User;
-    title: string;
-    description: string | null;
-    fileIds: DriveFile['id'][];
-    files: DriveFile[];
-    isSensitive: boolean;
-    likedCount: number;
-    isLiked?: boolean;
-};
+type FlashLikeRequest = operations['flash/like']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashMyLikesRequest = operations['flash/my-likes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashMyLikesResponse = operations['flash/my-likes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FlashMyRequest = operations['flash/my']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashMyResponse = operations['flash/my']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FlashShowRequest = operations['flash/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashShowResponse = operations['flash/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FlashUnlikeRequest = operations['flash/unlike']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashUpdateRequest = operations['flash/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+export const followersVisibilities: readonly ["public", "followers", "private"];
+
+// @public (undocumented)
+type Following = components['schemas']['Following'];
+
+// @public (undocumented)
+type FollowingCreateRequest = operations['following/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingCreateResponse = operations['following/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingDeleteRequest = operations['following/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingDeleteResponse = operations['following/delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingInvalidateRequest = operations['following/invalidate']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingInvalidateResponse = operations['following/invalidate']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsAcceptRequest = operations['following/requests/accept']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsCancelRequest = operations['following/requests/cancel']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsCancelResponse = operations['following/requests/cancel']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsListRequest = operations['following/requests/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsListResponse = operations['following/requests/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsRejectRequest = operations['following/requests/reject']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingUpdateAllRequest = operations['following/update-all']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingUpdateRequest = operations['following/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingUpdateResponse = operations['following/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+export const followingVisibilities: readonly ["public", "followers", "private"];
+
+// @public (undocumented)
+type GalleryFeaturedRequest = operations['gallery/featured']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryFeaturedResponse = operations['gallery/featured']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPopularResponse = operations['gallery/popular']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPost = components['schemas']['GalleryPost'];
+
+// @public (undocumented)
+type GalleryPostsCreateRequest = operations['gallery/posts/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsCreateResponse = operations['gallery/posts/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsDeleteRequest = operations['gallery/posts/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsLikeRequest = operations['gallery/posts/like']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsRequest = operations['gallery/posts']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsResponse = operations['gallery/posts']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsShowRequest = operations['gallery/posts/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsShowResponse = operations['gallery/posts/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsUnlikeRequest = operations['gallery/posts/unlike']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsUpdateRequest = operations['gallery/posts/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsUpdateResponse = operations['gallery/posts/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GetAvatarDecorationsResponse = operations['get-avatar-decorations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Hashtag = components['schemas']['Hashtag'];
+
+// @public (undocumented)
+type HashtagsListRequest = operations['hashtags/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsListResponse = operations['hashtags/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsSearchRequest = operations['hashtags/search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsSearchResponse = operations['hashtags/search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsShowRequest = operations['hashtags/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsShowResponse = operations['hashtags/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsTrendResponse = operations['hashtags/trend']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsUsersRequest = operations['hashtags/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsUsersResponse = operations['hashtags/users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type I2faDoneRequest = operations['i/2fa/done']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faKeyDoneRequest = operations['i/2fa/key-done']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faPasswordLessRequest = operations['i/2fa/password-less']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRegisterKeyRequest = operations['i/2fa/register-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRegisterRequest = operations['i/2fa/register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRemoveKeyRequest = operations['i/2fa/remove-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faUnregisterRequest = operations['i/2fa/unregister']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faUpdateKeyRequest = operations['i/2fa/update-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IAppsRequest = operations['i/apps']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IAuthorizedAppsRequest = operations['i/authorized-apps']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IChangePasswordRequest = operations['i/change-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IClaimAchievementRequest = operations['i/claim-achievement']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ID = string;
 
 // @public (undocumented)
-type Instance = {
-    id: ID;
-    firstRetrievedAt: DateString;
-    host: string;
-    usersCount: number;
-    notesCount: number;
-    followingCount: number;
-    followersCount: number;
-    driveUsage: number;
-    driveFiles: number;
-    latestRequestSentAt: DateString | null;
-    latestStatus: number | null;
-    latestRequestReceivedAt: DateString | null;
-    lastCommunicatedAt: DateString;
-    isNotResponding: boolean;
-    isSuspended: boolean;
-    isSilenced: boolean;
-    isBlocked: boolean;
-    softwareName: string | null;
-    softwareVersion: string | null;
-    openRegistrations: boolean | null;
-    name: string | null;
-    description: string | null;
-    maintainerName: string | null;
-    maintainerEmail: string | null;
-    iconUrl: string | null;
-    faviconUrl: string | null;
-    themeColor: string | null;
-    infoUpdatedAt: DateString | null;
-};
+type IDeleteAccountRequest = operations['i/delete-account']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
+type IExportFollowingRequest = operations['i/export-following']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type Invite = {
-    id: ID;
-    code: string;
-    expiresAt: DateString | null;
-    createdAt: DateString;
-    createdBy: UserLite | null;
-    usedBy: UserLite | null;
-    usedAt: DateString | null;
-    used: boolean;
-};
+type IFavoritesRequest = operations['i/favorites']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type InviteLimit = {
-    remaining: number;
-};
+type IFavoritesResponse = operations['i/favorites']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IGalleryLikesRequest = operations['i/gallery/likes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IGalleryLikesResponse = operations['i/gallery/likes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IGalleryPostsRequest = operations['i/gallery/posts']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IGalleryPostsResponse = operations['i/gallery/posts']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IImportAntennasRequest = operations['i/import-antennas']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportBlockingRequest = operations['i/import-blocking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportFollowingRequest = operations['i/import-following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportMutingRequest = operations['i/import-muting']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportUserListsRequest = operations['i/import-user-lists']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IMoveRequest = operations['i/move']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type INotificationsGroupedRequest = operations['i/notifications-grouped']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type INotificationsGroupedResponse = operations['i/notifications-grouped']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type INotificationsRequest = operations['i/notifications']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type INotificationsResponse = operations['i/notifications']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type InviteCode = components['schemas']['InviteCode'];
+
+// @public (undocumented)
+type InviteCreateResponse = operations['invite/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type InviteDeleteRequest = operations['invite/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type InviteLimitResponse = operations['invite/limit']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type InviteListRequest = operations['invite/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type InviteListResponse = operations['invite/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IPageLikesRequest = operations['i/page-likes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IPageLikesResponse = operations['i/page-likes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IPagesRequest = operations['i/pages']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IPagesResponse = operations['i/pages']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IPinRequest = operations['i/pin']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IPinResponse = operations['i/pin']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IReadAnnouncementRequest = operations['i/read-announcement']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegenerateTokenRequest = operations['i/regenerate-token']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryGetAllRequest = operations['i/registry/get-all']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryGetDetailRequest = operations['i/registry/get-detail']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryGetRequest = operations['i/registry/get']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryKeysRequest = operations['i/registry/keys']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryKeysWithTypeRequest = operations['i/registry/keys-with-type']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryRemoveRequest = operations['i/registry/remove']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistrySetRequest = operations['i/registry/set']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IResponse = operations['i']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IRevokeTokenRequest = operations['i/revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 function isAPIError(reason: any): reason is APIError;
 
 // @public (undocumented)
-type LiteInstanceMetadata = {
-    maintainerName: string | null;
-    maintainerEmail: string | null;
-    version: string;
-    name: string | null;
-    shortName: string | null;
-    uri: string;
-    description: string | null;
-    langs: string[];
-    tosUrl: string | null;
-    repositoryUrl: string;
-    feedbackUrl: string;
-    impressumUrl: string | null;
-    privacyPolicyUrl: string | null;
-    disableRegistration: boolean;
-    disableLocalTimeline: boolean;
-    disableGlobalTimeline: boolean;
-    driveCapacityPerLocalUserMb: number;
-    driveCapacityPerRemoteUserMb: number;
-    emailRequiredForSignup: boolean;
-    enableHcaptcha: boolean;
-    hcaptchaSiteKey: string | null;
-    enableRecaptcha: boolean;
-    recaptchaSiteKey: string | null;
-    enableTurnstile: boolean;
-    turnstileSiteKey: string | null;
-    swPublickey: string | null;
-    themeColor: string | null;
-    mascotImageUrl: string | null;
-    bannerUrl: string | null;
-    serverErrorImageUrl: string | null;
-    infoImageUrl: string | null;
-    notFoundImageUrl: string | null;
-    iconUrl: string | null;
-    backgroundImageUrl: string | null;
-    logoImageUrl: string | null;
-    maxNoteTextLength: number;
-    enableEmail: boolean;
-    enableTwitterIntegration: boolean;
-    enableGithubIntegration: boolean;
-    enableDiscordIntegration: boolean;
-    enableServiceWorker: boolean;
-    emojis: CustomEmoji[];
-    defaultDarkTheme: string | null;
-    defaultLightTheme: string | null;
-    ads: {
-        id: ID;
-        ratio: number;
-        place: string;
-        url: string;
-        imageUrl: string;
-    }[];
-    notesPerOneAd: number;
-    translatorAvailable: boolean;
-    serverRules: string[];
-};
+type ISigninHistoryRequest = operations['i/signin-history']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type MeDetailed = UserDetailed & {
-    avatarId: DriveFile['id'];
-    bannerId: DriveFile['id'];
-    autoAcceptFollowed: boolean;
-    alwaysMarkNsfw: boolean;
-    carefulBot: boolean;
-    emailNotificationTypes: string[];
-    hasPendingReceivedFollowRequest: boolean;
-    hasUnreadAnnouncement: boolean;
-    hasUnreadAntenna: boolean;
-    hasUnreadMentions: boolean;
-    hasUnreadMessagingMessage: boolean;
-    hasUnreadNotification: boolean;
-    hasUnreadSpecifiedNotes: boolean;
-    unreadNotificationsCount: number;
-    hideOnlineStatus: boolean;
-    injectFeaturedNote: boolean;
-    integrations: Record<string, any>;
-    isDeleted: boolean;
-    isExplorable: boolean;
-    mutedWords: string[][];
-    notificationRecieveConfig: {
-        [notificationType in typeof notificationTypes_2[number]]?: {
-            type: 'all';
-        } | {
-            type: 'never';
-        } | {
-            type: 'following';
-        } | {
-            type: 'follower';
-        } | {
-            type: 'mutualFollow';
-        } | {
-            type: 'list';
-            userListId: string;
-        };
-    };
-    noCrawle: boolean;
-    receiveAnnouncementEmail: boolean;
-    usePasswordLessLogin: boolean;
-    unreadAnnouncements: Announcement[];
-    twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
-    [other: string]: any;
-};
+type ISigninHistoryResponse = operations['i/signin-history']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type MeDetailedWithSecret = MeDetailed & {
-    email: string;
-    emailVerified: boolean;
-    securityKeysList: {
-        id: string;
-        name: string;
-        lastUsed: string;
-    }[];
-};
+type IUnpinRequest = operations['i/unpin']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type MeSignup = MeDetailedWithSecret & {
-    token: string;
-};
+type IUnpinResponse = operations['i/unpin']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type MessagingMessage = {
-    id: ID;
-    createdAt: DateString;
-    file: DriveFile | null;
-    fileId: DriveFile['id'] | null;
-    isRead: boolean;
-    reads: User['id'][];
-    text: string | null;
-    user: User;
-    userId: User['id'];
-    recipient?: User | null;
-    recipientId: User['id'] | null;
-    group?: UserGroup | null;
-    groupId: UserGroup['id'] | null;
-};
+type IUpdateEmailRequest = operations['i/update-email']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IUpdateRequest = operations['i/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IUpdateResponse = operations['i/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksCreateRequest = operations['i/webhooks/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksDeleteRequest = operations['i/webhooks/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksShowRequest = operations['i/webhooks/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksUpdateRequest = operations['i/webhooks/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MeDetailed = components['schemas']['MeDetailed'];
+
+// @public (undocumented)
+type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
+
+// @public (undocumented)
+type MetaRequest = operations['meta']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MiauthGenTokenRequest = operations['miauth/gen-token']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MiauthGenTokenResponse = operations['miauth/gen-token']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ModerationLog = {
@@ -2673,173 +2133,217 @@ type ModerationLog = {
 } | {
     type: 'resolveAbuseReport';
     info: ModerationLogPayloads['resolveAbuseReport'];
+} | {
+    type: 'unsetUserAvatar';
+    info: ModerationLogPayloads['unsetUserAvatar'];
+} | {
+    type: 'unsetUserBanner';
+    info: ModerationLogPayloads['unsetUserBanner'];
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
+
+// @public (undocumented)
+type MuteCreateRequest = operations['mute/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MuteDeleteRequest = operations['mute/delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
 
 // @public (undocumented)
-type Note = {
-    id: ID;
-    createdAt: DateString;
-    text: string | null;
-    cw: string | null;
-    user: User;
-    userId: User['id'];
-    reply?: Note;
-    replyId: Note['id'];
-    renote?: Note;
-    renoteId: Note['id'];
-    files: DriveFile[];
-    fileIds: DriveFile['id'][];
-    visibility: 'public' | 'home' | 'followers' | 'specified';
-    visibleUserIds?: User['id'][];
-    channel?: Channel;
-    channelId?: Channel['id'];
-    localOnly?: boolean;
-    myReaction?: string;
-    reactions: Record<string, number>;
-    renoteCount: number;
-    repliesCount: number;
-    clippedCount?: number;
-    poll?: {
-        expiresAt: DateString | null;
-        multiple: boolean;
-        choices: {
-            isVoted: boolean;
-            text: string;
-            votes: number;
-        }[];
-    };
-    emojis: {
-        name: string;
-        url: string;
-    }[];
-    uri?: string;
-    url?: string;
-    isHidden?: boolean;
-};
+type MuteListRequest = operations['mute/list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NoteFavorite = {
-    id: ID;
-    createdAt: DateString;
-    noteId: Note['id'];
-    note: Note;
-};
+type MuteListResponse = operations['mute/list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type NoteReaction = {
-    id: ID;
-    createdAt: DateString;
-    user: UserLite;
-    type: string;
-};
+type Muting = components['schemas']['Muting'];
+
+// @public (undocumented)
+type MyAppsRequest = operations['my/apps']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MyAppsResponse = operations['my/apps']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Note = components['schemas']['Note'];
+
+// @public (undocumented)
+type NoteFavorite = components['schemas']['NoteFavorite'];
+
+// @public (undocumented)
+type NoteReaction = components['schemas']['NoteReaction'];
+
+// @public (undocumented)
+type NotesChildrenRequest = operations['notes/children']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesChildrenResponse = operations['notes/children']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesClipsRequest = operations['notes/clips']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesClipsResponse = operations['notes/clips']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesConversationRequest = operations['notes/conversation']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesConversationResponse = operations['notes/conversation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesCreateRequest = operations['notes/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesCreateResponse = operations['notes/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDeleteRequest = operations['notes/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesFavoritesCreateRequest = operations['notes/favorites/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesFavoritesDeleteRequest = operations['notes/favorites/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesFeaturedRequest = operations['notes/featured']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesFeaturedResponse = operations['notes/featured']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesGlobalTimelineRequest = operations['notes/global-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesGlobalTimelineResponse = operations['notes/global-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHybridTimelineRequest = operations['notes/hybrid-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHybridTimelineResponse = operations['notes/hybrid-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesLocalTimelineRequest = operations['notes/local-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesLocalTimelineResponse = operations['notes/local-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMentionsRequest = operations['notes/mentions']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMentionsResponse = operations['notes/mentions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesPollsRecommendationRequest = operations['notes/polls/recommendation']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesPollsRecommendationResponse = operations['notes/polls/recommendation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesPollsVoteRequest = operations['notes/polls/vote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesReactionsCreateRequest = operations['notes/reactions/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesReactionsDeleteRequest = operations['notes/reactions/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesReactionsRequest = operations['notes/reactions']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesReactionsResponse = operations['notes/reactions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRenotesRequest = operations['notes/renotes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRenotesResponse = operations['notes/renotes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRepliesRequest = operations['notes/replies']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRepliesResponse = operations['notes/replies']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRequest = operations['notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesResponse = operations['notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesSearchByTagRequest = operations['notes/search-by-tag']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesSearchByTagResponse = operations['notes/search-by-tag']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesSearchRequest = operations['notes/search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesSearchResponse = operations['notes/search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesShowRequest = operations['notes/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesShowResponse = operations['notes/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesStateRequest = operations['notes/state']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesStateResponse = operations['notes/state']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesThreadMutingCreateRequest = operations['notes/thread-muting/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesThreadMutingDeleteRequest = operations['notes/thread-muting/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesTimelineRequest = operations['notes/timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesTimelineResponse = operations['notes/timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesTranslateRequest = operations['notes/translate']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesTranslateResponse = operations['notes/translate']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUnrenoteRequest = operations['notes/unrenote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUserListTimelineRequest = operations['notes/user-list-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUserListTimelineResponse = operations['notes/user-list-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
 
 // @public (undocumented)
-type Notification_2 = {
-    id: ID;
-    createdAt: DateString;
-    isRead: boolean;
-} & ({
-    type: 'reaction';
-    reaction: string;
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'reply';
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'renote';
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'quote';
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'mention';
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'note';
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'pollEnded';
-    user: User;
-    userId: User['id'];
-    note: Note;
-} | {
-    type: 'follow';
-    user: User;
-    userId: User['id'];
-} | {
-    type: 'followRequestAccepted';
-    user: User;
-    userId: User['id'];
-} | {
-    type: 'receiveFollowRequest';
-    user: User;
-    userId: User['id'];
-} | {
-    type: 'groupInvited';
-    invitation: UserGroup;
-    user: User;
-    userId: User['id'];
-} | {
-    type: 'achievementEarned';
-    achievement: string;
-} | {
-    type: 'app';
-    header?: string | null;
-    body: string;
-    icon?: string | null;
-} | {
-    type: 'test';
-});
+type Notification_2 = components['schemas']['Notification'];
 
 // @public (undocumented)
-export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "achievementEarned"];
+type NotificationsCreateRequest = operations['notifications/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type OriginType = 'combined' | 'local' | 'remote';
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
 
 // @public (undocumented)
-type Page = {
-    id: ID;
-    createdAt: DateString;
-    updatedAt: DateString;
-    userId: User['id'];
-    user: User;
-    content: Record<string, any>[];
-    variables: Record<string, any>[];
-    title: string;
-    name: string;
-    summary: string | null;
-    hideTitleWhenPinned: boolean;
-    alignCenter: boolean;
-    font: string;
-    script: string;
-    eyeCatchingImageId: DriveFile['id'] | null;
-    eyeCatchingImage: DriveFile | null;
-    attachedFiles: any;
-    likedCount: number;
-    isLiked?: boolean;
-};
+type Page = components['schemas']['Page'];
 
 // @public (undocumented)
 type PageEvent = {
@@ -2851,46 +2355,145 @@ type PageEvent = {
 };
 
 // @public (undocumented)
+type PagePushRequest = operations['page-push']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesCreateRequest = operations['pages/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesCreateResponse = operations['pages/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type PagesDeleteRequest = operations['pages/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesFeaturedResponse = operations['pages/featured']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type PagesLikeRequest = operations['pages/like']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesShowRequest = operations['pages/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesShowResponse = operations['pages/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type PagesUnlikeRequest = operations['pages/unlike']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesUpdateRequest = operations['pages/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 function parse(acct: string): Acct;
 
 // @public (undocumented)
 export const permissions: string[];
 
 // @public (undocumented)
-type ServerInfo = {
-    machine: string;
-    cpu: {
-        model: string;
-        cores: number;
+type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type PinnedUsersResponse = operations['pinned-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type PromoReadRequest = operations['promo/read']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type QueueCount = components['schemas']['QueueCount'];
+
+// @public (undocumented)
+type QueueStats = {
+    deliver: {
+        activeSincePrevTick: number;
+        active: number;
+        waiting: number;
+        delayed: number;
     };
+    inbox: {
+        activeSincePrevTick: number;
+        active: number;
+        waiting: number;
+        delayed: number;
+    };
+};
+
+// @public (undocumented)
+type QueueStatsLog = string[];
+
+// @public (undocumented)
+type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RenoteMuteDeleteRequest = operations['renote-mute/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RenoteMuteListRequest = operations['renote-mute/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RenoteMuteListResponse = operations['renote-mute/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RenoteMuting = components['schemas']['RenoteMuting'];
+
+// @public (undocumented)
+type RequestResetPasswordRequest = operations['request-reset-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ResetPasswordRequest = operations['reset-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type Role = components['schemas']['Role'];
+
+// @public (undocumented)
+type RoleLite = components['schemas']['RoleLite'];
+
+// @public (undocumented)
+type RolesListResponse = operations['roles/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RolesNotesRequest = operations['roles/notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesNotesResponse = operations['roles/notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RolesShowRequest = operations['roles/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesShowResponse = operations['roles/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RolesUsersRequest = operations['roles/users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ServerStats = {
+    cpu: number;
     mem: {
-        total: number;
+        used: number;
+        active: number;
+    };
+    net: {
+        rx: number;
+        tx: number;
     };
     fs: {
-        total: number;
-        used: number;
+        r: number;
+        w: number;
     };
 };
 
 // @public (undocumented)
-type Signin = {
-    id: ID;
-    createdAt: DateString;
-    ip: string;
-    headers: Record<string, any>;
-    success: boolean;
-};
+type ServerStatsLog = string[];
 
 // @public (undocumented)
-type Stats = {
-    notesCount: number;
-    originalNotesCount: number;
-    usersCount: number;
-    originalUsersCount: number;
-    instances: number;
-    driveUsageLocal: number;
-    driveUsageRemote: number;
-};
+type Signin = components['schemas']['Signin'];
+
+// @public (undocumented)
+type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
 
 // Warning: (ae-forgotten-export) The symbol "StreamEvents" needs to be exported by the entry point index.d.ts
 //
@@ -2931,114 +2534,223 @@ export class Stream extends EventEmitter<StreamEvents> {
     useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
 }
 
+// Warning: (ae-forgotten-export) The symbol "SwitchCase" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "IsCaseMatched" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "GetCaseResult" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoints[E]['req']> = Endpoints[E]['res'] extends SwitchCase ? IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> : IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1> : IsCaseMatched<E, P, 2> extends true ? GetCaseResult<E, P, 2> : IsCaseMatched<E, P, 3> extends true ? GetCaseResult<E, P, 3> : IsCaseMatched<E, P, 4> extends true ? GetCaseResult<E, P, 4> : IsCaseMatched<E, P, 5> extends true ? GetCaseResult<E, P, 5> : IsCaseMatched<E, P, 6> extends true ? GetCaseResult<E, P, 6> : IsCaseMatched<E, P, 7> extends true ? GetCaseResult<E, P, 7> : IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> : IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> : Endpoints[E]['res']['$switch']['$default'] : Endpoints[E]['res'];
+
+// @public (undocumented)
+type SwRegisterRequest = operations['sw/register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type SwRegisterResponse = operations['sw/register']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type SwShowRegistrationRequest = operations['sw/show-registration']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type SwShowRegistrationResponse = operations['sw/show-registration']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type SwUnregisterRequest = operations['sw/unregister']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type SwUpdateRegistrationRequest = operations['sw/update-registration']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type SwUpdateRegistrationResponse = operations['sw/update-registration']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type TestRequest = operations['test']['requestBody']['content']['application/json'];
+
 // @public (undocumented)
 function toString_2(acct: Acct): string;
 
 // @public (undocumented)
-type User = UserLite | UserDetailed;
+type User = components['schemas']['User'];
 
 // @public (undocumented)
-type UserDetailed = UserLite & {
-    alsoKnownAs: string[];
-    bannerBlurhash: string | null;
-    bannerColor: string | null;
-    bannerUrl: string | null;
-    birthday: string | null;
-    createdAt: DateString;
-    description: string | null;
-    ffVisibility: 'public' | 'followers' | 'private';
-    fields: {
-        name: string;
-        value: string;
-    }[];
-    verifiedLinks: string[];
-    followersCount: number;
-    followingCount: number;
-    hasPendingFollowRequestFromYou: boolean;
-    hasPendingFollowRequestToYou: boolean;
-    isAdmin: boolean;
-    isBlocked: boolean;
-    isBlocking: boolean;
-    isBot: boolean;
-    isCat: boolean;
-    isFollowed: boolean;
-    isFollowing: boolean;
-    isLocked: boolean;
-    isModerator: boolean;
-    isMuted: boolean;
-    isSilenced: boolean;
-    isSuspended: boolean;
-    lang: string | null;
-    lastFetchedAt?: DateString;
-    location: string | null;
-    movedTo: string;
-    notesCount: number;
-    pinnedNoteIds: ID[];
-    pinnedNotes: Note[];
-    pinnedPage: Page | null;
-    pinnedPageId: string | null;
-    publicReactions: boolean;
-    securityKeys: boolean;
-    twoFactorEnabled: boolean;
-    updatedAt: DateString | null;
-    uri: string | null;
-    url: string | null;
-    notify: 'normal' | 'none';
-};
+type UserDetailed = components['schemas']['UserDetailed'];
 
 // @public (undocumented)
-type UserGroup = TODO_2;
+type UserDetailedNotMe = components['schemas']['UserDetailedNotMe'];
 
 // @public (undocumented)
-type UserList = {
-    id: ID;
-    createdAt: DateString;
-    name: string;
-    userIds: User['id'][];
-};
+type UserDetailedNotMeOnly = components['schemas']['UserDetailedNotMeOnly'];
 
 // @public (undocumented)
-type UserLite = {
-    id: ID;
-    username: string;
-    host: string | null;
-    name: string | null;
-    onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
-    avatarUrl: string;
-    avatarBlurhash: string;
-    avatarDecorations: {
-        id: ID;
-        url: string;
-        angle?: number;
-        flipH?: boolean;
-    }[];
-    emojis: {
-        name: string;
-        url: string;
-    }[];
-    instance?: {
-        name: Instance['name'];
-        softwareName: Instance['softwareName'];
-        softwareVersion: Instance['softwareVersion'];
-        iconUrl: Instance['iconUrl'];
-        faviconUrl: Instance['faviconUrl'];
-        themeColor: Instance['themeColor'];
-    };
-    isCat?: boolean;
-    isBot?: boolean;
-};
+type UserList = components['schemas']['UserList'];
 
 // @public (undocumented)
-type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
+type UserLite = components['schemas']['UserLite'];
+
+// @public (undocumented)
+type UsernameAvailableRequest = operations['username/available']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsernameAvailableResponse = operations['username/available']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersAchievementsRequest = operations['users/achievements']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersClipsRequest = operations['users/clips']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersClipsResponse = operations['users/clips']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFeaturedNotesRequest = operations['users/featured-notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFeaturedNotesResponse = operations['users/featured-notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFlashsRequest = operations['users/flashs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFlashsResponse = operations['users/flashs']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFollowersRequest = operations['users/followers']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFollowersResponse = operations['users/followers']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFollowingRequest = operations['users/following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFollowingResponse = operations['users/following']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGalleryPostsRequest = operations['users/gallery/posts']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGalleryPostsResponse = operations['users/gallery/posts']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetFrequentlyRepliedUsersRequest = operations['users/get-frequently-replied-users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetFrequentlyRepliedUsersResponse = operations['users/get-frequently-replied-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsCreateFromPublicRequest = operations['users/lists/create-from-public']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsCreateFromPublicResponse = operations['users/lists/create-from-public']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsCreateRequest = operations['users/lists/create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsCreateResponse = operations['users/lists/create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsDeleteRequest = operations['users/lists/delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsFavoriteRequest = operations['users/lists/favorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsGetMembershipsRequest = operations['users/lists/get-memberships']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsListRequest = operations['users/lists/list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsListResponse = operations['users/lists/list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsPullRequest = operations['users/lists/pull']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsPushRequest = operations['users/lists/push']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsShowRequest = operations['users/lists/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsShowResponse = operations['users/lists/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsUnfavoriteRequest = operations['users/lists/unfavorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsUpdateMembershipRequest = operations['users/lists/update-membership']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsUpdateRequest = operations['users/lists/update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsUpdateResponse = operations['users/lists/update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersNotesRequest = operations['users/notes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersNotesResponse = operations['users/notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersPagesRequest = operations['users/pages']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersPagesResponse = operations['users/pages']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersReactionsRequest = operations['users/reactions']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersReactionsResponse = operations['users/reactions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersRecommendationRequest = operations['users/recommendation']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersRecommendationResponse = operations['users/recommendation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersRelationRequest = operations['users/relation']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersRelationResponse = operations['users/relation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersReportAbuseRequest = operations['users/report-abuse']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersRequest = operations['users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersResponse = operations['users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersSearchByUsernameAndHostRequest = operations['users/search-by-username-and-host']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersSearchByUsernameAndHostResponse = operations['users/search-by-username-and-host']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersSearchRequest = operations['users/search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersSearchResponse = operations['users/search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersShowRequest = operations['users/show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersShowResponse = operations['users/show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersUpdateMemoRequest = operations['users/update-memo']['requestBody']['content']['application/json'];
 
 // Warnings were encountered during analysis:
 //
-// src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:632:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
-// src/entities.ts:116:2 - (ae-forgotten-export) The symbol "notificationTypes_2" needs to be exported by the entry point index.d.ts
-// src/entities.ts:627:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
+// src/entities.ts:25:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

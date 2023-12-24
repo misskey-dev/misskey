@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch } from 'vue';
+import { onMounted, watch, ref, shallowRef } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -47,27 +47,28 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let disabled = $ref(false);
+const disabled = ref(false);
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
-const withRenotes = $ref(props.column.withRenotes ?? true);
-const withReplies = $ref(props.column.withReplies ?? false);
-const onlyFiles = $ref(props.column.onlyFiles ?? false);
+const withRenotes = ref(props.column.withRenotes ?? true);
+const withReplies = ref(props.column.withReplies ?? false);
+const onlyFiles = ref(props.column.onlyFiles ?? false);
 
-watch($$(withRenotes), v => {
+watch(withRenotes, v => {
 	updateColumn(props.column.id, {
 		withRenotes: v,
 	});
 });
 
-watch($$(withReplies), v => {
+watch(withReplies, v => {
 	updateColumn(props.column.id, {
 		withReplies: v,
 	});
 });
 
-watch($$(onlyFiles), v => {
+watch(onlyFiles, v => {
 	updateColumn(props.column.id, {
 		onlyFiles: v,
 	});
@@ -77,7 +78,7 @@ onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
 	} else if ($i) {
-		disabled = (
+		disabled.value = (
 			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
 			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)));
 	}
@@ -114,15 +115,17 @@ const menu = [{
 }, {
 	type: 'switch',
 	text: i18n.ts.showRenotes,
-	ref: $$(withRenotes),
+	ref: withRenotes,
 }, props.column.tl === 'local' || props.column.tl === 'social' ? {
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
-	ref: $$(withReplies),
+	ref: withReplies,
+	disabled: onlyFiles,
 } : undefined, {
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
-	ref: $$(onlyFiles),
+	ref: onlyFiles,
+	disabled: props.column.tl === 'local' || props.column.tl === 'social' ? withReplies : false,
 }];
 </script>
 

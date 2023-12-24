@@ -33,13 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { $ref } from 'vue/macros';
+import { shallowRef, ref } from 'vue';
+
 import XSignup from '@/components/MkSignupDialog.form.vue';
 import XServerRules from '@/components/MkSignupDialog.rules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
@@ -52,17 +51,17 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const isAcceptedServerRule = $ref(false);
+const isAcceptedServerRule = ref(false);
 
 function onSignup(res) {
 	emit('done', res);
-	dialog.close();
+	dialog.value.close();
 }
 
 function onSignupEmailPending() {
-	dialog.close();
+	dialog.value.close();
 }
 </script>
 
