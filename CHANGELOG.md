@@ -18,7 +18,7 @@
 - Enhance: ローカリゼーションの更新
 
 ### Client
-- 
+- Feat: `Mk:C:mfm`に`onClick`が指定できるように。コールバック引数から`localX`と`localY`を取得可能
 
 ### Server
 - Enhance: センシティブワードの設定がハッシュタグトレンドにも適用されるようになりました
