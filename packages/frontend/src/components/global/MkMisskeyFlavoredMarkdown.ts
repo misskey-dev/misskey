@@ -41,7 +41,6 @@ type MfmProps = {
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
-	clickEv: (evId: string) => void;
 };
 
 type MfmEvents = {
