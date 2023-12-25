@@ -887,6 +887,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// ダイレクトのとき、そのリストが対象外のユーザーの場合
 				if (
 					note.visibility === 'specified' &&
+					note.userId !== userListMembership.userListUserId &&
 					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
 				) continue;
 
