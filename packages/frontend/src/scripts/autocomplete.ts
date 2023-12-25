@@ -14,7 +14,7 @@ export class Autocomplete {
 	private suggestion: {
 		x: Ref<number>;
 		y: Ref<number>;
-		q: Ref<string | Record<string, any> | null>;
+		q: Ref<any>;
 		close: () => void;
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;

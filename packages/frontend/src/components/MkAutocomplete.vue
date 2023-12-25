@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</li>
 	</ol>
 	<ol v-else-if="mfmParams.length > 0" ref="suggests" :class="$style.list">
-		<li v-for="param in mfmParams" tabindex="-1" :class="$style.item" @click="complete(type, (q as Record<string, any>).params.toSpliced(-1, 1, param).join(','))" @keydown="onKeydown">
+		<li v-for="param in mfmParams" tabindex="-1" :class="$style.item" @click="complete(type, q.params.toSpliced(-1, 1, param).join(','))" @keydown="onKeydown">
 			<span>{{ param }}</span>
 		</li>
 	</ol>
@@ -134,7 +134,7 @@ export default {
 <script lang="ts" setup>
 const props = defineProps<{
 	type: string;
-	q: string | Record<string, any> | null;
+	q: any;
 	textarea: HTMLTextAreaElement;
 	close: () => void;
 	x: number;
