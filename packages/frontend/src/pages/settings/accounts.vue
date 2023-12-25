@@ -29,7 +29,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
-const storedAccounts = ref<any>(null);
+const storedAccounts = ref<{ id: string, token: string }[]>([]);
 const accounts = ref<Misskey.entities.UserDetailed[]>([]);
 
 const init = async () => {

@@ -164,19 +164,33 @@ export const meta = {
 					type: 'object',
 					optional: false, nullable: false,
 					properties: {
-						place: {
+						id: {
 							type: 'string',
 							optional: false, nullable: false,
+							format: 'id',
+							example: 'xxxxxxxxxx',
 						},
 						url: {
 							type: 'string',
 							optional: false, nullable: false,
 							format: 'url',
 						},
+						place: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+						ratio: {
+							type: 'number',
+							optional: false, nullable: false,
+						},
 						imageUrl: {
 							type: 'string',
 							optional: false, nullable: false,
 							format: 'url',
+						},
+						dayOfWeek: {
+							type: 'integer',
+							optional: false, nullable: false,
 						},
 					},
 				},

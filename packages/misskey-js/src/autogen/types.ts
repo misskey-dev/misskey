@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.0
- * generatedAt: 2023-12-24T08:46:10.930Z
+ * generatedAt: 2023-12-25T03:48:31.850Z
  */
 
 /**
@@ -4474,6 +4474,7 @@ export type operations = {
             maintainerEmail: string | null;
             maintainerName: string | null;
             name: string | null;
+            shortName: string | null;
             objectStorageS3ForcePathStyle: boolean;
             privacyPolicyUrl: string | null;
             repositoryUrl: string;
@@ -13741,57 +13742,9 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            topSubInstances: ({
-                id?: string;
-                firstRetrievedAt?: string;
-                host?: string;
-                usersCount?: number;
-                notesCount?: number;
-                followingCount?: number;
-                followersCount?: number;
-                isNotResponding?: boolean;
-                isSuspended?: boolean;
-                isBlocked?: boolean;
-                softwareName?: string;
-                softwareVersion?: string;
-                openRegistrations?: boolean;
-                name?: string;
-                description?: string;
-                maintainerName?: string;
-                maintainerEmail?: string;
-                isSilenced?: boolean;
-                iconUrl?: string;
-                faviconUrl?: string;
-                themeColor?: string;
-                infoUpdatedAt?: string | null;
-                latestRequestReceivedAt?: string | null;
-              })[];
+            topSubInstances: components['schemas']['FederationInstance'][];
             otherFollowersCount: number;
-            topPubInstances: ({
-                id?: string;
-                firstRetrievedAt?: string;
-                host?: string;
-                usersCount?: number;
-                notesCount?: number;
-                followingCount?: number;
-                followersCount?: number;
-                isNotResponding?: boolean;
-                isSuspended?: boolean;
-                isBlocked?: boolean;
-                softwareName?: string;
-                softwareVersion?: string;
-                openRegistrations?: boolean;
-                name?: string;
-                description?: string;
-                maintainerName?: string;
-                maintainerEmail?: string;
-                isSilenced?: boolean;
-                iconUrl?: string;
-                faviconUrl?: string;
-                themeColor?: string;
-                infoUpdatedAt?: string | null;
-                latestRequestReceivedAt?: string | null;
-              })[];
+            topPubInstances: components['schemas']['FederationInstance'][];
             otherFollowingCount: number;
           };
         };
@@ -18752,11 +18705,18 @@ export type operations = {
             iconUrl: string | null;
             maxNoteTextLength: number;
             ads: {
-                place: string;
+                /**
+                 * Format: id
+                 * @example xxxxxxxxxx
+                 */
+                id: string;
                 /** Format: url */
                 url: string;
+                place: string;
+                ratio: number;
                 /** Format: url */
                 imageUrl: string;
+                dayOfWeek: number;
               }[];
             /** @default 0 */
             notesPerOneAd: number;
@@ -21057,7 +21017,10 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>;
+          'application/json': {
+            sourceLang: string;
+            text: string;
+          };
         };
       };
       /** @description Client error */

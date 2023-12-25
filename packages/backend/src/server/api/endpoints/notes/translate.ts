@@ -21,6 +21,10 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
+		properties: {
+			sourceLang: { type: 'string' },
+			text: { type: 'string' },
+		},
 	},
 
 	errors: {

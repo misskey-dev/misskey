@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkA class="a" :to="`/instance-info/${instance.host}`" behavior="window" :title="instance.host">{{ instance.host }}</MkA>
 					<p>{{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</p>
 				</div>
-				<MkMiniChart class="chart" :src="charts[i].requests.received"/>
+				<MkMiniChart class="chart" :src="charts[i]['requests.received']"/>
 			</div>
 		</TransitionGroup>
 	</div>
@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
@@ -56,8 +57,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const instances = ref([]);
-const charts = ref([]);
+const instances = ref<Misskey.entities.FederationInstance[]>([]);
+const charts = ref<Misskey.entities.ChartsInstanceResponse[]>([]);
 const fetching = ref(true);
 
 const fetch = async () => {
