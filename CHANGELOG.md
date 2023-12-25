@@ -16,6 +16,7 @@
 
 ### General
 - Enhance: ローカリゼーションの更新
+- Fix: 自分のdirect noteがuser list timelineに追加されない
 
 ### Client
 - 
