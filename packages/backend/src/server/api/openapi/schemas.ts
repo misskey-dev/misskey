@@ -46,29 +46,29 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 export const schemas = {
 	Error: {
 		type: 'object',
+		description: 'An error object.',
 		properties: {
-			error: {
+			code: {
+				type: 'string',
+				description: 'An error code. Unique within the endpoint.',
+			},
+			message: {
+				type: 'string',
+				description: 'An error message.',
+			},
+			id: {
+				type: 'string',
+				format: 'uuid',
+				description: 'An error ID. This ID is static.',
+			},
+			info: {
 				type: 'object',
-				description: 'An error object.',
-				properties: {
-					code: {
-						type: 'string',
-						description: 'An error code. Unique within the endpoint.',
-					},
-					message: {
-						type: 'string',
-						description: 'An error message.',
-					},
-					id: {
-						type: 'string',
-						format: 'uuid',
-						description: 'An error ID. This ID is static.',
-					},
-				},
-				required: ['code', 'id', 'message'],
+				nullable: true,
+				optional: true,
+				description: 'Additional information about the error.',
 			},
 		},
-		required: ['error'],
+		required: ['code', 'id', 'message'],
 	},
 
 	...Object.fromEntries(
