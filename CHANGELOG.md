@@ -19,7 +19,7 @@
 - Fix: 自分のdirect noteがuser list timelineに追加されない
 
 ### Client
-- 
+- Fix: 一部のモデログ(logYellowでの表示対象)について、表示の色が変わらない問題を修正
 
 ### Server
 - Enhance: センシティブワードの設定がハッシュタグトレンドにも適用されるようになりました
