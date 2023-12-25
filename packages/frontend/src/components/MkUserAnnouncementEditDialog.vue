@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -99,10 +99,10 @@ const emit = defineEmits<{
 	(ev: 'closed'): void
 }>();
 
-const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+const announceTitleEl = shallowRef<HTMLInputElement | null>(null);
 
 function insertEmoji(ev: MouseEvent): void {
-	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl);
+	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl.value);
 }
 
 async function done(): Promise<void> {

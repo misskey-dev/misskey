@@ -321,7 +321,7 @@ watch(visibility, () => {
 
 const prepend = (item: MisskeyEntity): void => {
 	// 初回表示時はunshiftだけでOK
-	if (!rootEl) {
+	if (!rootEl.value) {
 		items.value.unshift(item);
 		return;
 	}
