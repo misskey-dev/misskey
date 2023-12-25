@@ -101,7 +101,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.html', '_blank', 'noopener');
+			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
 	}, ($i) ? {
 		text: i18n.ts._initialTutorial.launchTutorial,

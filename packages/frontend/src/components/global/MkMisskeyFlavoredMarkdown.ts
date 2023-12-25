@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h } from 'vue';
+import { VNode, h, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
@@ -43,8 +43,12 @@ type MfmProps = {
 	enableEmojiMenuReaction?: boolean;
 };
 
+type MfmEvents = {
+	clickEv(id: string): void;
+};
+
 // eslint-disable-next-line import/no-default-export
-export default function(props: MfmProps) {
+export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -280,6 +284,13 @@ export default function(props: MfmProps) {
 								mode: 'detail',
 							}),
 						]);
+					}
+					case 'clickable': {
+						return h('span', { onClick(ev: MouseEvent): void {
+							ev.stopPropagation();
+							ev.preventDefault();
+							context.emit('clickEv', token.props.args.ev ?? '');
+						} }, genEl(token.children, scale));
 					}
 				}
 				if (style === undefined) {

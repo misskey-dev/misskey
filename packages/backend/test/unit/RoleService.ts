@@ -73,13 +73,21 @@ describe('RoleService', () => {
 				CacheService,
 				IdService,
 				GlobalEventService,
+				{
+					provide: NotificationService,
+					useFactory: () => ({
+						createNotification: jest.fn(),
+					}),
+				},
+				{
+					provide: NotificationService.name,
+					useExisting: NotificationService,
+				},
 			],
 		})
 			.useMocker((token) => {
 				if (token === MetaService) {
 					return { fetch: jest.fn() };
-				} else if (token === NotificationService) {
-					return { createNotification: jest.fn() };
 				}
 				if (typeof token === 'function') {
 					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
@@ -98,6 +106,8 @@ describe('RoleService', () => {
 
 		metaService = app.get<MetaService>(MetaService) as jest.Mocked<MetaService>;
 		notificationService = app.get<NotificationService>(NotificationService) as jest.Mocked<NotificationService>;
+
+		await roleService.onModuleInit();
 	});
 
 	afterEach(async () => {
@@ -284,10 +294,12 @@ describe('RoleService', () => {
 			const user = await createUser();
 			const role = await createRole({
 				isPublic: true,
+				name: 'a',
 			});
 
 			await roleService.assign(user.id, role.id);
 
+			clock.uninstall();
 			await sleep(100);
 
 			const assignments = await roleAssignmentsRepository.find({
@@ -301,7 +313,7 @@ describe('RoleService', () => {
 			expect(notificationService.createNotification).toHaveBeenCalled();
 			expect(notificationService.createNotification.mock.lastCall![0]).toBe(user.id);
 			expect(notificationService.createNotification.mock.lastCall![1]).toBe('roleAssigned');
-			expect(notificationService.createNotification.mock.lastCall![2]).toBe({
+			expect(notificationService.createNotification.mock.lastCall![2]).toEqual({
 				roleId: role.id,
 			});
 		});
@@ -310,10 +322,12 @@ describe('RoleService', () => {
 			const user = await createUser();
 			const role = await createRole({
 				isPublic: false,
+				name: 'a',
 			});
 
 			await roleService.assign(user.id, role.id);
 
+			clock.uninstall();
 			await sleep(100);
 
 			const assignments = await roleAssignmentsRepository.find({
