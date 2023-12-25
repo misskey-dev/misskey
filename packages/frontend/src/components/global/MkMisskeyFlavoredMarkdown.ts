@@ -290,7 +290,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 							ev.stopPropagation();
 							ev.preventDefault();
 							context.emit('clickEv', token.props.args.ev ?? '');
-						} });
+						} }, genEl(token.children, scale));
 					}
 				}
 				if (style === undefined) {
