@@ -20,6 +20,7 @@
 
 ### Client
 - Fix: 一部のモデログ(logYellowでの表示対象)について、表示の色が変わらない問題を修正
+- Feat: AiScript専用のMFM構文`$[clickable.ev=EVENTNAME ...]`を追加。`Mk:C:mfm`のオプション`onClickEv`に関数を渡すと、クリック時に`EVENTNAME`を引数にして呼び出す
 
 ### Server
 - Enhance: センシティブワードの設定がハッシュタグトレンドにも適用されるようになりました
