@@ -241,7 +241,7 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 		color: color?.value,
 		font: font?.value,
 		onClickEv: (evId: string) => {
-			if (onClickEv) call(onClickEv, evId);
+			if (onClickEv) call(onClickEv, values.STR(evId));
 		},
 	};
 }
