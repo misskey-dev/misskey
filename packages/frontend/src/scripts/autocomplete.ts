@@ -155,7 +155,7 @@ export class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private async open(type: string, q: string | Record<string, any> | null) {
+	private async open(type: string, q: any) {
 		if (type !== this.currentType) {
 			this.close();
 		}
