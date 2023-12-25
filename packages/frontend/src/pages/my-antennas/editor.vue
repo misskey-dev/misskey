@@ -80,10 +80,10 @@ const localOnly = ref<boolean>(props.antenna.localOnly);
 const withReplies = ref<boolean>(props.antenna.withReplies);
 const withFile = ref<boolean>(props.antenna.withFile);
 const notify = ref<boolean>(props.antenna.notify);
-const userLists = ref<Misskey.entities.UserList[]>([]);
+const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
-	if (src.value === 'list' && userLists.value.length === 0) {
+	if (src.value === 'list' && userLists.value === null) {
 		userLists.value = await os.api('users/lists/list');
 	}
 });

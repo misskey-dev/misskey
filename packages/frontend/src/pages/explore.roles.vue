@@ -17,7 +17,7 @@ import * as Misskey from 'misskey-js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';
 
-const roles = ref<Misskey.entities.Role[]>([]);
+const roles = ref<Misskey.entities.Role[] | null>(null);
 
 os.api('roles/list').then(res => {
 	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.displayOrder - a.displayOrder);

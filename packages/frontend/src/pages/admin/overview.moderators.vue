@@ -22,7 +22,7 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 
-const moderators = ref<Misskey.entities.UserDetailed[]>([]);
+const moderators = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);
 
 onMounted(async () => {

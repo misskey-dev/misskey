@@ -54,8 +54,8 @@ import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { i18n } from '@/i18n.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 
-const topSubInstancesForPie = ref<InstanceForPie[]>([]);
-const topPubInstancesForPie = ref<InstanceForPie[]>([]);
+const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
+const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);
 const federationPubActive = ref<number | null>(null);
 const federationPubActiveDiff = ref<number | null>(null);
 const federationSubActive = ref<number | null>(null);

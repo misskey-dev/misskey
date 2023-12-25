@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<XCalendar v-show="widgetProps.view === 0" :activity="activity"/>
-			<XChart v-show="widgetProps.view === 1" :activity="activity"/>
+			<XCalendar v-show="widgetProps.view === 0" :activity="activity ?? []"/>
+			<XChart v-show="widgetProps.view === 1" :activity="activity ?? []"/>
 		</template>
 	</div>
 </MkContainer>
@@ -64,7 +64,7 @@ const activity = ref<{
 	notes: number;
 	replies: number;
 	renotes: number;
-}[]>([]);
+}[] | null>(null);
 const fetching = ref(true);
 
 const toggleView = () => {

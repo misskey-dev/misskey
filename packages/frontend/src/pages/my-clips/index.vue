@@ -43,7 +43,7 @@ const pagination = {
 };
 
 const tab = ref('my');
-const favorites = ref<Misskey.entities.Clip[]>([]);
+const favorites = ref<Misskey.entities.Clip[] | null>(null);
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

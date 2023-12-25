@@ -24,7 +24,7 @@ import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { defaultStore } from '@/store.js';
 
-const newUsers = ref<Misskey.entities.UserDetailed[]>([]);
+const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);
 
 const fetch = async () => {

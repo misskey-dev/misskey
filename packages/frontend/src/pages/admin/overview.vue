@@ -86,14 +86,14 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const rootEl = shallowRef<HTMLElement>();
 const serverInfo = ref<Misskey.entities.ServerInfoResponse | null>(null);
-const topSubInstancesForPie = ref<InstanceForPie[]>([]);
-const topPubInstancesForPie = ref<InstanceForPie[]>([]);
+const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
+const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);
 const federationPubActive = ref<number | null>(null);
 const federationPubActiveDiff = ref<number | null>(null);
 const federationSubActive = ref<number | null>(null);
 const federationSubActiveDiff = ref<number | null>(null);
-const newUsers = ref<Misskey.entities.UserDetailed[]>([]);
-const activeInstances = shallowRef<Misskey.entities.FederationInstance[]>([]);
+const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
+const activeInstances = shallowRef<Misskey.entities.FederationInstance | null>(null);
 const queueStatsConnection = markRaw(useStream().useChannel('queueStats'));
 const now = new Date();
 const filesPagination = {
