@@ -81,11 +81,11 @@ os.apiGet('charts/user/notes', {
 	span: 'day',
 	limit: 7 * 21,
 }).then(res => {
-	activity.value = res['diffs.normal'].map((_, i) => ({
-		total: res['diffs.normal'][i] + res['diffs.reply'][i] + res['diffs.renote'][i],
-		notes: res['diffs.normal'][i],
-		replies: res['diffs.reply'][i],
-		renotes: res['diffs.renote'][i],
+	activity.value = res.diffs.normal.map((_, i) => ({
+		total: res.diffs.normal[i] + res.diffs.reply[i] + res.diffs.renote[i],
+		notes: res.diffs.normal[i],
+		replies: res.diffs.reply[i],
+		renotes: res.diffs.renote[i],
 	}));
 	fetching.value = false;
 });

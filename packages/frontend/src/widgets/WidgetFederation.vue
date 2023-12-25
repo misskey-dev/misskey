@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkA class="a" :to="`/instance-info/${instance.host}`" behavior="window" :title="instance.host">{{ instance.host }}</MkA>
 					<p>{{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</p>
 				</div>
-				<MkMiniChart class="chart" :src="charts[i]['requests.received']"/>
+				<MkMiniChart class="chart" :src="charts[i].requests.received"/>
 			</div>
 		</TransitionGroup>
 	</div>
