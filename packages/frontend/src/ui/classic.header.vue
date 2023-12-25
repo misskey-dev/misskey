@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="azykntjl">
 	<div class="body">
@@ -42,24 +47,24 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted } from 'vue';
-import { openInstanceMenu } from './_common_/common';
-import * as os from '@/os';
-import { navbarItemDef } from '@/navbar';
-import { openAccountMenu as openAccountMenu_, $i } from '@/account';
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { openInstanceMenu } from './_common_/common.js';
+import * as os from '@/os.js';
+import { navbarItemDef } from '@/navbar.js';
+import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const WINDOW_THRESHOLD = 1400;
 
-let settingsWindowed = $ref(window.innerWidth > WINDOW_THRESHOLD);
-let menu = $ref(defaultStore.state.menu);
+const settingsWindowed = ref(window.innerWidth > WINDOW_THRESHOLD);
+const menu = ref(defaultStore.state.menu);
 // const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
-let otherNavItemIndicated = computed<boolean>(() => {
+const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {
-		if (menu.includes(def)) continue;
+		if (menu.value.includes(def)) continue;
 		if (navbarItemDef[def].indicated) return true;
 	}
 	return false;
@@ -81,7 +86,7 @@ function openAccountMenu(ev: MouseEvent) {
 
 onMounted(() => {
 	window.addEventListener('resize', () => {
-		settingsWindowed = (window.innerWidth >= WINDOW_THRESHOLD);
+		settingsWindowed.value = (window.innerWidth >= WINDOW_THRESHOLD);
 	}, { passive: true });
 });
 

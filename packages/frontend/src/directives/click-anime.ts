@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Directive } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {

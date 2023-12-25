@@ -1,14 +1,19 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
 import type { summaly } from 'summaly';
-import { components } from '@/components';
-import { directives } from '@/directives';
+import { components } from '@/components/index.js';
+import { directives } from '@/directives/index.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
-describe('MkMediaImage', () => {
+describe('MkUrlPreview', () => {
 	const renderPreviewBy = async (summary: Partial<SummalyResult>): Promise<RenderResult> => {
 		if (!summary.player) {
 			summary.player = {
@@ -137,5 +142,23 @@ describe('MkMediaImage', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.parentElement?.style.paddingTop, '200px');
+	});
+
+	test('Loading a tweet in iframe', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://twitter.com/i/web/status/1685072521782325249',
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
+	});
+
+	test('Loading a post in iframe', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://x.com/i/web/status/1685072521782325249',
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
 	});
 });

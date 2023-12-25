@@ -1,11 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
-import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { FollowingsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -13,12 +17,6 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class UserSuspendService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
@@ -30,7 +28,7 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	public async doPostSuspend(user: { id: User['id']; host: User['host'] }): Promise<void> {
+	public async doPostSuspend(user: { id: MiUser['id']; host: MiUser['host'] }): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 
 		if (this.userEntityService.isLocalUser(user)) {
@@ -60,7 +58,7 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	public async doPostUnsuspend(user: User): Promise<void> {
+	public async doPostUnsuspend(user: MiUser): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 
 		if (this.userEntityService.isLocalUser(user)) {

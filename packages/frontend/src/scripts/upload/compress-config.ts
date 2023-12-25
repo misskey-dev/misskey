@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import isAnimated from 'is-file-animated';
-import { isWebpSupported } from './isWebpSupported';
+import { isWebpSupported } from './isWebpSupported.js';
 import type { BrowserImageResizerConfig } from 'browser-image-resizer';
 
 const compressTypeMap = {

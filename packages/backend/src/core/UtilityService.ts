@@ -1,6 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { URL } from 'node:url';
 import { toASCII } from 'punycode';
 import { Inject, Injectable } from '@nestjs/common';
+import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -28,6 +34,39 @@ export class UtilityService {
 	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
 		if (host == null) return false;
 		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
+	public isSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
+		if (!silencedHosts || host == null) return false;
+		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
+	public isSensitiveWordIncluded(text: string, sensitiveWords: string[]): boolean {
+		if (sensitiveWords.length === 0) return false;
+		if (text === '') return false;
+
+		const regexpregexp = /^\/(.+)\/(.*)$/;
+
+		const matched = sensitiveWords.some(filter => {
+			// represents RegExp
+			const regexp = filter.match(regexpregexp);
+			// This should never happen due to input sanitisation.
+			if (!regexp) {
+				const words = filter.split(' ');
+				return words.every(keyword => text.includes(keyword));
+			}
+			try {
+				// TODO: RE2インスタンスをキャッシュ
+				return new RE2(regexp[1], regexp[2]).test(text);
+			} catch (err) {
+				// This should never happen due to input sanitisation.
+				return false;
+			}
+		});
+
+		return matched;
 	}
 
 	@bindThis

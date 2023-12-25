@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -10,30 +15,37 @@
 				<template #label>{{ i18n.ts._play.summary }}</template>
 			</MkTextarea>
 			<MkButton primary @click="selectPreset">{{ i18n.ts.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
-			<MkTextarea v-model="script" class="_monospace" tall spellcheck="false">
+			<MkCodeEditor v-model="script" lang="is">
 				<template #label>{{ i18n.ts._play.script }}</template>
-			</MkTextarea>
+			</MkCodeEditor>
 			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
+			<MkSelect v-model="visibility">
+				<template #label>{{ i18n.ts.visibility }}</template>
+				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
+				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
+			</MkSelect>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
-import { useRouter } from '@/router';
+import MkSelect from '@/components/MkSelect.vue';
+import { useRouter } from '@/router.js';
 
-const PRESET_DEFAULT = `/// @ 0.15.0
+const PRESET_DEFAULT = `/// @ 0.16.0
 
 var name = ""
 
@@ -51,7 +63,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.15.0
+const PRESET_OMIKUJI = `/// @ 0.16.0
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -94,7 +106,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.15.0
+const PRESET_SHUFFLE = `/// @ 0.16.0
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -173,7 +185,7 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.15.0
+const PRESET_QUIZ = `/// @ 0.16.0
 let title = '地理クイズ'
 
 let qas = [{
@@ -286,7 +298,7 @@ qaEls.push(Ui:C:container({
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.15.0
+const PRESET_TIMELINE = `/// @ 0.16.0
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {
@@ -352,77 +364,79 @@ const props = defineProps<{
 	id?: string;
 }>();
 
-let flash = $ref(null);
+const flash = ref(null);
+const visibility = ref('public');
 
 if (props.id) {
-	flash = await os.api('flash/show', {
+	flash.value = await os.api('flash/show', {
 		flashId: props.id,
 	});
 }
 
-let title = $ref(flash?.title ?? 'New Play');
-let summary = $ref(flash?.summary ?? '');
-let permissions = $ref(flash?.permissions ?? []);
-let script = $ref(flash?.script ?? PRESET_DEFAULT);
+const title = ref(flash.value?.title ?? 'New Play');
+const summary = ref(flash.value?.summary ?? '');
+const permissions = ref(flash.value?.permissions ?? []);
+const script = ref(flash.value?.script ?? PRESET_DEFAULT);
 
 function selectPreset(ev: MouseEvent) {
 	os.popupMenu([{
 		text: 'Omikuji',
 		action: () => {
-			script = PRESET_OMIKUJI;
+			script.value = PRESET_OMIKUJI;
 		},
 	}, {
 		text: 'Shuffle',
 		action: () => {
-			script = PRESET_SHUFFLE;
+			script.value = PRESET_SHUFFLE;
 		},
 	}, {
 		text: 'Quiz',
 		action: () => {
-			script = PRESET_QUIZ;
+			script.value = PRESET_QUIZ;
 		},
 	}, {
 		text: 'Timeline viewer',
 		action: () => {
-			script = PRESET_TIMELINE;
+			script.value = PRESET_TIMELINE;
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 async function save() {
-	if (flash) {
+	if (flash.value) {
 		os.apiWithDialog('flash/update', {
 			flashId: props.id,
-			title,
-			summary,
-			permissions,
-			script,
+			title: title.value,
+			summary: summary.value,
+			permissions: permissions.value,
+			script: script.value,
+			visibility: visibility.value,
 		});
 	} else {
 		const created = await os.apiWithDialog('flash/create', {
-			title,
-			summary,
-			permissions,
-			script,
+			title: title.value,
+			summary: summary.value,
+			permissions: permissions.value,
+			script: script.value,
 		});
 		router.push('/play/' + created.id + '/edit');
 	}
 }
 
 function show() {
-	if (flash == null) {
+	if (flash.value == null) {
 		os.alert({
 			text: 'Please save',
 		});
 	} else {
-		os.pageWindow(`/play/${flash.id}`);
+		os.pageWindow(`/play/${flash.value.id}`);
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: flash.title }),
+		text: i18n.t('deleteAreYouSure', { x: flash.value.title }),
 	});
 	if (canceled) return;
 
@@ -432,12 +446,12 @@ async function del() {
 	router.push('/play');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => flash ? {
-	title: i18n.ts._play.edit + ': ' + flash.title,
+definePageMetadata(computed(() => flash.value ? {
+	title: i18n.ts._play.edit + ': ' + flash.value.title,
 } : {
 	title: i18n.ts._play.new,
 }));

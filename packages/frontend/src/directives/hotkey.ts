@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Directive } from 'vue';
-import { makeHotkey } from '../scripts/hotkey';
+import { makeHotkey } from '../scripts/hotkey.js';
 
 export default {
 	mounted(el, binding) {

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <section>
 	<div v-if="app.permission.length > 0">
@@ -15,14 +20,14 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { AuthSession } from 'misskey-js/built/entities';
+import { computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	session: AuthSession;
+	session: Misskey.entities.AuthSessionShowResponse;
 }>();
 
 const emit = defineEmits<{
@@ -30,11 +35,11 @@ const emit = defineEmits<{
 	(event: 'denied'): void;
 }>();
 
-const app = $computed(() => props.session.app);
+const app = computed(() => props.session.app);
 
-const name = $computed(() => {
+const name = computed(() => {
 	const el = document.createElement('div');
-	el.textContent = app.name;
+	el.textContent = app.value.name;
 	return el.innerHTML;
 });
 
@@ -53,7 +58,6 @@ function accept() {
 		emit('accepted');
 	});
 }
-
 </script>
 
 <style lang="scss" module>

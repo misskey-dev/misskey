@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="700">
 	<div class="_gaps_s">
@@ -7,14 +12,14 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 
-let roles = $ref();
+const roles = ref();
 
 os.api('roles/list').then(res => {
-	roles = res.filter(x => x.target === 'manual').sort((a, b) => b.displayOrder - a.displayOrder);
+	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.displayOrder - a.displayOrder);
 });
 </script>
 

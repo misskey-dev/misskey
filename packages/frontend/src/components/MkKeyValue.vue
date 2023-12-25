@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="[$style.root, { [$style.oneline]: oneline }]">
 	<div :class="$style.key">
@@ -12,9 +17,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	copy?: string | null;

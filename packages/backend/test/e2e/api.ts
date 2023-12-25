@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream } from '../utils.js';
+import { IncomingMessage } from 'http';
+import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream, relativeFetch } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
-import { IncomingMessage } from 'http';
 
 describe('API', () => {
 	let app: INestApplicationContext;
@@ -218,6 +223,42 @@ describe('API', () => {
 			assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_request", error_description'));
 		});
 
-		// TODO: insufficient_scope test (authテストが全然なくて書けない)
+		describe('invalid bearer format', () => {
+			test('No preceding bearer', async () => {
+				const result = await relativeFetch('api/notes/create', {
+					method: 'POST',
+					headers: {
+						Authorization: alice.token,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ text: 'test' }),
+				});
+				assert.strictEqual(result.status, 401);
+			});
+
+			test('Lowercase bearer', async () => {
+				const result = await relativeFetch('api/notes/create', {
+					method: 'POST',
+					headers: {
+						Authorization: `bearer ${alice.token}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ text: 'test' }),
+				});
+				assert.strictEqual(result.status, 401);
+			});
+
+			test('No space after bearer', async () => {
+				const result = await relativeFetch('api/notes/create', {
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer${alice.token}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ text: 'test' }),
+				});
+				assert.strictEqual(result.status, 401);
+			});
+		});
 	});
 });

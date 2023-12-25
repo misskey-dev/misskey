@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_panel _shadow" :class="$style.root">
 	<!-- TODO: インスタンス運営者が任意のテキストとリンクを設定できるようにする -->
@@ -18,7 +23,7 @@
 				</template>
 			</I18n>
 			<div style="margin-top: 0.2em;">
-				<MkLink target="_blank" url="https://misskey-hub.net/docs/donate.html">{{ i18n.ts.learnMore }}</MkLink>
+				<MkLink target="_blank" url="https://misskey-hub.net/docs/for-users/resources/donate/">{{ i18n.ts.learnMore }}</MkLink>
 			</div>
 		</div>
 		<div class="_buttons">
@@ -33,11 +38,11 @@
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
-import { host } from '@/config';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { miLocalStorage } from '@/local-storage';
-import { instance } from '@/instance';
+import { host } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

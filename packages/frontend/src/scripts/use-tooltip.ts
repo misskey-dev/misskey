@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Ref, ref, watch, onUnmounted } from 'vue';
 
 export function useTooltip(
@@ -16,6 +21,8 @@ export function useTooltip(
 
 	let changeShowingState: (() => void) | null;
 
+	let autoHidingTimer;
+
 	const open = () => {
 		close();
 		if (!isHovering) return;
@@ -28,6 +35,16 @@ export function useTooltip(
 		changeShowingState = () => {
 			showing.value = false;
 		};
+
+		autoHidingTimer = window.setInterval(() => {
+			if (elRef.value == null || !document.body.contains(elRef.value instanceof Element ? elRef.value : elRef.value.$el)) {
+				if (!isHovering) return;
+				isHovering = false;
+				window.clearTimeout(timeoutId);
+				close();
+				window.clearInterval(autoHidingTimer);
+			}
+		}, 1000);
 	};
 
 	const close = () => {
@@ -48,6 +65,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		isHovering = false;
 		window.clearTimeout(timeoutId);
+		window.clearInterval(autoHidingTimer);
 		close();
 	};
 
@@ -62,6 +80,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		isHovering = false;
 		window.clearTimeout(timeoutId);
+		window.clearInterval(autoHidingTimer);
 		close();
 	};
 

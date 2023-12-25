@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const packedNoteSchema = {
 	type: 'object',
 	properties: {
@@ -122,18 +127,26 @@ export const packedNoteSchema = {
 		channel: {
 			type: 'object',
 			optional: true, nullable: true,
-			items: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					id: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-					name: {
-						type: 'string',
-						optional: false, nullable: true,
-					},
+			properties: {
+				id: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				name: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				color: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				isSensitive: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				allowRenoteToExternal: {
+					type: 'boolean',
+					optional: false, nullable: false,
 				},
 			},
 		},
@@ -163,6 +176,18 @@ export const packedNoteSchema = {
 		},
 		url: {
 			type: 'string',
+			optional: true, nullable: false,
+		},
+		reactionAndUserPairCache: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
+		clippedCount: {
+			type: 'number',
 			optional: true, nullable: false,
 		},
 

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div :class="$style.label"><slot name="label"></slot></div>
@@ -19,8 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
-import { i18n } from '@/i18n';
+import { ref, shallowRef, toRefs } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;

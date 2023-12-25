@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as http from 'node:http';
 import * as https from 'node:https';
 import * as net from 'node:net';
@@ -48,12 +53,14 @@ export class HttpRequestService {
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup as unknown as net.LookupFunction,
+			localAddress: config.outgoingAddress,
 		});
 
 		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup as unknown as net.LookupFunction,
+			localAddress: config.outgoingAddress,
 		});
 
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
@@ -66,6 +73,7 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
+				localAddress: config.outgoingAddress,
 			})
 			: this.http;
 
@@ -77,6 +85,7 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
+				localAddress: config.outgoingAddress,
 			})
 			: this.https;
 	}
@@ -88,7 +97,7 @@ export class HttpRequestService {
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
-		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
+		if (bypassProxy || (this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
 			return url.protocol === 'http:' ? this.http : this.https;
 		} else {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;

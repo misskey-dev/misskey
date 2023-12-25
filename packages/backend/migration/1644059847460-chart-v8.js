@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class chartV81644059847460 {
     name = 'chartV81644059847460'
@@ -14,9 +17,9 @@ export class chartV81644059847460 {
 			await queryRunner.query(`ALTER TABLE "__chart_day__active_users" ALTER COLUMN "___local_users" TYPE integer USING "___local_users"::integer`);
 			await queryRunner.query(`ALTER TABLE "__chart_day__active_users" ALTER COLUMN "___remote_users" TYPE integer USING "___remote_users"::integer`);
 		}
-	
+
 		async down(queryRunner) {
-	
+
 			await queryRunner.query(`ALTER TABLE "__chart__active_users" ALTER COLUMN "___local_users" TYPE bigint USING "___local_users"::bigint`);
 			await queryRunner.query(`ALTER TABLE "__chart__active_users" ALTER COLUMN "___remote_users" TYPE bigint USING "___remote_users"::bigint`);
 			await queryRunner.query(`ALTER TABLE "__chart_day__active_users" ALTER COLUMN "___local_users" TYPE bigint USING "___local_users"::bigint`);

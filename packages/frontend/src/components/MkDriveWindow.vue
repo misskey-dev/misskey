@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkWindow
 	ref="window"
@@ -18,7 +23,7 @@ import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;

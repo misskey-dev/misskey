@@ -1,6 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <header :class="$style.root">
-	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+	<div v-if="mock" :class="$style.name">
+		<MkUserName :user="note.user"/>
+	</div>
+	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -9,8 +17,11 @@
 		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
 	</div>
 	<div :class="$style.info">
-		<MkA :to="notePage(note)">
-			<MkTime :time="note.createdAt"/>
+		<div v-if="mock">
+			<MkTime :time="note.createdAt" colored/>
+		</div>
+		<MkA v-else :to="notePage(note)">
+			<MkTime :time="note.createdAt" colored/>
 		</MkA>
 		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
@@ -24,16 +35,17 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import * as misskey from 'misskey-js';
-import { i18n } from '@/i18n';
-import { notePage } from '@/filters/note';
-import { userPage } from '@/filters/user';
+import { inject } from 'vue';
+import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { notePage } from '@/filters/note.js';
+import { userPage } from '@/filters/user.js';
 
 defineProps<{
-	note: misskey.entities.Note;
-	pinned?: boolean;
+	note: Misskey.entities.Note;
 }>();
+
+const mock = inject<boolean>('mock', false);
 </script>
 
 <style lang="scss" module>

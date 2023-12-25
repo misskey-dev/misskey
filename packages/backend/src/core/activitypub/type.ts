@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export type Obj = { [x: string]: any };
 export type ApObject = IObject | string | (IObject | string)[];
 
@@ -7,6 +12,7 @@ export interface IObject {
 	id?: string;
 	name?: string | null;
 	summary?: string;
+	_misskey_summary?: string;
 	published?: string;
 	cc?: ApObject;
 	to?: ApObject;

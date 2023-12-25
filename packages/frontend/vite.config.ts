@@ -2,14 +2,11 @@ import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
-// @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
-import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
-import locales from '../../locales';
-import generateDTS from '../../locales/generateDTS';
+import locales from '../../locales/index.js';
 import meta from '../../package.json';
-import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
-import pluginJson5 from './vite.json5';
+import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
+import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -29,6 +26,7 @@ const hash = (str: string, seed = 0): number => {
 };
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';
@@ -51,10 +49,7 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
-			pluginVue({
-				reactivityTransform: true,
-			}),
-			ReactivityTransform(),
+			pluginVue(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
 			...process.env.NODE_ENV === 'production'
@@ -67,10 +62,6 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
-			{
-				name: 'locale:generateDTS',
-				buildStart: generateDTS,
-			},
 		],
 
 		resolve: {
@@ -117,8 +108,8 @@ export function getConfig(): UserConfig {
 
 		build: {
 			target: [
-				'chrome108',
-				'firefox109',
+				'chrome116',
+				'firefox116',
 				'safari16',
 			],
 			manifest: 'manifest.json',
@@ -155,10 +146,14 @@ export function getConfig(): UserConfig {
 		test: {
 			environment: 'happy-dom',
 			deps: {
-				inline: [
-					// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-					'browser-image-resizer',
-				],
+				optimizer: {
+					web: {
+						include: [
+							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
+							'browser-image-resizer',
+						],
+					},
+				},
 			},
 		},
 	};

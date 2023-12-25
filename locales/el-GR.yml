@@ -104,7 +104,6 @@ clickToShow: "Κάντε κλικ για εμφάνιση"
 add: "Προσθέστε"
 reaction: "Αντιδράσεις"
 reactions: "Αντιδράσεις"
-reactionSetting: "Αντιδράσεις για εμφάνιση στην επιλογή αντίδρασης"
 reactionSettingDescription2: "Σύρετε για να αλλάξετε τη σειρά, κάντε κλικ για να διαγράψετε, πατήστε \"+\" για να προσθέσετε."
 rememberNoteVisibility: "Θυμήσου τις ρυθμίσεις ορατότητας σημειώματος"
 attachCancel: "Διαγραφή αρχείου"
@@ -228,7 +227,6 @@ userList: "Λίστες"
 about: "Πληροφορίες"
 moderator: "Συντονιστής"
 moderation: "Συντονισμός"
-cacheClear: "Εκκαθάριση προσωρινής μνήμης"
 markAsReadAllNotifications: "Όλες οι ειδοποιήσεις διαβάστηκαν"
 members: "Μέλη"
 transfer: "Μεταφορά"
@@ -287,6 +285,9 @@ searchByGoogle: "Αναζήτηση"
 file: "Αρχεία"
 recommended: "Προτεινόμενα"
 cannotUploadBecauseNoFreeSpace: "Το ανέβασμα απέτυχε λόγω ανεπαρκούς Αποθηκευτικού Χώρου"
+icon: "Εικονίδιο"
+replies: "Απάντηση"
+renotes: "Κοινοποίηση σημειώματος"
 _email:
   _follow:
     title: "Έχετε ένα νέο ακόλουθο"
@@ -300,8 +301,6 @@ _theme:
 _sfx:
   note: "Σημειώματα"
   notification: "Ειδοποιήσεις"
-  chat: "Συνομιλία"
-  chatBg: "Συνομιλία (Παρασκήνιο)"
   antenna: "Αντένες"
   channel: "Ειδοποιήσεις καναλιών"
 _ago:
@@ -394,3 +393,5 @@ _deck:
     mentions: "Επισημάνσεις"
 _webhookSettings:
   name: "Όνομα"
+_moderationLogTypes:
+  suspend: "Αποβολή"

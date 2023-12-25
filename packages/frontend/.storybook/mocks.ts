@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { type SharedOptions, rest } from 'msw';
 
 export const onUnhandledRequest = ((req, print) => {
@@ -20,7 +25,7 @@ export const commonHandlers = [
 	}),
 	rest.get('/twemoji/:codepoints.svg', async (req, res, ctx) => {
 		const { codepoints } = req.params;
-		const value = await fetch(`https://unpkg.com/@discordapp/twemoji@14.1.2/dist/svg/${codepoints}.svg`).then((response) => response.blob());
+		const value = await fetch(`https://unpkg.com/@discordapp/twemoji@15.0.2/dist/svg/${codepoints}.svg`).then((response) => response.blob());
 		return res(ctx.set('Content-Type', 'image/svg+xml'), ctx.body(value));
 	}),
 ];

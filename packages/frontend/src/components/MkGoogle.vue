@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<input v-model="query" :class="$style.input" type="search" :placeholder="q">
@@ -7,7 +12,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	q: string;
@@ -16,7 +21,9 @@ const props = defineProps<{
 const query = ref(props.q);
 
 const search = () => {
-	window.open(`https://www.google.com/search?q=${query.value}`, '_blank');
+	const sp = new URLSearchParams();
+	sp.append('q', query.value);
+	window.open(`https://www.google.com/search?${sp.toString()}`, '_blank', 'noopener');
 };
 </script>
 

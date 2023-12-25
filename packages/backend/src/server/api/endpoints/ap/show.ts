@@ -1,9 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, NotesRepository } from '@/models/index.js';
-import type { Note } from '@/models/entities/Note.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import type { SchemaType } from '@/misc/json-schema.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
@@ -14,7 +18,6 @@ import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 
@@ -81,16 +84,9 @@ export const paramDef = {
 	required: ['uri'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -114,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	 * URIからUserかNoteを解決する
 	 */
 	@bindThis
-	private async fetchAny(uri: string, me: LocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	private async fetchAny(uri: string, me: MiLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
 		if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) return null;
@@ -147,7 +143,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	}
 
 	@bindThis
-	private async mergePack(me: LocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+	private async mergePack(me: MiLocalUser | null | undefined, user: MiUser | null | undefined, note: MiNote | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 		if (user != null) {
 			return {
 				type: 'User',

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import type * as Misskey from 'misskey-js';
 
 export type SwMessageOrderType = 'post' | 'push';
@@ -36,6 +41,7 @@ export type BadgeNames =
 	| 'antenna'
 	| 'arrow-back-up'
 	| 'at'
+	| 'bell'
 	| 'chart-arrows'
 	| 'circle-check'
 	| 'medal'

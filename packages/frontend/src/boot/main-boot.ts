@@ -1,19 +1,25 @@
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import { common } from './common';
-import { version, ui, lang, updateLocale } from '@/config';
-import { i18n, updateI18n } from '@/i18n';
-import { confirm, alert, post, popup, toast } from '@/os';
-import { useStream } from '@/stream';
-import * as sound from '@/scripts/sound';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { makeHotkey } from '@/scripts/hotkey';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { miLocalStorage } from '@/local-storage';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
-import { mainRouter } from '@/router';
-import { initializeSw } from '@/scripts/initialize-sw';
-import { deckStore } from '@/ui/deck/deck-store';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { createApp, markRaw, defineAsyncComponent } from 'vue';
+import { common } from './common.js';
+import { ui } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import { confirm, alert, post, popup, toast } from '@/os.js';
+import { useStream } from '@/stream.js';
+import * as sound from '@/scripts/sound.js';
+import { $i, updateAccount, signout } from '@/account.js';
+import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { mainRouter } from '@/router.js';
+import { initializeSw } from '@/scripts/initialize-sw.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
+import { emojiPicker } from '@/scripts/emoji-picker.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -25,6 +31,7 @@ export async function mainBoot() {
 	));
 
 	reactionPicker.init();
+	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
 		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
@@ -52,7 +59,7 @@ export async function mainBoot() {
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('../plugin').then(async ({ install }) => {
+		import('@/plugin.js').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
 			await new Promise(r => setTimeout(r, 0));
 			install(plugin);
@@ -68,6 +75,14 @@ export async function mainBoot() {
 		},
 	};
 
+	if (defaultStore.state.enableSeasonalScreenEffect) {
+		const month = new Date().getMonth() + 1;
+		if (month === 12 || month === 1) {
+			const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+			new SnowfallEffect().render();
+		}
+	}
+
 	if ($i) {
 		// only add post shortcuts if logged in
 		hotkeys['p|n'] = post;
@@ -75,6 +90,21 @@ export async function mainBoot() {
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
 				popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+			}
+		});
+
+		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
+			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				announcement,
+			}, {}, 'closed');
+		}
+
+		stream.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
 			}
 		});
 
@@ -205,11 +235,18 @@ export async function mainBoot() {
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccount({ hasUnreadNotification: false });
+			updateAccount({
+				hasUnreadNotification: false,
+				unreadNotificationsCount: 0,
+			});
 		});
 
 		main.on('unreadNotification', () => {
-			updateAccount({ hasUnreadNotification: true });
+			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
+			updateAccount({
+				hasUnreadNotification: true,
+				unreadNotificationsCount,
+			});
 		});
 
 		main.on('unreadMention', () => {

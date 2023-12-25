@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { popup } from '@/os';
+import { popup } from '@/os.js';
 
 export default {
 	mounted(el, binding, vn) {

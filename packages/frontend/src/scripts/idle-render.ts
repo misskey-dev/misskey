@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 const requestIdleCallback: typeof globalThis.requestIdleCallback = globalThis.requestIdleCallback ?? ((callback) => {
 	const start = performance.now();
 	const timeoutId = setTimeout(() => {

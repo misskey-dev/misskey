@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -11,7 +16,13 @@
 				</div>
 				-->
 					<div class="banner">
-						<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
+						<MkMediaImage
+							v-if="page.eyeCatchingImageId"
+							:image="page.eyeCatchingImage"
+							:cover="true"
+							:disableImageLink="true"
+							class="thumbnail"
+						/>
 					</div>
 					<div class="content">
 						<XPage :page="page"/>
@@ -23,7 +34,8 @@
 						</div>
 						<div class="other">
 							<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-							<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+							<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
+							<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
 						</div>
 					</div>
 					<div class="user">
@@ -51,8 +63,8 @@
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
+					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
 			</div>
@@ -64,44 +76,47 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { url } from '@/config';
+import * as os from '@/os.js';
+import { url } from '@/config.js';
+import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { pageViewInterruptors, defaultStore } from '@/store';
-import { deepClone } from '@/scripts/clone';
-import { $i } from '@/account';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { pageViewInterruptors, defaultStore } from '@/store.js';
+import { deepClone } from '@/scripts/clone.js';
+import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	pageName: string;
 	username: string;
 }>();
 
-let page = $ref(null);
-let error = $ref(null);
+const page = ref(null);
+const error = ref(null);
 const otherPostsPagination = {
 	endpoint: 'users/pages' as const,
 	limit: 6,
 	params: computed(() => ({
-		userId: page.user.id,
+		userId: page.value.user.id,
 	})),
 };
-const path = $computed(() => props.username + '/' + props.pageName);
+const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
-	page = null;
+	page.value = null;
 	os.api('pages/show', {
 		name: props.pageName,
 		username: props.username,
 	}).then(async _page => {
-		page = _page;
+		page.value = _page;
 
 		// plugin
 		if (pageViewInterruptors.length > 0) {
@@ -109,33 +124,38 @@ function fetchPage() {
 			for (const interruptor of pageViewInterruptors) {
 				result = await interruptor.handler(result);
 			}
-			page = result;
+			page.value = result;
 		}
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
 function share() {
 	navigator.share({
-		title: page.title ?? page.name,
-		text: page.summary,
-		url: `${url}/@${page.user.username}/pages/${page.name}`,
+		title: page.value.title ?? page.value.name,
+		text: page.value.summary,
+		url: `${url}/@${page.value.user.username}/pages/${page.value.name}`,
 	});
+}
+
+function copyLink() {
+	copyToClipboard(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
+	os.success();
 }
 
 function shareWithNote() {
 	os.post({
-		initialText: `${page.title || page.name} ${url}/@${page.user.username}/pages/${page.name}`,
+		initialText: `${page.value.title || page.value.name} ${url}/@${page.value.user.username}/pages/${page.value.name}`,
 	});
 }
 
 function like() {
 	os.apiWithDialog('pages/like', {
-		pageId: page.id,
+		pageId: page.value.id,
 	}).then(() => {
-		page.isLiked = true;
-		page.likedCount++;
+		page.value.isLiked = true;
+		page.value.likedCount++;
 	});
 }
 
@@ -146,32 +166,32 @@ async function unlike() {
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('pages/unlike', {
-		pageId: page.id,
+		pageId: page.value.id,
 	}).then(() => {
-		page.isLiked = false;
-		page.likedCount--;
+		page.value.isLiked = false;
+		page.value.likedCount--;
 	});
 }
 
 function pin(pin) {
 	os.apiWithDialog('i/update', {
-		pinnedPageId: pin ? page.id : null,
+		pinnedPageId: pin ? page.value.id : null,
 	});
 }
 
-watch(() => path, fetchPage, { immediate: true });
+watch(() => path.value, fetchPage, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => page ? {
-	title: page.title || page.name,
-	avatar: page.user,
-	path: `/@${page.user.username}/pages/${page.name}`,
+definePageMetadata(computed(() => page.value ? {
+	title: page.value.title || page.value.name,
+	avatar: page.value.user,
+	path: `/@${page.value.user.username}/pages/${page.value.name}`,
 	share: {
-		title: page.title || page.name,
-		text: page.summary,
+		title: page.value.title || page.value.name,
+		text: page.value.summary,
 	},
 } : null));
 </script>
@@ -199,11 +219,14 @@ definePageMetadata(computed(() => page ? {
 		}
 
 		> .banner {
-			> img {
+			> .thumbnail {
 				// TODO: 良い感じのアスペクト比で表示
 				display: block;
 				width: 100%;
-				height: 150px;
+				height: auto;
+				aspect-ratio: 3/1;
+				border-radius: var(--radius);
+				overflow: hidden;
 				object-fit: cover;
 			}
 		}
@@ -272,5 +295,15 @@ definePageMetadata(computed(() => page ? {
 		font-size: 85%;
 		opacity: 0.75;
 	}
+}
+</style>
+
+<style module>
+.relatedPagesRoot {
+	padding: var(--margin);
+}
+
+.relatedPagesItem > article {
+	background-color: var(--panelHighlight) !important;
 }
 </style>

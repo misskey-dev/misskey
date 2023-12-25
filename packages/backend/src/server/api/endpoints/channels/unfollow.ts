@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelFollowingsRepository, ChannelsRepository } from '@/models/index.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { ChannelsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -31,15 +36,12 @@ export const paramDef = {
 	required: ['channelId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
-
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
+		private channelFollowingService: ChannelFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({
@@ -50,10 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			await this.channelFollowingsRepository.delete({
-				followerId: me.id,
-				followeeId: channel.id,
-			});
+			await this.channelFollowingService.unfollow(me, channel);
 		});
 	}
 }

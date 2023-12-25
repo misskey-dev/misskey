@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps">
 	<div :class="$style.header">
@@ -55,8 +60,8 @@ import { v4 as uuid } from 'uuid';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
+import { i18n } from '@/i18n.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

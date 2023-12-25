@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import { jobQueue, server } from './common.js';

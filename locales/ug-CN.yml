@@ -1,4 +1,19 @@
 ---
 _lang_: "ياپونچە"
+headlineMisskey: "خاتىرە ئارقىلىق ئۇلانغان تور"
+monthAndDay: "{day}-{month}"
 search: "ئىزدەش"
+ok: "ماقۇل"
+noThankYou: "ئۇنى توختىتىڭ"
+profile: "profile"
+login: "كىرىش"
+loggingIn: "كىرىش"
+pin: "pinned"
+delete: "ئۆچۈرۈش"
+pinned: "pinned"
+remove: "ئۆچۈرۈش"
 searchByGoogle: "ئىزدەش"
+_2fa:
+  renewTOTPCancel: "ئۇنى توختىتىڭ"
+_widgets:
+  profile: "profile"

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer>
 	<template #icon><i class="ti ti-chart-line"></i></template>
@@ -15,34 +20,34 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import * as misskey from 'misskey-js';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkChart from '@/components/MkChart.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 	limit?: number;
 }>(), {
 	limit: 50,
 });
 
-let chartSrc = $ref('per-user-notes');
+const chartSrc = ref('per-user-notes');
 
 function showMenu(ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.notes,
-		active: chartSrc === 'per-user-notes',
+		active: chartSrc.value === 'per-user-notes',
 		action: () => {
-			chartSrc = 'per-user-notes';
+			chartSrc.value = 'per-user-notes';
 		},
 	}, {
 		text: i18n.ts.numberOfProfileView,
-		active: chartSrc === 'per-user-pv',
+		active: chartSrc.value === 'per-user-pv',
 		action: () => {
-			chartSrc = 'per-user-pv';
+			chartSrc.value = 'per-user-pv';
 		},
 	}, /*, {
 		text: i18n.ts.following,

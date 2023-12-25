@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -14,29 +19,28 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XFollowList from './follow-list.vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	acct: string;
 }>(), {
 });
 
-let user = $ref<null | misskey.entities.UserDetailed>(null);
-let error = $ref(null);
+const user = ref<null | Misskey.entities.UserDetailed>(null);
+const error = ref(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
-	user = null;
-	os.api('users/show', Acct.parse(props.acct)).then(u => {
-		user = u;
+	user.value = null;
+	os.api('users/show', Misskey.acct.parse(props.acct)).then(u => {
+		user.value = u;
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
@@ -44,15 +48,15 @@ watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => user ? {
+definePageMetadata(computed(() => user.value ? {
 	icon: 'ti ti-user',
-	title: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
+	title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
 	subtitle: i18n.ts.following,
-	userName: user,
-	avatar: user,
+	userName: user.value,
+	avatar: user.value,
 } : null));
 </script>

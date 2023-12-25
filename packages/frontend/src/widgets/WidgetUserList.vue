@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-userList">
 	<template #icon><i class="ti ti-users"></i></template>
@@ -19,12 +24,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { ref } from 'vue';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 
 const name = 'userList';
@@ -52,9 +58,9 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-let list = $ref();
-let users = $ref([]);
-let fetching = $ref(true);
+const list = ref();
+const users = ref([]);
+const fetching = ref(true);
 
 async function chooseList() {
 	const lists = await os.api('users/lists/list');
@@ -74,19 +80,19 @@ async function chooseList() {
 
 const fetch = () => {
 	if (widgetProps.listId == null) {
-		fetching = false;
+		fetching.value = false;
 		return;
 	}
 
 	os.api('users/lists/show', {
 		listId: widgetProps.listId,
 	}).then(_list => {
-		list = _list;
+		list.value = _list;
 		os.api('users/show', {
-			userIds: list.userIds,
+			userIds: list.value.userIds,
 		}).then(_users => {
-			users = _users;
-			fetching = false;
+			users.value = _users;
+			fetching.value = false;
 		});
 	});
 };

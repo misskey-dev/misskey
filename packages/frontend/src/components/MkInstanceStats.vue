@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<MkFoldableSection class="item">
@@ -79,27 +84,27 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
-import { initChart } from '@/scripts/init-chart';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
 const chartLimit = 500;
-let chartSpan = $ref<'hour' | 'day'>('hour');
-let chartSrc = $ref('active-users');
-let heatmapSrc = $ref('active-users');
-let subDoughnutEl = $shallowRef<HTMLCanvasElement>();
-let pubDoughnutEl = $shallowRef<HTMLCanvasElement>();
+const chartSpan = ref<'hour' | 'day'>('hour');
+const chartSrc = ref('active-users');
+const heatmapSrc = ref('active-users');
+const subDoughnutEl = shallowRef<HTMLCanvasElement>();
+const pubDoughnutEl = shallowRef<HTMLCanvasElement>();
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',
@@ -158,7 +163,7 @@ function createDoughnut(chartEl, tooltip, data) {
 
 onMounted(() => {
 	os.apiGet('federation/stats', { limit: 30 }).then(fedStats => {
-		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
+		createDoughnut(subDoughnutEl.value, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followersCount,
@@ -167,7 +172,7 @@ onMounted(() => {
 			},
 		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
 
-		createDoughnut(pubDoughnutEl, externalTooltipHandler2, fedStats.topPubInstances.map(x => ({
+		createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, fedStats.topPubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followingCount,

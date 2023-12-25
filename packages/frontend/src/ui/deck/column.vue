@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
@@ -37,11 +42,11 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { MenuItem } from '@/types/menu';
+import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -52,6 +57,7 @@ const props = withDefaults(defineProps<{
 	isStacked?: boolean;
 	naked?: boolean;
 	menu?: MenuItem[];
+	refresher?: () => Promise<void>;
 }>(), {
 	isStacked: false,
 	naked: false,
@@ -61,16 +67,16 @@ const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
 }>();
 
-let body = $shallowRef<HTMLDivElement | null>();
+const body = shallowRef<HTMLDivElement | null>();
 
-let dragging = $ref(false);
-watch($$(dragging), v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
+const dragging = ref(false);
+watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
 
-let draghover = $ref(false);
-let dropready = $ref(false);
+const draghover = ref(false);
+const dropready = ref(false);
 
-const isMainColumn = $computed(() => props.column.type === 'main');
-const active = $computed(() => props.column.active !== false);
+const isMainColumn = computed(() => props.column.type === 'main');
+const active = computed(() => props.column.active !== false);
 
 onMounted(() => {
 	os.deckGlobalEvents.on('column.dragStart', onOtherDragStart);
@@ -83,11 +89,11 @@ onBeforeUnmount(() => {
 });
 
 function onOtherDragStart() {
-	dropready = true;
+	dropready.value = true;
 }
 
 function onOtherDragEnd() {
-	dropready = false;
+	dropready.value = false;
 }
 
 function toggleActive() {
@@ -98,7 +104,7 @@ function toggleActive() {
 }
 
 function getMenu() {
-	let items = [{
+	let items: MenuItem[] = [{
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
@@ -111,11 +117,12 @@ function getMenu() {
 				width: {
 					type: 'number',
 					label: i18n.ts.width,
+					description: i18n.ts._deck.usedAsMinWidthWhenFlexible,
 					default: props.column.width,
 				},
 				flexible: {
 					type: 'boolean',
-					label: i18n.ts.flexible,
+					label: i18n.ts._deck.flexible,
 					default: props.column.flexible,
 				},
 			});
@@ -163,7 +170,7 @@ function getMenu() {
 		action: () => {
 			popRightColumn(props.column.id);
 		},
-	} : undefined, null, {
+	} : undefined, { type: 'divider' }, {
 		icon: 'ti ti-trash',
 		text: i18n.ts.remove,
 		danger: true,
@@ -173,8 +180,20 @@ function getMenu() {
 	}];
 
 	if (props.menu) {
-		items.unshift(null);
+		items.unshift({ type: 'divider' });
 		items = props.menu.concat(items);
+	}
+
+	if (props.refresher) {
+		items = [{
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			action: () => {
+				if (props.refresher) {
+					props.refresher();
+				}
+			},
+		}, ...items];
 	}
 
 	return items;
@@ -189,8 +208,8 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 function goTop() {
-	if (body) {
-		body.scrollTo({
+	if (body.value) {
+		body.value.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		});
@@ -204,17 +223,17 @@ function onDragstart(ev) {
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
 	window.setTimeout(() => {
-		dragging = true;
+		dragging.value = true;
 	}, 10);
 }
 
 function onDragend(ev) {
-	dragging = false;
+	dragging.value = false;
 }
 
 function onDragover(ev) {
 	// 自分自身がドラッグされている場合
-	if (dragging) {
+	if (dragging.value) {
 		// 自分自身にはドロップさせない
 		ev.dataTransfer.dropEffect = 'none';
 	} else {
@@ -222,16 +241,16 @@ function onDragover(ev) {
 
 		ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
-		if (isDeckColumn) draghover = true;
+		if (isDeckColumn) draghover.value = true;
 	}
 }
 
 function onDragleave() {
-	draghover = false;
+	draghover.value = false;
 }
 
 function onDrop(ev) {
-	draghover = false;
+	draghover.value = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 
 	const id = ev.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);

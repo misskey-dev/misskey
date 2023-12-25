@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
@@ -13,6 +18,7 @@ type Context = {
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
+// eslint-disable-next-line import/no-default-export
 export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="700">
 	<MkPagination v-slot="{items}" :pagination="pagination">
@@ -10,12 +15,12 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>(), {
 });
 

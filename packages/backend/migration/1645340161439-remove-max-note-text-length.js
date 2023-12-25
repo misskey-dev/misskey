@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class removeMaxNoteTextLength1645340161439 {
     name = 'removeMaxNoteTextLength1645340161439'

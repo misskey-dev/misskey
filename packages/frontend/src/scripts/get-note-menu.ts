@@ -1,21 +1,29 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { defineAsyncComponent, Ref } from 'vue';
-import * as misskey from 'misskey-js';
-import { claimAchievement } from './achievements';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { url } from '@/config';
-import { defaultStore, noteActions } from '@/store';
-import { miLocalStorage } from '@/local-storage';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import { clipsCache } from '@/cache';
+import * as Misskey from 'misskey-js';
+import { claimAchievement } from './achievements.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { url } from '@/config.js';
+import { defaultStore, noteActions } from '@/store.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { getUserMenu } from '@/scripts/get-user-menu.js';
+import { clipsCache } from '@/cache.js';
+import { MenuItem } from '@/types/menu.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 export async function getNoteClipMenu(props: {
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	isDeleted: Ref<boolean>;
-	currentClip?: misskey.entities.Clip;
+	currentClip?: Misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -24,9 +32,9 @@ export async function getNoteClipMenu(props: {
 		props.note.poll == null
 	);
 
-	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
 
-	const clips = await clipsCache.fetch(() => os.api('clips/list'));
+	const clips = await clipsCache.fetch();
 	return [...clips.map(clip => ({
 		text: clip.name,
 		action: () => {
@@ -53,7 +61,7 @@ export async function getNoteClipMenu(props: {
 				},
 			);
 		},
-	})), null, {
+	})), { type: 'divider' }, {
 		icon: 'ti ti-plus',
 		text: i18n.ts.createNew,
 		action: async () => {
@@ -86,13 +94,38 @@ export async function getNoteClipMenu(props: {
 	}];
 }
 
+export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): MenuItem {
+	return {
+		icon: 'ti ti-exclamation-circle',
+		text,
+		action: (): void => {
+			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
+			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+				user: note.user,
+				initialComment: `Note: ${u}\n-----\n`,
+			}, {}, 'closed');
+		},
+	};
+}
+
+export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): MenuItem {
+	return {
+		icon: 'ti ti-link',
+		text,
+		action: (): void => {
+			copyToClipboard(`${url}/notes/${note.id}`);
+			os.success();
+		},
+	};
+}
+
 export function getNoteMenu(props: {
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	menuButton: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
-	currentClip?: misskey.entities.Clip;
+	currentClip?: Misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -101,7 +134,9 @@ export function getNoteMenu(props: {
 		props.note.poll == null
 	);
 
-	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+
+	const cleanups = [] as (() => void)[];
 
 	function del(): void {
 		os.confirm({
@@ -205,18 +240,6 @@ export function getNoteMenu(props: {
 		os.pageWindow(`/notes/${appearNote.id}`);
 	}
 
-	function showReactions(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
-	}
-
-	function showRenotes(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkRenotedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
-	}
-
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -228,7 +251,7 @@ export function getNoteMenu(props: {
 		props.translation.value = res;
 	}
 
-	let menu;
+	let menu: MenuItem[];
 	if ($i) {
 		const statePromise = os.api('notes/state', {
 			noteId: appearNote.id,
@@ -241,45 +264,34 @@ export function getNoteMenu(props: {
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,
-				}, null] : []
+				}, { type: 'divider' }] : []
 			), {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
 				action: openDetail,
 			}, {
-				icon: 'ti ti-repeat',
-				text: i18n.ts.renotesList,
-				action: showRenotes,
-			}, {
-				icon: 'ti ti-icons',
-				text: i18n.ts.reactionsList,
-				action: showReactions,
-			}, {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
-			}, {
-				icon: 'ti ti-link',
-				text: i18n.ts.copyLink,
-				action: copyLink,
-			}, (appearNote.url || appearNote.uri) ? {
+			}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
+			, (appearNote.url || appearNote.uri) ? {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url ?? appearNote.uri, '_blank');
+					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
 			} : undefined,
-			{
+			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
 				action: share,
-			},
-			instance.translatorAvailable ? {
+			}] : []),
+			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
-			null,
+			{ type: 'divider' },
 			statePromise.then(state => state.isFavorited ? {
 				icon: 'ti ti-star-off',
 				text: i18n.ts.unfavorite,
@@ -290,7 +302,7 @@ export function getNoteMenu(props: {
 				action: () => toggleFavorite(true),
 			}),
 			{
-				type: 'parent',
+				type: 'parent' as const,
 				icon: 'ti ti-paperclip',
 				text: i18n.ts.clip,
 				children: () => getNoteClipMenu(props),
@@ -313,18 +325,20 @@ export function getNoteMenu(props: {
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
 			} : undefined,
-			appearNote.userId !== $i.id ? {
-				type: 'parent',
+			{
+				type: 'parent' as const,
 				icon: 'ti ti-user',
 				text: i18n.ts.user,
 				children: async () => {
-					const user = await os.api('users/show', { userId: appearNote.userId });
-					return getUserMenu(user);
+					const user = appearNote.userId === $i?.id ? $i : await os.api('users/show', { userId: appearNote.userId });
+					const { menu, cleanup } = getUserMenu(user);
+					cleanups.push(cleanup);
+					return menu;
 				},
-			} : undefined,
+			},
 			/*
 		...($i.isModerator || $i.isAdmin ? [
-			null,
+			{ type: 'divider' },
 			{
 				icon: 'ti ti-speakerphone',
 				text: i18n.ts.promote,
@@ -333,22 +347,13 @@ export function getNoteMenu(props: {
 			: []
 		),*/
 			...(appearNote.userId !== $i.id ? [
-				null,
-				{
-					icon: 'ti ti-exclamation-circle',
-					text: i18n.ts.reportAbuse,
-					action: () => {
-						const u = appearNote.url ?? appearNote.uri ?? `${url}/notes/${appearNote.id}`;
-						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
-							user: appearNote.user,
-							initialComment: `Note: ${u}\n-----\n`,
-						}, {}, 'closed');
-					},
-				}]
+				{ type: 'divider' },
+				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
+			]
 			: []
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
-				null,
+				{ type: 'divider' },
 				appearNote.userId === $i.id ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
@@ -365,29 +370,26 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'ti ti-external-link',
-			text: i18n.ts.detailed,
+			icon: 'ti ti-info-circle',
+			text: i18n.ts.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, {
-			icon: 'ti ti-link',
-			text: i18n.ts.copyLink,
-			action: copyLink,
-		}, (appearNote.url || appearNote.uri) ? {
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
+		, (appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
-				window.open(appearNote.url ?? appearNote.uri, '_blank');
+				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 			},
 		} : undefined]
 			.filter(x => x !== undefined);
 	}
 
 	if (noteActions.length > 0) {
-		menu = menu.concat([null, ...noteActions.map(action => ({
+		menu = menu.concat([{ type: "divider" }, ...noteActions.map(action => ({
 			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
@@ -397,7 +399,7 @@ export function getNoteMenu(props: {
 	}
 
 	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
+		menu = menu.concat([{ type: "divider" }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
 			action: () => {
@@ -406,5 +408,133 @@ export function getNoteMenu(props: {
 		}]);
 	}
 
-	return menu;
+	const cleanup = () => {
+		if (_DEV_) console.log('note menu cleanup', cleanups);
+		for (const cl of cleanups) {
+			cl();
+		}
+	};
+
+	return {
+		menu,
+		cleanup,
+	};
+}
+
+type Visibility = 'public' | 'home' | 'followers' | 'specified';
+
+// defaultStore.state.visibilityがstringなためstringも受け付けている
+function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
+	if (a === 'specified' || b === 'specified') return 'specified';
+	if (a === 'followers' || b === 'followers') return 'followers';
+	if (a === 'home' || b === 'home') return 'home';
+	// if (a === 'public' || b === 'public')
+	return 'public';
+}
+
+export function getRenoteMenu(props: {
+	note: Misskey.entities.Note;
+	renoteButton: Ref<HTMLElement>;
+	mock?: boolean;
+}) {
+	const isRenote = (
+		props.note.renote != null &&
+		props.note.text == null &&
+		props.note.fileIds.length === 0 &&
+		props.note.poll == null
+	);
+
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+
+	const channelRenoteItems: MenuItem[] = [];
+	const normalRenoteItems: MenuItem[] = [];
+
+	if (appearNote.channel) {
+		channelRenoteItems.push(...[{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = props.renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
+				if (!props.mock) {
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						channelId: appearNote.channelId,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				if (!props.mock) {
+					os.post({
+						renote: appearNote,
+						channel: appearNote.channel,
+					});
+				}
+			},
+		}]);
+	}
+
+	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
+		normalRenoteItems.push(...[{
+			text: i18n.ts.renote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = props.renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
+				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+
+				let visibility = appearNote.visibility;
+				visibility = smallerVisibility(visibility, configuredVisibility);
+				if (appearNote.channel?.isSensitive) {
+					visibility = smallerVisibility(visibility, 'home');
+				}
+
+				if (!props.mock) {
+					os.api('notes/create', {
+						localOnly,
+						visibility,
+						renoteId: appearNote.id,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, (props.mock) ? undefined : {
+			text: i18n.ts.quote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+				});
+			},
+		}]);
+	}
+
+	const renoteItems = [
+		...normalRenoteItems,
+		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [{ type: 'divider' }] : [],
+		...channelRenoteItems,
+	];
+
+	return {
+		menu: renoteItems,
+	};
 }

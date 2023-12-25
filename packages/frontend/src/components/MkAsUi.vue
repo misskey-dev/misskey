@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div v-if="c.type === 'root'" :class="$style.root">
@@ -6,7 +11,7 @@
 		</template>
 	</div>
 	<span v-else-if="c.type === 'text'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }">{{ c.text }}</span>
-	<Mfm v-else-if="c.type === 'mfm'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }" :text="c.text"/>
+	<Mfm v-else-if="c.type === 'mfm'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }" :text="c.text" @clickEv="c.onClickEv"/>
 	<MkButton v-else-if="c.type === 'button'" :primary="c.primary" :rounded="c.rounded" :disabled="c.disabled" :small="size === 'small'" inline @click="c.onClick">{{ c.text }}</MkButton>
 	<div v-else-if="c.type === 'buttons'" class="_buttons" :style="{ justifyContent: align }">
 		<MkButton v-for="button in c.buttons" :primary="button.primary" :rounded="button.rounded" :disabled="button.disabled" inline :small="size === 'small'" @click="button.onClick">{{ button.text }}</MkButton>
@@ -33,6 +38,14 @@
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
 	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" inline @click="openPostForm">{{ c.text }}</MkButton>
+	<div v-else-if="c.type === 'postForm'" :class="$style.postForm">
+		<MkPostForm
+			fixed
+			:instant="true"
+			:initialText="c.form.text"
+			:initialCw="c.form.cw"
+		/>
+	</div>
 	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
 		<template #label>{{ c.title }}</template>
 		<template v-for="child in c.children" :key="child">
@@ -48,15 +61,16 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref } from 'vue';
-import * as os from '@/os';
+import { Ref, ref } from 'vue';
+import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { AsUiComponent } from '@/scripts/aiscript/ui';
+import { AsUiComponent } from '@/scripts/aiscript/ui.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
@@ -74,16 +88,17 @@ function g(id) {
 	return props.components.find(x => x.value.id === id).value;
 }
 
-let valueForSwitch = $ref(c.default ?? false);
+const valueForSwitch = ref(c.default ?? false);
 
 function onSwitchUpdate(v) {
-	valueForSwitch = v;
+	valueForSwitch.value = v;
 	if (c.onChange) c.onChange(v);
 }
 
 function openPostForm() {
 	os.post({
 		initialText: c.form.text,
+		initialCw: c.form.cw,
 		instant: true,
 	});
 }
@@ -108,5 +123,10 @@ function openPostForm() {
 
 .fontMonospace {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+}
+
+.postForm {
+	background: var(--bg);
+	border-radius: 8px;
 }
 </style>

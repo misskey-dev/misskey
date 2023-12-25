@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
 	<template #header>
 		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -9,19 +14,19 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef } from 'vue';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store';
+import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 
 onMounted(() => {
 	if (props.column.roleId == null) {

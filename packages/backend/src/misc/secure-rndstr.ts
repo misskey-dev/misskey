@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as crypto from 'node:crypto';
 
 export const L_CHARS = '0123456789abcdefghijklmnopqrstuvwxyz';

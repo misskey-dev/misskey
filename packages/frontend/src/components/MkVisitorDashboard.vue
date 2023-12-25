@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-if="meta" :class="$style.root">
 	<div :class="[$style.main, $style.panel]">
@@ -46,32 +51,29 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { Instance } from 'misskey-js/built/entities';
-import XTimeline from './welcome.timeline.vue';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { instanceName } from '@/config';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import number from '@/filters/number';
+import { instanceName } from '@/config.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
-let meta = $ref<Instance>();
-let stats = $ref(null);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
 os.api('meta', { detail: true }).then(_meta => {
-	meta = _meta;
+	meta.value = _meta;
 });
 
-os.api('stats', {
-}).then((res) => {
-	stats = res;
+os.api('stats', {}).then((res) => {
+	stats.value = res;
 });
 
 function signin() {
@@ -99,18 +101,35 @@ function showMenu(ev) {
 		action: () => {
 			os.pageWindow('/about-misskey');
 		},
-	}, null, {
+	}, { type: 'divider' }, (instance.impressumUrl) ? {
+		text: i18n.ts.impressum,
+		icon: 'ti ti-file-invoice',
+		action: () => {
+			window.open(instance.impressumUrl, '_blank', 'noopener');
+		},
+	} : undefined, (instance.tosUrl) ? {
+		text: i18n.ts.termsOfService,
+		icon: 'ti ti-notebook',
+		action: () => {
+			window.open(instance.tosUrl, '_blank', 'noopener');
+		},
+	} : undefined, (instance.privacyPolicyUrl) ? {
+		text: i18n.ts.privacyPolicy,
+		icon: 'ti ti-shield-lock',
+		action: () => {
+			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
+		},
+	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.md', '_blank');
+			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function exploreOtherServers() {
-	// TODO: 言語をよしなに
-	window.open('https://join.misskey.page/ja-JP/instances', '_blank');
+	window.open('https://misskey-hub.net/servers/', '_blank', 'noopener');
 }
 </script>
 

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class driveCapacityOverrideMb1655813815729 {
     name = 'driveCapacityOverrideMb1655813815729'
 

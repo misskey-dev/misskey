@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<canvas ref="chartEl"></canvas>
@@ -17,14 +22,14 @@
 import { onMounted, ref, shallowRef, watch, PropType } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { chartVLine } from '@/scripts/chart-vline';
-import { alpha } from '@/scripts/color';
-import date from '@/filters/date';
-import { initChart } from '@/scripts/init-chart';
-import { chartLegend } from '@/scripts/chart-legend';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { chartVLine } from '@/scripts/chart-vline.js';
+import { alpha } from '@/scripts/color.js';
+import date from '@/filters/date.js';
+import { initChart } from '@/scripts/init-chart.js';
+import { chartLegend } from '@/scripts/chart-legend.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
@@ -69,7 +74,7 @@ const props = defineProps({
 	},
 });
 
-let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
+const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -263,7 +268,7 @@ const render = () => {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor), ...(props.detailed ? [chartLegend(legendEl)] : [])],
+		plugins: [chartVLine(vLineColor), ...(props.detailed ? [chartLegend(legendEl.value)] : [])],
 	});
 };
 

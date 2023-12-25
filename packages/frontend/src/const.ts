@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // ブラウザで直接表示することを許可するファイルの種類のリスト
 // ここに含まれないものは application/octet-stream としてレスポンスされる
 // SVGはXSSを生むので許可しない
@@ -49,7 +54,21 @@ https://github.com/sindresorhus/file-type/blob/main/core.js
 https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
 */
 
-export const notificationTypes = ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app'] as const;
+export const notificationTypes = [
+	'note',
+	'follow',
+	'mention',
+	'reply',
+	'renote',
+	'quote',
+	'reaction',
+	'pollEnded',
+	'receiveFollowRequest',
+	'followRequestAccepted',
+	'roleAssigned',
+	'achievementEarned',
+	'app',
+] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
 export const ROLE_POLICIES = [
@@ -61,7 +80,9 @@ export const ROLE_POLICIES = [
 	'inviteLimitCycle',
 	'inviteExpirationTime',
 	'canManageCustomEmojis',
+	'canManageAvatarDecorations',
 	'canSearchNotes',
+	'canUseTranslator',
 	'canHideAds',
 	'driveCapacityMb',
 	'alwaysMarkNsfw',
@@ -74,6 +95,7 @@ export const ROLE_POLICIES = [
 	'userListLimit',
 	'userEachUserListsLimit',
 	'rateLimitFactor',
+	'avatarDecorationLimit',
 ] as const;
 
 // なんか動かない

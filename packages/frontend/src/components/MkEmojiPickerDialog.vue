@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModal
 	ref="modal"
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
-	:preferType="asReactionPicker && defaultStore.state.reactionPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
+	:preferType="defaultStore.state.emojiPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
 	:src="src"
@@ -17,6 +22,7 @@
 		class="_popup _shadow"
 		:class="{ [$style.drawer]: type === 'drawer' }"
 		:showPinned="showPinned"
+		:pinnedEmojis="pinnedEmojis"
 		:asReactionPicker="asReactionPicker"
 		:asDrawer="type === 'drawer'"
 		:max-height="maxHeight"
@@ -29,17 +35,21 @@
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
+  pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
+  choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,
+	pinnedEmojis: undefined,
 	asReactionPicker: false,
+	choseAndClose: true,
 });
 
 const emit = defineEmits<{
@@ -53,7 +63,9 @@ const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
 	emit('done', emoji);
-	modal.value?.close();
+	if (props.choseAndClose) {
+		modal.value?.close();
+	}
 }
 
 function opening() {

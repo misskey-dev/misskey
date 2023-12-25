@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div data-cy-mkw-jobQueue class="mkw-jobQueue _monospace" :class="{ _panel: !widgetProps.transparent }">
 	<div class="inbox">
@@ -46,13 +51,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, reactive } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { useStream } from '@/stream';
-import number from '@/filters/number';
-import * as sound from '@/scripts/sound';
-import { deepClone } from '@/scripts/clone';
+import { onUnmounted, reactive, ref } from 'vue';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { useStream } from '@/stream.js';
+import number from '@/filters/number.js';
+import * as sound from '@/scripts/sound.js';
+import { deepClone } from '@/scripts/clone.js';
+import { defaultStore } from '@/store.js';
 
 const name = 'jobQueue';
 
@@ -94,7 +100,18 @@ const current = reactive({
 	},
 });
 const prev = reactive({} as typeof current);
-const jammedSound = sound.setVolume(sound.getAudio('syuilo/queue-jammed'), 1);
+const jammedAudioBuffer = ref<AudioBuffer | null>(null);
+const jammedSoundNodePlaying = ref<boolean>(false);
+
+if (defaultStore.state.sound_masterVolume) {
+	sound.loadAudio({
+		type: 'syuilo/queue-jammed',
+		volume: 1,
+	}).then(buf => {
+		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
+		jammedAudioBuffer.value = buf;
+	});
+}
 
 for (const domain of ['inbox', 'deliver']) {
 	prev[domain] = deepClone(current[domain]);
@@ -108,8 +125,13 @@ const onStats = (stats) => {
 		current[domain].waiting = stats[domain].waiting;
 		current[domain].delayed = stats[domain].delayed;
 
-		if (current[domain].waiting > 0 && widgetProps.sound && jammedSound.paused) {
-			jammedSound.play();
+		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
+			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, 1);
+			if (soundNode) {
+				jammedSoundNodePlaying.value = true;
+				soundNode.onended = () => jammedSoundNodePlaying.value = false;
+				soundNode.start();
+			}
 		}
 	}
 };

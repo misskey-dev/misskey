@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
-import { i18n } from '@/i18n';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import * as os from '@/os';
-import { MenuItem } from '@/types/menu';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import * as os from '@/os.js';
+import { MenuItem } from '@/types/menu.js';
+import { defaultStore } from '@/store.js';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -22,7 +27,7 @@ function rename(file: Misskey.entities.DriveFile) {
 
 function describe(file: Misskey.entities.DriveFile) {
 	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
-		default: file.comment != null ? file.comment : '',
+		default: file.comment ?? '',
 		file: file,
 	}, {
 		done: caption => {
@@ -51,6 +56,7 @@ function copyUrl(file: Misskey.entities.DriveFile) {
 	copyToClipboard(file.url);
 	os.success();
 }
+
 /*
 function addApp() {
 	alert('not implemented yet');
@@ -72,6 +78,11 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 	const isImage = file.type.startsWith('image/');
 	let menu;
 	menu = [{
+		type: 'link',
+		to: `/my/drive/file/${file.id}`,
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-info-circle',
+	}, { type: 'divider' }, {
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(file),
@@ -88,9 +99,9 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		icon: 'ti ti-crop',
 		action: () => os.cropImage(file, {
 			aspectRatio: NaN,
-			uploadFolder: folder ? folder.id : folder
+			uploadFolder: folder ? folder.id : folder,
 		}),
-	}] : [], null, {
+	}] : [], { type: 'divider' }, {
 		text: i18n.ts.createNoteFromTheFile,
 		icon: 'ti ti-pencil',
 		action: () => os.post({
@@ -107,7 +118,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		text: i18n.ts.download,
 		icon: 'ti ti-download',
 		download: file.name,
-	}, null, {
+	}, { type: 'divider' }, {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		danger: true,
@@ -115,7 +126,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 	}];
 
 	if (defaultStore.state.devMode) {
-		menu = menu.concat([null, {
+		menu = menu.concat([{ type: 'divider' }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyFileId,
 			action: () => {

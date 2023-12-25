@@ -1,14 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistryItemsRepository } from '@/models/index.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
-
-	secure: true,
 } as const;
 
 export const paramDef = {
@@ -19,53 +19,18 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
-	required: ['key', 'value'],
+	required: ['key', 'value', 'scope'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.registryItemsRepository)
-		private registryItemsRepository: RegistryItemsRepository,
-
-		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private registryApiService: RegistryApiService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
-			const query = this.registryItemsRepository.createQueryBuilder('item')
-				.where('item.domain IS NULL')
-				.andWhere('item.userId = :userId', { userId: me.id })
-				.andWhere('item.key = :key', { key: ps.key })
-				.andWhere('item.scope = :scope', { scope: ps.scope });
-
-			const existingItem = await query.getOne();
-
-			if (existingItem) {
-				await this.registryItemsRepository.update(existingItem.id, {
-					updatedAt: new Date(),
-					value: ps.value,
-				});
-			} else {
-				await this.registryItemsRepository.insert({
-					id: this.idService.genId(),
-					createdAt: new Date(),
-					updatedAt: new Date(),
-					userId: me.id,
-					domain: null,
-					scope: ps.scope,
-					key: ps.key,
-					value: ps.value,
-				});
-			}
-
-			// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-			this.globalEventService.publishMainStream(me.id, 'registryUpdated', {
-				scope: ps.scope,
-				key: ps.key,
-				value: ps.value,
-			});
+		super(meta, paramDef, async (ps, me, accessToken) => {
+			await this.registryApiService.set(me.id, accessToken ? accessToken.id : (ps.domain ?? null), ps.scope, ps.key, ps.value);
 		});
 	}
 }

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
 
@@ -188,7 +193,7 @@ function nothingToDo<T, V = T>(value: T): V {
 export class MemoryKVCache<T, V = T> {
 	public cache: Map<string, { date: number; value: V; }>;
 	private lifetime: number;
-	private gcIntervalHandle: NodeJS.Timer;
+	private gcIntervalHandle: NodeJS.Timeout;
 	private toMapConverter: (value: T) => V;
 	private fromMapConverter: (cached: V) => T | undefined;
 

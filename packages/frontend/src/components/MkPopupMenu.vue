@@ -1,14 +1,19 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :zPriority="'high'" :src="src" :transparentBg="true" @click="modal.close()" @close="emit('closing')" @closed="emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="modal.close()"/>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="onModalClose" @closed="onModalClosed">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, shallowRef } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu';
+import { MenuItem } from '@/types/menu.js';
 
 defineProps<{
 	items: MenuItem[];
@@ -23,7 +28,47 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-let modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
+const manualShowing = ref(true);
+const hiding = ref(false);
+
+function click() {
+	close();
+}
+
+function onModalClose() {
+	emit('closing');
+}
+
+function onMenuClose() {
+	close();
+	if (hiding.value) {
+		// hidingであればclosedを発火
+		emit('closed');
+	}
+}
+
+function onModalClosed() {
+	if (!hiding.value) {
+		// hidingでなければclosedを発火
+		emit('closed');
+	}
+}
+
+function hide() {
+	manualShowing.value = false;
+	hiding.value = true;
+
+	// closeは呼ぶ必要がある
+	modal.value?.close();
+}
+
+function close() {
+	manualShowing.value = false;
+
+	// closeは呼ぶ必要がある
+	modal.value?.close();
+}
 </script>
 
 <style lang="scss" module>

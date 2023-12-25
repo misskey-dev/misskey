@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <section>
 	<component
@@ -20,7 +25,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
-import { SectionBlock } from './block.type';
+import { SectionBlock } from './block.type.js';
 
 const XBlock = defineAsyncComponent(() => import('./page.block.vue'));
 

@@ -9,24 +9,24 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
+
+# Add only the root, not each workspace item
+# https://github.com/dependabot/dependabot-core/issues/4993#issuecomment-1289133027
 - package-ecosystem: npm
   directory: "/"
   schedule:
     interval: daily
+  # PNPM has an issue with dependabot. See:
+  # https://github.com/dependabot/dependabot-core/issues/7258
+  # https://github.com/pnpm/pnpm/issues/6530
+  # TODO: Restore this when the issue is solved
   open-pull-requests-limit: 0
-- package-ecosystem: npm
-  directory: "/packages/backend"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 0
-- package-ecosystem: npm
-  directory: "/packages/frontend"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 0
-- package-ecosystem: npm
-  directory: "/packages/sw"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 0
+  groups:
+    swc:
+      patterns:
+        - "@swc/*"
+    storybook:
+      patterns:
+        - "storybook*"
+        - "@storybook/*"

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="mk-uploader _acrylic" :style="{ zIndex }">
 	<ol v-if="uploads.length > 0">
@@ -19,9 +24,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as os from '@/os';
-import { uploads } from '@/scripts/upload';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { uploads } from '@/scripts/upload.js';
+import { i18n } from '@/i18n.js';
 
 const zIndex = os.claimZIndex('high');
 </script>

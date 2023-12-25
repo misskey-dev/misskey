@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
-import type { User, LocalUser, RemoteUser } from '@/models/entities/User.js';
-import type { Note, IMentionedRemoteUsers } from '@/models/entities/Note.js';
-import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
+import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import type { MiNote, IMentionedRemoteUsers } from '@/models/Note.js';
+import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -18,6 +23,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -43,6 +50,7 @@ export class NoteDeleteService {
 		private apDeliverManagerService: ApDeliverManagerService,
 		private metaService: MetaService,
 		private searchService: SearchService,
+		private moderationLogService: ModerationLogService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
@@ -53,15 +61,9 @@ export class NoteDeleteService {
 	 * @param user 投稿者
 	 * @param note 投稿
 	 */
-	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; isBot: User['isBot']; }, note: Note, quiet = false) {
+	async delete(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, quiet = false, deleter?: MiUser) {
 		const deletedAt = new Date();
 		const cascadingNotes = await this.findCascadingNotes(note);
-
-		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
-		if (note.renoteId && (await this.noteEntityService.countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
-			this.notesRepository.decrement({ id: note.renoteId }, 'renoteCount', 1);
-			if (!user.isBot) this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
-		}
 
 		if (note.replyId) {
 			await this.notesRepository.decrement({ id: note.replyId }, 'repliesCount', 1);
@@ -74,10 +76,10 @@ export class NoteDeleteService {
 
 			//#region ローカルの投稿なら削除アクティビティを配送
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-				let renote: Note | null = null;
+				let renote: MiNote | null = null;
 
-				// if deletd note is renote
-				if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
+				// if deleted note is renote
+				if (isPureRenote(note)) {
 					renote = await this.notesRepository.findOneBy({
 						id: note.renoteId,
 					});
@@ -126,11 +128,22 @@ export class NoteDeleteService {
 			id: note.id,
 			userId: user.id,
 		});
+
+		if (deleter && (note.userId !== deleter.id)) {
+			const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
+			this.moderationLogService.log(deleter, 'deleteNote', {
+				noteId: note.id,
+				noteUserId: note.userId,
+				noteUserUsername: user.username,
+				noteUserHost: user.host,
+				note: note,
+			});
+		}
 	}
 
 	@bindThis
-	private async findCascadingNotes(note: Note): Promise<Note[]> {
-		const recursive = async (noteId: string): Promise<Note[]> => {
+	private async findCascadingNotes(note: MiNote): Promise<MiNote[]> {
+		const recursive = async (noteId: string): Promise<MiNote[]> => {
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.replyId = :noteId', { noteId })
 				.orWhere(new Brackets(q => {
@@ -146,13 +159,13 @@ export class NoteDeleteService {
 			].flat();
 		};
 
-		const cascadingNotes: Note[] = await recursive(note.id);
+		const cascadingNotes: MiNote[] = await recursive(note.id);
 
 		return cascadingNotes;
 	}
 
 	@bindThis
-	private async getMentionedRemoteUsers(note: Note) {
+	private async getMentionedRemoteUsers(note: MiNote) {
 		const where = [] as any[];
 
 		// mention / reply / dm
@@ -174,11 +187,11 @@ export class NoteDeleteService {
 
 		return await this.usersRepository.find({
 			where,
-		}) as RemoteUser[];
+		}) as MiRemoteUser[];
 	}
 
 	@bindThis
-	private async deliverToConcerned(user: { id: LocalUser['id']; host: null; }, note: Note, content: any) {
+	private async deliverToConcerned(user: { id: MiLocalUser['id']; host: null; }, note: MiNote, content: any) {
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);
 		const remoteUsers = await this.getMentionedRemoteUsers(note);

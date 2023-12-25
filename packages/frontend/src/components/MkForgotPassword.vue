@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModalWindow
 	ref="dialog"
@@ -34,33 +39,33 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'done'): void;
 	(ev: 'closed'): void;
 }>();
 
-let dialog: InstanceType<typeof MkModalWindow> = $ref();
+const dialog = ref<InstanceType<typeof MkModalWindow>>();
 
-let username = $ref('');
-let email = $ref('');
-let processing = $ref(false);
+const username = ref('');
+const email = ref('');
+const processing = ref(false);
 
 async function onSubmit() {
-	processing = true;
+	processing.value = true;
 	await os.apiWithDialog('request-reset-password', {
-		username,
-		email,
+		username: username.value,
+		email: email.value,
 	});
 	emit('done');
-	dialog.close();
+	dialog.value.close();
 }
 </script>

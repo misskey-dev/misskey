@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import {
 	packedUserLiteSchema,
 	packedUserDetailedNotMeOnlySchema,
@@ -30,6 +35,10 @@ import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
+import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
+import { packedSigninSchema } from '@/models/json-schema/signin.js';
+import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
+import { packedAdSchema } from '@/models/json-schema/ad.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -41,6 +50,8 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	Ad: packedAdSchema,
+	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
@@ -64,6 +75,9 @@ export const refs = {
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
+	Signin: packedSigninSchema,
+	RoleLite: packedRoleLiteSchema,
+	Role: packedRoleSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;

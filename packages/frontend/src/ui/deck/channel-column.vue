@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<XColumn :menu="menu" :column="column" :isStacked="isStacked">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="() => timeline.reloadTimeline()">
 	<template #header>
 		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -14,21 +19,22 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import { shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store';
+import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
-let channel = $shallowRef<misskey.entities.Channel>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const channel = shallowRef<Misskey.entities.Channel>();
 
 if (props.column.channelId == null) {
 	setChannel();
@@ -53,14 +59,14 @@ async function setChannel() {
 }
 
 async function post() {
-	if (!channel || channel.id !== props.column.channelId) {
-		channel = await os.api('channels/show', {
+	if (!channel.value || channel.value.id !== props.column.channelId) {
+		channel.value = await os.api('channels/show', {
 			channelId: props.column.channelId,
 		});
 	}
 
 	os.post({
-		channel,
+		channel: channel.value,
 	});
 }
 

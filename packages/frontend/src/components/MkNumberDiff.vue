@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <span class="ceaaebcd" :class="{ [$style.isPlus]: isPlus, [$style.isMinus]: isMinus, [$style.isZero]: isZero }">
 	<slot name="before"></slot>{{ isPlus ? '+' : '' }}{{ number(value) }}<slot name="after"></slot>
@@ -6,7 +11,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import number from '@/filters/number';
+import number from '@/filters/number.js';
 
 const props = defineProps<{
 	value: number;

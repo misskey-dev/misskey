@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const unicodeEmojiCategories = ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'] as const;
 
 export type UnicodeEmojiDef = {
@@ -37,4 +42,10 @@ export function getEmojiName(char: string): string | null {
 	} else {
 		return emojilist[idx].name;
 	}
+}
+
+export interface CustomEmojiFolderTree {
+	value: string;
+	category: string;
+	children: CustomEmojiFolderTree[];
 }

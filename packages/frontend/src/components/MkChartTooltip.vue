@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkTooltip ref="tooltip" :showing="showing" :x="x" :y="y" :maxWidth="340" :direction="'top'" :innerMargin="16" @closed="emit('closed')">
 	<div v-if="title || series">

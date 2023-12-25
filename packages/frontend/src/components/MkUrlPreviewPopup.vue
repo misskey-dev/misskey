@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" @afterLeave="emit('closed')">
@@ -7,10 +12,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	showing: boolean;
@@ -23,16 +28,16 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let top = $ref(0);
-let left = $ref(0);
+const top = ref(0);
+const left = ref(0);
 
 onMounted(() => {
 	const rect = props.source.getBoundingClientRect();
 	const x = Math.max((rect.left + (props.source.offsetWidth / 2)) - (300 / 2), 6) + window.pageXOffset;
 	const y = rect.top + props.source.offsetHeight + window.pageYOffset;
 
-	top = y;
-	left = x;
+	top.value = y;
+	left.value = x;
 });
 </script>
 

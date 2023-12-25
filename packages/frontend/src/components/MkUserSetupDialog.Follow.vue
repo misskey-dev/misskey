@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps">
 	<div style="text-align: center;">{{ i18n.ts._initialAccountSetting.followUsers }}</div>
@@ -29,15 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
-import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
 import MkPagination from '@/components/MkPagination.vue';
 
 const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };

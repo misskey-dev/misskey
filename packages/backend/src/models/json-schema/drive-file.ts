@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const packedDriveFileSchema = {
 	type: 'object',
 	properties: {
@@ -69,7 +74,7 @@ export const packedDriveFileSchema = {
 		},
 		url: {
 			type: 'string',
-			optional: false, nullable: true,
+			optional: false, nullable: false,
 			format: 'url',
 		},
 		thumbnailUrl: {

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import si from 'systeminformation';
 import Xev from 'xev';
@@ -15,7 +20,7 @@ const round = (num: number) => Math.round(num * 10) / 10;
 
 @Injectable()
 export class ServerStatsService implements OnApplicationShutdown {
-	private intervalId: NodeJS.Timer | null = null;
+	private intervalId: NodeJS.Timeout | null = null;
 
 	constructor(
 		private metaService: MetaService,
@@ -103,6 +108,5 @@ async function net() {
 
 // FS STAT
 async function fs() {
-	const data = await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
-	return data ?? { rIO_sec: 0, wIO_sec: 0 };
+	return await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
 }

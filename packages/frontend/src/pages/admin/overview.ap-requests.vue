@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkLoading v-if="fetching"/>
@@ -15,22 +20,22 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import * as os from '@/os';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { chartVLine } from '@/scripts/chart-vline';
-import { defaultStore } from '@/store';
-import { alpha } from '@/scripts/color';
-import { initChart } from '@/scripts/init-chart';
+import * as os from '@/os.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { chartVLine } from '@/scripts/chart-vline.js';
+import { defaultStore } from '@/store.js';
+import { alpha } from '@/scripts/color.js';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
 const chartLimit = 50;
-const chartEl = $shallowRef<HTMLCanvasElement>();
-const chartEl2 = $shallowRef<HTMLCanvasElement>();
-let fetching = $ref(true);
+const chartEl = shallowRef<HTMLCanvasElement>();
+const chartEl2 = shallowRef<HTMLCanvasElement>();
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
@@ -69,7 +74,7 @@ onMounted(async () => {
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
 
-	new Chart(chartEl, {
+	new Chart(chartEl.value, {
 		type: 'line',
 		data: {
 			datasets: [{
@@ -173,7 +178,7 @@ onMounted(async () => {
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	new Chart(chartEl2, {
+	new Chart(chartEl2.value, {
 		type: 'bar',
 		data: {
 			datasets: [{
@@ -260,7 +265,7 @@ onMounted(async () => {
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	fetching = false;
+	fetching.value = false;
 });
 </script>
 

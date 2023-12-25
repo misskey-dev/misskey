@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModalWindow
 	ref="dialog"
@@ -21,11 +26,11 @@
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
-				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text">
+				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text" :mfmAutocomplete="form[item].treatAsMfm">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
-				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
+				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" :mfmAutocomplete="form[item].treatAsMfm" :mfmPreview="form[item].treatAsMfm">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkTextarea>
@@ -64,7 +69,7 @@ import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	title: string;

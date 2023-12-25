@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -40,7 +45,7 @@
 
 				<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination">
 					<div :class="$style.users">
-						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/user-info/${user.id}`">
+						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
 							<MkUserCardMini :user="user"/>
 						</MkA>
 					</div>
@@ -52,34 +57,34 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, shallowRef, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import * as os from '@/os';
-import { lookupUser } from '@/scripts/lookup-user';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { lookupUser } from '@/scripts/lookup-user.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { dateString } from '@/filters/date';
+import { dateString } from '@/filters/date.js';
 
-let paginationComponent = $shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-let sort = $ref('+createdAt');
-let state = $ref('all');
-let origin = $ref('local');
-let searchUsername = $ref('');
-let searchHost = $ref('');
+const sort = ref('+createdAt');
+const state = ref('all');
+const origin = ref('local');
+const searchUsername = ref('');
+const searchHost = ref('');
 const pagination = {
 	endpoint: 'admin/show-users' as const,
 	limit: 10,
 	params: computed(() => ({
-		sort: sort,
-		state: state,
-		origin: origin,
-		username: searchUsername,
-		hostname: searchHost,
+		sort: sort.value,
+		state: state.value,
+		origin: origin.value,
+		username: searchUsername.value,
+		hostname: searchHost.value,
 	})),
 	offsetMode: true,
 };
@@ -106,15 +111,15 @@ async function addUser() {
 		username: username,
 		password: password,
 	}).then(res => {
-		paginationComponent.reload();
+		paginationComponent.value.reload();
 	});
 }
 
 function show(user) {
-	os.pageWindow(`/user-info/${user.id}`);
+	os.pageWindow(`/admin/user/${user.id}`);
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-search',
 	text: i18n.ts.search,
 	handler: searchUser,
@@ -130,7 +135,7 @@ const headerActions = $computed(() => [{
 	handler: lookupUser,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.users,

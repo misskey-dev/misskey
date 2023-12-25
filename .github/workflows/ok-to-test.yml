@@ -17,13 +17,13 @@ jobs:
     # See app.yml for an example app manifest
     - name: Generate token
       id: generate_token
-      uses: tibdex/github-app-token@v1
+      uses: tibdex/github-app-token@v2
       with:
         app_id: ${{ secrets.DEPLOYBOT_APP_ID }}
         private_key: ${{ secrets.DEPLOYBOT_PRIVATE_KEY }}
 
     - name: Slash Command Dispatch
-      uses: peter-evans/slash-command-dispatch@v1
+      uses: peter-evans/slash-command-dispatch@v3
       env:
         TOKEN: ${{ steps.generate_token.outputs.token }}
       with:

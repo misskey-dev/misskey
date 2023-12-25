@@ -1,12 +1,19 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Note } from '@/models/entities/Note.js';
-import { User } from '@/models/index.js';
-import type { NotesRepository } from '@/models/index.js';
+import { MiNote } from '@/models/Note.js';
+import { MiUser } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
@@ -20,6 +27,8 @@ type Q =
 	{ op: '<', k: K, v: number } |
 	{ op: '>=', k: K, v: number } |
 	{ op: '<=', k: K, v: number } |
+	{ op: 'is null', k: K} |
+	{ op: 'is not null', k: K} |
 	{ op: 'and', qs: Q[] } |
 	{ op: 'or', qs: Q[] } |
 	{ op: 'not', q: Q };
@@ -45,6 +54,8 @@ function compileQuery(q: Q): string {
 		case '<=': return `(${q.k} <= ${compileValue(q.v)})`;
 		case 'and': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
 		case 'or': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
+		case 'is null': return `(${q.k} IS NULL)`;
+		case 'is not null': return `(${q.k} IS NOT NULL)`;
 		case 'not': return `(NOT ${compileQuery(q.q)})`;
 		default: throw new Error('unrecognized query operator');
 	}
@@ -65,6 +76,7 @@ export class SearchService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private cacheService: CacheService,
 		private queryService: QueryService,
 		private idService: IdService,
 	) {
@@ -100,7 +112,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async indexNote(note: Note): Promise<void> {
+	public async indexNote(note: MiNote): Promise<void> {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
@@ -122,7 +134,7 @@ export class SearchService {
 
 			await this.meilisearchNoteIndex?.addDocuments([{
 				id: note.id,
-				createdAt: note.createdAt.getTime(),
+				createdAt: this.idService.parse(note.id).date.getTime(),
 				userId: note.userId,
 				userHost: note.userHost,
 				channelId: note.channelId,
@@ -136,7 +148,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async unindexNote(note: Note): Promise<void> {
+	public async unindexNote(note: MiNote): Promise<void> {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
@@ -145,15 +157,15 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: User | null, opts: {
-		userId?: Note['userId'] | null;
-		channelId?: Note['channelId'] | null;
+	public async searchNote(q: string, me: MiUser | null, opts: {
+		userId?: MiNote['userId'] | null;
+		channelId?: MiNote['channelId'] | null;
 		host?: string | null;
 	}, pagination: {
-		untilId?: Note['id'];
-		sinceId?: Note['id'];
+		untilId?: MiNote['id'];
+		sinceId?: MiNote['id'];
 		limit?: number;
-	}): Promise<Note[]> {
+	}): Promise<MiNote[]> {
 		if (this.meilisearch) {
 			const filter: Q = {
 				op: 'and',
@@ -165,7 +177,7 @@ export class SearchService {
 			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
 			if (opts.host) {
 				if (opts.host === '.') {
-					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
+					filter.qs.push({ op: 'is null', k: 'userHost' });
 				} else {
 					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
 				}
@@ -178,8 +190,19 @@ export class SearchService {
 				limit: pagination.limit,
 			});
 			if (res.hits.length === 0) return [];
-			const notes = await this.notesRepository.findBy({
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>()];
+			const notes = (await this.notesRepository.findBy({
 				id: In(res.hits.map(x => x.id)),
+			})).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+				return true;
 			});
 			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
 		} else {
@@ -198,6 +221,14 @@ export class SearchService {
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
+
+			if (opts.host) {
+				if (opts.host === '.') {
+					query.andWhere('user.host IS NULL');
+				} else {
+					query.andWhere('user.host = :host', { host: opts.host });
+				}
+			}
 
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);

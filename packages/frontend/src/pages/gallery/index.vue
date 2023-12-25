@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
@@ -42,13 +47,13 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref, computed } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -56,9 +61,9 @@ const props = defineProps<{
 	tag?: string;
 }>();
 
-let tab = $ref('explore');
-let tags = $ref([]);
-let tagsRef = $ref();
+const tab = ref('explore');
+const tags = ref([]);
+const tagsRef = ref();
 
 const recentPostsPagination = {
 	endpoint: 'gallery/posts' as const,
@@ -77,21 +82,21 @@ const likedPostsPagination = {
 	limit: 5,
 };
 
-const tagUsersPagination = $computed(() => ({
+const tagUsersPagination = computed(() => ({
 	endpoint: 'hashtags/users' as const,
 	limit: 30,
 	params: {
-		tag: this.tag,
+		tag: props.tag,
 		origin: 'combined',
 		sort: '+follower',
 	},
 }));
 
 watch(() => props.tag, () => {
-	if (tagsRef) tagsRef.tags.toggleContent(props.tag == null);
+	if (tagsRef.value) tagsRef.value.tags.toggleContent(props.tag == null);
 });
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: () => {
@@ -99,7 +104,7 @@ const headerActions = $computed(() => [{
 	},
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'explore',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',

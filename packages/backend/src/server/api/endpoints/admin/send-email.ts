@@ -1,9 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmailService } from '@/core/EmailService.js';
 
 export const meta = {
 	tags: ['admin'],
+
+	kind: 'write:admin',
 
 	requireCredential: true,
 	requireModerator: true,
@@ -19,9 +26,8 @@ export const paramDef = {
 	required: ['to', 'subject', 'text'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private emailService: EmailService,
 	) {

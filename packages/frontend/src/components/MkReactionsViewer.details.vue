@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="340" @closed="emit('closed')">
 	<div :class="$style.root">
@@ -10,7 +15,7 @@
 				<MkAvatar :class="$style.avatar" :user="u"/>
 				<MkUserName :user="u" :nowrap="true"/>
 			</div>
-			<div v-if="users.length > 10" :class="$style.more">+{{ count - 10 }}</div>
+			<div v-if="count > 10" :class="$style.more">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>
@@ -20,7 +25,7 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist';
+import { getEmojiName } from '@/scripts/emojilist.js';
 
 defineProps<{
 	showing: boolean;
@@ -68,7 +73,6 @@ function getReactionName(reaction: string): string {
 }
 
 .users {
-	contain: content;
 	flex: 1;
 	min-width: 0;
 	margin: -4px 14px 0 10px;
@@ -80,7 +84,7 @@ function getReactionName(reaction: string): string {
 	line-height: 24px;
 	padding-top: 4px;
 	white-space: nowrap;
-	overflow: hidden;
+	overflow: visible;
 	text-overflow: ellipsis;
 }
 

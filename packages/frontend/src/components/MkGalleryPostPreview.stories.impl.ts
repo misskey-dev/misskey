@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
 import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
-import { galleryPost } from '../../.storybook/fakes';
+import { galleryPost } from '../../.storybook/fakes.js';
 import MkGalleryPostPreview from './MkGalleryPostPreview.vue';
 export const Default = {
 	render(args) {

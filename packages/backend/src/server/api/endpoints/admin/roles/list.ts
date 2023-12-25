@@ -1,14 +1,31 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository } from '@/models/index.js';
+import type { RolesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 
 export const meta = {
 	tags: ['admin', 'role'],
 
+	kind: 'read:admin',
+
 	requireCredential: true,
 	requireModerator: true,
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'Role',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -19,9 +36,8 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,

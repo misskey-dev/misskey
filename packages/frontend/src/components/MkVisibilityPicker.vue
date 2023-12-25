@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts.visibility }}
 		</div>
-		<button key="public" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
+		<button key="public" :disabled="isSilenced" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
@@ -37,32 +42,33 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick } from 'vue';
-import * as misskey from 'misskey-js';
+import { nextTick, shallowRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
-	currentVisibility: typeof misskey.noteVisibilities[number];
+	currentVisibility: typeof Misskey.noteVisibilities[number];
+	isSilenced: boolean;
 	localOnly: boolean;
 	src?: HTMLElement;
 }>(), {
 });
 
 const emit = defineEmits<{
-	(ev: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
+	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
 	(ev: 'closed'): void;
 }>();
 
-let v = $ref(props.currentVisibility);
+const v = ref(props.currentVisibility);
 
-function choose(visibility: typeof misskey.noteVisibilities[number]): void {
-	v = visibility;
+function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
+	v.value = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {
-		if (modal) modal.close();
+		if (modal.value) modal.value.close();
 	});
 }
 </script>

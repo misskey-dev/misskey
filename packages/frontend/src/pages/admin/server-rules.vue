@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -36,31 +41,31 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref, computed } from 'vue';
 import XHeader from './_header_.vue';
-import * as os from '@/os';
-import { fetchInstance, instance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { fetchInstance, instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-let serverRules: string[] = $ref(instance.serverRules);
+const serverRules = ref<string[]>(instance.serverRules);
 
 const save = async () => {
 	await os.apiWithDialog('admin/update-meta', {
-		serverRules,
+		serverRules: serverRules.value,
 	});
 	fetchInstance();
 };
 
 const remove = (index: number): void => {
-	serverRules.splice(index, 1);
+	serverRules.value.splice(index, 1);
 };
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.serverRules,

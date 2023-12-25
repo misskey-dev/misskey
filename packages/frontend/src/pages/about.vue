@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
@@ -41,14 +46,18 @@
 							<template #value>{{ instance.maintainerEmail }}</template>
 						</MkKeyValue>
 					</FormSplit>
-					<MkFolder v-if="instance.serverRules.length > 0">
-						<template #label>{{ i18n.ts.serverRules }}</template>
+					<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>{{ i18n.ts.impressum }}</FormLink>
+					<div class="_gaps_s">
+						<MkFolder v-if="instance.serverRules.length > 0">
+							<template #label>{{ i18n.ts.serverRules }}</template>
 
-						<ol class="_gaps_s" :class="$style.rules">
-							<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
-						</ol>
-					</MkFolder>
-					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+							<ol class="_gaps_s" :class="$style.rules">
+								<li v-for="item, index in instance.serverRules" :key="index" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
+							</ol>
+						</MkFolder>
+						<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+						<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>{{ i18n.ts.privacyPolicy }}</FormLink>
+					</div>
 				</div>
 			</FormSection>
 
@@ -70,7 +79,7 @@
 
 			<FormSection>
 				<template #label>Well-known resources</template>
-				<div class="_formLinks">
+				<div class="_gaps_s">
 					<FormLink :to="`/.well-known/host-meta`" external>host-meta</FormLink>
 					<FormLink :to="`/.well-known/host-meta.json`" external>host-meta.json</FormLink>
 					<FormLink :to="`/.well-known/nodeinfo`" external>nodeinfo</FormLink>
@@ -93,10 +102,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, host } from '@/config';
+import { version, host } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -104,12 +113,12 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
-import * as os from '@/os';
-import number from '@/filters/number';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { claimAchievement } from '@/scripts/achievements';
-import { instance } from '@/instance';
+import * as os from '@/os.js';
+import number from '@/filters/number.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -117,23 +126,23 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
-let stats = $ref(null);
-let tab = $ref(props.initialTab);
+const stats = ref(null);
+const tab = ref(props.initialTab);
 
-watch($$(tab), () => {
-	if (tab === 'charts') {
+watch(tab, () => {
+	if (tab.value === 'charts') {
 		claimAchievement('viewInstanceChart');
 	}
 });
 
 const initStats = () => os.api('stats', {
 }).then((res) => {
-	stats = res;
+	stats.value = res;
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 }, {

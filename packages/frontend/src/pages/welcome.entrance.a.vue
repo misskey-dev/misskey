@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-if="meta" class="rsqzvsbo">
 	<MkFeaturedPhotos class="bg"/>
 	<XTimeline class="tl"/>
 	<div class="shape1"></div>
 	<div class="shape2"></div>
-	<img src="/client-assets/misskey.svg" class="misskey"/>
+	<img :src="misskeysvg" class="misskey"/>
 	<div class="emojis">
 		<MkEmoji :normal="true" :noStyle="true" emoji="👍"/>
 		<MkEmoji :normal="true" :noStyle="true" emoji="❤"/>
@@ -19,7 +24,7 @@
 		<MarqueeText :duration="40">
 			<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
 				<!--<MkInstanceCardMini :instance="instance"/>-->
-				<img v-if="instance.iconUrl" class="icon" :src="instance.iconUrl" alt=""/>
+				<img v-if="instance.iconUrl" class="icon" :src="getInstanceIcon(instance)" alt=""/>
 				<span class="name _monospace">{{ instance.host }}</span>
 			</MkA>
 		</MarqueeText>
@@ -28,32 +33,35 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { Instance } from 'misskey-js/built/entities';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import { instanceName } from '@/config';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import number from '@/filters/number';
-import MkNumber from '@/components/MkNumber.vue';
+import misskeysvg from '/client-assets/misskey.svg';
+import * as os from '@/os.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
+import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
-let meta = $ref<Instance>();
-let instances = $ref<any[]>();
+const meta = ref<Misskey.entities.MetaResponse>();
+const instances = ref<Misskey.entities.FederationInstance[]>();
+
+function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
+	if (!instance.iconUrl) {
+		return '';
+	}
+	return getProxiedImageUrl(instance.iconUrl, 'preview');
+}
 
 os.api('meta', { detail: true }).then(_meta => {
-	meta = _meta;
+	meta.value = _meta;
 });
 
 os.apiGet('federation/instances', {
 	sort: '+pubSub',
 	limit: 20,
 }).then(_instances => {
-	instances = _instances;
+	instances.value = _instances;
 });
 </script>
 

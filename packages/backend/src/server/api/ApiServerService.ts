@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import { ModuleRef } from '@nestjs/core';
 import type { Config } from '@/config.js';
-import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
+import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -21,9 +26,6 @@ export class ApiServerService {
 
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,

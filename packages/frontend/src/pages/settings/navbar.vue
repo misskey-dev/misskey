@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormSlot>
@@ -46,13 +51,12 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import * as os from '@/os';
-import { navbarItemDef } from '@/navbar';
-import { defaultStore } from '@/store';
-import { unisonReload } from '@/scripts/unison-reload';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { deepClone } from '@/scripts/clone';
+import * as os from '@/os.js';
+import { navbarItemDef } from '@/navbar.js';
+import { defaultStore } from '@/store.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -110,9 +114,9 @@ watch(menuDisplay, async () => {
 	await reloadAsk();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.navbar,

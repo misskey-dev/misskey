@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // NIRAX --- A lightweight router
 
 import { EventEmitter } from 'eventemitter3';
 import { Component, onMounted, shallowRef, ShallowRef } from 'vue';
-import { safeURIDecode } from '@/scripts/safe-uri-decode';
+import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 
 type RouteDef = {
 	path: string;

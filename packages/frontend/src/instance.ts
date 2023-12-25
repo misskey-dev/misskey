@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
-import { api } from './os';
-import { miLocalStorage } from './local-storage';
-import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const';
+import { api } from '@/os.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -10,7 +15,7 @@ const cached = miLocalStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(cached ? JSON.parse(cached) : {
+export const instance: Misskey.entities.MetaResponse = reactive(cached ? JSON.parse(cached) : {
 	// TODO: set default values
 });
 

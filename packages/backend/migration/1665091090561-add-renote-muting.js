@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class addRenoteMuting1665091090561 {
 	constructor() {
@@ -12,5 +16,9 @@ export class addRenoteMuting1665091090561 {
 	}
 
 	async down(queryRunner) {
+		await queryRunner.query(`DROP INDEX "IDX_renote_muting_muterId"`);
+		await queryRunner.query(`DROP INDEX "IDX_renote_muting_muteeId"`);
+		await queryRunner.query(`DROP INDEX "IDX_renote_muting_createdAt"`);
+		await queryRunner.query(`DROP TABLE "renote_muting"`);
 	}
 }

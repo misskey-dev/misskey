@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <span v-if="!fetching" :class="$style.root">
 	<template v-if="display === 'marquee'">
@@ -24,8 +29,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MarqueeText from '@/components/MkMarquee.vue';
-import { useInterval } from '@/scripts/use-interval';
-import { shuffle } from '@/scripts/shuffle';
+import { useInterval } from '@/scripts/use-interval.js';
+import { shuffle } from '@/scripts/shuffle.js';
 
 const props = defineProps<{
 	url?: string;
@@ -39,7 +44,7 @@ const props = defineProps<{
 
 const items = ref([]);
 const fetching = ref(true);
-let key = $ref(0);
+const key = ref(0);
 
 const tick = () => {
 	window.fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
@@ -49,7 +54,7 @@ const tick = () => {
 			}
 			items.value = feed.items;
 			fetching.value = false;
-			key++;
+			key.value++;
 		});
 	});
 };

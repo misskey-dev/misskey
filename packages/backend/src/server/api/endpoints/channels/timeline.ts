@@ -1,12 +1,20 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelsRepository, Note, NotesRepository } from '@/models/index.js';
+import type { ChannelsRepository, NotesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { MiLocalUser } from '@/models/User.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -42,17 +50,14 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 	},
 	required: ['channelId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -62,9 +67,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
+		private cacheService: CacheService,
 		private activeUsersChart: ActiveUsersChart,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
+
+			const serverSettings = await this.metaService.fetch();
+
 			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
@@ -73,70 +86,50 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			let timeline: Note[] = [];
-
-			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			let noteIdsRes: [string, string[]][] = [];
-
-			if (!ps.sinceId && !ps.sinceDate) {
-				noteIdsRes = await this.redisClient.xrevrange(
-					`channelTimeline:${channel.id}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
-					'COUNT', limit);
-			}
-
-			// redis から取得していないとき・取得数が足りないとき
-			if (noteIdsRes.length < limit) {
-				//#region Construct query
-				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-					.andWhere('note.channelId = :channelId', { channelId: channel.id })
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
-
-				if (me) {
-					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateMutedNoteQuery(query, me);
-					this.queryService.generateBlockedUserQuery(query, me);
-				}
-				//#endregion
-
-				timeline = await query.limit(ps.limit).getMany();
-			} else {
-				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
-
-				if (noteIds.length === 0) {
-					return [];
-				}
-
-				//#region Construct query
-				const query = this.notesRepository.createQueryBuilder('note')
-					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-					.innerJoinAndSelect('note.user', 'user')
-					.leftJoinAndSelect('note.reply', 'reply')
-					.leftJoinAndSelect('note.renote', 'renote')
-					.leftJoinAndSelect('reply.user', 'replyUser')
-					.leftJoinAndSelect('renote.user', 'renoteUser')
-					.leftJoinAndSelect('note.channel', 'channel');
-
-				if (me) {
-					this.queryService.generateMutedUserQuery(query, me);
-					this.queryService.generateMutedNoteQuery(query, me);
-					this.queryService.generateBlockedUserQuery(query, me);
-				}
-				//#endregion
-
-				timeline = await query.getMany();
-				timeline.sort((a, b) => a.id > b.id ? -1 : 1);
-			}
-
 			if (me) this.activeUsersChart.read(me);
 
-			return await this.noteEntityService.packMany(timeline, me);
+			if (!serverSettings.enableFanoutTimeline) {
+				return await this.noteEntityService.packMany(await this.getFromDb({ untilId, sinceId, limit: ps.limit, channelId: channel.id }, me), me);
+			}
+
+			return await this.fanoutTimelineEndpointService.timeline({
+				untilId,
+				sinceId,
+				limit: ps.limit,
+				allowPartial: ps.allowPartial,
+				me,
+				useDbFallback: true,
+				redisTimelines: [`channelTimeline:${channel.id}`],
+				excludePureRenotes: false,
+				dbFallback: async (untilId, sinceId, limit) => {
+					return await this.getFromDb({ untilId, sinceId, limit, channelId: channel.id }, me);
+				},
+			});
 		});
+	}
+
+	private async getFromDb(ps: {
+		untilId: string | null,
+		sinceId: string | null,
+		limit: number,
+		channelId: string
+	}, me: MiLocalUser | null) {
+		//#region fallback to database
+		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			.andWhere('note.channelId = :channelId', { channelId: ps.channelId })
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser')
+			.leftJoinAndSelect('note.channel', 'channel');
+
+		if (me) {
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
+		}
+		//#endregion
+
+		return await query.limit(ps.limit).getMany();
 	}
 }

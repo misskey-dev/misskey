@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="bcekxzvu _margin _panel">
 	<div class="target">
-		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
+		<MkA v-user-preview="report.targetUserId" class="info" :to="`/admin/user/${report.targetUserId}`">
 			<MkAvatar class="avatar" :user="report.targetUser" indicator/>
 			<div class="names">
 				<MkUserName class="name" :user="report.targetUser"/>
@@ -18,7 +23,7 @@
 			<Mfm :text="report.comment"/>
 		</div>
 		<hr/>
-		<div>{{ i18n.ts.reporter }}: <MkAcct :user="report.reporter"/></div>
+		<div>{{ i18n.ts.reporter }}: <MkA :to="`/admin/user/${report.reporter.id}`" class="_link">@{{ report.reporter.username }}</MkA></div>
 		<div v-if="report.assignee">
 			{{ i18n.ts.moderator }}:
 			<MkAcct :user="report.assignee"/>
@@ -36,12 +41,13 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { dateString } from '@/filters/date';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { dateString } from '@/filters/date.js';
 
 const props = defineProps<{
 	report: any;
@@ -51,11 +57,11 @@ const emit = defineEmits<{
 	(ev: 'resolved', reportId: string): void;
 }>();
 
-let forward = $ref(props.report.forwarded);
+const forward = ref(props.report.forwarded);
 
 function resolve() {
 	os.apiWithDialog('admin/resolve-abuse-user-report', {
-		forward: forward,
+		forward: forward.value,
 		reportId: props.report.id,
 	}).then(() => {
 		emit('resolved', props.report.id);

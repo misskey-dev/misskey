@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <span :class="$style.container">
 	<span ref="content" :class="$style.content">
@@ -13,10 +18,10 @@ interface Props {
 
 const contentSymbol = Symbol();
 const observer = new ResizeObserver((entries) => {
-  const results: {
-    container: HTMLSpanElement;
-    transform: string;
-  }[] = [];
+	const results: {
+		container: HTMLSpanElement;
+		transform: string;
+	}[] = [];
 	for (const entry of entries) {
 		const content = (entry.target[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
 		const props: Required<Props> = content[contentSymbol];

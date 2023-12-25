@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps">
 	<div class="_gaps">
@@ -20,28 +25,25 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted } from 'vue';
+import { ref } from 'vue';
 import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { $i } from '@/account';
-import { instance } from '@/instance';
-import MkInfo from '@/components/MkInfo.vue';
-import { useRouter } from '@/router';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
-let key = $ref('');
-let searchQuery = $ref('');
-let searchOrigin = $ref('combined');
-let userPagination = $ref();
+const key = ref('');
+const searchQuery = ref('');
+const searchOrigin = ref('combined');
+const userPagination = ref();
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	const query = searchQuery.value.toString().trim();
 
 	if (query == null || query === '') return;
 
@@ -63,15 +65,15 @@ async function search() {
 		return;
 	}
 
-	userPagination = {
+	userPagination.value = {
 		endpoint: 'users/search',
 		limit: 10,
 		params: {
 			query: query,
-			origin: searchOrigin,
+			origin: searchOrigin.value,
 		},
 	};
 
-	key = query;
+	key.value = query;
 }
 </script>
