@@ -18,7 +18,7 @@
 - Enhance: ローカリゼーションの更新
 
 ### Client
-- Feat: AiScript専用のMFM構文`$[clickable.ev=EVENTNAME ...]`を追加。`Mk:C:mfm`のオプション`onClickEv`に関数を渡すと、クリック時に`EVENTNAME`を引数にして呼び出す
+- 
 
 ### Server
 - Enhance: センシティブワードの設定がハッシュタグトレンドにも適用されるようになりました
