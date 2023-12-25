@@ -95,7 +95,7 @@ export class Autocomplete {
 
 		const isMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
-		const isMfmParam = mfmParamIndex !== -1 && text.split(/\$\[[a-zA-Z]+\.[a-zA-Z,=]*/).pop() === "";
+		const isMfmParam = mfmParamIndex !== -1 && text.split(/\$\[[a-zA-Z]+/).pop()?.includes('.');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 
