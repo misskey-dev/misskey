@@ -14,7 +14,7 @@ import { MFM_TAGS } from '@/const.js';
 export function functionPicker(src: any, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
     return new Promise((res, rej) => {
         os.popupMenu([{
-			text: "装飾を追加", // TODO i18n 化
+			text: i18n.ts.addMfmFunction,
 			type: 'label',
 		}, ...getFunctionList(textArea, textRef)], src);
     });

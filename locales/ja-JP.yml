@@ -1181,6 +1181,7 @@ remainingN: "残り: {n}"
 overwriteContentConfirm: "現在の内容に上書きされますがよろしいですか？"
 seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
+addMfmFunction: "装飾を追加"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
