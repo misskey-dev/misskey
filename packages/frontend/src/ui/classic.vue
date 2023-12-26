@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</Transition>
 
-	<iframe v-if="defaultStore.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://mkai.ml2d.com/?scale=2&y=1.4"></iframe>
+	<iframe v-if="defaultStore.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://mla.nfs.pub/?scale=2&y=1.4"></iframe>
 
 	<XCommon/>
 </div>
