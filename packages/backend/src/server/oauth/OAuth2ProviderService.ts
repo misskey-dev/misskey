@@ -480,9 +480,7 @@ export class OAuth2ProviderService {
 
 	@bindThis
 	public async createTokenServer(fastify: FastifyInstance): Promise<void> {
-		fastify.register(fastifyCors, {
-			origin: '*',
-		});
+		fastify.register(fastifyCors);
 		fastify.post('', async () => { });
 
 		await fastify.register(fastifyExpress);
