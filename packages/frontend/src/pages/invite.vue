@@ -55,7 +55,7 @@ const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i ==
 const pagination = {
 	endpoint: 'invite/list' as const,
 	limit: 10,
-} as Paging;
+} satisfies Paging;
 
 const resetCycle = computed<null | string>(() => {
 	if (!inviteLimitCycle) return null;

@@ -40,7 +40,7 @@ const pagination = {
 	endpoint: 'clips/list' as const,
 	noPaging: true,
 	limit: 10,
-} as Paging;
+} satisfies Paging;
 
 const tab = ref('my');
 const favorites = ref<Misskey.entities.Clip[] | null>(null);

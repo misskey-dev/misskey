@@ -53,7 +53,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 const pagination = {
 	endpoint: 'i/signin-history' as const,
 	limit: 5,
-} as Paging;
+} satisfies Paging;
 
 async function change() {
 	const { canceled: canceled2, result: newPassword } = await os.inputText({

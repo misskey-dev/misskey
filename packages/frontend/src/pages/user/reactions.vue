@@ -35,7 +35,7 @@ const pagination = {
 	params: computed(() => ({
 		userId: props.user.id,
 	})),
-} as Paging;
+} satisfies Paging;
 </script>
 
 <style lang="scss" module>

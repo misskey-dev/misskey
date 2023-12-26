@@ -39,13 +39,13 @@ import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
-const pinnedUsers = { endpoint: 'pinned-users', noPaging: true } as Paging;
+const pinnedUsers = { endpoint: 'pinned-users', noPaging: true } satisfies Paging;
 
 const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
 	state: 'alive',
 	origin: 'local',
 	sort: '+follower',
-} } as Paging;
+} } satisfies Paging;
 </script>
 
 <style lang="scss" module>

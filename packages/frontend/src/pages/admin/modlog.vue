@@ -52,7 +52,7 @@ const pagination = {
 		type: type.value,
 		userId: moderatorId.value === '' ? null : moderatorId.value,
 	})),
-} as Paging;
+} satisfies Paging;
 
 console.log(Misskey);
 

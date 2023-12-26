@@ -77,7 +77,7 @@ const pagination = {
 		reporterOrigin: reporterOrigin.value,
 		targetUserOrigin: targetUserOrigin.value,
 	})),
-} as Paging;
+} satisfies Paging;
 
 function resolved(reportId) {
 	reports.value.removeItem(reportId);

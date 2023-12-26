@@ -83,20 +83,20 @@ onMounted(() => {
 const featuredPagination = {
 	endpoint: 'channels/featured' as const,
 	noPaging: true,
-} as Paging;
+} satisfies Paging;
 const favoritesPagination = {
 	endpoint: 'channels/my-favorites' as const,
 	limit: 100,
 	noPaging: true,
-} as Paging;
+} satisfies Paging;
 const followingPagination = {
 	endpoint: 'channels/followed' as const,
 	limit: 10,
-} as Paging;
+} satisfies Paging;
 const ownedPagination = {
 	endpoint: 'channels/owned' as const,
 	limit: 10,
-} as Paging;
+} satisfies Paging;
 
 async function search() {
 	const query = searchQuery.value.toString().trim();

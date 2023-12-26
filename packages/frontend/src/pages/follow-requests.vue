@@ -51,7 +51,7 @@ const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const pagination = {
 	endpoint: 'following/requests/list' as const,
 	limit: 10,
-} as Paging;
+} satisfies Paging;
 
 function accept(user) {
 	os.api('following/requests/accept', { userId: user.id }).then(() => {

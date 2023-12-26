@@ -108,7 +108,7 @@ const otherPostsPagination = {
 	params: computed(() => ({
 		userId: page.value.user.id,
 	})),
-} as Paging;
+} satisfies Paging;
 const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {

@@ -81,7 +81,7 @@ const pagination = {
 		sort: sort.value,
 	})),
 	offsetMode: true,
-} as Paging;
+} satisfies Paging;
 
 const expiresAt = ref('');
 const noExpirationDate = ref(true);

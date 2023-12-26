@@ -51,15 +51,15 @@ const tab = ref('featured');
 const featuredPagesPagination = {
 	endpoint: 'pages/featured' as const,
 	noPaging: true,
-} as Paging;
+} satisfies Paging;
 const myPagesPagination = {
 	endpoint: 'i/pages' as const,
 	limit: 5,
-} as Paging;
+} satisfies Paging;
 const likedPagesPagination = {
 	endpoint: 'i/page-likes' as const,
 	limit: 5,
-} as Paging;
+} satisfies Paging;
 
 function create() {
 	router.push('/pages/new');

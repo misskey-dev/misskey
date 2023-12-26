@@ -64,7 +64,7 @@ const pagination = {
 	endpoint: 'drive/files' as const,
 	limit: 10,
 	params: computed(() => ({ sort: sortMode.value })),
-} as Paging;
+} satisfies Paging;
 
 const sortOptions = [
 	{ value: 'sizeDesc', displayName: i18n.ts._drivecleaner.orderBySizeDesc },

@@ -258,7 +258,7 @@ const announcementsPagination = {
 	params: computed(() => ({
 		userId: props.userId,
 	})),
-} as Paging;
+} satisfies Paging;
 const expandedRoles = ref([]);
 
 function createFetcher() {
