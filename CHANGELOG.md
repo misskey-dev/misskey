@@ -12,6 +12,17 @@
 
 -->
 
+## 2023.x.x (unreleased)
+
+### General
+-
+
+### Client
+- 
+
+### Server
+- Enhance: `oauth/token`エンドポイントのCORS対応
+
 ## 2023.12.1
 
 ### General
