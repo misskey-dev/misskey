@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import FormPagination, { Paging } from '@/components/MkPagination.vue';
+import FormPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -63,7 +63,7 @@ const pagination = {
 	params: {
 		sort: '+lastUsedAt',
 	},
-} satisfies Paging;
+};
 
 function revoke(token) {
 	os.api('i/revoke-token', { tokenId: token.id }).then(() => {

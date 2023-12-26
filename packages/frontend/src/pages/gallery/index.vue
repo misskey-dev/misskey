@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -68,19 +68,19 @@ const tagsRef = ref();
 const recentPostsPagination = {
 	endpoint: 'gallery/posts' as const,
 	limit: 6,
-} satisfies Paging;
+};
 const popularPostsPagination = {
 	endpoint: 'gallery/featured' as const,
 	noPaging: true,
-} satisfies Paging;
+};
 const myPostsPagination = {
 	endpoint: 'i/gallery/posts' as const,
 	limit: 5,
-} satisfies Paging;
+};
 const likedPostsPagination = {
 	endpoint: 'i/gallery/likes' as const,
 	limit: 5,
-} satisfies Paging;
+};
 
 const tagUsersPagination = computed(() => ({
 	endpoint: 'hashtags/users' as const,
@@ -90,7 +90,7 @@ const tagUsersPagination = computed(() => ({
 		origin: 'combined',
 		sort: '+follower',
 	},
-} satisfies Paging));
+}));
 
 watch(() => props.tag, () => {
 	if (tagsRef.value) tagsRef.value.tags.toggleContent(props.tag == null);

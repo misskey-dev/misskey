@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, shallowRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile } from '@/scripts/select-file.js';
@@ -100,7 +100,7 @@ const pagination = {
 	params: computed(() => ({
 		query: (query.value && query.value !== '') ? query.value : null,
 	})),
-} satisfies Paging;
+};
 
 const remotePagination = {
 	endpoint: 'admin/emoji/list-remote' as const,
@@ -109,7 +109,7 @@ const remotePagination = {
 		query: (queryRemote.value && queryRemote.value !== '') ? queryRemote.value : null,
 		host: (host.value && host.value !== '') ? host.value : null,
 	})),
-} satisfies Paging;
+};
 
 const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
