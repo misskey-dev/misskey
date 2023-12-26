@@ -292,10 +292,10 @@ export class UserFollowingService implements OnModuleInit {
 
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			// Publish follow event
-			this.userEntityService.pack(followee.id, follower, {
+			this.userEntityService.pack<false, true>(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
+				this.globalEventService.publishMainStream(follower.id, 'follow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
@@ -359,7 +359,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
 			// Publish unfollow event
-			this.userEntityService.pack(followee.id, follower, {
+			this.userEntityService.pack<false, true>(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
@@ -499,7 +499,7 @@ export class UserFollowingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventService.publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
-			this.userEntityService.pack(followee.id, followee, {
+			this.userEntityService.pack<true, true>(followee.id, followee, {
 				detail: true,
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 
@@ -547,7 +547,7 @@ export class UserFollowingService implements OnModuleInit {
 			followerId: follower.id,
 		});
 
-		this.userEntityService.pack(followee.id, followee, {
+		this.userEntityService.pack<true, true>(followee.id, followee, {
 			detail: true,
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
@@ -575,7 +575,7 @@ export class UserFollowingService implements OnModuleInit {
 			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 
-		this.userEntityService.pack(followee.id, followee, {
+		this.userEntityService.pack<true, true>(followee.id, followee, {
 			detail: true,
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
@@ -695,7 +695,7 @@ export class UserFollowingService implements OnModuleInit {
 	 */
 	@bindThis
 	private async publishUnfollow(followee: Both, follower: Local): Promise<void> {
-		const packedFollowee = await this.userEntityService.pack(followee.id, follower, {
+		const packedFollowee = await this.userEntityService.pack<false, true>(followee.id, follower, {
 			detail: true,
 		});
 

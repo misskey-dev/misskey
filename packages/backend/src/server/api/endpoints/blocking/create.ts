@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.userBlockingService.block(blocker, blockee);
 
-			return await this.userEntityService.pack(blockee.id, blocker, {
+			return await this.userEntityService.pack<false, true>(blockee.id, blocker, {
 				detail: true,
 			});
 		});

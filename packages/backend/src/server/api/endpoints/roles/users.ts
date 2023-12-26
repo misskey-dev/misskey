@@ -33,11 +33,11 @@ export const meta = {
 			properties: {
 				id: {
 					type: 'string',
-					format: 'misskey:id'
+					format: 'misskey:id',
 				},
 				user: {
 					type: 'object',
-					ref: 'User'
+					ref: 'UserDetailed',
 				},
 			},
 			required: ['id', 'user'],

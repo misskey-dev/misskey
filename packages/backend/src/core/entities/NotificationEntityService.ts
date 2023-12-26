@@ -62,7 +62,7 @@ export class NotificationEntityService implements OnModuleInit {
 		},
 		hint?: {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'User'>>;
+			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = src;
@@ -161,7 +161,7 @@ export class NotificationEntityService implements OnModuleInit {
 		},
 		hint?: {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'User'>>;
+			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = src;

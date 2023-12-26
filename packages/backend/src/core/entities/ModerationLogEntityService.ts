@@ -36,7 +36,7 @@ export class ModerationLogEntityService {
 			type: log.type,
 			info: log.info,
 			userId: log.userId,
-			user: this.userEntityService.pack(log.user ?? log.userId, null, {
+			user: this.userEntityService.pack<false, true>(log.user ?? log.userId, null, {
 				detail: true,
 			}),
 		});

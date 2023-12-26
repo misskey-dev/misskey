@@ -1,5 +1,5 @@
 import { ModerationLogPayloads } from './consts.js';
-import { Announcement, EmojiDetailed, Page, User, UserDetailed } from './autogen/models';
+import { Announcement, EmojiDetailed, Page, User, UserDetailedNotMe } from './autogen/models';
 
 export * from './autogen/entities';
 export * from './autogen/models';
@@ -19,7 +19,7 @@ export type ModerationLog = {
 	id: ID;
 	createdAt: DateString;
 	userId: User['id'];
-	user: UserDetailed | null;
+	user: UserDetailedNotMe | null;
 } & ({
 	type: 'updateServerSettings';
 	info: ModerationLogPayloads['updateServerSettings'];

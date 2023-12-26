@@ -157,7 +157,7 @@ export class ApiServerService {
 				return {
 					ok: true,
 					token: token.token,
-					user: await this.userEntityService.pack(token.userId, null, { detail: true }),
+					user: await this.userEntityService.pack<false, true>(token.userId, null, { detail: true }),
 				};
 			} else {
 				return {

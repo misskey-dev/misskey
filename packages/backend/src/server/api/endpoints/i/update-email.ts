@@ -43,7 +43,7 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		ref: 'UserDetailed',
+		ref: 'MeDetailed',
 	},
 } as const;
 
@@ -105,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailVerifyCode: null,
 			});
 
-			const iObj = await this.userEntityService.pack(me.id, me, {
+			const iObj = await this.userEntityService.pack<true, true>(me.id, me, {
 				detail: true,
 				includeSecrets: true,
 			});

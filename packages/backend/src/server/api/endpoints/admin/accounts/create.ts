@@ -11,6 +11,7 @@ import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
+import { Packed } from '@/misc/json-schema.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -20,7 +21,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'User',
+		ref: 'MeDetailed',
 		properties: {
 			token: {
 				type: 'string',
@@ -61,12 +62,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ignorePreservedUsernames: true,
 			});
 
-			const res = await this.userEntityService.pack(account, account, {
+			const res = await this.userEntityService.pack<true, true>(account, account, {
 				detail: true,
 				includeSecrets: true,
-			});
+			}) as Packed<'MeDetailed'> & { token: string };
 
-			(res as any).token = secret;
+			res.token = secret;
 
 			return res;
 		});
