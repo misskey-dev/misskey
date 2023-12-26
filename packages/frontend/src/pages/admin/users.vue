@@ -61,7 +61,7 @@ import { computed, shallowRef, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { lookupUser } from '@/scripts/lookup-user.js';
 import { i18n } from '@/i18n.js';
@@ -87,7 +87,7 @@ const pagination = {
 		hostname: searchHost.value,
 	})),
 	offsetMode: true,
-};
+} satisfies Paging;
 
 function searchUser() {
 	os.selectUser().then(user => {

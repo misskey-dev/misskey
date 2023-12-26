@@ -218,7 +218,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 
@@ -299,7 +299,7 @@ const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const isDeleted = ref(false);
 const muted = ref($i ? checkWordMute(appearNote.value, $i, $i.mutedWords) : false);
-const translation = ref(null);
+const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed) : null;
@@ -325,7 +325,7 @@ provide('react', (reaction: string) => {
 });
 
 const tab = ref('replies');
-const reactionTabType = ref(null);
+const reactionTabType = ref<string | null>(null);
 
 const renotesPagination = computed(() => ({
 	endpoint: 'notes/renotes',
@@ -333,7 +333,7 @@ const renotesPagination = computed(() => ({
 	params: {
 		noteId: appearNote.value.id,
 	},
-}));
+} satisfies Paging));
 
 const reactionsPagination = computed(() => ({
 	endpoint: 'notes/reactions',
@@ -342,7 +342,7 @@ const reactionsPagination = computed(() => ({
 		noteId: appearNote.value.id,
 		type: reactionTabType.value,
 	},
-}));
+} satisfies Paging));
 
 useNoteCapture({
 	rootEl: el,

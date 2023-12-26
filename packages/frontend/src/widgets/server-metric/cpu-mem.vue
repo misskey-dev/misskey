@@ -76,11 +76,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 
 const props = defineProps<{
 	connection: any,
-	meta: any
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
 const viewBoxX = ref<number>(50);
@@ -94,10 +95,10 @@ const cpuPolylinePoints = ref<string>('');
 const memPolylinePoints = ref<string>('');
 const cpuPolygonPoints = ref<string>('');
 const memPolygonPoints = ref<string>('');
-const cpuHeadX = ref<any>(null);
-const cpuHeadY = ref<any>(null);
-const memHeadX = ref<any>(null);
-const memHeadY = ref<any>(null);
+const cpuHeadX = ref<number>();
+const cpuHeadY = ref<number>();
+const memHeadX = ref<number>();
+const memHeadY = ref<number>();
 const cpuP = ref<string>('');
 const memP = ref<string>('');
 

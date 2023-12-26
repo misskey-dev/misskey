@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n.js';
@@ -36,7 +36,7 @@ import { infoImageUrl } from '@/instance.js';
 const pagination = {
 	endpoint: 'i/favorites' as const,
 	limit: 10,
-};
+} satisfies Paging;
 
 definePageMetadata({
 	title: i18n.ts.favorites,

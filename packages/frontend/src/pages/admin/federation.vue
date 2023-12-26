@@ -62,7 +62,7 @@ import { computed, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
@@ -88,7 +88,7 @@ const pagination = {
 			state.value === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-};
+} satisfies Paging;
 
 function getStatus(instance) {
 	if (instance.isSuspended) return 'Suspended';

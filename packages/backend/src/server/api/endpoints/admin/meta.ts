@@ -381,6 +381,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			shortName: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			objectStorageS3ForcePathStyle: {
 				type: 'boolean',
 				optional: false, nullable: false,

@@ -62,6 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import XBlocks from './page-editor.blocks.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -85,16 +86,16 @@ const props = defineProps<{
 const tab = ref('settings');
 const author = ref($i);
 const readonly = ref(false);
-const page = ref(null);
-const pageId = ref(null);
-const currentName = ref(null);
+const page = ref<Misskey.entities.Page | null>(null);
+const pageId = ref<string | null>(null);
+const currentName = ref<string | null>(null);
 const title = ref('');
-const summary = ref(null);
+const summary = ref<string | null>(null);
 const name = ref(Date.now().toString());
-const eyeCatchingImage = ref(null);
-const eyeCatchingImageId = ref(null);
+const eyeCatchingImage = ref<Misskey.entities.DriveFile | null>(null);
+const eyeCatchingImageId = ref<string | null>(null);
 const font = ref('sans-serif');
-const content = ref([]);
+const content = ref<Misskey.entities.Page['content']>([]);
 const alignCenter = ref(false);
 const hideTitleWhenPinned = ref(false);
 

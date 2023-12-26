@@ -313,8 +313,13 @@ const patrons = [
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
 
 let easterEggReady = false;
-const easterEggEmojis = ref([]);
-const easterEggEngine = ref(null);
+const easterEggEmojis = ref<{
+	id: string,
+	top: number,
+	left: number,
+	emoji: string
+}[]>([]);
+const easterEggEngine = ref<{ stop: () => void } | null>(null);
 const containerEl = shallowRef<HTMLElement>();
 
 function iconLoaded() {

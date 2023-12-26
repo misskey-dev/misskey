@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User;
@@ -31,7 +31,7 @@ const pagination = {
 	params: computed(() => ({
 		userId: props.user.id,
 	})),
-};
+} satisfies Paging;
 </script>
 
 <style lang="scss" module>

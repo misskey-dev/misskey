@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<XCalendar v-show="widgetProps.view === 0" :activity="[].concat(activity)"/>
-			<XChart v-show="widgetProps.view === 1" :activity="[].concat(activity)"/>
+			<XCalendar v-show="widgetProps.view === 0" :activity="activity ?? []"/>
+			<XChart v-show="widgetProps.view === 1" :activity="activity ?? []"/>
 		</template>
 	</div>
 </MkContainer>
@@ -59,7 +59,12 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-const activity = ref(null);
+const activity = ref<{
+	total: number;
+	notes: number;
+	replies: number;
+	renotes: number;
+}[] | null>(null);
 const fetching = ref(true);
 
 const toggleView = () => {

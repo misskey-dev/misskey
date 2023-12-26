@@ -52,7 +52,7 @@ const emit = defineEmits<{
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 const passwordInput = shallowRef<InstanceType<typeof MkInput>>();
 const password = ref('');
-const token = ref(null);
+const token = ref<string | null>(null);
 
 function onClose() {
 	emit('cancelled');

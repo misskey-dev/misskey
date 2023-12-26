@@ -51,7 +51,7 @@ const props = defineProps<{
 
 const scope = computed(() => props.path ? props.path.split('/') : []);
 
-const keys = ref(null);
+const keys = ref<any>(null);
 
 function fetchKeys() {
 	os.api('i/registry/keys-with-type', {

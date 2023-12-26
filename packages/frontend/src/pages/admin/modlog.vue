@@ -36,13 +36,13 @@ import XHeader from './_header_.vue';
 import XModLog from './modlog.ModLog.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const logs = shallowRef<InstanceType<typeof MkPagination>>();
 
-const type = ref(null);
+const type = ref<string | null>(null);
 const moderatorId = ref('');
 
 const pagination = {
@@ -52,7 +52,7 @@ const pagination = {
 		type: type.value,
 		userId: moderatorId.value === '' ? null : moderatorId.value,
 	})),
-};
+} satisfies Paging;
 
 console.log(Misskey);
 

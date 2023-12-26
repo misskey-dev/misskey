@@ -75,9 +75,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, ref, toRef, watch} from 'vue';
-import {openInstanceMenu} from './common';
+import {openInstanceMenu} from './common.js';
 import * as os from '@/os';
-import {navbarItemDef} from '@/navbar';
+import {navbarItemDef} from '@/navbar.js';
 import {$i, openAccountMenu as openAccountMenu_} from '@/account';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';

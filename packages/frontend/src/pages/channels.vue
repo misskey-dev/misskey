@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, ref } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -83,20 +83,20 @@ onMounted(() => {
 const featuredPagination = {
 	endpoint: 'channels/featured' as const,
 	noPaging: true,
-};
+} satisfies Paging;
 const favoritesPagination = {
 	endpoint: 'channels/my-favorites' as const,
 	limit: 100,
 	noPaging: true,
-};
+} satisfies Paging;
 const followingPagination = {
 	endpoint: 'channels/followed' as const,
 	limit: 10,
-};
+} satisfies Paging;
 const ownedPagination = {
 	endpoint: 'channels/owned' as const,
 	limit: 10,
-};
+} satisfies Paging;
 
 async function search() {
 	const query = searchQuery.value.toString().trim();

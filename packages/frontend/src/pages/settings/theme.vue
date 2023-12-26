@@ -102,7 +102,7 @@ import {ColdDeviceStorage, defaultStore, bannerDark, bannerLight, iconDark, icon
 import {i18n} from '@/i18n';
 import {instance} from '@/instance';
 import {uniqueBy} from '@/scripts/array';
-import {fetchThemes, getThemes} from '@/theme-store';
+import {fetchThemes, getThemes} from '@/theme-store.js';
 import {definePageMetadata} from '@/scripts/page-metadata';
 import {miLocalStorage} from '@/local-storage';
 
