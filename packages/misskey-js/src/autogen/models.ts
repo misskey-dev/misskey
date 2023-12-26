@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.0
- * generatedAt: 2023-12-24T08:46:11.013Z
+ * generatedAt: 2023-12-25T03:48:31.993Z
  */
 
 import { components } from './types.js';
