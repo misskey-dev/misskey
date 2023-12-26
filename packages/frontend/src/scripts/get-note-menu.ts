@@ -282,7 +282,7 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.renoteFromDetails,
 				action: openRenoteSource,
-			}] : []) ,
+			}] : []),
 			{
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
