@@ -62,6 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
@@ -69,7 +70,7 @@ import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { defaultStore } from '@/store.js';
 
-const stats = ref<any>(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const usersComparedToThePrevDay = ref<number>();
 const notesComparedToThePrevDay = ref<number>();
 const onlineUsersCount = ref(0);

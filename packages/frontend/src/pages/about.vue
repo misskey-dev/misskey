@@ -103,6 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
 import { version, host } from '@/config.js';
@@ -126,7 +127,7 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
-const stats = ref(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const tab = ref(props.initialTab);
 
 watch(tab, () => {

@@ -62,7 +62,7 @@ const props = defineProps<{
 }>();
 
 const note = ref<null | Misskey.entities.Note>();
-const clips = ref();
+const clips = ref<Misskey.entities.Clip[]>();
 const showPrev = ref(false);
 const showNext = ref(false);
 const error = ref();
