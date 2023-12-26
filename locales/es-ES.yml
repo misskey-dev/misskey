@@ -1833,6 +1833,14 @@ _sfx:
   notification: "Notificaciones"
   antenna: "Antena receptora"
   channel: "Notificaciones del canal"
+  reaction: "Al seleccionar una reacción"
+_soundSettings:
+  driveFile: "Usar un archivo de audio en Drive"
+  driveFileWarn: "Selecciona un archivo de audio en Drive."
+  driveFileTypeWarn: "Este archivo es incompatible"
+  driveFileTypeWarnDescription: "Selecciona un archivo de audio"
+  driveFileDurationWarn: "La duración del audio es demasiado larga."
+  driveFileDurationWarnDescription: "Usar un audio de larga duración puede llegar a molestar mientras usas Misskey. ¿Quieres continuar?"
 _ago:
   future: "Futuro"
   justNow: "Justo ahora"
@@ -2333,3 +2341,9 @@ _externalResourceInstaller:
 _dataSaver:
   _media:
     title: "Cargando Multimedia"
+    description: "Impide la carga automática de imágenes y vídeos. Tendrás que tocar en las imágenes y vídeos ocultos para cargarlos."
+  _avatar:
+    title: "Imagen del avatar"
+    description: "Desactiva la animación de los avatares. Las imágenes animadas pueden llegar a ser de mayor tamaño que las normales, por lo que al desactivarlas puedes reducir el consumo de datos."
+  _urlPreview:
+    title: "Vista previa de URLs"
