@@ -79,7 +79,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
 const enableEmail = ref<boolean>(false);
-const email = ref<any>(null);
+const email = ref<string | null>(null);
 const smtpSecure = ref<boolean>(false);
 const smtpHost = ref<string>('');
 const smtpPort = ref<number>(0);

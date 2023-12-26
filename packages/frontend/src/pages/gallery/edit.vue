@@ -39,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -56,10 +57,10 @@ const props = defineProps<{
 	postId?: string;
 }>();
 
-const init = ref(null);
-const files = ref([]);
-const description = ref(null);
-const title = ref(null);
+const init = ref<(() => Promise<any>) | null>(null);
+const files = ref<Misskey.entities.DriveFile[]>([]);
+const description = ref<string | null>(null);
+const title = ref<string | null>(null);
 const isSensitive = ref(false);
 
 function selectFile(evt) {
@@ -109,7 +110,7 @@ watch(() => props.postId, () => {
 	init.value = () => props.postId ? os.api('gallery/posts/show', {
 		postId: props.postId,
 	}).then(post => {
-		files.value = post.files;
+		files.value = post.files ?? [];
 		title.value = post.title;
 		description.value = post.description;
 		isSensitive.value = post.isSensitive;

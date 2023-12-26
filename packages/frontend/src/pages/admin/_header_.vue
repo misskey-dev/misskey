@@ -70,7 +70,7 @@ const metadata = injectPageMetadata();
 const el = shallowRef<HTMLElement>(null);
 const tabRefs = {};
 const tabHighlightEl = shallowRef<HTMLElement | null>(null);
-const bg = ref(null);
+const bg = ref<string | null>(null);
 const height = ref(0);
 const hasTabs = computed(() => {
 	return props.tabs && props.tabs.length > 0;
