@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User;
@@ -30,7 +30,7 @@ const followingPagination = {
 	params: computed(() => ({
 		userId: props.user.id,
 	})),
-};
+} satisfies Paging;
 
 const followersPagination = {
 	endpoint: 'users/followers' as const,
@@ -38,7 +38,7 @@ const followersPagination = {
 	params: computed(() => ({
 		userId: props.user.id,
 	})),
-};
+} satisfies Paging;
 </script>
 
 <style lang="scss" module>

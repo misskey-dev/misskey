@@ -56,7 +56,7 @@ import { computed, shallowRef, ref } from 'vue';
 
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -77,7 +77,7 @@ const pagination = {
 		reporterOrigin: reporterOrigin.value,
 		targetUserOrigin: targetUserOrigin.value,
 	})),
-};
+} satisfies Paging;
 
 function resolved(reportId) {
 	reports.value.removeItem(reportId);

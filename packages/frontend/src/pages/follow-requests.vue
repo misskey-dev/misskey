@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef, computed } from 'vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
 import * as os from '@/os.js';
@@ -51,7 +51,7 @@ const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const pagination = {
 	endpoint: 'following/requests/list' as const,
 	limit: 10,
-};
+} satisfies Paging;
 
 function accept(user) {
 	os.api('following/requests/accept', { userId: user.id }).then(() => {

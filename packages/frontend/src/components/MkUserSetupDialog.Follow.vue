@@ -37,15 +37,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
-const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };
+const pinnedUsers = { endpoint: 'pinned-users', noPaging: true } satisfies Paging;
 
 const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
 	state: 'alive',
 	origin: 'local',
 	sort: '+follower',
-} };
+} } satisfies Paging;
 </script>
 
 <style lang="scss" module>

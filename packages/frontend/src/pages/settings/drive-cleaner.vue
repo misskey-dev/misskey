@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import * as os from '@/os.js';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n.js';
 import bytes from '@/filters/bytes.js';
@@ -64,7 +64,7 @@ const pagination = {
 	endpoint: 'drive/files' as const,
 	limit: 10,
 	params: computed(() => ({ sort: sortMode.value })),
-};
+} satisfies Paging;
 
 const sortOptions = [
 	{ value: 'sizeDesc', displayName: i18n.ts._drivecleaner.orderBySizeDesc },

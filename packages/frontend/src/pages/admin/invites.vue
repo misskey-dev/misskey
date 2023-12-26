@@ -73,7 +73,7 @@ const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const type = ref('all');
 const sort = ref('+createdAt');
 
-const pagination: Paging = {
+const pagination = {
 	endpoint: 'admin/invite/list' as const,
 	limit: 10,
 	params: computed(() => ({
@@ -81,7 +81,7 @@ const pagination: Paging = {
 		sort: sort.value,
 	})),
 	offsetMode: true,
-};
+} satisfies Paging;
 
 const expiresAt = ref('');
 const noExpirationDate = ref(true);
@@ -97,10 +97,10 @@ async function createWithOptions() {
 	os.alert({
 		type: 'success',
 		title: i18n.ts.inviteCodeCreated,
-		text: tickets?.map(x => x.code).join('\n'),
+		text: tickets.map(x => x.code).join('\n'),
 	});
 
-	tickets?.forEach(ticket => pagingComponent.value?.prepend(ticket));
+	tickets.forEach(ticket => pagingComponent.value?.prepend(ticket));
 }
 
 function deleted(id: string) {
