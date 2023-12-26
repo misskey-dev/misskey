@@ -74,7 +74,7 @@ async function calcAspectRatio() {
 			gallery.value.style.aspectRatio = ratioMax(16 / 9);
 			break;
 		case '1_1':
-			gallery.value.style.aspectRatio = ratioMax(1 / 1);
+			gallery.value.style.aspectRatio = ratioMax(1);
 			break;
 		case '2_3':
 			gallery.value.style.aspectRatio = ratioMax(2 / 3);

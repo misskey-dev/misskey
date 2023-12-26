@@ -66,11 +66,9 @@ const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'))
 .codePlaceholderRoot {
 	display: block;
 	width: 100%;
-	background: none;
 	border: none;
 	outline: none;
-  font: inherit;
-  color: inherit;
+	font: inherit;
 	cursor: pointer;
 
 	box-sizing: border-box;

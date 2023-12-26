@@ -6,7 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { Ref } from 'vue';
 
-export type MenuAction = (ev: MouseEvent) => void;
+export type MenuAction = (ev: MouseEvent) => Promise<void> | void;
 
 export type MenuDivider = { type: 'divider' };
 export type MenuNull = undefined;

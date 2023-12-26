@@ -100,7 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
+import { inject, watch, nextTick, onMounted, onUnmounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -191,7 +191,9 @@ if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
-const autocomplete = ref(null);
+const autocompleteTextareaInput = ref<Autocomplete | null>(null);
+const autocompleteCwInput = ref<Autocomplete | null>(null);
+const autocompleteHashtagsInput = ref<Autocomplete | null>(null);
 const draghover = ref(false);
 const quoteId = ref(null);
 const hasNotSpecifiedMentions = ref(false);
@@ -909,10 +911,9 @@ onMounted(() => {
 		});
 	}
 
-	// TODO: detach when unmount
-	new Autocomplete(textareaEl.value, text);
-	new Autocomplete(cwInputEl.value, cw);
-	new Autocomplete(hashtagsInputEl.value, hashtags);
+	autocompleteTextareaInput.value = new Autocomplete(textareaEl.value, text);
+	autocompleteCwInput.value = new Autocomplete(cwInputEl.value, cw);
+	autocompleteHashtagsInput.value = new Autocomplete(hashtagsInputEl.value, hashtags);
 
 	nextTick(() => {
 		// 書きかけの投稿を復元
@@ -953,6 +954,15 @@ onMounted(() => {
 
 		nextTick(() => watchForDraft());
 	});
+});
+
+onUnmounted(() => {
+	autocompleteTextareaInput.value?.detach();
+	autocompleteTextareaInput.value = null;
+	autocompleteCwInput.value?.detach();
+	autocompleteCwInput.value = null;
+	autocompleteHashtagsInput.value?.detach();
+	autocompleteHashtagsInput.value = null;
 });
 
 defineExpose({
