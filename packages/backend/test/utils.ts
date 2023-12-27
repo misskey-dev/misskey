@@ -26,6 +26,8 @@ interface UserToken {
 
 const config = loadConfig();
 export const port = config.port;
+export const origin = config.url;
+export const host = new URL(config.url).host;
 
 export const cookie = (me: UserToken): string => {
 	return `token=${me.token};`;
