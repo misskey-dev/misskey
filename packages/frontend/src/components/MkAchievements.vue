@@ -67,7 +67,7 @@ const props = withDefaults(defineProps<{
 	withDescription: true,
 });
 
-const achievements = ref();
+const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null);
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {

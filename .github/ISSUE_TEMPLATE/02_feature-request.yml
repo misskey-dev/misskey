@@ -15,3 +15,8 @@ body:
       description: その機能の追加によって、どんな問題やニーズが解決されそうですか? また、それはどんな人に役立ちそうですか?
     validations:
       required: true
+  - type: checkboxes
+    attributes:
+      label: Do you want to implement this feature yourself?
+      options:
+        - label: Yes, I will implement this by myself and send a pull request

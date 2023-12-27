@@ -66,6 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -82,9 +83,9 @@ import { $i } from '@/account.js';
 import MkSelect from '@/components/MkSelect.vue';
 
 const fetching = ref(true);
-const usage = ref<any>(null);
-const capacity = ref<any>(null);
-const uploadFolder = ref<any>(null);
+const usage = ref<number | null>(null);
+const capacity = ref<number | null>(null);
+const uploadFolder = ref<Misskey.entities.DriveFolder | null>(null);
 const alwaysMarkNsfw = ref($i.alwaysMarkNsfw);
 const autoSensitive = ref($i.autoSensitive);
 

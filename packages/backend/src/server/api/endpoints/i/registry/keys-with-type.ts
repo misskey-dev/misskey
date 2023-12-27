@@ -9,6 +9,7 @@ import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'object',

@@ -138,7 +138,7 @@ export class ReactionService {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 
 						// センシティブ
-						if ((note.reactionAcceptance === 'nonSensitiveOnly') && emoji.isSensitive) {
+						if ((note.reactionAcceptance === 'nonSensitiveOnly' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && emoji.isSensitive) {
 							reaction = FALLBACK;
 						}
 					} else {

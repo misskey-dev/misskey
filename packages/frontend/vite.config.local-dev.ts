@@ -1,6 +1,6 @@
 import dns from 'dns';
 import { defineConfig } from 'vite';
-import locales from '../../locales';
+import locales from '../../locales/index.js';
 import { getConfig } from './vite.config.js';
 
 dns.setDefaultResultOrder('ipv4first');

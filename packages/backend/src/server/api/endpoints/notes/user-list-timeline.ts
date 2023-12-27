@@ -22,6 +22,7 @@ export const meta = {
 	tags: ['notes', 'lists'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',

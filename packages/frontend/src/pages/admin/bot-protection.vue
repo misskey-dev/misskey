@@ -65,6 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
+import type { CaptchaProvider } from '@/components/MkCaptcha.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -76,7 +77,7 @@ import { i18n } from '@/i18n.js';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
-const provider = ref(null);
+const provider = ref<CaptchaProvider | null>(null);
 const hcaptchaSiteKey = ref<string | null>(null);
 const hcaptchaSecretKey = ref<string | null>(null);
 const recaptchaSiteKey = ref<string | null>(null);

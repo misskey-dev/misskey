@@ -42,7 +42,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const logs = shallowRef<InstanceType<typeof MkPagination>>();
 
-const type = ref(null);
+const type = ref<string | null>(null);
 const moderatorId = ref('');
 
 const pagination = {
