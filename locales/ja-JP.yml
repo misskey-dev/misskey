@@ -1628,6 +1628,7 @@ _role:
     canHideAds: "広告の非表示"
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
+    canUseDriveFileInSoundSettings: "サウンド設定でドライブのファイルを利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
   _condition:
     isLocal: "ローカルユーザー"

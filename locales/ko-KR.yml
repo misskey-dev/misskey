@@ -1612,6 +1612,7 @@ _role:
     canHideAds: "광고 숨기기"
     canSearchNotes: "노트 검색 이용 가능 여부"
     canUseTranslator: "번역 기능의 사용"
+    canUseDriveFileInSoundSettings: "사운드 설정에서 드라이브의 파일 사용 가능 여부"
     avatarDecorationLimit: "아바타 장식의 최대 붙임 개수"
   _condition:
     isLocal: "로컬 사용자"

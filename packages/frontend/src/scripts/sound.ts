@@ -5,6 +5,7 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
+import { $i } from "@/account.js";
 import * as os from '@/os.js';
 
 let ctx: AudioContext;
@@ -16,7 +17,7 @@ export const soundsTypes = [
 	null,
 
 	// ドライブの音声
-	'_driveFile_',
+	...($i?.policies.canUseDriveFileInSoundSettings ? ['_driveFile_'] : []),
 
 	// プリインストール
 	'syuilo/n-aec',
@@ -156,7 +157,7 @@ export type OperationType = typeof operationTypes[number];
 export async function loadAudio(soundStore: SoundStore, options?: { useCache?: boolean; }) {
 	if (_DEV_) console.log('loading audio. opts:', options);
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && (!$i?.policies.canUseDriveFileInSoundSettings || !soundStore.fileUrl))) {
 		return;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

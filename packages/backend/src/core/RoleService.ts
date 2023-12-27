@@ -47,6 +47,7 @@ export type RolePolicies = {
 	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
 	canUseTranslator: boolean;
+	canUseDriveFileInSoundSettings: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
 	alwaysMarkNsfw: boolean;
@@ -77,6 +78,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageAvatarDecorations: false,
 	canSearchNotes: false,
 	canUseTranslator: true,
+	canUseDriveFileInSoundSettings: false,
 	canHideAds: false,
 	driveCapacityMb: 100,
 	alwaysMarkNsfw: false,
@@ -341,6 +343,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
+			canUseDriveFileInSoundSettings: calc('canUseDriveFileInSoundSettings', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),

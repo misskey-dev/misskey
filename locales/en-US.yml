@@ -1603,7 +1603,8 @@ _role:
     descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
     canHideAds: "Can hide ads"
     canSearchNotes: "Usage of note search"
-    canUseTranslator: "Translator usage"
+    canUseTranslator: "Can use Translator"
+    canUseDriveFileInSoundSettings: "Can use Drive File in Sound Settings"
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"
