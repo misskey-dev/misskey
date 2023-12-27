@@ -12,13 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const meta = ref(null);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
 
 os.api('meta', { detail: true }).then(res => {
 	meta.value = res;

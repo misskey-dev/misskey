@@ -14,10 +14,9 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:reset-password',
 
 	res: {
 		type: 'object',

@@ -52,7 +52,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar';
+import { navbarItemDef } from '@/navbar.js';
 import { defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';

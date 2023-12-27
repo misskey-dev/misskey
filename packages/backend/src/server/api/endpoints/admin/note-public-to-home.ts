@@ -21,6 +21,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:notes',
 
 	errors: {
 		noteNotFound: {
