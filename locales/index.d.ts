@@ -2078,6 +2078,8 @@ export interface Locale {
         "read:flash-likes": string;
         "write:flash-likes": string;
         "read:admin:abuse-user-reports": string;
+        "read:admin:abuse-report-resolvers": string;
+        "write:admin:abuse-report-resolvers": string;
         "write:admin:delete-account": string;
         "write:admin:delete-all-files-of-a-user": string;
         "read:admin:index-stats": string;

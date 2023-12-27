@@ -12,9 +12,11 @@ import type { AbuseReportResolversRepository, MiAbuseReportResolver } from '@/mo
 import { ApiError } from '../../../error.js';
 
 export const meta = {
-	requireCredential: true,
+	tags: ['admin'],
 
+	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:abuse-report-resolvers',
 
 	errors: {
 		resolverNotFound: {

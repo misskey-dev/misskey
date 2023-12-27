@@ -46,6 +46,8 @@ export const permissions = [
 	'read:flash-likes',
 	'write:flash-likes',
 	'read:admin:abuse-user-reports',
+	'read:admin:abuse-report-resolvers',
+	'write:admin:abuse-report-resolvers',
 	'write:admin:delete-account',
 	'write:admin:delete-all-files-of-a-user',
 	'read:admin:index-stats',

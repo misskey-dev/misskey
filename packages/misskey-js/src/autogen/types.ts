@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.1-io
- * generatedAt: 2023-12-27T18:51:33.146Z
+ * generatedAt: 2023-12-27T19:40:56.996Z
  */
 
 /**
@@ -139,7 +139,7 @@ export type paths = {
      * admin/abuse-report-resolver/create
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
      */
     post: operations['admin/abuse-report-resolver/create'];
   };
@@ -148,7 +148,7 @@ export type paths = {
      * admin/abuse-report-resolver/list
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolvers*
      */
     post: operations['admin/abuse-report-resolver/list'];
   };
@@ -157,7 +157,7 @@ export type paths = {
      * admin/abuse-report-resolver/delete
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
      */
     post: operations['admin/abuse-report-resolver/delete'];
   };
@@ -166,7 +166,7 @@ export type paths = {
      * admin/abuse-report-resolver/update
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
      */
     post: operations['admin/abuse-report-resolver/update'];
   };
@@ -5457,7 +5457,7 @@ export type operations = {
    * admin/abuse-report-resolver/create
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
    */
   'admin/abuse-report-resolver/create': {
     requestBody: {
@@ -5523,7 +5523,7 @@ export type operations = {
    * admin/abuse-report-resolver/list
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolvers*
    */
   'admin/abuse-report-resolver/list': {
     requestBody: {
@@ -5588,7 +5588,7 @@ export type operations = {
    * admin/abuse-report-resolver/delete
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
    */
   'admin/abuse-report-resolver/delete': {
     requestBody: {
@@ -5640,7 +5640,7 @@ export type operations = {
    * admin/abuse-report-resolver/update
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
    */
   'admin/abuse-report-resolver/update': {
     requestBody: {

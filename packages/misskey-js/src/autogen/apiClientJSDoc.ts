@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.1-io
- * generatedAt: 2023-12-27T18:51:33.354Z
+ * generatedAt: 2023-12-27T19:40:57.229Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -154,7 +154,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
      */
     request<E extends 'admin/abuse-report-resolver/create', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -165,7 +165,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolvers*
      */
     request<E extends 'admin/abuse-report-resolver/list', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -176,7 +176,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
      */
     request<E extends 'admin/abuse-report-resolver/delete', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -187,7 +187,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolvers*
      */
     request<E extends 'admin/abuse-report-resolver/update', P extends Endpoints[E]['req']>(
       endpoint: E,
