@@ -40,6 +40,7 @@ export const notificationTypes = [
 	'followRequestAccepted',
 	'roleAssigned',
 	'achievementEarned',
+	'noteSchedulingFailed',
 	'app',
 	'test'] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;

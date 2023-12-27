@@ -2380,6 +2380,7 @@ export interface Locale {
         "roleAssigned": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
+        "noteSchedulingFailed": string;
         "testNotification": string;
         "checkNotificationBehavior": string;
         "sendTestNotification": string;
@@ -2401,6 +2402,7 @@ export interface Locale {
             "followRequestAccepted": string;
             "roleAssigned": string;
             "achievementEarned": string;
+            "noteSchedulingFailed": string;
             "app": string;
         };
         "_actions": {
@@ -2580,6 +2582,7 @@ export interface Locale {
         "willBePostedAtX": string;
         "deleteAreYouSure": string;
         "deleteAndEditConfirm": string;
+        "somethingHappened": string;
     };
     "_dataSaver": {
         "_media": {

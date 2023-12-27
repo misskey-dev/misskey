@@ -2282,6 +2282,7 @@ _notification:
   roleAssigned: "ロールが付与されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
+  noteSchedulingFailed: "予約投稿に失敗しました"
   testNotification: "通知テスト"
   checkNotificationBehavior: "通知の表示を確かめる"
   sendTestNotification: "テスト通知を送信する"
@@ -2304,6 +2305,7 @@ _notification:
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
+    noteSchedulingFailed: "予約投稿に失敗した"
     app: "連携アプリからの通知"
 
   _actions:
@@ -2468,6 +2470,7 @@ _schedulePost:
   willBePostedAtX: "{date}に投稿予約しました。"
   deleteAreYouSure: "予約投稿を削除しますか？"
   deleteAndEditConfirm: "予約投稿を削除して編集しますか？"
+  somethingHappened: "何らかの問題が発生し、正常に投稿されませんでした。"
 
 _dataSaver:
   _media:

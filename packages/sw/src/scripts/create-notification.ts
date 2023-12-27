@@ -211,6 +211,13 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						tag: `achievement:${data.body.achievement}`,
 					}];
 
+				case 'noteSchedulingFailed':
+					return [t('_notification.noteSchedulingFailed'), {
+						body: t(`_schedulePost.somethingHappened`),
+						badge: iconUrl('bell'),
+						data,
+					}];
+
 				case 'pollEnded':
 					return [t('_notification.pollEnded'), {
 						body: data.body.note.text ?? '',
@@ -231,7 +238,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						badge: iconUrl('bell'),
 						data,
 					}];
-		
+
 				default:
 					return null;
 			}
