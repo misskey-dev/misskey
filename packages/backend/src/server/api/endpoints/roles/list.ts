@@ -13,6 +13,7 @@ export const meta = {
 	tags: ['role'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',

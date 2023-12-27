@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
-	kind: 'write:admin',
+	secure: true,
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
 } as const;
