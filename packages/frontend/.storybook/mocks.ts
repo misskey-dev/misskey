@@ -15,12 +15,12 @@ export const onUnhandledRequest = ((req, print) => {
 export const commonHandlers = [
 	rest.get('/fluent-emoji/:codepoints.png', async (req, res, ctx) => {
 		const { codepoints } = req.params;
-		const value = await fetch(`https://raw.githubusercontent.com/misskey-dev/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
+		const value = await fetch(`https://raw.githubusercontent.com/MisskeyIO/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
 		return res(ctx.set('Content-Type', 'image/png'), ctx.body(value));
 	}),
 	rest.get('/fluent-emojis/:codepoints.png', async (req, res, ctx) => {
 		const { codepoints } = req.params;
-		const value = await fetch(`https://raw.githubusercontent.com/misskey-dev/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
+		const value = await fetch(`https://raw.githubusercontent.com/MisskeyIO/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
 		return res(ctx.set('Content-Type', 'image/png'), ctx.body(value));
 	}),
 	rest.get('/twemoji/:codepoints.svg', async (req, res, ctx) => {
