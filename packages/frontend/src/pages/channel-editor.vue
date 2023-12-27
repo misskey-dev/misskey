@@ -70,6 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch, defineAsyncComponent } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
@@ -90,15 +91,15 @@ const props = defineProps<{
 	channelId?: string;
 }>();
 
-const channel = ref(null);
-const name = ref(null);
-const description = ref(null);
+const channel = ref<Misskey.entities.Channel | null>(null);
+const name = ref<string | null>(null);
+const description = ref<string | null>(null);
 const bannerUrl = ref<string | null>(null);
 const bannerId = ref<string | null>(null);
 const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
-const pinnedNotes = ref([]);
+const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {

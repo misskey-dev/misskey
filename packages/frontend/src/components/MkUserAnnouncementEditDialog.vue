@@ -66,7 +66,7 @@ const props = defineProps<{
 	announcement?: any,
 }>();
 
-const dialog = ref(null);
+const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
 const title = ref<string>(props.announcement ? props.announcement.title : '');
 const text = ref<string>(props.announcement ? props.announcement.text : '');
 const icon = ref<string>(props.announcement ? props.announcement.icon : 'info');

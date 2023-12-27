@@ -11,12 +11,12 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class UserListChannel extends Channel {
 	public readonly chName = 'userList';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private listId: string;
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
@@ -137,9 +137,10 @@ class UserListChannel extends Channel {
 }
 
 @Injectable()
-export class UserListChannelService {
+export class UserListChannelService implements MiChannelService<false> {
 	public readonly shouldShare = UserListChannel.shouldShare;
 	public readonly requireCredential = UserListChannel.requireCredential;
+	public readonly kind = UserListChannel.kind;
 
 	constructor(
 		@Inject(DI.userListsRepository)
