@@ -67,7 +67,7 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { url } from '@/config.js';
@@ -93,7 +93,7 @@ const otherPostsPagination = {
 	params: computed(() => ({
 		userId: post.value.user.id,
 	})),
-} satisfies Paging;
+};
 
 function fetchPost() {
 	post.value = null;
