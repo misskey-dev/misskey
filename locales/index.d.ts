@@ -1714,6 +1714,7 @@ export interface Locale {
             "canHideAds": string;
             "canSearchNotes": string;
             "canUseTranslator": string;
+            "canUseDriveFileInSoundSettings": string;
             "avatarDecorationLimit": string;
         };
         "_condition": {

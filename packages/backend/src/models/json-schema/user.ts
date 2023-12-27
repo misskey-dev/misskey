@@ -635,6 +635,10 @@ export const packedMeDetailedOnlySchema = {
 					type: 'boolean',
 					nullable: false, optional: false,
 				},
+				canUseDriveFileInSoundSettings: {
+					type: 'boolean',
+					nullable: false, optional: false,
+				},
 				canHideAds: {
 					type: 'boolean',
 					nullable: false, optional: false,

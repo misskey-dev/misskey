@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.389Z
+ * generatedAt: 2023-12-28T06:42:42.926Z
  */
 
 /**
@@ -40,7 +40,6 @@ export type paths = {
      * admin/accounts/create
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     post: operations['admin/accounts/create'];
@@ -3659,6 +3658,7 @@ export type components = {
         canManageAvatarDecorations: boolean;
         canSearchNotes: boolean;
         canUseTranslator: boolean;
+        canUseDriveFileInSoundSettings: boolean;
         canHideAds: boolean;
         driveCapacityMb: number;
         alwaysMarkNsfw: boolean;
@@ -4356,6 +4356,11 @@ export type components = {
           priority: number;
           useDefault: boolean;
         };
+        canUseDriveFileInSoundSettings: {
+          value: number | boolean;
+          priority: number;
+          useDefault: boolean;
+        };
         canUseTranslator: {
           value: number | boolean;
           priority: number;
@@ -4620,7 +4625,6 @@ export type operations = {
    * admin/accounts/create
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *No*
    */
   'admin/accounts/create': {
