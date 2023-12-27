@@ -18,7 +18,7 @@ import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { mf2 } from 'microformats-parser';
-import { permissions as kinds } from 'misskey-js';
+import { kinds } from '@/misc/api-permissions.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
