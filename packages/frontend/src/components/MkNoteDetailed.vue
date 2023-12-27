@@ -224,7 +224,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 
@@ -307,7 +307,7 @@ const renotesPagination = computed(() => ({
 	params: {
 		noteId: appearNote.value.id,
 	},
-} satisfies Paging));
+}));
 
 const reactionsPagination = computed(() => ({
 	endpoint: 'notes/reactions',
@@ -316,7 +316,7 @@ const reactionsPagination = computed(() => ({
 		noteId: appearNote.value.id,
 		type: reactionTabType.value,
 	},
-} satisfies Paging));
+}));
 
 useNoteCapture({
 	rootEl: el,

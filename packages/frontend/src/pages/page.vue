@@ -85,7 +85,7 @@ import { url } from '@/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -108,7 +108,7 @@ const otherPostsPagination = {
 	params: computed(() => ({
 		userId: page.value.user.id,
 	})),
-} satisfies Paging;
+};
 const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {

@@ -129,7 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -142,17 +142,17 @@ import MkFolder from '@/components/MkFolder.vue';
 const renoteMutingPagination = {
 	endpoint: 'renote-mute/list' as const,
 	limit: 10,
-} satisfies Paging;
+};
 
 const mutingPagination = {
 	endpoint: 'mute/list' as const,
 	limit: 10,
-} satisfies Paging;
+};
 
 const blockingPagination = {
 	endpoint: 'blocking/list' as const,
 	limit: 10,
-} satisfies Paging;
+};
 
 const expandedRenoteMuteItems = ref([]);
 const expandedMuteItems = ref([]);

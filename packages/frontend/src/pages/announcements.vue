@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
@@ -55,7 +55,7 @@ const paginationCurrent = {
 	params: {
 		isActive: true,
 	},
-} satisfies Paging;
+};
 
 const paginationPast = {
 	endpoint: 'announcements' as const,
@@ -63,7 +63,7 @@ const paginationPast = {
 	params: {
 		isActive: false,
 	},
-} satisfies Paging;
+};
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
 
