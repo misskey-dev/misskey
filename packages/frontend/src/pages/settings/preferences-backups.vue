@@ -83,10 +83,10 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'useReactionPickerForContextMenu',
 	'showGapBetweenNotesInTimeline',
 	'instanceTicker',
-	'reactionPickerSize',
-	'reactionPickerWidth',
-	'reactionPickerHeight',
-	'reactionPickerUseDrawerForMobile',
+	'emojiPickerScale',
+	'emojiPickerWidth',
+	'emojiPickerHeight',
+	'emojiPickerUseDrawerForMobile',
 	'defaultSideView',
 	'menuDisplay',
 	'reportError',
@@ -406,7 +406,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles.value[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles.value[profileId].name}.json`,
-	}, null, {
+	}, { type: 'divider' }, {
 		text: ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(profileId),
@@ -414,7 +414,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		text: ts._preferencesBackups.save,
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
-	}, null, {
+	}, { type: 'divider' }, {
 		text: ts.delete,
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),

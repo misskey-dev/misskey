@@ -13,6 +13,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:roles',
 } as const;
 
 export const paramDef = {

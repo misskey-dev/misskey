@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:unset-user-banner',
 } as const;
 
 export const paramDef = {

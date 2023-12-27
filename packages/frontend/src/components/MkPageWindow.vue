@@ -37,7 +37,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
 import { mainRouter, routes, page } from '@/router.js';
 import { $i } from '@/account.js';
-import { Router, useScrollPositionManager } from '@/nirax';
+import { Router, useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { openingWindowsCount } from '@/os.js';

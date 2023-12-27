@@ -6,8 +6,9 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
-import { signup, api, post, startServer, initTestDb, waitFire } from '../utils.js';
+import { signup, api, post, startServer, initTestDb, waitFire, createAppToken, port } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
 
@@ -558,6 +559,28 @@ describe('Streaming', () => {
 
 				assert.strictEqual(fired, false);
 			});
+		});
+
+		test('Authentication', async () => {
+			const application = await createAppToken(ayano, []);
+			const application2 = await createAppToken(ayano, ['read:account']);
+			const socket = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${application}`);
+			const established = await new Promise<boolean>((resolve, reject) => {
+				socket.on('error', () => resolve(false));
+				socket.on('unexpected-response', () => resolve(false));
+				setTimeout(() => resolve(true), 3000);
+			});
+
+			socket.close();
+			assert.strictEqual(established, false);
+
+			const fired = await waitFire(
+				{ token: application2 }, 'hybridTimeline',
+				() => api('notes/create', { text: 'Hello, world!' }, ayano),
+				msg => msg.type === 'note' && msg.body.userId === ayano.id,
+			);
+
+			assert.strictEqual(fired, true);
 		});
 
 		// XXX: QueryFailedError: duplicate key value violates unique constraint "IDX_347fec870eafea7b26c8a73bac"

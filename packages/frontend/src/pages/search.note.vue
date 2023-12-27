@@ -42,18 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { $i } from '@/account.js';
-import { instance } from '@/instance.js';
-import MkInfo from '@/components/MkInfo.vue';
 import { useRouter } from '@/router.js';
 import MkFolder from '@/components/MkFolder.vue';
 
@@ -63,7 +59,7 @@ const key = ref(0);
 const searchQuery = ref('');
 const searchOrigin = ref('combined');
 const notePagination = ref();
-const user = ref(null);
+const user = ref<any>(null);
 const isLocalOnly = ref(false);
 
 function selectUser() {

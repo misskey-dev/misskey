@@ -34,7 +34,6 @@ import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import * as os from '@/os.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
-import { $i } from '@/account.js';
 
 const notes = ref<Misskey.entities.Note[]>([]);
 const isScrolling = ref(false);

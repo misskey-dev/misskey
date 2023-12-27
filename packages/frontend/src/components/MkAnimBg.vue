@@ -21,8 +21,9 @@ const props = withDefaults(defineProps<{
 	focus: 1.0,
 });
 
-function loadShader(gl, type, source) {
+function loadShader(gl: WebGLRenderingContext, type: number, source: string) {
 	const shader = gl.createShader(type);
+	if (shader == null) return null;
 
 	gl.shaderSource(shader, source);
 	gl.compileShader(shader);
@@ -38,11 +39,13 @@ function loadShader(gl, type, source) {
 	return shader;
 }
 
-function initShaderProgram(gl, vsSource, fsSource) {
+function initShaderProgram(gl: WebGLRenderingContext, vsSource: string, fsSource: string) {
 	const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
 	const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
 
 	const shaderProgram = gl.createProgram();
+	if (shaderProgram == null || vertexShader == null || fragmentShader == null) return null;
+
 	gl.attachShader(shaderProgram, vertexShader);
 	gl.attachShader(shaderProgram, fragmentShader);
 	gl.linkProgram(shaderProgram);
@@ -63,8 +66,10 @@ let handle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 
 onMounted(() => {
 	const canvas = canvasEl.value!;
-	canvas.width = canvas.offsetWidth;
-	canvas.height = canvas.offsetHeight;
+	let width = canvas.offsetWidth;
+	let height = canvas.offsetHeight;
+	canvas.width = width;
+	canvas.height = height;
 
 	const gl = canvas.getContext('webgl', { premultipliedAlpha: true });
 	if (gl == null) return;
@@ -197,6 +202,7 @@ onMounted(() => {
 			gl_FragColor = vec4( color, max(max(color.x, color.y), color.z) );
 		}
 	`);
+	if (shaderProgram == null) return;
 
 	gl.useProgram(shaderProgram);
 	const u_resolution = gl.getUniformLocation(shaderProgram, 'u_resolution');
@@ -226,7 +232,23 @@ onMounted(() => {
 		gl!.uniform1f(u_time, 0);
 		gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 	} else {
-		function render(timeStamp) {
+		function render(timeStamp: number) {
+			let sizeChanged = false;
+			if (Math.abs(height - canvas.offsetHeight) > 2) {
+				height = canvas.offsetHeight;
+				canvas.height = height;
+				sizeChanged = true;
+			}
+			if (Math.abs(width - canvas.offsetWidth) > 2) {
+				width = canvas.offsetWidth;
+				canvas.width = width;
+				sizeChanged = true;
+			}
+			if (sizeChanged && gl) {
+				gl.uniform2fv(u_resolution, [width, height]);
+				gl.viewport(0, 0, width, height);
+			}
+
 			gl!.uniform1f(u_time, timeStamp);
 			gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 

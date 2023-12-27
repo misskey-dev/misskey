@@ -12,6 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:send-email',
 } as const;
 
 export const paramDef = {

@@ -74,12 +74,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>Enable</template>
 						</MkSwitch>
 						<MkSwitch v-model="enableVerifymailApi" @update:modelValue="save">
-							<template #label>Use Verifymail API</template>
+							<template #label>Use Verifymail.io API</template>
 						</MkSwitch>
 						<MkInput v-model="verifymailAuthKey" @update:modelValue="save">
 							<template #prefix><i class="ti ti-key"></i></template>
-							<template #label>Verifymail API Auth Key</template>
+							<template #label>Verifymail.io API Auth Key</template>
 						</MkInput>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Banned Email Domains</template>
+
+					<div class="_gaps_m">
+						<MkTextarea v-model="bannedEmailDomains">
+							<template #label>Banned Email Domains List</template>
+						</MkTextarea>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 
@@ -124,6 +135,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -141,6 +153,7 @@ const enableIpLogging = ref<boolean>(false);
 const enableActiveEmailValidation = ref<boolean>(false);
 const enableVerifymailApi = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
+const bannedEmailDomains = ref<string>('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -161,6 +174,7 @@ async function init() {
 	enableActiveEmailValidation.value = meta.enableActiveEmailValidation;
 	enableVerifymailApi.value = meta.enableVerifymailApi;
 	verifymailAuthKey.value = meta.verifymailAuthKey;
+	bannedEmailDomains.value = meta.bannedEmailDomains.join('\n');
 }
 
 function save() {
@@ -180,6 +194,7 @@ function save() {
 		enableActiveEmailValidation: enableActiveEmailValidation.value,
 		enableVerifymailApi: enableVerifymailApi.value,
 		verifymailAuthKey: verifymailAuthKey.value,
+		bannedEmailDomains: bannedEmailDomains.value.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

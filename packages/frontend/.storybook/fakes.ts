@@ -82,7 +82,8 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		birthday: '2014-06-20',
 		createdAt: '2016-12-28T22:49:51.000Z',
 		description: 'I am a cool user!',
-		ffVisibility: 'public',
+		followingVisibility: 'public',
+		followersVisibility: 'public',
 		roles: [],
 		fields: [
 			{

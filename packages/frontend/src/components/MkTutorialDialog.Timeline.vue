@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.divider"></div>
 	<I18n :src="i18n.ts._initialTutorial._timeline.description3" tag="div" style="padding: 0 16px;">
 		<template #link>
-			<a href="https://misskey-hub.net/docs/features/timeline.html" target="_blank" class="_link">{{ i18n.ts.help }}</a>
+			<a href="https://misskey-hub.net/docs/for-users/features/timeline/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 		</template>
 	</I18n>
 

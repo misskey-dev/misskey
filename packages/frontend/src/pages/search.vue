@@ -23,10 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import MkInfo from '@/components/MkInfo.vue';

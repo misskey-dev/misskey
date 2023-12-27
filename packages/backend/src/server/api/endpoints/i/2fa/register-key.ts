@@ -36,6 +36,140 @@ export const meta = {
 			id: 'bf32b864-449b-47b8-974e-f9a5468546f1',
 		},
 	},
+
+	res: {
+		type: 'object',
+		nullable: false,
+		optional: false,
+		properties: {
+			rp: {
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+						nullable: true,
+					},
+				},
+			},
+			user: {
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+					},
+					name: {
+						type: 'string',
+					},
+					displayName: {
+						type: 'string',
+					},
+				},
+			},
+			challenge: {
+				type: 'string',
+			},
+			pubKeyCredParams: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						type: {
+							type: 'string',
+						},
+						alg: {
+							type: 'number',
+						},
+					},
+				},
+			},
+			timeout: {
+				type: 'number',
+				nullable: true,
+			},
+			excludeCredentials: {
+				type: 'array',
+				nullable: true,
+				items: {
+					type: 'object',
+					properties: {
+						id: {
+							type: 'string',
+						},
+						type: {
+							type: 'string',
+						},
+						transports: {
+							type: 'array',
+							items: {
+								type: 'string',
+								enum: [
+									"ble",
+									"cable",
+									"hybrid",
+									"internal",
+									"nfc",
+									"smart-card",
+									"usb",
+								],
+							},
+						},
+					},
+				},
+			},
+			authenticatorSelection: {
+				type: 'object',
+				nullable: true,
+				properties: {
+					authenticatorAttachment: {
+						type: 'string',
+						enum: [
+							"cross-platform",
+							"platform",
+						],
+					},
+					requireResidentKey: {
+						type: 'boolean',
+					},
+					userVerification: {
+						type: 'string',
+						enum: [
+							"discouraged",
+							"preferred",
+							"required",
+						],
+					},
+				},
+			},
+			attestation: {
+				type: 'string',
+				nullable: true,
+				enum: [
+					"direct",
+					"enterprise",
+					"indirect",
+					"none",
+				],
+			},
+			extensions: {
+				type: 'object',
+				nullable: true,
+				properties: {
+					appid: {
+						type: 'string',
+						nullable: true,
+					},
+					credProps: {
+						type: 'boolean',
+						nullable: true,
+					},
+					hmacCreateSecret: {
+						type: 'boolean',
+						nullable: true,
+					},
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

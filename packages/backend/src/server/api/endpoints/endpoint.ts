@@ -11,6 +11,23 @@ export const meta = {
 	requireCredential: false,
 
 	tags: ['meta'],
+
+	res: {
+		type: 'object',
+		nullable: true,
+		properties: {
+			params: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						name: { type: 'string' },
+						type: { type: 'string' },
+					},
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

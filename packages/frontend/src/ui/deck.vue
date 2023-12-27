@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<XSidebar v-if="!isMobile"/>
 
 	<div :class="$style.main">
-		<XAnnouncements v-if="$i" :class="$style.announcements"/>
+		<XAnnouncements v-if="$i"/>
 		<XStatusBars/>
 		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
@@ -99,7 +99,6 @@ import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, delete
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollContainer } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i } from '@/account.js';
@@ -236,7 +235,7 @@ function changeProfile(ev: MouseEvent) {
 				deckStore.set('profile', k);
 				unisonReload();
 			},
-		}))), null, {
+		}))), { type: 'divider' }, {
 			text: i18n.ts._deck.newProfile,
 			icon: 'ti ti-plus',
 			action: async () => {
