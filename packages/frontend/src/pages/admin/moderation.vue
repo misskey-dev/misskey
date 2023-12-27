@@ -44,6 +44,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.urlPreviewDenyList }}</template>
 						<template #caption>{{ i18n.ts.urlPreviewDenyListDescription }}</template>
 					</MkTextarea>
+
+					<MkTextarea v-model="hiddenTags">
+						<template #label>{{ i18n.ts.hiddenTags }}</template>
+						<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -59,13 +64,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import FormSection from '@/components/form/section.vue';
-import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
@@ -74,40 +77,43 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 
-let enableRegistration: boolean = $ref(false);
-let emailRequiredForSignup: boolean = $ref(false);
-let sensitiveWords: string = $ref('');
-let preservedUsernames: string = $ref('');
-let tosUrl: string | null = $ref(null);
-let privacyPolicyUrl: string | null = $ref(null);
-let urlPreviewDenyList: string = $ref('');
+const enableRegistration = ref<boolean>(false);
+const emailRequiredForSignup = ref<boolean>(false);
+const sensitiveWords = ref<string>('');
+const hiddenTags = ref<string>('');
+const preservedUsernames = ref<string>('');
+const tosUrl = ref<string | null>(null);
+const privacyPolicyUrl = ref<string | null>(null);
+const urlPreviewDenyList = ref<string | undefined>('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	enableRegistration = !meta.disableRegistration;
-	emailRequiredForSignup = meta.emailRequiredForSignup;
-	sensitiveWords = meta.sensitiveWords.join('\n');
-	preservedUsernames = meta.preservedUsernames.join('\n');
-	tosUrl = meta.tosUrl;
-	privacyPolicyUrl = meta.privacyPolicyUrl;
-	urlPreviewDenyList = meta.urlPreviewDenyList.join('\n');
+	enableRegistration.value = !meta.disableRegistration;
+	emailRequiredForSignup.value = meta.emailRequiredForSignup;
+	sensitiveWords.value = meta.sensitiveWords.join('\n');
+	hiddenTags.value = meta.hiddenTags.join('\n');
+	preservedUsernames.value = meta.preservedUsernames.join('\n');
+	tosUrl.value = meta.tosUrl;
+	privacyPolicyUrl.value = meta.privacyPolicyUrl;
+	urlPreviewDenyList.value = meta.urlPreviewDenyList?.join('\n');
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		disableRegistration: !enableRegistration,
-		emailRequiredForSignup,
-		tosUrl,
-		privacyPolicyUrl,
-		sensitiveWords: sensitiveWords.split('\n'),
-		preservedUsernames: preservedUsernames.split('\n'),
-		urlPreviewDenyList: urlPreviewDenyList.split('\n'),
+		disableRegistration: !enableRegistration.value,
+		emailRequiredForSignup: emailRequiredForSignup.value,
+		tosUrl: tosUrl.value,
+		privacyPolicyUrl: privacyPolicyUrl.value,
+		sensitiveWords: sensitiveWords.value.split('\n'),
+		hiddenTags: hiddenTags.value.split('\n'),
+		preservedUsernames: preservedUsernames.value.split('\n'),
+		urlPreviewDenyList: urlPreviewDenyList.value?.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});
 }
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.moderation,

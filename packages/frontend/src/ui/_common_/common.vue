@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { swInject } from './sw-inject';
+import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups, pendingApiRequestsCount } from '@/os.js';
 import { uploads } from '@/scripts/upload.js';
@@ -56,14 +56,14 @@ import { $i } from '@/account.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
-import { globalEvents } from '@/events';
+import { globalEvents } from '@/events.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = $ref<Misskey.entities.Notification[]>([]);
+const notifications = ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
 	if (document.visibilityState === 'visible') {
@@ -72,13 +72,13 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 			useStream().send('readNotification');
 		}
 
-		notifications.unshift(notification);
+		notifications.value.unshift(notification);
 		window.setTimeout(() => {
-			if (notifications.length > 3) notifications.pop();
+			if (notifications.value.length > 3) notifications.value.pop();
 		}, 500);
 
 		window.setTimeout(() => {
-			notifications = notifications.filter(x => x.id !== notification.id);
+			notifications.value = notifications.value.filter(x => x.id !== notification.id);
 		}, 6000);
 	}
 

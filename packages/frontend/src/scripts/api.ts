@@ -10,7 +10,12 @@ import { $i } from '@/account.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
+export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
+	endpoint: E,
+	data: P = {} as any,
+	token?: string | null | undefined,
+	signal?: AbortSignal,
+): Promise<Misskey.api.SwitchCaseResponseType<E, P>> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
@@ -52,7 +57,10 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 }
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Misskey.Endpoints[E]['res']> {
+export function apiGet<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
+	endpoint: E,
+	data: P = {} as any,
+): Promise<Misskey.api.SwitchCaseResponseType<E, P>> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {

@@ -10,6 +10,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { QueryService } from '@/core/QueryService.js';
+import { CacheService } from '@/core/CacheService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -48,8 +49,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
 		private queryService: QueryService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const userIdsWhoBlockingMe = me ? await this.cacheService.userBlockedCache.fetch(me.id) : new Set<string>();
+
+			// early return if me is blocked by requesting user
+			if (userIdsWhoBlockingMe.has(ps.userId)) {
+				return [];
+			}
+
 			let noteIds = await this.featuredService.getPerUserNotesRanking(ps.userId, 50);
 
 			noteIds.sort((a, b) => a > b ? -1 : 1);

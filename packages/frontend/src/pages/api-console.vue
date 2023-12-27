@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import JSON5 from 'json5';
 import { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
@@ -46,7 +46,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const body = ref('{}');
 const endpoint = ref('');
-const endpoints = ref<any[]>([]);
+const endpoints = ref<string[]>([]);
 const sending = ref(false);
 const res = ref('');
 const withCredential = ref(true);
@@ -83,9 +83,9 @@ function onEndpointChange() {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: 'API console',

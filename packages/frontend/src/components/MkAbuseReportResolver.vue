@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -66,7 +66,7 @@ const props = defineProps<{
 		previousExpiresAt?: string;
 	}
 }>();
-let expirationDate: Date | null = $ref(null);
+const expirationDate = ref<Date | null>(null);
 
 type NonNullType<T> = {
 	[P in keyof T]: NonNullable<T[P]>
@@ -105,9 +105,9 @@ const value = computed({
 
 function renderExpirationDate(empty = false) {
 	if (value.value.expirationDate && !empty) {
-		expirationDate = new Date(value.value.expirationDate);
+		expirationDate.value = new Date(value.value.expirationDate);
 	} else {
-		expirationDate = null;
+		expirationDate.value = null;
 	}
 }
 

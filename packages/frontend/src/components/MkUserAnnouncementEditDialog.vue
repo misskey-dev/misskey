@@ -66,6 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -82,40 +83,40 @@ const props = defineProps<{
 	announcement?: any,
 }>();
 
-let dialog = $ref(null);
-let title: string = $ref(props.announcement ? props.announcement.title : '');
-let text: string = $ref(props.announcement ? props.announcement.text : '');
-let icon: string = $ref(props.announcement ? props.announcement.icon : 'info');
-let display: string = $ref(props.announcement ? props.announcement.display : 'dialog');
-let needConfirmationToRead: boolean = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
-let closeDuration: number = $ref(props.announcement ? props.announcement.closeDuration : 0);
-let displayOrder: number = $ref(props.announcement ? props.announcement.displayOrder : 0);
-let silence: boolean = $ref(props.announcement ? props.announcement.silence : false);
-let reads: number = $ref(props.announcement ? props.announcement.reads : 0);
+const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
+const title = ref<string>(props.announcement ? props.announcement.title : '');
+const text = ref<string>(props.announcement ? props.announcement.text : '');
+const icon = ref<string>(props.announcement ? props.announcement.icon : 'info');
+const display = ref<string>(props.announcement ? props.announcement.display : 'dialog');
+const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const closeDuration = ref<number>(props.announcement ? props.announcement.closeDuration : 0);
+const displayOrder = ref<number>(props.announcement ? props.announcement.displayOrder : 0);
+const silence = ref<boolean>(props.announcement ? props.announcement.silence : false);
+const reads = ref<number>(props.announcement ? props.announcement.reads : 0);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
 	(ev: 'closed'): void
 }>();
 
-const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+const announceTitleEl = shallowRef<HTMLInputElement | null>(null);
 
 function insertEmoji(ev: MouseEvent): void {
-	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl);
+	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl.value);
 }
 
 async function done(): Promise<void> {
 	const params = {
-		title: title,
-		text: text,
-		icon: icon,
+		title: title.value,
+		text: text.value,
+		icon: icon.value,
 		imageUrl: null,
-		display: display,
-		needConfirmationToRead: needConfirmationToRead,
-		closeDuration: closeDuration,
-		displayOrder: displayOrder,
-		silence: silence,
-		reads: reads,
+		display: display.value,
+		needConfirmationToRead: needConfirmationToRead.value,
+		closeDuration: closeDuration.value,
+		displayOrder: displayOrder.value,
+		silence: silence.value,
+		reads: reads.value,
 		userId: props.user.id,
 	};
 
@@ -132,7 +133,7 @@ async function done(): Promise<void> {
 			},
 		});
 
-		dialog.close();
+		dialog.value.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -140,14 +141,14 @@ async function done(): Promise<void> {
 			created: created,
 		});
 
-		dialog.close();
+		dialog.value.close();
 	}
 }
 
 async function del(): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title }),
+		text: i18n.t('removeAreYouSure', { x: title.value }),
 	});
 	if (canceled) return;
 
@@ -157,7 +158,7 @@ async function del(): Promise<void> {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.close();
+		dialog.value.close();
 	});
 }
 </script>

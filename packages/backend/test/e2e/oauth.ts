@@ -941,4 +941,24 @@ describe('OAuth', () => {
 		const response = await fetch(new URL('/oauth/foo', host));
 		assert.strictEqual(response.status, 404);
 	});
+
+	describe('CORS', () => {
+		test('Token endpoint should support CORS', async () => {
+			const response = await fetch(new URL('/oauth/token', host), { method: 'POST' });
+			assert.ok(!response.ok);
+			assert.strictEqual(response.headers.get('Access-Control-Allow-Origin'), '*');
+		});
+
+		test('Authorize endpoint should not support CORS', async () => {
+			const response = await fetch(new URL('/oauth/authorize', host), { method: 'GET' });
+			assert.ok(!response.ok);
+			assert.ok(!response.headers.has('Access-Control-Allow-Origin'));
+		});
+
+		test('Decision endpoint should not support CORS', async () => {
+			const response = await fetch(new URL('/oauth/decision', host), { method: 'POST' });
+			assert.ok(!response.ok);
+			assert.ok(!response.headers.has('Access-Control-Allow-Origin'));
+		});
+	});
 });

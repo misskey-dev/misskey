@@ -51,9 +51,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XTimeline from './welcome.timeline.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -63,20 +62,18 @@ import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
-let meta = $ref<Misskey.entities.Instance>();
-let stats = $ref(null);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
 os.api('meta', { detail: true }).then(_meta => {
-	meta = _meta;
+	meta.value = _meta;
 });
 
-os.api('stats', {
-}).then((res) => {
-	stats = res;
+os.api('stats', {}).then((res) => {
+	stats.value = res;
 });
 
 function signin() {
@@ -104,7 +101,7 @@ function showMenu(ev) {
 		action: () => {
 			os.pageWindow('/about-misskey');
 		},
-	}, null, (instance.impressumUrl) ? {
+	}, { type: 'divider' }, (instance.impressumUrl) ? {
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
 		action: () => {
@@ -122,17 +119,17 @@ function showMenu(ev) {
 		action: () => {
 			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
 		},
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : null, {
+	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.md', '_blank', 'noopener');
+			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function exploreOtherServers() {
-	window.open('https://join.misskey.page/instances', '_blank', 'noopener');
+	window.open('https://misskey-hub.net/servers/', '_blank', 'noopener');
 }
 </script>
 

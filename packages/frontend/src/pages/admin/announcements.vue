@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput ref="announceTitleEl" v-model="announcement.title" :large="false">
 						<template #label>{{ i18n.ts.title }}&nbsp;<button v-tooltip="i18n.ts.emoji" :class="['_button']" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button></template>
 					</MkInput>
-					<MkTextarea v-model="announcement.text">
+					<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
 					<MkInput v-model="announcement.imageUrl" type="url">
@@ -95,12 +95,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, shallowRef, watch, computed } from 'vue';
 import * as misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -110,12 +109,13 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
-const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+const announceTitleEl = shallowRef<HTMLInputElement | null>(null);
 const user = ref<misskey.entities.UserLite | null>(null);
 const offset = ref(0);
 const hasMore = ref(false);
+import MkTextarea from '@/components/MkTextarea.vue';
 
-let announcements: any[] = $ref([]);
+const announcements = ref<any[]>([]);
 
 function selectUserFilter(): void {
 	os.selectUser().then(_user => {
@@ -131,11 +131,11 @@ function editUser(announcement): void {
 }
 
 function insertEmoji(ev: MouseEvent): void {
-	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl);
+	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl.value);
 }
 
 function add() {
-	announcements.unshift({
+	announcements.value.unshift({
 		_id: Math.random().toString(36),
 		id: null,
 		title: 'New announcement',
@@ -157,7 +157,7 @@ function del(announcement) {
 		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		announcements = announcements.filter(x => x !== announcement);
+		announcements.value = announcements.value.filter(x => x !== announcement);
 		os.api('admin/announcements/delete', announcement);
 	});
 }
@@ -181,7 +181,7 @@ async function save(announcement): Promise<void> {
 
 function fetch(resetOffset = false): void {
 	if (resetOffset) {
-		announcements = [];
+		announcements.value = [];
 		offset.value = 0;
 	}
 
@@ -191,7 +191,7 @@ function fetch(resetOffset = false): void {
 		limit: 10,
 		userId: user.value?.id,
 	}).then(announcementResponse => {
-		announcements = announcements.concat(announcementResponse);
+		announcements.value = announcements.value.concat(announcementResponse);
 		hasMore.value = announcementResponse?.length === 10;
 		offset.value += announcementResponse?.length ?? 0;
 	});
@@ -200,14 +200,14 @@ function fetch(resetOffset = false): void {
 watch(user, () => fetch(true));
 fetch(true);
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.announcements,

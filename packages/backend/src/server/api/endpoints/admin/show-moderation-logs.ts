@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:show-moderation-log',
 
 	res: {
 		type: 'array',

@@ -127,10 +127,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canSearchNotes'])">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canUseTranslator'])">
 							<template #label>{{ i18n.ts._role._options.canUseTranslator }}</template>
 							<template #suffix>{{ policies.canUseTranslator ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="policies.canUseTranslator">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseDriveFileInSoundSettings, 'canUseDriveFileInSoundSettings'])">
+							<template #label>{{ i18n.ts._role._options.canUseDriveFileInSoundSettings }}</template>
+							<template #suffix>{{ policies.canUseDriveFileInSoundSettings ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUseDriveFileInSoundSettings">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
@@ -216,6 +224,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.avatarDecorationLimit, 'avatarDecorationLimit'])">
+							<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
+							<template #suffix>{{ policies.avatarDecorationLimit }}</template>
+							<MkInput v-model="policies.avatarDecorationLimit" type="number" :min="0">
+							</MkInput>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -255,7 +270,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
 import { useRouter } from '@/router.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { ROLE_POLICIES } from '@/const';
+import { ROLE_POLICIES } from '@/const.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');
@@ -282,9 +297,9 @@ function create() {
 	router.push('/admin/roles/new');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.roles,

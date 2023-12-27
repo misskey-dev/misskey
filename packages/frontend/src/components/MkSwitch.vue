@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]">
+<div :class="[$style.root, { [$style.disabled]: disabled }]">
 	<input
 		ref="input"
 		type="checkbox"
@@ -64,9 +64,6 @@ const toggle = () => {
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
-
-	//&.checked {
-	//}
 }
 
 .input {

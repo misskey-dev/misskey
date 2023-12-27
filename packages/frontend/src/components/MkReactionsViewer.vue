@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { inject, watch } from 'vue';
+import { inject, watch, ref } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { defaultStore } from '@/store.js';
 
@@ -38,31 +38,31 @@ const emit = defineEmits<{
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
-let reactions = $ref<[string, number][]>([]);
-let hasMoreReactions = $ref(false);
+const reactions = ref<[string, number][]>([]);
+const hasMoreReactions = ref(false);
 
-if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReaction)) {
-	reactions[props.note.myReaction] = props.note.reactions[props.note.myReaction];
+if (props.note.myReaction && !Object.keys(reactions.value).includes(props.note.myReaction)) {
+	reactions.value[props.note.myReaction] = props.note.reactions[props.note.myReaction];
 }
 
 function onMockToggleReaction(emoji: string, count: number) {
 	if (!mock) return;
 
-	const i = reactions.findIndex((item) => item[0] === emoji);
+	const i = reactions.value.findIndex((item) => item[0] === emoji);
 	if (i < 0) return;
 
-	emit('mockUpdateMyReaction', emoji, (count - reactions[i][1]));
+	emit('mockUpdateMyReaction', emoji, (count - reactions.value[i][1]));
 }
 
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
-	hasMoreReactions = Object.keys(newSource).length > maxNumber;
+	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
-	for (let i = 0; i < reactions.length; i++) {
-		const reaction = reactions[i][0];
+	for (let i = 0; i < reactions.value.length; i++) {
+		const reaction = reactions.value[i][0];
 		if (reaction in newSource && newSource[reaction] !== 0) {
-			reactions[i][1] = newSource[reaction];
-			newReactions.push(reactions[i]);
+			reactions.value[i][1] = newSource[reaction];
+			newReactions.push(reactions.value[i]);
 		}
 	}
 
@@ -80,7 +80,7 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
 	}
 
-	reactions = newReactions;
+	reactions.value = newReactions;
 }, { immediate: true, deep: true });
 </script>
 

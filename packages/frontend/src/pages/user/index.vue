@@ -9,7 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div v-if="user">
 			<XHome v-if="tab === 'home'" :user="user"/>
-			<XTimeline v-else-if="tab === 'notes'" :user="user"/>
+			<MkSpacer v-else-if="tab === 'notes'" :contentMax="800" style="padding-top: 0">
+				<XTimeline :user="user"/>
+			</MkSpacer>
 			<XActivity v-else-if="tab === 'activity'" :user="user"/>
 			<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
 			<XReactions v-else-if="tab === 'reactions'" :user="user"/>
@@ -27,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch } from 'vue';
+import { defineAsyncComponent, computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
 import * as os from '@/os.js';
@@ -54,17 +56,17 @@ const props = withDefaults(defineProps<{
 	page: 'home',
 });
 
-let tab = $ref(props.page);
-let user = $ref<null | Misskey.entities.UserDetailed>(null);
-let error = $ref(null);
+const tab = ref(props.page);
+const user = ref<null | Misskey.entities.UserDetailed>(null);
+const error = ref<any>(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
-	user = null;
+	user.value = null;
 	os.api('users/show', Misskey.acct.parse(props.acct)).then(u => {
-		user = u;
+		user.value = u;
 	}).catch(err => {
-		error = err;
+		error.value = err;
 	});
 }
 
@@ -72,9 +74,9 @@ watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => user ? [{
+const headerTabs = computed(() => user.value ? [{
 	key: 'home',
 	title: i18n.ts.overview,
 	icon: 'ti ti-home',
@@ -86,11 +88,11 @@ const headerTabs = $computed(() => user ? [{
 	key: 'activity',
 	title: i18n.ts.activity,
 	icon: 'ti ti-chart-line',
-}, ...(user.host == null ? [{
+}, ...(user.value.host == null ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
-}] : []), ...($i && ($i.id === user.id)) || user.publicReactions ? [{
+}] : []), ...($i && ($i.id === user.value.id)) || user.value.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',
@@ -120,15 +122,15 @@ const headerTabs = $computed(() => user ? [{
 	icon: 'ti ti-code',
 }] : []);
 
-definePageMetadata(computed(() => user ? {
+definePageMetadata(computed(() => user.value ? {
 	icon: 'ti ti-user',
-	title: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
-	subtitle: `@${getAcct(user)}`,
-	userName: user,
-	avatar: user,
-	path: `/@${user.username}`,
+	title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
+	subtitle: `@${getAcct(user.value)}`,
+	userName: user.value,
+	avatar: user.value,
+	path: `/@${user.value.username}`,
 	share: {
-		title: user.name,
+		title: user.value.name,
 	},
 } : null));
 </script>

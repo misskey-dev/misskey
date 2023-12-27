@@ -23,21 +23,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<img
-		v-if="showDecoration && (decoration || user.avatarDecorations.length > 0)"
-		:class="[$style.decoration]"
-		:src="decoration?.url ?? user.avatarDecorations[0].url"
-		:style="{
-			rotate: getDecorationAngle(),
-			scale: getDecorationScale(),
-		}"
-		alt=""
-	>
+	<template v-if="showDecoration">
+		<img
+			v-for="decoration in decorations ?? user.avatarDecorations"
+			:class="[$style.decoration]"
+			:src="decoration.url"
+			:style="{
+				rotate: getDecorationAngle(decoration),
+				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
+			}"
+			alt=""
+		>
+	</template>
 </component>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
@@ -47,9 +50,9 @@ import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store.js';
 
-const animation = $ref(defaultStore.state.animation);
-const squareAvatars = $ref(defaultStore.state.squareAvatars);
-const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
+const animation = ref(defaultStore.state.animation);
+const squareAvatars = ref(defaultStore.state.squareAvatars);
+const useBlurEffect = ref(defaultStore.state.useBlurEffect);
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -57,19 +60,14 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
-	decoration?: {
-		url: string;
-		angle?: number;
-		flipH?: boolean;
-		flipV?: boolean;
-	};
+	decorations?: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>[];
 	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
-	decoration: undefined,
+	decorations: undefined,
 	forceShowDecoration: false,
 });
 
@@ -79,11 +77,11 @@ const emit = defineEmits<{
 
 const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
 
-const bound = $computed(() => props.link
+const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = $computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.enableDataSaverMode)
+const url = computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar)
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
 
@@ -92,34 +90,26 @@ function onClick(ev: MouseEvent): void {
 	emit('click', ev);
 }
 
-function getDecorationAngle() {
-	let angle;
-	if (props.decoration) {
-		angle = props.decoration.angle ?? 0;
-	} else if (props.user.avatarDecorations.length > 0) {
-		angle = props.user.avatarDecorations[0].angle ?? 0;
-	} else {
-		angle = 0;
-	}
+function getDecorationAngle(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const angle = decoration.angle ?? 0;
 	return angle === 0 ? undefined : `${angle * 360}deg`;
 }
 
-function getDecorationScale() {
-	let scaleX;
-	if (props.decoration) {
-		scaleX = props.decoration.flipH ? -1 : 1;
-	} else if (props.user.avatarDecorations.length > 0) {
-		scaleX = props.user.avatarDecorations[0].flipH ? -1 : 1;
-	} else {
-		scaleX = 1;
-	}
+function getDecorationScale(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const scaleX = decoration.flipH ? -1 : 1;
 	return scaleX === 1 ? undefined : `${scaleX} 1`;
 }
 
-let color = $ref<string | undefined>();
+function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const offsetX = decoration.offsetX ?? 0;
+	const offsetY = decoration.offsetY ?? 0;
+	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
+}
+
+const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
-	color = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
+	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
 });

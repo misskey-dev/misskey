@@ -96,6 +96,11 @@ export class NodeinfoServerService {
 				metadata: {
 					nodeName: meta.name,
 					nodeDescription: meta.description,
+					nodeAdmins: [{
+						name: meta.maintainerName,
+						email: meta.maintainerEmail,
+					}],
+					// deprecated
 					maintainer: {
 						name: meta.maintainerName,
 						email: meta.maintainerEmail,

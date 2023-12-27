@@ -29,17 +29,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated } from 'vue';
+import { onActivated, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { userListsCache } from '@/cache';
+import { userListsCache } from '@/cache.js';
 import { infoImageUrl } from '@/instance.js';
 import { $i } from '@/account.js';
 
-const items = $computed(() => userListsCache.value.value ?? []);
+const items = computed(() => userListsCache.value.value ?? []);
 
 function fetch() {
 	userListsCache.fetch();
@@ -57,7 +57,7 @@ async function create() {
 	fetch();
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-refresh',
 	text: i18n.ts.reload,
@@ -67,7 +67,7 @@ const headerActions = $computed(() => [{
 	},
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.manageLists,

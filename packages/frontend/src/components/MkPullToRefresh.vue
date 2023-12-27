@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkLoading from '@/components/global/MkLoading.vue';
-import { onMounted, onUnmounted, onActivated, onDeactivated } from 'vue';
+import { onMounted, onUnmounted, onActivated, onDeactivated, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
@@ -36,17 +36,17 @@ const RELEASE_TRANSITION_DURATION = 200;
 const PULL_BRAKE_BASE = 1.5;
 const PULL_BRAKE_FACTOR = 170;
 
-let isPullStart = $ref(false);
-let isPullEnd = $ref(false);
-let isRefreshing = $ref(false);
-let pullDistance = $ref(0);
-let moveRatio = $ref(0);
+const isPullStart = ref(false);
+const isPullEnd = ref(false);
+const isRefreshing = ref(false);
+const pullDistance = ref(0);
+const moveRatio = ref(0);
 
 let supportPointerDesktop = false;
 let startScreenY: number | null = null;
 let startClientX: number | null = null;
 
-const rootEl = $shallowRef<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 let scrollEl: HTMLElement | null = null;
 
 let disabled = false;
@@ -76,19 +76,19 @@ function getClientX(event) {
 }
 
 function moveStart(event) {
-	if (!isPullStart && !isRefreshing && !disabled && scrollEl?.scrollTop === 0) {
-		isPullStart = true;
+	if (!isPullStart.value && !isRefreshing.value && !disabled && scrollEl?.scrollTop === 0) {
+		isPullStart.value = true;
 		startScreenY = getScreenY(event);
 		startClientX = getClientX(event);
-		pullDistance = 0;
-		moveRatio = 0;
+		pullDistance.value = 0;
+		moveRatio.value = 0;
 	}
 }
 
 function moveBySystem(to: number): Promise<void> {
 	return new Promise(r => {
-		const startHeight = pullDistance;
-		const overHeight = pullDistance - to;
+		const startHeight = pullDistance.value;
+		const overHeight = pullDistance.value - to;
 		if (overHeight < 1) {
 			r();
 			return;
@@ -97,37 +97,37 @@ function moveBySystem(to: number): Promise<void> {
 		let intervalId = setInterval(() => {
 			const time = Date.now() - startTime;
 			if (time > RELEASE_TRANSITION_DURATION) {
-				pullDistance = to;
+				pullDistance.value = to;
 				clearInterval(intervalId);
 				r();
 				return;
 			}
 			const nextHeight = startHeight - (overHeight / RELEASE_TRANSITION_DURATION) * time;
-			if (pullDistance < nextHeight) return;
-			pullDistance = nextHeight;
+			if (pullDistance.value < nextHeight) return;
+			pullDistance.value = nextHeight;
 		}, 1);
 	});
 }
 
 async function fixOverContent() {
-	if (pullDistance > FIRE_THRESHOLD) {
+	if (pullDistance.value > FIRE_THRESHOLD) {
 		await moveBySystem(FIRE_THRESHOLD);
 	}
 }
 
 async function closeContent() {
-	if (pullDistance > 0) {
+	if (pullDistance.value > 0) {
 		await moveBySystem(0);
 	}
 }
 
 function moveEnd() {
-	if (isPullStart && !isRefreshing) {
+	if (isPullStart.value && !isRefreshing.value) {
 		startScreenY = null;
 		startClientX = null;
-		if (isPullEnd) {
-			isPullEnd = false;
-			isRefreshing = true;
+		if (isPullEnd.value) {
+			isPullEnd.value = false;
+			isRefreshing.value = true;
 			fixOverContent().then(() => {
 				emit('refresh');
 				props.refresher().then(() => {
@@ -135,18 +135,18 @@ function moveEnd() {
 				});
 			});
 		} else {
-			closeContent().then(() => isPullStart = false);
+			closeContent().then(() => isPullStart.value = false);
 		}
 	}
 }
 
 function moving(event: TouchEvent | PointerEvent) {
-	if (!isPullStart && scrollEl?.scrollTop === 0) moveStart(event);
-	if (!isPullStart || isRefreshing || disabled) return;
+	if (!isPullStart.value && scrollEl?.scrollTop === 0) moveStart(event);
+	if (!isPullStart.value || isRefreshing.value || disabled) return;
 
-	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance)) {
-		pullDistance = 0;
-		isPullEnd = false;
+	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance.value)) {
+		pullDistance.value = 0;
+		isPullEnd.value = false;
 		moveEnd();
 		return;
 	}
@@ -160,14 +160,14 @@ function moving(event: TouchEvent | PointerEvent) {
 
 	const moveHeight = moveScreenY - startScreenY!;
 	const moveWidth = moveClientX - startClientX!;
-	pullDistance = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
-	moveRatio = Math.max(Math.abs(moveHeight), 1) / Math.max(Math.abs(moveWidth), 1);
+	pullDistance.value = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
+	moveRatio.value = Math.max(Math.abs(moveHeight), 1) / Math.max(Math.abs(moveWidth), 1);
 
-	if (pullDistance > 0 && moveRatio > FIRE_THRESHOLD_RATIO) {
+	if (pullDistance.value > 0 && moveRatio.value > FIRE_THRESHOLD_RATIO) {
 		if (event.cancelable) event.preventDefault();
 	}
 
-	isPullEnd = pullDistance >= FIRE_THRESHOLD && moveRatio > FIRE_THRESHOLD_RATIO;
+	isPullEnd.value = pullDistance.value >= FIRE_THRESHOLD && moveRatio.value > FIRE_THRESHOLD_RATIO;
 }
 
 /**
@@ -177,8 +177,8 @@ function moving(event: TouchEvent | PointerEvent) {
  */
 function refreshFinished() {
 	closeContent().then(() => {
-		isPullStart = false;
-		isRefreshing = false;
+		isPullStart.value = false;
+		isRefreshing.value = false;
 	});
 }
 
@@ -196,33 +196,34 @@ function onScrollContainerScroll() {
 }
 
 onMounted(() => {
-	isRefreshing = false;
-	if (rootEl == null) return;
-	scrollEl = getScrollContainer(rootEl);
+	isRefreshing.value = false;
+	if (rootEl.value == null) return;
+
+	scrollEl = getScrollContainer(rootEl.value);
 	if (scrollEl == null) return;
 	scrollEl.addEventListener('scroll', onScrollContainerScroll, { passive: true });
-	rootEl.addEventListener('touchstart', moveStart, { passive: true });
-	rootEl.addEventListener('touchmove', moving, { passive: false }); // passive: falseにしないとpreventDefaultが使えない
-	rootEl.addEventListener('touchend', moveEnd, { passive: true });
+	rootEl.value.addEventListener('touchstart', moveStart, { passive: true });
+	rootEl.value.addEventListener('touchmove', moving, { passive: false }); // passive: falseにしないとpreventDefaultが使えない
+	rootEl.value.addEventListener('touchend', moveEnd, { passive: true });
 });
 
 onActivated(() => {
-	isRefreshing = false;
+	isRefreshing.value = false;
 });
 
 onDeactivated(() => {
 	scrollEl!.style.touchAction = 'auto';
-	isRefreshing = true;
+	isRefreshing.value = true;
 });
 
 onUnmounted(() => {
 	scrollEl!.style.touchAction = 'auto';
-	isRefreshing = true;
+	isRefreshing.value = true;
 	if (scrollEl) scrollEl.removeEventListener('scroll', onScrollContainerScroll);
-	if (rootEl == null) return;
-	rootEl.removeEventListener('touchstart', moveStart);
-	rootEl.removeEventListener('touchmove', moving);
-	rootEl.removeEventListener('touchend', moveEnd);
+	if (rootEl.value == null) return;
+	rootEl.value.removeEventListener('touchstart', moveStart);
+	rootEl.value.removeEventListener('touchmove', moving);
+	rootEl.value.removeEventListener('touchend', moveEnd);
 });
 
 defineExpose({

@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:invite-codes',
 
 	res: {
 		type: 'array',
@@ -21,6 +22,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
+			ref: 'InviteCode',
 		},
 	},
 } as const;
