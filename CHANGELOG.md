@@ -1,5 +1,5 @@
 <!--
-## x.x.x (unreleased)
+## 2023.x.x (unreleased)
 
 ### General
 -
@@ -11,17 +11,6 @@
 -
 
 -->
-
-## x.x.x (unreleased)
-
-### General
--
-
-### Client
-- Enhance: 誕生年に9999年を指定すると、年齢を非表示にできるように
-
-### Server
--
 
 ## 2023.12.1
 
