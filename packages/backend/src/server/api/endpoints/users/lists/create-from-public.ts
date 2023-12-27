@@ -20,7 +20,7 @@ export const meta = {
 	requireRolePolicy: 'canCreateContent',
 
 	prohibitMoved: true,
-
+	kind: 'write:account',
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

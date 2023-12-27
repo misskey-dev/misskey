@@ -4,10 +4,10 @@ import pluginVue from '@vitejs/plugin-vue';
 import typescript from '@rollup/plugin-typescript';
 import { type UserConfig, defineConfig } from 'vite';
 
-import locales from '../../locales';
+import locales from '../../locales/index.js';
 import meta from '../../package.json';
-import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
-import pluginJson5 from './vite.json5';
+import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
+import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -27,6 +27,7 @@ const hash = (str: string, seed = 0): number => {
 };
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';

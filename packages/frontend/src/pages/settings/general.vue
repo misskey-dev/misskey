@@ -49,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="hideMutedNotes">{{ i18n.ts._wordMute.hideMutedNotes }}</MkSwitch>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
+				<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
@@ -270,6 +271,7 @@ const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
 const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
 const animatedMfm = computed(defaultStore.makeGetterSetter('animatedMfm'));
 const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
+const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
 const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));

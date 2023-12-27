@@ -27,13 +27,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, ref, shallowRef, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { clipsCache } from '@/cache';
+import { clipsCache } from '@/cache.js';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -42,7 +43,7 @@ const pagination = {
 };
 
 const tab = ref('my');
-const favorites = ref();
+const favorites = ref<Misskey.entities.Clip[] | null>(null);
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

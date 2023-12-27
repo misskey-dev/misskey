@@ -62,7 +62,7 @@ const activeSincePrevTick = ref(0);
 const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
-const jobs = ref([]);
+const jobs = ref<(string | number)[][]>([]);
 const chartProcess = shallowRef<InstanceType<typeof XChart>>();
 const chartActive = shallowRef<InstanceType<typeof XChart>>();
 const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
@@ -104,9 +104,11 @@ const onStatsLog = (statsLog) => {
 };
 
 onMounted(() => {
-	os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
-		jobs.value = result;
-	});
+	if (props.domain === 'inbox' || props.domain === 'deliver') {
+		os.api(`admin/queue/${props.domain}-delayed`).then(result => {
+			jobs.value = result;
+		});
+	}
 
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);

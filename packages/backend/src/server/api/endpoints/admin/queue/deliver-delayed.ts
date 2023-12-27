@@ -12,10 +12,9 @@ import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:queue',
 
 	res: {
 		type: 'array',

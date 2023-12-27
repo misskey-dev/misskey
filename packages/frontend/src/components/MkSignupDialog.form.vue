@@ -115,9 +115,9 @@ const emailState = ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:
 const passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
 const passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
 const submitting = ref<boolean>(false);
-const hCaptchaResponse = ref(null);
-const reCaptchaResponse = ref(null);
-const turnstileResponse = ref(null);
+const hCaptchaResponse = ref<string | null>(null);
+const reCaptchaResponse = ref<string | null>(null);
+const turnstileResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
 const emailAbortController = ref<null | AbortController>(null);
 

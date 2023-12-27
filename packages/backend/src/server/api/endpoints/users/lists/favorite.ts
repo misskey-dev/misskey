@@ -13,7 +13,7 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	requireCredential: true,
 	requireRolePolicy: 'canUpdateContent',
-
+	kind: 'write:account',
 	errors: {
 		noSuchList: {
 			message: 'No such user list.',

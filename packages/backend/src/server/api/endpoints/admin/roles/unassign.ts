@@ -13,10 +13,9 @@ import { RoleService } from '@/core/RoleService.js';
 export const meta = {
 	tags: ['admin', 'role'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:roles',
 
 	errors: {
 		noSuchRole: {

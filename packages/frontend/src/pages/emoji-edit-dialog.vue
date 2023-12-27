@@ -110,7 +110,7 @@ const props = defineProps<{
 	emoji?: any,
 }>();
 
-const dialog = ref(null);
+const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji ? props.emoji.category : '');
 const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
@@ -118,9 +118,9 @@ const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
 const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
 const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
 const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
-const rolesThatCanBeUsedThisEmojiAsReaction = ref([]);
+const rolesThatCanBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
 const roleIdsThatCanNotBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction : []);
-const rolesThatCanNotBeUsedThisEmojiAsReaction = ref([]);
+const rolesThatCanNotBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
 const file = ref<Misskey.entities.DriveFile>();
 
 watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {

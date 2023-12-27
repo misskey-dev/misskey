@@ -88,9 +88,9 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const tab = ref('local');
-const query = ref(null);
-const queryRemote = ref(null);
-const host = ref(null);
+const query = ref<string | null>(null);
+const queryRemote = ref<string | null>(null);
+const host = ref<string | null>(null);
 const selectMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 

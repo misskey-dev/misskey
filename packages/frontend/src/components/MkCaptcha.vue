@@ -26,7 +26,7 @@ export type Captcha = {
 	getResponse(id: string): string;
 };
 
-type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile';
+export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;

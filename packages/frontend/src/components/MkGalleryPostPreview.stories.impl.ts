@@ -7,7 +7,7 @@
 import { expect } from '@storybook/jest';
 import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
-import { galleryPost } from '../../.storybook/fakes';
+import { galleryPost } from '../../.storybook/fakes.js';
 import MkGalleryPostPreview from './MkGalleryPostPreview.vue';
 export const Default = {
 	render(args) {
