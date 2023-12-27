@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.1
- * generatedAt: 2023-12-27T13:37:28.920Z
+ * generatedAt: 2023-12-27T13:38:13.340Z
  */
 
 /**
@@ -527,7 +527,7 @@ export type paths = {
      * admin/note-public-to-home
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
      */
     post: operations['admin/note-public-to-home'];
   };
@@ -7688,7 +7688,7 @@ export type operations = {
    * admin/note-public-to-home
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:notes*
    */
   'admin/note-public-to-home': {
     requestBody: {

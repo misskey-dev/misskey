@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.1
- * generatedAt: 2023-12-27T13:37:29.002Z
+ * generatedAt: 2023-12-27T13:38:13.458Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -628,7 +628,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
      */
     request<E extends 'admin/note-public-to-home', P extends Endpoints[E]['req']>(
       endpoint: E,
