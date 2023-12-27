@@ -2571,16 +2571,16 @@ export interface Locale {
             };
         };
     };
-		"_schedulePost": {
-			"list": string;
-			"postDate": string;
-			"postTime": string;
-			"localTime": string;
-			"addSchedule": string;
-			"willBePostedAtX": string;
-			"deleteAreYouSure": string;
-			"deleteAndEditConfirm": string;
-		};
+    "_schedulePost": {
+        "list": string;
+        "postDate": string;
+        "postTime": string;
+        "localTime": string;
+        "addSchedule": string;
+        "willBePostedAtX": string;
+        "deleteAreYouSure": string;
+        "deleteAndEditConfirm": string;
+    };
     "_dataSaver": {
         "_media": {
             "title": string;
