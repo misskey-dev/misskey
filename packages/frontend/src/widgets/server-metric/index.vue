@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, Widget, WidgetComponentExpose } from '../widget.js';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
@@ -65,7 +66,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-const meta = ref(null);
+const meta = ref<Misskey.entities.ServerInfoResponse | null>(null);
 
 os.apiGet('server-info', {}).then(res => {
 	meta.value = res;

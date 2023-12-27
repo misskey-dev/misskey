@@ -77,7 +77,7 @@ const widgetRefs = {};
 const configWidget = (id: string) => {
 	widgetRefs[id].configure();
 };
-const widgetAdderSelected = ref(null);
+const widgetAdderSelected = ref<string | null>(null);
 const addWidget = () => {
 	if (widgetAdderSelected.value == null) return;
 

@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
+	secure: true,
 
 	limit: {
 		duration: ms('1hour'),

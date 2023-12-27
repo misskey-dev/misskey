@@ -46,7 +46,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
-const selectedThemeId = ref(null);
+const selectedThemeId = ref<string | null>(null);
 
 const themes = computed(() => [...installedThemes.value, ...builtinThemes.value]);
 

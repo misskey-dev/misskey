@@ -121,6 +121,8 @@ sensitive: "Sensitive"
 add: "Add"
 reaction: "Reactions"
 reactions: "Reactions"
+emojiPicker: "Emoji picker"
+emojiPickerDisplay: "Emoji picker display"
 reactionSettingDescription2: "Drag to reorder, click to delete, press \"+\" to add."
 rememberNoteVisibility: "Remember note visibility settings"
 attachCancel: "Remove attachment"
@@ -260,6 +262,7 @@ removed: "Successfully deleted"
 removeAreYouSure: "Are you sure that you want to remove \"{x}\"?"
 deleteAreYouSure: "Are you sure that you want to delete \"{x}\"?"
 resetAreYouSure: "Really reset?"
+areYouSure: "Are you sure?"
 saved: "Saved"
 messaging: "Chat"
 upload: "Upload"
@@ -874,6 +877,8 @@ makeReactionsPublicDescription: "This will make the list of all your past reacti
 classic: "Classic"
 muteThread: "Mute thread"
 unmuteThread: "Unmute thread"
+followingVisibility: "Visibility of follows"
+followersVisibility: "Visibility of followers"
 continueThread: "View thread continuation"
 deleteAccountConfirm: "This will irreversibly delete your account. Proceed?"
 incorrectPassword: "Incorrect password."
@@ -1972,6 +1977,7 @@ _widgets:
   _userList:
     chooseList: "Select a list"
   clicker: "Clicker"
+  birthdayFollowings: "Users who celebrate their birthday today"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -2329,6 +2335,8 @@ _dataSaver:
   _avatar:
     title: "Avatar image"
     description: "Stop avatar image animation. Animated images can be larger in file size than normal  images, potentially leading to further reductions in data traffic."
+  _urlPreview:
+    title: "URL preview thumbnails"
   _code:
     title: "Code highlighting"
     description: "If code highlighting notations are used in MFM, etc., they will not load until tapped. Syntax highlighting requires downloading the highlight definition files for each programming language. Therefore, disabling the automatic loading of these files is expected to reduce the amount of communication data."

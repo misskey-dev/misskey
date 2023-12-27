@@ -19,6 +19,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canInvite',
+	kind: 'write:invite-codes',
 
 	errors: {
 		exceededCreateLimit: {
