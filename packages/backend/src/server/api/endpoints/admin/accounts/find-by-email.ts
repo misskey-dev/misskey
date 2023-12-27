@@ -13,10 +13,9 @@ import { ApiError } from '@/server/api/error.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:account',
 
 	errors: {
 		userNotFound: {

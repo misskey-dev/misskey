@@ -16,8 +16,6 @@ import { Packed } from '@/misc/json-schema.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -49,12 +47,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userEntityService: UserEntityService,
 		private signupService: SignupService,
 	) {
-		super(meta, paramDef, async (ps, _me) => {
+		super(meta, paramDef, async (ps, _me, token) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
 			const noUsers = (await this.usersRepository.countBy({
 				host: IsNull(),
 			})) === 0;
-			if (!noUsers && !me?.isRoot) throw new Error('access denied');
+			if ((!noUsers && !me?.isRoot) || token !== null) throw new Error('access denied');
 
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,

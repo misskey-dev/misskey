@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { IncomingMessage } from 'http';
-import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream, relativeFetch } from '../utils.js';
+import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream, relativeFetch, createAppToken } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
 
@@ -89,6 +89,11 @@ describe('API', () => {
 	});
 
 	test('管理者専用のAPIのアクセス制限', async () => {
+		const application = await createAppToken(alice, ['read:account']);
+		const application2 = await createAppToken(alice, ['read:admin:index-stats']);
+		const application3 = await createAppToken(bob, []);
+		const application4 = await createAppToken(bob, ['read:admin:index-stats']);
+
 		// aliceは管理者、APIを使える
 		await successfulApiCall({
 			endpoint: '/admin/get-index-stats',
@@ -127,6 +132,42 @@ describe('API', () => {
 			status: 401,
 			code: 'AUTHENTICATION_FAILED',
 			id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+		});
+
+		await successfulApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application2 },
+		});
+
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application },
+		}, {
+			status: 403,
+			code: 'PERMISSION_DENIED',
+			id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+		});
+
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application3 },
+		}, {
+			status: 403,
+			code: 'ROLE_PERMISSION_DENIED',
+			id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+		});
+
+		await failedApiCall({
+			endpoint: '/admin/get-index-stats',
+			parameters: {},
+			user: { token: application4 },
+		}, {
+			status: 403,
+			code: 'ROLE_PERMISSION_DENIED',
+			id: 'c3d38592-54c0-429d-be96-5636b0431a61',
 		});
 	});
 

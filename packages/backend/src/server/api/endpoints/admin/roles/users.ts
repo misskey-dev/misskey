@@ -16,10 +16,9 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin', 'role', 'users'],
 
-	kind: 'read:admin',
-
 	requireCredential: false,
 	requireAdmin: true,
+	kind: 'read:admin:roles',
 
 	errors: {
 		noSuchRole: {

@@ -25,6 +25,7 @@ export const meta = {
 	tags: ['federation'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	limit: {
 		duration: ms('1hour'),
