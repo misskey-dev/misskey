@@ -88,11 +88,11 @@ export class FollowingEntityService {
 			createdAt: this.idService.parse(following.id).date.toISOString(),
 			followeeId: following.followeeId,
 			followerId: following.followerId,
-			followee: opts.populateFollowee ? this.userEntityService.pack<false, true>(following.followee ?? following.followeeId, me, {
-				detail: true,
+			followee: opts.populateFollowee ? this.userEntityService.pack(following.followee ?? following.followeeId, me, {
+				schema: 'UserDetailedNotMe',
 			}) : undefined,
-			follower: opts.populateFollower ? this.userEntityService.pack<false, true>(following.follower ?? following.followerId, me, {
-				detail: true,
+			follower: opts.populateFollower ? this.userEntityService.pack(following.follower ?? following.followerId, me, {
+				schema: 'UserDetailedNotMe',
 			}) : undefined,
 		});
 	}

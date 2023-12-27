@@ -112,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return {
 				accessToken: accessToken.token,
 				user: await this.userEntityService.pack(session.userId, null, {
-					detail: true,
+					schema: 'UserDetailedNotMe',
 				}),
 			};
 		});

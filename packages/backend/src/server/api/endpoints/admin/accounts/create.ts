@@ -62,8 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ignorePreservedUsernames: true,
 			});
 
-			const res = await this.userEntityService.pack<true, true>(account, account, {
-				detail: true,
+			const res = await this.userEntityService.pack(account, account, {
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			}) as Packed<'MeDetailed'> & { token: string };
 

@@ -38,8 +38,8 @@ export class MutingEntityService {
 			createdAt: this.idService.parse(muting.id).date.toISOString(),
 			expiresAt: muting.expiresAt ? muting.expiresAt.toISOString() : null,
 			muteeId: muting.muteeId,
-			mutee: this.userEntityService.pack<false, true>(muting.muteeId, me, {
-				detail: true,
+			mutee: this.userEntityService.pack(muting.muteeId, me, {
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}

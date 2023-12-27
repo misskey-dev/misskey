@@ -58,8 +58,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.userNotFound);
 			}
 
-			const res = await this.userEntityService.pack<false, true>(profile.user!, null, {
-				detail: true,
+			const res = await this.userEntityService.pack(profile.user!, null, {
+				schema: 'UserDetailedNotMe',
 			});
 
 			return res;

@@ -147,7 +147,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (user != null) {
 			return {
 				type: 'User',
-				object: await this.userEntityService.pack<false, true>(user, me, { detail: true }),
+				object: await this.userEntityService.pack(user, me, { schema: 'UserDetailedNotMe' }),
 			};
 		} else if (note != null) {
 			try {

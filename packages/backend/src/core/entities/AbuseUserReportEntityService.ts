@@ -37,14 +37,14 @@ export class AbuseUserReportEntityService {
 			reporterId: report.reporterId,
 			targetUserId: report.targetUserId,
 			assigneeId: report.assigneeId,
-			reporter: this.userEntityService.pack<false, true>(report.reporter ?? report.reporterId, null, {
-				detail: true,
+			reporter: this.userEntityService.pack(report.reporter ?? report.reporterId, null, {
+				schema: 'UserDetailedNotMe',
 			}),
-			targetUser: this.userEntityService.pack<false, true>(report.targetUser ?? report.targetUserId, null, {
-				detail: true,
+			targetUser: this.userEntityService.pack(report.targetUser ?? report.targetUserId, null, {
+				schema: 'UserDetailedNotMe',
 			}),
-			assignee: report.assigneeId ? this.userEntityService.pack<false, true>(report.assignee ?? report.assigneeId, null, {
-				detail: true,
+			assignee: report.assigneeId ? this.userEntityService.pack(report.assignee ?? report.assigneeId, null, {
+				schema: 'UserDetailedNotMe',
 			}) : null,
 			forwarded: report.forwarded,
 		});

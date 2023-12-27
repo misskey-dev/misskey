@@ -102,8 +102,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Delete blocking
 			await this.userBlockingService.unblock(blocker, blockee);
 
-			return await this.userEntityService.pack<false, true>(blockee.id, blocker, {
-				detail: true,
+			return await this.userEntityService.pack(blockee.id, blocker, {
+				schema: 'UserDetailedNotMe',
 			});
 		});
 	}

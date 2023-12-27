@@ -202,8 +202,8 @@ export class ServerService implements OnApplicationShutdown {
 					emailVerifyCode: null,
 				});
 
-				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack<true, true>(profile.userId, { id: profile.userId }, {
-					detail: true,
+				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
+					schema: 'MeDetailed',
 					includeSecrets: true,
 				}));
 

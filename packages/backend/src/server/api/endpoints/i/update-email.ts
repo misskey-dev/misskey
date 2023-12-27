@@ -105,8 +105,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailVerifyCode: null,
 			});
 
-			const iObj = await this.userEntityService.pack<true, true>(me.id, me, {
-				detail: true,
+			const iObj = await this.userEntityService.pack(me.id, me, {
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			});
 
