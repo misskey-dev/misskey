@@ -85,7 +85,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -98,7 +99,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let ads: any[] = $ref([]);
+const ads = ref<Misskey.entities.Ad[]>([]);
 
 // ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
 const localTime = new Date();
@@ -109,7 +110,7 @@ let publishing: boolean | null = null;
 
 os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 	if (adsResponse != null) {
-		ads = adsResponse.map(r => {
+		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
@@ -141,7 +142,7 @@ function toggleDayOfWeek(ad, index) {
 }
 
 function add() {
-	ads.unshift({
+	ads.value.unshift({
 		id: null,
 		memo: '',
 		place: 'square',
@@ -161,7 +162,7 @@ function remove(ad) {
 		text: i18n.t('removeAreYouSure', { x: ad.url }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		ads = ads.filter(x => x !== ad);
+		ads.value = ads.value.filter(x => x !== ad);
 		if (ad.id == null) return;
 		os.apiWithDialog('admin/ad/delete', {
 			id: ad.id,
@@ -209,9 +210,9 @@ function save(ad) {
 }
 
 function more() {
-	os.api('admin/ad/list', { untilId: ads.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
+	os.api('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
-		ads = ads.concat(adsResponse.map(r => {
+		ads.value = ads.value.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
@@ -228,7 +229,7 @@ function more() {
 function refresh() {
 	os.api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
-		ads = adsResponse.map(r => {
+		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
@@ -244,14 +245,14 @@ function refresh() {
 
 refresh();
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.ads,

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:readonly="readonly"
 			:placeholder="placeholder"
 			:pattern="pattern"
-			:autocomplete="autocomplete"
+			:autocomplete="props.autocomplete"
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
@@ -26,16 +26,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></textarea>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
+	<div v-if="mfmPreview" v-show="preview" v-panel :class="$style.mfmPreview">
+		<Mfm :text="v"/>
+	</div>
 
 	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -46,6 +51,8 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	mfmAutocomplete?: boolean | SuggestionType[],
+	mfmPreview?: boolean;
 	spellcheck?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
@@ -68,6 +75,8 @@ const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
 const inputEl = shallowRef<HTMLTextAreaElement>();
+const preview = ref(false);
+let autocomplete: Autocomplete;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev) => {
@@ -81,6 +90,16 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	if (ev.code === 'Enter') {
 		emit('enter');
+	}
+
+	if (props.code && ev.key === 'Tab') {
+		const pos = inputEl.value?.selectionStart ?? 0;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
+		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		nextTick(() => {
+			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		});
+		ev.preventDefault();
 	}
 };
 
@@ -113,6 +132,16 @@ onMounted(() => {
 			focus();
 		}
 	});
+
+	if (props.mfmAutocomplete) {
+		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
+	}
+});
+
+onUnmounted(() => {
+	if (autocomplete) {
+		autocomplete.detach();
+	}
 });
 </script>
 
@@ -193,5 +222,13 @@ onMounted(() => {
 
 .save {
 	margin: 8px 0 0 0;
+}
+
+.mfmPreview {
+  padding: 12px;
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  min-height: 130px;
+	pointer-events: none;
 }
 </style>

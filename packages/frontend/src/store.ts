@@ -119,6 +119,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 	},
+	pinnedEmojis: {
+		where: 'account',
+		default: [],
+	},
 	reactionAcceptance: {
 		where: 'account',
 		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
@@ -223,10 +227,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	enableDataSaverMode: {
-		where: 'device',
-		default: false,
-	},
 	disableShowingAnimatedImages: {
 		where: 'device',
 		default: window.matchMedia('(prefers-reduced-motion)').matches,
@@ -275,19 +275,19 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
-	reactionPickerSize: {
+	emojiPickerScale: {
 		where: 'device',
 		default: 1,
 	},
-	reactionPickerWidth: {
+	emojiPickerWidth: {
 		where: 'device',
 		default: 1,
 	},
-	reactionPickerHeight: {
+	emojiPickerHeight: {
 		where: 'device',
 		default: 2,
 	},
-	reactionPickerUseDrawerForMobile: {
+	emojiPickerUseDrawerForMobile: {
 		where: 'device',
 		default: true,
 	},
@@ -402,6 +402,19 @@ export const defaultStore = markRaw(new Storage('base', {
 	useGroupedNotifications: {
 		where: 'device',
 		default: true,
+	},
+	dataSaver: {
+		where: 'device',
+		default: {
+			media: false,
+			avatar: false,
+			urlPreview: false,
+			code: false,
+		} as Record<string, boolean>,
+	},
+	enableSeasonalScreenEffect: {
+		where: 'device',
+		default: false,
 	},
 
 	sound_masterVolume: {

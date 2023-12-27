@@ -7,7 +7,7 @@ services:
       - "127.0.0.1:56312:6379"
 
   dbtest:
-    image: postgres:13
+    image: postgres:15
     ports:
       - "127.0.0.1:54312:5432"
     environment:

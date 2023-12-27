@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageAvatarDecorations',
+	kind: 'write:admin:avatar-decorations',
 	errors: {
 	},
 } as const;

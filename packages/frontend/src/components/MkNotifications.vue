@@ -25,12 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
@@ -43,7 +42,7 @@ const props = defineProps<{
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination: Paging = defaultStore.state.useGroupedNotifications ? {
+const pagination = computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,
 	limit: 20,
 	params: computed(() => ({
@@ -55,7 +54,7 @@ const pagination: Paging = defaultStore.state.useGroupedNotifications ? {
 	params: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-};
+});
 
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;

@@ -13,6 +13,17 @@ export const meta = {
 	tags: ['role'],
 
 	requireCredential: true,
+	kind: 'read:account',
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'Role',
+		},
+	},
 } as const;
 
 export const paramDef = {

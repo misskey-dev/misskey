@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
@@ -28,16 +28,16 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let top = $ref(0);
-let left = $ref(0);
+const top = ref(0);
+const left = ref(0);
 
 onMounted(() => {
 	const rect = props.source.getBoundingClientRect();
 	const x = Math.max((rect.left + (props.source.offsetWidth / 2)) - (300 / 2), 6) + window.pageXOffset;
 	const y = rect.top + props.source.offsetHeight + window.pageYOffset;
 
-	top = y;
-	left = x;
+	top.value = y;
+	left.value = x;
 });
 </script>
 

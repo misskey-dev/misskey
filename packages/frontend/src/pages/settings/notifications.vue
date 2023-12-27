@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { shallowRef, computed } from 'vue';
 import XNotificationConfig from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -68,11 +68,11 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const.js';
 
-const nonConfigurableNotificationTypes = ['note'];
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'achievementEarned'];
 
-let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
-let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
-let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage || false);
+const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
+const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
+const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await os.api('users/lists/list');
 
 async function readAllUnreadNotes() {
@@ -95,14 +95,14 @@ async function updateReceiveConfig(type, value) {
 }
 
 function onChangeSendReadMessage(v: boolean) {
-	if (!pushRegistrationInServer) return;
+	if (!pushRegistrationInServer.value) return;
 
 	os.apiWithDialog('sw/update-registration', {
-		endpoint: pushRegistrationInServer.endpoint,
+		endpoint: pushRegistrationInServer.value.endpoint,
 		sendReadMessage: v,
 	}).then(res => {
-		if (!allowButton)	return;
-		allowButton.pushRegistrationInServer = res;
+		if (!allowButton.value)	return;
+		allowButton.value.pushRegistrationInServer = res;
 	});
 }
 
@@ -110,9 +110,9 @@ function testNotification(): void {
 	os.api('notifications/test-notification');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.notifications,

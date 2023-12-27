@@ -12,6 +12,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
+import { clearCache } from './scripts/clear-cache.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -177,6 +178,13 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i && $i.policies?.canScheduleNote),
 		action: (ev) => {
 			os.listSchedulePost();
+		},
+	},
+	cacheClear: {
+		title: i18n.ts.clearCache,
+		icon: 'ti ti-trash',
+		action: (ev) => {
+			clearCache();
 		},
 	},
 });

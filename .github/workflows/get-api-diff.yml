@@ -22,16 +22,13 @@ jobs:
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json
-            repo-name: ${{ github.event.pull_request.base.repo.full_name }}
             ref: ${{ github.base_ref }}
           - api-json-name: api-head.json
-            repo-name: ${{ github.event.pull_request.head.repo.full_name }}
-            ref: ${{ github.head_ref }}
+            ref: refs/pull/${{ github.event.number }}/merge
 
     steps:
     - uses: actions/checkout@v4.1.1
       with:
-        repository: ${{ matrix.repo-name }}
         ref: ${{ matrix.ref }}
         submodules: true
     - name: Install pnpm
@@ -40,7 +37,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -57,9 +54,9 @@ jobs:
     - name: Copy API.json
       run: cp packages/backend/built/api.json ${{ matrix.api-json-name }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: api-artifact
+        name: api-artifact-${{ matrix.api-json-name }}
         path: ${{ matrix.api-json-name }}
 
   save-pr-number:
@@ -70,7 +67,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           echo "$PR_NUMBER" > ./pr_number
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: api-artifact
+          name: api-artifact-pr-number
           path: pr_number

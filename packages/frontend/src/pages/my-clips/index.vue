@@ -26,14 +26,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref, shallowRef, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { clipsCache } from '@/cache';
+import { clipsCache } from '@/cache.js';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -41,13 +42,13 @@ const pagination = {
 	limit: 10,
 };
 
-let tab = $ref('my');
-let favorites = $ref();
+const tab = ref('my');
+const favorites = ref<Misskey.entities.Clip[] | null>(null);
 
-const pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-watch($$(tab), async () => {
-	favorites = await os.api('clips/my-favorites');
+watch(tab, async () => {
+	favorites.value = await os.api('clips/my-favorites');
 });
 
 async function create() {
@@ -60,6 +61,7 @@ async function create() {
 			type: 'string',
 			required: false,
 			multiline: true,
+			treatAsMfm: true,
 			label: i18n.ts.description,
 		},
 		isPublic: {
@@ -74,20 +76,20 @@ async function create() {
 
 	clipsCache.delete();
 
-	pagingComponent.reload();
+	pagingComponent.value.reload();
 }
 
 function onClipCreated() {
-	pagingComponent.reload();
+	pagingComponent.value.reload();
 }
 
 function onClipDeleted() {
-	pagingComponent.reload();
+	pagingComponent.value.reload();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'my',
 	title: i18n.ts.myClips,
 	icon: 'ti ti-paperclip',

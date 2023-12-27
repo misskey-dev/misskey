@@ -17,13 +17,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { defaultStore } from '@/store.js';
 
-let newUsers = $ref(null);
-let fetching = $ref(true);
+const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
+const fetching = ref(true);
 
 const fetch = async () => {
 	const _newUsers = await os.api('admin/show-users', {
@@ -31,8 +33,8 @@ const fetch = async () => {
 		sort: '+createdAt',
 		origin: 'local',
 	});
-	newUsers = _newUsers;
-	fetching = false;
+	newUsers.value = _newUsers;
+	fetching.value = false;
 };
 
 useInterval(fetch, 1000 * 60, {
