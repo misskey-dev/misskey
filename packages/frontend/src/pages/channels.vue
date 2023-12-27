@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="700">
 		<div v-if="tab === 'search'">
 			<div class="_gaps">
-				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
 				<MkRadios v-model="searchType" @update:modelValue="search()">
