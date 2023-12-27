@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
+import { ComputedRef, Ref, onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -36,7 +36,7 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
 import { useRouter } from '@/router.js';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -51,10 +51,10 @@ const indexInfo = {
 provide('shouldOmitHeaderTitle', false);
 
 const INFO = ref(indexInfo);
-const childInfo = ref(null);
+const childInfo: Ref<ComputedRef<PageMetadata> | null> = ref(null);
 const narrow = ref(false);
 const view = ref(null);
-const el = ref(null);
+const el = ref<HTMLDivElement | null>(null);
 const pageProps = ref({});
 let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
 let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;

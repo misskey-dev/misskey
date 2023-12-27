@@ -173,6 +173,7 @@
 			<p>清除浏览器缓存</p>
 			<p>更新您的操作系统和浏览器</p>
 			<p>停用广告拦截器</p>
+			<p>&#40;Tor Browser&#41; 将 dom.webaudio.enabled 设置为 true</p>
 			<details style="color: #62b6e7;">
 				<summary>其他选项</summary>
 				<a href="/flush">

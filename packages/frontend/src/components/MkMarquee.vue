@@ -27,7 +27,7 @@ export default {
 		},
 	},
 	setup(props) {
-		const contentEl = ref();
+		const contentEl = ref<HTMLElement>();
 
 		function calc() {
 			const eachLength = contentEl.value.offsetWidth / props.repeat;

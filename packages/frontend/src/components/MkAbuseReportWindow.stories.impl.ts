@@ -7,8 +7,8 @@
 import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
-import { userDetailed } from '../../.storybook/fakes';
-import { commonHandlers } from '../../.storybook/mocks';
+import { userDetailed } from '../../.storybook/fakes.js';
+import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAbuseReportWindow from './MkAbuseReportWindow.vue';
 export const Default = {
 	render(args) {
