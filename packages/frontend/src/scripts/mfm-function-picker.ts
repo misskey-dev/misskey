@@ -11,7 +11,7 @@ import { MFM_TAGS } from '@/const.js';
 /**
  * MFMの装飾のリストを表示する
  */
-export function functionPicker(src: any, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
+export function mfmFunctionPicker(src: any, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
     return new Promise((res, rej) => {
         os.popupMenu([{
 			text: i18n.ts.addMfmFunction,
