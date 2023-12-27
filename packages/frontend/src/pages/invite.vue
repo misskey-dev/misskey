@@ -52,10 +52,10 @@ const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
-const pagination = {
+const pagination: Paging = {
 	endpoint: 'invite/list' as const,
 	limit: 10,
-} satisfies Paging;
+};
 
 const resetCycle = computed<null | string>(() => {
 	if (!inviteLimitCycle) return null;
