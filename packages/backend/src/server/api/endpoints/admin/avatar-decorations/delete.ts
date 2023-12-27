@@ -12,10 +12,9 @@ import { ApiError } from '../../../error.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireRolePolicy: 'canManageAvatarDecorations',
+	kind: 'write:admin:avatar-decorations',
 	errors: {
 	},
 } as const;

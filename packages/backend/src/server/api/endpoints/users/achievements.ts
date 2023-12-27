@@ -9,7 +9,7 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: false,
 
 	res: {
 		type: 'array',
@@ -24,7 +24,7 @@ export const meta = {
 				},
 			},
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {

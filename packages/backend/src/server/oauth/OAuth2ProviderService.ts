@@ -17,9 +17,9 @@ import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { mf2 } from 'microformats-parser';
+import { permissions as kinds } from 'misskey-js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { kinds } from '@/misc/api-permissions.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -426,7 +426,7 @@ export class OAuth2ProviderService {
 				}
 
 				try {
-					const scopes = [...new Set(scope)].filter(s => kinds.includes(s));
+					const scopes = [...new Set(scope)].filter(s => (<readonly string[]>kinds).includes(s));
 					if (!scopes.length) {
 						throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
 					}
