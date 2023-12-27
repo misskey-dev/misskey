@@ -10,6 +10,7 @@ import { ApiError } from '../../../error.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'read:account',
 
 	errors: {
 		noSuchKey: {

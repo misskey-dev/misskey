@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import MkFlashPreview from '@/components/MkFlashPreview.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
@@ -53,15 +53,15 @@ const tab = ref('featured');
 const featuredFlashsPagination = {
 	endpoint: 'flash/featured' as const,
 	noPaging: true,
-} satisfies Paging;
+};
 const myFlashsPagination = {
 	endpoint: 'flash/my' as const,
 	limit: 5,
-} satisfies Paging;
+};
 const likedFlashsPagination = {
 	endpoint: 'flash/my-likes' as const,
 	limit: 5,
-} satisfies Paging;
+};
 
 function create() {
 	router.push('/play/new');

@@ -45,7 +45,7 @@ import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -53,7 +53,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 const pagination = {
 	endpoint: 'i/signin-history' as const,
 	limit: 5,
-} satisfies Paging;
+};
 
 async function change() {
 	const { canceled: canceled2, result: newPassword } = await os.inputText({

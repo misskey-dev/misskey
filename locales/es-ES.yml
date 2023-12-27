@@ -1289,6 +1289,8 @@ _serverSettings:
   shortName: "Nombre corto"
   shortNameDescription: "Forma corta del nombre de la instancia que puede mostrarse si el nombre completo es demasiado largo."
   fanoutTimelineDescription: "Incrementa el rendimiento de forma significativa cuando se obtienen las líneas de tiempo y reduce la carga en la base de datos. A cambio, el uso de la memoria en Redis incrementará. Considera desactivar esta opción en caso de que tu servidor tenga poca memoria o detectes inestabilidad."
+  fanoutTimelineDbFallback: "Cargar desde la base de datos"
+  fanoutTimelineDbFallbackDescription: "Cuando esta opción está habilitada, la carga de peticiones adicionales de la línea de tiempo se hará desde la base de datos cuando éstas no se encuentren en la caché. Al deshabilitar esta opción se reduce la carga del servidor, pero limita el número de líneas de tiempo que pueden obtenerse."
 _accountMigration:
   moveFrom: "Trasladar de otra cuenta a ésta"
   moveFromSub: "Crear un alias para otra cuenta."
@@ -1833,6 +1835,14 @@ _sfx:
   notification: "Notificaciones"
   antenna: "Antena receptora"
   channel: "Notificaciones del canal"
+  reaction: "Al seleccionar una reacción"
+_soundSettings:
+  driveFile: "Usar un archivo de audio en Drive"
+  driveFileWarn: "Selecciona un archivo de audio en Drive."
+  driveFileTypeWarn: "Este archivo es incompatible"
+  driveFileTypeWarnDescription: "Selecciona un archivo de audio"
+  driveFileDurationWarn: "La duración del audio es demasiado larga."
+  driveFileDurationWarnDescription: "Usar un audio de larga duración puede llegar a molestar mientras usas Misskey. ¿Quieres continuar?"
 _ago:
   future: "Futuro"
   justNow: "Justo ahora"
@@ -2333,3 +2343,13 @@ _externalResourceInstaller:
 _dataSaver:
   _media:
     title: "Cargando Multimedia"
+    description: "Desactiva la carga automática de imágenes y vídeos. Tendrás que tocar en las imágenes y vídeos ocultos para cargarlos."
+  _avatar:
+    title: "Avatares animados"
+    description: "Desactiva la animación de los avatares. Las imágenes animadas pueden llegar a ser de mayor tamaño que las normales, por lo que al desactivarlas puedes reducir el consumo de datos."
+  _urlPreview:
+    title: "Vista previa de URLs"
+    description: "Desactiva la carga de vistas previas de las URLs."
+  _code:
+    title: "Resaltar código"
+    description: "Si se usa resaltado de código en MFM, etc., no se cargará hasta pulsar en ello. El resaltado de sintaxis requiere la descarga de archivos de definición para cada lenguaje de programación. Debido a esto, al deshabilitar la carga automática de estos archivos reducirás el consumo de datos."

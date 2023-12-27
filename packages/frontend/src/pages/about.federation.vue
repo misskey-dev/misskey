@@ -83,7 +83,7 @@ const pagination = {
 			state.value === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-} satisfies Paging;
+} as Paging;
 
 function getStatus(instance) {
 	if (instance.isSuspended) return 'Suspended';

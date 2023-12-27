@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -44,7 +44,7 @@ const pagination = {
 	endpoint: 'i/webhooks/list' as const,
 	limit: 100,
 	noPaging: true,
-} satisfies Paging;
+};
 
 const headerActions = computed(() => []);
 

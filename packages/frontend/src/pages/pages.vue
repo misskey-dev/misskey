@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
@@ -51,15 +51,15 @@ const tab = ref('featured');
 const featuredPagesPagination = {
 	endpoint: 'pages/featured' as const,
 	noPaging: true,
-} satisfies Paging;
+};
 const myPagesPagination = {
 	endpoint: 'i/pages' as const,
 	limit: 5,
-} satisfies Paging;
+};
 const likedPagesPagination = {
 	endpoint: 'i/page-likes' as const,
 	limit: 5,
-} satisfies Paging;
+};
 
 function create() {
 	router.push('/pages/new');
