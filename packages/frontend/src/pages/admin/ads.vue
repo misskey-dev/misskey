@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="square">square</option>
 					<option value="horizontal">horizontal</option>
 					<option value="horizontal-big">horizontal-big</option>
+					<option value="vertical">vertical</option>
 				</MkRadios>
 				<!--
 			<div style="margin: 32px 0;">

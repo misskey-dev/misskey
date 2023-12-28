@@ -178,6 +178,7 @@ export const meta = {
 						place: {
 							type: 'string',
 							optional: false, nullable: false,
+							enum: ['square', 'horizontal', 'horizontal-big', 'vertical'],
 						},
 						ratio: {
 							type: 'number',

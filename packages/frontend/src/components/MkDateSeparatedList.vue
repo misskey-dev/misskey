@@ -95,7 +95,7 @@ export default defineComponent({
 				if (props.ad && item._shouldInsertAd_) {
 					return [h(MkAd, {
 						key: item.id + ':ad',
-						prefer: ['horizontal', 'horizontal-big'],
+						prefer: [],
 					}), el];
 				} else {
 					return el;

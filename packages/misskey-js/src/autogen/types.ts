@@ -19119,7 +19119,7 @@ export type operations = {
             notFoundImageUrl: string | null;
             iconUrl: string | null;
             maxNoteTextLength: number;
-            ads: {
+            ads: ({
                 /**
                  * Format: id
                  * @example xxxxxxxxxx
@@ -19127,12 +19127,13 @@ export type operations = {
                 id: string;
                 /** Format: url */
                 url: string;
-                place: string;
+                /** @enum {string} */
+                place: 'square' | 'horizontal' | 'horizontal-big' | 'vertical';
                 ratio: number;
                 /** Format: url */
                 imageUrl: string;
                 dayOfWeek: number;
-              }[];
+              })[];
             /** @default 0 */
             notesPerOneAd: number;
             /** @example false */
