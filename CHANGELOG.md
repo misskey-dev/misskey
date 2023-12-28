@@ -12,6 +12,12 @@
 
 -->
 
+## 202x.x.x (Unreleased)
+
+### General
+- Feat: サウンドの設定にドライブのファイルを使用できるかどうかをロールで決められるように (cherry-pick from https://github.com/MisskeyIO/misskey/commit/90e8b942a3f87b4c8f585c38b0f31e863ab6fa99)\
+  cherry-pick元からの変更点：デフォルトで**オン**になっています
+
 ## 2023.12.2
 
 ### General
