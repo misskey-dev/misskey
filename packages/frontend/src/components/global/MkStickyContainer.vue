@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
 
-import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const';
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
 
 const rootEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();

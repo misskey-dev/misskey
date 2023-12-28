@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
@@ -38,7 +39,7 @@ const props = defineProps<{
 	antennaId: string;
 }>();
 
-const antenna = ref(null);
+const antenna = ref<Misskey.entities.Antenna | null>(null);
 const queue = ref(0);
 const rootEl = shallowRef<HTMLElement>();
 const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();

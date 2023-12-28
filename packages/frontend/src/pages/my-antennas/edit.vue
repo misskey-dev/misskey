@@ -11,16 +11,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XAntenna from './editor.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache } from '@/cache';
+import { antennasCache } from '@/cache.js';
 
 const router = useRouter();
 
-const antenna = ref<any>(null);
+const antenna = ref<Misskey.entities.Antenna | null>(null);
 
 const props = defineProps<{
 	antennaId: string

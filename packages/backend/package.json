@@ -68,7 +68,7 @@
 		"@discordapp/twemoji": "15.0.2",
 		"@fastify/accepts": "4.3.0",
 		"@fastify/cookie": "9.2.0",
-		"@fastify/cors": "8.4.2",
+		"@fastify/cors": "8.5.0",
 		"@fastify/express": "2.3.0",
 		"@fastify/http-proxy": "9.3.0",
 		"@fastify/multipart": "8.0.0",
