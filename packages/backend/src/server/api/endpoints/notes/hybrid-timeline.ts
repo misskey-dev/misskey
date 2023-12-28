@@ -20,6 +20,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ApiError } from '../../error.js';
+import { loadConfig } from '@/config.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -191,13 +192,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 			.andWhere(new Brackets(qb => {
+				const config = loadConfig();
 				if (followees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
 					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					qb.orWhere(`(note.visibility = 'public') AND ('${String(config.mulukhiya.defaultTag)}' = any(note.tags))`);
 				} else {
 					qb.where('note.userId = :meId', { meId: me.id });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					qb.orWhere(`(note.visibility = 'public') AND ('${String(config.mulukhiya.defaultTag)}' = any(note.tags))`);
 				}
 			}))
 			.innerJoinAndSelect('note.user', 'user')

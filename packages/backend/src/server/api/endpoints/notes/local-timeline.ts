@@ -18,6 +18,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ApiError } from '../../error.js';
+import { loadConfig } from '@/config.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -149,9 +150,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withFiles: boolean,
 		withReplies: boolean,
 	}, me: MiLocalUser | null) {
+		const config = loadConfig();
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
-			.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.channelId IS NULL)')
+			.andWhere(`(note.visibility = 'public') AND ('${String(config.mulukhiya.defaultTag)}' = any(note.tags)) AND (note.channelId IS NULL)`)
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
