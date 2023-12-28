@@ -1,16 +1,28 @@
 <!--
-## 2023.x.x (unreleased)
+## x.x.x (unreleased)
 
 ### General
 -
 
 ### Client
--
+- 
 
 ### Server
 -
 
 -->
+
+
+## x.x.x (unreleased)
+
+### General
+-
+
+### Client
+- Enhance: MFMの属性でオートコンプリートが使用できるように #12735
+
+### Server
+-
 
 ## 2023.12.2
 
@@ -35,7 +47,6 @@
 - Enhance: MFM入力補助ボタンを投稿フォームに表示できるように #12787
 - Fix: 一部のモデログ(logYellowでの表示対象)について、表示の色が変わらない問題を修正
 - Fix: `fg`/`bg`MFMに長い単語を指定すると、オーバーフローされずはみ出る問題を修正
-- Enhance: MFMの属性でオートコンプリートが使用できるように #12735
 
 ### Server
 - Enhance: センシティブワードの設定がハッシュタグトレンドにも適用されるようになりました
