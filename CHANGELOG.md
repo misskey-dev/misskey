@@ -12,15 +12,28 @@
 
 -->
 
+## 2023.12.2
+
+### General
+- v2023.12.1でDockerを利用してサーバーを起動できない問題を修正
+
+### Client
+- Enhance: 検索画面においてEnterキー押下で検索できるように
+
 ## 2023.12.1
+
+### Note
+- アクセストークンの権限が再整理されたため、一部のAPIが古いAPIトークンでは動作しなくなりました。\
+  権限不足になる場合には権限を再設定して再生成してください。
 
 ### General
 - Enhance: ローカリゼーションの更新
 - Fix: 自分のdirect noteがuser list timelineに追加されない
 
 ### Client
-- Fix: 一部のモデログ(logYellowでの表示対象)について、表示の色が変わらない問題を修正
 - Feat: AiScript専用のMFM構文`$[clickable.ev=EVENTNAME ...]`を追加。`Mk:C:mfm`のオプション`onClickEv`に関数を渡すと、クリック時に`EVENTNAME`を引数にして呼び出す
+- Enhance: MFM入力補助ボタンを投稿フォームに表示できるように #12787
+- Fix: 一部のモデログ(logYellowでの表示対象)について、表示の色が変わらない問題を修正
 - Fix: `fg`/`bg`MFMに長い単語を指定すると、オーバーフローされずはみ出る問題を修正
 - Enhance: MFMの属性でオートコンプリートが使用できるように #12735
 
