@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ i18n.ts.moderator }}:
 			<MkAcct :user="report.assignee"/>
 		</div>
+		<div v-if="report.category">カテゴリ: {{ i18n.t(`_abuseReportCategory.${report.category}`) }}</div>
 		<div><MkTime :time="report.createdAt"/></div>
 		<div class="action">
 			<MkSwitch v-model="forward" :disabled="report.targetUser.host == null || report.resolved">

@@ -1187,6 +1187,28 @@ seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
+abuseReportCategory: "通報の種類"
+selectCategory: "カテゴリを選択"
+reportComplete: "通報完了"
+blockThisUser: "このユーザーをブロックする"
+muteThisUser: "このユーザーをミュートする"
+
+_abuseReportMsgs:
+  rightsAbuseCantAccept: "申し訳ございません。権利侵害の通報は権利者ご本人からのみ受け付けております。"
+
+_abuseReportCategory:
+  nsfw: "センシティブなコンテンツを含む投稿"
+  spam: "スパム"
+  explicit: "暴力もしくは攻撃的な投稿"
+  phishing: "フィッシングもしくは詐欺行為"
+  personalinfoleak: "本人もしくは他人の個人情報の漏えい"
+  selfharm: "自殺もしくは自害など生命に関わる問題"
+  criticalbreach: "重大な規約違反"
+  otherbreach: "その他の規約違反"
+  violationrights: "権利侵害もしくはなりすまし（本人）"
+  violationrightsother: "権利侵害（他人）"
+  notlike: "この人が気に入らない"
+  other: "その他"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

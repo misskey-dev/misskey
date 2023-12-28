@@ -74,6 +74,10 @@ export const meta = {
 					nullable: true, optional: true,
 					ref: 'User',
 				},
+				category: {
+					type: 'string',
+					nullable: false, optional: false,
+				}
 			},
 		},
 	},
@@ -89,6 +93,7 @@ export const paramDef = {
 		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		forwarded: { type: 'boolean', default: false },
+		category: { type: 'string', nullable: true, default: null },
 	},
 	required: [],
 } as const;
@@ -118,6 +123,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			switch (ps.targetUserOrigin) {
 				case 'local': query.andWhere('report.targetUserHost IS NULL'); break;
 				case 'remote': query.andWhere('report.targetUserHost IS NOT NULL'); break;
+			}
+
+			if (ps.category) {
+				query.andWhere('report.category = :category', { category: ps.category });
 			}
 
 			const reports = await query.limit(ps.limit).getMany();

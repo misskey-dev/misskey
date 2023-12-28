@@ -48,6 +48,7 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		comment: { type: 'string', minLength: 1, maxLength: 2048 },
+		category: { type: 'string', minLength: 1, maxLength: 20, default: 'other' },
 	},
 	required: ['userId', 'comment'],
 } as const;
@@ -85,6 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
+				category: ps.category,
 			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.queueService.createReportAbuseJob(report);

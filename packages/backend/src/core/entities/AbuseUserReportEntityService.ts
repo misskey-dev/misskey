@@ -50,6 +50,7 @@ export class AbuseUserReportEntityService {
 				detail: true,
 			}) : null,
 			forwarded: report.forwarded,
+			category: report.category,
 		});
 	}
 

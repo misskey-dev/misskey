@@ -12,6 +12,10 @@ export const packedAbuseUserReportSchema = {
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
+		category: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
 		createdAt: {
 			type: 'string',
 			optional: false, nullable: false,

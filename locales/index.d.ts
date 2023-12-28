@@ -1190,6 +1190,28 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "abuseReportCategory": string;
+    "selectCategory": string;
+    "reportComplete": string;
+    "blockThisUser": string;
+    "muteThisUser": string;
+    "_abuseReportMsgs": {
+        "rightsAbuseCantAccept": string;
+    };
+    "_abuseReportCategory": {
+        "nsfw": string;
+        "spam": string;
+        "explicit": string;
+        "phishing": string;
+        "personalinfoleak": string;
+        "selfharm": string;
+        "criticalbreach": string;
+        "otherbreach": string;
+        "violationrights": string;
+        "violationrightsother": string;
+        "notlike": string;
+        "other": string;
+    };
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
