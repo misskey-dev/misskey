@@ -914,10 +914,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// デフォルトタグ
 			const config = loadConfig();
 			if (note.visibility === 'public' && note.tags.includes(String(config.mulukhiya.defaultTag))) {
-				this.funoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
-				this.funoutTimelineService.push('localTimeline', note.id, 1000, r);
+				this.fanoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
+				this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
 				if (note.fileIds.length > 0) {
-					this.funoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+					this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
 				}
 			}
 
