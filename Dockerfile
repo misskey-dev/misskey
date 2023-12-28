@@ -51,6 +51,7 @@ WORKDIR /misskey
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
+COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
@@ -77,7 +78,9 @@ WORKDIR /misskey
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
+COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
 COPY --chown=misskey:misskey --from=native-builder /misskey/built ./built
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built ./packages/misskey-js/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./

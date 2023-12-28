@@ -86,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 		</div>
 		<div :class="$style.footerRight">
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
@@ -126,6 +127,7 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
 
 const modal = inject('modal');
 
@@ -182,17 +184,19 @@ const poll = ref<{
 const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
+const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
+watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
-const visibleUsers = ref([]);
+const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
 const autocomplete = ref(null);
 const draghover = ref(false);
-const quoteId = ref(null);
+const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
 const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
 const imeText = ref('');
@@ -860,6 +864,14 @@ async function insertEmoji(ev: MouseEvent) {
 			textAreaReadOnly.value = false;
 			nextTick(() => focus());
 		},
+	);
+}
+
+async function insertMfmFunction(ev: MouseEvent) {
+	mfmFunctionPicker(
+		ev.currentTarget ?? ev.target,
+		textareaEl.value,
+		text,
 	);
 }
 

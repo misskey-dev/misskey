@@ -77,6 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -99,8 +100,8 @@ const props = defineProps<{
 	username: string;
 }>();
 
-const page = ref(null);
-const error = ref(null);
+const page = ref<Misskey.entities.Page | null>(null);
+const error = ref<any>(null);
 const otherPostsPagination = {
 	endpoint: 'users/pages' as const,
 	limit: 6,

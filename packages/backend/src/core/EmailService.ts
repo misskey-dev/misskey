@@ -7,7 +7,6 @@ import { URLSearchParams } from 'node:url';
 import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
-import { SubOutputFormat } from 'deep-email-validator/dist/output/output.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
@@ -166,7 +165,10 @@ export class EmailService {
 			email: emailAddress,
 		});
 
-		let validated;
+		let validated: {
+			valid: boolean,
+			reason?: string | null,
+		};
 
 		if (meta.enableActiveEmailValidation) {
 			if (meta.enableVerifymailApi && meta.verifymailAuthKey != null) {

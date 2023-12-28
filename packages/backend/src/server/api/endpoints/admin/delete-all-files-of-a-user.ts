@@ -12,10 +12,9 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:delete-all-files-of-a-user',
 } as const;
 
 export const paramDef = {

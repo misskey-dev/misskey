@@ -122,7 +122,7 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	menuButton: Ref<HTMLElement>;
-	translation: Ref<any>;
+	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;

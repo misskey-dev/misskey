@@ -37,7 +37,7 @@ import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
