@@ -131,7 +131,11 @@ function editUser(announcement): void {
 }
 
 function insertEmoji(ev: MouseEvent): void {
-	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl.value);
+	os.openEmojiPicker(
+		(ev.currentTarget ?? ev.target) as HTMLElement,
+		{ asReactionPicker: false },
+		announceTitleEl.value
+	);
 }
 
 function add() {

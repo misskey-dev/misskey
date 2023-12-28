@@ -860,15 +860,10 @@ function insertMention() {
 async function insertEmoji(ev: MouseEvent) {
 	textAreaReadOnly.value = true;
 
-	emojiPicker.show(
-		ev.currentTarget ?? ev.target,
-		emoji => {
-			insertTextAtCursor(textareaEl.value, emoji);
-		},
-		() => {
-			textAreaReadOnly.value = false;
-			nextTick(() => focus());
-		},
+	os.openEmojiPicker(
+		(ev.currentTarget ?? ev.target) as HTMLElement,
+		{ asReactionPicker: false },
+		textareaEl.value
 	);
 }
 
