@@ -11,7 +11,7 @@ import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
 
-export function AiScriptReadline(q: string): Promise<string> {
+export function aiScriptReadline(q: string): Promise<string> {
 	return new Promise(ok => {
 		os.inputText({
 			title: q,
