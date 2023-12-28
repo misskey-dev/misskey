@@ -1186,6 +1186,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "hemisphere": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2588,6 +2589,11 @@ export interface Locale {
             "title": string;
             "description": string;
         };
+    };
+    "_hemisphere": {
+        "N": string;
+        "S": string;
+        "caption": string;
     };
 }
 declare const locales: {

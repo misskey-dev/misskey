@@ -1183,6 +1183,7 @@ seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
+hemisphere: "お住まいの地域"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2472,3 +2473,8 @@ _dataSaver:
   _code:
     title: "コードハイライト"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
+
+_hemisphere:
+  N: "北半球"
+  S: "南半球"
+  caption: "一部のクライアント設定で、季節を判定するために使用します。"
