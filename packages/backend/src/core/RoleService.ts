@@ -71,7 +71,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageAvatarDecorations: false,
 	canSearchNotes: false,
 	canUseTranslator: true,
-	canUseDriveFileInSoundSettings: false,
+	canUseDriveFileInSoundSettings: true,
 	canHideAds: false,
 	driveCapacityMb: 100,
 	alwaysMarkNsfw: false,
