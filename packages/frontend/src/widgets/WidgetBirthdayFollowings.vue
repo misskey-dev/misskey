@@ -53,7 +53,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const users = ref<Misskey.entities.FollowingFolloweePopulated[]>([]);
+const users = ref<Misskey.Endpoints['users/following']['res']>([]);
 const fetching = ref(true);
 let lastFetchedAt = '1970-01-01';
 
@@ -70,9 +70,10 @@ const fetch = () => {
 	now.setHours(0, 0, 0, 0);
 
 	if (now > lfAtD) {
+		fetching.value = true;
 		os.api('users/following', {
 			limit: 18,
-			birthday: now.toISOString(),
+			birthday: `${now.getFullYear().toString().padStart(4, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`,
 			userId: $i.id,
 		}).then(res => {
 			users.value = res;

@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.389Z
+ * generatedAt: 2023-12-28T07:43:32.546Z
  */
 
 /**
@@ -40,7 +40,6 @@ export type paths = {
      * admin/accounts/create
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     post: operations['admin/accounts/create'];
@@ -4620,7 +4619,6 @@ export type operations = {
    * admin/accounts/create
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *No*
    */
   'admin/accounts/create': {
