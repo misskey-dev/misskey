@@ -11,6 +11,16 @@
 -
 
 -->
+## 2023.12.3 (unreleased)
+
+### General
+-
+
+### Client
+- Fix: `Mk:C:mfm`の`onClickEv`が正常に呼び出されない問題を修正
+
+### Server
+-
 
 ## 2023.12.2
 
