@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
 import { onMounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
@@ -35,7 +36,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-const file = ref<any>(null);
+const file = ref<Misskey.entities.DriveFile | null>(null);
 
 async function choose() {
 	os.selectDriveFile(false).then((fileResponse) => {

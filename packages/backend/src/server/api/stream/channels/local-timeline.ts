@@ -9,13 +9,14 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 import { loadConfig } from '@/config.js';
+import { RoleService } from '@/core/RoleService.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
@@ -87,9 +88,10 @@ class LocalTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class LocalTimelineChannelService {
+export class LocalTimelineChannelService implements MiChannelService<false> {
 	public readonly shouldShare = LocalTimelineChannel.shouldShare;
 	public readonly requireCredential = LocalTimelineChannel.requireCredential;
+	public readonly kind = LocalTimelineChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,

@@ -46,7 +46,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const body = ref('{}');
 const endpoint = ref('');
-const endpoints = ref<any[]>([]);
+const endpoints = ref<string[]>([]);
 const sending = ref(false);
 const res = ref('');
 const withCredential = ref(true);

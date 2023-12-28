@@ -37,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -53,7 +54,7 @@ const props = withDefaults(defineProps<{
 });
 
 const tab = ref(props.initialTab);
-const role = ref();
+const role = ref<Misskey.entities.Role>();
 const error = ref();
 const visible = ref(false);
 
@@ -62,7 +63,7 @@ watch(() => props.role, () => {
 		roleId: props.role,
 	}).then(res => {
 		role.value = res;
-		document.title = `${role.value?.name} | ${instanceName}`;
+		document.title = `${role.value.name} | ${instanceName}`;
 		visible.value = res.isExplorable && res.isPublic;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {

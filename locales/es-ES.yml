@@ -121,6 +121,12 @@ sensitive: "Marcado como sensible"
 add: "Agregar"
 reaction: "Reacción"
 reactions: "Reacción"
+emojiPicker: "Selector de emojis"
+pinnedEmojisForReactionSettingDescription: "Puedes seleccionar reacciones para fijarlos en el selector"
+pinnedEmojisSettingDescription: "Puedes seleccionar emojis para fijarlos en el selector"
+emojiPickerDisplay: "Mostrar el selector de emojis"
+overwriteFromPinnedEmojisForReaction: "Sobreescribir las reacciones fijadas"
+overwriteFromPinnedEmojis: "Sobreescribir los emojis fijados"
 reactionSettingDescription2: "Arrastre para reordenar, click para borrar, apriete la tecla + para añadir."
 rememberNoteVisibility: "Recordar visibilidad"
 attachCancel: "Quitar adjunto"
@@ -260,6 +266,7 @@ removed: "Borrado"
 removeAreYouSure: "¿Desea borrar \"{x}\"?"
 deleteAreYouSure: "¿Desea borrar \"{x}\"?"
 resetAreYouSure: "¿Desea reestablecer?"
+areYouSure: "¿Estás conforme?"
 saved: "Guardado"
 messaging: "Chat"
 upload: "Subir"
@@ -640,6 +647,7 @@ smtpSecure: "Usar SSL/TLS implícito en la conexión SMTP"
 smtpSecureInfo: "Apagar cuando se use STARTTLS"
 testEmail: "Prueba de envío"
 wordMute: "Silenciar palabras"
+hardWordMute: "Filtro de palabra fuerte"
 regexpError: "Error de la expresión regular"
 regexpErrorDescription: "Ocurrió un error en la expresión regular en la linea {line} de las palabras muteadas {tab}"
 instanceMute: "Instancias silenciadas"
@@ -873,6 +881,8 @@ makeReactionsPublicDescription: "Todas las reacciones que hayas hecho serán pú
 classic: "Clásico"
 muteThread: "Silenciar hilo"
 unmuteThread: "Mostrar hilo"
+followingVisibility: "Visibilidad de seguidos"
+followersVisibility: "Visibilidad de seguidores"
 continueThread: "Ver la continuación del hilo"
 deleteAccountConfirm: "La cuenta será borrada. ¿Está seguro?"
 incorrectPassword: "La contraseña es incorrecta"
@@ -1024,6 +1034,7 @@ sensitiveWords: "Palabras sensibles"
 sensitiveWordsDescription: "La visibilidad de todas las notas que contienen cualquiera de las palabras configuradas serán puestas en \"Inicio\" automáticamente. Puedes enumerás varias separándolas con saltos de línea"
 sensitiveWordsDescription2: "Si se usan espacios se crearán expresiones AND y las palabras subsecuentes con barras inclinadas se convertirán en expresiones regulares."
 hiddenTags: "Hashtags ocultos"
+hiddenTagsDescription: "Selecciona las etiquetas que no se mostrarán en tendencias. Una etiqueta por línea."
 notesSearchNotAvailable: "No se puede buscar una nota"
 license: "Licencia"
 unfavoriteConfirm: "¿Desea quitar de favoritos?"
@@ -1152,6 +1163,7 @@ tosAndPrivacyPolicy: "Condiciones de Uso y Política de Privacidad"
 avatarDecorations: "Decoraciones de avatar"
 attach: "Acoplar"
 detach: "Quitar"
+detachAll: "Quitar todo"
 angle: "Ángulo"
 flip: "Echar de un capirotazo"
 showAvatarDecorations: "Mostrar decoraciones de avatar"
@@ -1165,6 +1177,10 @@ cwNotationRequired: "Si se ha activado \"ocultar contenido\", es necesario propo
 doReaction: "Añadir reacción"
 code: "Código"
 reloadRequiredToApplySettings: "Es necesario recargar para que se aplique la configuración."
+remainingN: "Faltan: {n}"
+overwriteContentConfirm: "¿Quieres sustituir todo el contenido actual?"
+seasonalScreenEffect: "Efectos de pantalla asociados a estaciones"
+decorate: "Decorar"
 _announcement:
   forExistingUsers: "Solo para usuarios registrados"
   forExistingUsersDescription: "Este anuncio solo se mostrará a aquellos usuarios registrados en el momento de su publicación. Si se deshabilita esta opción, aquellos usuarios que se registren tras su publicación también lo verán."
@@ -1222,6 +1238,45 @@ _initialTutorial:
     home: "Puedes ver los posts de las cuentas que sigues."
     local: "Puedes ver los posts de todos los usuarios de este servidor."
     social: "Se ven los posts de la línea de tiempo de inicio junto con los de la línea de tiempo local."
+    global: "Puedes ver notas de todos los servidores conectados."
+    description2: "Puedes cambiar la línea de tiempo en la parte superior de la pantalla cuando quieras."
+    description3: "Además, hay listas de líneas de tiempo y listas de canales. Para más detalle, por favor visita este enlace: {link}"
+  _postNote:
+    title: "Ajustes de publicación de nota"
+    description1: "Cuando publicas una nota en Misskey, hay varias opciones disponibles. El formulario tiene este aspecto."
+    _visibility:
+      description: "Puedes limitar quién puede ver tu nota."
+      public: "Tu nota será visible para todos los usuarios."
+      home: "Publicar solo en la línea de tiempo de Inicio. La nota se verá en tu perfil, la verán tus seguidores y también cuando sea renotada."
+      followers: "Visible solo para seguidores. Sólo tus seguidores podrán ver la nota, y no podrá ser renotada por otras personas."
+      direct: "Visible sólo para usuarios específicos, y el destinatario será notificado. Puede usarse como alternativa a la mensajería directa."
+      doNotSendConfidencialOnDirect1: "¡Ten cuidado cuando vayas a enviar información sensible!"
+      doNotSendConfidencialOnDirect2: "Los administradores del servidor pueden leer lo que escribes. Ten cuidado cuando envíes información sensible en notas directas en servidores no confiables."
+      localOnly: "Publicando con esta opción seleccionada, la nota no se federará hacia otros servidores. Los usuarios de otros servidores no podrán ver estas notas directamente, sin importar los ajustes seleccionados más arriba."
+    _cw:
+      title: "Alerta de contenido (CW)"
+      description: "En lugar de mostrarse el contenido de la nota, se mostrará lo que escribas en el campo \"comentarios\". Pulsando en \"leer más\" desplegará el contenido de la nota."
+      _exampleNote:
+        cw: "¡Esto te hará tener hambre!"
+        note: "Acabo de comerme un donut de chocolate glaseado 🍩😋"
+      useCases: "Esto se usa cuando las normas del servidor lo requieren, o para ocultar spoilers o contenido sensible."
+  _howToMakeAttachmentsSensitive:
+    title: "¿Cómo puedo marcar adjuntos como contenido sensible?"
+    description: "Cuando las normas del servidor lo requieran, o el contenido lo requiera, marca la opción de \"contenido sensible\" para el adjunto."
+    tryThisFile: "¡Prueba a marcar la imagen adjunta como contenido sensible!"
+    _exampleNote:
+      note: "Ups, la he liado al abrir la tapa del natto..."
+    method: "Para marcar un adjunto como sensible, haz clic en la miniatura, abre el menú, y haz clic en \"Marcar como sensible\"."
+    sensitiveSucceeded: "Cuando adjuntes archivos, por favor, ten en cuenta las normas del servidor para marcarlos como contenido sensible."
+    doItToContinue: "Marca el archivo adjunto como sensible para continuar."
+  _done:
+    title: "¡Has completado el tutorial! 🎉"
+    description: "Las funciones que mostramos aquí son sólo una pequeña parte. Para más detalles sobre el funcionamiento de Misskey, pulsa en este enlace: {link}"
+_timelineDescription:
+  home: "En la línea de tiempo de Inicio puedes ver las notas de las cuentas a las que sigues."
+  local: "En la línea de tiempo Local puedes ver las notas de todos los usuarios del servidor."
+  social: "En la línea de tiempo Social verás las notas de Inicio y Local a la vez."
+  global: "En la línea de tiempo Global verás las notas de todos los servidores conectados."
 _serverRules:
   description: "Un conjunto de reglas que serán mostradas antes del registro. Configurar un sumario de términos de servicio es recomendado."
 _serverSettings:
@@ -1233,6 +1288,9 @@ _serverSettings:
   manifestJsonOverride: "Sobreescribir manifest.json"
   shortName: "Nombre corto"
   shortNameDescription: "Forma corta del nombre de la instancia que puede mostrarse si el nombre completo es demasiado largo."
+  fanoutTimelineDescription: "Incrementa el rendimiento de forma significativa cuando se obtienen las líneas de tiempo y reduce la carga en la base de datos. A cambio, el uso de la memoria en Redis incrementará. Considera desactivar esta opción en caso de que tu servidor tenga poca memoria o detectes inestabilidad."
+  fanoutTimelineDbFallback: "Cargar desde la base de datos"
+  fanoutTimelineDbFallbackDescription: "Cuando esta opción está habilitada, la carga de peticiones adicionales de la línea de tiempo se hará desde la base de datos cuando éstas no se encuentren en la caché. Al deshabilitar esta opción se reduce la carga del servidor, pero limita el número de líneas de tiempo que pueden obtenerse."
 _accountMigration:
   moveFrom: "Trasladar de otra cuenta a ésta"
   moveFromSub: "Crear un alias para otra cuenta."
@@ -1490,6 +1548,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "Sobrecarga de pruebas"
       description: "Envía muchas notificaciones de prueba en un corto espacio de tiempo"
+    _tutorialCompleted:
+      title: "Diploma del Curso Básico de Misskey"
+      description: "Tutorial completado"
 _role:
   new: "Crear rol"
   edit: "Editar rol"
@@ -1500,7 +1561,9 @@ _role:
   assignTarget: "Asignar objetivo"
   descriptionOfAssignTarget: "<b>Manual</b> Para cambiar manualmente lo que se incluye en este rol.\n<b>Condicional</b> configura una condición, y los usuarios que cumplan la condición serán incluídos automáticamente."
   manual: "manual"
+  manualRoles: "Roles manuales"
   conditional: "condicional"
+  conditionalRoles: "Roles condicionales"
   condition: "condición"
   isConditionalRole: "Esto es un rol condicional"
   isPublic: "Publicar rol"
@@ -1549,6 +1612,7 @@ _role:
     canHideAds: "Puede ocultar anuncios"
     canSearchNotes: "Uso de la búsqueda de notas"
     canUseTranslator: "Uso de traductor"
+    avatarDecorationLimit: "Número máximo de decoraciones de avatar"
   _condition:
     isLocal: "Usuario local"
     isRemote: "Usuario remoto"
@@ -1577,6 +1641,7 @@ _emailUnavailable:
   disposable: "No es un correo reutilizable"
   mx: "Servidor de correo inválido"
   smtp: "Servidor de correo no disponible"
+  banned: "Email no disponible"
 _ffVisibility:
   public: "Publicar"
   followers: "Visible solo para seguidores"
@@ -1653,6 +1718,7 @@ _aboutMisskey:
   donate: "Donar a Misskey"
   morePatrons: "Muchas más personas nos apoyan. Muchas gracias🥰"
   patrons: "Patrocinadores"
+  projectMembers: "Miembros del proyecto"
 _displayOfSensitiveMedia:
   respect: "Esconder medios marcados como sensibles"
   ignore: "Mostrar medios marcados como sensibles"
@@ -1677,6 +1743,7 @@ _channel:
   notesCount: "{n} notas"
   nameAndDescription: "Nombre y descripción"
   nameOnly: "Sólo nombre"
+  allowRenoteToExternal: "Permitir renotas y menciones fuera del canal"
 _menuDisplay:
   sideFull: "Horizontal"
   sideIcon: "Horizontal (ícono)"
@@ -1768,6 +1835,14 @@ _sfx:
   notification: "Notificaciones"
   antenna: "Antena receptora"
   channel: "Notificaciones del canal"
+  reaction: "Al seleccionar una reacción"
+_soundSettings:
+  driveFile: "Usar un archivo de audio en Drive"
+  driveFileWarn: "Selecciona un archivo de audio en Drive."
+  driveFileTypeWarn: "Este archivo es incompatible"
+  driveFileTypeWarnDescription: "Selecciona un archivo de audio"
+  driveFileDurationWarn: "La duración del audio es demasiado larga."
+  driveFileDurationWarnDescription: "Usar un audio de larga duración puede llegar a molestar mientras usas Misskey. ¿Quieres continuar?"
 _ago:
   future: "Futuro"
   justNow: "Justo ahora"
@@ -1780,6 +1855,12 @@ _ago:
   yearsAgo: "Hace {n} años"
   invalid: "No hay nada que ver aqui"
 _timeIn:
+  seconds: "En {n} segundos"
+  minutes: "En {n}m"
+  hours: "En {n}h"
+  days: "En {n}d"
+  weeks: "En {n}sem."
+  months: "En {n}M"
   years: "En {n} años"
 _time:
   second: "Segundos"
@@ -1906,6 +1987,7 @@ _widgets:
   _userList:
     chooseList: "Seleccione una lista"
   clicker: "Cliqueador"
+  birthdayFollowings: "Hoy cumplen años"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
@@ -1968,6 +2050,7 @@ _profile:
   changeAvatar: "Cambiar avatar"
   changeBanner: "Cambiar banner"
   verifiedLinkDescription: "Introduciendo una URL que contiene un enlace a tu perfil, se puede mostrar un icono de verificación de propiedad al lado del campo."
+  avatarDecorationMax: "Puedes añadir un máximo de {max} decoraciones de avatar."
 _exportOrImport:
   allNotes: "Todas las notas"
   favoritedNotes: "Notas favoritas"
@@ -2089,6 +2172,7 @@ _notification:
   pollEnded: "Estan disponibles los resultados de la encuesta"
   newNote: "Nueva nota"
   unreadAntennaNote: "Antena {name}"
+  roleAssigned: "Rol asignado"
   emptyPushNotificationMessage: "Se han actualizado las notificaciones push"
   achievementEarned: "Logro desbloqueado"
   testNotification: "Notificación de prueba"
@@ -2110,6 +2194,7 @@ _notification:
     pollEnded: "La encuesta terminó"
     receiveFollowRequest: "Recibió una solicitud de seguimiento"
     followRequestAccepted: "El seguimiento fue aceptado"
+    roleAssigned: "Rol asignado"
     achievementEarned: "Logro desbloqueado"
     app: "Notificaciones desde aplicaciones"
   _actions:
@@ -2255,3 +2340,16 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "Instalación de tema fallida"
       description: "Ha ocurrido un problema al instalar el tema. Por favor, inténtalo de nuevo. Se pueden ver más detalles del error en la consola de Javascript."
+_dataSaver:
+  _media:
+    title: "Cargando Multimedia"
+    description: "Desactiva la carga automática de imágenes y vídeos. Tendrás que tocar en las imágenes y vídeos ocultos para cargarlos."
+  _avatar:
+    title: "Avatares animados"
+    description: "Desactiva la animación de los avatares. Las imágenes animadas pueden llegar a ser de mayor tamaño que las normales, por lo que al desactivarlas puedes reducir el consumo de datos."
+  _urlPreview:
+    title: "Vista previa de URLs"
+    description: "Desactiva la carga de vistas previas de las URLs."
+  _code:
+    title: "Resaltar código"
+    description: "Si se usa resaltado de código en MFM, etc., no se cargará hasta pulsar en ello. El resaltado de sintaxis requiere la descarga de archivos de definición para cada lenguaje de programación. Debido a esto, al deshabilitar la carga automática de estos archivos reducirás el consumo de datos."
