@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInput v-model="profile.birthday" type="date" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
+		<template #caption>{{ i18n.ts._profile.hideAgeDescription }}</template>
 	</MkInput>
 
 	<MkSelect v-model="profile.lang">
