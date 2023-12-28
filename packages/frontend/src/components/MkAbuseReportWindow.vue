@@ -23,13 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="spam">{{ i18n.ts._abuseReportCategory.spam }}</option>
 					<option value="explicit">{{ i18n.ts._abuseReportCategory.explicit }}</option>
 					<option value="phishing">{{ i18n.ts._abuseReportCategory.phishing }}</option>
-					<option value="personalinfoleak">{{ i18n.ts._abuseReportCategory.personalinfoleak }}</option>
-					<option value="selfharm">{{ i18n.ts._abuseReportCategory.selfharm }}</option>
-					<option value="criticalbreach">{{ i18n.ts._abuseReportCategory.criticalbreach }}</option>
-					<option value="otherbreach">{{ i18n.ts._abuseReportCategory.otherbreach }}</option>
-					<option value="violationrights">{{ i18n.ts._abuseReportCategory.violationrights }}</option>
-					<option value="violationrightsother">{{ i18n.ts._abuseReportCategory.violationrightsother }}</option>
-					<option value="notlike">{{ i18n.ts._abuseReportCategory.notlike }}</option>
+					<option value="personalInfoLeak">{{ i18n.ts._abuseReportCategory.personalInfoLeak }}</option>
+					<option value="selfHarm">{{ i18n.ts._abuseReportCategory.selfHarm }}</option>
+					<option value="criticalBreach">{{ i18n.ts._abuseReportCategory.criticalBreach }}</option>
+					<option value="otherBreach">{{ i18n.ts._abuseReportCategory.otherBreach }}</option>
+					<option value="violationRights">{{ i18n.ts._abuseReportCategory.violationRights }}</option>
+					<option value="violationRightsOther">{{ i18n.ts._abuseReportCategory.violationRightsOther }}</option>
+					<option value="notLike">{{ i18n.ts._abuseReportCategory.notLike }}</option>
 					<option value="other">{{ i18n.ts._abuseReportCategory.other }}</option>
 				</MkSelect>
 			</div>
@@ -107,24 +107,25 @@ function muteUser() {
 
 function refreshUserInfo() {
 	os.api('users/show', { userId: props.user.id })
-	.then((res) => {
-		fullUserInfo.value = res;
-	});
+		.then((res) => {
+			fullUserInfo.value = res;
+		});
 }
 
 function send() {
-	if (category.value === 'violationrightsother') {
+	if (category.value === 'violationRightsOther') {
 		os.alert({
 			type: 'info',
-			text: i18n.ts._abuseReportMsgs.rightsAbuseCantAccept
+			text: i18n.ts._abuseReportMsgs.rightsAbuseCantAccept,
 		});
 		uiWindow.value?.close();
 		emit('closed');
 		return;
 	}
-	if (category.value === 'notlike') {
+	if (category.value === 'notLike') {
 		uiWindow.value?.close();
 		page.value = 2;
+		return;
 	}
 	os.apiWithDialog('users/report-abuse', {
 		userId: props.user.id,
@@ -132,11 +133,11 @@ function send() {
 		category: category.value,
 	}, undefined).then(res => {
 		os.api('users/show', { userId: props.user.id })
-		.then((res) => {
-			fullUserInfo.value = res;
-			uiWindow.value?.close();
-			page.value = 2;
-		});
+			.then((res) => {
+				fullUserInfo.value = res;
+				uiWindow.value?.close();
+				page.value = 2;
+			});
 	});
 }
 </script>

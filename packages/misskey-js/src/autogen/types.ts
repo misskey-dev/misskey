@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.1-io
- * generatedAt: 2023-12-27T19:40:56.996Z
+ * version: 2023.12.2-io
+ * generatedAt: 2023-12-28T08:11:12.906Z
  */
 
 /**
@@ -4478,6 +4478,7 @@ export type components = {
        * @example xxxxxxxxxx
        */
       id: string;
+      category: string;
       /** Format: date-time */
       createdAt: string;
       comment: string;
@@ -4696,6 +4697,8 @@ export type operations = {
           targetUserOrigin?: 'combined' | 'local' | 'remote';
           /** @default false */
           forwarded?: boolean;
+          /** @default null */
+          category?: string | null;
         };
       };
     };
@@ -4723,6 +4726,7 @@ export type operations = {
               reporter: components['schemas']['User'];
               targetUser: components['schemas']['User'];
               assignee?: components['schemas']['User'] | null;
+              category: string;
             })[];
         };
       };
@@ -25233,6 +25237,11 @@ export type operations = {
           /** Format: misskey:id */
           userId: string;
           comment: string;
+          /**
+           * @default other
+           * @enum {string}
+           */
+          category?: 'nsfw' | 'spam' | 'explicit' | 'phishing' | 'personalInfoLeak' | 'selfHarm' | 'criticalBreach' | 'otherBreach' | 'violationRights' | 'violationRightsOther' | 'other' | 'personalinfoleak' | 'selfharm' | 'criticalbreach' | 'otherbreach' | 'violationrights' | 'violationrightsother' | 'notlike';
         };
       };
     };

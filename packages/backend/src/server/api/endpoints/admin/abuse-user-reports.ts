@@ -77,7 +77,7 @@ export const meta = {
 				category: {
 					type: 'string',
 					nullable: false, optional: false,
-				}
+				},
 			},
 		},
 	},
