@@ -171,17 +171,17 @@ export class EmailService {
 		};
 
 		if (meta.enableActiveEmailValidation) {
-			if (meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
+			validated = await validateEmail({
+				email: emailAddress,
+				validateRegex: true,
+				validateMx: true,
+				validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
+				validateDisposable: true, // 捨てアドかどうかチェック
+				validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
+			});
+
+			if (validated.valid && meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
 				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
-			} else {
-				validated = await validateEmail({
-					email: emailAddress,
-					validateRegex: true,
-					validateMx: true,
-					validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
-					validateDisposable: true, // 捨てアドかどうかチェック
-					validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
-				});
 			}
 		} else {
 			validated = { valid: true, reason: null };
