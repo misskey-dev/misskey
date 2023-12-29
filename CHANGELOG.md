@@ -17,6 +17,9 @@
 ### General
 - ユーザー登録を承認制にできるように (cherry-pick from https://git.joinsharkey.org/Sharkey/Sharkey)
 
+### Client
+- Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
+
 ## 2023.12.2
 
 ### General
