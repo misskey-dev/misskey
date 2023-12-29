@@ -54,7 +54,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
-	title: i18n.ts.approvals,
+	title: i18n.ts.signupPendingApprovals,
 	icon: 'ti ti-user-check',
 })));
 </script>

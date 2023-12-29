@@ -148,7 +148,8 @@ export interface Locale {
     "blockConfirm": string;
     "unblockConfirm": string;
     "suspendConfirm": string;
-    "approveConfirm": string;
+    "registerApproveConfirm": string;
+    "registerApproveConfirmDescription": string;
     "unsuspendConfirm": string;
     "selectList": string;
     "editList": string;
@@ -878,6 +879,7 @@ export interface Locale {
     "off": string;
     "emailRequiredForSignup": string;
     "approvalRequiredForSignup": string;
+    "signupPendingApprovals": string;
     "unread": string;
     "filter": string;
     "controlPanel": string;

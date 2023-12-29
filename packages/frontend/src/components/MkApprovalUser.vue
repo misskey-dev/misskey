@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ email }}</div>
 			</div>
 			<div>
-				<div :class="$style.label">Reason</div>
+				<div :class="$style.label">{{ i18n.ts.registerReason }}</div>
 				<div>{{ reason }}</div>
 			</div>
 		</div>
@@ -89,7 +89,8 @@ async function deleteAccount() {
 async function approveAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.approveConfirm,
+		title: i18n.ts.registerApproveConfirm,
+		text: i18n.ts.registerApproveConfirmDescription,
 	});
 	if (confirm.canceled) return;
 	await os.api('admin/approve-user', { userId: props.user.id });
