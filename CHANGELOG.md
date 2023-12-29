@@ -1,5 +1,5 @@
 <!--
-## x.x.x (unreleased)
+## 202x.x.x (unreleased)
 
 ### General
 -
@@ -12,17 +12,11 @@
 
 -->
 
-
-## x.x.x (unreleased)
-
-### General
--
+## 202x.x.x (Unreleased)
 
 ### Client
+- Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
 - Enhance: MFMの属性でオートコンプリートが使用できるように #12735
-
-### Server
--
 
 ## 2023.12.2
 
