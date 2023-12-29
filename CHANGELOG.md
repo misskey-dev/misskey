@@ -1,5 +1,5 @@
 <!--
-## x.x.x (unreleased)
+## 202x.x.x (unreleased)
 
 ### General
 -
@@ -12,16 +12,11 @@
 
 -->
 
-## x.x.x (unreleased)
-
-### General
--
+## 202x.x.x (Unreleased)
 
 ### Client
+- Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
 - Enhance: 誕生年に9999年を指定すると、年齢を非表示にできるように
-
-### Server
--
 
 ## 2023.12.2
 

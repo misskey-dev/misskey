@@ -284,6 +284,18 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableTruemailApi: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			truemailInstance: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			truemailAuthKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableChartsForRemoteUser: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -520,6 +532,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
 				enableVerifymailApi: instance.enableVerifymailApi,
 				verifymailAuthKey: instance.verifymailAuthKey,
+				enableTruemailApi: instance.enableTruemailApi,
+				truemailInstance: instance.truemailInstance,
+				truemailAuthKey: instance.truemailAuthKey,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				enableServerMachineStats: instance.enableServerMachineStats,
