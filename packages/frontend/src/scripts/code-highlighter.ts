@@ -1,7 +1,8 @@
 import { setWasm, setCDN, Highlighter, getHighlighter as _getHighlighter } from 'shiki';
+import { version } from '@/config.js';
 
-setWasm('/assets/shiki/dist/onig.wasm');
-setCDN('/assets/shiki/');
+setWasm(`/assets/shiki.${version}/dist/onig.wasm`);
+setCDN(`/assets/shiki.${version}/`);
 
 let _highlighter: Highlighter | null = null;
 
