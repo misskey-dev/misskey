@@ -295,7 +295,7 @@ function createFetcher() {
 		approved.value = info.value.approved;
 		suspended.value = info.value.isSuspended;
 		moderationNote.value = info.value.moderationNote;
-		signupReason.value = info.signupReason;
+		signupReason.value = info.value.signupReason;
 
 		watch(moderationNote, async () => {
 			await os.api('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
