@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2023-12-29T08:35:39.936Z
+ * generatedAt: 2023-12-29T08:51:51.659Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -705,7 +705,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:approve-account*
      */
     request<E extends 'admin/approve-user', P extends Endpoints[E]['req']>(
       endpoint: E,

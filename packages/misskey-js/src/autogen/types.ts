@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2023-12-29T08:35:39.797Z
+ * generatedAt: 2023-12-29T08:51:51.514Z
  */
 
 /**
@@ -590,7 +590,7 @@ export type paths = {
      * admin/approve-user
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:approve-account*
      */
     post: operations['admin/approve-user'];
   };
@@ -8118,7 +8118,7 @@ export type operations = {
    * admin/approve-user
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:approve-account*
    */
   'admin/approve-user': {
     requestBody: {
