@@ -12,6 +12,11 @@
 
 -->
 
+## 202x.x.x (Unreleased)
+
+### General
+- ユーザー登録を承認制にできるように (cherry-pick from https://git.joinsharkey.org/transfem-org/sharkey)
+
 ## 2023.12.2
 
 ### General
