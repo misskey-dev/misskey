@@ -116,7 +116,7 @@ const menuDef = computed(() => [{
 		to: '/admin/invites',
 		active: currentPage.value?.route.name === 'invites',
 	}, {
-		icon: 'ti ti-check',
+		icon: 'ti ti-user-check',
 		text: i18n.ts.approvals,
 		to: '/admin/approvals',
 		active: currentPage.value?.route.name === 'approvals',

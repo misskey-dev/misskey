@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkFolder :expanded="false">
-	<template #icon><i class="ph-user ph-bold ph-lg"></i></template>
+	<template #icon><i class="ti ti-user-check"></i></template>
 	<template #label>{{ i18n.ts.user }}: {{ user.username }}</template>
 
 	<div class="_gaps_s" :class="$style.root">
