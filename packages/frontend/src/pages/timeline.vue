@@ -82,6 +82,16 @@ const onlyFiles = computed({
 	get: () => (defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('onlyFiles', false)),
 	set: (x) => saveTlFilter('onlyFiles', x),
 });
+const hideSensitive = computed({
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	get: () => (defaultStore.reactiveState.tl.value.filter.hideSensitive ?? saveTlFilter('hideSensitive', false)),
+	set: (x) => {
+		saveTlFilter('hideSensitive', x);
+
+		// これだけはクライアント側で完結する処理なので手動でリロード
+		tlComponent.value?.reloadTimeline();
+	},
+});
 
 watch(src, () => queue.value = 0);
 
@@ -223,6 +233,10 @@ const headerActions = computed(() => {
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
+				}, {
+					type: 'switch',
+					text: i18n.ts.hideSensitive,
+					ref: hideSensitive,
 				}], ev.currentTarget ?? ev.target);
 			},
 		},
@@ -232,8 +246,7 @@ const headerActions = computed(() => {
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
-				console.log('called');
-				tlComponent.value.reloadTimeline();
+				tlComponent.value?.reloadTimeline();
 			},
 		});
 	}
