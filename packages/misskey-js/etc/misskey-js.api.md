@@ -86,6 +86,9 @@ type AdminAnnouncementsListResponse = operations['admin/announcements/list']['re
 type AdminAnnouncementsUpdateRequest = operations['admin/announcements/update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminApproveUserRequest = operations['admin/approve-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminAvatarDecorationsCreateRequest = operations['admin/avatar-decorations/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1136,6 +1139,7 @@ declare namespace entities {
         AdminShowUsersRequest,
         AdminShowUsersResponse,
         AdminSuspendUserRequest,
+        AdminApproveUserRequest,
         AdminUnsuspendUserRequest,
         AdminUpdateMetaRequest,
         AdminDeleteAccountRequest,
@@ -2259,7 +2263,7 @@ type ModerationLog = {
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "approve", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
 
 // @public (undocumented)
 type MuteCreateRequest = operations['mute/create']['requestBody']['content']['application/json'];

@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.494Z
+ * version: 2023.12.2
+ * generatedAt: 2023-12-29T07:43:34.900Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -33,7 +33,6 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     request<E extends 'admin/accounts/create', P extends Endpoints[E]['req']>(
@@ -698,6 +697,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:admin:suspend-user*
      */
     request<E extends 'admin/suspend-user', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes*
+     */
+    request<E extends 'admin/approve-user', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

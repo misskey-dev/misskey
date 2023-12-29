@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.491Z
+ * version: 2023.12.2
+ * generatedAt: 2023-12-29T07:43:34.897Z
  */
 
 import type {
@@ -87,6 +87,7 @@ import type {
 	AdminShowUsersRequest,
 	AdminShowUsersResponse,
 	AdminSuspendUserRequest,
+	AdminApproveUserRequest,
 	AdminUnsuspendUserRequest,
 	AdminUpdateMetaRequest,
 	AdminDeleteAccountRequest,
@@ -606,6 +607,7 @@ export type Endpoints = {
 	'admin/show-user': { req: AdminShowUserRequest; res: AdminShowUserResponse };
 	'admin/show-users': { req: AdminShowUsersRequest; res: AdminShowUsersResponse };
 	'admin/suspend-user': { req: AdminSuspendUserRequest; res: EmptyResponse };
+	'admin/approve-user': { req: AdminApproveUserRequest; res: EmptyResponse };
 	'admin/unsuspend-user': { req: AdminUnsuspendUserRequest; res: EmptyResponse };
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
 	'admin/delete-account': { req: AdminDeleteAccountRequest; res: AdminDeleteAccountResponse };
