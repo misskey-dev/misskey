@@ -1038,6 +1038,10 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SignupRequest;
         res: SignupResponse;
     };
+    'signup-pending': {
+        req: SignupPendingRequest;
+        res: SignupPendingResponse;
+    };
     'signin': {
         req: SigninRequest;
         res: SigninResponse;
@@ -1063,6 +1067,8 @@ declare namespace entities {
         AnnouncementCreated,
         SignupRequest,
         SignupResponse,
+        SignupPendingRequest,
+        SignupPendingResponse,
         SigninRequest,
         SigninResponse,
         EmptyRequest,
@@ -2637,7 +2643,18 @@ type SigninRequest = {
 // @public (undocumented)
 type SigninResponse = {
     id: User['id'];
-    i: string | null;
+    i: string;
+};
+
+// @public (undocumented)
+type SignupPendingRequest = {
+    code: string;
+};
+
+// @public (undocumented)
+type SignupPendingResponse = {
+    id: User['id'];
+    i: string;
 };
 
 // @public (undocumented)
@@ -2653,7 +2670,7 @@ type SignupRequest = {
 };
 
 // @public (undocumented)
-type SignupResponse = UserDetailed & {
+type SignupResponse = MeDetailed & {
     token: string;
 };
 
