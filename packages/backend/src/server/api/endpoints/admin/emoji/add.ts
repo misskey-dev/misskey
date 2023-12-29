@@ -58,7 +58,7 @@ export const paramDef = {
 			},
 		},
 	},
-	required: ['name', 'fileId', 'draft'],
+	required: ['name', 'fileId'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す
@@ -87,7 +87,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				license: ps.license ?? null,
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
-				draft: false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
 			}, me);
 

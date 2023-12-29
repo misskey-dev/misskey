@@ -44,6 +44,7 @@ export const paramDef = {
 		isSensitive: { type: 'boolean', nullable: true },
 		localOnly: { type: 'boolean', nullable: true },
 		fileId: { type: 'string', format: 'misskey:id' },
+		isNotifyIsHome: { type: 'boolean', nullable: true },
 	},
 	required: ['name', 'fileId'],
 } as const;
@@ -86,7 +87,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					aliases: ps.aliases ?? [],
 					license: ps.license ?? null,
 					host: null,
-					draft: false,
 					isSensitive: ps.isSensitive ?? false,
 					localOnly: ps.localOnly ?? false,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],

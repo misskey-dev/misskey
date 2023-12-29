@@ -36,7 +36,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</MkFolder>
         <MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
-        <MkSwitch v-model="FeaturedOrNote">{{ i18n.ts.FeaturedOrNote}}<template #caption>{{ i18n.ts.FeaturedOrNoteInfo }} </template></MkSwitch>
         <MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
 		</div>
 	</FormSection>
@@ -325,7 +324,6 @@ const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'))
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
 const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTimeline'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
-const FeaturedOrNote = computed(defaultStore.makeGetterSetter('FeaturedOrNote'))
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
@@ -392,7 +390,6 @@ watch([
 	showMediaTimeline,
   showVisibilityColor,
   enableonlyAndWithSave,
-  FeaturedOrNote,
   showGlobalTimeline,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,

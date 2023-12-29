@@ -148,17 +148,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<XActivity :key="user.id" :user="user"/>
           </MkLazy>
 				</template>
-          <div v-if="!defaultStore.state.FeaturedOrNote">
-            <div v-if="!disableNotes">
-              <MkLazy>
-						<XTimeline :user="user"/>
-              </MkLazy>
+            <div>
+                <div style="margin-bottom: 8px;">{{ i18n.ts._sfx.note }}</div>
+                <MkNotes :class="$style.tl" :noGap="true" :pagination="Notes"/>
             </div>
-          </div>
-          <div v-else>
-            <div style="margin-bottom: 8px;">{{ i18n.ts._sfx.note }}</div>
-            <MkNotes :class="$style.tl" :noGap="true" :pagination="Notes"/>
-          </div>
         </div>
       </div>
       <div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -195,6 +188,8 @@ import {isFollowingVisibleForMe, isFollowersVisibleForMe} from '@/scripts/isFfVi
 import MkNotifyButton from "@/components/MkNotifyButton.vue";
 import MkRemoteInfoUpdate from "@/components/MkRemoteInfoUpdate.vue";
 import {defaultStore} from '@/store.js';
+import MkNotes from "@/components/MkNotes.vue";
+import MkLazy from "@/components/global/MkLazy.vue";
 
 function calcAge(birthdate: string): number {
   const date = new Date(birthdate);
