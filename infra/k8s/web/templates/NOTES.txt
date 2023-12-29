@@ -1,0 +1,18 @@
+{{- if .Values.ingress.enabled }}
+
+1. Misskeyがデプロイされました。以下のURLでアクセスできます:
+
+	https://{{ index .Values.ingress.hosts 0 "host" }}/
+
+2. テストを実行してサービスの接続を確認します:
+
+  helm test {{ .Release.Name }}
+
+{{- else }}
+
+Misskeyがデプロイされました。クラスター内から以下のコマンドを使用してアクセスします:
+
+  POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "web.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ .Values.service.port }}:3000
+
+{{- end }}

@@ -1,0 +1,35 @@
+replicaCount: 2
+
+image:
+  repository: na2na/misskey-na2na
+  tag: "2023.11.1-na2na-v4"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "200m"
+  hosts:
+    - host: example.na2na.dev
+      paths:
+        - /
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# HPAの設定
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80 # 必要に応じてコメントアウトを解除
