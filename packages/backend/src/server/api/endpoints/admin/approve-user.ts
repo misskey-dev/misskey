@@ -27,11 +27,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-        @Inject(DI.userProfilesRepository)
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
 		private moderationLogService: ModerationLogService,
-        private emailService: EmailService,
+		private emailService: EmailService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });

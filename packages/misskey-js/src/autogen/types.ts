@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2023-12-29T08:51:51.514Z
+ * generatedAt: 2023-12-29T15:24:16.025Z
  */
 
 /**
@@ -3567,6 +3567,7 @@ export type components = {
       roles: components['schemas']['RoleLite'][];
       memo: string | null;
       moderationNote?: string;
+      approved?: boolean;
       isFollowing?: boolean;
       isFollowed?: boolean;
       hasPendingFollowRequestFromYou?: boolean;
@@ -4465,6 +4466,9 @@ export type operations = {
             enableActiveEmailValidation: boolean;
             enableVerifymailApi: boolean;
             verifymailAuthKey: string | null;
+            enableTruemailApi: boolean;
+            truemailInstance: string | null;
+            truemailAuthKey: string | null;
             enableChartsForRemoteUser: boolean;
             enableChartsForFederatedInstances: boolean;
             enableServerMachineStats: boolean;
@@ -8308,6 +8312,9 @@ export type operations = {
           enableActiveEmailValidation?: boolean;
           enableVerifymailApi?: boolean;
           verifymailAuthKey?: string | null;
+          enableTruemailApi?: boolean;
+          truemailInstance?: string | null;
+          truemailAuthKey?: string | null;
           enableChartsForRemoteUser?: boolean;
           enableChartsForFederatedInstances?: boolean;
           enableServerMachineStats?: boolean;
