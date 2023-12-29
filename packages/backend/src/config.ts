@@ -9,7 +9,7 @@ import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
 import type { RedisOptions } from 'ioredis';
 
-type RedisOptionsSource = Partial<RedisOptions> & {
+export type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
 	port: number;
 	family?: number;
@@ -47,6 +47,14 @@ type Source = {
 	redis: RedisOptionsSource;
 	redisForPubsub?: RedisOptionsSource;
 	redisForJobQueue?: RedisOptionsSource;
+	redisForSystemQueue?: RedisOptionsSource;
+	redisForEndedPollNotificationQueue?: RedisOptionsSource;
+	redisForDeliverQueue?: RedisOptionsSource;
+	redisForInboxQueue?: RedisOptionsSource;
+	redisForDbQueue?: RedisOptionsSource;
+	redisForRelationshipQueue?: RedisOptionsSource;
+	redisForObjectStorageQueue?: RedisOptionsSource;
+	redisForWebhookDeliverQueue?: RedisOptionsSource;
 	redisForTimelines?: RedisOptionsSource;
 	meilisearch?: {
 		host: string;
@@ -164,7 +172,14 @@ export type Config = {
 	videoThumbnailGenerator: string | null;
 	redis: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
-	redisForJobQueue: RedisOptions & RedisOptionsSource;
+	redisForSystemQueue: RedisOptions & RedisOptionsSource;
+	redisForEndedPollNotificationQueue: RedisOptions & RedisOptionsSource;
+	redisForDeliverQueue: RedisOptions & RedisOptionsSource;
+	redisForInboxQueue: RedisOptions & RedisOptionsSource;
+	redisForDbQueue: RedisOptions & RedisOptionsSource;
+	redisForRelationshipQueue: RedisOptions & RedisOptionsSource;
+	redisForObjectStorageQueue: RedisOptions & RedisOptionsSource;
+	redisForWebhookDeliverQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
@@ -209,6 +224,7 @@ export function loadConfig(): Config {
 		: null;
 	const internalMediaProxy = `${scheme}://${host}/proxy`;
 	const redis = convertRedisOptions(config.redis, host);
+	const redisForJobQueue = config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis;
 
 	return {
 		version,
@@ -231,7 +247,14 @@ export function loadConfig(): Config {
 		meilisearch: config.meilisearch,
 		redis,
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
-		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,
+		redisForSystemQueue: config.redisForSystemQueue ? convertRedisOptions(config.redisForSystemQueue, host) : redisForJobQueue,
+		redisForEndedPollNotificationQueue: config.redisForEndedPollNotificationQueue ? convertRedisOptions(config.redisForEndedPollNotificationQueue, host) : redisForJobQueue,
+		redisForDeliverQueue: config.redisForDeliverQueue ? convertRedisOptions(config.redisForDeliverQueue, host) : redisForJobQueue,
+		redisForInboxQueue: config.redisForInboxQueue ? convertRedisOptions(config.redisForInboxQueue, host) : redisForJobQueue,
+		redisForDbQueue: config.redisForDbQueue ? convertRedisOptions(config.redisForDbQueue, host) : redisForJobQueue,
+		redisForRelationshipQueue: config.redisForRelationshipQueue ? convertRedisOptions(config.redisForRelationshipQueue, host) : redisForJobQueue,
+		redisForObjectStorageQueue: config.redisForObjectStorageQueue ? convertRedisOptions(config.redisForObjectStorageQueue, host) : redisForJobQueue,
+		redisForWebhookDeliverQueue: config.redisForWebhookDeliverQueue ? convertRedisOptions(config.redisForWebhookDeliverQueue, host) : redisForJobQueue,
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		id: config.id,
 		proxy: config.proxy,
