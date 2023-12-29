@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkPagination ref="paginationComponent" :pagination="pagination">
 					<template #default="{ items }">
 						<div class="_gaps_s">
-							<SkApprovalUser v-for="item in items" :key="item.id" :user="(item as any)" :onDeleted="deleted"/>
+							<MkApprovalUser v-for="item in items" :key="item.id" :user="(item as any)" :onDeleted="deleted"/>
 						</div>
 					</template>
 				</MkPagination>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, shallowRef } from 'vue';
 import XHeader from './_header_.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import SkApprovalUser from '@/components/SkApprovalUser.vue';
+import MkApprovalUser from '@/components/MkApprovalUser.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
