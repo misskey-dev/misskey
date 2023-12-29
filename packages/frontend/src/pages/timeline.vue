@@ -79,7 +79,7 @@ const withReplies = computed({
 });
 const onlyFiles = computed({
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => (defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('withReplies', false)),
+	get: () => (defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('onlyFiles', false)),
 	set: (x) => saveTlFilter('onlyFiles', x),
 });
 
