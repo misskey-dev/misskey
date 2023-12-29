@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: misskey
+spec:
+  selector:
+    app: redis
+  ports:
+    - name: http
+      port: 6379
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: misskey-redis-pvc
+  namespace: misskey
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  namespace: misskey
+  labels:
+    app: redis
+spec:
+  restartPolicy: Always
+  containers:
+    - name: redis
+      image: redis:7
+      volumeMounts:
+        - mountPath: /data
+          name: redis-volume
+      resources:
+        limits:
+          memory: "100Mi"
+          cpu: "250m"
+      ports:
+        - containerPort: 6379
+  volumes:
+    - name: redis-volume
+      persistentVolumeClaim:
+        claimName: misskey-redis-pvc

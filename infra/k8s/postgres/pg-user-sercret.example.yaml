@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pg-user-secret
+  namespace: misskey
+type: Opaque
+data:
+  username: bWlzc2tleQ== # misskey
+  password: bWlzc2tleQ== # misskey
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: superuser-secret
+  namespace: misskey
+type: Opaque
+data:
+  username: cG9zdGdyZXM= # postgres
+  password: cG9zdGdyZXM= # postgres

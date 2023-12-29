@@ -1,0 +1,64 @@
+# postgresql cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+  namespace: misskey
+spec:
+  instances: 3 # HAクラスタのインスタンス数
+  primaryUpdateStrategy: unsupervised
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.1-12
+  superuserSecret:
+    name: superuser-secret
+  storage:
+    size: "30Gi"
+  postgresql:
+    parameters:
+      max_connections: "128"
+      shared_buffers: "2GB"
+      effective_cache_size: "6GB"
+      maintenance_work_mem: "512MB"
+      checkpoint_completion_target: "0.7"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "300"
+      work_mem: "8MB"
+      min_wal_size: "1GB"
+      max_wal_size: "4GB"
+      max_worker_processes: "4"
+      max_parallel_workers_per_gather: "2"
+      max_parallel_workers: "4"
+      max_parallel_maintenance_workers: "2"
+  bootstrap:
+    initdb:
+      database: misskey
+      owner: misskey
+      secret:
+        name: pg-user-secret
+
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://na2na-postgresql-cluster-backup/backup/" # ストレージ内の階層
+      endpointURL: "https://s3.ap-northeast-1-ntt.wasabisys.com/"
+      s3Credentials:
+        accessKeyId:
+          name: s3-secret
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: s3-secret
+          key: ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+    retentionPolicy: "30d" # 30日で削除
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: backup
+spec:
+  schedule: "0 0 0 * * *"
+  backupOwnerReference: self
+  cluster:
+    name: postgres-cluster

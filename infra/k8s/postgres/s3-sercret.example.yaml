@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: s3-secret
+  namespace: misskey
+type: Opaque
+data:
+  ACCESS_KEY_ID: "" # ベース64エンコードされたアクセスキー
+  ACCESS_SECRET_KEY: "" # ベース64エンコードされたシークレットキー
