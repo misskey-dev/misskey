@@ -2,9 +2,10 @@ name: Publish Docker image (io)
 
 on:
   push:
+    branches:
+      - io 
     tags:
       - "**"
-
   workflow_dispatch:
 
 jobs:
