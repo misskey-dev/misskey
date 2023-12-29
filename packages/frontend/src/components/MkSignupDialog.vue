@@ -63,8 +63,9 @@ function onSignup(res) {
 function onSignupEmailPending() {
 	dialog.value.close();
 }
+
 function onApprovalPending() {
-	dialog.close();
+	dialog.value.close();
 }
 </script>
 

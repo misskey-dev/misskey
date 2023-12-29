@@ -519,7 +519,7 @@ const headerTabs = computed(() => [{
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',
-});
+}]);
 
 definePageMetadata(computed(() => ({
 	title: user.value ? acct(user.value) : i18n.ts.userInfo,
