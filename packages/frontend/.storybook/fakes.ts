@@ -71,6 +71,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		username,
 		host,
 		name,
+		approved: true,
 		onlineStatus: 'unknown',
 		avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
 		avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',

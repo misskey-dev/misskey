@@ -368,7 +368,6 @@ export class UserEntityService implements OnModuleInit {
 			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
-			approved: user.approved,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
@@ -442,6 +441,7 @@ export class UserEntityService implements OnModuleInit {
 					targetUserId: user.id,
 				}).then(row => row?.memo ?? null),
 				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
+				approved: iAmModerator ? user.approved : undefined,
 			} : {}),
 
 			...(opts.detail && isMe ? {
