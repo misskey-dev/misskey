@@ -73,13 +73,26 @@ const withRenotes = computed({
 	set: (x) => saveTlFilter('withRenotes', x),
 });
 const withReplies = computed({
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => ($i ? defaultStore.reactiveState.tl.value.filter.withReplies ?? saveTlFilter('withReplies', true) : false),
+	get: () => {
+		if (!$i) return false;
+		if (['local', 'social'].includes(src.value) && onlyFiles.value) {
+			return false;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			return defaultStore.reactiveState.tl.value.filter.withReplies ?? saveTlFilter('withReplies', true);
+		}
+	},
 	set: (x) => saveTlFilter('withReplies', x),
 });
 const onlyFiles = computed({
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => (defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('onlyFiles', false)),
+	get: () => {
+		if (['local', 'social'].includes(src.value) && withReplies.value) {
+			return false;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			return defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('onlyFiles', false);
+		}
+	},
 	set: (x) => saveTlFilter('onlyFiles', x),
 });
 const hideSensitive = computed({
@@ -185,7 +198,7 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string
 }
 
 function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
-	if (!['withReplies'].includes(key) || $i) {
+	if (key !== 'withReplies' || $i) {
 		const out = { ...defaultStore.state.tl };
 		out.filter[key] = newValue;
 		defaultStore.set('tl', out);
