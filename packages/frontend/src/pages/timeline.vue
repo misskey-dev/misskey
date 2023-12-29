@@ -63,16 +63,27 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value), set: (x) => saveSrc(x) });
-const withRenotes = ref(true);
-const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);
-const onlyFiles = ref(false);
+const src = computed({
+	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
+	set: (x) => saveSrc(x),
+});
+const withRenotes = computed({
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	get: () => (defaultStore.reactiveState.tl.value.filter.withRenotes ?? saveTlFilter('withRenotes', true)),
+	set: (x) => saveTlFilter('withRenotes', x),
+});
+const withReplies = computed({
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	get: () => ($i ? defaultStore.reactiveState.tl.value.filter.withReplies ?? saveTlFilter('withReplies', true) : false),
+	set: (x) => saveTlFilter('withReplies', x),
+});
+const onlyFiles = computed({
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	get: () => (defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('withReplies', false)),
+	set: (x) => saveTlFilter('onlyFiles', x),
+});
 
 watch(src, () => queue.value = 0);
-
-watch(withReplies, (x) => {
-	if ($i) defaultStore.set('tlWithReplies', x);
-});
 
 function queueUpdated(q: number): void {
 	queue.value = q;
@@ -149,16 +160,27 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 }
 
 function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
-	let userList = null;
+	const out = {
+		...defaultStore.state.tl,
+		src: newSrc,
+	};
+
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
-		userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id);
+		out.userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id) ?? null;
 	}
-	defaultStore.set('tl', {
-		src: newSrc,
-		userList,
-	});
+
+	defaultStore.set('tl', out);
 	srcWhenNotSignin.value = newSrc;
+}
+
+function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
+	if (!['withReplies'].includes(key) || $i) {
+		const out = { ...defaultStore.state.tl };
+		out.filter[key] = newValue;
+		defaultStore.set('tl', out);
+	}
+	return newValue;
 }
 
 async function timetravel(): Promise<void> {
