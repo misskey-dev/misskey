@@ -6,17 +6,9 @@ image:
   pullPolicy: Always
 
 service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: true
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "200m"
-  hosts:
-    - host: example.na2na.dev
-      paths:
-        - /
+  type: NodePort
+  port: 3000
+  nodePort: 30000
 
 resources: {}
 

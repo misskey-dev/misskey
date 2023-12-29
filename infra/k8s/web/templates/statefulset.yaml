@@ -20,18 +20,14 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 3000
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 3000
           volumeMounts:
-            - name: config
-              mountPath: /etc/config
+          - mountPath: /misskey/.config
+            name: misskey-default-conf-file
       volumes:
-        - name: config
+        - name: misskey-default-conf-file
           configMap:
-            name: {{ include "web.fullname" . }}-config
+            name: misskey-default-config
