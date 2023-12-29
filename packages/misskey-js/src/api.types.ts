@@ -1,7 +1,14 @@
 import { Endpoints as Gen } from './autogen/endpoint';
 import { UserDetailed } from './autogen/models';
 import { UsersShowRequest } from './autogen/entities';
-import { SigninRequest, SigninResponse, SignupRequest, SignupResponse } from './entities';
+import {
+	SigninRequest,
+	SigninResponse,
+	SignupPendingRequest,
+	SignupPendingResponse,
+	SignupRequest,
+	SignupResponse,
+} from './entities';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
 	T,
@@ -61,6 +68,11 @@ export type Endpoints = Overwrite<
 		'signup': {
 			req: SignupRequest;
 			res: SignupResponse;
+		},
+		// api.jsonには載せないものなのでここで定義
+		'signup-pending': {
+			req: SignupPendingRequest;
+			res: SignupPendingResponse;
 		},
 		// api.jsonには載せないものなのでここで定義
 		'signin': {
