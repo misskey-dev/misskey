@@ -1033,6 +1033,9 @@ export interface Locale {
     "disableFederationOk": string;
     "invitationRequiredToRegister": string;
     "approvalRequiredToRegister": string;
+    "registerReason": string;
+    "registerHasNotBeenApprovedYet": string;
+    "registerApprovalEmailRecommended": string;
     "emailNotSupported": string;
     "postToTheChannel": string;
     "cannotBeChangedLater": string;
