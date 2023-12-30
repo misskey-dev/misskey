@@ -339,7 +339,7 @@ watch([
 	await reloadAsk();
 });
 
-const emojiIndexLangs = ['en-US','ja-JP'];
+const emojiIndexLangs = ['en-US', 'ja-JP'];
 
 function downloadEmojiIndex(lang: string) {
 	async function main() {
