@@ -346,7 +346,7 @@ function downloadEmojiIndex(lang: string) {
 		function download() {
 			switch (lang) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
-				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JPjson').then(x => x.default);
+				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JP.json').then(x => x.default);
 				default: throw new Error('unrecognized lang: ' + lang);
 			}
 		}
