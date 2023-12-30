@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkButton>
 	</div>
 </template>
-<template v-else-if="postExpanded">
+<div v-else-if="postExpanded">
 	<div v-if="tweetId" ref="twitter">
 		<iframe
 			ref="tweet"
@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-if="tweetId" class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
-</template>
+</div>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="defaultStore.state.dataSaver.urlPreview ? '' : `background-image: url('${thumbnail}')`">

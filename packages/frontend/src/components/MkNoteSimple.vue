@@ -81,7 +81,6 @@ const showContent = ref(false);
 }
 
 .quoted {
-	margin: 8px 0;
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;

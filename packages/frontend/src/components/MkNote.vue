@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
-					<MkNoteSimple v-if="appearNote.renote" :note="appearNote.renote" :quoted="true"/>
+					<MkNoteSimple v-if="appearNote.renote" :class="$style.quote" :note="appearNote.renote" :quoted="true"/>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>
@@ -798,6 +798,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .poll {
 	font-size: 80%;
+}
+
+.quote {
+	margin: 8px 0;
 }
 
 .channel {
