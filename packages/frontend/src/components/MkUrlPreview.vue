@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<template v-if="player.url && playerEnabled">
+<div v-if="player.url && playerEnabled">
 	<div
 		:class="$style.player"
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
@@ -25,9 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
 		</MkButton>
 	</div>
-</template>
-<template v-else-if="tweetId && tweetExpanded">
-	<div ref="twitter">
+</div>
+<div v-else-if="postExpanded">
+	<div v-if="tweetId" ref="twitter">
 		<iframe
 			ref="tweet"
 			allow="fullscreen;web-share"
@@ -37,12 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		></iframe>
 	</div>
+	<MkNoteSimple v-else-if="note" :note="note" :quoted="true"/>
 	<div :class="$style.action">
-		<MkButton :small="true" inline @click="tweetExpanded = false">
-			<i class="ti ti-x"></i> {{ i18n.ts.close }}
+		<MkButton :small="true" inline @click="postExpanded = false">
+			<i v-if="tweetId" class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
-</template>
+</div>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="defaultStore.state.dataSaver.urlPreview ? '' : `background-image: url('${thumbnail}')`">
@@ -66,8 +67,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</component>
 	<template v-if="showActions">
 		<div v-if="tweetId" :class="$style.action">
-			<MkButton :small="true" inline @click="tweetExpanded = true">
+			<MkButton :small="true" inline @click="postExpanded = true">
 				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandTweet }}
+			</MkButton>
+		</div>
+		<div v-if="noteUrl || note" :class="$style.action">
+			<MkButton :small="true" inline @click="resolveNote()">
+				{{ i18n.ts.expandNote }}
 			</MkButton>
 		</div>
 		<div v-if="!playerEnabled && player.url" :class="$style.action">
@@ -85,11 +91,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted, ref } from 'vue';
 import type { summaly } from 'summaly';
+import type * as Misskey from 'misskey-js';
 import { url as local } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
 
@@ -126,7 +134,9 @@ const player = ref({
 } as SummalyResult['player']);
 const playerEnabled = ref(false);
 const tweetId = ref<string | null>(null);
-const tweetExpanded = ref(props.detail);
+const noteUrl = ref<string | null>(null);
+const note = ref<Misskey.entities.Note | null>(null);
+const postExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
@@ -172,9 +182,40 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		sitename.value = info.sitename;
 		player.value = info.player;
 		sensitive.value = info.sensitive ?? false;
+		noteUrl.value = info.activityPub;
+		if (postExpanded.value) {
+			resolveNote();
+		}
 	});
 
-function adjustTweetHeight(message: any) {
+async function resolveNote(): Promise<void> {
+	if (note.value) {
+		// Reuse the data
+		postExpanded.value = true;
+		return;
+	}
+	if (!noteUrl.value) {
+		// Note does not exist
+		return;
+	}
+
+	try {
+		fetching.value = true;
+		const result = await os.api('ap/show', { uri: noteUrl.value });
+		if (result.type === 'Note') {
+			note.value = result.object;
+			postExpanded.value = true;
+		} else {
+			postExpanded.value = false;
+		}
+	} finally {
+		// Prevent repeated resolving
+		noteUrl.value = null;
+		fetching.value = false;
+	}
+}
+
+function adjustTweetHeight(message: any): void {
 	if (message.origin !== 'https://platform.twitter.com') return;
 	const embed = message.data?.['twttr.embed'];
 	if (embed?.method !== 'twttr.private.resize') return;
