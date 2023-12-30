@@ -80,6 +80,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Verifymail.io API Auth Key</template>
 						</MkInput>
+						<MkSwitch v-model="enableTruemailApi" @update:modelValue="save">
+							<template #label>Use TrueMail API</template>
+						</MkSwitch>
+						<MkInput v-model="truemailInstance" @update:modelValue="save">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>TrueMail API Instance</template>
+						</MkInput>
+						<MkInput v-model="truemailAuthKey" @update:modelValue="save">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>TrueMail API Auth Key</template>
+						</MkInput>
 					</div>
 				</MkFolder>
 
@@ -153,6 +164,9 @@ const enableIpLogging = ref<boolean>(false);
 const enableActiveEmailValidation = ref<boolean>(false);
 const enableVerifymailApi = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
+const enableTruemailApi = ref<boolean>(false);
+const truemailInstance = ref<string | null>(null);
+const truemailAuthKey = ref<string | null>(null);
 const bannedEmailDomains = ref<string>('');
 
 async function init() {
@@ -194,6 +208,9 @@ function save() {
 		enableActiveEmailValidation: enableActiveEmailValidation.value,
 		enableVerifymailApi: enableVerifymailApi.value,
 		verifymailAuthKey: verifymailAuthKey.value,
+		enableTruemailApi: enableTruemailApi.value,
+		truemailInstance: truemailInstance.value,
+		truemailAuthKey: truemailAuthKey.value,
 		bannedEmailDomains: bannedEmailDomains.value.split('\n'),
 	}).then(() => {
 		fetchInstance();
