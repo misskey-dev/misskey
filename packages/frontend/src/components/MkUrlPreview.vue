@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<template v-if="player.url && playerEnabled">
+<div v-if="player.url && playerEnabled">
 	<div
 		:class="$style.player"
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
 		</MkButton>
 	</div>
-</template>
+</div>
 <div v-else-if="postExpanded">
 	<div v-if="tweetId" ref="twitter">
 		<iframe
