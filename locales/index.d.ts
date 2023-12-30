@@ -133,6 +133,7 @@ export interface Locale {
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
     "attachCancel": string;
+    "deleteFile": string;
     "markAsSensitive": string;
     "unmarkAsSensitive": string;
     "enterFileName": string;
