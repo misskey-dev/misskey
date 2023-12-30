@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@discordapp/twemoji": "15.0.2",
 		"@github/webauthn-json": "2.1.1",
+		"@misskey-dev/browser-image-resizer": "2.2.1-misskey.10",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "5.0.5",
 		"@rollup/pluginutils": "5.1.0",
@@ -30,7 +31,6 @@
 		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.0.6",
 		"astring": "1.8.6",
 		"broadcast-channel": "7.0.0",
-		"browser-image-resizer": "github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
 		"buraha": "0.0.1",
 		"canvas-confetti": "1.6.1",
 		"chart.js": "4.4.1",
