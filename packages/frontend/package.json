@@ -74,6 +74,7 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
+		"@misskey-dev/eslint-plugin": "^1.0.0",
 		"@misskey-dev/summaly": "^5.0.3",
 		"@storybook/addon-actions": "7.6.5",
 		"@storybook/addon-essentials": "7.6.5",
