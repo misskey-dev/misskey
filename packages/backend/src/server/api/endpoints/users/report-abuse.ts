@@ -25,7 +25,7 @@ export const meta = {
 	requireCredential: true,
 	kind: 'write:report-abuse',
 
-	description: 'User a report.',
+	description: 'File a report.',
 
 	errors: {
 		noSuchUser: {
@@ -91,9 +91,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const notes = ps.noteIds ? await this.notesRepository.find({
-				where: { id: In(ps.noteIds) },
+				where: { id: In(ps.noteIds), userId: user.id },
 			}) : [];
-			const filteredNotes = notes.filter(note => note.userId === user.id);
+
 			const report = await this.abuseUserReportsRepository.insert({
 				id: this.idService.gen(),
 				targetUserId: user.id,
@@ -101,7 +101,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
-				notes: ps.noteIds ? await this.noteEntityService.packMany(filteredNotes) : [],
+				notes: (ps.noteIds && !((await this.metaService.fetch()).enableGDPRMode)) ? await this.noteEntityService.packMany(notes) : [],
+				noteIds: (ps.noteIds && (await this.metaService.fetch()).enableGDPRMode) ? ps.noteIds : [],
 			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
 
 			// Publish event to moderators
@@ -115,6 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						reporterId: report.reporterId,
 						comment: report.comment,
 						notes: report.notes,
+						noteIds: report.noteIds ?? [],
 					});
 				}
 				const meta = await this.metaService.fetch();

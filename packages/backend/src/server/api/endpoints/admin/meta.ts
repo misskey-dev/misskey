@@ -416,6 +416,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			enableGDPRMode: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -534,6 +538,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				notesPerOneAd: instance.notesPerOneAd,
+				enableGDPRMode: instance.enableGDPRMode,
 			};
 		});
 	}

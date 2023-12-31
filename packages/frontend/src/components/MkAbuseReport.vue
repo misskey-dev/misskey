@@ -24,7 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFolder v-if="report.notes.length !== 0" :class="$style.notes">
 				<template #label>{{ i18n.ts.reportedNote }}</template>
 				<div v-for="note in report.notes" :class="$style.notes">
-					<MkNoteSimple :note="note"/>
+					<MkNoteSimple v-if="note !== 'deleted'" :note="note"/>
+					<div v-else> note is deleted </div>
 				</div>
 			</MkFolder>
 		</div>
@@ -62,7 +63,7 @@ const props = defineProps<{
     id: string;
     createdAt:string;
     targetUserId:Misskey.entities.User['id'];
-    targetUser:Misskey.entities.User & {createdAt:string;};
+    targetUser:Misskey.entities.User & { createdAt:string; };
     reporter:Misskey.entities.User;
     assignee:Misskey.entities.User['id'];
     comment:string;
@@ -109,6 +110,7 @@ function resolve() {
 	padding: 24px;
 	border-right: solid 1px var(--divider);
 }
+
 .info {
 	display: flex;
 	box-sizing: border-box;

@@ -138,6 +138,7 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		enableGDPRMode: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -208,6 +209,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.infoImageUrl !== undefined) {
 				set.infoImageUrl = ps.infoImageUrl;
+			}
+			console.log(ps.enableGDPRMode);
+			if (ps.enableGDPRMode !== undefined) {
+				set.enableGDPRMode = ps.enableGDPRMode;
 			}
 
 			if (ps.notFoundImageUrl !== undefined) {

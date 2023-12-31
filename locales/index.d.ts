@@ -876,6 +876,7 @@ export interface Locale {
     "on": string;
     "off": string;
     "emailRequiredForSignup": string;
+    "enableGDPRMode": string;
     "unread": string;
     "filter": string;
     "controlPanel": string;
