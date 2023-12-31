@@ -13,7 +13,6 @@ packages/*/node_modules
 redis/
 keydb/
 files/
-misskey-assets/
 fluent-emojis/
 .pnp.*
 
