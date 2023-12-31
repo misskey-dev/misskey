@@ -28,3 +28,18 @@ export function baseQueueOptions(config: RedisOptions & RedisOptionsSource, queu
 		prefix: config.prefix ? `${config.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};
 }
+
+export function baseWorkerOptions(config: RedisOptions & RedisOptionsSource, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.WorkerOptions {
+	return {
+		connection: {
+			...config,
+			maxRetriesPerRequest: null,
+			keyPrefix: undefined,
+		},
+		prefix: config.prefix ? `${config.prefix}:queue:${queueName}` : `queue:${queueName}`,
+		skipLockRenewal: false,
+		lockDuration: 60 * 1000,
+		lockRenewTime: 30 * 1000,
+		stalledInterval: 90 * 1000,
+	};
+}

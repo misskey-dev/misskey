@@ -40,7 +40,7 @@ import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMu
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
-import { QUEUE, baseQueueOptions } from './const.js';
+import { QUEUE, baseWorkerOptions } from './const.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
@@ -146,7 +146,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				default: throw new Error(`unrecognized job type ${job.name} for system`);
 			}
 		}, {
-			...baseQueueOptions(this.config.redisForSystemQueue, QUEUE.SYSTEM),
+			...baseWorkerOptions(this.config.redisForSystemQueue, QUEUE.SYSTEM),
 			autorun: false,
 		});
 
@@ -185,7 +185,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				default: throw new Error(`unrecognized job type ${job.name} for db`);
 			}
 		}, {
-			...baseQueueOptions(this.config.redisForDbQueue, QUEUE.DB),
+			...baseWorkerOptions(this.config.redisForDbQueue, QUEUE.DB),
 			autorun: false,
 		});
 
@@ -201,7 +201,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		//#region deliver
 		this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => this.deliverProcessorService.process(job), {
-			...baseQueueOptions(this.config.redisForDeliverQueue, QUEUE.DELIVER),
+			...baseWorkerOptions(this.config.redisForDeliverQueue, QUEUE.DELIVER),
 			autorun: false,
 			concurrency: this.config.deliverJobConcurrency ?? 128,
 			limiter: {
@@ -225,7 +225,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		//#region inbox
 		this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => this.inboxProcessorService.process(job), {
-			...baseQueueOptions(this.config.redisForInboxQueue, QUEUE.INBOX),
+			...baseWorkerOptions(this.config.redisForInboxQueue, QUEUE.INBOX),
 			autorun: false,
 			concurrency: this.config.inboxJobConcurrency ?? 16,
 			limiter: {
@@ -249,7 +249,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		//#region webhook deliver
 		this.webhookDeliverQueueWorker = new Bull.Worker(QUEUE.WEBHOOK_DELIVER, (job) => this.webhookDeliverProcessorService.process(job), {
-			...baseQueueOptions(this.config.redisForWebhookDeliverQueue, QUEUE.WEBHOOK_DELIVER),
+			...baseWorkerOptions(this.config.redisForWebhookDeliverQueue, QUEUE.WEBHOOK_DELIVER),
 			autorun: false,
 			concurrency: 64,
 			limiter: {
@@ -281,7 +281,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				default: throw new Error(`unrecognized job type ${job.name} for relationship`);
 			}
 		}, {
-			...baseQueueOptions(this.config.redisForRelationshipQueue, QUEUE.RELATIONSHIP),
+			...baseWorkerOptions(this.config.redisForRelationshipQueue, QUEUE.RELATIONSHIP),
 			autorun: false,
 			concurrency: this.config.relashionshipJobConcurrency ?? 16,
 			limiter: {
@@ -308,7 +308,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				default: throw new Error(`unrecognized job type ${job.name} for objectStorage`);
 			}
 		}, {
-			...baseQueueOptions(this.config.redisForObjectStorageQueue, QUEUE.OBJECT_STORAGE),
+			...baseWorkerOptions(this.config.redisForObjectStorageQueue, QUEUE.OBJECT_STORAGE),
 			autorun: false,
 			concurrency: 16,
 		});
@@ -325,7 +325,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		//#region ended poll notification
 		this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => this.endedPollNotificationProcessorService.process(job), {
-			...baseQueueOptions(this.config.redisForEndedPollNotificationQueue, QUEUE.ENDED_POLL_NOTIFICATION),
+			...baseWorkerOptions(this.config.redisForEndedPollNotificationQueue, QUEUE.ENDED_POLL_NOTIFICATION),
 			autorun: false,
 		});
 		//#endregion
