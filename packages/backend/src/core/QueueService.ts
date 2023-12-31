@@ -121,7 +121,7 @@ export class QueueService {
 				content,
 				to: d[0],
 				isSharedInbox: d[1],
-			} as DeliverJobData,
+			},
 			opts,
 		})));
 

@@ -162,7 +162,13 @@ export class ActivityPubServerService {
 			}
 		}
 
-		this.queueService.inbox(request.body as IActivity, signature);
+		const activity = request.body as IActivity;
+		if (!activity.type || !signature.keyId) {
+			reply.code(400);
+			return;
+		}
+
+		this.queueService.inbox(activity, signature);
 
 		reply.code(202);
 	}
