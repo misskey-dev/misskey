@@ -101,6 +101,12 @@ importers:
       '@fastify/view':
         specifier: 8.2.0
         version: 8.2.0
+      '@misskey-dev/sharp-read-bmp':
+        specifier: ^1.1.1
+        version: 1.1.1
+      '@misskey-dev/summaly':
+        specifier: ^5.0.3
+        version: 5.0.3
       '@nestjs/common':
         specifier: 10.2.10
         version: 10.2.10(reflect-metadata@0.1.14)(rxjs@7.8.1)
@@ -350,9 +356,6 @@ importers:
       sharp:
         specifier: 0.32.6
         version: 0.32.6
-      sharp-read-bmp:
-        specifier: github:misskey-dev/sharp-read-bmp
-        version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
       slacc:
         specifier: 0.0.10
         version: 0.0.10
@@ -362,9 +365,6 @@ importers:
       stringz:
         specifier: 2.1.0
         version: 2.1.0
-      summaly:
-        specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8
       systeminformation:
         specifier: 5.21.20
         version: 5.21.20
@@ -661,6 +661,9 @@ importers:
       '@github/webauthn-json':
         specifier: 2.1.1
         version: 2.1.1
+      '@misskey-dev/browser-image-resizer':
+        specifier: 2.2.1-misskey.10
+        version: 2.2.1-misskey.10
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.9.1)
@@ -694,9 +697,6 @@ importers:
       broadcast-channel:
         specifier: 7.0.0
         version: 7.0.0
-      browser-image-resizer:
-        specifier: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
-        version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
       buraha:
         specifier: 0.0.1
         version: 0.0.1
@@ -824,6 +824,9 @@ importers:
       '@misskey-dev/eslint-plugin':
         specifier: ^1.0.0
         version: 1.0.0(@typescript-eslint/eslint-plugin@6.14.0)(@typescript-eslint/parser@6.14.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
+      '@misskey-dev/summaly':
+        specifier: ^5.0.3
+        version: 5.0.3
       '@storybook/addon-actions':
         specifier: 7.6.5
         version: 7.6.5
@@ -983,9 +986,6 @@ importers:
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.5)(@storybook/components@7.6.5)(@storybook/core-events@7.6.5)(@storybook/manager-api@7.6.5)(@storybook/preview-api@7.6.5)(@storybook/theming@7.6.5)(@storybook/types@7.6.5)(react-dom@18.2.0)(react@18.2.0)
-      summaly:
-        specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -4950,6 +4950,10 @@ packages:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
 
+  /@misskey-dev/browser-image-resizer@2.2.1-misskey.10:
+    resolution: {integrity: sha512-Spjiwa8brffhz4FiYrZ8VoPRyPPRzcdaIzLVb8oMnD9YGU3uzcX/CcZ08okFhrUR/N6IlQM86r5dNH/yY5Uyjg==}
+    dev: false
+
   /@misskey-dev/eslint-plugin@1.0.0(@typescript-eslint/eslint-plugin@6.11.0)(@typescript-eslint/parser@6.11.0)(eslint-plugin-import@2.29.1)(eslint@8.53.0):
     resolution: {integrity: sha512-dh6UbcrNDVg5DD8k8Qh4ab30OPpuEYIlJCqaBV/lkIV8wNN/AfCJ2V7iTP8V8KjryM4t+sf5IqzQLQnT0mWI4A==}
     peerDependencies:
@@ -4977,6 +4981,26 @@ packages:
       eslint: 8.56.0
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.14.0)(eslint@8.56.0)
     dev: true
+
+  /@misskey-dev/sharp-read-bmp@1.1.1:
+    resolution: {integrity: sha512-X52BQYL/I9mafypQ+wBhst+BUlYiPWnHhKGcF6ybcYSLl+zhcV0q5mezIXHozhM0Sv0A7xCdrWmR7TCNxHLrtQ==}
+    dependencies:
+      decode-bmp: 0.2.1
+      decode-ico: 0.4.1
+      sharp: 0.32.6
+    dev: false
+
+  /@misskey-dev/summaly@5.0.3:
+    resolution: {integrity: sha512-jVkuLEDrq2FaeHL8VY51LTqB6j0Jv5L7s0nmKGKMnE0jPBpSj6flswnZgntGmz5mbdCj47utEqu8FY43kH7PVg==}
+    dependencies:
+      cheerio: 1.0.0-rc.12
+      escape-regexp: 0.0.1
+      got: 12.6.1
+      html-entities: 2.3.2
+      iconv-lite: 0.6.3
+      jschardet: 3.0.0
+      private-ip: 2.3.3
+      trace-redirect: 1.0.6
 
   /@mole-inc/bin-wrapper@8.0.1:
     resolution: {integrity: sha512-sTGoeZnjI8N4KS+sW2AN95gDBErhAguvkw/tWdCjeM8bvxpz5lqrnd0vOJABA1A+Ic3zED7PYoLP/RANLgVotA==}
@@ -8045,10 +8069,10 @@ packages:
 
   /@types/http-cache-semantics@4.0.1:
     resolution: {integrity: sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==}
+    dev: false
 
   /@types/http-cache-semantics@4.0.4:
     resolution: {integrity: sha512-1m0bIFVc7eJWyve9S0RnuRgcQqF/Xd5QsUZAZeQFr1Q3/p9JWoQQEqmVy+DPTNpGXwhgIetAoYF8JSc33q29QA==}
-    dev: false
 
   /@types/http-link-header@1.0.5:
     resolution: {integrity: sha512-AxhIKR8UbyoqCTNp9rRepkktHuUOw3DjfOfDCaO9kwI8AYzjhxyrvZq4+mRw/2daD3hYDknrtSeV6SsPwmc71w==}
@@ -9958,19 +9982,6 @@ packages:
       get-stream: 6.0.1
       http-cache-semantics: 4.1.1
       keyv: 4.5.4
-      mimic-response: 4.0.0
-      normalize-url: 8.0.0
-      responselike: 3.0.0
-    dev: false
-
-  /cacheable-request@10.2.8:
-    resolution: {integrity: sha512-IDVO5MJ4LItE6HKFQTqT2ocAQsisOoCTUDu1ddCmnhyiwFQjXNPp4081Xj23N4tO+AFEFNzGuNEf/c8Gwwt15A==}
-    engines: {node: '>=14.16'}
-    dependencies:
-      '@types/http-cache-semantics': 4.0.1
-      get-stream: 6.0.1
-      http-cache-semantics: 4.1.1
-      keyv: 4.5.2
       mimic-response: 4.0.0
       normalize-url: 8.0.0
       responselike: 3.0.0
@@ -12914,18 +12925,18 @@ packages:
       responselike: 2.0.1
     dev: false
 
-  /got@12.6.0:
-    resolution: {integrity: sha512-WTcaQ963xV97MN3x0/CbAriXFZcXCfgxVp91I+Ze6pawQOa7SgzwSx2zIJJsX+kTajMnVs0xcFD1TxZKFqhdnQ==}
+  /got@12.6.1:
+    resolution: {integrity: sha512-mThBblvlAF1d4O5oqyvN+ZxLAYwIJK7bpMxgYqPD9okW0C3qm5FFn7k811QrcuEBwaogR3ngOFoCfs6mRv7teQ==}
     engines: {node: '>=14.16'}
     dependencies:
       '@sindresorhus/is': 5.3.0
       '@szmarczak/http-timer': 5.0.1
       cacheable-lookup: 7.0.0
-      cacheable-request: 10.2.8
+      cacheable-request: 10.2.14
       decompress-response: 6.0.0
       form-data-encoder: 2.1.4
       get-stream: 6.0.1
-      http2-wrapper: 2.2.0
+      http2-wrapper: 2.2.1
       lowercase-keys: 3.0.0
       p-cancelable: 3.0.0
       responselike: 3.0.0
@@ -13197,20 +13208,12 @@ packages:
       resolve-alpn: 1.2.1
     dev: false
 
-  /http2-wrapper@2.2.0:
-    resolution: {integrity: sha512-kZB0wxMo0sh1PehyjJUWRFEd99KC5TLjZ2cULC4f9iqJBAmKQQXEICjxl5iPJRwP40dpeHFqqhm7tYCvODpqpQ==}
-    engines: {node: '>=10.19.0'}
-    dependencies:
-      quick-lru: 5.1.1
-      resolve-alpn: 1.2.1
-
   /http2-wrapper@2.2.1:
     resolution: {integrity: sha512-V5nVw1PAOgfI3Lmeaj2Exmeg7fenjhRUgz1lPSezy1CuhPYbgQtbQj4jZfEAEMlaL+vupsvhjqCyjzob0yxsmQ==}
     engines: {node: '>=10.19.0'}
     dependencies:
       quick-lru: 5.1.1
       resolve-alpn: 1.2.1
-    dev: false
 
   /http_ece@1.1.0:
     resolution: {integrity: sha512-bptAfCDdPJxOs5zYSe7Y3lpr772s1G346R4Td5LgRUeCwIGpCGDUTJxRrhTNcAXbx37spge0kWEIH7QAYWNTlA==}
@@ -14661,12 +14664,12 @@ packages:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
     dependencies:
       json-buffer: 3.0.1
+    dev: false
 
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
     dependencies:
       json-buffer: 3.0.1
-    dev: false
 
   /kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
@@ -15538,10 +15541,6 @@ packages:
 
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
-    dev: false
-
-  /node-addon-api@5.0.0:
-    resolution: {integrity: sha512-CvkDw2OEnme7ybCykJpVcKH+uAOLV2qLqiyla128dN9TkEWfrYmxG6C2boDe5KcNQqZF3orkqzGgOMvZ/JNekA==}
     dev: false
 
   /node-addon-api@6.1.0:
@@ -18027,21 +18026,6 @@ packages:
       kind-of: 6.0.3
     dev: true
 
-  /sharp@0.31.3:
-    resolution: {integrity: sha512-XcR4+FCLBFKw1bdB+GEhnUNXNXvnt0tDo4WsBsraKymuo/IAuPuCBVAL2wIkUw2r/dwFW5Q5+g66Kwl2dgDFVg==}
-    engines: {node: '>=14.15.0'}
-    requiresBuild: true
-    dependencies:
-      color: 4.2.3
-      detect-libc: 2.0.2
-      node-addon-api: 5.0.0
-      prebuild-install: 7.1.1
-      semver: 7.5.4
-      simple-get: 4.0.1
-      tar-fs: 2.1.1
-      tunnel-agent: 0.6.0
-    dev: false
-
   /sharp@0.32.6:
     resolution: {integrity: sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==}
     engines: {node: '>=14.15.0'}
@@ -20426,22 +20410,6 @@ packages:
     engines: {vscode: ^1.83.0}
     dev: false
 
-  github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0227e860621e55cbed0aabe6dc601096a7748c4a}
-    name: browser-image-resizer
-    version: 2.2.1-misskey.3
-    dev: false
-
-  github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/sharp-read-bmp/tar.gz/02d9dc189fa7df0c4bea09330be26741772dac01}
-    name: sharp-read-bmp
-    version: 1.0.0
-    dependencies:
-      decode-bmp: 0.2.1
-      decode-ico: 0.4.1
-      sharp: 0.31.3
-    dev: false
-
   github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.6.5)(@storybook/components@7.6.5)(@storybook/core-events@7.6.5)(@storybook/manager-api@7.6.5)(@storybook/preview-api@7.6.5)(@storybook/theming@7.6.5)(@storybook/types@7.6.5)(react-dom@18.2.0)(react@18.2.0):
     resolution: {tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
     id: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
@@ -20473,17 +20441,3 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
-
-  github.com/misskey-dev/summaly/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/d2a3e07205c3c9769bc5a7b42031c8884b5a25c8}
-    name: summaly
-    version: 4.0.2
-    dependencies:
-      cheerio: 1.0.0-rc.12
-      escape-regexp: 0.0.1
-      got: 12.6.0
-      html-entities: 2.3.2
-      iconv-lite: 0.6.3
-      jschardet: 3.0.0
-      private-ip: 2.3.3
-      trace-redirect: 1.0.6
