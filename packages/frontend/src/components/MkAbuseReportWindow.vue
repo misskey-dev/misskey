@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m" :class="$style.root">
 					<MkPagination v-slot="{items}" :key="user.id" :pagination="Pagination">
 						<div v-for="item in items" :key="item.id" :class="$style.note">
-							<MkSwitch v-model="item.isAbuseReport" @update:modelValue="pushAbuseReportNote($event,item.id)"></MkSwitch>
+							<MkSwitch :modelValue="item.id === initialNoteId" @update:modelValue="pushAbuseReportNote($event,item.id)"></MkSwitch>
 							<MkAvatar :user="item.user" preview/>
 							<MkNoteSimple :note="item"/>
 						</div>
