@@ -1632,7 +1632,7 @@ _role:
 _sensitiveMediaDetection:
   description: "ใช้ Machine Learning เพื่อตรวจจับสื่อที่มีเนื้อหาละเอียดอ่อนโดยอัตโนมัติและใช้เพื่อการกลั่นกรอง ภาระของเซิร์ฟเวอร์จะเพิ่มขึ้นเล็กน้อย"
   sensitivity: "ความไวในการตรวจจับ"
-  sensitivityDescription: "การลดความไวนั้นจะนำไปสู่การตรวจจับที่ผิดพลาดน้อยลง (ผลบวกที่ผิดพลาด) แต่ในขณะที่การเพิ่มนั้นจะนำไปสู่การตรวจหาที่พลาดน้อยลง (ผลลบเท็จ)"
+  sensitivityDescription: "เมื่อความไวต่ำ Misdetection (ผลบวกลวง) จะลดลง, เมื่อความไวสูง Missed detection (ผลลบลวง) จะลดลง"
   setSensitiveFlagAutomatically: "ทำเครื่องหมายว่ามีเนื้อหาละเอียดอ่อน"
   setSensitiveFlagAutomaticallyDescription: "ผลลัพธ์ของการตรวจจับภายในนั้นจะยังคงอยู่ ถึงแม้ว่าจะปิดตัวเลือกนี้"
   analyzeVideos: "เปิดใช้งานวิเคราะห์ของวิดีโอ"
