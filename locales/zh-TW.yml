@@ -1935,6 +1935,9 @@ _permissions:
   "write:flash": "編輯 Play"
   "read:flash-likes": "檢視 Play 的讚"
   "write:flash-likes": "編輯 Play 的讚"
+  "read:admin:abuse-user-reports": "檢視來自使用者的檢舉"
+  "write:admin:delete-account": "刪除使用者帳戶"
+  "write:admin:delete-all-files-of-a-user": "刪除使用者的所有檔案"
 _auth:
   shareAccessTitle: "應用程式的存取權限"
   shareAccess: "要授權「“{name}”」存取您的帳戶嗎？"
