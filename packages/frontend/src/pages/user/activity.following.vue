@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, shallowRef, ref } from 'vue';
-import { Chart, ChartDataset } from 'chart.js';
+import {Chart, ChartData, ChartDataset} from 'chart.js';
 import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os.js';
@@ -82,10 +82,10 @@ async function renderChart() {
 			barPercentage: 0.7,
 			categoryPercentage: 0.7,
 			fill: true,
-		/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
+		//* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
 		} satisfies ChartData, extra);
-		 */
-		}, extra);
+		 //*/
+		//}, extra);
 	}
 
 	chartInstance = new Chart(chartEl.value, {
