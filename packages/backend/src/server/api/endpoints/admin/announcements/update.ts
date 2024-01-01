@@ -23,6 +23,11 @@ export const meta = {
 			code: 'NO_SUCH_ANNOUNCEMENT',
 			id: 'd3aae5a7-6372-4cb4-b61c-f511ffc2d7cc',
 		},
+		cannotMakeMoreEmergencyAnnouncement: {
+			message: 'You cannot create more than one Emergency Announcement.',
+			code: 'TOO_MANY_EMERGENCY_ANNOUNCEMENT',
+			id: 'f57c4255-81b2-4094-9e38-ab5c006b66bd',
+		},
 	},
 } as const;
 
@@ -34,7 +39,7 @@ export const paramDef = {
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 0 },
 		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'] },
-		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog', 'emergency'] },
 		forExistingUsers: { type: 'boolean' },
 		silence: { type: 'boolean' },
 		needConfirmationToRead: { type: 'boolean' },
@@ -55,6 +60,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
+
+			const checkExisingEmergencyAnnouncement = async (): Promise<boolean> => {
+				const announcements = await this.announcementsRepository.findBy({
+					display: 'emergency',
+					isActive: true,
+				});
+				return announcements.length > 1 || (announcements.length === 1 && announcements[0]?.id !== ps.id);
+			};
+
+			if (ps.display === 'emergency' && ps.isActive && await checkExisingEmergencyAnnouncement()) {
+				throw new ApiError(meta.errors.cannotMakeMoreEmergencyAnnouncement);
+			}
 
 			await this.announcementService.update(announcement, {
 				updatedAt: new Date(),

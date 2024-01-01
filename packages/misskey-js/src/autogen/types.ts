@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.389Z
+ * version: 2023.12.2
+ * generatedAt: 2024-01-01T17:21:03.771Z
  */
 
 /**
@@ -40,7 +40,6 @@ export type paths = {
      * admin/accounts/create
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     post: operations['admin/accounts/create'];
@@ -4456,6 +4455,9 @@ export type operations = {
             enableActiveEmailValidation: boolean;
             enableVerifymailApi: boolean;
             verifymailAuthKey: string | null;
+            enableTruemailApi: boolean;
+            truemailInstance: string | null;
+            truemailAuthKey: string | null;
             enableChartsForRemoteUser: boolean;
             enableChartsForFederatedInstances: boolean;
             enableServerMachineStats: boolean;
@@ -4489,6 +4491,10 @@ export type operations = {
             tosUrl: string | null;
             uri: string;
             version: string;
+            enableEmergencyAnnouncementIntegration: boolean;
+            emergencyAnnouncementIntegrationConfig: {
+              type: string;
+            };
           };
         };
       };
@@ -4620,7 +4626,6 @@ export type operations = {
    * admin/accounts/create
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *No*
    */
   'admin/accounts/create': {
@@ -5032,7 +5037,7 @@ export type operations = {
            * @default normal
            * @enum {string}
            */
-          display?: 'normal' | 'banner' | 'dialog';
+          display?: 'normal' | 'banner' | 'dialog' | 'emergency';
           /** @default false */
           forExistingUsers?: boolean;
           /** @default false */
@@ -5243,7 +5248,7 @@ export type operations = {
           /** @enum {string} */
           icon?: 'info' | 'warning' | 'error' | 'success';
           /** @enum {string} */
-          display?: 'normal' | 'banner' | 'dialog';
+          display?: 'normal' | 'banner' | 'dialog' | 'emergency';
           forExistingUsers?: boolean;
           silence?: boolean;
           needConfirmationToRead?: boolean;
@@ -8247,6 +8252,9 @@ export type operations = {
           enableActiveEmailValidation?: boolean;
           enableVerifymailApi?: boolean;
           verifymailAuthKey?: string | null;
+          enableTruemailApi?: boolean;
+          truemailInstance?: string | null;
+          truemailAuthKey?: string | null;
           enableChartsForRemoteUser?: boolean;
           enableChartsForFederatedInstances?: boolean;
           enableServerMachineStats?: boolean;
@@ -8263,6 +8271,11 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          enableEmergencyAnnouncementIntegration?: boolean;
+          emergencyAnnouncementIntegrationConfig?: ({
+            /** @enum {string} */
+            type?: 'none' | 'p2pquake';
+          }) | null;
         };
       };
     };
@@ -8937,6 +8950,8 @@ export type operations = {
         'application/json': {
           /** @default 10 */
           limit?: number;
+          /** @enum {string|null} */
+          display?: 'normal' | 'banner' | 'dialog' | 'emergency' | null;
           /** Format: misskey:id */
           sinceId?: string;
           /** Format: misskey:id */

@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 				<MkInfo v-if="noBotProtection" warn class="info">{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 				<MkInfo v-if="noEmailServer" warn class="info">{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="thereIsActiveEmergencyAnnouncement" warn class="info">{{ i18n.ts._emergencyAnnouncement._admin.hasEmergencyAnnouncement }} <MkA to="/admin/announcements" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 
 				<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
 			</div>
@@ -60,6 +61,7 @@ let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instan
 let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
 let noEmailServer = !instance.enableEmail;
 const thereIsUnresolvedAbuseReport = ref(false);
+const thereIsActiveEmergencyAnnouncement = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
 
 os.api('admin/abuse-user-reports', {
@@ -67,6 +69,14 @@ os.api('admin/abuse-user-reports', {
 	limit: 1,
 }).then(reports => {
 	if (reports.length > 0) thereIsUnresolvedAbuseReport.value = true;
+});
+
+os.api('announcements', {
+	display: 'emergency',
+	isActive: true,
+	limit: 1,
+}).then(announcements => {
+	if (announcements.length > 0) thereIsActiveEmergencyAnnouncement.value = true;
 });
 
 const NARROW_THRESHOLD = 600;

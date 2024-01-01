@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
 			<MkFolder v-for="announcement in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
-				<template #label>{{ announcement.title }}</template>
+				<template #label>{{ emergencyTitle(announcement) }}</template>
 				<template #icon>
 					<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
 					<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
+					<MkInfo v-if="announcement.title.startsWith('__PROVIDER_')">{{ i18n.ts._emergencyAnnouncement._admin.autoGenWarn }}</MkInfo>
 					<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
@@ -43,8 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="normal">{{ i18n.ts.normal }}</option>
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
+						<option value="emergency">{{ i18n.ts._emergencyAnnouncement._admin.label }}</option>
 					</MkRadios>
-					<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
+					<MkInfo v-if="announcement.display === 'emergency'" warn>{{ i18n.ts._emergencyAnnouncement._admin.labelCaption }}</MkInfo>
+					<MkInfo v-if="['emergency', 'dialog'].includes(announcement.display)" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
 					</MkSwitch>
@@ -81,6 +84,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { emergencyTitle } from '@/scripts/emergency-announcements-text.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 

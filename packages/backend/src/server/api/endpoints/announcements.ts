@@ -31,6 +31,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog', 'emergency'], nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		isActive: { type: 'boolean', default: true },
@@ -53,6 +54,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId)
 				.andWhere('announcement.isActive = :isActive', { isActive: ps.isActive })
+				.andWhere(new Brackets(qb => {
+					if (ps.display) qb.where('announcement.display = :display', { display: ps.display });
+				}))
 				.andWhere(new Brackets(qb => {
 					if (me) qb.orWhere('announcement.userId = :meId', { meId: me.id });
 					qb.orWhere('announcement.userId IS NULL');

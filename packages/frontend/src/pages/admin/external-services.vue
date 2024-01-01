@@ -8,19 +8,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
-			<FormSection>
-				<template #label>DeepL Translation</template>
+			<div class="_gaps_m">
+				<FormSection>
+					<template #label>DeepL Translation</template>
 
-				<div class="_gaps_m">
-					<MkInput v-model="deeplAuthKey">
-						<template #prefix><i class="ti ti-key"></i></template>
-						<template #label>DeepL Auth Key</template>
-					</MkInput>
-					<MkSwitch v-model="deeplIsPro">
-						<template #label>Pro account</template>
-					</MkSwitch>
-				</div>
-			</FormSection>
+					<div class="_gaps_m">
+						<MkInput v-model="deeplAuthKey">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>DeepL Auth Key</template>
+						</MkInput>
+						<MkSwitch v-model="deeplIsPro">
+							<template #label>Pro account</template>
+						</MkSwitch>
+					</div>
+				</FormSection>
+				<FormSection>
+					<template #label>{{ i18n.ts._emergencyAnnouncement._admin._integration.title }}</template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="enableEmergencyAnnouncementIntegration">
+							<template #label>{{ i18n.ts._emergencyAnnouncement._admin._integration.switch }}</template>
+						</MkSwitch>
+						<template v-if="enableEmergencyAnnouncementIntegration">
+							<MkSelect v-model="emergencyAnnouncementIntegrationType">
+								<template #label>{{ i18n.ts._emergencyAnnouncement._admin._integration.intgType }}</template>
+								<option value="none">{{ i18n.ts.none }}</option>
+								<option value="p2pquake">p2pquake</option>
+							</MkSelect>
+							<div v-if="emergencyAnnouncementIntegrationType === 'p2pquake'">
+								<MkInfo>{{ i18n.ts._emergencyAnnouncement._admin._integration._integrator._p2pquake.info }}</MkInfo>
+							</div>
+						</template>
+					</div>
+				</FormSection>
+			</div>
 		</FormSuspense>
 	</MkSpacer>
 	<template #footer>
@@ -39,6 +60,8 @@ import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
@@ -49,16 +72,27 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 const deeplAuthKey = ref<string>('');
 const deeplIsPro = ref<boolean>(false);
 
+const enableEmergencyAnnouncementIntegration = ref<boolean>(false);
+const emergencyAnnouncementIntegrationType = ref<'none' | 'p2pquake'>('none');
+
 async function init() {
 	const meta = await os.api('admin/meta');
-	deeplAuthKey.value = meta.deeplAuthKey;
+	deeplAuthKey.value = meta.deeplAuthKey ?? '';
 	deeplIsPro.value = meta.deeplIsPro;
+
+	enableEmergencyAnnouncementIntegration.value = meta.enableEmergencyAnnouncementIntegration;
+	emergencyAnnouncementIntegrationType.value = meta.emergencyAnnouncementIntegrationConfig.type as 'none' | 'p2pquake';
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		deeplAuthKey: deeplAuthKey.value,
 		deeplIsPro: deeplIsPro.value,
+
+		enableEmergencyAnnouncementIntegration: enableEmergencyAnnouncementIntegration.value,
+		emergencyAnnouncementIntegrationConfig: {
+			type: emergencyAnnouncementIntegrationType.value,
+		},
 	}).then(() => {
 		fetchInstance();
 	});
