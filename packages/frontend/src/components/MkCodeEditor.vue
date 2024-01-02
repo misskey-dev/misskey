@@ -119,6 +119,7 @@ watch(modelValue, newValue => {
 });
 
 watch(v, newValue => {
+	vModel.value = newValue;
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
