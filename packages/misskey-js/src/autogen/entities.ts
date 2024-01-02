@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.489Z
+ * version: 2023.12.2
+ * generatedAt: 2024-01-02T12:45:49.280Z
  */
 
 import { operations } from './types.js';
@@ -393,6 +393,9 @@ export type NotesConversationRequest = operations['notes/conversation']['request
 export type NotesConversationResponse = operations['notes/conversation']['responses']['200']['content']['application/json'];
 export type NotesCreateRequest = operations['notes/create']['requestBody']['content']['application/json'];
 export type NotesCreateResponse = operations['notes/create']['responses']['200']['content']['application/json'];
+export type NotesScheduleDeleteRequest = operations['notes/schedule/delete']['requestBody']['content']['application/json'];
+export type NotesScheduleListRequest = operations['notes/schedule/list']['requestBody']['content']['application/json'];
+export type NotesScheduleListResponse = operations['notes/schedule/list']['responses']['200']['content']['application/json'];
 export type NotesDeleteRequest = operations['notes/delete']['requestBody']['content']['application/json'];
 export type NotesFavoritesCreateRequest = operations['notes/favorites/create']['requestBody']['content']['application/json'];
 export type NotesFavoritesDeleteRequest = operations['notes/favorites/delete']['requestBody']['content']['application/json'];
