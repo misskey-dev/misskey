@@ -12,14 +12,13 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['notes'],
-
 	requireCredential: true,
-
+	requireAdmin: false,
+	kind: 'write:notes',
 	limit: {
 		duration: ms('1hour'),
 		max: 300,
 	},
-
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',

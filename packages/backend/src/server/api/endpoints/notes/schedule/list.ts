@@ -13,8 +13,10 @@ import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['notes'],
-
 	requireCredential: true,
+	requireAdmin: false,
+	kind: 'read:notes',
+	secure: true, // added this line
 	requireRolePolicy: 'canScheduleNote',
 	res: {
 		type: 'array',
@@ -24,7 +26,6 @@ export const meta = {
 			optional: false, nullable: false,
 		},
 	},
-
 	errors: {
 	},
 } as const;
@@ -41,12 +42,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.scheduledNotesRepository)
-		private scheduledNotesRepository: ScheduledNotesRepository,
+  @Inject(DI.scheduledNotesRepository)
+  private scheduledNotesRepository: ScheduledNotesRepository,
 
-		private idService: IdService,
-		private userEntityService: UserEntityService,
-		private queryService: QueryService,
+  private userEntityService: UserEntityService,
+  private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.scheduledNotesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
