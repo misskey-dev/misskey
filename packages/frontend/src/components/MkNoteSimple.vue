@@ -91,7 +91,7 @@ const showContent = ref(false);
 	margin: 0;
 	padding: 0;
 	font-size: 0.95em;
-  border-bottom: solid 0.5px var(--divider);
+
 }
 .button{
   margin-right: var(--margin);

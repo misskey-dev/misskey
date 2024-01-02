@@ -5431,6 +5431,7 @@ export type operations = {
               updatedAt: string | null;
               name: string;
               description: string;
+            category: string;
               url: string;
               roleIdsThatCanBeUsedThisDecoration: string[];
             })[];
@@ -14879,6 +14880,7 @@ export type operations = {
               name: string;
               description: string;
               url: string;
+              category: string;
               roleIdsThatCanBeUsedThisDecoration: string[];
             }[];
         };

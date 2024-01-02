@@ -95,6 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: avatarDecoration.name,
 				description: avatarDecoration.description,
 				url: avatarDecoration.url,
+				category: avatarDecoration.category,
 				roleIdsThatCanBeUsedThisDecoration: avatarDecoration.roleIdsThatCanBeUsedThisDecoration,
 			}));
 		});

@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
     <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
     <!-- フォルダの中にはカスタム絵文字だけ（Unicode絵文字もこっち） -->
-    <section v-if="!hasChildSection" style="border-radius: 6px; padding-top: 9px;">
-        <header class="_acrylic" @click="shown = !shown"  style="border-radius: 6px;">
+    <section v-if="!hasChildSection" style="border-radius: 6px;">
+        <header class="_acrylic" @click="shown = !shown" >
             <i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
         </header>
         <div v-if="shown" class="body">

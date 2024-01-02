@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header>
-		<XHeader :actions="headerActions" :tabs="headerTabs"/>
+		<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
@@ -34,8 +34,8 @@ import * as os from '@/os.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import MkSpacer from "@/components/global/MkSpacer.vue";
-import MkStickyContainer from "@/components/global/MkStickyContainer.vue";
+import MkSpacer from '@/components/global/MkSpacer.vue';
+import MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 
 const blockedHosts = ref<string>('');
 const silencedHosts = ref<string>('');
@@ -43,8 +43,8 @@ const tab = ref('block');
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	blockedHosts.value = meta.blockedHosts.join('\n');
-	silencedHosts.value = meta.silencedHosts.join('\n');
+	blockedHosts.value = meta.blockedHosts ? meta.blockedHosts.join('\n') : '';
+	silencedHosts.value = meta.silencedHosts ? meta.silencedHosts.join('\n') : '';
 }
 
 function save() {

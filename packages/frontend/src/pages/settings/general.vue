@@ -35,32 +35,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</MkFolder>
-        <MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline}}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
-        <MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
+			<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline }}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
+			<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
 		</div>
 	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.displayOfNote }}</template>
+	<MkFoldableSection :defaultOpen="false" class="item">
+		<template #header>{{ i18n.ts.displayOfNote }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
-				<MkSwitch v-model="showVisibilityColor">{{ i18n.ts.showVisibilityColor}}</MkSwitch>
-        <MkColorInput v-if="showVisibilityColor" v-model="homeColor">
-          <template #label>{{ i18n.ts._visibility.home }}</template>
-        </MkColorInput>
-        <MkColorInput v-if="showVisibilityColor" v-model="followerColor">
-          <template #label>{{ i18n.ts._visibility.followers }}</template>
-        </MkColorInput>
-        <MkColorInput v-if="showVisibilityColor" v-model="specifiedColor">
-          <template #label>{{ i18n.ts._visibility.specified }}</template>
-        </MkColorInput>
-        <MkColorInput v-if="showVisibilityColor" v-model="localOnlyColor">
-          <template #label>{{ i18n.ts.localOnly }}</template>
-        </MkColorInput>
+				<MkSwitch v-model="showVisibilityColor">{{ i18n.ts.showVisibilityColor }}</MkSwitch>
+				<MkColorInput v-if="showVisibilityColor" v-model="homeColor">
+					<template #label>{{ i18n.ts._visibility.home }}</template>
+				</MkColorInput>
+				<MkColorInput v-if="showVisibilityColor" v-model="followerColor">
+					<template #label>{{ i18n.ts._visibility.followers }}</template>
+				</MkColorInput>
+				<MkColorInput v-if="showVisibilityColor" v-model="specifiedColor">
+					<template #label>{{ i18n.ts._visibility.specified }}</template>
+				</MkColorInput>
+				<MkColorInput v-if="showVisibilityColor" v-model="localOnlyColor">
+					<template #label>{{ i18n.ts.localOnly }}</template>
+				</MkColorInput>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
@@ -97,10 +96,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
 			</MkRadios>
 		</div>
-	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.notificationDisplay }}</template>
+	</MkFoldableSection>
+	<MkFoldableSection :defaultOpen="false" class="item">
+		<template #header>{{ i18n.ts.notificationDisplay }}</template>
 
 		<div class="_gaps_m">
 			<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
@@ -121,11 +119,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 		</div>
-	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.appearance }}</template>
-
+	</MkFoldableSection>
+	<MkFoldableSection :defaultOpen="false" class="item">
+		<template #header>{{ i18n.ts.appearance }}</template>
 		<div class="_gaps_m">
 			<div class="_gaps_s">
 				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
@@ -139,8 +135,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
 				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }} <template #caption>{{ i18n.ts.gamingModeInfo }} </template></MkSwitch>
-                <MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave}}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
-                <MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
+				<MkSwitch v-model="enableonlyAndWithSave">{{ i18n.ts.onlyAndWithSave }}<template #caption>{{ i18n.ts.onlyAndWithSaveInfo }} </template></MkSwitch>
+				<MkSwitch v-model="enablehanntenn">{{ i18n.ts.hanntenn }}<template #caption>{{ i18n.ts.hanntennInfo }} </template></MkSwitch>
 				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
 			</div>
 			<div>
@@ -161,10 +157,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
 			</MkRadios>
 		</div>
-	</FormSection>
-
-	<FormSection>
-		<template #label>{{ i18n.ts.behavior }}</template>
+	</MkFoldableSection>
+	<MkFoldableSection :defaultOpen="false" class="item">
+		<template #header>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -184,10 +179,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 			</MkRange>
-            <MkRange v-model="numberOfGamingSpeed" :min="1" :max="60" :step="1" easing>
-                <template #label>{{ i18n.ts.GamingSpeedChange }}</template>
-                <template #caption>{{ i18n.ts.GamingSpeedChangeInfo }}</template>
-            </MkRange>
+			<MkRange v-model="numberOfGamingSpeed" :min="1" :max="60" :step="1" easing>
+				<template #label>{{ i18n.ts.GamingSpeedChange }}</template>
+				<template #caption>{{ i18n.ts.GamingSpeedChangeInfo }}</template>
+			</MkRange>
 			<MkFolder>
 				<template #label>{{ i18n.ts.dataSaver }}</template>
 
@@ -219,7 +214,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</div>
-	</FormSection>
+	</MkFoldableSection>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.other }}</template>
@@ -261,7 +256,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import MkColorInput from "@/components/MkColorInput.vue";
+import MkColorInput from '@/components/MkColorInput.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -323,7 +319,7 @@ const enableonlyAndWithSave = computed(defaultStore.makeGetterSetter('onlyAndWit
 const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
 const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTimeline'));
-const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'))
+const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
@@ -333,29 +329,31 @@ watch(lang, () => {
 	miLocalStorage.removeItem('localeVersion');
 });
 
-document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
+document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value + 's');
+
 function hexToRgb(hex) {
-  // 16進数のカラーコードから "#" を除去
-  hex = hex.replace(/^#/, '');
+	// 16進数のカラーコードから "#" を除去
+	hex = hex.replace(/^#/, '');
 
-  // 16進数をRGBに変換
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
+	// 16進数をRGBに変換
+	const r = parseInt(hex.substring(0, 2), 16);
+	const g = parseInt(hex.substring(2, 4), 16);
+	const b = parseInt(hex.substring(4, 6), 16);
 
-  return `${r},${g},${b}`;
+	return `${r},${g},${b}`;
 }
+
 document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
-document.documentElement.style.setProperty("--followerColor",hexToRgb(followerColor.value));
-document.documentElement.style.setProperty("--specifiedColor",hexToRgb(specifiedColor.value))
-watch([homeColor,specifiedColor,followerColor], ()=>{
-  document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
-  document.documentElement.style.setProperty("--followerColor",hexToRgb(followerColor.value));
-  document.documentElement.style.setProperty("--specifiedColor",hexToRgb(specifiedColor.value))
-})
-watch(numberOfGamingSpeed, () =>{
-  document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value+'s');
-})
+document.documentElement.style.setProperty('--followerColor', hexToRgb(followerColor.value));
+document.documentElement.style.setProperty('--specifiedColor', hexToRgb(specifiedColor.value));
+watch([homeColor, specifiedColor, followerColor], () => {
+	document.documentElement.style.setProperty('--homeColor', hexToRgb(homeColor.value));
+	document.documentElement.style.setProperty('--followerColor', hexToRgb(followerColor.value));
+	document.documentElement.style.setProperty('--specifiedColor', hexToRgb(specifiedColor.value));
+});
+watch(numberOfGamingSpeed, () => {
+	document.documentElement.style.setProperty('--gamingspeed', numberOfGamingSpeed.value + 's');
+});
 watch(fontSize, () => {
 	if (fontSize.value == null) {
 		miLocalStorage.removeItem('fontSize');
@@ -388,9 +386,9 @@ watch([
 	highlightSensitiveMedia,
 	keepScreenOn,
 	showMediaTimeline,
-  showVisibilityColor,
-  enableonlyAndWithSave,
-  showGlobalTimeline,
+	showVisibilityColor,
+	enableonlyAndWithSave,
+	showGlobalTimeline,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
 ], async () => {

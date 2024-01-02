@@ -1274,23 +1274,21 @@ defineExpose({
 .cw {
   z-index: 1;
   padding-bottom: 8px;
-  border-bottom: solid 0.5px var(--divider);
+  border-bottom: solid 1px var(--divider);
 }
 
 .postOptionsRoot {
 	>* {
-		border-bottom: solid 0.5px var(--divider);
+		border-bottom: solid 1px var(--divider);
 	}
-	>:last-child {
-		border-bottom: none;
-	}
+
 }
 
 .hashtags {
   z-index: 1;
   padding-top: 8px;
   padding-bottom: 8px;
-  border-top: solid 0.5px var(--divider);
+  border-top: solid 1px var(--divider);
 }
 
 .textOuter {
