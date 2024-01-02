@@ -29,13 +29,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
 		</div>
 
-		<div :class="$style.decorations">
-			<XDecoration
-				v-for="avatarDecoration in avatarDecorations"
-				:key="avatarDecoration.id"
-				:decoration="avatarDecoration"
-				@click="openDecoration(avatarDecoration)"
-			/>
+		<div v-for="category in categories">
+			<MkFoldableSection>
+				<template #header> {{ (category !== '') ? category : i18n.ts.other }}</template>
+				<div :class="$style.decorations">
+					<div v-for="avatarDecoration in avatarDecorations.filter(ad => ad.category === category)">
+						<XDecoration
+							:key="avatarDecoration.id"
+							:decoration="avatarDecoration"
+							@click="openDecoration(avatarDecoration)"
+						/>
+					</div>
+				</div>
+			</MkFoldableSection>
 		</div>
 	</div>
 	<div v-else>
@@ -54,13 +60,19 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const loading = ref(true);
-const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
+const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse & { category:string }>([]);
 
 os.api('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;
 	loading.value = false;
+});
+const categories = computed(() => {
+	const allCategories = avatarDecorations.value.map(ad => ad.category);
+	const uniqueCategories = [...new Set(allCategories)];
+	return uniqueCategories.sort();
 });
 
 function openDecoration(avatarDecoration, index?: number) {
