@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
+import type * as Bull from 'bullmq';
 import type { RedisOptions } from 'ioredis';
 
 export type RedisOptionsSource = Partial<RedisOptions> & {
@@ -82,6 +83,8 @@ type Source = {
 	outgoingAddress?: string;
 	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
 
+	bullmqQueueOptions?: Partial<Bull.QueueOptions>;
+	bullmqWorkerOptions?: Partial<Bull.WorkerOptions>;
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
 	relashionshipJobConcurrency?: number;
@@ -144,6 +147,8 @@ export type Config = {
 	id: string;
 	outgoingAddress: string | undefined;
 	outgoingAddressFamily: 'ipv4' | 'ipv6' | 'dual' | undefined;
+	bullmqQueueOptions: Partial<Bull.QueueOptions>;
+	bullmqWorkerOptions: Partial<Bull.WorkerOptions>;
 	deliverJobConcurrency: number | undefined;
 	inboxJobConcurrency: number | undefined;
 	relashionshipJobConcurrency: number | undefined;
@@ -266,6 +271,8 @@ export function loadConfig(): Config {
 		clusterLimit: config.clusterLimit,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
+		bullmqQueueOptions: config.bullmqQueueOptions ?? {},
+		bullmqWorkerOptions: config.bullmqWorkerOptions ?? {},
 		deliverJobConcurrency: config.deliverJobConcurrency,
 		inboxJobConcurrency: config.inboxJobConcurrency,
 		relashionshipJobConcurrency: config.relashionshipJobConcurrency,

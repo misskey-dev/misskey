@@ -47,7 +47,16 @@ const $meilisearch: Provider = {
 const $redis: Provider = {
 	provide: DI.redis,
 	useFactory: (config: Config) => {
-		return new Redis.Redis(config.redis);
+		return new Redis.Redis({
+			...config.redis,
+			reconnectOnError: (err: Error) => {
+				if ( err.message.includes('READONLY')
+					|| err.message.includes('ETIMEDOUT')
+					|| err.message.includes('Command timed out')
+				) return 2;
+				return 1;
+			},
+		});
 	},
 	inject: [DI.config],
 };
@@ -55,7 +64,16 @@ const $redis: Provider = {
 const $redisForPub: Provider = {
 	provide: DI.redisForPub,
 	useFactory: (config: Config) => {
-		const redis = new Redis.Redis(config.redisForPubsub);
+		const redis = new Redis.Redis({
+			...config.redisForPubsub,
+			reconnectOnError: (err: Error) => {
+				if ( err.message.includes('READONLY')
+					|| err.message.includes('ETIMEDOUT')
+					|| err.message.includes('Command timed out')
+				) return 2;
+				return 1;
+			},
+		});
 		return redis;
 	},
 	inject: [DI.config],
@@ -64,7 +82,16 @@ const $redisForPub: Provider = {
 const $redisForSub: Provider = {
 	provide: DI.redisForSub,
 	useFactory: (config: Config) => {
-		const redis = new Redis.Redis(config.redisForPubsub);
+		const redis = new Redis.Redis({
+			...config.redisForPubsub,
+			reconnectOnError: (err: Error) => {
+				if ( err.message.includes('READONLY')
+					|| err.message.includes('ETIMEDOUT')
+					|| err.message.includes('Command timed out')
+				) return 2;
+				return 1;
+			},
+		});
 		redis.subscribe(config.host);
 		return redis;
 	},
@@ -74,7 +101,16 @@ const $redisForSub: Provider = {
 const $redisForTimelines: Provider = {
 	provide: DI.redisForTimelines,
 	useFactory: (config: Config) => {
-		return new Redis.Redis(config.redisForTimelines);
+		return new Redis.Redis({
+			...config.redisForTimelines,
+			reconnectOnError: (err: Error) => {
+				if ( err.message.includes('READONLY')
+					|| err.message.includes('ETIMEDOUT')
+					|| err.message.includes('Command timed out')
+				) return 2;
+				return 1;
+			},
+		});
 	},
 	inject: [DI.config],
 };

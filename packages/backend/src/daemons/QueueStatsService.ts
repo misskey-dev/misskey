@@ -43,8 +43,8 @@ export class QueueStatsService implements OnApplicationShutdown {
 		let activeDeliverJobs = 0;
 		let activeInboxJobs = 0;
 
-		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config.redisForDeliverQueue, QUEUE.DELIVER));
-		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config.redisForInboxQueue, QUEUE.INBOX));
+		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config.redisForDeliverQueue, this.config.bullmqQueueOptions, QUEUE.DELIVER));
+		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config.redisForInboxQueue, this.config.bullmqQueueOptions, QUEUE.INBOX));
 
 		deliverQueueEvents.on('active', () => {
 			activeDeliverJobs++;

@@ -18,28 +18,40 @@ export const QUEUE = {
 	WEBHOOK_DELIVER: 'webhookDeliver',
 };
 
-export function baseQueueOptions(config: RedisOptions & RedisOptionsSource, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.QueueOptions {
+export function baseQueueOptions(config: RedisOptions & RedisOptionsSource, queueOptions: Partial<Bull.QueueOptions>, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.QueueOptions {
 	return {
+		...queueOptions,
 		connection: {
 			...config,
 			maxRetriesPerRequest: null,
 			keyPrefix: undefined,
+			reconnectOnError: (err: Error) => {
+				if ( err.message.includes('READONLY')
+					|| err.message.includes('ETIMEDOUT')
+					|| err.message.includes('Command timed out')
+				) return 2;
+				return 1;
+			},
 		},
 		prefix: config.prefix ? `${config.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};
 }
 
-export function baseWorkerOptions(config: RedisOptions & RedisOptionsSource, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.WorkerOptions {
+export function baseWorkerOptions(config: RedisOptions & RedisOptionsSource, workerOptions: Partial<Bull.WorkerOptions>, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.WorkerOptions {
 	return {
+		...workerOptions,
 		connection: {
 			...config,
 			maxRetriesPerRequest: null,
 			keyPrefix: undefined,
+			reconnectOnError: (err: Error) => {
+				if ( err.message.includes('READONLY')
+					|| err.message.includes('ETIMEDOUT')
+					|| err.message.includes('Command timed out')
+				) return 2;
+				return 1;
+			},
 		},
 		prefix: config.prefix ? `${config.prefix}:queue:${queueName}` : `queue:${queueName}`,
-		skipLockRenewal: false,
-		lockDuration: 60 * 1000,
-		lockRenewTime: 30 * 1000,
-		stalledInterval: 90 * 1000,
 	};
 }
