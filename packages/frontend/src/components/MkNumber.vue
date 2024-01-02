@@ -36,7 +36,7 @@ watch(() => props.value, (to, from) => {
 		}
 	}
 
-	requestAnimationFrame(step);
+	window.requestAnimationFrame(step);
 }, {
 	immediate: true,
 });
