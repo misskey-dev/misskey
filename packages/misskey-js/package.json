@@ -23,6 +23,7 @@
 	},
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.38.5",
+		"@misskey-dev/eslint-plugin": "^1.0.0",
 		"@swc/jest": "0.2.29",
 		"@types/jest": "29.5.11",
 		"@types/node": "20.10.5",

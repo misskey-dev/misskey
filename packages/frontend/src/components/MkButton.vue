@@ -198,6 +198,10 @@ function onMousedown(evt: MouseEvent): void {
 	box-sizing: border-box;
 	transition: background 0.1s ease;
 
+	&:hover {
+		text-decoration: none;
+	}
+
 	&:not(:disabled):hover {
 		background: var(--buttonHoverBg);
 	}
