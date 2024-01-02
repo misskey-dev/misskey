@@ -771,7 +771,17 @@ async function post(ev?: MouseEvent) {
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
 		const hashtags_ = hashtags.value.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
-		postData.text = postData.text ? `${postData.text} ${hashtags_}` : hashtags_;
+		if (!postData.text) {
+			postData.text = hashtags_;
+		} else {
+			const postTextLines = postData.text.split('\n');
+			if (postTextLines[postTextLines.length - 1].trim() === '') {
+				postTextLines[postTextLines.length - 1] += hashtags_;
+			} else {
+				postTextLines[postTextLines.length - 1] += ' ' + hashtags_;
+			}
+			postData.text = postTextLines.join('\n');
+		}
 	}
 
 	// plugin
