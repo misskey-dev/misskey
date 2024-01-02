@@ -247,7 +247,7 @@ const submitText = computed((): string => {
 		? i18n.ts.quote
 		: props.reply
 			? i18n.ts.reply
-			: schedule
+			: schedule.value
 				? i18n.ts._schedulePost.addSchedule
 				: i18n.ts.note;
 });
@@ -814,7 +814,7 @@ async function post(ev?: MouseEvent) {
 			if (notesCount === 1) {
 				claimAchievement('notes1');
 			}
-			poll = null;
+			poll.value = null;
 
 			if (postData.schedule?.scheduledAt) {
 				const d = new Date(postData.schedule.scheduledAt);
@@ -937,7 +937,7 @@ function openAccountMenu(ev: MouseEvent) {
 
 function openOtherSettingsMenu(ev: MouseEvent) {
 	let reactionAcceptanceIcon: string;
-	switch (reactionAcceptance) {
+	switch (reactionAcceptance.value) {
 		case 'likeOnly':
 			reactionAcceptanceIcon = 'ti ti-heart';
 			break;
@@ -954,13 +954,13 @@ function openOtherSettingsMenu(ev: MouseEvent) {
 		text: i18n.ts.reactionAcceptance,
 		icon: reactionAcceptanceIcon,
 		action: toggleReactionAcceptance,
-	}, ($i.policies?.canScheduleNote) ? {
+	}, ($i.policies.canScheduleNote) ? {
 		type: 'button',
 		text: i18n.ts.schedulePost,
 		icon: 'ti ti-calendar-time',
-		indicate: (schedule != null),
+		indicate: (schedule.value != null),
 		action: toggleSchedule,
-	} : undefined, ...(($i.policies?.canScheduleNote) ? [null, {
+	} : undefined, ...(($i.policies.canScheduleNote) ? [{ type: 'divider' }, {
 		type: 'button',
 		text: i18n.ts._schedulePost.list,
 		icon: 'ti ti-calendar-event',

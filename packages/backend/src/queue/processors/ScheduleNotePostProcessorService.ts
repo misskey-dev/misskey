@@ -9,6 +9,7 @@ import { bindThis } from '@/decorators.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import type { ScheduledNotesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { ScheduleNotePostJobData } from '../types.js';
@@ -23,7 +24,7 @@ export class ScheduleNotePostProcessorService {
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
+		private notificationService: NotificationService,
 		private noteCreateService: NoteCreateService,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -37,6 +38,15 @@ export class ScheduleNotePostProcessorService {
 				this.logger.warn(`Schedule note ${job.data.scheduledNoteId} not found`);
 			} else {
 				data.note.createdAt = new Date();
+				if (data.scheduledAt.getTime() > data.note.createdAt.getTime()) {
+					await this.scheduledNotesRepository.remove(data);
+
+					await this.notificationService.createNotification(data.userId, 'noteSchedulingFailed', {
+						scheduledNoteId: data.id,
+					});
+					return;
+				}
+
 				const me = await this.usersRepository.findOneByOrFail({ id: data.userId });
 				await this.noteCreateService.create(me, data.note);
 				await this.scheduledNotesRepository.remove(data);
