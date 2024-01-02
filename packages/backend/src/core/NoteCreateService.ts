@@ -374,7 +374,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					? data.visibleUsers.map(u => u.id)
 					: []
 				: [],
-
+			isScheduled: data.isScheduled != null,
 			attachedFileTypes: data.files ? data.files.map(file => file.type) : [],
 
 			// 以下非正規化データ

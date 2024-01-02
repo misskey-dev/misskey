@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
 	</div>
 	<div :class="$style.info">
+		<i v-if="note.isScheduled" style="margin-right: 0.5em;" class="ti ti-clock"></i>
 		<div v-if="mock">
 			<MkTime :time="note.createdAt" colored/>
 		</div>
@@ -43,7 +44,7 @@ import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 
 defineProps<{
-	note: Misskey.entities.Note & {isSchedule? : boolean};
+	note: Misskey.entities.Note & {isSchedule? : boolean, isScheduled? : boolean};
   scheduled?: boolean;
 }>();
 

@@ -295,11 +295,13 @@ export type MiNoteCreateOption = {
 	poll?: IPoll | null;
 	schedule?: MiScheduledNote | null;
 	localOnly?: boolean | null;
+	isScheduled?: boolean | null;
 	reactionAcceptance?: MiNote['reactionAcceptance'];
 	cw?: string | null;
 	visibility?: string;
 	visibleUsers?: MiMinimumUser[] | null;
 	channel?: MiChannel | null;
+	isSchedule?: boolean | null;
 	apMentions?: MiMinimumUser[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;

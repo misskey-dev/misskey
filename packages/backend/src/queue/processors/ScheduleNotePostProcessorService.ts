@@ -48,6 +48,7 @@ export class ScheduleNotePostProcessorService {
 				}
 
 				const me = await this.usersRepository.findOneByOrFail({ id: data.userId });
+				data.note.isScheduled = true;
 				await this.noteCreateService.create(me, data.note);
 				await this.scheduledNotesRepository.remove(data);
 			}
