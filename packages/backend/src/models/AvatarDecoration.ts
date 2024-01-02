@@ -33,6 +33,7 @@ export class MiAvatarDecoration {
 
 	@Column('varchar', {
 		length: 256,
+		default: '',
 	})
 	public category: string;
 
