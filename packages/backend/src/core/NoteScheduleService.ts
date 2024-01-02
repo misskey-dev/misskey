@@ -4,12 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from 'misskey-js/built/autogen/models.js';
+
 import { QueryService } from '@/core/QueryService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 import type { ScheduledNotesRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
+import { MiUser } from '@/models/_.js';
 
 const now = new Date();
 @Injectable()
@@ -22,7 +23,7 @@ export class NoteScheduleService {
 	) {
 	}
 	@bindThis
-	public async notifyExpiredItems(userId: User['id']) {
+	public async notifyExpiredItems(userId: MiUser['id']) {
 		const query = this.queryService.makePaginationQuery(this.scheduledNotesRepository.createQueryBuilder('scheduleNote'))
 			.andWhere('scheduleNote.userId = :userId', { userId });
 
