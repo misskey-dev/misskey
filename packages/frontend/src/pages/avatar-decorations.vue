@@ -7,13 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
+		<MkSwitch v-model="select">SelectMode</MkSwitch>
+		<MkButton @click="setCategoryBulk">Set Category</MkButton>
 		<div class="_gaps">
 			<div :class="$style.decorations">
 				<XDecoration
 					v-for="avatarDecoration in avatarDecorations"
 					:key="avatarDecoration.id"
+					:class=" selectItemsId.includes(avatarDecoration.id) ? $style.selected : '' "
 					:decoration="avatarDecoration"
-					@click="openDecorationEdit(avatarDecoration)"
+					@click="select ? selectItems(avatarDecoration.id) : openDecorationEdit(avatarDecoration)"
 				/>
 			</div>
 		</div>
@@ -22,14 +25,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, defineAsyncComponent } from 'vue';
+import { ref, computed, defineAsyncComponent, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import XDecoration from '@/pages/settings/avatar-decoration.decoration.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
+const select = ref(false);
+const selectItemsId = ref<string[]>([]);
 
 function add() {
 	avatarDecorations.value.unshift({
@@ -40,6 +47,15 @@ function add() {
 		url: '',
 		category: '',
 	});
+}
+
+function selectItems(decorationId) {
+	if (selectItemsId.value.includes(decorationId)) {
+		const index = selectItemsId.value.indexOf(decorationId);
+		selectItemsId.value.splice(index, 1);
+	} else {
+		selectItemsId.value.push(decorationId);
+	}
 }
 
 function openDecorationEdit(avatarDecoration) {
@@ -68,6 +84,25 @@ function load() {
 }
 
 load();
+watch(select, () => {
+	selectItemsId.value = [];
+});
+
+async function setCategoryBulk() {
+	const { canceled, result } = await os.inputText({
+		title: 'Category',
+	});
+	if (canceled) return;
+	if (selectItemsId.value.length > 1) {
+		for (let i = 0; i < selectItemsId.value.length; i++) {
+			let decorationId = selectItemsId.value[i];
+			await os.api('admin/avatar-decorations/update', {
+				id: decorationId,
+				category: result,
+			});
+		}
+	}
+}
 
 const headerActions = computed(() => [{
 	asFullButton: true,
@@ -88,5 +123,8 @@ definePageMetadata({
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     grid-gap: 12px;
+}
+.selected{
+			border: 0.1px solid var(--accent);
 }
 </style>
