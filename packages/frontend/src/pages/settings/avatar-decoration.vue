@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-for="category in categories">
-			<MkFoldableSection>
+			<MkFoldableSection :defaultOpen="false">
 				<template #header> {{ (category !== '') ? category : i18n.ts.other }}</template>
 				<div :class="$style.decorations">
 					<div v-for="avatarDecoration in avatarDecorations.filter(ad => ad.category === category)">
