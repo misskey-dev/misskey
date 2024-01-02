@@ -30,7 +30,7 @@ watch(() => props.value, (to, from) => {
 		const elapsed = timestamp - start;
 		tweened.number = (from ?? 0) + (to - (from ?? 0)) * elapsed / 500;
 		if (elapsed < 500) {
-			requestAnimationFrame(step);
+			window.requestAnimationFrame(step);
 		} else {
 			tweened.number = to;
 		}
