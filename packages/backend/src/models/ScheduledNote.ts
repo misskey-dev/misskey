@@ -22,6 +22,11 @@ export class MiScheduledNote {
 	})
 	public userId: MiUser['id'];
 
+	@Column('boolean', {
+		default: false,
+	})
+	public isFailed: boolean;
+
 	@Column('timestamp with time zone')
 	public scheduledAt: Date;
 }

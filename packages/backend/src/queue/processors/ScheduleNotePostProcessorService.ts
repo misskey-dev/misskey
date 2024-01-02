@@ -39,7 +39,7 @@ export class ScheduleNotePostProcessorService {
 			} else {
 				data.note.createdAt = new Date();
 				if (data.scheduledAt.getTime() > data.note.createdAt.getTime()) {
-					await this.scheduledNotesRepository.remove(data);
+					await this.scheduledNotesRepository.update(data.id, { isFailed: true });
 
 					await this.notificationService.createNotification(data.userId, 'noteSchedulingFailed', {
 						scheduledNoteId: data.id,
