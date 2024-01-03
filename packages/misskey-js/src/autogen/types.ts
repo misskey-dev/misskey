@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-03T10:08:25.920Z
+ * generatedAt: 2024-01-03T14:50:11.515Z
  */
 
 /**
@@ -4012,7 +4012,7 @@ export type components = {
       /** Format: id */
       userId: string;
       user: components['schemas']['UserLite'];
-      content: Record<string, never>[];
+      content: components['schemas']['PageBlock'][];
       variables: Record<string, never>[];
       title: string;
       name: string;
@@ -4027,6 +4027,29 @@ export type components = {
       likedCount: number;
       isLiked?: boolean;
     };
+    PageBlock: OneOf<[{
+      id: string;
+      /** @enum {string} */
+      type: 'text';
+      text: string;
+    }, {
+      id: string;
+      /** @enum {string} */
+      type: 'section';
+      title: string;
+      children: components['schemas']['PageBlock'][];
+    }, {
+      id: string;
+      /** @enum {string} */
+      type: 'image';
+      fileId: string | null;
+    }, {
+      id: string;
+      /** @enum {string} */
+      type: 'note';
+      detailed: boolean;
+      note: string | null;
+    }]>;
     Channel: {
       /**
        * Format: id

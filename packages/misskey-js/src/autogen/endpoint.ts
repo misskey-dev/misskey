@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-03T10:08:26.055Z
+ * generatedAt: 2024-01-03T14:50:11.643Z
  */
 
 import type {

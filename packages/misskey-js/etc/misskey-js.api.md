@@ -1614,6 +1614,7 @@ declare namespace entities {
         Hashtag,
         InviteCode,
         Page,
+        PageBlock,
         Channel,
         QueueCount,
         Antenna,
@@ -2461,6 +2462,9 @@ export const notificationTypes: readonly ["note", "follow", "mention", "reply", 
 
 // @public (undocumented)
 type Page = components['schemas']['Page'];
+
+// @public (undocumented)
+type PageBlock = components['schemas']['PageBlock'];
 
 // @public (undocumented)
 type PageEvent = {

@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-03T10:08:26.049Z
+ * generatedAt: 2024-01-03T14:50:11.637Z
  */
 
 import { components } from './types.js';
@@ -29,6 +29,7 @@ export type Blocking = components['schemas']['Blocking'];
 export type Hashtag = components['schemas']['Hashtag'];
 export type InviteCode = components['schemas']['InviteCode'];
 export type Page = components['schemas']['Page'];
+export type PageBlock = components['schemas']['PageBlock'];
 export type Channel = components['schemas']['Channel'];
 export type QueueCount = components['schemas']['QueueCount'];
 export type Antenna = components['schemas']['Antenna'];
