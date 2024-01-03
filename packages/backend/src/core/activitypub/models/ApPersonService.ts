@@ -38,6 +38,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -76,6 +78,8 @@ export class ApPersonService implements OnModuleInit {
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
 	private logger: Logger;
+	private httpRequestService: HttpRequestService;
+	private avatarDecorationService: AvatarDecorationService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -124,6 +128,8 @@ export class ApPersonService implements OnModuleInit {
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
 		this.logger = this.apLoggerService.logger;
+		this.httpRequestService = this.moduleRef.get('HttpRequestService');
+		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 	}
 
 	private punyHost(url: string): string {
@@ -225,14 +231,14 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
-	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>> {
+	private async resolveAvatarAndBanner(user: MiRemoteUser, host: string | null, icon: any, image: any): Promise<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash' | 'avatarDecorations'>> {
 		const [avatar, banner] = await Promise.all([icon, image].map(img => {
 			if (img == null) return null;
 			if (user == null) throw new Error('failed to create user: user is null');
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
 
-		return {
+		const returnData: any = {
 			avatarId: avatar?.id ?? null,
 			bannerId: banner?.id ?? null,
 			avatarUrl: avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
@@ -240,6 +246,41 @@ export class ApPersonService implements OnModuleInit {
 			avatarBlurhash: avatar?.blurhash ?? null,
 			bannerBlurhash: banner?.blurhash ?? null,
 		};
+
+		if (host) {
+			const i = await this.federatedInstanceService.fetch(host);
+			console.log('avatarDecorationFetch: start');
+			if (i.softwareName === 'misskey') {
+				const remoteUserId = user.uri.split('/users/')[1];
+				const userMetaRequest = await this.httpRequestService.send(`https://${i.host}/api/users/show`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						'userId': remoteUserId,
+					}),
+				});
+				const res: any = await userMetaRequest.json();
+				if (res.avatarDecorations) {
+					const localDecos = await this.avatarDecorationService.getAll();
+					// ローカルのデコレーションとして登録する
+					for (const deco of res.avatarDecorations) {
+						if (localDecos.some((v) => v.id === deco.id)) continue;
+						await this.avatarDecorationService.create({
+							id: deco.id,
+							updatedAt: null,
+							url: deco.url,
+							name: `import_${host}_${deco.id}`,
+							description: `Imported from ${host}`,
+						});
+					}
+					Object.assign(returnData, { avatarDecorations: res.avatarDecorations });
+				}
+			}
+		}
+
+		return returnData;
 	}
 
 	/**
@@ -380,7 +421,7 @@ export class ApPersonService implements OnModuleInit {
 
 		//#region アバターとヘッダー画像をフェッチ
 		try {
-			const updates = await this.resolveAvatarAndBanner(user, person.icon, person.image);
+			const updates = await this.resolveAvatarAndBanner(user, host, person.icon, person.image);
 			await this.usersRepository.update(user.id, updates);
 			user = { ...user, ...updates };
 
@@ -443,8 +484,14 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
+		let host = null;
+
 		if (url && !checkHttps(url)) {
 			throw new Error('unexpected schema of person url: ' + url);
+		}
+
+		if (url) {
+			host = new URL(url).host;
 		}
 
 		const updates = {
@@ -462,7 +509,7 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
-			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
+			...(await this.resolveAvatarAndBanner(exist, host, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
 		const moving = ((): boolean => {
