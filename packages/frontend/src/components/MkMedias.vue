@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 
+import {ref} from "vue";
 import {notePage} from "@/filters/note.js";
 import {i18n} from "@/i18n.js";
 import ImgWithBlurhash from "@/components/MkImgWithBlurhash.vue";
@@ -27,7 +28,7 @@ import * as Misskey from "misskey-js";
 import {defaultStore} from "@/store.js";
 import {getStaticImageUrl} from "@/scripts/media-proxy.js";
 
-let showingFiles = $ref<string[]>([]);
+let showingFiles = ref<string[]>([]);
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
