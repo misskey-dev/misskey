@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</MkInput>
 
-	<MkInput v-model="profile.birthday" type="date" manualSave>
+	<MkInput v-model="profile.birthday" :min="birthdayMin" :max="birthdayMax" type="date" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
 	</MkInput>
@@ -144,9 +144,13 @@ const profile = reactive({
 	isBot: $i.isBot,
 	isCat: $i.isCat,
 });
+
 const isAgeHidden = computed(() => {
 	return profile.birthday?.split('-')[0] === '9999';
 });
+
+const birthdayMin = computed(() => isAgeHidden.value ? '9999-01-01' : '');
+const birthdayMax = computed(() => isAgeHidden.value ? '9999-12-31' : '');
 
 function ageVisibilityChanged(newValue: boolean) {
 	if (!profile.birthday) {
@@ -158,7 +162,6 @@ function ageVisibilityChanged(newValue: boolean) {
 	} else {
 		profile.birthday = `2000-${month}-${day}`;
 	}
-	console.log(profile.birthday);
 }
 
 watch(() => profile, () => {
