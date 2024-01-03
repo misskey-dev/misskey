@@ -2025,7 +2025,7 @@ _widgets:
   digitalClock: "電子時鐘"
   unixClock: "UNIX 時間"
   federation: "聯邦宇宙"
-  instanceCloud: "伺服器標籤雲"
+  instanceCloud: "伺服器雲"
   postForm: "發文視窗"
   slideshow: "幻燈片"
   button: "按鈕"
@@ -2077,7 +2077,7 @@ _visibility:
   specified: "指定使用者"
   specifiedDescription: "僅發布至指定使用者"
   disableFederation: "停用聯邦"
-  disableFederationDescription: "不要傳遞給其他伺服器"
+  disableFederationDescription: "不發送到其他伺服器"
 _postForm:
   replyPlaceholder: "回覆此貼文..."
   quotePlaceholder: "引用此貼文..."
