@@ -168,7 +168,7 @@ export class Storage<T extends StateDef> {
 		this.reactiveState[key].value = this.state[key] = rawValue;
 
 		return this.addIdbSetJob(async () => {
-			if (_DEV_) console.log(`set ${key} start`);
+			if (_DEV_) console.log(`set ${String(key)} start`);
 			switch (this.def[key].where) {
 				case 'device': {
 					this.pizzaxChannel.postMessage({
@@ -207,7 +207,7 @@ export class Storage<T extends StateDef> {
 					break;
 				}
 			}
-			if (_DEV_) console.log(`set ${key} complete`);
+			if (_DEV_) console.log(`set ${String(key)} complete`);
 		});
 	}
 
