@@ -35,8 +35,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInput v-model="profile.birthday" type="date" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
-		<template #caption>{{ i18n.ts._profile.hideAgeDescription }}</template>
 	</MkInput>
+	<MkSwitch :modelValue="isAgeHidden" @update:modelValue="ageVisibilityChanged">
+		<template #label>{{ i18n.ts._profile.hideAge }}</template>
+	</MkSwitch>
 
 	<MkSelect v-model="profile.lang">
 		<template #label>{{ i18n.ts.language }}</template>
@@ -142,6 +144,21 @@ const profile = reactive({
 	isBot: $i.isBot,
 	isCat: $i.isCat,
 });
+const isAgeHidden = computed(() => {
+	return profile.birthday?.split('-')[0] === '9999';
+});
+function ageVisibilityChanged(newValue: boolean) {
+	if (!profile.birthday) {
+		profile.birthday = '2000-01-01';
+	}
+	let [_year, month, day] = profile.birthday.split('-');
+	if (newValue) {
+		profile.birthday = `9999-${month}-${day}`;
+	} else {
+		profile.birthday = `2000-${month}-${day}`;
+	}
+	console.log(profile.birthday);
+}
 
 watch(() => profile, () => {
 	save();

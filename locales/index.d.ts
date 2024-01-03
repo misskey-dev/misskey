@@ -2238,7 +2238,7 @@ export interface Locale {
         "username": string;
         "description": string;
         "youCanIncludeHashtags": string;
-        "hideAgeDescription": string;
+        "hideAge": string;
         "metadata": string;
         "metadataEdit": string;
         "metadataDescription": string;
