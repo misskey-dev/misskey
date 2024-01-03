@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
 	mode?: 'relative' | 'absolute' | 'detail';
 	colored?: boolean;
 }>(), {
-	origin: isChromatic() ? new Date('2023-04-01T00:00:00Z') : null,
+	origin: isChromatic() ? () => new Date('2023-04-01T00:00:00Z') : null,
 	mode: 'relative',
 });
 

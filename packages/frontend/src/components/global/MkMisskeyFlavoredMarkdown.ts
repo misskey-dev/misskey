@@ -19,6 +19,7 @@ import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
+import { safeParseFloat } from '@/scripts/safe-parse.js';
 
 const QUOTE_STYLE = `
 display: block;
@@ -35,7 +36,7 @@ type MfmProps = {
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
 	isNote?: boolean;
-	emojiUrls?: string[];
+	emojiUrls?: Record<string, string>;
 	rootScale?: number;
 	nyaize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
@@ -57,8 +58,9 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 
 	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
-	const validTime = (t: string | null | undefined) => {
+	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;
+		if (typeof t === 'boolean') return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
 
@@ -217,14 +219,14 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						return h(MkSparkle, {}, genEl(token.children, scale));
 					}
 					case 'rotate': {
-						const degrees = parseFloat(token.props.args.deg ?? '90');
+						const degrees = safeParseFloat(token.props.args.deg) ?? 90;
 						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 						break;
 					}
 					case 'position': {
 						if (!defaultStore.state.advancedMfm) break;
-						const x = parseFloat(token.props.args.x ?? '0');
-						const y = parseFloat(token.props.args.y ?? '0');
+						const x = safeParseFloat(token.props.args.x) ?? 0;
+						const y = safeParseFloat(token.props.args.y) ?? 0;
 						style = `transform: translateX(${x}em) translateY(${y}em);`;
 						break;
 					}
@@ -233,21 +235,21 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 							style = '';
 							break;
 						}
-						const x = Math.min(parseFloat(token.props.args.x ?? '1'), 5);
-						const y = Math.min(parseFloat(token.props.args.y ?? '1'), 5);
+						const x = Math.min(safeParseFloat(token.props.args.x) ?? 1, 5);
+						const y = Math.min(safeParseFloat(token.props.args.y) ?? 1, 5);
 						style = `transform: scale(${x}, ${y});`;
 						scale = scale * Math.max(x, y);
 						break;
 					}
 					case 'fg': {
 						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						if (typeof color !== 'string' || !/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
 						style = `color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
 					case 'bg': {
 						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						if (typeof color !== 'string' || !/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
 						style = `background-color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
@@ -289,7 +291,8 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						return h('span', { onClick(ev: MouseEvent): void {
 							ev.stopPropagation();
 							ev.preventDefault();
-							context.emit('clickEv', token.props.args.ev ?? '');
+							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
+							context.emit('clickEv', clickEv);
 						} }, genEl(token.children, scale));
 					}
 				}
@@ -350,7 +353,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 				return [h(MkCode, {
 					key: Math.random(),
 					code: token.props.code,
-					lang: token.props.lang,
+					lang: token.props.lang ?? undefined,
 				})];
 			}
 
@@ -394,8 +397,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						return [h(MkCustomEmoji, {
 							key: Math.random(),
 							name: token.props.name,
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-							url: props.emojiUrls ? props.emojiUrls[token.props.name] : null,
+							url: props.emojiUrls && props.emojiUrls[token.props.name],
 							normal: props.plain,
 							host: props.author.host,
 							useOriginalSize: scale >= 2.5,
