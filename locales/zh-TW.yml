@@ -669,6 +669,7 @@ useGlobalSettingDesc: "啟用時，將使用帳戶通知設定。停用時，則
 other: "其他"
 regenerateLoginToken: "重新產生登入權杖"
 regenerateLoginTokenDescription: "重新產生用於登入的內部權杖。一般情況下是不需要這樣做的。重新產生後，所有裝置將會被登出。"
+theKeywordWhenSearchingForCustomEmoji: "這是搜尋自訂表情符號時的關鍵字"
 setMultipleBySeparatingWithSpace: "您可以使用空格分隔多個項目。"
 fileIdOrUrl: "檔案 ID 或 URL"
 behavior: "行為"
