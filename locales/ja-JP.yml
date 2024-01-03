@@ -1184,7 +1184,7 @@ seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
-hideSensitive: "センシティブなノートを隠す"
+withSensitive: "センシティブなノートを表示"
 userSaysSomethingSensitive: "{name}のセンシティブな投稿"
 
 _announcement:

@@ -187,8 +187,8 @@ export const defaultStore = markRaw(new Storage('base', {
 			filter: {
 				withReplies: true,
 				withRenotes: true,
+				withSensitive: true,
 				onlyFiles: false,
-				hideSensitive: false,
 			},
 		},
 	},

@@ -69,7 +69,7 @@ const src = computed({
 });
 const withRenotes = computed({
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => (defaultStore.reactiveState.tl.value.filter.withRenotes ?? saveTlFilter('withRenotes', true)),
+	get: () => (defaultStore.reactiveState.tl.value.filter?.withRenotes ?? saveTlFilter('withRenotes', true)),
 	set: (x) => saveTlFilter('withRenotes', x),
 });
 const withReplies = computed({
@@ -79,7 +79,7 @@ const withReplies = computed({
 			return false;
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			return defaultStore.reactiveState.tl.value.filter.withReplies ?? saveTlFilter('withReplies', true);
+			return defaultStore.reactiveState.tl.value.filter?.withReplies ?? saveTlFilter('withReplies', true);
 		}
 	},
 	set: (x) => saveTlFilter('withReplies', x),
@@ -90,16 +90,16 @@ const onlyFiles = computed({
 			return false;
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			return defaultStore.reactiveState.tl.value.filter.onlyFiles ?? saveTlFilter('onlyFiles', false);
+			return defaultStore.reactiveState.tl.value.filter?.onlyFiles ?? saveTlFilter('onlyFiles', false);
 		}
 	},
 	set: (x) => saveTlFilter('onlyFiles', x),
 });
-const hideSensitive = computed({
+const withSensitive = computed({
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => (defaultStore.reactiveState.tl.value.filter.hideSensitive ?? saveTlFilter('hideSensitive', false)),
+	get: () => (defaultStore.reactiveState.tl.value.filter?.withSensitive ?? saveTlFilter('withSensitive', true)),
 	set: (x) => {
-		saveTlFilter('hideSensitive', x);
+		saveTlFilter('withSensitive', x);
 
 		// これだけはクライアント側で完結する処理なので手動でリロード
 		tlComponent.value?.reloadTimeline();
@@ -200,6 +200,15 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string
 function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
 	if (key !== 'withReplies' || $i) {
 		const out = { ...defaultStore.state.tl };
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (!out.filter) {
+			out.filter = {
+				withRenotes: true,
+				withReplies: true,
+				withSensitive: true,
+				onlyFiles: false,
+			};
+		}
 		out.filter[key] = newValue;
 		defaultStore.set('tl', out);
 	}
@@ -243,13 +252,13 @@ const headerActions = computed(() => {
 					disabled: onlyFiles,
 				} : undefined, {
 					type: 'switch',
+					text: i18n.ts.withSensitive,
+					ref: withSensitive,
+				}, {
+					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
-				}, {
-					type: 'switch',
-					text: i18n.ts.hideSensitive,
-					ref: hideSensitive,
 				}], ev.currentTarget ?? ev.target);
 			},
 		},

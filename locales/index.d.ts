@@ -1187,7 +1187,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
-    "hideSensitive": string;
+    "withSensitive": string;
     "userSaysSomethingSensitive": string;
     "_announcement": {
         "forExistingUsers": string;

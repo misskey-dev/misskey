@@ -277,7 +277,7 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	if (checkOnly) return false;
 
-	if (inTimeline && defaultStore.state.tl.filter.hideSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
+	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
 	return false;
 }
 
