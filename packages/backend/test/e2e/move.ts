@@ -20,12 +20,12 @@ describe('Account Move', () => {
 	let url: URL;
 
 	let root: any;
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
-	let dave: misskey.entities.MeSignup;
-	let eve: misskey.entities.MeSignup;
-	let frank: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
+	let dave: misskey.entities.SignupResponse;
+	let eve: misskey.entities.SignupResponse;
+	let frank: misskey.entities.SignupResponse;
 
 	let Users: UsersRepository;
 
