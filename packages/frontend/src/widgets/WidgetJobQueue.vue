@@ -120,10 +120,10 @@ for (const domain of ['inbox', 'deliver']) {
 const onStats = (stats) => {
 	for (const domain of ['inbox', 'deliver']) {
 		prev[domain] = deepClone(current[domain]);
-		current[domain].activeSincePrevTick = 123;
-		current[domain].active = 1234;
-		current[domain].waiting = 123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789;
-		current[domain].delayed = 123456789;
+		current[domain].activeSincePrevTick = stats[domain].activeSincePrevTick;
+		current[domain].active = stats[domain].active;
+		current[domain].waiting = stats[domain].waiting;
+		current[domain].delayed = stats[domain].delayed;
 
 		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
 			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, 1);
