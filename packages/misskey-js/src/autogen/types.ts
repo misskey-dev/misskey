@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.389Z
+ * version: 2023.12.2
+ * generatedAt: 2024-01-02T08:53:56.447Z
  */
 
 /**
@@ -40,7 +40,6 @@ export type paths = {
      * admin/accounts/create
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     post: operations['admin/accounts/create'];
@@ -3788,13 +3787,14 @@ export type components = {
        * @example xxxxxxxxxx
        */
       channelId?: string | null;
-      channel?: {
+      channel?: ({
         id: string;
         name: string;
         color: string;
         isSensitive: boolean;
         allowRenoteToExternal: boolean;
-      } | null;
+        userId: string | null;
+      }) | null;
       localOnly?: boolean;
       reactionAcceptance: string | null;
       reactions: Record<string, never>;
@@ -4456,6 +4456,9 @@ export type operations = {
             enableActiveEmailValidation: boolean;
             enableVerifymailApi: boolean;
             verifymailAuthKey: string | null;
+            enableTruemailApi: boolean;
+            truemailInstance: string | null;
+            truemailAuthKey: string | null;
             enableChartsForRemoteUser: boolean;
             enableChartsForFederatedInstances: boolean;
             enableServerMachineStats: boolean;
@@ -4620,7 +4623,6 @@ export type operations = {
    * admin/accounts/create
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *No*
    */
   'admin/accounts/create': {
@@ -8247,6 +8249,9 @@ export type operations = {
           enableActiveEmailValidation?: boolean;
           enableVerifymailApi?: boolean;
           verifymailAuthKey?: string | null;
+          enableTruemailApi?: boolean;
+          truemailInstance?: string | null;
+          truemailAuthKey?: string | null;
           enableChartsForRemoteUser?: boolean;
           enableChartsForFederatedInstances?: boolean;
           enableServerMachineStats?: boolean;

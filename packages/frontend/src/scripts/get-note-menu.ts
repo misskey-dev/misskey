@@ -352,6 +352,42 @@ export function getNoteMenu(props: {
 			]
 			: []
 			),
+			...(appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin) ? [
+				{ type: 'divider' },
+				{
+					type: 'parent' as const,
+					icon: 'ti ti-device-tv',
+					text: i18n.ts.channel,
+					children: async () => {
+						const channelChildMenu = [] as MenuItem[];
+
+						const channel = await os.api('channels/show', { channelId: appearNote.channel!.id });
+
+						if (channel.pinnedNoteIds.includes(appearNote.id)) {
+							channelChildMenu.push({
+								icon: 'ti ti-pinned-off',
+								text: i18n.ts.unpin,
+								action: () => os.apiWithDialog('channels/update', {
+									channelId: appearNote.channel!.id,
+									pinnedNoteIds: channel.pinnedNoteIds.filter(id => id !== appearNote.id),
+								}),
+							});
+						} else {
+							channelChildMenu.push({
+								icon: 'ti ti-pin',
+								text: i18n.ts.pin,
+								action: () => os.apiWithDialog('channels/update', {
+									channelId: appearNote.channel!.id,
+									pinnedNoteIds: [...channel.pinnedNoteIds, appearNote.id],
+								}),
+							});
+						}
+						return channelChildMenu;
+					},
+				},
+			]
+			: []
+			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				{ type: 'divider' },
 				appearNote.userId === $i.id ? {
