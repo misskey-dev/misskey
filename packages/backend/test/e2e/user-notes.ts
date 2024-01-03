@@ -13,7 +13,7 @@ import type * as misskey from 'misskey-js';
 describe('users/notes', () => {
 	let app: INestApplicationContext;
 
-	let alice: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
 	let jpgNote: any;
 	let pngNote: any;
 	let jpgPngNote: any;
