@@ -118,6 +118,10 @@ export const packedNoteSchema = {
 			type: 'object',
 			optional: true, nullable: true,
 		},
+		emojis: {
+			type: 'object',
+			optional: true, nullable: false,
+		},
 		channelId: {
 			type: 'string',
 			optional: true, nullable: true,
