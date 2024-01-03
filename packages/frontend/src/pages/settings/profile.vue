@@ -147,6 +147,7 @@ const profile = reactive({
 const isAgeHidden = computed(() => {
 	return profile.birthday?.split('-')[0] === '9999';
 });
+
 function ageVisibilityChanged(newValue: boolean) {
 	if (!profile.birthday) {
 		profile.birthday = '2000-01-01';
