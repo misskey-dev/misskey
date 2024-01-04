@@ -48,7 +48,7 @@ async function ok() {
 		if (confirm.canceled) return;
 	}
 
-	modal.value.close();
+	modal.value?.close();
 	os.api('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
@@ -56,7 +56,7 @@ async function ok() {
 }
 
 function onBgClick() {
-	rootEl.value.animate([{
+	rootEl.value?.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {
