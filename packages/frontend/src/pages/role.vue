@@ -18,16 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer v-else-if="tab === 'users'" :contentMax="1200">
 		<div class="_gaps_s">
 			<div v-if="role">{{ role.description }}</div>
-			<MkUserList v-if="visiable" :pagination="users" :extractor="(item) => item.user"/>
-			<div v-else-if="!visiable" class="_fullinfo">
+			<MkUserList v-if="visible" :pagination="users" :extractor="(item) => item.user"/>
+			<div v-else-if="!visible" class="_fullinfo">
 				<img :src="infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</div>
 	</MkSpacer>
 	<MkSpacer v-else-if="tab === 'timeline'" :contentMax="700">
-		<MkTimeline v-if="visiable" ref="timeline" src="role" :role="props.role"/>
-		<div v-else-if="!visiable" class="_fullinfo">
+		<MkTimeline v-if="visible" ref="timeline" src="role" :role="props.role"/>
+		<div v-else-if="!visible" class="_fullinfo">
 			<img :src="infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<{
 let tab = $ref(props.initialTab);
 let role = $ref();
 let error = $ref();
-let visiable = $ref(false);
+let visible = $ref(false);
 
 watch(() => props.role, () => {
 	os.api('roles/show', {
@@ -63,7 +63,7 @@ watch(() => props.role, () => {
 	}).then(res => {
 		role = res;
 		document.title = `${role?.name} | ${instanceName}`;
-		visiable = res.isExplorable && res.isPublic;
+		visible = res.isExplorable && res.isPublic;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
 			error = i18n.ts.noRole;
