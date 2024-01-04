@@ -49,7 +49,7 @@ type MfmEvents = {
 };
 
 // eslint-disable-next-line import/no-default-export
-export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
+export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -292,7 +292,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 							ev.stopPropagation();
 							ev.preventDefault();
 							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
-							context.emit('clickEv', clickEv);
+							emit('clickEv', clickEv);
 						} }, genEl(token.children, scale));
 					}
 				}
