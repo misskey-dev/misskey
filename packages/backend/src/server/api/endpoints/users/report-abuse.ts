@@ -53,7 +53,7 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		comment: { type: 'string', minLength: 1, maxLength: 2048 },
-		noteIds: { type: 'array', items: { type: 'string', format: 'misskey:id' } },
+		noteIds: { type: 'array', items: { type: 'string', format: 'misskey:id', maxLength: 16 } },
 	},
 	required: ['userId', 'comment'],
 } as const;

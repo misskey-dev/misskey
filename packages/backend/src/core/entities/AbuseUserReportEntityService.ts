@@ -34,7 +34,7 @@ export class AbuseUserReportEntityService {
 		src: MiAbuseUserReport['id'] | MiAbuseUserReport,
 	) {
 		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });
-		const notes = (report.notes.length === 0) ? report.notes : [];
+		const notes = [];
 
 		if (report.noteIds && report.noteIds.length > 0) {
 			for (const x of report.noteIds) {
@@ -45,6 +45,8 @@ export class AbuseUserReportEntityService {
 				}
 				notes.push(await this.noteEntityService.pack(x));
 			}
+		} else if (report.notes.length > 0) {
+			notes.push(...(report.notes));
 		}
 
 		console.log(report.notes.length, null, notes);
