@@ -40,7 +40,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';

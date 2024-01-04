@@ -32,7 +32,7 @@ import * as Misskey from 'misskey-js';
 import { sum } from '@/scripts/array.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 

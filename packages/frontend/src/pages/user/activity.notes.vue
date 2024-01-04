@@ -18,7 +18,7 @@ import { onMounted, shallowRef, ref } from 'vue';
 import { Chart, ChartDataset } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { chartVLine } from '@/scripts/chart-vline.js';

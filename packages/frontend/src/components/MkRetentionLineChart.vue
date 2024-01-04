@@ -16,7 +16,7 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { chartVLine } from '@/scripts/chart-vline.js';
 import { alpha } from '@/scripts/color.js';
 import { initChart } from '@/scripts/init-chart.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 initChart();
 

@@ -129,7 +129,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import { iAmModerator, iAmAdmin } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';

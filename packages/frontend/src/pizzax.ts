@@ -8,7 +8,7 @@
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import { $i } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { get, set } from '@/scripts/idb-proxy.js';
 import { defaultStore } from '@/store.js';
 import { useStream } from '@/stream.js';

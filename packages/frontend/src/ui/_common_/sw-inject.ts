@@ -4,7 +4,7 @@
  */
 
 import { post } from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i, login } from '@/account.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { mainRouter } from '@/router.js';

@@ -10,7 +10,7 @@ import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Plugin } from '@/store.js';
 import { ColdDeviceStorage } from '@/store.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 export type AiScriptPluginMeta = {

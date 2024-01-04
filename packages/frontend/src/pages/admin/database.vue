@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import bytes from '@/filters/bytes.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';

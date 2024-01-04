@@ -25,7 +25,7 @@ import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, Wid
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
 import { GetFormResultType } from '@/scripts/form.js';
-import { misskeyApiGet } from '@/scripts/misskeyApi.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';

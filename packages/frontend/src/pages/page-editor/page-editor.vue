@@ -71,7 +71,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import { url } from '@/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { mainRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';

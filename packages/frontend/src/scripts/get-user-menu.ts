@@ -10,7 +10,7 @@ import { i18n } from '@/i18n.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { host, url } from '@/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
 import { $i, iAmModerator } from '@/account.js';
 import { mainRouter } from '@/router.js';

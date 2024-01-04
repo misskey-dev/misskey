@@ -90,7 +90,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskeyApi.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';

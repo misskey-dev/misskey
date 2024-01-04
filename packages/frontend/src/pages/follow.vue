@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { mainRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';

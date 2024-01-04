@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import XChart from './queue.chart.chart.vue';
 import number from '@/filters/number.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';

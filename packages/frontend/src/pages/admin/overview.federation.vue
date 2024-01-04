@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, ref } from 'vue';
 import XPie, { type InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskeyApi.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { i18n } from '@/i18n.js';

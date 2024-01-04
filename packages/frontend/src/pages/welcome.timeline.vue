@@ -32,7 +32,7 @@ import { onUpdated, ref, shallowRef } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import { misskeyApiGet } from '@/scripts/misskeyApi.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
 const notes = ref<Misskey.entities.Note[]>([]);

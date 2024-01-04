@@ -5,7 +5,7 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();

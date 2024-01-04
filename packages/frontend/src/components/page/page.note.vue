@@ -16,7 +16,7 @@ import * as Misskey from 'misskey-js';
 import { NoteBlock } from './block.type.js';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import { misskeyApi } from '@/scripts/misskeyApi.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
 	block: NoteBlock,

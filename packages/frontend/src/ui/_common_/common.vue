@@ -50,7 +50,7 @@ import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
-import { pendingApiRequestsCount } from '@/scripts/misskeyApi.js';
+import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
 import { uploads } from '@/scripts/upload.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
