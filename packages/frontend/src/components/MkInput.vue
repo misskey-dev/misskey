@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:placeholder="placeholder"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
+			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
 			:step="step"
 			:list="id"
@@ -58,6 +59,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];

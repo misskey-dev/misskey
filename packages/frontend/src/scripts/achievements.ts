@@ -82,6 +82,7 @@ export const ACHIEVEMENT_TYPES = [
 	'cookieClicked',
 	'brainDiver',
 	'smashTestNotificationButton',
+	'tutorialCompleted',
 ] as const;
 
 export const ACHIEVEMENT_BADGES = {
@@ -458,6 +459,11 @@ export const ACHIEVEMENT_BADGES = {
 	'smashTestNotificationButton': {
 		img: '/fluent-emoji/1f514.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
+		frame: 'bronze',
+	},
+	'tutorialCompleted': {
+		img: '/fluent-emoji/1f393.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
 /* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>

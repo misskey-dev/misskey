@@ -74,6 +74,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		onlineStatus: 'unknown',
 		avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
 		avatarBlurhash: 'eQFRshof5NWBRi},juayfPju53WB?0ofs;s*a{ofjuay^SoMEJR%ay',
+		avatarDecorations: [],
 		emojis: [],
 		bannerBlurhash: 'eQA^IW^-MH8w9tE8I=S^o{$*R4RikXtSxutRozjEnNR.RQadoyozog',
 		bannerColor: '#000000',

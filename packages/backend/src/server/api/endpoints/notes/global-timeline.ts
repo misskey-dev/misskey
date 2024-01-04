@@ -87,6 +87,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
 			}
+
+			if (ps.withRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.where('note.renoteId IS NULL');
+					qb.orWhere(new Brackets(qb => {
+						qb.where('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+					}));
+				}));
+			}
 			//#endregion
 
 			const timeline = await query.limit(ps.limit).getMany();

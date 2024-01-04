@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps">
+			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
 			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
 			<MkFolder v-for="announcement in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
@@ -27,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
-					<MkInput v-model="announcement.imageUrl">
+					<MkInput v-model="announcement.imageUrl" type="url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<MkRadios v-model="announcement.icon">
@@ -43,8 +44,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
 					</MkRadios>
+					<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
+					</MkSwitch>
+					<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
+						{{ i18n.ts._announcement.silence }}
 					</MkSwitch>
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
@@ -95,6 +100,7 @@ function add() {
 		icon: 'info',
 		display: 'normal',
 		forExistingUsers: false,
+		silence: false,
 		needConfirmationToRead: false,
 	});
 }

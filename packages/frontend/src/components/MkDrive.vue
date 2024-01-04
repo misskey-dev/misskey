@@ -505,6 +505,7 @@ function appendFile(file: Misskey.entities.DriveFile) {
 function appendFolder(folderToAppend: Misskey.entities.DriveFolder) {
 	addFolder(folderToAppend);
 }
+
 /*
 function prependFile(file: Misskey.entities.DriveFile) {
 	addFile(file, true);

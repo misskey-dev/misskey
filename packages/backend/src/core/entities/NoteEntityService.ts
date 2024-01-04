@@ -350,6 +350,7 @@ export class NoteEntityService implements OnModuleInit {
 				name: channel.name,
 				color: channel.color,
 				isSensitive: channel.isSensitive,
+				allowRenoteToExternal: channel.allowRenoteToExternal,
 			} : undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,

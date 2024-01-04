@@ -979,6 +979,7 @@ assign: "Zuweisen"
 unassign: "Entfernen"
 color: "Farbe"
 manageCustomEmojis: "Kann benutzerdefinierte Emojis verwalten"
+manageAvatarDecorations: "Profilbilddekorationen verwalten"
 youCannotCreateAnymore: "Du hast das Erstellungslimit erreicht."
 cannotPerformTemporary: "Vorübergehend nicht verfügbar"
 cannotPerformTemporaryDescription: "Diese Aktion ist wegen des Überschreitenes des Ausführungslimits temporär nicht verfügbar. Bitte versuche es nach einiger Zeit erneut."
@@ -1132,6 +1133,10 @@ mutualFollow: "Gegenseitig gefolgt"
 fileAttachedOnly: "Nur Notizen mit Dateien"
 showRepliesToOthersInTimeline: "Antworten in Chronik anzeigen"
 hideRepliesToOthersInTimeline: "Antworten nicht in Chronik anzeigen"
+showRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutzern in Chronik anzeigen"
+hideRepliesToOthersInTimelineAll: "Antworten von allen momentan gefolgten Benutzern nicht in Chronik anzeigen"
+confirmShowRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern in der Chronik anzeigen?"
+confirmHideRepliesAll: "Dies ist eine unwiderrufliche Aktion. Wirklich Antworten von allen momentan gefolgten Benutzern nicht in der Chronik anzeigen?"
 externalServices: "Externe Dienste"
 impressum: "Impressum"
 impressumUrl: "Impressums-URL"
@@ -1139,6 +1144,18 @@ impressumDescription: "In manchen Ländern, wie Deutschland und dessen Umgebung,
 privacyPolicy: "Datenschutzerklärung"
 privacyPolicyUrl: "Datenschutzerklärungs-URL"
 tosAndPrivacyPolicy: "Nutzungsbedingungen und Datenschutzerklärung"
+avatarDecorations: "Profilbilddekoration"
+attach: "Anbringen"
+detach: "Entfernen"
+angle: "Winkel"
+flip: "Umdrehen"
+showAvatarDecorations: "Profilbilddekoration anzeigen"
+releaseToRefresh: "Zum Aktualisieren loslassen"
+refreshing: "Wird aktualisiert..."
+pullDownToRefresh: "Zum Aktualisieren ziehen"
+disableStreamingTimeline: "Echtzeitaktualisierung der Chronik deaktivieren"
+useGroupedNotifications: "Benachrichtigungen gruppieren"
+cwNotationRequired: "Ist \"Inhaltswarnung verwenden\" aktiviert, muss eine Beschreibung gegeben werden."
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
@@ -1160,7 +1177,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Durch die Aktivierung von Push-Benachrichtigungen kannst du von {name} Benachrichtigungen direkt auf dein Gerät erhalten."
   initialAccountSettingCompleted: "Kontoeinrichtung abgeschlossen!"
   haveFun: "Viel Spaß mit {name}!"
-  ifYouNeedLearnMore: "Besuche {link}, falls du mehr über {name} (Misskey) lernen möchtest."
   skipAreYouSure: "Die Kontoeinrichtung wirklich überspringen?"
   laterAreYouSure: "Die Kontoeinrichtung wirklich später erledigen?"
 _serverRules:
@@ -1174,6 +1190,7 @@ _serverSettings:
   manifestJsonOverride: "Überschreiben von manifest.json"
   shortName: "Abkürzung"
   shortNameDescription: "Ein Kürzel für den Namen der Instanz, der angezeigt werden kann, falls der volle Instanzname lang ist."
+  fanoutTimelineDescription: "Ist diese Option aktiviert, kann eine erhebliche Verbesserung im Abrufen von Chroniken und eine Reduzierung der Datenbankbelastung erzielt werden, im Gegenzug zu einer Steigerung in der Speichernutzung von Redis. Bei geringem Serverspeicher oder Serverinstabilität kann diese Option deaktiviert werden."
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"
@@ -1474,6 +1491,7 @@ _role:
     inviteLimitCycle: "Zyklus des Einladungslimits"
     inviteExpirationTime: "Gültigkeitsdauer von Einladungen"
     canManageCustomEmojis: "Benutzerdefinierte Emojis verwalten"
+    canManageAvatarDecorations: "Profilbilddekorationen verwalten"
     driveCapacity: "Drive-Kapazität"
     alwaysMarkNsfw: "Dateien immer als NSFW markieren"
     pinMax: "Maximale Anzahl an angehefteten Notizen"
@@ -1593,6 +1611,7 @@ _aboutMisskey:
   donate: "An Misskey spenden"
   morePatrons: "Wir schätzen ebenso die Unterstützung vieler anderer hier nicht gelisteter Personen sehr. Danke! 🥰"
   patrons: "UnterstützerInnen"
+  projectMembers: "Projektmitglieder"
 _displayOfSensitiveMedia:
   respect: "Sensible Medien verbergen"
   ignore: "Sensible Medien anzeigen"
@@ -1724,16 +1743,6 @@ _time:
   minute: "Minute(n)"
   hour: "Stunde(n)"
   day: "Tag(en)"
-_timelineTutorial:
-  title: "Wie du Misskey verwendest"
-  step1_1: "Dieser Bildschirm ist die \"Chronik\". Hier werden alle \"Notizen\" von {name} angezeigt."
-  step1_2: "Es gibt einige verschiedene Chroniken. Beispielsweise werden in der \"Startseite\" alle Notizen von Nutzern, denen du folgst, angezeigt, und in der \"Lokalen Chronik\" werden Notizen aller Nutzer auf {name} angezeigt."
-  step2_1: "Lass uns als nächstes versuchen, eine Notiz zu schreiben. Dies kannst du tun, indem du auf den Knopf mit dem Stift-Icon drückst."
-  step2_2: "Stell dich den anderen vor oder schreibe einfach \"Hallo {name}!\", wenn du darauf keine Lust hast oder dir nichts einfällt."
-  step3_1: "Fertig mit dem Senden deiner ersten Notiz?"
-  step3_2: "Falls deine Notiz nun in deiner Chronik auftaucht, hast du alles richtig gemacht."
-  step4_1: "Notizen können zusätzlich mit \"Reaktionen\" ausgestattet werden."
-  step4_2: "Um eine Reaktion anzufügen, klicke auf das „+“-Symbol einer Notiz und wähle ein Emoji aus, mit dem du reagieren möchtest."
 _2fa:
   alreadyRegistered: "Du hast bereits ein Gerät für Zwei-Faktor-Authentifizierung registriert."
   registerTOTP: "Authentifizierungs-App registrieren"
@@ -2043,6 +2052,9 @@ _notification:
   checkNotificationBehavior: "Aussehen von Benachrichtigungen überprüfen"
   sendTestNotification: "Testbenachrichtigung senden"
   notificationWillBeDisplayedLikeThis: "Benachrichtigungen sehen so aus"
+  reactedBySomeUsers: "{n} Benutzer haben eine Reaktion geschickt"
+  renotedBySomeUsers: "Renote von {n} Benutzern"
+  followedBySomeUsers: "Von {n} Benutzern gefolgt"
   _types:
     all: "Alle"
     note: "Neue Notizen"
@@ -2146,6 +2158,9 @@ _moderationLogTypes:
   createAd: "Werbung erstellt"
   deleteAd: "Werbung gelöscht"
   updateAd: "Werbung aktualisiert"
+  createAvatarDecoration: "Profilbilddekoration erstellt"
+  updateAvatarDecoration: "Profilbilddekoration aktualisiert"
+  deleteAvatarDecoration: "Profilbilddekoration gelöscht"
 _fileViewer:
   title: "Dateiinformationen"
   type: "Dateityp"
@@ -2154,3 +2169,44 @@ _fileViewer:
   uploadedAt: "Hochgeladen am"
   attachedNotes: "Zugehörige Notizen"
   thisPageCanBeSeenFromTheAuthor: "Nur der Benutzer, der diese Datei hochgeladen hat, kann diese Seite sehen."
+_externalResourceInstaller:
+  title: "Von externer Seite installieren"
+  checkVendorBeforeInstall: "Überprüfe vor Installation die Vertrauenswürdigkeit des Vertreibers."
+  _plugin:
+    title: "Möchtest du dieses Plugin installieren?"
+    metaTitle: "Plugininformation"
+  _theme:
+    title: "Möchten du dieses Farbschema installieren?"
+    metaTitle: "Farbschemainfo"
+  _meta:
+    base: "Farbschemavorlage"
+  _vendorInfo:
+    title: "Vertreiber"
+    endpoint: "Referenzierter Endpunkt"
+    hashVerify: "Hash-Verifikation"
+  _errors:
+    _invalidParams:
+      title: "Ungültige Parameter"
+      description: "Es fehlen Informationen zum Laden der externen Ressource. Überprüfe die übergebene URL."
+    _resourceTypeNotSupported:
+      title: "Diese Ressource wird nicht unterstützt"
+      description: "Dieser Ressourcentyp wird nicht unterstützt. Bitte kontaktiere den Seitenbesitzer."
+    _failedToFetch:
+      title: "Fehler beim Abrufen der Daten"
+      fetchErrorDescription: "Während der Kommunikation mit der externen Seite ist ein Fehler aufgetreten. Kontaktiere den Seitenbesitzer, falls ein erneutes Probieren dieses Problem nicht löst."
+      parseErrorDescription: "Während dem Auslesen der externen Daten ist ein Fehler aufgetreten. Kontaktiere den Seitenbesitzer."
+    _hashUnmatched:
+      title: "Datenverifizierung fehlgeschlagen"
+      description: "Die Integritätsprüfung der geladenen Daten ist fehlgeschlagen. Aus Sicherheitsgründen kann die Installation nicht fortgesetzt werden. Kontaktiere den Seitenbesitzer."
+    _pluginParseFailed:
+      title: "AiScript-Fehler"
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des AiScript-Parsings ein Fehler auf. Kontaktiere den Autor des Plugins. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _pluginInstallFailed:
+      title: "Das Plugin konnte nicht installiert werden"
+      description: "Während der Installation des Plugin ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _themeParseFailed:
+      title: "Parsing des Farbschemas fehlgeschlagen"
+      description: "Die angeforderten Daten wurden erfolgreich abgerufen, jedoch trat während des Farbschema-Parsings ein Fehler auf. Kontaktiere den Autor des Farbschemas. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+    _themeInstallFailed:
+      title: "Das Farbschema konnte nicht installiert werden"
+      description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<Mfm :text="block.text" :isNote="false" :i="$i"/>
+	<Mfm :text="block.text" :isNote="false"/>
 	<MkUrlPreview v-for="url in urls" :key="url" :url="url"/>
 </div>
 </template>

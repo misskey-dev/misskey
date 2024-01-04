@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
-	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
@@ -23,6 +23,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
+	<img
+		v-if="showDecoration && (decoration || user.avatarDecorations.length > 0)"
+		:class="[$style.decoration]"
+		:src="decoration?.url ?? user.avatarDecorations[0].url"
+		:style="{
+			rotate: getDecorationAngle(),
+			scale: getDecorationScale(),
+		}"
+		alt=""
+	>
 </component>
 </template>
 
@@ -47,28 +57,63 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
+	decoration?: {
+		url: string;
+		angle?: number;
+		flipH?: boolean;
+		flipV?: boolean;
+	};
+	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
+	decoration: undefined,
+	forceShowDecoration: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'click', v: MouseEvent): void;
 }>();
 
+const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
+
 const bound = $computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
+const url = $computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.enableDataSaverMode)
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
 
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
 	emit('click', ev);
+}
+
+function getDecorationAngle() {
+	let angle;
+	if (props.decoration) {
+		angle = props.decoration.angle ?? 0;
+	} else if (props.user.avatarDecorations.length > 0) {
+		angle = props.user.avatarDecorations[0].angle ?? 0;
+	} else {
+		angle = 0;
+	}
+	return angle === 0 ? undefined : `${angle * 360}deg`;
+}
+
+function getDecorationScale() {
+	let scaleX;
+	if (props.decoration) {
+		scaleX = props.decoration.flipH ? -1 : 1;
+	} else if (props.user.avatarDecorations.length > 0) {
+		scaleX = props.user.avatarDecorations[0].flipH ? -1 : 1;
+	} else {
+		scaleX = 1;
+	}
+	return scaleX === 1 ? undefined : `${scaleX} 1`;
 }
 
 let color = $ref<string | undefined>();
@@ -134,7 +179,7 @@ watch(() => props.user.avatarBlurhash, () => {
 
 .indicator {
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 	bottom: 0;
 	left: 0;
 	width: 20%;
@@ -277,5 +322,14 @@ watch(() => props.user.avatarBlurhash, () => {
 			}
 		}
 	}
+}
+
+.decoration {
+	position: absolute;
+	z-index: 1;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	pointer-events: none;
 }
 </style>

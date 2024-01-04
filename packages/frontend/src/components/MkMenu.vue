@@ -145,11 +145,13 @@ const onGlobalMousedown = (event: MouseEvent) => {
 };
 
 let childCloseTimer: null | number = null;
+
 function onItemMouseEnter(item) {
 	childCloseTimer = window.setTimeout(() => {
 		closeChild();
 	}, 300);
 }
+
 function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }

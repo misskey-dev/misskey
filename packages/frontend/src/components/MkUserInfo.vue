@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<span v-if="$i && $i.id !== user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
 	<div :class="$style.description">
 		<div v-if="user.description" :class="$style.mfm">
-			<Mfm :text="user.description" :author="user" :i="$i"/>
+			<Mfm :text="user.description" :author="user"/>
 		</div>
 		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
 	</div>

@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkKeyValue>
 					</FormSplit>
 					<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>{{ i18n.ts.impressum }}</FormLink>
-					<div class="_formLinks">
+					<div class="_gaps_s">
 						<MkFolder v-if="instance.serverRules.length > 0">
 							<template #label>{{ i18n.ts.serverRules }}</template>
 
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<FormSection>
 				<template #label>Well-known resources</template>
-				<div class="_formLinks">
+				<div class="_gaps_s">
 					<FormLink :to="`/.well-known/host-meta`" external>host-meta</FormLink>
 					<FormLink :to="`/.well-known/host-meta.json`" external>host-meta.json</FormLink>
 					<FormLink :to="`/.well-known/nodeinfo`" external>nodeinfo</FormLink>

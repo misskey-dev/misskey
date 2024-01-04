@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div class="description">
 						<MkOmit>
-							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user" :i="$i"/>
+							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user"/>
 							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 						</MkOmit>
 					</div>
@@ -100,7 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<Mfm :text="field.name" :plain="true" :colored="false"/>
 							</dt>
 							<dd class="value">
-								<Mfm :text="field.value" :author="user" :i="$i" :colored="false"/>
+								<Mfm :text="field.value" :author="user" :colored="false"/>
 								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
 							</dd>
 						</dl>

@@ -90,11 +90,15 @@ class UserListChannel extends Channel {
 			if (!note.visibleUserIds!.includes(this.user!.id)) return;
 		}
 
-		// 関係ない返信は除外
-		if (note.reply && !this.membershipsMap[note.userId]?.withReplies) {
+		if (note.reply) {
 			const reply = note.reply;
-			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-			if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
+			if (this.membershipsMap[note.userId]?.withReplies) {
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+			} else {
+				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
+			}
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する

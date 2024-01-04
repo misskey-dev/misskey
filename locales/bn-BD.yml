@@ -840,6 +840,7 @@ youFollowing: "অনুসরণ করা হচ্ছে"
 icon: "প্রোফাইল ছবি"
 replies: "জবাব"
 renotes: "রিনোট"
+flip: "উল্টান"
 _role:
   priority: "অগ্রাধিকার"
   _priority:

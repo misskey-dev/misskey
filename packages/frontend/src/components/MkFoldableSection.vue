@@ -84,6 +84,7 @@ onMounted(() => {
 			return getParentBg(el.parentElement);
 		}
 	}
+
 	const rawBg = getParentBg(el.value);
 	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	_bg.setAlpha(0.85);

@@ -17,6 +17,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -416,5 +417,124 @@ export function getNoteMenu(props: {
 	return {
 		menu,
 		cleanup,
+	};
+}
+
+type Visibility = 'public' | 'home' | 'followers' | 'specified';
+
+// defaultStore.state.visibilityがstringなためstringも受け付けている
+function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
+	if (a === 'specified' || b === 'specified') return 'specified';
+	if (a === 'followers' || b === 'followers') return 'followers';
+	if (a === 'home' || b === 'home') return 'home';
+	// if (a === 'public' || b === 'public')
+	return 'public';
+}
+
+export function getRenoteMenu(props: {
+	note: Misskey.entities.Note;
+	renoteButton: Ref<HTMLElement>;
+	mock?: boolean;
+}) {
+	const isRenote = (
+		props.note.renote != null &&
+		props.note.text == null &&
+		props.note.fileIds.length === 0 &&
+		props.note.poll == null
+	);
+
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+
+	const channelRenoteItems: MenuItem[] = [];
+	const normalRenoteItems: MenuItem[] = [];
+
+	if (appearNote.channel) {
+		channelRenoteItems.push(...[{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = props.renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
+				if (!props.mock) {
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						channelId: appearNote.channelId,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				if (!props.mock) {
+					os.post({
+						renote: appearNote,
+						channel: appearNote.channel,
+					});
+				}
+			},
+		}]);
+	}
+
+	if (!appearNote.channel || appearNote.channel?.allowRenoteToExternal) {
+		normalRenoteItems.push(...[{
+			text: i18n.ts.renote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = props.renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
+				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+
+				let visibility = appearNote.visibility;
+				visibility = smallerVisibility(visibility, configuredVisibility);
+				if (appearNote.channel?.isSensitive) {
+					visibility = smallerVisibility(visibility, 'home');
+				}
+
+				if (!props.mock) {
+					os.api('notes/create', {
+						localOnly,
+						visibility,
+						renoteId: appearNote.id,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			},
+		}, (props.mock) ? undefined : {
+			text: i18n.ts.quote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+				});
+			},
+		}]);
+	}
+
+	// nullを挟むことで区切り線を出せる
+	const renoteItems = [
+		...normalRenoteItems,
+		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [null] : [],
+		...channelRenoteItems,
+	];
+
+	return {
+		menu: renoteItems,
 	};
 }

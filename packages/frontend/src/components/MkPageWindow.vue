@@ -166,6 +166,8 @@ defineExpose({
 
 <style lang="scss" module>
 .root {
+	overscroll-behavior: contain;
+
 	min-height: 100%;
 	background: var(--bg);
 

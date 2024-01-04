@@ -87,6 +87,7 @@ function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
 	return new Map([...map, ...arrayToEntries(entities)]);
 }
+
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance.js';
@@ -101,6 +102,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
+	(ev: 'status', error: boolean): void;
 }>();
 
 let rootEl = $shallowRef<HTMLElement>();
@@ -191,6 +193,11 @@ watch(queue, (a, b) => {
 	if (a.size === 0 && b.size === 0) return;
 	emit('queue', queue.value.size);
 }, { deep: true });
+
+watch(error, (n, o) => {
+	if (n === o) return;
+	emit('status', n);
+});
 
 async function init(): Promise<void> {
 	items.value = new Map();

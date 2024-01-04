@@ -225,6 +225,13 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						data,
 					}];
 
+				case 'test':
+					return [t('_notification.testNotification'), {
+						body: t('_notification.notificationWillBeDisplayedLikeThis'),
+						badge: iconUrl('bell'),
+						data,
+					}];
+		
 				default:
 					return null;
 			}

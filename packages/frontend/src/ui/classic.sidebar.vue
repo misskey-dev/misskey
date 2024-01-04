@@ -21,7 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="item === '-'" class="divider"></div>
 		<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="item" activeClass="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
-			<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="_indicatorCircle"></i></span>
+			<span v-if="navbarItemDef[item].indicated" class="indicator">
+				<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
+				<i v-else class="_indicatorCircle"></i>
+			</span>
 		</component>
 	</template>
 	<div class="divider"></div>
@@ -218,6 +221,12 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 			color: var(--navIndicator);
 			font-size: 8px;
 			animation: blink 1s infinite;
+
+			&:has(.itemIndicateValueIcon) {
+				animation: none;
+				left: auto;
+				right: 20px;
+			}
 		}
 
 		&:hover {

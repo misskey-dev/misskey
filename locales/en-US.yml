@@ -979,6 +979,7 @@ assign: "Assign"
 unassign: "Unassign"
 color: "Color"
 manageCustomEmojis: "Manage Custom Emojis"
+manageAvatarDecorations: "Manage avatar decorations"
 youCannotCreateAnymore: "You've hit the creation limit."
 cannotPerformTemporary: "Temporarily unavailable"
 cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
@@ -1132,6 +1133,10 @@ mutualFollow: "Mutual follow"
 fileAttachedOnly: "Only notes with files"
 showRepliesToOthersInTimeline: "Show replies to others in timeline"
 hideRepliesToOthersInTimeline: "Hide replies to others from timeline"
+showRepliesToOthersInTimelineAll: "Show replies to others from everyone you follow in timeline"
+hideRepliesToOthersInTimelineAll: "Hide replies to others from everyone you follow in timeline"
+confirmShowRepliesAll: "This operation is irreversible. Would you really like to show replies to others from everyone you follow in your timeline?"
+confirmHideRepliesAll: "This operation is irreversible. Would you really like to hide replies to others from everyone you follow in your timeline?"
 externalServices: "External Services"
 impressum: "Impressum"
 impressumUrl: "Impressum URL"
@@ -1139,6 +1144,20 @@ impressumDescription: "In some countries, like germany, the inclusion of operato
 privacyPolicy: "Privacy Policy"
 privacyPolicyUrl: "Privacy Policy URL"
 tosAndPrivacyPolicy: "Terms of Service and Privacy Policy"
+avatarDecorations: "Avatar decorations"
+attach: "Attach"
+detach: "Remove"
+angle: "Angle"
+flip: "Flip"
+showAvatarDecorations: "Show avatar decorations"
+releaseToRefresh: "Release to refresh"
+refreshing: "Refreshing..."
+pullDownToRefresh: "Pull down to refresh"
+disableStreamingTimeline: "Disable real-time timeline updates"
+useGroupedNotifications: "Display grouped notifications"
+signupPendingError: "There was a problem verifying the email address. The link may have expired."
+cwNotationRequired: "If \"Hide content\" is enabled, a description must be provided."
+doReaction: "Add reaction"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
@@ -1148,6 +1167,8 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Having too many active announcements may worsen the user experience. Please consider archiving announcements that have become obsolete."
   readConfirmTitle: "Mark as read?"
   readConfirmText: "This will mark the contents of \"{title}\" as read."
+  shouldNotBeUsedToPresentPermanentInfo: "As it may significantly impact the user experience for new users, it is recommended to use notifications in the flow information rather than stock information."
+  dialogAnnouncementUxWarn: "Having two or more dialog-style notifications simultaneously can significantly impact the user experience, so please use them carefully."
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."
@@ -1160,9 +1181,77 @@ _initialAccountSetting:
   pushNotificationDescription: "Enabling push notifications will allow you to receive notifications from {name} directly on your device."
   initialAccountSettingCompleted: "Profile setup complete!"
   haveFun: "Enjoy {name}!"
-  ifYouNeedLearnMore: "If you'd like to learn more about how to use {name} (Misskey), please visit {link}."
+  youCanContinueTutorial: "You can proceed to a tutorial on how to use {name} (Misskey) or you can exit the setup here and start using it immediately."
+  startTutorial: "Start Tutorial"
   skipAreYouSure: "Really skip profile setup?"
   laterAreYouSure: "Really do profile setup later?"
+_initialTutorial:
+  launchTutorial: "Start Tutorial"
+  title: "Tutorial"
+  wellDone: "Well done!"
+  skipAreYouSure: "Quit Tutorial?"
+  _landing:
+    title: "Welcome to the Tutorial"
+    description: "Here, you can learn the basics of using Misskey and its features."
+  _note:
+    title: "What is a Note?"
+    description: "Posts on Misskey are called 'Notes.' Notes are arranged chronologically on the timeline and are updated in real-time."
+    reply: "Click on this button to reply to a message. It's also possible to reply to replies, continuing the conversation like a thread."
+    renote: "You can share that note to your own timeline. You can also quote them with your comments."
+    reaction: "You can add reactions to the Note. More details will be explained on the next page."
+    menu: "You can view Note details, copy links, and perform various other actions."
+  _reaction:
+    title: "What are Reactions?"
+    description: "Notes can be reacted to with various emojis. Reactions allow you to express nuances that may not be conveyed with just a 'like.'"
+    letsTryReacting: "Reactions can be added by clicking the '+' button on the note. Try reacting to this sample note!"
+    reactToContinue: "Add a reaction to proceed."
+    reactNotification: "You'll receive real-time notifications when someone reacts to your note."
+    reactDone: "You can undo a reaction by pressing the '-' button."
+  _timeline:
+    title: "The Concept of Timelines"
+    description1: "Misskey provides multiple timelines based on usage (some may not be available depending on the server's policies)."
+    home: "You can view notes from accounts you follow."
+    local: "You can view notes from all users on this server."
+    social: "Notes from the Home and Local timelines will be displayed."
+    global: "You can view notes from all connected servers."
+    description2: "You can switch between timelines at the top of the screen at any time."
+    description3: "Additionally, there are list timelines and channel timelines. For more details, please refer to {link}."
+  _postNote:
+    title: "Note Posting Settings"
+    description1: "When posting a note on Misskey, various options are available. The posting form looks like this."
+    _visibility:
+      description: "You can limit who can view your note."
+      public: "Your note will be visible for all users."
+      home: "Public only on the Home timeline. People visiting your profile, via followers, and through renotes can see it."
+      followers: "Visible to followers only. Only followers can see it and no one else, and it cannot be renoted by others."
+      direct: "Visible only to specified users, and the recipient will be notified. It can be used as an alternative to direct messaging."
+      doNotSendConfidencialOnDirect1: "Be careful when sending sensitive information!"
+      doNotSendConfidencialOnDirect2: "Administrators of the server can see what you write. Be careful with sensitive information when sending direct notes to users on untrusted servers."
+      localOnly: "Posting with this flag will not federate the note to other servers. Users on other servers will not be able to view these notes directly, regardless of the display settings above."
+    _cw:
+      title: "Content Warning"
+      description: "Instead of the body, the content written in 'comments' field will be displayed. Pressing \"read more\" will reveal the body."
+      _exampleNote:
+        cw: "This will surely make you hungry!"
+        note: "Just had a chocolate-glazed donut 🍩😋"
+      useCases: "This is used when following the server guidelines for necessary notes or for self-restriction of spoiler or sensitive text."
+  _howToMakeAttachmentsSensitive:
+    title: "How to Mark Attachments as Sensitive?"
+    description: "For attachments that are required by server guidelines or that should not be left intact, add a \"sensitive\" flag."
+    tryThisFile: "Try marking the image attached in this form as sensitive!"
+    _exampleNote:
+      note: "Oops, messed up opening the natto lid..."
+    method: "To mark an attachment as sensitive, click the file thumbnail, open the menu, and click \"Mark as Sensitive.\""
+    sensitiveSucceeded: "When attaching files, please set sensitivities in accordance with the server guidelines."
+    doItToContinue: "Mark the attachment file as sensitive to proceed."
+  _done:
+    title: "The tutorial is complete! 🎉"
+    description: "The functions introduced here are just a small part. For a more detailed understanding of using Misskey, please refer to {link}."
+_timelineDescription:
+  home: "In the Home timeline, you can see notes from accounts you follow."
+  local: "In the Local timeline, you can see notes from all users on this server."
+  social: "The Social timeline displays notes from both the Home and Local timelines."
+  global: "In the Global timeline, you can see notes from all connected servers."
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _serverSettings:
@@ -1174,6 +1263,7 @@ _serverSettings:
   manifestJsonOverride: "manifest.json Override"
   shortName: "Short name"
   shortNameDescription: "A shorthand for the instance's name that can be displayed if the full official name is long."
+  fanoutTimelineDescription: "Greatly increases performance of timeline retrieval and reduces load on the database when enabled. In exchange, memory usage of Redis will increase. Consider disabling this in case of low server memory or server instability."
 _accountMigration:
   moveFrom: "Migrate another account to this one"
   moveFromSub: "Create alias to another account"
@@ -1431,6 +1521,9 @@ _achievements:
     _smashTestNotificationButton:
       title: "Test overflow"
       description: "Trigger the notification test repeatedly within an extremely short time"
+    _tutorialCompleted:
+      title: "Misskey Elementary Course Diploma"
+      description: "Tutorial completed"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -1474,6 +1567,7 @@ _role:
     inviteLimitCycle: "Invite limit cooldown"
     inviteExpirationTime: "Invite expiration interval"
     canManageCustomEmojis: "Can manage custom emojis"
+    canManageAvatarDecorations: "Manage avatar decorations"
     driveCapacity: "Drive capacity"
     alwaysMarkNsfw: "Always mark files as NSFW"
     pinMax: "Maximum number of pinned notes"
@@ -1593,6 +1687,7 @@ _aboutMisskey:
   donate: "Donate to Misskey"
   morePatrons: "We also appreciate the support of many other helpers not listed here. Thank you! 🥰"
   patrons: "Patrons"
+  projectMembers: "Project members"
 _displayOfSensitiveMedia:
   respect: "Hide media marked as sensitive"
   ignore: "Display media marked as sensitive"
@@ -1617,6 +1712,7 @@ _channel:
   notesCount: "{n} Notes"
   nameAndDescription: "Name and description"
   nameOnly: "Name only"
+  allowRenoteToExternal: "Allow renote and quote outside the channel"
 _menuDisplay:
   sideFull: "Side"
   sideIcon: "Side (Icons)"
@@ -1724,16 +1820,6 @@ _time:
   minute: "Minute(s)"
   hour: "Hour(s)"
   day: "Day(s)"
-_timelineTutorial:
-  title: "How to use Misskey"
-  step1_1: "This is the \"timeline\". All \"notes\" submitted on {name} will be chronologically displayed here."
-  step1_2: "There are a few different timelines. For example, the \"Home timeline\" will contain notes of users you follow, and the \"Local timeline\" will contain notes from all users of {name}."
-  step2_1: "Let's try posting a note next. You can do so by pressing the button with a pencil icon."
-  step2_2: "How about writing a self-introduction, or just \"Hello {name}!\" if you don't feel like it?"
-  step3_1: "Finished posting your first note?"
-  step3_2: "Your first note should now be displayed on your timeline."
-  step4_1: "You can also attach \"Reactions\" to notes."
-  step4_2: "To attach a reaction, press the \"+\" mark on a note and choose an emoji you'd like to react with."
 _2fa:
   alreadyRegistered: "You have already registered a 2-factor authentication device."
   registerTOTP: "Register authenticator app"
@@ -2043,6 +2129,9 @@ _notification:
   checkNotificationBehavior: "Check notification appearance"
   sendTestNotification: "Send test notification"
   notificationWillBeDisplayedLikeThis: "Notifications look like this"
+  reactedBySomeUsers: "{n} users reacted"
+  renotedBySomeUsers: "Renote from {n} users"
+  followedBySomeUsers: "Followed by {n} users"
   _types:
     all: "All"
     note: "New notes"
@@ -2146,6 +2235,9 @@ _moderationLogTypes:
   createAd: "Ad created"
   deleteAd: "Ad deleted"
   updateAd: "Ad updated"
+  createAvatarDecoration: "Avatar decoration created"
+  updateAvatarDecoration: "Avatar decoration updated"
+  deleteAvatarDecoration: "Avatar decoration deleted"
 _fileViewer:
   title: "File details"
   type: "File type"
@@ -2154,3 +2246,44 @@ _fileViewer:
   uploadedAt: "Uploaded at"
   attachedNotes: "Attached notes"
   thisPageCanBeSeenFromTheAuthor: "This page can only be seen by the user who uploaded this file."
+_externalResourceInstaller:
+  title: "Install from external site"
+  checkVendorBeforeInstall: "Make sure the distributor of this resource is trustworthy before installation."
+  _plugin:
+    title: "Do you want to install this plugin?"
+    metaTitle: "Plugin information"
+  _theme:
+    title: "Do you want to install this theme?"
+    metaTitle: "Theme information"
+  _meta:
+    base: "Base color scheme"
+  _vendorInfo:
+    title: "Distributor information"
+    endpoint: "Referenced endpoint"
+    hashVerify: "Hash verification"
+  _errors:
+    _invalidParams:
+      title: "Invalid parameters"
+      description: "There is not enough information to load data from an external site. Please confirm the entered URL."
+    _resourceTypeNotSupported:
+      title: "This external resource is not supported"
+      description: "The type of this external resource is not supported. Please contact the site administrator."
+    _failedToFetch:
+      title: "Failed to fetch data"
+      fetchErrorDescription: "An error occurred communicating with the external site. If trying again does not fix this issue, please contact the site administrator."
+      parseErrorDescription: "An error occurred processing the data loaded from the external site. Please contact the site administrator."
+    _hashUnmatched:
+      title: "Data verification failed"
+      description: "An error occurred verifying the integrity of the fetched data. As a security measure, installation cannot continue. Please contact the site administrator."
+    _pluginParseFailed:
+      title: "AiScript Error"
+      description: "The requested data was fetched successfully, but an error occurred during AiScript parsing. Please contact the plugin author. Error details can be viewed in the Javascript console."
+    _pluginInstallFailed:
+      title: "Plugin installation failed"
+      description: "A problem occurred during plugin installation. Please try again. Error details can be viewed in the Javascript console."
+    _themeParseFailed:
+      title: "Theme parsing failed"
+      description: "The requested data was fetched successfully, but an error occurred during theme parsing. Please contact the theme author. Error details can be viewed in the Javascript console."
+    _themeInstallFailed:
+      title: "Failed to install theme"
+      description: "A problem occurred during theme installation. Please try again. Error details can be viewed in the Javascript console."

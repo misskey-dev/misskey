@@ -4,20 +4,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img v-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle"/>
-<span v-else-if="useOsNativeEmojis" :alt="props.emoji" @pointerenter="computeTitle">{{ props.emoji }}</span>
+<img v-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<span v-else-if="useOsNativeEmojis" :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ props.emoji }}</span>
 <span v-else>{{ emoji }}</span>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
 import { defaultStore } from '@/store.js';
 import { getEmojiName } from '@/scripts/emojilist.js';
+import * as os from '@/os.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	emoji: string;
+	menu?: boolean;
+	menuReaction?: boolean;
 }>();
+
+const react = inject<((name: string) => void) | null>('react', null);
 
 const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
@@ -30,6 +37,28 @@ const url = computed(() => {
 function computeTitle(event: PointerEvent): void {
 	const title = getEmojiName(props.emoji as string) ?? props.emoji as string;
 	(event.target as HTMLElement).title = title;
+}
+
+function onClick(ev: MouseEvent) {
+	if (props.menu) {
+		os.popupMenu([{
+			type: 'label',
+			text: props.emoji,
+		}, {
+			text: i18n.ts.copy,
+			icon: 'ti ti-copy',
+			action: () => {
+				copyToClipboard(props.emoji);
+				os.success();
+			},
+		}, ...(props.menuReaction && react ? [{
+			text: i18n.ts.doReaction,
+			icon: 'ti ti-plus',
+			action: () => {
+				react(props.emoji);
+			},
+		}] : [])], ev.currentTarget ?? ev.target);
+	}
 }
 </script>
 

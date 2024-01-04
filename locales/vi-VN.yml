@@ -1047,6 +1047,7 @@ loadReplies: "Hiển thị các trả lời"
 pinnedList: "Các mục đã được ghim"
 keepScreenOn: "Giữ màn hình luôn bật"
 verifiedLink: "Chúng tôi đã xác nhận bạn là chủ sở hữu của đường dẫn này"
+flip: "Lật"
 _announcement:
   forExistingUsers: "Chỉ những người dùng đã tồn tại"
   forExistingUsersDescription: "Nếu được bật, thông báo này sẽ chỉ hiển thị với những người dùng đã tồn tại vào lúc thông báo được tạo. Nếu tắt đi, những tài khoản mới đăng ký sau khi thông báo được đăng lên cũng sẽ thấy nó."
@@ -1066,7 +1067,6 @@ _initialAccountSetting:
   pushNotificationDescription: "Bật thông báo đẩy sẽ cho phép bạn nhận thông báo từ {name} trực tiếp từ thiết bị của bạn."
   initialAccountSettingCompleted: "Thiết lập tài khoản thành công!"
   haveFun: "Hãy tận hưởng {name} nhé!"
-  ifYouNeedLearnMore: "Nếu bạn muốn tìm hiểu thêm về cách sử dụng {name} (Misskey), hãy vào {link}."
   skipAreYouSure: "Bạn thực sự muốn bỏ qua mục thiết lập tài khoản?"
   laterAreYouSure: "Bạn thực sự muốn thiết lập tài khoản vào lúc khác?"
 _serverSettings:
@@ -1502,9 +1502,6 @@ _time:
   minute: "phút"
   hour: "giờ"
   day: "ngày"
-_timelineTutorial:
-  step4_1: "Bạn có thể thêm \"Reaction\" vào ghi chú"
-  step4_2: "Khi thêm biểu cảm hãy nhấn dấu \"+\""
 _2fa:
   alreadyRegistered: "Bạn đã đăng ký thiết bị xác minh 2 bước."
   registerTOTP: "Đăng ký ứng dụng xác thực"
