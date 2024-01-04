@@ -71,7 +71,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'advancedMfm',
 	'loadRawImages',
 	'imageNewTab',
-	'enableDataSaverMode',
+	'dataSaver',
 	'disableShowingAnimatedImages',
 	'emojiStyle',
 	'disableDrawer',

@@ -150,10 +150,14 @@ export function getConfig(): UserConfig {
 		test: {
 			environment: 'happy-dom',
 			deps: {
-				inline: [
-					// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-					'browser-image-resizer',
-				],
+				optimizer: {
+					web: {
+						include: [
+							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
+							'browser-image-resizer',
+						],
+					},
+				},
 			},
 		},
 	};

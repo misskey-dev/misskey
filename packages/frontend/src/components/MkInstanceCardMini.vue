@@ -21,15 +21,15 @@ import * as os from '@/os.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
-	instance: Misskey.entities.Instance;
+	instance: Misskey.entities.FederationInstance;
 }>();
 
 let chartValues = $ref<number[] | null>(null);
 
 os.apiGet('charts/instance', { host: props.instance.host, limit: 16 + 1, span: 'day' }).then(res => {
 	// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
-	res.requests.received.splice(0, 1);
-	chartValues = res.requests.received;
+	res['requests.received'].splice(0, 1);
+	chartValues = res['requests.received'];
 });
 
 function getInstanceIcon(instance): string {

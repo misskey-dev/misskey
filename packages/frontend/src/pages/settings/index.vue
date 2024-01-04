@@ -33,13 +33,11 @@ import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { clearCache } from '@/scripts/clear-cache.js';
 import { instance } from '@/instance.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { fetchCustomEmojis } from '@/custom-emojis.js';
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -182,13 +180,7 @@ const menuDef = computed(() => [{
 		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
 		action: async () => {
-			os.waiting();
-			miLocalStorage.removeItem('locale');
-			miLocalStorage.removeItem('theme');
-			miLocalStorage.removeItem('emojis');
-			miLocalStorage.removeItem('lastEmojisFetchedAt');
-			await fetchCustomEmojis(true);
-			unisonReload();
+			await clearCache();
 		},
 	}, {
 		type: 'button',

@@ -39,6 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.sensitiveWords }}</template>
 						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
 					</MkTextarea>
+
+					<MkTextarea v-model="hiddenTags">
+						<template #label>{{ i18n.ts.hiddenTags }}</template>
+						<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -72,6 +77,7 @@ import FormLink from '@/components/form/link.vue';
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
 let sensitiveWords: string = $ref('');
+let hiddenTags: string = $ref('');
 let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
 let privacyPolicyUrl: string | null = $ref(null);
@@ -81,6 +87,7 @@ async function init() {
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
 	sensitiveWords = meta.sensitiveWords.join('\n');
+	hiddenTags = meta.hiddenTags.join('\n');
 	preservedUsernames = meta.preservedUsernames.join('\n');
 	tosUrl = meta.tosUrl;
 	privacyPolicyUrl = meta.privacyPolicyUrl;
@@ -93,6 +100,7 @@ function save() {
 		tosUrl,
 		privacyPolicyUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
+		hiddenTags: hiddenTags.split('\n'),
 		preservedUsernames: preservedUsernames.split('\n'),
 	}).then(() => {
 		fetchInstance();

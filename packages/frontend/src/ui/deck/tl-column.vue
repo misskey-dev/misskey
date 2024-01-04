@@ -120,10 +120,12 @@ const menu = [{
 	type: 'switch',
 	text: i18n.ts.showRepliesToOthersInTimeline,
 	ref: $$(withReplies),
+	disabled: $$(onlyFiles),
 } : undefined, {
 	type: 'switch',
 	text: i18n.ts.fileAttachedOnly,
 	ref: $$(onlyFiles),
+	disabled: props.column.tl === 'local' || props.column.tl === 'social' ? $$(withReplies) : false,
 }];
 </script>
 

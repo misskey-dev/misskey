@@ -18,6 +18,7 @@ import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { isSupportShare } from '@/scripts/navigator.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -280,11 +281,11 @@ export function getNoteMenu(props: {
 					window.open(appearNote.url ?? appearNote.uri, '_blank');
 				},
 			} : undefined,
-			{
+			...(isSupportShare() ? [{
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
 				action: share,
-			},
+			}] : []),
 			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
@@ -484,7 +485,7 @@ export function getRenoteMenu(props: {
 		}]);
 	}
 
-	if (!appearNote.channel || appearNote.channel?.allowRenoteToExternal) {
+	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
 		normalRenoteItems.push(...[{
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',

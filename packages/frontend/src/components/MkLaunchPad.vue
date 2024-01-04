@@ -101,6 +101,8 @@ function close() {
 			vertical-align: bottom;
 			height: 100px;
 			border-radius: 10px;
+			padding: 10px;
+			box-sizing: border-box;
 
 			&:hover {
 				color: var(--accent);

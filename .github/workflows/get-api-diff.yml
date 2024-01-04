@@ -22,16 +22,13 @@ jobs:
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json
-            repo-name: ${{ github.event.pull_request.base.repo.full_name }}
             ref: ${{ github.base_ref }}
           - api-json-name: api-head.json
-            repo-name: ${{ github.event.pull_request.head.repo.full_name }}
-            ref: ${{ github.head_ref }}
+            ref: refs/pull/${{ github.event.number }}/merge
 
     steps:
     - uses: actions/checkout@v4.1.1
       with:
-        repository: ${{ matrix.repo-name }}
         ref: ${{ matrix.ref }}
         submodules: true
     - name: Install pnpm

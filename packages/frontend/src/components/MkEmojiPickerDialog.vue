@@ -31,20 +31,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 import { defaultStore } from '@/store.js';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
+  choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,
 	asReactionPicker: false,
+	choseAndClose: true,
 });
 
 const emit = defineEmits<{
@@ -53,21 +54,23 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
-const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
+const modal = $shallowRef<InstanceType<typeof MkModal>>();
+const picker = $shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
 	emit('done', emoji);
-	modal.value?.close();
+	if (props.choseAndClose) {
+		modal?.close();
+	}
 }
 
 function opening() {
-	picker.value?.reset();
-	picker.value?.focus();
+	picker?.reset();
+	picker?.focus();
 
 	// 何故かちょっと待たないとフォーカスされない
 	setTimeout(() => {
-		picker.value?.focus();
+		picker?.focus();
 	}, 10);
 }
 </script>

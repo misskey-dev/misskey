@@ -67,13 +67,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
-		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
+		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :user="postAccount ?? $i"/>
+	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer :class="$style.footer">
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -124,6 +124,7 @@ import { deepClone } from '@/scripts/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import { emojiPicker } from '@/scripts/emoji-picker.js';
 
 const modal = inject('modal');
 
@@ -194,6 +195,7 @@ let hasNotSpecifiedMentions = $ref(false);
 let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
 let imeText = $ref('');
 let showingOptions = $ref(false);
+const textAreaReadOnly = ref(false);
 
 const draftKey = $computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -366,8 +368,8 @@ function checkMissingMention() {
 				return;
 			}
 		}
-		hasNotSpecifiedMentions = false;
 	}
+	hasNotSpecifiedMentions = false;
 }
 
 function addMissingMention() {
@@ -845,7 +847,18 @@ function insertMention() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
+	textAreaReadOnly.value = true;
+
+	emojiPicker.show(
+		ev.currentTarget ?? ev.target,
+		emoji => {
+			insertTextAtCursor(textareaEl, emoji);
+		},
+		() => {
+			textAreaReadOnly.value = false;
+			focus();
+		},
+	);
 }
 
 function showActions(ev) {
@@ -1059,8 +1072,9 @@ defineExpose({
 
 .visibility {
 	overflow: clip;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 210px;
 
 	&:enabled {
 		> .headerRightButtonText {

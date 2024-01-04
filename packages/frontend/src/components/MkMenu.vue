@@ -202,7 +202,7 @@ function focusDown() {
 }
 
 function switchItem(item: MenuSwitch & { ref: any }) {
-	if (item.disabled) return;
+	if (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value) return;
 	item.ref = !item.ref;
 }
 
