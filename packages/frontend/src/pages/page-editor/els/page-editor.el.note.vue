@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
 import { watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -41,7 +42,7 @@ const emit = defineEmits<{
 }>();
 
 const id = ref<any>(props.modelValue.note);
-const note = ref<any>(null);
+const note = ref<Misskey.entities.Note | null>(null);
 
 watch(id, async () => {
 	if (id.value && (id.value.startsWith('http://') || id.value.startsWith('https://'))) {

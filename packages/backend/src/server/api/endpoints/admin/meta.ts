@@ -13,10 +13,9 @@ import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 export const meta = {
 	tags: ['meta'],
 
-	kind: 'read:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:meta',
 
 	res: {
 		type: 'object',
@@ -143,6 +142,14 @@ export const meta = {
 				optional: false, nullable: false,
 				items: {
 					type: 'string',
+				},
+			},
+			bannedEmailDomains: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 			preservedUsernames: {
@@ -277,6 +284,18 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableTruemailApi: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			truemailInstance: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			truemailAuthKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableChartsForRemoteUser: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -370,6 +389,10 @@ export const meta = {
 				optional: false, nullable: true,
 			},
 			name: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			shortName: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -509,10 +532,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
 				enableVerifymailApi: instance.enableVerifymailApi,
 				verifymailAuthKey: instance.verifymailAuthKey,
+				enableTruemailApi: instance.enableTruemailApi,
+				truemailInstance: instance.truemailInstance,
+				truemailAuthKey: instance.truemailAuthKey,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
+				bannedEmailDomains: instance.bannedEmailDomains,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,

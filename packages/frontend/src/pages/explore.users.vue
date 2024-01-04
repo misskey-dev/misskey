@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, ref, shallowRef, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkUserList from '@/components/MkUserList.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
@@ -76,8 +77,8 @@ const props = defineProps<{
 
 const origin = ref('local');
 const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
-const tagsLocal = ref([]);
-const tagsRemote = ref([]);
+const tagsLocal = ref<Misskey.entities.Hashtag[]>([]);
+const tagsRemote = ref<Misskey.entities.Hashtag[]>([]);
 
 watch(() => props.tag, () => {
 	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);

@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -32,7 +33,7 @@ import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const relays = ref<any[]>([]);
+const relays = ref<Misskey.entities.AdminRelaysListResponse>([]);
 
 async function addRelay() {
 	const { canceled, result: inbox } = await os.inputText({
@@ -67,7 +68,7 @@ function remove(inbox: string) {
 }
 
 function refresh() {
-	api('admin/relays/list').then((relayList: any) => {
+	api('admin/relays/list').then(relayList => {
 		relays.value = relayList;
 	});
 }

@@ -12,10 +12,9 @@ import { MetaService } from '@/core/MetaService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:meta',
 } as const;
 
 export const paramDef = {
@@ -117,11 +116,15 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableVerifymailApi: { type: 'boolean' },
 		verifymailAuthKey: { type: 'string', nullable: true },
+		enableTruemailApi: { type: 'boolean' },
+		truemailInstance: { type: 'string', nullable: true },
+		truemailAuthKey: { type: 'string', nullable: true },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
+		bannedEmailDomains: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
@@ -469,6 +472,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					set.verifymailAuthKey = ps.verifymailAuthKey;
 				}
 			}
+			
+			if (ps.enableTruemailApi !== undefined) {
+				set.enableTruemailApi = ps.enableTruemailApi;
+			}
+
+			if (ps.truemailInstance !== undefined) {
+				if (ps.truemailInstance === '') {
+					set.truemailInstance = null;
+				} else {
+					set.truemailInstance = ps.truemailInstance;
+				}
+			}
+
+			if (ps.truemailAuthKey !== undefined) {
+				if (ps.truemailAuthKey === '') {
+					set.truemailAuthKey = null;
+				} else {
+					set.truemailAuthKey = ps.truemailAuthKey;
+				}
+			}
 
 			if (ps.enableChartsForRemoteUser !== undefined) {
 				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
@@ -524,6 +547,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.notesPerOneAd !== undefined) {
 				set.notesPerOneAd = ps.notesPerOneAd;
+			}
+
+			if (ps.bannedEmailDomains !== undefined) {
+				set.bannedEmailDomains = ps.bannedEmailDomains;
 			}
 
 			const before = await this.metaService.fetch(true);

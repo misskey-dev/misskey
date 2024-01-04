@@ -54,7 +54,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import { infoImageUrl } from '@/instance.js';
 
-const list = ref<any>(null);
+const list = ref<InstanceType<typeof FormPagination>>();
 
 const pagination = {
 	endpoint: 'i/apps' as const,
