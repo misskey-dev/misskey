@@ -25,3 +25,21 @@ vi.mock('@/store.js', () => {
 		},
 	};
 });
+
+// Add mocks for Web Audio API
+const AudioNodeMock = vi.fn(() => ({
+	connect: vi.fn(() => ({ connect: vi.fn() })),
+	start: vi.fn(),
+}));
+
+const GainNodeMock = vi.fn(() => ({
+	gain: vi.fn(),
+}));
+
+const AudioContextMock = vi.fn(() => ({
+	createBufferSource: vi.fn(() => new AudioNodeMock()),
+	createGain: vi.fn(() => new GainNodeMock()),
+	decodeAudioData: vi.fn(),
+}));
+
+vi.stubGlobal('AudioContext', AudioContextMock);

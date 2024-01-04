@@ -64,15 +64,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			if (noteIds.length === 0) {
-				return [];
-			}
-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			if (ps.untilId) {
 				noteIds = noteIds.filter(id => id < ps.untilId!);
 			}
 			noteIds = noteIds.slice(0, ps.limit);
+
+			if (noteIds.length === 0) {
+				return [];
+			}
 
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })

@@ -198,12 +198,14 @@ export class NotificationEntityService implements OnModuleInit {
 			});
 		} else if (notification.type === 'renote:grouped') {
 			const users = await Promise.all(notification.userIds.map(userId => {
-				const user = hint?.packedUsers != null
-					? hint.packedUsers.get(userId)
-					: this.userEntityService.pack(userId!, { id: meId }, {
-						detail: false,
-					});
-				return user;
+				const packedUser = hint?.packedUsers != null ? hint.packedUsers.get(userId) : null;
+				if (packedUser) {
+					return packedUser;
+				}
+
+				return this.userEntityService.pack(userId, { id: meId }, {
+					detail: false,
+				});
 			}));
 			return await awaitAll({
 				id: notification.id,

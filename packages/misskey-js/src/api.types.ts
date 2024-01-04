@@ -15,6 +15,8 @@ export type Endpoints = {
 	// admin
 	'admin/abuse-user-reports': { req: TODO; res: TODO; };
 	'admin/delete-all-files-of-a-user': { req: { userId: User['id']; }; res: null; };
+	'admin/unset-user-avatar': { req: { userId: User['id']; }; res: null; };
+	'admin/unset-user-banner': { req: { userId: User['id']; }; res: null; };
 	'admin/delete-logs': { req: NoParams; res: null; };
 	'admin/get-index-stats': { req: TODO; res: TODO; };
 	'admin/get-table-stats': { req: TODO; res: TODO; };
@@ -430,7 +432,8 @@ export type Endpoints = {
 		injectFeaturedNote?: boolean;
 		receiveAnnouncementEmail?: boolean;
 		alwaysMarkNsfw?: boolean;
-		mutedWords?: string[][];
+		mutedWords?: (string[] | string)[];
+		hardMutedWords?: (string[] | string)[];
 		notificationRecieveConfig?: any;
 		emailNotificationTypes?: string[];
 		alsoKnownAs?: string[];

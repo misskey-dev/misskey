@@ -79,6 +79,10 @@ export const packedFederationInstanceSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		isSilenced: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		iconUrl: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -92,11 +96,6 @@ export const packedFederationInstanceSchema = {
 		themeColor: {
 			type: 'string',
 			optional: false, nullable: true,
-		},
-		isSilenced: {
-			type: "boolean",
-			optional: false,
-			nullable: false,
 		},
 		infoUpdatedAt: {
 			type: 'string',
