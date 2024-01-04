@@ -23,7 +23,7 @@ const accountData = miLocalStorage.getItem('account');
 // TODO: 外部からはreadonlyに
 export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
-export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;
 
 export let notesCount = $i == null ? 0 : $i.notesCount;
