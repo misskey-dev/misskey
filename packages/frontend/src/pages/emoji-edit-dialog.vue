@@ -39,7 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 				<MkInput v-model="aliases" autocapitalize="off">
 					<template #label>{{ i18n.ts.tags }}</template>
-					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
+					<template #caption>
+						{{ i18n.ts.theKeywordWhenSearchingForCustomEmoji }}<br/>
+						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
+					</template>
 				</MkInput>
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>

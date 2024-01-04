@@ -19,11 +19,13 @@ import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
+import { signinRequired } from '@/account.js';
 import { api } from '@/scripts/api.js';
-import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
-const instanceMutes = ref($i!.mutedInstances.join('\n'));
+const $i = signinRequired();
+
+const instanceMutes = ref($i.mutedInstances.join('\n'));
 const changed = ref(false);
 
 async function save() {

@@ -52,9 +52,11 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { api } from '@/scripts/api.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+
+const $i = signinRequired();
 
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);

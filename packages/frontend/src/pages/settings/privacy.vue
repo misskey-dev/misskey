@@ -80,8 +80,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import { api } from '@/scripts/api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+
+const $i = signinRequired();
 
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);
@@ -90,8 +92,8 @@ const preventAiLearning = ref($i.preventAiLearning);
 const isExplorable = ref($i.isExplorable);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
-const followingVisibility = ref($i?.followingVisibility);
-const followersVisibility = ref($i?.followersVisibility);
+const followingVisibility = ref($i.followingVisibility);
+const followersVisibility = ref($i.followersVisibility);
 
 const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
