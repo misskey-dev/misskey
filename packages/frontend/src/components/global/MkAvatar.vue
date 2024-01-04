@@ -82,7 +82,7 @@ const bound = computed(() => props.link
 	: {});
 
 const url = computed(() => {
-	if (!props.user.avatarUrl) return null;
+	if (props.user.avatarUrl == null) return null;
 	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
 	return props.user.avatarUrl;
 });
