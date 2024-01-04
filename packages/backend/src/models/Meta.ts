@@ -458,6 +458,23 @@ export class MiMeta {
 	public verifymailAuthKey: string | null;
 
 	@Column('boolean', {
+		default: false,
+	})
+	public enableTruemailApi: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public truemailInstance: string | null;
+	
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public truemailAuthKey: string | null;
+
+	@Column('boolean', {
 		default: true,
 	})
 	public enableChartsForRemoteUser: boolean;
