@@ -362,7 +362,7 @@ export function getNoteMenu(props: {
 					children: async () => {
 						const channelChildMenu = [] as MenuItem[];
 
-						const channel = await os.api('channels/show', { channelId: appearNote.channel!.id });
+						const channel = await api('channels/show', { channelId: appearNote.channel!.id });
 
 						if (channel.pinnedNoteIds.includes(appearNote.id)) {
 							channelChildMenu.push({
