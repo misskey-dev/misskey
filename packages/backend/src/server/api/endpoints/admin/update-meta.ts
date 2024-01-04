@@ -63,6 +63,10 @@ export const paramDef = {
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
 		hcaptchaSecretKey: { type: 'string', nullable: true },
+		enableMcaptcha: { type: 'boolean' },
+		mcaptchaSiteKey: { type: 'string', nullable: true },
+		mcaptchaInstanceUrl: { type: 'string', nullable: true },
+		mcaptchaSecretKey: { type: 'string', nullable: true },
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
@@ -269,6 +273,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.hcaptchaSecretKey = ps.hcaptchaSecretKey;
 			}
 
+			if (ps.enableMcaptcha !== undefined) {
+				set.enableMcaptcha = ps.enableMcaptcha;
+			}
+
+			if (ps.mcaptchaSiteKey !== undefined) {
+				set.mcaptchaSitekey = ps.mcaptchaSiteKey;
+			}
+
+			if (ps.mcaptchaInstanceUrl !== undefined) {
+				set.mcaptchaInstanceUrl = ps.mcaptchaInstanceUrl;
+			}
+
+			if (ps.mcaptchaSecretKey !== undefined) {
+				set.mcaptchaSecretKey = ps.mcaptchaSecretKey;
+			}
+
 			if (ps.enableRecaptcha !== undefined) {
 				set.enableRecaptcha = ps.enableRecaptcha;
 			}
@@ -472,7 +492,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					set.verifymailAuthKey = ps.verifymailAuthKey;
 				}
 			}
-			
+
 			if (ps.enableTruemailApi !== undefined) {
 				set.enableTruemailApi = ps.enableTruemailApi;
 			}
