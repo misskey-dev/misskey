@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h1 :title="flash.title">{{ flash.title }}</h1>
 		</header>
 		<p v-if="flash.summary" :title="flash.summary">
-			<Mfm :text="flash.summary" :plain="true" :nowrap="true"/>
+			<Mfm class="summaryMfm" :text="flash.summary" :plain="true" :nowrap="true"/>
 		</p>
 		<footer>
 			<img class="icon" :src="flash.user.avatarUrl"/>
@@ -58,7 +58,7 @@ const props = defineProps<{
 			font-size: 0.8em;
 			overflow: clip;
 
-			> span {
+			> .summaryMfm {
 				display: block;
 				width: 100%;
 			}
