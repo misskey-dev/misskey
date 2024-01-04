@@ -26,6 +26,11 @@ export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : n
 export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;
 
+export function signinRequired() {
+	if ($i == null) throw new Error('signin required');
+	return $i;
+}
+
 export let notesCount = $i == null ? 0 : $i.notesCount;
 export function incNotesCount() {
 	notesCount++;

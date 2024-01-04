@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
-				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
+				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -66,9 +66,11 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import MkPagination from '@/components/MkPagination.vue';
+
+const $i = signinRequired();
 
 const {
 	enableInfiniteScroll,
