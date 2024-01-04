@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkFolder>
@@ -59,7 +59,7 @@ const key = ref(0);
 const searchQuery = ref('');
 const searchOrigin = ref('combined');
 const notePagination = ref();
-const user = ref(null);
+const user = ref<any>(null);
 const isLocalOnly = ref(false);
 
 function selectUser() {

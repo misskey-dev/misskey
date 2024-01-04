@@ -9,6 +9,7 @@ import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'write:account',
 } as const;
 
 export const paramDef = {

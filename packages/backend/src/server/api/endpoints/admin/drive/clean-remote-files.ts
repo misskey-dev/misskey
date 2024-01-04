@@ -10,10 +10,9 @@ import { QueueService } from '@/core/QueueService.js';
 export const meta = {
 	tags: ['admin'],
 
-	kind: 'write:admin',
-
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:drive',
 } as const;
 
 export const paramDef = {

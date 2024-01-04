@@ -248,6 +248,11 @@ export default class Connection {
 			return;
 		}
 
+		if (this.token && ((channelService.kind && !this.token.permission.some(p => p === channelService.kind))
+			|| (!channelService.kind && channelService.requireCredential))) {
+			return;
+		}
+
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
 		if (channelService.shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
