@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
-	:preferType="asReactionPicker && defaultStore.state.reactionPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
+	:preferType="defaultStore.state.emojiPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
 	:src="src"
@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		class="_popup _shadow"
 		:class="{ [$style.drawer]: type === 'drawer' }"
 		:showPinned="showPinned"
+		:pinnedEmojis="pinnedEmojis"
 		:asReactionPicker="asReactionPicker"
 		:asDrawer="type === 'drawer'"
 		:max-height="maxHeight"
@@ -31,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 import { defaultStore } from '@/store.js';
@@ -39,11 +41,13 @@ const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
+  pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
   choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,
+	pinnedEmojis: undefined,
 	asReactionPicker: false,
 	choseAndClose: true,
 });
@@ -54,23 +58,23 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
-const picker = $shallowRef<InstanceType<typeof MkEmojiPicker>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
+const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
 	emit('done', emoji);
 	if (props.choseAndClose) {
-		modal?.close();
+		modal.value?.close();
 	}
 }
 
 function opening() {
-	picker?.reset();
-	picker?.focus();
+	picker.value?.reset();
+	picker.value?.focus();
 
 	// 何故かちょっと待たないとフォーカスされない
 	setTimeout(() => {
-		picker?.focus();
+		picker.value?.focus();
 	}, 10);
 }
 </script>

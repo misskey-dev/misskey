@@ -139,12 +139,14 @@ if (!mock) {
 
 <style lang="scss" module>
 .root {
-	display: inline-block;
+	display: inline-flex;
 	height: 42px;
 	margin: 2px;
 	padding: 0 6px;
 	font-size: 1.5em;
 	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
 
 	&.canToggle {
 		background: var(--buttonBg);
@@ -183,7 +185,7 @@ if (!mock) {
 	&.reacted, &.reacted:hover {
 		background: var(--accentedBg);
 		color: var(--accent);
-		box-shadow: 0 0 0px 1px var(--accent) inset;
+		box-shadow: 0 0 0 1px var(--accent) inset;
 
 		> .count {
 			color: var(--accent);

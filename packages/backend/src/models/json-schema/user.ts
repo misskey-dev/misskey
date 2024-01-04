@@ -74,6 +74,14 @@ export const packedUserLiteSchema = {
 						format: 'url',
 						nullable: false, optional: false,
 					},
+					offsetX: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
+					offsetY: {
+						type: 'number',
+						nullable: false, optional: true,
+					},
 				},
 			},
 		},
@@ -303,7 +311,12 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		ffVisibility: {
+		followingVisibility: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['public', 'followers', 'private'],
+		},
+		followersVisibility: {
 			type: 'string',
 			nullable: false, optional: false,
 			enum: ['public', 'followers', 'private'],
@@ -329,41 +342,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
-				properties: {
-					id: {
-						type: 'string',
-						nullable: false, optional: false,
-						format: 'id',
-					},
-					name: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					color: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					iconUrl: {
-						type: 'string',
-						nullable: true, optional: false,
-					},
-					description: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					isModerator: {
-						type: 'boolean',
-						nullable: false, optional: false,
-					},
-					isAdministrator: {
-						type: 'boolean',
-						nullable: false, optional: false,
-					},
-					displayOrder: {
-						type: 'number',
-						nullable: false, optional: false,
-					},
-				},
+				ref: 'RoleLite',
 			},
 		},
 		memo: {
@@ -575,9 +554,7 @@ export const packedMeDetailedOnlySchema = {
 				mention: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
-				achievementEarned: notificationRecieveConfig,
 				receiveFollowRequest: notificationRecieveConfig,
-				followRequestAccepted: notificationRecieveConfig,
 			},
 		},
 		emailNotificationTypes: {
@@ -703,6 +680,10 @@ export const packedMeDetailedOnlySchema = {
 					nullable: false, optional: false,
 				},
 				rateLimitFactor: {
+					type: 'number',
+					nullable: false, optional: false,
+				},
+				avatarDecorationLimit: {
 					type: 'number',
 					nullable: false, optional: false,
 				},

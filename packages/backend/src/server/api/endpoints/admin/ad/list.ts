@@ -12,8 +12,21 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'read:admin',
+
 	requireCredential: true,
 	requireModerator: true,
+	res: {
+		type: 'array',
+		optional: false,
+		nullable: false,
+		items: {
+			type: 'object',
+			optional: false,
+			nullable: false,
+			ref: 'Ad',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -44,7 +57,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 			const ads = await query.limit(ps.limit).getMany();
 
-			return ads;
+			return ads.map(ad => ({
+				id: ad.id,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
+				dayOfWeek: ad.dayOfWeek,
+				url: ad.url,
+				imageUrl: ad.imageUrl,
+				memo: ad.memo,
+				place: ad.place,
+				priority: ad.priority,
+				ratio: ad.ratio,
+			}));
 		});
 	}
 }

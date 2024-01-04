@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, shallowRef, ref } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -26,14 +26,14 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
-const withRenotes = $ref(props.column.withRenotes ?? true);
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const withRenotes = ref(props.column.withRenotes ?? true);
 
 if (props.column.listId == null) {
 	setList();
 }
 
-watch($$(withRenotes), v => {
+watch(withRenotes, v => {
 	updateColumn(props.column.id, {
 		withRenotes: v,
 	});
@@ -72,7 +72,7 @@ const menu = [
 	{
 		type: 'switch',
 		text: i18n.ts.showRenotes,
-		ref: $$(withRenotes),
+		ref: withRenotes,
 	},
 ];
 </script>

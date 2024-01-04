@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkTextarea v-model="installThemeCode">
+	<MkCodeEditor v-model="installThemeCode" lang="json5">
 		<template #label>{{ i18n.ts._theme.code }}</template>
-	</MkTextarea>
+	</MkCodeEditor>
 
 	<div class="_buttons">
 		<MkButton :disabled="installThemeCode == null" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
@@ -17,15 +17,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import { ref, computed } from 'vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
 import { parseThemeCode, previewTheme, installTheme } from '@/scripts/install-theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let installThemeCode = $ref(null);
+const installThemeCode = ref(null);
 
 async function install(code: string): Promise<void> {
 	try {
@@ -55,9 +55,9 @@ async function install(code: string): Promise<void> {
 	}
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts._theme.install,

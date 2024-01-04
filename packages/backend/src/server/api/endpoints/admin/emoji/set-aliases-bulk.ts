@@ -10,6 +10,8 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
 } as const;

@@ -14,6 +14,8 @@ export const GALLERY_POSTS_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ご�
 const PER_USER_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 7; // 1週間ごと
 const HASHTAG_RANKING_WINDOW = 1000 * 60 * 60; // 1時間ごと
 
+const featuredEpoc = new Date('2023-01-01T00:00:00Z').getTime();
+
 @Injectable()
 export class FeaturedService {
 	constructor(
@@ -24,7 +26,7 @@ export class FeaturedService {
 
 	@bindThis
 	private getCurrentWindow(windowRange: number): number {
-		const passed = new Date().getTime() - new Date(new Date().getFullYear(), 0, 1).getTime();
+		const passed = new Date().getTime() - featuredEpoc;
 		return Math.floor(passed / windowRange);
 	}
 
@@ -76,6 +78,17 @@ export class FeaturedService {
 	}
 
 	@bindThis
+	private async removeFromRanking(name: string, windowRange: number, element: string): Promise<void> {
+		const currentWindow = this.getCurrentWindow(windowRange);
+		const previousWindow = currentWindow - 1;
+
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.zrem(`${name}:${currentWindow}`, element);
+		redisPipeline.zrem(`${name}:${previousWindow}`, element);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
 	public updateGlobalNotesRanking(noteId: MiNote['id'], score = 1): Promise<void> {
 		return this.updateRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, noteId, score);
 	}
@@ -123,5 +136,10 @@ export class FeaturedService {
 	@bindThis
 	public getHashtagsRanking(threshold: number): Promise<string[]> {
 		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, threshold);
+	}
+
+	@bindThis
+	public removeHashtagsFromRanking(hashtag: string): Promise<void> {
+		return this.removeFromRanking('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, hashtag);
 	}
 }
