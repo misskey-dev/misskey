@@ -8,7 +8,7 @@ import { common } from './common.js';
 import { version, ui, lang, updateLocale } from '@/config.js';
 import { i18n, updateI18n } from '@/i18n.js';
 import { confirm, alert, post, popup, toast } from '@/os.js';
-import { useStream, isReloading } from '@/stream.js';
+import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
@@ -39,7 +39,6 @@ export async function mainBoot() {
 
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
-		if (isReloading) return;
 		if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
 			location.reload();
 		} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
@@ -58,7 +57,7 @@ export async function mainBoot() {
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('../plugin').then(async ({ install }) => {
+		import('@/plugin.js').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
 			await new Promise(r => setTimeout(r, 0));
 			install(plugin);

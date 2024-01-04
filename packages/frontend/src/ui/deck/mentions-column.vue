@@ -4,10 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn :column="column" :isStacked="isStacked">
+<XColumn :column="column" :isStacked="isStacked" :refresher="() => reloadTimeline()">
 	<template #header><i class="ti ti-at" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
-	<MkNotes :pagination="pagination"/>
+	<MkNotes ref="tlComponent" :pagination="pagination"/>
 </XColumn>
 </template>
 
@@ -21,6 +21,16 @@ defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
+
+const tlComponent: InstanceType<typeof MkNotes> = $ref();
+
+function reloadTimeline() {
+	return new Promise<void>((res) => {
+		tlComponent.pagingComponent?.reload().then(() => {
+			res();
+		});
+	});
+}
 
 const pagination = {
 	endpoint: 'notes/mentions' as const,

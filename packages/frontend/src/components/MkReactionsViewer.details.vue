@@ -73,7 +73,6 @@ function getReactionName(reaction: string): string {
 }
 
 .users {
-	contain: content;
 	flex: 1;
 	min-width: 0;
 	margin: -4px 14px 0 10px;
@@ -85,7 +84,7 @@ function getReactionName(reaction: string): string {
 	line-height: 24px;
 	padding-top: 4px;
 	white-space: nowrap;
-	overflow: hidden;
+	overflow: visible;
 	text-overflow: ellipsis;
 }
 

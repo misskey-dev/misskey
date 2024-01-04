@@ -1169,6 +1169,8 @@ _announcement:
   readConfirmText: "This will mark the contents of \"{title}\" as read."
   shouldNotBeUsedToPresentPermanentInfo: "As it may significantly impact the user experience for new users, it is recommended to use notifications in the flow information rather than stock information."
   dialogAnnouncementUxWarn: "Having two or more dialog-style notifications simultaneously can significantly impact the user experience, so please use them carefully."
+  silence: "No notification"
+  silenceDescription: "Turning this on will skip the notification of this announcement and the user won't need to read it."
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."

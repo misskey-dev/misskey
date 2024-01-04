@@ -51,7 +51,6 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
-		includeMyRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		excludeNsfw: { type: 'boolean', default: false },
 	},
@@ -169,7 +168,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				query.andWhere('note.fileIds != \'{}\'');
 			}
 
-			if (ps.includeMyRenotes === false) {
+			if (ps.withRenotes === false) {
 				query.andWhere(new Brackets(qb => {
 					qb.orWhere('note.userId != :userId', { userId: ps.userId });
 					qb.orWhere('note.renoteId IS NULL');

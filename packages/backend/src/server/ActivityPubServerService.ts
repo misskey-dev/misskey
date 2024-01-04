@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
@@ -10,6 +11,7 @@ import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
+import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
@@ -27,7 +29,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
@@ -108,7 +110,58 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		// TODO: request.bodyのバリデーション？
+		if (signature.params.headers.indexOf('host') === -1
+			|| request.headers.host !== this.config.host) {
+			// Host not specified or not match.
+			reply.code(401);
+			return;
+		}
+
+		if (signature.params.headers.indexOf('digest') === -1) {
+			// Digest not found.
+			reply.code(401);
+		} else {
+			const digest = request.headers.digest;
+
+			if (typeof digest !== 'string') {
+				// Huh?
+				reply.code(401);
+				return;
+			}
+
+			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
+			const match = digest.match(re);
+
+			if (match == null) {
+				// Invalid digest
+				reply.code(401);
+				return;
+			}
+
+			const algo = match[1];
+			const digestValue = match[2];
+
+			if (algo !== 'SHA-256') {
+				// Unsupported digest algorithm
+				reply.code(401);
+				return;
+			}
+
+			if (request.rawBody == null) {
+				// Bad request
+				reply.code(400);
+				return;
+			}
+
+			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
+
+			if (hash !== digestValue) {
+				// Invalid digest
+				reply.code(401);
+				return;
+			}
+		}
+
 		this.queueService.inbox(request.body as IActivity, signature);
 
 		reply.code(202);
@@ -460,9 +513,28 @@ export class ActivityPubServerService {
 			},
 		});
 
+		const almostDefaultJsonParser: FastifyBodyParser<Buffer> = function (request, rawBody, done) {
+			if (rawBody.length === 0) {
+				const err = new Error('Body cannot be empty!') as any;
+				err.statusCode = 400;
+				return done(err);
+			}
+
+			try {
+				const json = secureJson.parse(rawBody.toString('utf8'), null, {
+					protoAction: 'ignore',
+					constructorAction: 'ignore',
+				});
+				done(null, json);
+			} catch (err: any) {
+				err.statusCode = 400;
+				return done(err);
+			}
+		};
+
 		fastify.register(fastifyAccepts);
-		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
-		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
+		fastify.addContentTypeParser('application/activity+json', { parseAs: 'buffer' }, almostDefaultJsonParser);
+		fastify.addContentTypeParser('application/ld+json', { parseAs: 'buffer' }, almostDefaultJsonParser);
 
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Access-Control-Allow-Headers', 'Accept');
@@ -474,8 +546,8 @@ export class ActivityPubServerService {
 
 		//#region Routing
 		// inbox (limit: 64kb)
-		fastify.post('/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
-		fastify.post('/users/:user/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/users/:user/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
 
 		// note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {

@@ -36,7 +36,7 @@ type MfmProps = {
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
-	nyaize: boolean | 'account';
+	nyaize: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
@@ -45,7 +45,7 @@ type MfmProps = {
 // eslint-disable-next-line import/no-default-export
 export default function(props: MfmProps) {
 	const isNote = props.isNote ?? true;
-	const shouldNyaize = props.nyaize ? props.nyaize === 'account' ? props.author?.isCat : false : false;
+	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;

@@ -18,7 +18,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		tokenId: { type: 'string', format: 'misskey:id' },
-		token: { type: 'string' },
+		token: { type: 'string', nullable: true },
 	},
 	anyOf: [
 		{ required: ['tokenId'] },
