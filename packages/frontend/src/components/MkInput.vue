@@ -163,7 +163,7 @@ onMounted(() => {
 			focus();
 		}
 	});
-	
+
 	if (props.mfmAutocomplete) {
 		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
 	}

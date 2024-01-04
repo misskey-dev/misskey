@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ i18n.ts.add }}</MkButton>
 	<MkButton v-else class="add" disabled>{{ i18n.ts._poll.noMore }}</MkButton>
 	<MkSwitch v-model="multiple">{{ i18n.ts._poll.canMultipleVote }}</MkSwitch>
-	<section>
+	<section style="margin-bottom: 8px;  border-top: solid 1.5px var(--divider);">
 		<div>
 			<MkSelect v-model="expiration" small>
 				<template #label>{{ i18n.ts._poll.expiration }}</template>
@@ -152,7 +152,7 @@ watch([choices, multiple, expiration, atDate, atTime, after, unit], () => emit('
     margin: 4px 8px;
     padding: 4px 8px;
     border-radius: 8px;
-    border: solid 2px var(--divider);
+    border: solid 1.5px var(--divider);
 	> .caution {
 		margin: 0 0 8px 0;
 		font-size: 0.8em;
