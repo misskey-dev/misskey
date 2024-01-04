@@ -696,6 +696,7 @@ export interface Locale {
     "other": string;
     "regenerateLoginToken": string;
     "regenerateLoginTokenDescription": string;
+    "theKeywordWhenSearchingForCustomEmoji": string;
     "setMultipleBySeparatingWithSpace": string;
     "emojiNameValidation": string;
     "isSensitive": string;
