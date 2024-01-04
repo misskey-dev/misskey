@@ -20,7 +20,7 @@ WORKDIR /misskey
 
 COPY --link pnpm-lock.yaml ./
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm fetch
+	pnpm fetch --ignore-scripts
 
 COPY --link ["pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
@@ -29,7 +29,8 @@ COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 
-RUN pnpm i --frozen-lockfile --aggregate-output --offline
+RUN pnpm i --frozen-lockfile --aggregate-output --offline \
+	&& pnpm rebuild -r
 
 COPY --link . ./
 
@@ -53,14 +54,15 @@ WORKDIR /misskey
 
 COPY --link pnpm-lock.yaml ./
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm fetch
+	pnpm fetch --ignore-scripts
 
 COPY --link ["pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 
-RUN pnpm i --frozen-lockfile --aggregate-output --offline
+RUN pnpm i --frozen-lockfile --aggregate-output --offline \
+	&& pnpm rebuild -r
 
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 
