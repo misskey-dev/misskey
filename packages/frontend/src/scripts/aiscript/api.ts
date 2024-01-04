@@ -11,6 +11,16 @@ import { customEmojis } from '@/custom-emojis.js';
 import { url, lang } from '@/config.js';
 import { nyaize } from '@/scripts/nyaize.js';
 
+export function aiScriptReadline(q: string): Promise<string> {
+	return new Promise(ok => {
+		os.inputText({
+			title: q,
+		}).then(({ result: a }) => {
+			ok(a ?? '');
+		});
+	});
+}
+
 export function createAiScriptEnv(opts) {
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,

@@ -17,10 +17,10 @@ import type * as misskey from 'misskey-js';
 describe('Endpoints', () => {
 	let app: INestApplicationContext;
 
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
-	let dave: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
+	let dave: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		app = await startServer();

@@ -62,11 +62,13 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const.js';
+
+const $i = signinRequired();
 
 const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'achievementEarned'];
 
@@ -86,11 +88,11 @@ async function readAllNotifications() {
 async function updateReceiveConfig(type, value) {
 	await os.apiWithDialog('i/update', {
 		notificationRecieveConfig: {
-			...$i!.notificationRecieveConfig,
+			...$i.notificationRecieveConfig,
 			[type]: value,
 		},
 	}).then(i => {
-		$i!.notificationRecieveConfig = i.notificationRecieveConfig;
+		$i.notificationRecieveConfig = i.notificationRecieveConfig;
 	});
 }
 

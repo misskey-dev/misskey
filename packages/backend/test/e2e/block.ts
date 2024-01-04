@@ -14,9 +14,9 @@ describe('Block', () => {
 	let app: INestApplicationContext;
 
 	// alice blocks bob
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
-	let carol: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		app = await startServer();

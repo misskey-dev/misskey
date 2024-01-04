@@ -25,7 +25,7 @@ const JSON_UTF8 = 'application/json; charset=utf-8';
 describe('Webリソース', () => {
 	let app: INestApplicationContext;
 
-	let alice: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
 	let aliceUploadedFile: any;
 	let alicesPost: any;
 	let alicePage: any;
@@ -34,7 +34,7 @@ describe('Webリソース', () => {
 	let aliceGalleryPost: any;
 	let aliceChannel: any;
 
-	let bob: misskey.entities.MeSignup;
+	let bob: misskey.entities.SignupResponse;
 
 	type Request = {
 		path: string,
