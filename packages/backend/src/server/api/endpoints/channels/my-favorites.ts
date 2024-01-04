@@ -13,6 +13,7 @@ export const meta = {
 	tags: ['channels', 'account'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUseChannel',
 
 	kind: 'read:channels',
 

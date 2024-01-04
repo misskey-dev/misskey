@@ -1670,6 +1670,7 @@ export interface Locale {
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
             "canManageAvatarDecorations": string;
+            "canUseChannel": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;

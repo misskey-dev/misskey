@@ -21,6 +21,7 @@ export const meta = {
 	tags: ['notes', 'channels'],
 
 	requireCredential: false,
+	requireRolePolicy: 'canUseChannel',
 
 	res: {
 		type: 'array',

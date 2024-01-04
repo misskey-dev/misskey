@@ -14,7 +14,8 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: false,
-
+	requireRolePolicy: 'canUseChannel',
+	
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
