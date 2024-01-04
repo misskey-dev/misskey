@@ -1933,6 +1933,8 @@ _permissions:
   "write:flash": "Editar Plays"
   "read:flash-likes": "Ver los Play que me gustan"
   "write:flash-likes": "Editar lista de Play que me gustan"
+  "read:admin:user-ips": "Ver dirección IP de usuario"
+  "write:admin:send-email": "Enviar email"
 _auth:
   shareAccessTitle: "Permisos de la aplicación"
   shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
