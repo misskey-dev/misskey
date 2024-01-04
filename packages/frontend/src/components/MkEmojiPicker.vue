@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</section>
 
 		<div v-if="tab === 'index'" class="group index">
-			<section v-if="showPinned && pinned.length > 0">
+			<section v-if="showPinned">
 				<div class="body">
 					<button
 						v-for="emoji in pinned"
@@ -137,7 +137,7 @@ const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 
 const {
-	reactions: pinnedReactions,
+	reactions: pinned,
 	reactionPickerSize,
 	reactionPickerWidth,
 	reactionPickerHeight,
@@ -145,7 +145,6 @@ const {
 	recentlyUsedEmojis,
 } = defaultStore.reactiveState;
 
-const pinned = computed(() => props.asReactionPicker ? pinnedReactions.value : []); // TODO: 非リアクションの絵文字ピッカー用のpinned絵文字を設定可能にする？
 const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
 const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
