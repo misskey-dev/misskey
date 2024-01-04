@@ -96,7 +96,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -109,7 +109,7 @@ const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, 
 const filterType = ref('all');
 let publishing: boolean | null = null;
 
-api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 	if (adsResponse != null) {
 		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
@@ -175,7 +175,7 @@ function remove(ad) {
 
 function save(ad) {
 	if (ad.id == null) {
-		api('admin/ad/create', {
+		misskeyApi('admin/ad/create', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
 			startsAt: new Date(ad.startsAt).getTime(),
@@ -192,7 +192,7 @@ function save(ad) {
 			});
 		});
 	} else {
-		api('admin/ad/update', {
+		misskeyApi('admin/ad/update', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
 			startsAt: new Date(ad.startsAt).getTime(),
@@ -211,7 +211,7 @@ function save(ad) {
 }
 
 function more() {
-	api('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
+	misskeyApi('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
 		ads.value = ads.value.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
@@ -228,7 +228,7 @@ function more() {
 }
 
 function refresh() {
-	api('admin/ad/list', { publishing: publishing }).then(adsResponse => {
+	misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
 		ads.value = adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);

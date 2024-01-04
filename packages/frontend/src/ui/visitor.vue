@@ -74,7 +74,7 @@ import * as Misskey from 'misskey-js';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
@@ -122,7 +122,7 @@ const keymap = computed(() => {
 
 const root = computed(() => mainRouter.currentRoute.value.name === 'index');
 
-api('meta', { detail: true }).then(res => {
+misskeyApi('meta', { detail: true }).then(res => {
 	meta.value = res;
 });
 

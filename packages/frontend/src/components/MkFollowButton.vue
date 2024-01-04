@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
@@ -64,7 +64,7 @@ const wait = ref(false);
 const connection = useStream().useChannel('main');
 
 if (props.user.isFollowing == null) {
-	api('users/show', {
+	misskeyApi('users/show', {
 		userId: props.user.id,
 	})
 		.then(onFollowChange);
@@ -89,17 +89,17 @@ async function onClick() {
 
 			if (canceled) return;
 
-			await api('following/delete', {
+			await misskeyApi('following/delete', {
 				userId: props.user.id,
 			});
 		} else {
 			if (hasPendingFollowRequestFromYou.value) {
-				await api('following/requests/cancel', {
+				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou.value = false;
 			} else {
-				await api('following/create', {
+				await misskeyApi('following/create', {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});

@@ -74,7 +74,7 @@ import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { useRouter } from '@/router.js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -114,7 +114,7 @@ const featuredPagination = computed(() => ({
 }));
 
 watch(() => props.channelId, async () => {
-	channel.value = await api('channels/show', {
+	channel.value = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 	favorited.value = channel.value.isFavorited ?? false;

@@ -46,7 +46,7 @@ import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { userPage } from '@/filters/user.js';
@@ -68,7 +68,7 @@ const showContent = ref(false);
 const replies = ref<Misskey.entities.Note[]>([]);
 
 if (props.detail) {
-	api('notes/children', {
+	misskeyApi('notes/children', {
 		noteId: props.note.id,
 		limit: 5,
 	}).then(res => {

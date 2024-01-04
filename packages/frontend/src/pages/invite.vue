@@ -40,7 +40,7 @@ import { computed, ref, shallowRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
@@ -69,7 +69,7 @@ const resetCycle = computed<null | string>(() => {
 });
 
 async function create() {
-	const ticket = await api('invite/create');
+	const ticket = await misskeyApi('invite/create');
 	os.alert({
 		type: 'success',
 		title: i18n.ts.inviteCodeCreated,
@@ -88,7 +88,7 @@ function deleted(id: string) {
 }
 
 async function update() {
-	currentInviteLimit.value = (await api('invite/limit')).remaining;
+	currentInviteLimit.value = (await misskeyApi('invite/limit')).remaining;
 }
 
 update();

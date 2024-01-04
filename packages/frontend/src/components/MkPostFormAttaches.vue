@@ -24,7 +24,7 @@ import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
@@ -62,7 +62,7 @@ function toggleSensitive(file) {
 		return;
 	}
 
-	api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).then(() => {
@@ -79,7 +79,7 @@ async function rename(file) {
 		allowEmpty: false,
 	});
 	if (canceled) return;
-	api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		name: result,
 	}).then(() => {
@@ -97,7 +97,7 @@ async function describe(file) {
 	}, {
 		done: caption => {
 			let comment = caption.length === 0 ? null : caption;
-			api('drive/files/update', {
+			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				comment: comment,
 			}).then(() => {

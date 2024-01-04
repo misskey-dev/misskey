@@ -148,7 +148,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -171,7 +171,7 @@ const truemailAuthKey = ref<string | null>(null);
 const bannedEmailDomains = ref<string>('');
 
 async function init() {
-	const meta = await api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	summalyProxy.value = meta.summalyProxy;
 	enableHcaptcha.value = meta.enableHcaptcha;
 	enableRecaptcha.value = meta.enableRecaptcha;

@@ -19,7 +19,7 @@ import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -41,7 +41,7 @@ watch(withRenotes, v => {
 });
 
 async function setList() {
-	const lists = await api('users/lists/list');
+	const lists = await misskeyApi('users/lists/list');
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({

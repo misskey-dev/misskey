@@ -145,7 +145,7 @@ import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { $i } from '@/account.js';
 import { infoImageUrl } from '@/instance.js';
 
@@ -162,12 +162,12 @@ const followRequestDone = ref(false);
 
 const acceptFollowRequest = () => {
 	followRequestDone.value = true;
-	api('following/requests/accept', { userId: props.notification.user.id });
+	misskeyApi('following/requests/accept', { userId: props.notification.user.id });
 };
 
 const rejectFollowRequest = () => {
 	followRequestDone.value = true;
-	api('following/requests/reject', { userId: props.notification.user.id });
+	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
 };
 </script>
 

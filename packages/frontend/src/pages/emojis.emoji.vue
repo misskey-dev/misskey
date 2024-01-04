@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os.js';
-import { apiGet } from '@/scripts/api.js';
+import { misskeyApiGet } from '@/scripts/misskeyApi.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 
@@ -44,7 +44,7 @@ function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: () => {
-			apiGet('emoji', { name: props.emoji.name }).then(res => {
+			misskeyApiGet('emoji', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
 					text: `Name: ${res.name}\nAliases: ${res.aliases.join(' ')}\nCategory: ${res.category}\nisSensitive: ${res.isSensitive}\nlocalOnly: ${res.localOnly}\nLicense: ${res.license}\nURL: ${res.url}`,

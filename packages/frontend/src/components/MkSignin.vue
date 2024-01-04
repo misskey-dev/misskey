@@ -59,7 +59,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { host as configHost } from '@/config.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
@@ -96,7 +96,7 @@ const props = defineProps({
 });
 
 function onUsernameChange(): void {
-	api('users/show', {
+	misskeyApi('users/show', {
 		username: username.value,
 	}).then(userResponse => {
 		user.value = userResponse;
@@ -121,7 +121,7 @@ async function queryKey(): Promise<void> {
 			credentialRequest.value = null;
 			queryingKey.value = false;
 			signing.value = true;
-			return api('signin', {
+			return misskeyApi('signin', {
 				username: username.value,
 				password: password.value,
 				credential: credential.toJSON(),
@@ -143,7 +143,7 @@ function onSubmit(): void {
 	signing.value = true;
 	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
 		if (webAuthnSupported() && user.value.securityKeys) {
-			api('signin', {
+			misskeyApi('signin', {
 				username: username.value,
 				password: password.value,
 			}).then(res => {
@@ -160,7 +160,7 @@ function onSubmit(): void {
 			signing.value = false;
 		}
 	} else {
-		api('signin', {
+		misskeyApi('signin', {
 			username: username.value,
 			password: password.value,
 			token: user.value?.twoFactorEnabled ? token.value : undefined,

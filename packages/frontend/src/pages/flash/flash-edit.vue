@@ -38,7 +38,7 @@ import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -370,7 +370,7 @@ const flash = ref<Misskey.entities.Flash | null>(null);
 const visibility = ref<Misskey.entities.FlashUpdateRequest['visibility']>('public');
 
 if (props.id) {
-	flash.value = await api('flash/show', {
+	flash.value = await misskeyApi('flash/show', {
 		flashId: props.id,
 	});
 }

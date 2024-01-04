@@ -57,7 +57,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -85,7 +85,7 @@ const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
 	if (src.value === 'list' && userLists.value === null) {
-		userLists.value = await api('users/lists/list');
+		userLists.value = await misskeyApi('users/lists/list');
 	}
 });
 
@@ -120,7 +120,7 @@ async function deleteAntenna() {
 	});
 	if (canceled) return;
 
-	await api('antennas/delete', {
+	await misskeyApi('antennas/delete', {
 		antennaId: props.antenna.id,
 	});
 

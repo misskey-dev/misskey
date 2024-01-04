@@ -34,7 +34,7 @@ import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
 import { useRouter } from '@/router.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
@@ -63,7 +63,7 @@ let noEmailServer = !instance.enableEmail;
 const thereIsUnresolvedAbuseReport = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
 
-api('admin/abuse-user-reports', {
+misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,
 }).then(reports => {
@@ -267,7 +267,7 @@ provideMetadataReceiver((info) => {
 });
 
 function invite() {
-	api('admin/invite/create').then(x => {
+	misskeyApi('admin/invite/create').then(x => {
 		os.alert({
 			type: 'info',
 			text: x[0].code,

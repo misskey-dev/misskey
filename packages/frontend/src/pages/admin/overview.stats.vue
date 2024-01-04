@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { api, apiGet } from '@/scripts/api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskeyApi.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n.js';
@@ -78,17 +78,17 @@ const fetching = ref(true);
 
 onMounted(async () => {
 	const [_stats, _onlineUsersCount] = await Promise.all([
-		api('stats', {}),
-		apiGet('get-online-users-count').then(res => res.count),
+		misskeyApi('stats', {}),
+		misskeyApiGet('get-online-users-count').then(res => res.count),
 	]);
 	stats.value = _stats;
 	onlineUsersCount.value = _onlineUsersCount;
 
-	apiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
+	misskeyApiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
 		usersComparedToThePrevDay.value = stats.value.originalUsersCount - chart.local.total[1];
 	});
 
-	apiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
+	misskeyApiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
 		notesComparedToThePrevDay.value = stats.value.originalNotesCount - chart.local.total[1];
 	});
 

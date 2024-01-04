@@ -4,7 +4,7 @@
  */
 
 import { post } from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { $i, login } from '@/account.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { mainRouter } from '@/router.js';
@@ -31,10 +31,10 @@ export function swInject() {
 				// プッシュ通知から来たreply,renoteはtruncateBodyが通されているため、
 				// 完全なノートを取得しなおす
 				if (props.reply) {
-					props.reply = await api('notes/show', { noteId: props.reply.id });
+					props.reply = await misskeyApi('notes/show', { noteId: props.reply.id });
 				}
 				if (props.renote) {
-					props.renote = await api('notes/show', { noteId: props.renote.id });
+					props.renote = await misskeyApi('notes/show', { noteId: props.renote.id });
 				}
 				return post(props);
 			}

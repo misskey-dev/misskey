@@ -59,7 +59,7 @@ import { computed, ref, shallowRef } from 'vue';
 import XHeader from './_header_.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -94,7 +94,7 @@ async function createWithOptions() {
 		count: createCount.value,
 	};
 
-	const tickets = await api('admin/invite/create', options);
+	const tickets = await misskeyApi('admin/invite/create', options);
 	os.alert({
 		type: 'success',
 		title: i18n.ts.inviteCodeCreated,

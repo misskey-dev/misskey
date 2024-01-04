@@ -129,7 +129,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import number from '@/filters/number.js';
 import { iAmModerator, iAmAdmin } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -165,9 +165,9 @@ const usersPagination = {
 
 async function fetch(): Promise<void> {
 	if (iAmAdmin) {
-		meta.value = await api('admin/meta');
+		meta.value = await misskeyApi('admin/meta');
 	}
-	instance.value = await api('federation/show-instance', {
+	instance.value = await misskeyApi('federation/show-instance', {
 		host: props.host,
 	});
 	suspended.value = instance.value?.isSuspended ?? false;
@@ -180,7 +180,7 @@ async function toggleBlock(): Promise<void> {
 	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
-	await api('admin/update-meta', {
+	await misskeyApi('admin/update-meta', {
 		blockedHosts: isBlocked.value ? meta.value.blockedHosts.concat([host]) : meta.value.blockedHosts.filter(x => x !== host),
 	});
 }
@@ -190,14 +190,14 @@ async function toggleSilenced(): Promise<void> {
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
 	const silencedHosts = meta.value.silencedHosts ?? [];
-	await api('admin/update-meta', {
+	await misskeyApi('admin/update-meta', {
 		silencedHosts: isSilenced.value ? silencedHosts.concat([host]) : silencedHosts.filter(x => x !== host),
 	});
 }
 
 async function toggleSuspend(): Promise<void> {
 	if (!instance.value) throw new Error('No instance?');
-	await api('admin/federation/update-instance', {
+	await misskeyApi('admin/federation/update-instance', {
 		host: instance.value.host,
 		isSuspended: suspended.value,
 	});
@@ -205,7 +205,7 @@ async function toggleSuspend(): Promise<void> {
 
 function refreshMetadata(): void {
 	if (!instance.value) throw new Error('No instance?');
-	api('admin/federation/refresh-remote-instance-metadata', {
+	misskeyApi('admin/federation/refresh-remote-instance-metadata', {
 		host: instance.value.host,
 	});
 	os.alert({

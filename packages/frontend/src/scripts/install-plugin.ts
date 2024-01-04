@@ -10,7 +10,7 @@ import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Plugin } from '@/store.js';
 import { ColdDeviceStorage } from '@/store.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 export type AiScriptPluginMeta = {
@@ -111,7 +111,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		}, {
 			done: async result => {
 				const { name, permissions } = result;
-				const { token } = await api('miauth/gen-token', {
+				const { token } = await misskeyApi('miauth/gen-token', {
 					session: null,
 					name: name,
 					permission: permissions,

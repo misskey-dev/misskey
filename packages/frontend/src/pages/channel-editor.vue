@@ -76,7 +76,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -106,7 +106,7 @@ watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {
 		bannerUrl.value = null;
 	} else {
-		bannerUrl.value = (await api('drive/files/show', {
+		bannerUrl.value = (await misskeyApi('drive/files/show', {
 			fileId: bannerId.value,
 		})).url;
 	}
@@ -115,7 +115,7 @@ watch(() => bannerId.value, async () => {
 async function fetchChannel() {
 	if (props.channelId == null) return;
 
-	channel.value = await api('channels/show', {
+	channel.value = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 
@@ -180,7 +180,7 @@ async function archive() {
 
 	if (canceled) return;
 
-	api('channels/update', {
+	misskeyApi('channels/update', {
 		channelId: props.channelId,
 		isArchived: true,
 	}).then(() => {

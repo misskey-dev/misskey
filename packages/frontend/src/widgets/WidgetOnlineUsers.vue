@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
-import { api, apiGet } from '@/scripts/api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskeyApi.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
@@ -45,7 +45,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 const onlineUsersCount = ref(0);
 
 const tick = () => {
-	apiGet('get-online-users-count').then(res => {
+	misskeyApiGet('get-online-users-count').then(res => {
 		onlineUsersCount.value = res.count;
 	});
 };

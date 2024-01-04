@@ -48,7 +48,7 @@ import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router.js';
@@ -59,7 +59,7 @@ const props = defineProps<{
 	webhookId: string;
 }>();
 
-const webhook = await api('i/webhooks/show', {
+const webhook = await misskeyApi('i/webhooks/show', {
 	webhookId: props.webhookId,
 });
 

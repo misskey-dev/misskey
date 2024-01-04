@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XFollowList from './follow-list.vue';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 
@@ -37,7 +37,7 @@ const error = ref<any>(null);
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user.value = null;
-	api('users/show', Misskey.acct.parse(props.acct)).then(u => {
+	misskeyApi('users/show', Misskey.acct.parse(props.acct)).then(u => {
 		user.value = u;
 	}).catch(err => {
 		error.value = err;

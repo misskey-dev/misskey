@@ -62,7 +62,7 @@ import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
@@ -90,7 +90,7 @@ const search = () => {
 		users.value = [];
 		return;
 	}
-	api('users/search-by-username-and-host', {
+	misskeyApi('users/search-by-username-and-host', {
 		username: username.value,
 		host: host.value,
 		limit: 10,
@@ -118,7 +118,7 @@ const cancel = () => {
 };
 
 onMounted(() => {
-	api('users/show', {
+	misskeyApi('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(users => {
 		if (props.includeSelf && users.find(x => $i ? x.id === $i.id : true) == null) {

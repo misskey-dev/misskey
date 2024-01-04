@@ -6,7 +6,7 @@
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
@@ -66,7 +66,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 				}
 			});
 
-			api('drive/files/upload-from-url', {
+			misskeyApi('drive/files/upload-from-url', {
 				url: url,
 				folderId: defaultStore.state.uploadFolder,
 				marker,

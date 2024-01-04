@@ -82,7 +82,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -178,7 +178,7 @@ const menu = (ev: MouseEvent) => {
 		icon: 'ti ti-download',
 		text: i18n.ts.export,
 		action: async () => {
-			api('export-custom-emojis', {
+			misskeyApi('export-custom-emojis', {
 			})
 				.then(() => {
 					os.alert({
@@ -197,7 +197,7 @@ const menu = (ev: MouseEvent) => {
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
-			api('admin/emoji/import-zip', {
+			misskeyApi('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
 				.then(() => {

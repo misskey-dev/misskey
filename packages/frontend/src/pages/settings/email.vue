@@ -54,7 +54,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -65,7 +65,7 @@ const $i = signinRequired();
 const emailAddress = ref($i.email);
 
 const onChangeReceiveAnnouncementEmail = (v) => {
-	api('i/update', {
+	misskeyApi('i/update', {
 		receiveAnnouncementEmail: v,
 	});
 };
@@ -88,7 +88,7 @@ const emailNotification_follow = ref($i.emailNotificationTypes.includes('follow'
 const emailNotification_receiveFollowRequest = ref($i.emailNotificationTypes.includes('receiveFollowRequest'));
 
 const saveNotificationSettings = () => {
-	api('i/update', {
+	misskeyApi('i/update', {
 		emailNotificationTypes: [
 			...[emailNotification_mention.value ? 'mention' : null],
 			...[emailNotification_reply.value ? 'reply' : null],

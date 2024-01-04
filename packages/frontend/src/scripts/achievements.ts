@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { $i } from '@/account.js';
 
 export const ACHIEVEMENT_TYPES = [
@@ -489,7 +489,7 @@ export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	window.setTimeout(() => {
 		claimingQueue.delete(type);
 	}, 500);
-	api('i/claim-achievement', { name: type });
+	misskeyApi('i/claim-achievement', { name: type });
 }
 
 if (_DEV_) {

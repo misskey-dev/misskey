@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import XChart from './queue.chart.chart.vue';
 import number from '@/filters/number.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -105,7 +105,7 @@ const onStatsLog = (statsLog) => {
 
 onMounted(() => {
 	if (props.domain === 'inbox' || props.domain === 'deliver') {
-		api(`admin/queue/${props.domain}-delayed`).then(result => {
+		misskeyApi(`admin/queue/${props.domain}-delayed`).then(result => {
 			jobs.value = result;
 		});
 	}

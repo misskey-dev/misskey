@@ -84,7 +84,7 @@ import MkInput from './MkInput.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 import * as config from '@/config.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { login } from '@/account.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -181,7 +181,7 @@ function onChangeUsername(): void {
 	usernameState.value = 'wait';
 	usernameAbortController.value = new AbortController();
 
-	api('username/available', {
+	misskeyApi('username/available', {
 		username: username.value,
 	}, undefined, usernameAbortController.value.signal).then(result => {
 		usernameState.value = result.available ? 'ok' : 'unavailable';
@@ -204,7 +204,7 @@ function onChangeEmail(): void {
 	emailState.value = 'wait';
 	emailAbortController.value = new AbortController();
 
-	api('email-address/available', {
+	misskeyApi('email-address/available', {
 		emailAddress: email.value,
 	}, undefined, emailAbortController.value.signal).then(result => {
 		emailState.value = result.available ? 'ok' :
@@ -246,7 +246,7 @@ async function onSubmit(): Promise<void> {
 	submitting.value = true;
 
 	try {
-		await api('signup', {
+		await misskeyApi('signup', {
 			username: username.value,
 			password: password.value,
 			emailAddress: email.value,
@@ -263,7 +263,7 @@ async function onSubmit(): Promise<void> {
 			});
 			emit('signupEmailPending');
 		} else {
-			const res = await api('signin', {
+			const res = await misskeyApi('signin', {
 				username: username.value,
 				password: password.value,
 			});

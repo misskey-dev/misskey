@@ -90,7 +90,7 @@ import MkInput from '@/components/MkInput.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -111,7 +111,7 @@ const objectStorageSetPublicRead = ref<boolean>(false);
 const objectStorageS3ForcePathStyle = ref<boolean>(true);
 
 async function init() {
-	const meta = await api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	useObjectStorage.value = meta.useObjectStorage;
 	objectStorageBaseUrl.value = meta.objectStorageBaseUrl;
 	objectStorageBucket.value = meta.objectStorageBucket;

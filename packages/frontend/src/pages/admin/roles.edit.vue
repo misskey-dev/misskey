@@ -28,7 +28,7 @@ import { v4 as uuid } from 'uuid';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router.js';
@@ -45,7 +45,7 @@ const role = ref<Misskey.entities.Role | null>(null);
 const data = ref<any>(null);
 
 if (props.id) {
-	role.value = await api('admin/roles/show', {
+	role.value = await misskeyApi('admin/roles/show', {
 		roleId: props.id,
 	});
 

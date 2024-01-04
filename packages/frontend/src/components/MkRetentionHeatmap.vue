@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, nextTick, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { alpha } from '@/scripts/color.js';
@@ -43,7 +43,7 @@ async function renderChart() {
 
 	const maxDays = wide ? 10 : narrow ? 5 : 7;
 
-	let raw = await api('retention', { });
+	let raw = await misskeyApi('retention', { });
 
 	raw = raw.slice(0, maxDays + 1);
 

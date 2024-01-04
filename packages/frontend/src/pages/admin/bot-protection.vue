@@ -72,7 +72,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 
@@ -87,7 +87,7 @@ const turnstileSiteKey = ref<string | null>(null);
 const turnstileSecretKey = ref<string | null>(null);
 
 async function init() {
-	const meta = await api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	hcaptchaSiteKey.value = meta.hcaptchaSiteKey;
 	hcaptchaSecretKey.value = meta.hcaptchaSecretKey;
 	recaptchaSiteKey.value = meta.recaptchaSiteKey;

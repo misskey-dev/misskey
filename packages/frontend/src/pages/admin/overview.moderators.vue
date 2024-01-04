@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 
@@ -26,7 +26,7 @@ const moderators = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);
 
 onMounted(async () => {
-	moderators.value = await api('admin/show-users', {
+	moderators.value = await misskeyApi('admin/show-users', {
 		sort: '+lastActiveDate',
 		state: 'adminOrModerator',
 		limit: 30,

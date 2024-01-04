@@ -12,7 +12,7 @@ import { MenuButton } from '@/types/menu.js';
 import { del, get, set } from '@/scripts/idb-proxy.js';
 import { apiUrl } from '@/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期
@@ -252,7 +252,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id));
-	const accountsPromise = api('users/show', { userIds: storedAccounts.map(x => x.id) });
+	const accountsPromise = misskeyApi('users/show', { userIds: storedAccounts.map(x => x.id) });
 
 	function createItem(account: Misskey.entities.UserDetailed) {
 		return {

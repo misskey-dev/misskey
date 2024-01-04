@@ -29,7 +29,7 @@ import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -42,7 +42,7 @@ async function addRelay() {
 		placeholder: i18n.ts.inboxUrl,
 	});
 	if (canceled) return;
-	api('admin/relays/add', {
+	misskeyApi('admin/relays/add', {
 		inbox,
 	}).then((relay: any) => {
 		refresh();
@@ -55,7 +55,7 @@ async function addRelay() {
 }
 
 function remove(inbox: string) {
-	api('admin/relays/remove', {
+	misskeyApi('admin/relays/remove', {
 		inbox,
 	}).then(() => {
 		refresh();
@@ -68,7 +68,7 @@ function remove(inbox: string) {
 }
 
 function refresh() {
-	api('admin/relays/list').then(relayList => {
+	misskeyApi('admin/relays/list').then(relayList => {
 		relays.value = relayList;
 	});
 }

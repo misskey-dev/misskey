@@ -26,7 +26,7 @@ import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -53,7 +53,7 @@ onMounted(async () => {
 	if (props.modelValue.fileId == null) {
 		await choose();
 	} else {
-		api('drive/files/show', {
+		misskeyApi('drive/files/show', {
 			fileId: props.modelValue.fileId,
 		}).then(fileResponse => {
 			file.value = fileResponse;

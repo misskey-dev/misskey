@@ -25,7 +25,7 @@ import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, Wid
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
 import { GetFormResultType } from '@/scripts/form.js';
-import { apiGet } from '@/scripts/api.js';
+import { misskeyApiGet } from '@/scripts/misskeyApi.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -76,7 +76,7 @@ const toggleView = () => {
 	save();
 };
 
-apiGet('charts/user/notes', {
+misskeyApiGet('charts/user/notes', {
 	userId: $i.id,
 	span: 'day',
 	limit: 7 * 21,

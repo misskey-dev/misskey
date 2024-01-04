@@ -68,7 +68,7 @@ import * as Misskey from 'misskey-js';
 import MkUserList from '@/components/MkUserList.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -123,14 +123,14 @@ const recentlyRegisteredUsersF = { endpoint: 'users', limit: 10, noPaging: true,
 	sort: '+createdAt',
 } };
 
-api('hashtags/list', {
+misskeyApi('hashtags/list', {
 	sort: '+attachedLocalUsers',
 	attachedToLocalUserOnly: true,
 	limit: 30,
 }).then(tags => {
 	tagsLocal.value = tags;
 });
-api('hashtags/list', {
+misskeyApi('hashtags/list', {
 	sort: '+attachedRemoteUsers',
 	attachedToRemoteUserOnly: true,
 	limit: 30,

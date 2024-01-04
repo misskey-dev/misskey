@@ -79,7 +79,7 @@ import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
-import { api, apiGet } from '@/scripts/api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskeyApi.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -118,14 +118,14 @@ onMounted(async () => {
 	magicGrid.listen();
 	*/
 
-	apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
+	misskeyApiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
 		federationPubActive.value = chart.pubActive[0];
 		federationPubActiveDiff.value = chart.pubActive[0] - chart.pubActive[1];
 		federationSubActive.value = chart.subActive[0];
 		federationSubActiveDiff.value = chart.subActive[0] - chart.subActive[1];
 	});
 
-	apiGet('federation/stats', { limit: 10 }).then(res => {
+	misskeyApiGet('federation/stats', { limit: 10 }).then(res => {
 		topSubInstancesForPie.value = [
 			...res.topSubInstances.map(x => ({
 				name: x.host,
@@ -150,18 +150,18 @@ onMounted(async () => {
 		];
 	});
 
-	api('admin/server-info').then(serverInfoResponse => {
+	misskeyApi('admin/server-info').then(serverInfoResponse => {
 		serverInfo.value = serverInfoResponse;
 	});
 
-	api('admin/show-users', {
+	misskeyApi('admin/show-users', {
 		limit: 5,
 		sort: '+createdAt',
 	}).then(res => {
 		newUsers.value = res;
 	});
 
-	api('federation/instances', {
+	misskeyApi('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {

@@ -8,7 +8,7 @@ import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 
@@ -19,7 +19,7 @@ function rename(file: Misskey.entities.DriveFile) {
 		default: file.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
-		api('drive/files/update', {
+		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			name: name,
 		});
@@ -32,7 +32,7 @@ function describe(file: Misskey.entities.DriveFile) {
 		file: file,
 	}, {
 		done: caption => {
-			api('drive/files/update', {
+			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				comment: caption.length === 0 ? null : caption,
 			});
@@ -41,7 +41,7 @@ function describe(file: Misskey.entities.DriveFile) {
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {
-	api('drive/files/update', {
+	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).catch(err => {
@@ -70,7 +70,7 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 	});
 
 	if (canceled) return;
-	api('drive/files/delete', {
+	misskeyApi('drive/files/delete', {
 		fileId: file.id,
 	});
 }

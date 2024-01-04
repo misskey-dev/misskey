@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -28,7 +28,7 @@ const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);
 
 const fetch = async () => {
-	const _newUsers = await api('admin/show-users', {
+	const _newUsers = await misskeyApi('admin/show-users', {
 		limit: 5,
 		sort: '+createdAt',
 		origin: 'local',

@@ -19,7 +19,7 @@ import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -36,7 +36,7 @@ onMounted(() => {
 });
 
 async function setRole() {
-	const roles = (await api('roles/list')).filter(x => x.isExplorable);
+	const roles = (await misskeyApi('roles/list')).filter(x => x.isExplorable);
 	const { canceled, result: role } = await os.select({
 		title: i18n.ts.role,
 		items: roles.map(x => ({

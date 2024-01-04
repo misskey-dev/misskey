@@ -67,7 +67,7 @@ import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import { api } from '@/scripts/api.js';
+import { misskeyApi } from '@/scripts/misskeyApi.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router.js';
@@ -93,7 +93,7 @@ const usersPagination = {
 
 const expandedItems = ref([]);
 
-const role = reactive(await api('admin/roles/show', {
+const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
 }));
 
