@@ -1,6 +1,6 @@
 export default (v, fractionDigits = 0) => {
 	if (v == null) return 'N/A';
-	if (v == 0) return '0';
+	if (v === 0) return '0';
 	const sizes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'];
 	const isMinus = v < 0;
 	if (isMinus) v = -v;
