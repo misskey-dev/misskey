@@ -5,7 +5,7 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
@@ -120,7 +120,7 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 		} catch (err) {
 			try {
 				// URLが変わっている可能性があるのでドライブ側からURLを取得するフォールバック
-				const apiRes = await os.api('drive/files/show', {
+				const apiRes = await misskeyApi('drive/files/show', {
 					fileId: soundStore.fileId,
 				});
 				response = await fetch(apiRes.url);

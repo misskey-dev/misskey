@@ -116,6 +116,9 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableVerifymailApi: { type: 'boolean' },
 		verifymailAuthKey: { type: 'string', nullable: true },
+		enableTruemailApi: { type: 'boolean' },
+		truemailInstance: { type: 'string', nullable: true },
+		truemailAuthKey: { type: 'string', nullable: true },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
@@ -467,6 +470,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					set.verifymailAuthKey = null;
 				} else {
 					set.verifymailAuthKey = ps.verifymailAuthKey;
+				}
+			}
+			
+			if (ps.enableTruemailApi !== undefined) {
+				set.enableTruemailApi = ps.enableTruemailApi;
+			}
+
+			if (ps.truemailInstance !== undefined) {
+				if (ps.truemailInstance === '') {
+					set.truemailInstance = null;
+				} else {
+					set.truemailInstance = ps.truemailInstance;
+				}
+			}
+
+			if (ps.truemailAuthKey !== undefined) {
+				if (ps.truemailAuthKey === '') {
+					set.truemailAuthKey = null;
+				} else {
+					set.truemailAuthKey = ps.truemailAuthKey;
 				}
 			}
 

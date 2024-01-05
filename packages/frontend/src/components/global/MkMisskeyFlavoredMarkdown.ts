@@ -242,13 +242,13 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 					case 'fg': {
 						let color = token.props.args.color;
 						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
-						style = `color: #${color};`;
+						style = `color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
 					case 'bg': {
 						let color = token.props.args.color;
 						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
-						style = `background-color: #${color};`;
+						style = `background-color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
 					case 'ruby': {

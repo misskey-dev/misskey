@@ -29,7 +29,7 @@ import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { version } from '@/config.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -46,7 +46,7 @@ const loaded = ref(false);
 const serverIsDead = ref(false);
 const meta = ref<Misskey.entities.MetaResponse | null>(null);
 
-os.api('meta', {
+misskeyApi('meta', {
 	detail: false,
 }).then(res => {
 	loaded.value = true;

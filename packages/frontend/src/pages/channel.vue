@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'search'">
 			<div class="_gaps">
 				<div>
-					<MkInput v-model="searchQuery">
+					<MkInput v-model="searchQuery" @enter="search()">
 						<template #prefix><i class="ti ti-search"></i></template>
 					</MkInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
@@ -74,6 +74,7 @@ import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useRouter } from '@/router.js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -113,7 +114,7 @@ const featuredPagination = computed(() => ({
 }));
 
 watch(() => props.channelId, async () => {
-	channel.value = await os.api('channels/show', {
+	channel.value = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 	favorited.value = channel.value.isFavorited ?? false;

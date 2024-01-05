@@ -672,6 +672,7 @@ export interface Locale {
     "other": string;
     "regenerateLoginToken": string;
     "regenerateLoginTokenDescription": string;
+    "theKeywordWhenSearchingForCustomEmoji": string;
     "setMultipleBySeparatingWithSpace": string;
     "fileIdOrUrl": string;
     "behavior": string;
@@ -1184,6 +1185,8 @@ export interface Locale {
     "overwriteContentConfirm": string;
     "seasonalScreenEffect": string;
     "decorate": string;
+    "addMfmFunction": string;
+    "enableQuickAddMfmFunction": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

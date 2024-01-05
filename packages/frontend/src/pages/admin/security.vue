@@ -80,6 +80,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Verifymail.io API Auth Key</template>
 						</MkInput>
+						<MkSwitch v-model="enableTruemailApi" @update:modelValue="save">
+							<template #label>Use TrueMail API</template>
+						</MkSwitch>
+						<MkInput v-model="truemailInstance" @update:modelValue="save">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>TrueMail API Instance</template>
+						</MkInput>
+						<MkInput v-model="truemailAuthKey" @update:modelValue="save">
+							<template #prefix><i class="ti ti-key"></i></template>
+							<template #label>TrueMail API Auth Key</template>
+						</MkInput>
 					</div>
 				</MkFolder>
 
@@ -137,6 +148,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -153,10 +165,13 @@ const enableIpLogging = ref<boolean>(false);
 const enableActiveEmailValidation = ref<boolean>(false);
 const enableVerifymailApi = ref<boolean>(false);
 const verifymailAuthKey = ref<string | null>(null);
+const enableTruemailApi = ref<boolean>(false);
+const truemailInstance = ref<string | null>(null);
+const truemailAuthKey = ref<string | null>(null);
 const bannedEmailDomains = ref<string>('');
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	summalyProxy.value = meta.summalyProxy;
 	enableHcaptcha.value = meta.enableHcaptcha;
 	enableRecaptcha.value = meta.enableRecaptcha;
@@ -194,6 +209,9 @@ function save() {
 		enableActiveEmailValidation: enableActiveEmailValidation.value,
 		enableVerifymailApi: enableVerifymailApi.value,
 		verifymailAuthKey: verifymailAuthKey.value,
+		enableTruemailApi: enableTruemailApi.value,
+		truemailInstance: truemailInstance.value,
+		truemailAuthKey: truemailAuthKey.value,
 		bannedEmailDomains: bannedEmailDomains.value.split('\n'),
 	}).then(() => {
 		fetchInstance();
