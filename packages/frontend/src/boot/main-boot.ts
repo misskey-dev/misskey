@@ -16,10 +16,11 @@ import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { mainRouter } from '@/global/router/main.js';
+import { setupRouter } from '@/global/router/define.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -29,6 +30,8 @@ export async function mainBoot() {
 		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
 		defineAsyncComponent(() => import('@/ui/universal.vue')),
 	));
+
+	setupRouter();
 
 	reactionPicker.init();
 	emojiPicker.init();

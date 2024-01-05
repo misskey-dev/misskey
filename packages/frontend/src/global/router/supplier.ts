@@ -1,0 +1,29 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { inject } from 'vue';
+import { IRouter, Router } from '@/nirax.js';
+import { mainRouter } from '@/global/router/main.js';
+
+/**
+ * メインの{@link Router}を取得する。
+ * あらかじめ{@link setupRouter}を実行しておく必要がある。
+ */
+export function useRouter(): IRouter {
+	return inject<Router | null>('router', null) ?? mainRouter;
+}
+
+/**
+ * 任意の{@link Router}を取得するためのファクトリを取得する。
+ * あらかじめ{@link setupRouter}を実行しておく必要がある。
+ */
+export function useRouterFactory(): (path: string) => IRouter {
+	const factory = inject<(path: string) => IRouter>('routerFactory');
+	if (!factory) {
+		throw new Error('routerFactory is not defined.');
+	}
+
+	return factory;
+}
