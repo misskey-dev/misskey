@@ -108,6 +108,7 @@ export class QueueService {
 	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -123,7 +124,7 @@ export class QueueService {
 			data: {
 				user,
 				content: contentBody,
-				digest: ApRequestCreator.createDigest(contentBody),
+				digest,
 				to: d[0],
 				isSharedInbox: d[1],
 			} as DeliverJobData,
