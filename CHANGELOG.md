@@ -15,7 +15,7 @@
 ## 202x.x.x (Unreleased)
 
 ### General
-- [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
+- Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
 
 ### Client
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
