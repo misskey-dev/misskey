@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
+import { App, AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
 import { IRouter, Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
@@ -548,8 +548,8 @@ function createRouterImpl(path: string): IRouter {
  * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
  * また、{@link Router}のインスタンスを作成するためのファクトリも{@link provide}経由で公開する（`routerFactory`というキーで取得可能）
  */
-export function setupRouter() {
-	provide('routerFactory', createRouterImpl);
+export function setupRouter(app: App) {
+	app.provide('routerFactory', createRouterImpl);
 
 	const mainRouter = createRouterImpl(location.pathname + location.search + location.hash);
 

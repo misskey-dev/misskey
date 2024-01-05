@@ -22,6 +22,7 @@ export function useRouter(): IRouter {
 export function useRouterFactory(): (path: string) => IRouter {
 	const factory = inject<(path: string) => IRouter>('routerFactory');
 	if (!factory) {
+		console.error('routerFactory is not defined.');
 		throw new Error('routerFactory is not defined.');
 	}
 

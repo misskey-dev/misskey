@@ -47,6 +47,14 @@ class MainRouterProxy implements IRouter {
 		return this.supplier().currentRoute;
 	}
 
+	get navHook(): ((path: string, flag?: any) => boolean) | null {
+		return this.supplier().navHook;
+	}
+
+	set navHook(value) {
+		this.supplier().navHook = value;
+	}
+
 	getCurrentKey(): string {
 		return this.supplier().getCurrentKey();
 	}

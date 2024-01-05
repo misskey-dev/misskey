@@ -79,6 +79,7 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 	current: Resolved;
 	currentRef: ShallowRef<Resolved>;
 	currentRoute: ShallowRef<RouteDef>;
+	navHook: ((path: string, flag?: any) => boolean) | null;
 
 	resolve(path: string): Resolved | null;
 
