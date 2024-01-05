@@ -5,7 +5,11 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/backend/**
   pull_request:
+    paths:
+      - packages/backend/**
 
 jobs:
   jest:

@@ -5,7 +5,11 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/frontend/**
   pull_request:
+    paths:
+      - packages/frontend/**
 
 jobs:
   vitest:
