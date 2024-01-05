@@ -16,7 +16,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
-import Widget from '@mcaptcha/vanilla-glue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
@@ -105,6 +104,7 @@ async function requestRender() {
 			'error-callback': callback,
 		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
+		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
 		// @ts-expect-error avoid typecheck error
 		new Widget({
 			siteKey: {
