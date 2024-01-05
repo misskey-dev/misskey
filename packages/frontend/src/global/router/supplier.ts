@@ -9,7 +9,7 @@ import { mainRouter } from '@/global/router/main.js';
 
 /**
  * メインの{@link Router}を取得する。
- * あらかじめ{@link setupRouter}を実行しておく必要がある。
+ * あらかじめ{@link setupRouter}を実行しておく必要がある（{@link provide}により{@link IRouter}のインスタンスを注入可能であるならばこの限りではない）
  */
 export function useRouter(): IRouter {
 	return inject<Router | null>('router', null) ?? mainRouter;
