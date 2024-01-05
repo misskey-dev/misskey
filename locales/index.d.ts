@@ -1186,6 +1186,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "pleaseWait": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

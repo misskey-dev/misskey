@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<span v-if="!available">{{ i18n.ts.waiting }}<MkEllipsis/></span>
+	<span v-if="!available">{{ i18n.ts.pleaseWait }}<MkEllipsis/></span>
 	<div ref="captchaEl"></div>
 </div>
 </template>
