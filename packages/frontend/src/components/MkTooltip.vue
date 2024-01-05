@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
 	targetElement?: HTMLElement;
 	x?: number;
 	y?: number;
-	text?: string;
+	text: string;
 	asMfm?: boolean;
 	maxWidth?: number;
 	direction?: 'top' | 'bottom' | 'right' | 'left';
@@ -53,6 +53,7 @@ const el = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex('high');
 
 function setPosition() {
+	if (!el.value || !props.targetElement) return;
 	const data = calcPopupPosition(el.value, {
 		anchorElement: props.targetElement,
 		direction: props.direction,
