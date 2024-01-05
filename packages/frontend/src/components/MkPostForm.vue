@@ -121,7 +121,7 @@ import { defaultStore, notePostInterruptors, postFormActions } from '@/store.js'
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { $i, notesCount, incNotesCount, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { signinRequired, notesCount, incNotesCount, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { uploadFile } from '@/scripts/upload.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -129,6 +129,8 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+
+const $i = signinRequired();
 
 const modal = inject('modal');
 
@@ -308,7 +310,7 @@ if (props.reply && props.reply.text != null) {
 	}
 }
 
-if ($i?.isSilenced && visibility.value === 'public') {
+if ($i.isSilenced && visibility.value === 'public') {
 	visibility.value = 'home';
 }
 
@@ -461,7 +463,7 @@ function setVisibility() {
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility.value,
-		isSilenced: $i?.isSilenced,
+		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
 	}, {

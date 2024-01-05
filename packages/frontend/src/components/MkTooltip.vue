@@ -13,8 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
-			<Mfm v-if="asMfm" :text="text"/>
-			<span v-else>{{ text }}</span>
+			<template v-if="text">
+				<Mfm v-if="asMfm" :text="text"/>
+				<span v-else>{{ text }}</span>
+			</template>
 		</slot>
 	</div>
 </Transition>
@@ -31,7 +33,7 @@ const props = withDefaults(defineProps<{
 	targetElement?: HTMLElement;
 	x?: number;
 	y?: number;
-	text: string;
+	text?: string;
 	asMfm?: boolean;
 	maxWidth?: number;
 	direction?: 'top' | 'bottom' | 'right' | 'left';
