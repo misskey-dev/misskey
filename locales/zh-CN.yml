@@ -2292,6 +2292,7 @@ _fileViewer:
   size: "文件大小"
   url: "URL"
   uploadedAt: "添加日期"
+  attachedNotes: "附加到的帖子"
   thisPageCanBeSeenFromTheAuthor: "此页只能被该文件的上传者查看。"
 _externalResourceInstaller:
   title: "从外部站点安装"
@@ -2302,6 +2303,8 @@ _externalResourceInstaller:
   _theme:
     title: "要安装此主题吗？"
     metaTitle: "主题信息"
+  _meta:
+    base: "基本配色方案"
   _vendorInfo:
     title: "来源信息"
     hashVerify: "确认文件完整性"
