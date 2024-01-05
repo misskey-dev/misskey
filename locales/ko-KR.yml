@@ -1151,7 +1151,7 @@ showRepliesToOthersInTimeline: "타임라인에 다른 사람에게 보내는 �
 hideRepliesToOthersInTimeline: "타임라인에 다른 사람에게 보내는 답글을 포함하지 않음"
 showRepliesToOthersInTimelineAll: "타임라인에 현재 팔로우 중인 사람 전원의 답글을 포함하게 하기"
 hideRepliesToOthersInTimelineAll: "타임라인에 현재 팔로우 중인 사람 전원의 답글이 나오지 않게 하기"
-confirmShowRepliesAll: "이 조작은 되돌릴 수 없습니다. 정말로 타임라인에 현재 팔로우 중인 사람 전원의 답글이 나오지 않게 하시겠습니까?"
+confirmShowRepliesAll: "이 조작은 되돌릴 수 없습니다. 정말로 타임라인에 현재 팔로우 중인 사람 전원의 답글이 나오게 하시겠습니까?"
 confirmHideRepliesAll: "이 조작은 되돌릴 수 없습니다. 정말로 타임라인에 현재 팔로우 중인 사람 전원의 답글이 나오지 않게 하시겠습니까?"
 externalServices: "외부 서비스"
 impressum: "운영자 정보"
