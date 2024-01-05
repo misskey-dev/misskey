@@ -84,6 +84,7 @@ const alwaysMarkNsfw = ref($i.alwaysMarkNsfw);
 const autoSensitive = ref($i.autoSensitive);
 
 const meterStyle = computed(() => {
+	if (!capacity.value || !usage.value) return {};
 	return {
 		width: `${usage.value / capacity.value * 100}%`,
 		background: tinycolor({
