@@ -34,24 +34,8 @@ export class QueueStatsService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public start(): void {
-		const log = [] as any[];
-
 		ev.on('requestQueueStatsLog', x => {
-			ev.emit(`queueStatsLog:${x.id}`, log.slice(0, x.length ?? 50));
-		});
-
-		let activeDeliverJobs = 0;
-		let activeInboxJobs = 0;
-
-		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config.redisForDeliverQueue, this.config.bullmqQueueOptions, QUEUE.DELIVER));
-		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config.redisForInboxQueue, this.config.bullmqQueueOptions, QUEUE.INBOX));
-
-		deliverQueueEvents.on('active', () => {
-			activeDeliverJobs++;
-		});
-
-		inboxQueueEvents.on('active', () => {
-			activeInboxJobs++;
+			ev.emit(`queueStatsLog:${x.id}`, []);
 		});
 
 		const tick = async () => {
@@ -60,13 +44,13 @@ export class QueueStatsService implements OnApplicationShutdown {
 
 			const stats = {
 				deliver: {
-					activeSincePrevTick: activeDeliverJobs,
+					activeSincePrevTick: 0, // it's removed for performance reason
 					active: deliverJobCounts.active,
 					waiting: deliverJobCounts.waiting,
 					delayed: deliverJobCounts.delayed,
 				},
 				inbox: {
-					activeSincePrevTick: activeInboxJobs,
+					activeSincePrevTick: 0, // it's removed for performance reason
 					active: inboxJobCounts.active,
 					waiting: inboxJobCounts.waiting,
 					delayed: inboxJobCounts.delayed,
@@ -74,12 +58,6 @@ export class QueueStatsService implements OnApplicationShutdown {
 			};
 
 			ev.emit('queueStats', stats);
-
-			log.unshift(stats);
-			if (log.length > 200) log.pop();
-
-			activeDeliverJobs = 0;
-			activeInboxJobs = 0;
 		};
 
 		tick();
