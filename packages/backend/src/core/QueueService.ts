@@ -76,13 +76,14 @@ export class QueueService {
 		if (to == null) return null;
 
 		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const data: DeliverJobData = {
 			user: {
 				id: user.id,
 			},
 			content: contentBody,
-			digest: ApRequestCreator.createDigest(contentBody),
+			digest,
 			to,
 			isSharedInbox,
 		};
