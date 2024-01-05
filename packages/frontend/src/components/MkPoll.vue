@@ -35,9 +35,10 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import { WithNonNullable } from '@/type.js';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: WithNonNullable<Misskey.entities.Note, 'poll'>;
 	readOnly?: boolean;
 }>();
 
