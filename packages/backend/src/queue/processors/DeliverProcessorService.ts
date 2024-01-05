@@ -72,7 +72,7 @@ export class DeliverProcessorService {
 		}
 
 		try {
-			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content);
+			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, job.data.digest);
 
 			// Update stats
 			this.federatedInstanceService.fetch(host).then(i => {
