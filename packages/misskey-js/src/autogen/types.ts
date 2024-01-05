@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-03T14:50:11.515Z
+ * generatedAt: 2024-01-05T17:21:27.961Z
  */
 
 /**
@@ -10877,14 +10877,18 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'local.incCount': number[];
-            'local.incSize': number[];
-            'local.decCount': number[];
-            'local.decSize': number[];
-            'remote.incCount': number[];
-            'remote.incSize': number[];
-            'remote.decCount': number[];
-            'remote.decSize': number[];
+            local: {
+              incCount: number[];
+              incSize: number[];
+              decCount: number[];
+              decSize: number[];
+            };
+            remote: {
+              incCount: number[];
+              incSize: number[];
+              decCount: number[];
+              decSize: number[];
+            };
           };
         };
       };
@@ -11012,30 +11016,44 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'requests.failed': number[];
-            'requests.succeeded': number[];
-            'requests.received': number[];
-            'notes.total': number[];
-            'notes.inc': number[];
-            'notes.dec': number[];
-            'notes.diffs.normal': number[];
-            'notes.diffs.reply': number[];
-            'notes.diffs.renote': number[];
-            'notes.diffs.withFile': number[];
-            'users.total': number[];
-            'users.inc': number[];
-            'users.dec': number[];
-            'following.total': number[];
-            'following.inc': number[];
-            'following.dec': number[];
-            'followers.total': number[];
-            'followers.inc': number[];
-            'followers.dec': number[];
-            'drive.totalFiles': number[];
-            'drive.incFiles': number[];
-            'drive.decFiles': number[];
-            'drive.incUsage': number[];
-            'drive.decUsage': number[];
+            requests: {
+              failed: number[];
+              succeeded: number[];
+              received: number[];
+            };
+            notes: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+              diffs: {
+                normal: number[];
+                reply: number[];
+                renote: number[];
+                withFile: number[];
+              };
+            };
+            users: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+            };
+            following: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+            };
+            followers: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+            };
+            drive: {
+              totalFiles: number[];
+              incFiles: number[];
+              decFiles: number[];
+              incUsage: number[];
+              decUsage: number[];
+            };
           };
         };
       };
@@ -11095,20 +11113,28 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'local.total': number[];
-            'local.inc': number[];
-            'local.dec': number[];
-            'local.diffs.normal': number[];
-            'local.diffs.reply': number[];
-            'local.diffs.renote': number[];
-            'local.diffs.withFile': number[];
-            'remote.total': number[];
-            'remote.inc': number[];
-            'remote.dec': number[];
-            'remote.diffs.normal': number[];
-            'remote.diffs.reply': number[];
-            'remote.diffs.renote': number[];
-            'remote.diffs.withFile': number[];
+            local: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+              diffs: {
+                normal: number[];
+                reply: number[];
+                renote: number[];
+                withFile: number[];
+              };
+            };
+            remote: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+              diffs: {
+                normal: number[];
+                reply: number[];
+                renote: number[];
+                withFile: number[];
+              };
+            };
           };
         };
       };
@@ -11237,18 +11263,30 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'local.followings.total': number[];
-            'local.followings.inc': number[];
-            'local.followings.dec': number[];
-            'local.followers.total': number[];
-            'local.followers.inc': number[];
-            'local.followers.dec': number[];
-            'remote.followings.total': number[];
-            'remote.followings.inc': number[];
-            'remote.followings.dec': number[];
-            'remote.followers.total': number[];
-            'remote.followers.inc': number[];
-            'remote.followers.dec': number[];
+            local: {
+              followings: {
+                total: number[];
+                inc: number[];
+                dec: number[];
+              };
+              followers: {
+                total: number[];
+                inc: number[];
+                dec: number[];
+              };
+            };
+            remote: {
+              followings: {
+                total: number[];
+                inc: number[];
+                dec: number[];
+              };
+              followers: {
+                total: number[];
+                inc: number[];
+                dec: number[];
+              };
+            };
           };
         };
       };
@@ -11313,10 +11351,12 @@ export type operations = {
             total: number[];
             inc: number[];
             dec: number[];
-            'diffs.normal': number[];
-            'diffs.reply': number[];
-            'diffs.renote': number[];
-            'diffs.withFile': number[];
+            diffs: {
+              normal: number[];
+              reply: number[];
+              renote: number[];
+              withFile: number[];
+            };
           };
         };
       };
@@ -11378,10 +11418,14 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'upv.user': number[];
-            'pv.user': number[];
-            'upv.visitor': number[];
-            'pv.visitor': number[];
+            upv: {
+              user: number[];
+              visitor: number[];
+            };
+            pv: {
+              user: number[];
+              visitor: number[];
+            };
           };
         };
       };
@@ -11443,8 +11487,12 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'local.count': number[];
-            'remote.count': number[];
+            local: {
+              count: number[];
+            };
+            remote: {
+              count: number[];
+            };
           };
         };
       };
@@ -11504,12 +11552,16 @@ export type operations = {
       200: {
         content: {
           'application/json': {
-            'local.total': number[];
-            'local.inc': number[];
-            'local.dec': number[];
-            'remote.total': number[];
-            'remote.inc': number[];
-            'remote.dec': number[];
+            local: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+            };
+            remote: {
+              total: number[];
+              inc: number[];
+              dec: number[];
+            };
           };
         };
       };
