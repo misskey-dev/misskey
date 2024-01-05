@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-shield"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
 					<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
-					<template v-if="enableMcaptcha" #suffix>mCaptcha</template>
+					<template v-else-if="enableMcaptcha" #suffix>mCaptcha</template>
 					<template v-else-if="enableRecaptcha" #suffix>reCAPTCHA</template>
 					<template v-else-if="enableTurnstile" #suffix>Turnstile</template>
 					<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
