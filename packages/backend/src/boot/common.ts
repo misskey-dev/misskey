@@ -24,8 +24,8 @@ export async function server() {
 
 	if (process.env.NODE_ENV !== 'test') {
 		app.get(ChartManagementService).start();
-		app.get(QueueStatsService).start();
-		app.get(ServerStatsService).start();
+		// app.get(QueueStatsService).start();
+		// app.get(ServerStatsService).start();
 	}
 
 	return app;
