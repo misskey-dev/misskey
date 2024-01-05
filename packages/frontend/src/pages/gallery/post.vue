@@ -66,6 +66,7 @@ import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
@@ -97,7 +98,7 @@ const otherPostsPagination = {
 
 function fetchPost() {
 	post.value = null;
-	os.api('gallery/posts/show', {
+	misskeyApi('gallery/posts/show', {
 		postId: props.postId,
 	}).then(_post => {
 		post.value = _post;

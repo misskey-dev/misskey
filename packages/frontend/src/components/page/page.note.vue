@@ -16,7 +16,7 @@ import * as Misskey from 'misskey-js';
 import { NoteBlock } from './block.type.js';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
 	block: NoteBlock,
@@ -26,7 +26,7 @@ const props = defineProps<{
 const note = ref<Misskey.entities.Note | null>(null);
 
 onMounted(() => {
-	os.api('notes/show', { noteId: props.block.note })
+	misskeyApi('notes/show', { noteId: props.block.note })
 		.then(result => {
 			note.value = result;
 		});

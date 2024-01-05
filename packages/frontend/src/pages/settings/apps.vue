@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import FormPagination from '@/components/MkPagination.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -66,7 +66,7 @@ const pagination = {
 };
 
 function revoke(token) {
-	os.api('i/revoke-token', { tokenId: token.id }).then(() => {
+	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
 		list.value.reload();
 	});
 }
