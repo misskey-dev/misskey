@@ -46,6 +46,7 @@ type Source = {
 		pass: string;
 	}[];
 	redis: RedisOptionsSource;
+	redisForDatabaseCache?: RedisOptionsSource;
 	redisForPubsub?: RedisOptionsSource;
 	redisForJobQueue?: RedisOptionsSource;
 	redisForSystemQueue?: RedisOptionsSource;
@@ -176,6 +177,7 @@ export type Config = {
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
 	redis: RedisOptions & RedisOptionsSource;
+	redisForDatabaseCache: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForSystemQueue: RedisOptions & RedisOptionsSource;
 	redisForEndedPollNotificationQueue: RedisOptions & RedisOptionsSource;
@@ -251,6 +253,7 @@ export function loadConfig(): Config {
 		dbSlaves: config.dbSlaves,
 		meilisearch: config.meilisearch,
 		redis,
+		redisForDatabaseCache: config.redisForDatabaseCache ? convertRedisOptions(config.redisForDatabaseCache, host) : redis,
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
 		redisForSystemQueue: config.redisForSystemQueue ? convertRedisOptions(config.redisForSystemQueue, host) : redisForJobQueue,
 		redisForEndedPollNotificationQueue: config.redisForEndedPollNotificationQueue ? convertRedisOptions(config.redisForEndedPollNotificationQueue, host) : redisForJobQueue,
