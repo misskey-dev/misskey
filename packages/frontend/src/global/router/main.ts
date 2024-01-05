@@ -28,6 +28,11 @@ export function setMainRouter(router: IRouter) {
 	mainRouterHolder = router;
 }
 
+/**
+ * {@link mainRouter}用のプロキシ実装。
+ * {@link mainRouter}は起動シーケンスの一部にて初期化されるため、僅かにundefinedになる期間がある。
+ * その僅かな期間のためだけに型をundefined込みにしたくないのでこのクラスを緩衝材として使用する。
+ */
 class MainRouterProxy implements IRouter {
 	private supplier: () => IRouter;
 
