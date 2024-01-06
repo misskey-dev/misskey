@@ -7,29 +7,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
-		<div class="_gaps">
-			<MkFolder v-for="avatarDecoration in avatarDecorations" :key="avatarDecoration.id ?? avatarDecoration._id" :defaultOpen="avatarDecoration.id == null">
-				<template #label>{{ avatarDecoration.name }}</template>
-				<template #caption>{{ avatarDecoration.description }}</template>
-
-				<div class="_gaps_m">
-					<MkInput v-model="avatarDecoration.name">
-						<template #label>{{ i18n.ts.name }}</template>
-					</MkInput>
-					<MkTextarea v-model="avatarDecoration.description">
-						<template #label>{{ i18n.ts.description }}</template>
-					</MkTextarea>
-					<MkInput v-model="avatarDecoration.url">
-						<template #label>{{ i18n.ts.imageUrl }}</template>
-					</MkInput>
-					<div class="buttons _buttons">
-						<MkButton class="button" inline primary @click="save(avatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-						<MkButton v-if="avatarDecoration.id != null" class="button" inline danger @click="del(avatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+		<MkFolder>
+			<template #label>ローカル</template>
+			<div class="_gaps">
+				<MkFolder v-for="localAvatarDecoration in localAvatarDecorations" :key="localAvatarDecoration.id ?? localAvatarDecoration._id" :defaultOpen="localAvatarDecoration.id == null">
+					<template #label>{{ localAvatarDecoration.name }}</template>
+					<template #caption>{{ localAvatarDecoration.description }}</template>
+					<div class="_gaps_m">
+						<MkInput v-model="localAvatarDecoration.name">
+							<template #label>{{ i18n.ts.name }}</template>
+						</MkInput>
+						<MkTextarea v-model="localAvatarDecoration.description">
+							<template #label>{{ i18n.ts.description }}</template>
+						</MkTextarea>
+						<MkInput v-model="localAvatarDecoration.url">
+							<template #label>{{ i18n.ts.imageUrl }}</template>
+						</MkInput>
+						<div class="buttons _buttons">
+							<MkButton class="button" inline primary @click="save(localAvatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+							<MkButton v-if="localAvatarDecoration.id != null" class="button" inline danger @click="del(localAvatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+						</div>
 					</div>
-				</div>
-			</MkFolder>
-		</div>
-	</MkSpacer>
+				</MkFolder>
+			</div>
+		</MkFolder>
+		<MkFolder>
+			<template #label>リモート</template>
+			<div class="_gaps">
+				<MkFolder v-for="remoteAvatarDecoration in remoteAvatarDecorations" :key="remoteAvatarDecoration.id ?? remoteAvatarDecoration._id" :defaultOpen="remoteAvatarDecoration.id == null">
+					<template #label>{{ remoteAvatarDecoration.name }}</template>
+					<template #caption>{{ remoteAvatarDecoration.description }}</template>
+					<div class="_gaps_m">
+						<MkInput v-model="remoteAvatarDecoration.name">
+							<template #label>{{ i18n.ts.name }}</template>
+						</MkInput>
+						<MkTextarea v-model="remoteAvatarDecoration.description">
+							<template #label>{{ i18n.ts.description }}</template>
+						</MkTextarea>
+						<MkInput v-model="remoteAvatarDecoration.url">
+							<template #label>{{ i18n.ts.imageUrl }}</template>
+						</MkInput>
+						<div class="buttons _buttons">
+							<MkButton class="button" inline primary @click="save(remoteAvatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+							<MkButton v-if="remoteAvatarDecoration.id != null" class="button" inline danger @click="del(remoteAvatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+						</div>
+					</div>
+				</MkFolder>
+			</div>
+		</MkFolder>
+	</mkspacer>
 </MkStickyContainer>
 </template>
 
@@ -45,6 +71,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
+const localAvatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
+const remoteAvatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
 
 function add() {
 	avatarDecorations.value.unshift({
@@ -79,7 +107,15 @@ async function save(avatarDecoration) {
 function load() {
 	os.api('admin/avatar-decorations/list').then(_avatarDecorations => {
 		avatarDecorations.value = _avatarDecorations;
-	});
+		_avatarDecorations.forEach(item => {
+			if (item.name.includes('import_')) {
+				remoteAvatarDecorations.value.push(item);
+			} else {
+				localAvatarDecorations.value.push(item);
+			}
+		});
+	},
+	);
 }
 
 load();
@@ -98,3 +134,4 @@ definePageMetadata({
 	icon: 'ti ti-sparkles',
 });
 </script>
+
