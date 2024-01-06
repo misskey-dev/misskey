@@ -739,9 +739,6 @@ importers:
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
-      gsap:
-        specifier: 3.12.4
-        version: 3.12.4
       idb-keyval:
         specifier: 6.2.1
         version: 6.2.1
@@ -877,10 +874,10 @@ importers:
         version: 7.6.5
       '@storybook/vue3':
         specifier: 7.6.5
-        version: 7.6.5(@vue/compiler-core@3.3.12)(vue@3.4.3)
+        version: 7.6.5(@vue/compiler-core@3.4.3)(vue@3.4.3)
       '@storybook/vue3-vite':
         specifier: 7.6.5
-        version: 7.6.5(@vue/compiler-core@3.3.12)(typescript@5.3.3)(vite@5.0.10)(vue@3.4.3)
+        version: 7.6.5(@vue/compiler-core@3.4.3)(typescript@5.3.3)(vite@5.0.10)(vue@3.4.3)
       '@testing-library/vue':
         specifier: 8.0.1
         version: 8.0.1(@vue/compiler-sfc@3.4.3)(vue@3.4.3)
@@ -7314,7 +7311,7 @@ packages:
       file-system-cache: 2.3.0
     dev: true
 
-  /@storybook/vue3-vite@7.6.5(@vue/compiler-core@3.3.12)(typescript@5.3.3)(vite@5.0.10)(vue@3.4.3):
+  /@storybook/vue3-vite@7.6.5(@vue/compiler-core@3.4.3)(typescript@5.3.3)(vite@5.0.10)(vue@3.4.3):
     resolution: {integrity: sha512-7wUCq2Lrjlekftd5ha3hG0GSGbbzuc370cKkBqSmwFuOfI38z5+VeYt7nDtAlncxcpVSH7DejTGRuKTlC7NyYg==}
     engines: {node: ^14.18 || >=16}
     peerDependencies:
@@ -7322,7 +7319,7 @@ packages:
     dependencies:
       '@storybook/builder-vite': 7.6.5(typescript@5.3.3)(vite@5.0.10)
       '@storybook/core-server': 7.6.5
-      '@storybook/vue3': 7.6.5(@vue/compiler-core@3.3.12)(vue@3.4.3)
+      '@storybook/vue3': 7.6.5(@vue/compiler-core@3.4.3)(vue@3.4.3)
       '@vitejs/plugin-vue': 4.5.2(vite@5.0.10)(vue@3.4.3)
       magic-string: 0.30.5
       vite: 5.0.10(@types/node@20.10.5)(sass@1.69.5)(terser@5.26.0)
@@ -7339,7 +7336,7 @@ packages:
       - vue
     dev: true
 
-  /@storybook/vue3@7.6.5(@vue/compiler-core@3.3.12)(vue@3.4.3):
+  /@storybook/vue3@7.6.5(@vue/compiler-core@3.4.3)(vue@3.4.3):
     resolution: {integrity: sha512-tv/9rVc3XXDOJu5hfZtKhrhM8x4GTLKon62Rmaxlq06weqkGlfBi/V/g1EZ7OE71Pi+woKS/TX7p9qbRrvgahg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -7351,7 +7348,7 @@ packages:
       '@storybook/global': 5.0.0
       '@storybook/preview-api': 7.6.5
       '@storybook/types': 7.6.5
-      '@vue/compiler-core': 3.3.12
+      '@vue/compiler-core': 3.4.3
       lodash: 4.17.21
       ts-dedent: 2.2.0
       type-fest: 2.19.0
@@ -12980,10 +12977,6 @@ packages:
     resolution: {integrity: sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
     dev: true
-
-  /gsap@3.12.4:
-    resolution: {integrity: sha512-1ByAq8dD0W4aBZ/JArgaQvc0gyUfkGkP8mgAQa0qZGdpOKlSOhOf+WNXjoLimKaKG3Z4Iu6DKZtnyszqQeyqWQ==}
-    dev: false
 
   /gunzip-maybe@1.4.2:
     resolution: {integrity: sha512-4haO1M4mLO91PW57BMsDFf75UmwoRX0GkdD+Faw+Lr+r/OZrOCS0pIBwOL1xCKQqnQzbNFGgK2V2CpBUPeFNTw==}

@@ -8,7 +8,7 @@
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import { $i } from '@/account.js';
-import { api } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { get, set } from '@/scripts/idb-proxy.js';
 import { defaultStore } from '@/store.js';
 import { useStream } from '@/stream.js';
@@ -134,7 +134,7 @@ export class Storage<T extends StateDef> {
 				window.setTimeout(async () => {
 					await defaultStore.ready;
 
-					api('i/registry/get-all', { scope: ['client', this.key] })
+					misskeyApi('i/registry/get-all', { scope: ['client', this.key] })
 						.then(kvs => {
 							const cache: Partial<T> = {};
 							for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
@@ -199,7 +199,7 @@ export class Storage<T extends StateDef> {
 					const cache = await get(this.registryCacheKeyName) || {};
 					cache[key] = rawValue;
 					await set(this.registryCacheKeyName, cache);
-					await api('i/registry/set', {
+					await misskeyApi('i/registry/set', {
 						scope: ['client', this.key],
 						key: key.toString(),
 						value: rawValue,
@@ -225,7 +225,10 @@ export class Storage<T extends StateDef> {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
+	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]): {
+		get: () => T[K]['default'];
+		set: (value: T[K]['default']) => void;
+	} {
 		const valueRef = ref(this.state[key]);
 
 		const stop = watch(this.reactiveState[key], val => {

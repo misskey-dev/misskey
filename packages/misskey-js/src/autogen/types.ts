@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-05T17:21:27.961Z
+ * generatedAt: 2024-01-02T08:53:56.447Z
  */
 
 /**
@@ -3788,13 +3788,14 @@ export type components = {
        * @example xxxxxxxxxx
        */
       channelId?: string | null;
-      channel?: {
+      channel?: ({
         id: string;
         name: string;
         color: string;
         isSensitive: boolean;
         allowRenoteToExternal: boolean;
-      } | null;
+        userId: string | null;
+      }) | null;
       localOnly?: boolean;
       reactionAcceptance: string | null;
       reactions: Record<string, never>;

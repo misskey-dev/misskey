@@ -672,6 +672,7 @@ export interface Locale {
     "other": string;
     "regenerateLoginToken": string;
     "regenerateLoginTokenDescription": string;
+    "theKeywordWhenSearchingForCustomEmoji": string;
     "setMultipleBySeparatingWithSpace": string;
     "fileIdOrUrl": string;
     "behavior": string;

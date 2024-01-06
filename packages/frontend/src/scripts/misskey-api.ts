@@ -10,7 +10,7 @@ import { $i } from '@/account.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
+export function misskeyApi<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
 	endpoint: E,
 	data: P = {} as any,
 	token?: string | null | undefined,
@@ -57,7 +57,7 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 }
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
+export function misskeyApiGet<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
 	endpoint: E,
 	data: P = {} as any,
 ): Promise<Misskey.api.SwitchCaseResponseType<E, P>> {
