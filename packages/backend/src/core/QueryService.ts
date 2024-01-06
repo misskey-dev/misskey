@@ -212,8 +212,8 @@ export class QueryService {
 				// または 自分自身
 					.orWhere('note.userId = :meId')
 				// または 自分宛て
-					.orWhere(':meId IN (note.visibleUserIds)')
-					.orWhere(':meId IN (note.mentions)')
+					.orWhere(':meId IN (SELECT unnest(note.visibleUserIds))')
+					.orWhere(':meId IN (SELECT unnest(note.mentions))')
 					.orWhere(new Brackets(qb => {
 						qb
 						// または フォロワー宛ての投稿であり、
