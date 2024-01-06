@@ -21,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 */
 import { onMounted, ref, shallowRef, watch, PropType } from 'vue';
 import { Chart } from 'chart.js';
-import gradient from 'chartjs-plugin-gradient';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
@@ -273,7 +272,7 @@ const render = () => {
 				} : undefined,
 			},
 		},
-		plugins: [gradient, chartVLine(vLineColor), ...(props.detailed && legendEl.value ? [chartLegend(legendEl.value)] : [])],
+		plugins: [chartVLine(vLineColor), ...(props.detailed && legendEl.value ? [chartLegend(legendEl.value)] : [])],
 	});
 };
 
