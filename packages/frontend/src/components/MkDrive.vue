@@ -693,7 +693,7 @@ async function isSensitive(Files, isSensitive: boolean) {
 
 	if (canceled) return;
 	Files.forEach((file) => {
-		os.api('drive/files/update', {
+		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			isSensitive,
 		});
@@ -708,7 +708,7 @@ async function fileDelete(Files) {
 
 	if (canceled) return;
 	Files.forEach((file) => {
-		os.api('drive/files/delete', {
+		misskeyApi('drive/files/delete', {
 			fileId: file.id,
 		});
 	});

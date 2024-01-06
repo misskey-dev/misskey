@@ -101,7 +101,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const stats = ref<any>({});
 
 onMounted(() => {
-    os.api('i/stats', {
+    misskeyApi('i/stats', {
         userId: $i!.id,
     }).then(response => {
         stats.value = response;

@@ -82,14 +82,14 @@ async function MultideleteFile(files: Misskey.entities.DriveFile[] | null) {
 
 	if (canceled) return;
 	files.forEach((e)=>{
-		os.api('drive/files/delete', {
+		misskeyApi('drive/files/delete', {
 			fileId: e.id,
         });
 	})
 }
 function isSensitive(files: Misskey.entities.DriveFile[] | null ,sensitive:boolean) {
 	files.forEach((e)=>{
-		os.api('drive/files/update', {
+		misskeyApi('drive/files/update', {
 			fileId: e.id,
 			isSensitive: sensitive,
 		}).catch(err => {

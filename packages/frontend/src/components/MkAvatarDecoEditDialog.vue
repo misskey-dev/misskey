@@ -81,7 +81,7 @@ function del() {
 		text: i18n.t('deleteAreYouSure', { x: props.avatarDecoration?.name }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		os.api('admin/avatar-decorations/delete', { id: props.avatarDecoration?.id }).then(() => {
+		misskeyApi('admin/avatar-decorations/delete', { id: props.avatarDecoration?.id }).then(() => {
 
 		});
 	});

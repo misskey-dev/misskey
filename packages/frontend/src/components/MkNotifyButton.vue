@@ -3,63 +3,63 @@ SPDX-FileCopyrightText: syuilo and other misskey contributors
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 <template>
-  <button
-      class="_button"
-      :class="[$style.root,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'
-,}]"  v-if="isFollowing"
-      @click="onClick"
-  >
-        <span v-if="props.user.notify === 'none'" :class="[{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }] "><i class="ti ti-bell"></i></span>
-        <span v-else-if="props.user.notify === 'normal'" :class="[{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"><i class="ti ti-bell-off"></i></span>
-  </button>
+<button
+	v-if="isFollowing"
+	class="_button" :class="[$style.root,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'
+	,}]"
+	@click="onClick"
+>
+	<span v-if="props.user.notify === 'none'" :class="[{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }] "><i class="ti ti-bell"></i></span>
+	<span v-else-if="props.user.notify === 'normal'" :class="[{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"><i class="ti ti-bell-off"></i></span>
+</button>
 </template>
 
 <script lang="ts" setup>
-import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import {useStream} from '@/stream.js';
-import {defaultStore} from "@/store.js";
+import { useStream } from '@/stream.js';
+import { defaultStore } from '@/store.js';
 
 let gaming = ref('');
 
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
+	gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
+	gaming.value = 'light';
 } else {
-  gaming.value = '';
+	gaming.value = '';
 }
 
 watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 
 watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 
 const props = withDefaults(defineProps<{
   user: Misskey.entities.UserDetailed,
   full?: boolean,
   large?: boolean,
 }>(), {
-  full: false,
-  large: false,
+	full: false,
+	large: false,
 });
 
 let isFollowing = ref(props.user.isFollowing);
@@ -67,47 +67,49 @@ let notify = ref(props.user.notify);
 const connection = useStream().useChannel('main');
 
 if (props.user.isFollowing == null) {
-  os.api('users/show', {
-    userId: props.user.id,
-  }).then(onFollowChange);
+	misskeyApi('users/show', {
+		userId: props.user.id,
+	}).then(onFollowChange);
 }
 
 if (props.user.notify == null) {
-  os.api('users/show', {
-    userId: props.user.id,
-  }).then(onNotifyChange);
+	misskeyApi('users/show', {
+		userId: props.user.id,
+	}).then(onNotifyChange);
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
-  if (user.id === props.user.id) {
-    isFollowing.value = user.isFollowing;
-  }
+	if (user.id === props.user.id) {
+		isFollowing.value = user.isFollowing;
+	}
 }
-function onNotifyChange(user: Misskey.entities.UserDetailed) {
-  if (user.id === props.user.id) {
-    notify.value = user.notify;
-    console.log(props.user.notify)
-  }
-}
-async function onClick() {
-  try {
-      await 		os.apiWithDialog('following/update', {
-        userId: props.user.id,
-        notify: props.user.notify === 'normal' ? 'none' : 'normal',
-      }).then(() => {
-        props.user.notify = props.user.notify === 'normal' ? 'none' : 'normal';
-      });
-  }finally {
 
-  }
+function onNotifyChange(user: Misskey.entities.UserDetailed) {
+	if (user.id === props.user.id) {
+		notify.value = user.notify;
+		console.log(props.user.notify);
+	}
+}
+
+async function onClick() {
+	try {
+		await 		os.apiWithDialog('following/update', {
+			userId: props.user.id,
+			notify: props.user.notify === 'normal' ? 'none' : 'normal',
+		}).then(() => {
+			props.user.notify = props.user.notify === 'normal' ? 'none' : 'normal';
+		});
+	} finally {
+
+	}
 }
 
 onMounted(() => {
-  connection.on('follow', onFollowChange);
-  connection.on('unfollow', onFollowChange);
+	connection.on('follow', onFollowChange);
+	connection.on('unfollow', onFollowChange);
 });
 onBeforeUnmount(() => {
-  connection.dispose();
+	connection.dispose();
 });
 </script>
 
@@ -278,9 +280,7 @@ onBeforeUnmount(() => {
 
   }
 
-
 }
-
 
   .gamingDark {
     color: black;
@@ -291,7 +291,6 @@ onBeforeUnmount(() => {
     color: white;
 
   }
-
 
 @-webkit-keyframes AnimationLight {
   0% {
