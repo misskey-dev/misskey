@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<span v-if="!available">{{ i18n.ts.pleaseWait }}<MkEllipsis/></span>
+	<span v-if="!available">Loading<MkEllipsis/></span>
 	<div ref="captchaEl"></div>
 </div>
 </template>
@@ -13,7 +13,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
 
 // APIs provided by Captcha services
 export type Captcha = {
