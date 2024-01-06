@@ -152,7 +152,7 @@ export type Channels = {
 			fileUpdated: (payload: DriveFile) => void;
 			folderCreated: (payload: DriveFolder) => void;
 			folderDeleted: (payload: DriveFolder['id']) => void;
-			folderUpdated: (payload: DriveFile) => void;
+			folderUpdated: (payload: DriveFolder) => void;
 		};
 		receives: null;
 	};
