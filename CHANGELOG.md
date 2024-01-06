@@ -20,6 +20,8 @@
 - Enhance: チャンネルノートのピン留めをノートのメニューからできるよ
 
 ### Server
+- Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
+- Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
 
 ## 2023.12.2
