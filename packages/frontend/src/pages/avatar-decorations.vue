@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, defineAsyncComponent, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import XDecoration from '@/pages/settings/avatar-decoration.decoration.vue';
@@ -78,7 +79,7 @@ function openDecorationCreate() {
 }
 
 function load() {
-	os.api('admin/avatar-decorations/list').then(_avatarDecorations => {
+	misskeyApi('admin/avatar-decorations/list').then(_avatarDecorations => {
 		avatarDecorations.value = _avatarDecorations;
 	});
 }

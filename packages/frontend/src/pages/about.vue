@@ -112,7 +112,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -153,7 +153,7 @@ watch(darkMode, () => {
     iconUrl.value = iconLight;
   }
 })
-const initStats = () => os.api('stats', {
+const initStats = () => misskeyApi('stats', {
 }).then((res) => {
 	stats.value = res;
 });

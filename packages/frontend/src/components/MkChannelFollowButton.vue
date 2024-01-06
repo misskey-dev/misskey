@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import {computed, ref, watch} from 'vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import {i18n} from '@/i18n.js';
 import {defaultStore} from "@/store.js";
 
@@ -57,12 +57,12 @@ async function onClick() {
 
   try {
     if (isFollowing.value) {
-      await os.api('channels/unfollow', {
+      await misskeyApi('channels/unfollow', {
         channelId: props.channel.id,
       });
       isFollowing.value = false;
     } else {
-      await os.api('channels/follow', {
+      await misskeyApi('channels/follow', {
         channelId: props.channel.id,
       });
       isFollowing.value = true;

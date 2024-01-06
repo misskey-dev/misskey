@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 
@@ -50,7 +51,7 @@ function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: () => {
-			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
+			misskeyApiGet('emoji', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
 					text: `License: ${res.license}`,

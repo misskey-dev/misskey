@@ -96,6 +96,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -119,7 +120,7 @@ let rolesThatCanBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
 let file = ref<Misskey.entities.DriveFile>();
 let isRequest = ref(props.isRequest ?? false);
 watch((roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
-	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
+	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 const isNotifyIsHome = ref(props.emoji ? props.emoji.isNotifyIsHome : false);
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji && !isRequest.value ? `/emoji/${props.emoji.name}.webp` : props.emoji && props.emoji.url ? props.emoji.url : null);
@@ -140,7 +141,7 @@ async function changeImage(ev) {
 }
 
 async function addRole() {
-	const roles = await os.api('admin/roles/list');
+	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id);
 
 	const { canceled, result: role } = await os.select({
@@ -211,7 +212,7 @@ async function del() {
 	});
 	if (canceled) return;
 
-	os.api('admin/emoji/delete', {
+	misskeyApi('admin/emoji/delete', {
 		id: props.emoji.id,
 	}).then(() => {
 		emit('done', {

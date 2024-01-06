@@ -31,6 +31,7 @@ import MkCustomEmojiEditLocal from '@/components/MkCustomEmojiEditLocal.vue';
 import MkCustomEmojiEditRemote from '@/components/MkCustomEmojiEditRemote.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
@@ -54,7 +55,7 @@ const menu = (ev: MouseEvent) => {
 		icon: 'ti ti-download',
 		text: i18n.ts.export,
 		action: async () => {
-			os.api('export-custom-emojis', {
+			misskeyApi('export-custom-emojis', {
 			})
 				.then(() => {
 					os.alert({
@@ -73,7 +74,7 @@ const menu = (ev: MouseEvent) => {
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
-			os.api('admin/emoji/import-zip', {
+			misskeyApi('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
 				.then(() => {

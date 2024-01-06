@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:withOkButton="true"
 	:okButtonDisabled="false"
 	:canClose="false"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="$emit('closed')"
 	@ok="ok()"
 >
@@ -87,7 +87,7 @@ function ok(): void {
 		name: name.value,
 		permissions: Object.keys(permissions.value).filter(p => permissions.value[p]),
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 function disableAll(): void {

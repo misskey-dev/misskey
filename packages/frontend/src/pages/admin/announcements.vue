@@ -79,6 +79,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -86,7 +87,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 
 const announcements = ref<any[]>([]);
 
-os.api('admin/announcements/list').then(announcementResponse => {
+misskeyApi('admin/announcements/list').then(announcementResponse => {
 	announcements.value = announcementResponse;
 });
 
@@ -112,7 +113,7 @@ function del(announcement) {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		announcements.value = announcements.value.filter(x => x !== announcement);
-		os.api('admin/announcements/delete', announcement);
+		misskeyApi('admin/announcements/delete', announcement);
 	});
 }
 
@@ -134,13 +135,13 @@ async function save(announcement) {
 }
 
 function more() {
-	os.api('admin/announcements/list', { untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
+	misskeyApi('admin/announcements/list', { untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
 		announcements.value = announcements.value.concat(announcementResponse);
 	});
 }
 
 function refresh() {
-	os.api('admin/announcements/list').then(announcementResponse => {
+	misskeyApi('admin/announcements/list').then(announcementResponse => {
 		announcements.value = announcementResponse;
 	});
 }

@@ -28,7 +28,7 @@ import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, Wid
 import { GetFormResultType } from '@/scripts/form.js';
 import { useStream } from '@/stream.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -74,7 +74,7 @@ const thumbnail = (image: any): string => {
 		: image.thumbnailUrl;
 };
 
-os.api('drive/stream', {
+misskeyApi('drive/stream', {
 	type: 'image/*',
 	limit: 9,
 }).then(res => {

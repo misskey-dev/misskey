@@ -34,6 +34,7 @@ import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
 import { useRouter } from '@/router.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
@@ -76,7 +77,7 @@ watch(darkMode, () => {
         iconUrl.value = iconLight;
     }
 })
-os.api('admin/abuse-user-reports', {
+misskeyApi('admin/abuse-user-reports', {
 	state: 'unresolved',
 	limit: 1,
 }).then(reports => {
@@ -280,7 +281,7 @@ provideMetadataReceiver((info) => {
 });
 
 function invite() {
-	os.api('admin/invite/create').then(x => {
+	misskeyApi('admin/invite/create').then(x => {
 		os.alert({
 			type: 'info',
 			text: x[0].code,

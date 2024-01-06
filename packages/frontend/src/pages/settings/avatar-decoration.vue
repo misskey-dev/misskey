@@ -56,16 +56,19 @@ import * as Misskey from 'misskey-js';
 import XDecoration from './avatar-decoration.decoration.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
+const $i = signinRequired();
+
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse & { category:string }>([]);
 
-os.api('get-avatar-decorations').then(_avatarDecorations => {
+misskeyApi('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;
 	loading.value = false;
 });

@@ -71,6 +71,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import { url } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { mainRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
@@ -106,7 +107,7 @@ watch(eyeCatchingImageId, async () => {
 	if (eyeCatchingImageId.value == null) {
 		eyeCatchingImage.value = null;
 	} else {
-		eyeCatchingImage.value = await os.api('drive/files/show', {
+		eyeCatchingImage.value = await misskeyApi('drive/files/show', {
 			fileId: eyeCatchingImageId.value,
 		});
 	}
@@ -149,7 +150,7 @@ function save() {
 
 	if (pageId.value) {
 		options.pageId = pageId.value;
-		os.api('pages/update', options)
+		misskeyApi('pages/update', options)
 			.then(page => {
 				currentName.value = name.value.trim();
 				os.alert({
@@ -158,7 +159,7 @@ function save() {
 				});
 			}).catch(onError);
 	} else {
-		os.api('pages/create', options)
+		misskeyApi('pages/create', options)
 			.then(created => {
 				pageId.value = created.id;
 				currentName.value = name.value.trim();
@@ -177,7 +178,7 @@ function del() {
 		text: i18n.t('removeAreYouSure', { x: title.value.trim() }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		os.api('pages/delete', {
+		misskeyApi('pages/delete', {
 			pageId: pageId.value,
 		}).then(() => {
 			os.alert({
@@ -192,7 +193,7 @@ function del() {
 function duplicate() {
 	title.value = title.value + ' - copy';
 	name.value = name.value + '-copy';
-	os.api('pages/create', getSaveOptions()).then(created => {
+	misskeyApi('pages/create', getSaveOptions()).then(created => {
 		pageId.value = created.id;
 		currentName.value = name.value.trim();
 		os.alert({
@@ -236,11 +237,11 @@ function removeEyeCatchingImage() {
 
 async function init() {
 	if (props.initPageId) {
-		page.value = await os.api('pages/show', {
+		page.value = await misskeyApi('pages/show', {
 			pageId: props.initPageId,
 		});
 	} else if (props.initPageName && props.initUser) {
-		page.value = await os.api('pages/show', {
+		page.value = await misskeyApi('pages/show', {
 			name: props.initPageName,
 			username: props.initUser,
 		});

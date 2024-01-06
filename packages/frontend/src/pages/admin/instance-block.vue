@@ -31,6 +31,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -42,7 +43,7 @@ const silencedHosts = ref<string>('');
 const tab = ref('block');
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	blockedHosts.value = meta.blockedHosts ? meta.blockedHosts.join('\n') : '';
 	silencedHosts.value = meta.silencedHosts ? meta.silencedHosts.join('\n') : '';
 }

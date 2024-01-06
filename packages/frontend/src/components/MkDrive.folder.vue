@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement } from '@/scripts/achievements.js';
@@ -147,13 +148,13 @@ function onDrop(ev: DragEvent) {
 		emit('removeFile', file.id);
     if (props.selectedFiles.length > 0) {
       props.selectedFiles.forEach((e)=>{
-        os.api('drive/files/update', {
+				misskeyApi('drive/files/update', {
           fileId: e.id,
           folderId: props.folder.id,
         });
       })
     }else{
-      os.api('drive/files/update', {
+			misskeyApi('drive/files/update', {
         fileId: file.id,
         folderId: props.folder.id,
       });
@@ -170,7 +171,7 @@ function onDrop(ev: DragEvent) {
 		if (folder.id === props.folder.id) return;
 
 		emit('removeFolder', folder.id);
-		os.api('drive/folders/update', {
+		misskeyApi('drive/folders/update', {
 			folderId: folder.id,
 			parentId: props.folder.id,
 		}).then(() => {
@@ -224,7 +225,7 @@ function rename() {
 		default: props.folder.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
-		os.api('drive/folders/update', {
+		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
 			name: name,
 		});
@@ -232,7 +233,7 @@ function rename() {
 }
 
 function deleteFolder() {
-  os.api('drive/folders/show', {
+	misskeyApi('drive/folders/show', {
     folderId: props.folder.id,
   }).then(async (r) => {
 
@@ -266,7 +267,7 @@ function deleteFolder() {
       })
 
 
-      os.api('drive/folders/show', {
+			misskeyApi('drive/folders/show', {
         folderId: props.folder.id,
       }).then(async (r) =>{
         if (r.filesCount > 0) {
@@ -283,7 +284,7 @@ function deleteFolder() {
             os.api('drive/files/delete',{fileId: r.id})
           })
 
-          os.api('drive/folders/delete', {
+					misskeyApi('drive/folders/delete', {
             folderId: props.folder.id,
           }).then(() => {
             if (defaultStore.state.uploadFolder === props.folder.id) {
@@ -306,11 +307,11 @@ function deleteFolder() {
             }
           });
 
-          os.api('drive/folders/delete', {
+					misskeyApi('drive/folders/delete', {
             folderId: props.folder.id,
           })
         }else{
-          os.api('drive/folders/delete', {
+					misskeyApi('drive/folders/delete', {
             folderId: props.folder.id,
           })
         }
@@ -318,7 +319,7 @@ function deleteFolder() {
 
     } else {
 
-      await os.api('drive/folders/delete', {
+      await misskeyApi('drive/folders/delete', {
         folderId: props.folder.id,
       }).then(() => {
         if (defaultStore.state.uploadFolder === props.folder.id) {
