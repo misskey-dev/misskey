@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.usersRepository.createQueryBuilder('user')
-				.where(':tag = ANY(user.tags)', { tag: normalizeForSearch(ps.tag) })
+				.where(':tag IN (user.tags)', { tag: normalizeForSearch(ps.tag) })
 				.andWhere('user.isSuspended = FALSE');
 
 			const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
