@@ -29,12 +29,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:poster="video.thumbnailUrl ?? undefined"
 			:title="video.comment ?? undefined"
 			:alt="video.comment"
-			preload="none"
+			preload="metadata"
 			playsinline
 		>
-			<source
-				:src="video.url"
-			>
+			<source :src="video.url">
 		</video>
 		<button v-if="isReady && !isPlaying" class="_button" :class="$style.videoOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
 		<div v-else-if="!isActuallyPlaying" :class="$style.videoLoading">
@@ -69,11 +67,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 				<MkMediaRange
 					v-model="volume"
+					:sliderBgWhite="true"
 					:class="$style.volumeSeekbar"
 				/>
 			</div>
 			<MkMediaRange
 				v-model="rangePercent"
+				:sliderBgWhite="true"
 				:class="$style.seekbarRoot"
 				:buffer="bufferedDataRatio"
 			/>
@@ -151,7 +151,6 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 const videoEl = shallowRef<HTMLVideoElement>();
 const playerEl = shallowRef<HTMLDivElement>();
 const isHoverring = ref(false);
-const oncePlayed = ref(false);
 const controlsShowing = computed(() => {
 	if (!oncePlayed.value) return true;
 	if (isHoverring.value) return true;
@@ -159,8 +158,10 @@ const controlsShowing = computed(() => {
 	return false;
 });
 const isFullscreen = ref(false);
+let controlStateTimer: string | number;
 
 // MediaControl: Common State
+const oncePlayed = ref(false);
 const isReady = ref(false);
 const isPlaying = ref(false);
 const isActuallyPlaying = ref(false);
@@ -175,13 +176,12 @@ const rangePercent = computed({
 		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.3);
+const volume = ref(.5);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!videoEl.value) return 0;
 	return bufferedEnd.value / videoEl.value.duration;
 });
-let controlStateTimer: string | number;
 
 // MediaControl Events
 function onMouseOver() {
@@ -338,6 +338,7 @@ onDeactivated(() => {
 .videoContainer {
 	container-type: inline-size;
 	position: relative;
+	overflow: clip;
 }
 
 .sensitive {
@@ -463,7 +464,7 @@ onDeactivated(() => {
 		"seekbar seekbar seekbar seekbar seekbar";
 	grid-template-columns: auto auto 1fr auto auto;
 	align-items: center;
-	gap: 4px;
+	gap: 4px 8px;
 	pointer-events: none;
 
 	padding: 35px 10px 10px 10px;

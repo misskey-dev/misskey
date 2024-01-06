@@ -1,27 +1,30 @@
-export default (ms: number) => {
-    const res: string[] = [];
+export default (ms: number, enableMs = false) => {
+	const res: string[] = [];
 
-    // ミリ秒を秒に変換
-    let seconds = Math.floor(ms / 1000);
+	// ミリ秒を秒に変換
+	let seconds = Math.floor(ms / 1000);
 
-    // 時間を計算
-    let hours = Math.floor(seconds / 3600);
-    if (hours > 0) res.push(format(hours));
-    seconds %= 3600;
+	// 小数点以下の値（２位まで）
+	const mili = ms - seconds * 1000;
 
-    // 分を計算
-    let minutes = Math.floor(seconds / 60);
-    res.push(format(minutes));
-    seconds %= 60;
+	// 時間を計算
+	const hours = Math.floor(seconds / 3600);
+	if (hours > 0) res.push(format(hours));
+	seconds %= 3600;
 
-    // 残った秒数を取得
-    seconds = seconds % 60;
-    res.push(format(seconds));
+	// 分を計算
+	const minutes = Math.floor(seconds / 60);
+	res.push(format(minutes));
+	seconds %= 60;
 
-    // 結果を返す
-    return res.join(':');
+	// 残った秒数を取得
+	seconds = seconds % 60;
+	res.push(format(seconds));
+
+	// 結果を返す
+	return res.join(':') + (enableMs ? '.' + format(Math.floor(mili / 10)) : '');
 };
 
 function format(n: number) {
-    return n.toString().padStart(2, '0');
+	return n.toString().padStart(2, '0');
 }

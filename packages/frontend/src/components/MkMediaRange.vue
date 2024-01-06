@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- Media系専用のinput range -->
 <template>
-<div :class="$style.controlsSeekbar">
+<div :class="$style.controlsSeekbar" :style="sliderBgWhite ? '--sliderBg: rgba(255,255,255,.25);' : '--sliderBg: var(--scrollbarHandle);'">
 	<progress v-if="buffer !== undefined" :class="$style.buffer" :value="isNaN(buffer) ? 0 : buffer" min="0" max="1">% buffered</progress>
 	<input v-model="model" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any"/>
 </div>
@@ -14,9 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ModelRef } from 'vue';
 
-defineProps<{
+withDefaults(defineProps<{
 	buffer?: number;
-}>();
+	sliderBgWhite?: boolean;
+}>(), {
+	buffer: undefined,
+	sliderBgWhite: false,
+});
 
 // eslint-disable-next-line no-undef
 const model = defineModel({ required: true }) as ModelRef<string | number>;
@@ -47,7 +51,7 @@ const modelValue = computed({
 		width: 100%;
 
 		&::-webkit-slider-runnable-track {
-			background-color: rgba(255, 255, 255, .25);
+			background-color: var(--sliderBg);
 			background-image: linear-gradient(to right,currentColor var(--value,0),transparent var(--value,0));
 			border: 0;
 			border-radius: 99rem;
@@ -63,7 +67,7 @@ const modelValue = computed({
 			height: 5px;
 			transition: box-shadow .3s ease;
 			user-select: none;
-			background-color: rgba(255, 255, 255, .25);
+			background-color: var(--sliderBg);
 		}
 
 		&::-webkit-slider-thumb {
@@ -109,7 +113,7 @@ const modelValue = computed({
 	> .buffer {
 		appearance: none;
 		background: transparent;
-		color: rgba(255, 255, 255, .25);
+		color: var(--sliderBg);
 		border: 0;
 		border-radius: 99rem;
 		height: 5px;
