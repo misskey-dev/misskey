@@ -56,7 +56,7 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
-
+import * as os from '@/os.js';
 let tab = ref('emojis');
 const headerActions = computed(() => []);
 
