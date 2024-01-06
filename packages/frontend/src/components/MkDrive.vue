@@ -98,6 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
+import type { MenuItem } from '@/types/menu.js';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
@@ -426,7 +427,7 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 	}
 }
 
-function move(target?: Misskey.entities.DriveFolder) {
+function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
 	if (!target) {
 		goRoot();
 		return;
@@ -612,7 +613,7 @@ function fetchMoreFiles() {
 }
 
 function getMenu() {
-	return [{
+	const menu: MenuItem[] = [{
 		type: 'switch',
 		text: i18n.ts.keepOriginalUploading,
 		ref: keepOriginal,
@@ -633,7 +634,7 @@ function getMenu() {
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
 		icon: 'ti ti-forms',
-		action: () => { renameFolder(folder.value); },
+		action: () => { folder.value && renameFolder(folder.value); },
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,
 		icon: 'ti ti-trash',
@@ -643,6 +644,8 @@ function getMenu() {
 		icon: 'ti ti-folder-plus',
 		action: () => { createFolder(); },
 	}];
+
+	return menu;
 }
 
 function showMenu(ev: MouseEvent) {
