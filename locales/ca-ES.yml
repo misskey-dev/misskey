@@ -982,6 +982,15 @@ signupPendingError: "Hi ha hagut un problema verificant l'adreça de correu elec
 cwNotationRequired: "Si està activat \"Amagar contingut\" s'ha d'escriure una descripció "
 doReaction: "Afegeix una reacció "
 code: "Codi"
+reloadRequiredToApplySettings: "És necessari recarregar la pàgina per aplicar els canvis."
+remainingN: "Queden: {n}"
+overwriteContentConfirm: "Vols substituir el contingut actual?"
+seasonalScreenEffect: "Efectes de pantalla segons les estacions"
+decorate: "Decorar"
+addMfmFunction: "Afegeix funcions MFM"
+enableQuickAddMfmFunction: "Activar accés ràpid per afegir funcions MFM"
+_announcement:
+  forExistingUsers: "Anunci per usuaris registrats"
 _role:
   assignTarget: "Assignar "
   _priority:
