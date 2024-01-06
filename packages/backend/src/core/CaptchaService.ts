@@ -80,8 +80,8 @@ export class CaptchaService {
 			throw new Error('mcaptcha-failed: no response provided');
 		}
 
-		const instanceUrl = new URL('/api/v1/pow/siteverify', instanceHost);
-		const result = await this.httpRequestService.send(instanceUrl.toString(), {
+		const endpointUrl = new URL('/api/v1/pow/siteverify', instanceHost);
+		const result = await this.httpRequestService.send(endpointUrl.toString(), {
 			method: 'POST',
 			body: JSON.stringify({
 				key: siteKey,
