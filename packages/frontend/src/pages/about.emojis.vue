@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span class="tag _button" v-for="tag in customEmojiTags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
 		</div>
 		-->
-	</div>
+		</div>
 
 		<MkFoldableSection v-if="searchEmojis">
 			<template #header>{{ i18n.ts.searchResult }}</template>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {watch, defineAsyncComponent, ref, computed} from 'vue';
+import { watch, defineAsyncComponent, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -56,6 +56,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
 let tab = ref('emojis');
 const headerActions = computed(() => []);
@@ -73,7 +74,7 @@ definePageMetadata(ref({}));
 let q = ref('');
 let searchEmojis = ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = ref(new Set());
-const requestEmojis = await os.apiGet('emoji-requests');
+const requestEmojis = await misskeyApiGet('emoji-requests');
 
 function search() {
 	if ((q.value === '' || q.value == null) && selectedTags.value.size === 0) {
