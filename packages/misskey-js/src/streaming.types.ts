@@ -7,6 +7,8 @@ import {
 	Notification,
 	Signin,
 	User,
+	UserDetailed,
+	UserDetailedNotMe,
 } from './autogen/models.js';
 import {
 	AnnouncementCreated,
@@ -27,9 +29,9 @@ export type Channels = {
 			mention: (payload: Note) => void;
 			reply: (payload: Note) => void;
 			renote: (payload: Note) => void;
-			follow: (payload: User) => void; // 自分が他人をフォローしたとき
-			followed: (payload: User) => void; // 他人が自分をフォローしたとき
-			unfollow: (payload: User) => void; // 自分が他人をフォロー解除したとき
+			follow: (payload: UserDetailedNotMe) => void; // 自分が他人をフォローしたとき
+			followed: (payload: UserDetailed) => void; // 他人が自分をフォローしたとき
+			unfollow: (payload: UserDetailed) => void; // 自分が他人をフォロー解除したとき
 			meUpdated: (payload: MeDetailed) => void;
 			pageEvent: (payload: PageEvent) => void;
 			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
