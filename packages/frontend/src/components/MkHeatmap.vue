@@ -27,10 +27,10 @@ const props = defineProps<{
 	src: string;
 }>();
 
-const rootEl = shallowRef<HTMLDivElement>(null);
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const rootEl = shallowRef<HTMLDivElement | null>(null);
+const chartEl = shallowRef<HTMLCanvasElement | null>(null);
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
@@ -38,6 +38,7 @@ const { handler: externalTooltipHandler } = useChartTooltip({
 });
 
 async function renderChart() {
+	if (!rootEl.value || !chartEl.value) return;
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
@@ -56,7 +57,7 @@ async function renderChart() {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => {
 			const dt = getDate(i);
 			const iso = `${dt.getFullYear()}-${(dt.getMonth() + 1).toString().padStart(2, '0')}-${dt.getDate().toString().padStart(2, '0')}`;
@@ -69,7 +70,7 @@ async function renderChart() {
 		});
 	};
 
-	let values;
+	let values: number[] = [];
 
 	if (props.src === 'active-users') {
 		const raw = await misskeyApi('charts/active-users', { limit: chartLimit, span: 'day' });
@@ -106,20 +107,18 @@ async function renderChart() {
 		data: {
 			datasets: [{
 				label: 'Read & Write',
-				data: format(values),
-				pointRadius: 0,
+				data: format(values) as any,
 				borderWidth: 0,
-				borderJoinStyle: 'round',
 				borderRadius: 3,
 				backgroundColor(c) {
-					const value = c.dataset.data[c.dataIndex].v;
+					// @ts-expect-error TS(2339)
+					const value = c.dataset.data[c.dataIndex].v as number;
 					let a = (value - min) / max;
 					if (value !== 0) { // 0でない限りは完全に不可視にはしない
 						a = Math.max(a, 0.05);
 					}
 					return alpha(color, a);
 				},
-				fill: true,
 				width(c) {
 					const a = c.chart.chartArea ?? {};
 					return (a.right - a.left) / weeks - marginEachCell;
@@ -190,11 +189,13 @@ async function renderChart() {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex];
-							return v.d;
+							// @ts-expect-error TS(2339)
+							return context[0].dataset.data[context[0].dataIndex].d;
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
+
+							// @ts-expect-error TS(2339)
 							return ['Active: ' + v.v];
 						},
 					},

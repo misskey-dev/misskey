@@ -111,17 +111,19 @@ async function onClick() {
 
 				claimAchievement('following1');
 
-				if ($i.followingCount >= 10) {
-					claimAchievement('following10');
-				}
-				if ($i.followingCount >= 50) {
-					claimAchievement('following50');
-				}
-				if ($i.followingCount >= 100) {
-					claimAchievement('following100');
-				}
-				if ($i.followingCount >= 300) {
-					claimAchievement('following300');
+				if ($i) {
+					if ($i.followingCount >= 10) {
+						claimAchievement('following10');
+					}
+					if ($i.followingCount >= 50) {
+						claimAchievement('following50');
+					}
+					if ($i.followingCount >= 100) {
+						claimAchievement('following100');
+					}
+					if ($i.followingCount >= 300) {
+						claimAchievement('following300');
+					}
 				}
 			}
 		}
