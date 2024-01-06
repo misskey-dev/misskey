@@ -12,7 +12,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="$i.avatarDecorations.length > 0" v-panel :class="$style.current" class="_gaps_s">
 			<div>{{ i18n.ts.inUse }}</div>
-
 			<div :class="$style.decorations">
 				<XDecoration
 					v-for="(avatarDecoration, i) in $i.avatarDecorations"
@@ -29,14 +28,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
 		</div>
 
-		<div :class="$style.decorations">
-			<XDecoration
-				v-for="avatarDecoration in avatarDecorations"
-				:key="avatarDecoration.id"
-				:decoration="avatarDecoration"
-				@click="openDecoration(avatarDecoration)"
-			/>
-		</div>
+		<MkFolder>
+			<template #label>ローカル</template>
+			<div :class="$style.decorations">
+				<XDecoration
+					v-for="localAvatarDecoration in localAvatarDecorations"
+					:key="localAvatarDecoration.id"
+					:decoration="localAvatarDecoration"
+					@click="openLocalDecoration(localAvatarDecoration)"
+				/>
+			</div>
+		</MkFolder>
+		<MkFolder>
+			<template #label>リモート</template>
+			<div :class="$style.decorations">
+				<XDecoration
+					v-for="remoteAvatarDecoration in remoteAvatarDecorations"
+					:key="remoteAvatarDecoration.id"
+					:decoration="remoteAvatarDecoration"
+					@click="openRemoteDecoration(remoteAvatarDecoration)"
+				/>
+			</div>
+		</MkFolder>
 	</div>
 	<div v-else>
 		<MkLoading/>
@@ -55,16 +68,116 @@ import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkFolder from '@/components/MkFolder.vue';
 
 const $i = signinRequired();
 
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
+const localAvatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
+const remoteAvatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
 
 misskeyApi('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;
+	_avatarDecorations.forEach(item => {
+		if (item.name.includes('import_')) {
+			remoteAvatarDecorations.value.push(item);
+		} else {
+			localAvatarDecorations.value.push(item);
+		}
+	});
 	loading.value = false;
 });
+
+function openLocalDecoration(avatarDecoration, index?: number) {
+	os.popup(defineAsyncComponent(() => import('./avatar-decoration.dialog.vue')), {
+		decoration: avatarDecoration,
+		usingIndex: index,
+	}, {
+		'attach': async (payload) => {
+			const decoration = {
+				id: avatarDecoration.id,
+				angle: payload.angle,
+				flipH: payload.flipH,
+				offsetX: payload.offsetX,
+				offsetY: payload.offsetY,
+			};
+			const update = [...$i.avatarDecorations, decoration];
+			await os.apiWithDialog('i/update', {
+				avatarDecorations: update,
+			});
+			$i.avatarDecorations = update;
+		},
+		'update': async (payload) => {
+			const decoration = {
+				id: avatarDecoration.id,
+				angle: payload.angle,
+				flipH: payload.flipH,
+				offsetX: payload.offsetX,
+				offsetY: payload.offsetY,
+			};
+			const update = [...$i.avatarDecorations];
+			update[index] = decoration;
+			await os.apiWithDialog('i/update', {
+				avatarDecorations: update,
+			});
+			$i.avatarDecorations = update;
+		},
+		'detach': async () => {
+			const update = [...$i.avatarDecorations];
+			update.splice(index, 1);
+			await os.apiWithDialog('i/update', {
+				avatarDecorations: update,
+			});
+			$i.avatarDecorations = update;
+		},
+	}, 'closed');
+}
+
+function openRemoteDecoration(avatarDecoration, index?: number) {
+	os.popup(defineAsyncComponent(() => import('./avatar-decoration.dialog.vue')), {
+		decoration: avatarDecoration,
+		usingIndex: index,
+	}, {
+		'attach': async (payload) => {
+			const decoration = {
+				id: avatarDecoration.id,
+				angle: payload.angle,
+				flipH: payload.flipH,
+				offsetX: payload.offsetX,
+				offsetY: payload.offsetY,
+			};
+			const update = [...$i.avatarDecorations, decoration];
+			await os.apiWithDialog('i/update', {
+				avatarDecorations: update,
+			});
+			$i.avatarDecorations = update;
+		},
+		'update': async (payload) => {
+			const decoration = {
+				id: avatarDecoration.id,
+				angle: payload.angle,
+				flipH: payload.flipH,
+				offsetX: payload.offsetX,
+				offsetY: payload.offsetY,
+			};
+			const update = [...$i.avatarDecorations];
+			update[index] = decoration;
+			await os.apiWithDialog('i/update', {
+				avatarDecorations: update,
+			});
+			$i.avatarDecorations = update;
+		},
+		'detach': async () => {
+			const update = [...$i.avatarDecorations];
+			update.splice(index, 1);
+			await os.apiWithDialog('i/update', {
+				avatarDecorations: update,
+			});
+			$i.avatarDecorations = update;
+		},
+	}, 'closed');
+}
 
 function openDecoration(avatarDecoration, index?: number) {
 	os.popup(defineAsyncComponent(() => import('./avatar-decoration.dialog.vue')), {
@@ -110,6 +223,7 @@ function openDecoration(avatarDecoration, index?: number) {
 		},
 	}, 'closed');
 }
+
 
 function detachAllDecorations() {
 	os.confirm({
