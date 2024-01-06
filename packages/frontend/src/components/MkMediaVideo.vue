@@ -283,6 +283,7 @@ function init() {
 				isPlaying.value = false;
 			});
 
+			durationMs.value = videoEl.value.duration * 1000;
 			videoEl.value.addEventListener('durationchange', () => {
 				if (videoEl.value) {
 					durationMs.value = videoEl.value.duration * 1000;

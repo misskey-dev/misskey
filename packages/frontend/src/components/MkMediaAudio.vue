@@ -207,7 +207,8 @@ function init() {
 				isActuallyPlaying.value = false;
 				isPlaying.value = false;
 			});
-
+			
+			durationMs.value = audioEl.value.duration * 1000;
 			audioEl.value.addEventListener('durationchange', () => {
 				if (audioEl.value) {
 					durationMs.value = audioEl.value.duration * 1000;
