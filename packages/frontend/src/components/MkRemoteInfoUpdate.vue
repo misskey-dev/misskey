@@ -4,20 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a :class="$style.root" @click="UserInfoUpdate" ><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i>{{ i18n.ts.remoteUserInfoUpdate }}</a>
+<a :class="$style.root" @click="UserInfoUpdate"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i>{{ i18n.ts.remoteUserInfoUpdate }}</a>
 </template>
 
 <script lang="ts" setup>
 import { i18n } from '@/i18n.js';
-import { api } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 const props = withDefaults(defineProps<{
   UserId: string;
 }>(), {
-  UserId: null,
+	UserId: null,
 });
 
 function UserInfoUpdate() {
-  api('federation/update-remote-user',{userId: props.UserId})
+	misskeyApi('federation/update-remote-user', { userId: props.UserId });
 }
 
 </script>
