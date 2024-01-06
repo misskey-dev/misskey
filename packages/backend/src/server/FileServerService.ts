@@ -176,6 +176,7 @@ export class FileServerService {
 						if (end > file.file.size) {
 							end = file.file.size - 1;
 						}
+						const chunksize = end - start + 1;
 
 						image = {
 							data: fs.createReadStream(file.path, {
@@ -186,16 +187,16 @@ export class FileServerService {
 							type: file.mime,
 						};
 
-						const chunksize = end - start + 1;
 						reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
 						reply.header('Accept-Ranges', 'bytes');
 						reply.header('Content-Length', chunksize);
+					} else {
+						image = {
+							data: fs.createReadStream(file.path),
+							ext: file.ext,
+							type: file.mime,
+						};
 					}
-					image = {
-						data: fs.createReadStream(file.path),
-						ext: file.ext,
-						type: file.mime,
-					};
 				}
 
 				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
