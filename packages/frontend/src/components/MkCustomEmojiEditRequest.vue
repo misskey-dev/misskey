@@ -37,6 +37,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkButton from '@/components/MkButton.vue';
+import {misskeyApi} from "@/scripts/misskey-api.js";
 
 const emojisRequestPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -77,7 +78,7 @@ async function unrequested(emoji) {
 	});
 	if (canceled) return;
 
-	await os.api('admin/emoji/update-request', {
+	await misskeyApi('admin/emoji/update-request', {
 		id: emoji.id,
 		fileId: emoji.fileId,
 		name: emoji.name,
@@ -100,7 +101,7 @@ async function deleteRequest(emoji) {
 	});
 	if (canceled) return;
 
-	os.api('admin/emoji/delete', {
+    misskeyApi('admin/emoji/delete', {
 		id: emoji.id,
 	}).then(() => {
 		emojisRequestPaginationComponent.value.removeItem((item) => item.id === emoji.id);

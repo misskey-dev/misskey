@@ -97,7 +97,7 @@ async function setCategoryBulk() {
 	if (selectItemsId.value.length > 1) {
 		for (let i = 0; i < selectItemsId.value.length; i++) {
 			let decorationId = selectItemsId.value[i];
-			await os.api('admin/avatar-decorations/update', {
+			await misskeyApi('admin/avatar-decorations/update', {
 				id: decorationId,
 				category: result,
 			});
