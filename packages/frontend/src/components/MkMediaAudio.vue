@@ -161,7 +161,7 @@ function togglePlayPause() {
 
 function toggleMute() {
 	if (volume.value === 0) {
-		volume.value = .3;
+		volume.value = .5;
 	} else {
 		volume.value = 0;
 	}
