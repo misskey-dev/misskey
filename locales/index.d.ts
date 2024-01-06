@@ -402,6 +402,11 @@ export interface Locale {
     "enableHcaptcha": string;
     "hcaptchaSiteKey": string;
     "hcaptchaSecretKey": string;
+    "mcaptcha": string;
+    "enableMcaptcha": string;
+    "mcaptchaSiteKey": string;
+    "mcaptchaSecretKey": string;
+    "mcaptchaInstanceUrl": string;
     "recaptcha": string;
     "enableRecaptcha": string;
     "recaptchaSiteKey": string;

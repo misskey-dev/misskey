@@ -95,7 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-only
         </MkInput>
         <MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha"
                    provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
-        <MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha"
+        <MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
+			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha"
                    provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
         <MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha"
                    provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
@@ -156,6 +157,7 @@ const passwordStrength = ref<'' | 'low' | 'medium' | 'high'>('');
 const passwordRetypeState = ref<null | 'match' | 'not-match'>(null);
 const submitting = ref<boolean>(false);
 const hCaptchaResponse = ref<string | null>(null);
+const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
@@ -164,7 +166,7 @@ const emailAbortController = ref<null | AbortController>(null);
 const shouldDisableSubmitting = computed((): boolean => {
   return submitting.value ||
       instance.enableHcaptcha && !hCaptchaResponse.value ||
-      instance.enableRecaptcha && !reCaptchaResponse.value ||
+      instance.enableMcaptcha && !mCaptchaResponse.value ||instance.enableRecaptcha && !reCaptchaResponse.value ||
       instance.enableTurnstile && !turnstileResponse.value ||
       instance.emailRequiredForSignup && emailState.value !== 'ok' ||
       usernameState.value !== 'ok' ||
@@ -291,7 +293,8 @@ async function onSubmit(): Promise<void> {
       emailAddress: email.value,
       invitationCode: invitationCode.value,
       'hcaptcha-response': hCaptchaResponse.value,
-      'g-recaptcha-response': reCaptchaResponse.value,
+      'm-captcha-response': mCaptchaResponse.value,
+			'g-recaptcha-response': reCaptchaResponse.value,
       'turnstile-response': turnstileResponse.value,
     });
     if (instance.emailRequiredForSignup) {
