@@ -2045,6 +2045,7 @@ _profile:
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"
+  clips: "Clip"
   followingList: "Followed users"
   muteList: "Muted users"
   blockingList: "Blocked users"
