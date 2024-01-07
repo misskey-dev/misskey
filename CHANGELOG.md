@@ -16,6 +16,7 @@
 
 ### General
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
+- Fix: リストライムラインの「リノートを表示」が正しく機能しない問題を修正
 
 ### Client
 - Feat: 新しいゲームを追加
@@ -26,6 +27,7 @@
 ### Server
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
 - Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
+- Enhance: クリップをエクスポートできるように
 
 ## 2023.12.2
 

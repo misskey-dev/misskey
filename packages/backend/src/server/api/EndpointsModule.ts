@@ -208,6 +208,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportClips from './endpoints/i/export-clips.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
@@ -569,6 +570,7 @@ const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass:
 const $i_exportFollowing: Provider = { provide: 'ep:i/export-following', useClass: ep___i_exportFollowing.default };
 const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_exportMute.default };
 const $i_exportNotes: Provider = { provide: 'ep:i/export-notes', useClass: ep___i_exportNotes.default };
+const $i_exportClips: Provider = { provide: 'ep:i/export-clips', useClass: ep___i_exportClips.default };
 const $i_exportFavorites: Provider = { provide: 'ep:i/export-favorites', useClass: ep___i_exportFavorites.default };
 const $i_exportUserLists: Provider = { provide: 'ep:i/export-user-lists', useClass: ep___i_exportUserLists.default };
 const $i_exportAntennas: Provider = { provide: 'ep:i/export-antennas', useClass: ep___i_exportAntennas.default };
@@ -934,6 +936,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportClips,
 		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_exportAntennas,
@@ -1293,6 +1296,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportClips,
 		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_exportAntennas,
