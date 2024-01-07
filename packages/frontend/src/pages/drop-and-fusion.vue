@@ -7,14 +7,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
-		<div v-show="!gameStarted" class="_gaps_s" :class="$style.root">
-			<div style="text-align: center;">
-				<div>{{ i18n.ts.bubbleGame }}</div>
-				<MkSelect v-model="gameMode">
-					<option value="normal">NORMAL</option>
-					<option value="square">SQUARE</option>
-				</MkSelect>
-				<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+		<div v-show="!gameStarted" :class="$style.root">
+			<div style="text-align: center;" class="_gaps">
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+					</div>
+				</div>
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<div class="_gaps" style="padding: 16px;">
+							<MkSelect v-model="gameMode">
+								<option value="normal">NORMAL</option>
+								<option value="square">SQUARE</option>
+							</MkSelect>
+							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div v-show="gameStarted" class="_gaps_s" :class="$style.root">
@@ -102,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Matter from 'matter-js';
-import { Ref, onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -684,7 +694,7 @@ class Game extends EventEmitter<{
 let game: Game;
 
 function onClick(ev: MouseEvent) {
-	const rect = containerEl.value.getBoundingClientRect();
+	const rect = containerEl.value!.getBoundingClientRect();
 
 	const x = (ev.clientX - rect.left) / viewScaleX;
 
@@ -692,7 +702,7 @@ function onClick(ev: MouseEvent) {
 }
 
 function onTouchend(ev: TouchEvent) {
-	const rect = containerEl.value.getBoundingClientRect();
+	const rect = containerEl.value!.getBoundingClientRect();
 
 	const x = (ev.changedTouches[0].clientX - rect.left) / viewScaleX;
 
@@ -700,11 +710,11 @@ function onTouchend(ev: TouchEvent) {
 }
 
 function onMousemove(ev: MouseEvent) {
-	mouseX.value = ev.clientX - containerEl.value.getBoundingClientRect().left;
+	mouseX.value = ev.clientX - containerEl.value!.getBoundingClientRect().left;
 }
 
 function onTouchmove(ev: TouchEvent) {
-	mouseX.value = ev.touches[0].clientX - containerEl.value.getBoundingClientRect().left;
+	mouseX.value = ev.touches[0].clientX - containerEl.value!.getBoundingClientRect().left;
 }
 
 function restart() {
