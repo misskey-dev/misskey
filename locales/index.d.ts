@@ -1190,6 +1190,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "bubbleGame": string;
     "abuseReportCategory": string;
     "selectCategory": string;
     "reportComplete": string;
