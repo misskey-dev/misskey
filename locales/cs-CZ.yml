@@ -1827,6 +1827,7 @@ _profile:
 _exportOrImport:
   allNotes: "Všechny poznámky"
   favoritedNotes: "Oblíbené poznámky"
+  clips: "Oříznout"
   followingList: "Sledovaní"
   muteList: "Ztlumit"
   blockingList: "Zablokovat"
