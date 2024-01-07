@@ -1789,6 +1789,7 @@ _profile:
 _exportOrImport:
   allNotes: "Все заметки\n"
   favoritedNotes: "Избранное"
+  clips: "Подборка"
   followingList: "Подписки"
   muteList: "Скрытые"
   blockingList: "Заблокированные"
