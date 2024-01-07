@@ -11,7 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						SCORE: <b><MkNumber :value="score"/></b>
+						<div>SCORE: <b><MkNumber :value="score"/></b></div>
+						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
 					</div>
 				</div>
 				<div :class="[$style.frame, $style.stock]" style="margin-left: auto;">
@@ -33,7 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.main">
 				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-					<img src="/client-assets/drop-and-fusion/frame.svg" :class="$style.mainFrameImg"/>
+					<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+					<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 					<canvas ref="canvasEl" :class="$style.canvas"/>
 					<Transition
 						:enterActiveClass="$style.transition_combo_enterActive"
@@ -44,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 					</Transition>
+					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: mouseX + 'px' }"/>
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
 						:leaveActiveClass="$style.transition_picked_leaveActive"
@@ -81,6 +84,8 @@ import * as os from '@/os.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
+import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
@@ -191,7 +196,7 @@ const FRUITS = [{
 
 const GAME_WIDTH = 450;
 const GAME_HEIGHT = 600;
-const PHYSICS_QUALITY_FACTOR = 32; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる
+const PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる、逆に高すぎても何故か不安定になる
 
 let viewScaleX = 1;
 let viewScaleY = 1;
@@ -203,6 +208,7 @@ const comboPrev = ref(0);
 const dropReady = ref(true);
 const gameOver = ref(false);
 const gameStarted = ref(false);
+const highScore = ref<number | null>(null);
 
 class Game extends EventEmitter<{
 	changeScore: (score: number) => void;
@@ -251,6 +257,8 @@ class Game extends EventEmitter<{
 		this.emit('changeScore', value);
 	}
 
+	private comboIntervalId: number | null = null;
+
 	constructor() {
 		super();
 
@@ -294,6 +302,8 @@ class Game extends EventEmitter<{
 		//#region walls
 		const WALL_OPTIONS: Matter.IChamferableBodyDefinition = {
 			isStatic: true,
+			friction: 0.7,
+			slop: 1.0,
 			render: {
 				strokeStyle: 'transparent',
 				fillStyle: 'transparent',
@@ -308,7 +318,7 @@ class Game extends EventEmitter<{
 		]);
 		//#endregion
 
-		this.overflowCollider = Matter.Bodies.rectangle(GAME_WIDTH / 2, 0, GAME_WIDTH, 125, {
+		this.overflowCollider = Matter.Bodies.rectangle(GAME_WIDTH / 2, 0, GAME_WIDTH, 200, {
 			isStatic: true,
 			isSensor: true,
 			render: {
@@ -328,11 +338,13 @@ class Game extends EventEmitter<{
 	private createBody(fruit: typeof FRUITS[number], x: number, y: number) {
 		return Matter.Bodies.circle(x, y, fruit.size / 2, {
 			label: fruit.id,
-			density: 0.0005,
+			//density: 0.0005,
+			density: fruit.size / 1000,
+			restitution: 0.2,
 			frictionAir: 0.01,
-			restitution: 0.4,
-			friction: 0.5,
+			friction: 0.7,
 			frictionStatic: 5,
+			slop: 1.0,
 			//mass: 0,
 			render: {
 				sprite: {
@@ -372,7 +384,7 @@ class Game extends EventEmitter<{
 				this.activeBodyIds.push(body.id);
 			}, 100);
 
-			const additionalScore = Math.round(currentFruit.score * (1 + (this.combo / 3)));
+			const additionalScore = Math.round(currentFruit.score * (1 + ((this.combo - 1) / 3)));
 			this.score += additionalScore;
 
 			const pan = ((newX / GAME_WIDTH) - 0.5) * 2;
@@ -449,7 +461,7 @@ class Game extends EventEmitter<{
 			}
 		});
 
-		window.setInterval(() => {
+		this.comboIntervalId = window.setInterval(() => {
 			if (this.latestFusionedAt < Date.now() - this.COMBO_INTERVAL) {
 				this.combo = 0;
 			}
@@ -469,7 +481,7 @@ class Game extends EventEmitter<{
 		this.emit('changeStock', this.stock);
 
 		const x = Math.min(GAME_WIDTH - this.PLAYAREA_MARGIN - (st.fruit.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.fruit.size / 2), _x));
-		const body = this.createBody(st.fruit, x, st.fruit.size / 2);
+		const body = this.createBody(st.fruit, x, 50 + st.fruit.size / 2);
 		Matter.Composite.add(this.engine.world, body);
 		this.activeBodyIds.push(body.id);
 		this.latestDroppedBodyId = body.id;
@@ -480,6 +492,7 @@ class Game extends EventEmitter<{
 	}
 
 	public dispose() {
+		if (this.comboIntervalId) window.clearInterval(this.comboIntervalId);
 		Matter.Render.stop(this.render);
 		Matter.Runner.stop(this.runner);
 		Matter.World.clear(this.engine.world, false);
@@ -567,10 +580,28 @@ function attachGame() {
 		currentPick.value = null;
 		dropReady.value = false;
 		gameOver.value = true;
+
+		if (score.value > (highScore.value ?? 0)) {
+			highScore.value = score.value;
+
+			misskeyApi('i/registry/set', {
+				scope: ['dropAndFusionGame'],
+				key: 'highScore',
+				value: highScore.value,
+			});
+		}
 	});
 }
 
-onMounted(() => {
+onMounted(async () => {
+	try {
+		highScore.value = await misskeyApi('i/registry/get', {
+			scope: ['dropAndFusionGame'],
+			key: 'highScore',
+		});
+	} catch (err) {
+	}
+
 	game = new Game();
 
 	attachGame();
@@ -667,7 +698,9 @@ definePageMetadata({
 	top: 0;
 	left: 0;
 	width: 100%;
-	filter: drop-shadow(0 6px 16px #0007);
+	// なんかiOSでちらつく
+	//filter: drop-shadow(0 6px 16px #0007);
+	border-radius: 16px;
 	pointer-events: none;
 	user-select: none;
 }
@@ -699,13 +732,28 @@ definePageMetadata({
 	text-align: center;
 	font-weight: bold;
 	font-style: oblique;
+	color: #fff;
+	-webkit-text-stroke: 1px rgb(255, 145, 0);
+	text-shadow: 0 0 6px #0005;
 	pointer-events: none;
 	user-select: none;
 }
 
 .currentFruit {
 	position: absolute;
-	margin-top: 20px;
+	margin-top: 80px;
+	z-index: 2;
+	filter: drop-shadow(0 6px 16px #0007);
+	pointer-events: none;
+	user-select: none;
+}
+
+.dropper {
+	position: absolute;
+	top: 0;
+	width: 70px;
+	margin-top: -10px;
+	margin-left: -30px;
 	z-index: 2;
 	filter: drop-shadow(0 6px 16px #0007);
 	pointer-events: none;
@@ -714,7 +762,7 @@ definePageMetadata({
 
 .currentFruitArrow {
 	position: absolute;
-	margin-top: 20px;
+	margin-top: 100px;
 	z-index: 3;
 	animation: currentFruitArrow 2s ease infinite;
 	pointer-events: none;
@@ -723,10 +771,10 @@ definePageMetadata({
 
 .dropGuide {
 	position: absolute;
-	top: 50px;
+	top: 120px;
 	z-index: 3;
 	width: 3px;
-	height: calc(100% - 50px);
+	height: calc(100% - 120px);
 	background: #f002;
 	pointer-events: none;
 	user-select: none;
