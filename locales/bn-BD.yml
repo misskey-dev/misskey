@@ -1192,6 +1192,7 @@ _profile:
   changeBanner: "ব্যানার পরিবর্তন করুন"
 _exportOrImport:
   allNotes: "সকল নোট"
+  clips: "ক্লিপ"
   followingList: "অনুসরণ করা হচ্ছে"
   muteList: "মিউট"
   blockingList: "ব্লক"
