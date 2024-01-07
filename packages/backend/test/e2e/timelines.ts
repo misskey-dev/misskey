@@ -6,12 +6,8 @@
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
-process.env.NODE_ENV = 'test';
-process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING = 'true';
-
 import * as assert from 'assert';
-import { api, post, randomString, signup, sleep, startServer, uploadUrl } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, post, randomString, signup, sleep, uploadUrl } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -20,16 +16,6 @@ function genHost() {
 function waitForPushToTl() {
 	return sleep(500);
 }
-
-let app: INestApplicationContext;
-
-beforeAll(async () => {
-	app = await startServer();
-}, 1000 * 60 * 2);
-
-afterAll(async () => {
-	await app.close();
-});
 
 describe('Timelines', () => {
 	describe('Home TL', () => {
@@ -335,7 +321,8 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await api('/following/requests/accept', { userId: alice.id }, bob);
+
 			const bobNote = await post(bob, { text: 'hi' });
 
 			await waitForPushToTl();
@@ -349,7 +336,8 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await api('/following/requests/accept', { userId: alice.id }, bob);
+
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();
@@ -763,7 +751,8 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await api('/following/requests/accept', { userId: alice.id }, bob);
+
 			const bobNote = await post(bob, { text: 'hi' });
 
 			await waitForPushToTl();
@@ -777,7 +766,8 @@ describe('Timelines', () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('/following/create', { userId: bob.id }, alice);
-			await sleep(1000);
+			await api('/following/requests/accept', { userId: alice.id }, bob);
+
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
 			await waitForPushToTl();

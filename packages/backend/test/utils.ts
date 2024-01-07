@@ -5,7 +5,7 @@
 
 import * as assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
-import { isAbsolute, basename } from 'node:path';
+import { basename, isAbsolute } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { inspect } from 'node:util';
 import WebSocket, { ClientOptions } from 'ws';
@@ -68,7 +68,11 @@ export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
 	return res.body;
 };
 
-const request = async (path: string, params: any, me?: UserToken): Promise<{ status: number, headers: Headers, body: any }> => {
+const request = async (path: string, params: any, me?: UserToken): Promise<{
+	status: number,
+	headers: Headers,
+	body: any
+}> => {
 	const bodyAuth: Record<string, string> = {};
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
@@ -275,7 +279,11 @@ interface UploadOptions {
  * Upload file
  * @param user User
  */
-export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadOptions = {}): Promise<{ status: number, headers: Headers, body: misskey.Endpoints['drive/files/create']['res'] | null }> => {
+export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadOptions = {}): Promise<{
+	status: number,
+	headers: Headers,
+	body: misskey.Endpoints['drive/files/create']['res'] | null
+}> => {
 	const absPath = path == null
 		? new URL('resources/Lenna.jpg', import.meta.url)
 		: isAbsolute(path.toString())
@@ -426,8 +434,8 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	];
 
 	const body =
-		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() :
-		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) :
+		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
+		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
 		null;
 
 	return {
@@ -556,4 +564,35 @@ export function sleep(msec: number) {
 			res();
 		}, msec);
 	});
+}
+
+export async function sendEnvUpdateRequest(params: { key: string, value?: string }) {
+	const res = await fetch(
+		`http://localhost:${port + 1000}/env`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(params),
+		},
+	);
+
+	if (res.status !== 200) {
+		throw new Error('server env update failed.');
+	}
+}
+
+export async function sendEnvResetRequest() {
+	const res = await fetch(
+		`http://localhost:${port + 1000}/env-reset`,
+		{
+			method: 'POST',
+			body: JSON.stringify({}),
+		},
+	);
+
+	if (res.status !== 200) {
+		throw new Error('server env update failed.');
+	}
 }
