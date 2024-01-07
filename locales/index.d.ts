@@ -204,6 +204,7 @@ export interface Locale {
     "stopActivityDelivery": string;
     "blockThisInstance": string;
     "silenceThisInstance": string;
+    "sensitiveMediaThisInstance": string;
     "operations": string;
     "software": string;
     "version": string;
@@ -225,6 +226,8 @@ export interface Locale {
     "blockedInstancesDescription": string;
     "silencedInstances": string;
     "silencedInstancesDescription": string;
+    "sensitiveMediaInstances": string;
+    "sensitiveMediaInstancesDescription": string;
     "muteAndBlock": string;
     "mutedUsers": string;
     "blockedUsers": string;

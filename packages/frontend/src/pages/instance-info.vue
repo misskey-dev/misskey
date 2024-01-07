@@ -37,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
 					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
+					<MkSwitch v-model="isSensitiveMedia" :disabled="!meta || !instance" @update:modelValue="toggleSensitiveMedia">{{ i18n.ts.sensitiveMediaThisInstance }}</MkSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>
@@ -149,6 +150,7 @@ const instance = ref<Misskey.entities.FederationInstance | null>(null);
 const suspended = ref(false);
 const isBlocked = ref(false);
 const isSilenced = ref(false);
+const isSensitiveMedia = ref(false);
 const faviconUrl = ref<string | null>(null);
 
 const usersPagination = {
@@ -172,6 +174,7 @@ async function fetch(): Promise<void> {
 	suspended.value = instance.value?.isSuspended ?? false;
 	isBlocked.value = instance.value?.isBlocked ?? false;
 	isSilenced.value = instance.value?.isSilenced ?? false;
+	isSensitiveMedia.value = instance.value?.isSensitiveMedia ?? false;
 	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
 }
 
@@ -191,6 +194,16 @@ async function toggleSilenced(): Promise<void> {
 	const silencedHosts = meta.value.silencedHosts ?? [];
 	await os.api('admin/update-meta', {
 		silencedHosts: isSilenced.value ? silencedHosts.concat([host]) : silencedHosts.filter(x => x !== host),
+	});
+}
+
+async function toggleSensitiveMedia(): Promise<void> {
+	if (!meta.value) throw new Error('No meta?');
+	if (!instance.value) throw new Error('No instance?');
+	const { host } = instance.value;
+	const sensitiveMediaHosts = meta.value.sensitiveMediaHosts ?? [];
+	await os.api('admin/update-meta', {
+		sensitiveMediaHosts: isSensitiveMedia.value ? sensitiveMediaHosts.concat([host]) : sensitiveMediaHosts.filter(x => x !== host),
 	});
 }
 

@@ -173,6 +173,9 @@ export class ApNoteService {
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const apHashtags = extractApHashtags(note.tag);
 
+		const meta = await this.metaService.fetch();
+		const isSensitiveMediaHost = this.utilityService.isSensitiveMediaHost(meta.blockedHosts, this.utilityService.extractDbHost(note.id ?? entryUri));
+
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
@@ -180,7 +183,7 @@ export class ApNoteService {
 		const files = (await Promise.all(toArray(note.attachment).map(attach => (
 			limit(() => this.apImageService.resolveImage(actor, {
 				...attach,
-				sensitive: note.sensitive, // Noteがsensitiveなら添付もsensitiveにする
+				sensitive: isSensitiveMediaHost || note.sensitive, // Noteがsensitiveなら添付もsensitiveにする
 			}))
 		))));
 

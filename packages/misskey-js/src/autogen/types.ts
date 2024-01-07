@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.2-io
- * generatedAt: 2023-12-28T08:11:12.906Z
+ * version: 2023.11.1-io.3a
+ * generatedAt: 2024-01-07T10:20:39.681Z
  */
 
 /**
@@ -4209,6 +4209,7 @@ export type components = {
       maintainerName: string | null;
       maintainerEmail: string | null;
       isSilenced: boolean;
+      isSensitiveMedia: boolean;
       /** Format: url */
       iconUrl: string | null;
       /** Format: url */
@@ -4560,6 +4561,7 @@ export type operations = {
             enableServiceWorker: boolean;
             translatorAvailable: boolean;
             silencedHosts?: string[];
+            sensitiveMediaHosts?: string[];
             pinnedUsers: string[];
             hiddenTags: string[];
             blockedHosts: string[];
@@ -8676,6 +8678,7 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           notesPerOneAd?: number;
           silencedHosts?: string[] | null;
+          sensitiveMediaHosts?: string[] | null;
           urlPreviewDenyList?: string[] | null;
         };
       };
@@ -25241,7 +25244,7 @@ export type operations = {
            * @default other
            * @enum {string}
            */
-          category?: 'nsfw' | 'spam' | 'explicit' | 'phishing' | 'personalInfoLeak' | 'selfHarm' | 'criticalBreach' | 'otherBreach' | 'violationRights' | 'violationRightsOther' | 'other' | 'personalinfoleak' | 'selfharm' | 'criticalbreach' | 'otherbreach' | 'violationrights' | 'violationrightsother' | 'notlike';
+          category?: 'nsfw' | 'spam' | 'explicit' | 'phishing' | 'personalInfoLeak' | 'selfHarm' | 'criticalBreach' | 'otherBreach' | 'violationRights' | 'violationRightsOther' | 'other';
         };
       };
     };

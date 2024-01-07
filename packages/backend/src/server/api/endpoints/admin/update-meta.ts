@@ -138,6 +138,11 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		sensitiveMediaHosts: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		urlPreviewDenyList: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
@@ -173,13 +178,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
+
 			if (Array.isArray(ps.silencedHosts)) {
 				let lastValue = '';
 				set.silencedHosts = ps.silencedHosts.sort().filter((h) => {
 					const lv = lastValue;
 					lastValue = h;
 					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
-				});
+				}).map(x => x.toLowerCase());
+			}
+
+			if (Array.isArray(ps.sensitiveMediaHosts)) {
+				let lastValue = '';
+				set.sensitiveMediaHosts = ps.sensitiveMediaHosts.sort().filter((h) => {
+					const lv = lastValue;
+					lastValue = h;
+					return h !== '' && h !== lv && !set.blockedHosts?.includes(h);
+				}).map(x => x.toLowerCase());
 			}
 
 			if (Array.isArray(ps.urlPreviewDenyList)) {

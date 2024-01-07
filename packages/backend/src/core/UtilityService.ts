@@ -43,6 +43,12 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public isSensitiveMediaHost(sensitiveMediaHosts: string[] | undefined, host: string | null): boolean {
+		if (!sensitiveMediaHosts || host == null) return false;
+		return sensitiveMediaHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
 	public isSensitiveWordIncluded(text: string, sensitiveWords: string[]): boolean {
 		if (sensitiveWords.length === 0) return false;
 		if (text === '') return false;

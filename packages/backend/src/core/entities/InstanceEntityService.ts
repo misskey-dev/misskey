@@ -43,6 +43,7 @@ export class InstanceEntityService {
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
 			isSilenced: this.utilityService.isSilencedHost(meta.silencedHosts, instance.host),
+			isSensitiveMedia: this.utilityService.isSensitiveMediaHost(meta.sensitiveMediaHosts, instance.host),
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,
