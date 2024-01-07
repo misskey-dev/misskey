@@ -2058,6 +2058,7 @@ _profile:
 _exportOrImport:
   allNotes: "Todas las notas"
   favoritedNotes: "Notas favoritas"
+  clips: "Clip"
   followingList: "Siguiendo"
   muteList: "Silenciados"
   blockingList: "Bloqueados"
