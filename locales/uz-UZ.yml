@@ -975,6 +975,7 @@ _profile:
   changeBanner: "Bannerni o'zgartirish"
 _exportOrImport:
   allNotes: "Barcha qaydlar"
+  clips: "Klip"
   followingList: "Obuna bo‘lish"
   muteList: "Ovozni o‘chirish"
   blockingList: "Bloklangan foydalanuvchilar"
