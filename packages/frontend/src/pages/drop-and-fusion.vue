@@ -74,6 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="gameOver" :class="$style.gameOverLabel">
 						<div>GAME OVER!</div>
 						<div>SCORE: <MkNumber :value="score"/></div>
+						<MkButton primary rounded inline @click="share">Share</MkButton>
 					</div>
 				</div>
 			</div>
@@ -103,6 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Matter from 'matter-js';
 import { Ref, onMounted, ref, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
+import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import * as sound from '@/scripts/sound.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -114,6 +116,8 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkSelect from '@/components/MkSelect.vue';
+import { apiUrl } from '@/config.js';
+import { $i } from '@/account.js';
 
 type Mono = {
 	id: string;
@@ -785,6 +789,46 @@ async function start() {
 	});
 	attachGame();
 	game.start();
+}
+
+function getGameImageDriveFile() {
+	return new Promise<Misskey.entities.DriveFile | null>(res => {
+		canvasEl.value?.toBlob(blob => {
+			if (!blob) return res(null);
+			if ($i == null) return res(null);
+			const formData = new FormData();
+			formData.append('file', blob);
+			formData.append('name', `bubble-game-${Date.now()}.png`);
+			formData.append('isSensitive', 'false');
+			formData.append('comment', 'null');
+			formData.append('i', $i.token);
+			if (defaultStore.state.uploadFolder) {
+				formData.append('folderId', defaultStore.state.uploadFolder);
+			}
+
+			window.fetch(apiUrl + '/drive/files/create', {
+				method: 'POST',
+				body: formData,
+			})
+				.then(response => response.json())
+				.then(f => {
+					res(f);
+				});
+		}, 'image/png');
+	});
+}
+
+async function share() {
+	const uploading = getGameImageDriveFile();
+	os.promiseDialog(uploading);
+	const file = await uploading;
+	if (!file) return;
+	os.post({
+		initialText: `#BubbleGame
+MODE: ${gameMode.value}
+SCORE: ${score.value}`,
+		initialFiles: [file],
+	});
 }
 
 useInterval(() => {
