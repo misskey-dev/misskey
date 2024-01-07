@@ -2053,6 +2053,7 @@ _profile:
 _exportOrImport:
   allNotes: "Tutte le note"
   favoritedNotes: "Note preferite"
+  clips: "Clip"
   followingList: "Follow"
   muteList: "Elenco profili silenziati"
   blockingList: "Elenco profili bloccati"
