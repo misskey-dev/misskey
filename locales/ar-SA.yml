@@ -1416,6 +1416,7 @@ _profile:
 _exportOrImport:
   allNotes: "كل الملاحظات"
   favoritedNotes: " الملاحظات المفضلة"
+  clips: "مِشبك"
   followingList: "المتابَعون"
   muteList: "المستخدمون المكتومون"
   blockingList: "المستخدمون المحجوبون"
