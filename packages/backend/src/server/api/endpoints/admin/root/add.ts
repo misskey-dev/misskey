@@ -10,6 +10,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	secure: true,
 } as const;
 
 export const paramDef = {
