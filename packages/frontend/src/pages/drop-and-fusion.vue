@@ -128,6 +128,7 @@ import * as os from '@/os.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
+import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -398,11 +399,12 @@ const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 
 class Game extends EventEmitter<{
-	changeScore: (score: number) => void;
-	changeCombo: (combo: number) => void;
-	changeStock: (stock: { id: string; mono: Mono }[]) => void;
+	changeScore: (newScore: number) => void;
+	changeCombo: (newCombo: number) => void;
+	changeStock: (newStock: { id: string; mono: Mono }[]) => void;
 	dropped: () => void;
-	fusioned: (x: number, y: number, score: number) => void;
+	fusioned: (x: number, y: number, scoreDelta: number) => void;
+	monoAdded: (mono: Mono) => void;
 	gameOver: () => void;
 }> {
 	private COMBO_INTERVAL = 1000;
@@ -591,6 +593,7 @@ class Game extends EventEmitter<{
 			const pan = ((newX / GAME_WIDTH) - 0.5) * 2;
 			sound.playRaw('syuilo/bubble2', 1, pan, nextMono.sfxPitch);
 
+			this.emit('monoAdded', nextMono);
 			this.emit('fusioned', newX, newY, additionalScore);
 		} else {
 			//const VELOCITY = 30;
@@ -610,12 +613,6 @@ class Game extends EventEmitter<{
 		this.isGameOver = true;
 		Matter.Runner.stop(this.runner);
 		this.emit('gameOver');
-	}
-
-	public start() {
-		os.promiseDialog(this.loadMonoTextures(), () => {
-			this.gameStart();
-		});
 	}
 
 	/** テクスチャをすべてキャッシュする */
@@ -647,22 +644,6 @@ class Game extends EventEmitter<{
 		}
 
 		return Promise.all(this.monoDefinitions.map(x => loadSingleMonoTexture(x, this)));
-	}
-
-	public getTextureImageUrl(mono: Mono) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (this.monoTextureUrls[mono.img]) {
-			return this.monoTextureUrls[mono.img];
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		} else if (this.monoTextures[mono.img]) {
-			// Gameクラス内にキャッシュがある場合はそれを使う
-			const out = URL.createObjectURL(this.monoTextures[mono.img]);
-			this.monoTextureUrls[mono.img] = out;
-			return out;
-		} else {
-			return mono.img;
-		}
 	}
 
 	private gameStart() {
@@ -722,6 +703,32 @@ class Game extends EventEmitter<{
 		}, 500);
 	}
 
+	public start() {
+		os.promiseDialog(this.loadMonoTextures(), () => {
+			this.gameStart();
+		});
+	}
+
+	public getTextureImageUrl(mono: Mono) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (this.monoTextureUrls[mono.img]) {
+			return this.monoTextureUrls[mono.img];
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		} else if (this.monoTextures[mono.img]) {
+			// Gameクラス内にキャッシュがある場合はそれを使う
+			const out = URL.createObjectURL(this.monoTextures[mono.img]);
+			this.monoTextureUrls[mono.img] = out;
+			return out;
+		} else {
+			return mono.img;
+		}
+	}
+
+	public getActiveMonos() {
+		return this.engine.world.bodies.map(x => this.monoDefinitions.find((mono) => mono.id === x.label)!).filter(x => x !== undefined);
+	}
+
 	public drop(_x: number) {
 		if (this.isGameOver) return;
 		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) {
@@ -741,6 +748,7 @@ class Game extends EventEmitter<{
 		this.latestDroppedBodyId = body.id;
 		this.latestDroppedAt = Date.now();
 		this.emit('dropped');
+		this.emit('monoAdded', st.mono);
 		const pan = ((x / GAME_WIDTH) - 0.5) * 2;
 		sound.playRaw('syuilo/poi2', 1, pan);
 	}
@@ -843,12 +851,25 @@ function attachGame() {
 		}, game.DROP_INTERVAL);
 	});
 
-	game.addListener('fusioned', (x, y, score) => {
-		const rect = canvasEl.value!.getBoundingClientRect();
+	game.addListener('fusioned', (x, y, scoreDelta) => {
+		if (!canvasEl.value) return;
+
+		const rect = canvasEl.value.getBoundingClientRect();
 		const domX = rect.left + (x * viewScaleX);
 		const domY = rect.top + (y * viewScaleY);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: score }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+	});
+
+	game.addListener('monoAdded', (mono) => {
+		// 実績関連
+		if (mono.level === 10) {
+			claimAchievement('bubbleGameExplodingHead');
+		}
+		const monos = game.getActiveMonos();
+		if (monos.filter(x => x.level === 10).length >= 2) {
+			claimAchievement('bubbleGameDoubleExplodingHead');
+		}
 	});
 
 	game.addListener('gameOver', () => {
