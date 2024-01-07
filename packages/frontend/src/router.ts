@@ -33,7 +33,7 @@ export const routes = [{
 	component: page(() => import('./pages/user/index.vue')),
 }, {
 	name: 'note',
-	path: '/notes/:noteId',
+	path: '/notes/:noteId/:initialTab?',
 	component: page(() => import('./pages/note.vue')),
 }, {
 	name: 'list',
