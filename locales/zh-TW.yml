@@ -2108,6 +2108,7 @@ _profile:
 _exportOrImport:
   allNotes: "所有貼文"
   favoritedNotes: "「我的最愛」貼文"
+  clips: "摘錄"
   followingList: "追隨中"
   muteList: "靜音"
   blockingList: "封鎖"
