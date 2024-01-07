@@ -90,6 +90,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -162,7 +163,7 @@ function createDoughnut(chartEl, tooltip, data) {
 }
 
 onMounted(() => {
-	os.apiGet('federation/stats', { limit: 30 }).then(fedStats => {
+	misskeyApiGet('federation/stats', { limit: 30 }).then(fedStats => {
 		createDoughnut(subDoughnutEl.value, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,

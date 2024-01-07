@@ -148,6 +148,10 @@ export const packedNoteSchema = {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
+				userId: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 			},
 		},
 		localOnly: {

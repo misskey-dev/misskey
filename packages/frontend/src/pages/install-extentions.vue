@@ -105,6 +105,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { AiScriptPluginMeta, parsePluginMeta, installPlugin } from '@/scripts/install-plugin.js';
 import { parseThemeCode, installTheme } from '@/scripts/install-theme.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
@@ -159,7 +160,7 @@ async function fetch() {
 		uiPhase.value = 'error';
 		return;
 	}
-	const res = await os.api('fetch-external-resources', {
+	const res = await misskeyApi('fetch-external-resources', {
 		url: url.value,
 		hash: hash.value,
 	}).catch((err) => {

@@ -49,6 +49,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -74,7 +75,7 @@ async function search() {
 	if (query == null || query === '') return;
 
 	if (query.startsWith('https://')) {
-		const promise = os.api('ap/show', {
+		const promise = misskeyApi('ap/show', {
 			uri: query,
 		});
 

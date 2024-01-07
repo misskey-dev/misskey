@@ -50,7 +50,7 @@ import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
@@ -90,13 +90,13 @@ function fetchNote() {
 	showPrev.value = false;
 	showNext.value = false;
 	note.value = null;
-	os.api('notes/show', {
+	misskeyApi('notes/show', {
 		noteId: props.noteId,
 	}).then(res => {
 		note.value = res;
 		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
 		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
-			os.api('notes/clips', {
+			misskeyApi('notes/clips', {
 				noteId: note.value.id,
 			}).then((_clips) => {
 				clips.value = _clips;

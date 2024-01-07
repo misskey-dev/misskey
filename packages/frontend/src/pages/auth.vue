@@ -46,7 +46,7 @@ import { onMounted, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i, login } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -75,13 +75,13 @@ onMounted(async () => {
 	if (!$i) return;
 
 	try {
-		session.value = await os.api('auth/session/show', {
+		session.value = await misskeyApi('auth/session/show', {
 			token: props.token,
 		});
 
 		// 既に連携していた場合
 		if (session.value.app.isAuthorized) {
-			await os.api('auth/accept', {
+			await misskeyApi('auth/accept', {
 				token: session.value.token,
 			});
 			accepted();
