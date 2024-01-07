@@ -82,9 +82,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
-						<div>GAME OVER!</div>
-						<div>SCORE: <MkNumber :value="score"/></div>
-						<MkButton primary rounded inline @click="share">Share</MkButton>
+						<div class="_gaps_s">
+							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+							<div>SCORE: <MkNumber :value="score"/></div>
+							<div class="_buttonsCenter">
+								<MkButton primary rounded @click="restart">Restart</MkButton>
+								<MkButton primary rounded @click="share">Share</MkButton>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
