@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
-	<span class="text" :class="{ up }">+1</span>
+	<span class="text" :class="{ up }">+{{ value }}</span>
 </div>
 </template>
 
@@ -16,7 +16,9 @@ import * as os from '@/os.js';
 const props = withDefaults(defineProps<{
 	x: number;
 	y: number;
+	value?: number;
 }>(), {
+	value: 1,
 });
 
 const emit = defineEmits<{
