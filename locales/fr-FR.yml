@@ -1816,6 +1816,7 @@ _profile:
   avatarDecorationMax: "Vous pouvez mettre au plus {max} décorations d'avatar."
 _exportOrImport:
   allNotes: "Toutes les notes"
+  clips: "Clip"
   followingList: "Abonnements"
   muteList: "Comptes masqués"
   blockingList: "Comptes bloqués"
