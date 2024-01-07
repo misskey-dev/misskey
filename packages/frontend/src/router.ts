@@ -528,6 +528,10 @@ export const routes = [{
 	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
 }, {
+	path: '/drop-and-fusion',
+	component: page(() => import('./pages/drop-and-fusion.vue')),
+	loginRequired: true,
+}, {
 	path: '/timeline',
 	component: page(() => import('./pages/timeline.vue')),
 }, {
