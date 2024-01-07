@@ -7,12 +7,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
-		<div class="_gaps_s" :class="$style.root" style="margin: 0 auto; max-width: 600px;">
+		<div v-show="!gameStarted" class="_gaps_s" :class="$style.root">
+			<div style="text-align: center;">
+				<div>{{ i18n.ts.bubbleGame }}</div>
+				<MkSelect v-model="gameMode">
+					<option value="normal">NORMAL</option>
+					<option value="square">SQUARE</option>
+				</MkSelect>
+				<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+			</div>
+		</div>
+		<div v-show="gameStarted" class="_gaps_s" :class="$style.root">
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/></b></div>
-						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
+						<b>BUBBLE GAME</b>
+						<div>- {{ gameMode }} -</div>
 					</div>
 				</div>
 				<div :class="[$style.frame, $style.stock]" style="margin-left: auto;">
@@ -26,14 +36,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:moveClass="$style.transition_stock_move"
 						>
 							<div v-for="x in stock" :key="x.id" style="display: inline-block;">
-								<img :src="x.fruit.img" style="width: 32px;"/>
+								<img :src="x.mono.img" style="width: 32px;"/>
 							</div>
 						</TransitionGroup>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.main">
-				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 					<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 					<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 					<canvas ref="canvasEl" :class="$style.canvas"/>
@@ -55,19 +65,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="currentPick?.fruit.img" :class="$style.currentFruit" :style="{ top: -(currentPick?.fruit.size / 2) + 'px', left: (mouseX - (currentPick?.fruit.size / 2)) + 'px', width: `${currentPick?.fruit.size}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="currentPick?.mono.img" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (mouseX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
 					</Transition>
 					<template v-if="dropReady">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentFruitArrow" :style="{ top: (currentPick?.fruit.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
 						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
 						<div>GAME OVER!</div>
 						<div>SCORE: <MkNumber :value="score"/></div>
+						<MkButton primary rounded inline @click="share">Share</MkButton>
 					</div>
 				</div>
 			</div>
-			<MkButton @click="restart">Restart</MkButton>
+			<div style="display: flex;">
+				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
+					<div :class="$style.frameInner">
+						<div>SCORE: <b><MkNumber :value="score"/></b></div>
+						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
+					</div>
+				</div>
+				<div :class="[$style.frame]" style="margin-left: auto;">
+					<div :class="$style.frameInner" style="text-align: center;">
+					</div>
+				</div>
+			</div>
+			<div :class="$style.frame">
+				<div :class="$style.frameInner">
+					<MkButton @click="restart">Restart</MkButton>
+				</div>
+			</div>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -77,6 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Matter from 'matter-js';
 import { Ref, onMounted, ref, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
+import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import * as sound from '@/scripts/sound.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -86,18 +114,37 @@ import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import MkSelect from '@/components/MkSelect.vue';
+import { apiUrl } from '@/config.js';
+import { $i } from '@/account.js';
+
+type Mono = {
+	id: string;
+	level: number;
+	size: number;
+	shape: 'circle' | 'rectangle';
+	score: number;
+	dropCandidate: boolean;
+	sfxPitch: number;
+	img: string;
+	imgSize: number;
+	spriteScale: number;
+};
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
 const mouseX = ref(0);
 
-const BASE_SIZE = 30;
-const FRUITS = [{
+const NORMAL_BASE_SIZE = 30;
+const NORAML_MONOS: Mono[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
 	level: 10,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 512,
-	available: false,
+	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/exploding_head.png',
 	imgSize: 256,
@@ -105,9 +152,10 @@ const FRUITS = [{
 }, {
 	id: 'be9f38d2-b267-4b1a-b420-904e22e80568',
 	level: 9,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 256,
-	available: false,
+	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/face_with_symbols_on_mouth.png',
 	imgSize: 256,
@@ -115,9 +163,10 @@ const FRUITS = [{
 }, {
 	id: 'beb30459-b064-4888-926b-f572e4e72e0c',
 	level: 8,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 128,
-	available: false,
+	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/cold_face.png',
 	imgSize: 256,
@@ -125,9 +174,10 @@ const FRUITS = [{
 }, {
 	id: 'feab6426-d9d8-49ae-849c-048cdbb6cdf0',
 	level: 7,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 64,
-	available: false,
+	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/zany_face.png',
 	imgSize: 256,
@@ -135,9 +185,10 @@ const FRUITS = [{
 }, {
 	id: 'd6d8fed6-6d18-4726-81a1-6cf2c974df8a',
 	level: 6,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 32,
-	available: false,
+	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/pleading_face.png',
 	imgSize: 256,
@@ -145,9 +196,10 @@ const FRUITS = [{
 }, {
 	id: '249c728e-230f-4332-bbbf-281c271c75b2',
 	level: 5,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 16,
-	available: true,
+	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/face_with_open_mouth.png',
 	imgSize: 256,
@@ -155,9 +207,10 @@ const FRUITS = [{
 }, {
 	id: '23d67613-d484-4a93-b71e-3e81b19d6186',
 	level: 4,
-	size: BASE_SIZE * 1.25 * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
 	score: 8,
-	available: true,
+	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/smiling_face_with_sunglasses.png',
 	imgSize: 256,
@@ -165,9 +218,10 @@ const FRUITS = [{
 }, {
 	id: '3cbd0add-ad7d-4685-bad0-29f6dddc0b99',
 	level: 3,
-	size: BASE_SIZE * 1.25 * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25 * 1.25,
+	shape: 'circle',
 	score: 4,
-	available: true,
+	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/grinning_squinting_face.png',
 	imgSize: 256,
@@ -175,9 +229,10 @@ const FRUITS = [{
 }, {
 	id: '8f86d4f4-ee02-41bf-ad38-1ce0ae457fb5',
 	level: 2,
-	size: BASE_SIZE * 1.25,
+	size: NORMAL_BASE_SIZE * 1.25,
+	shape: 'circle',
 	score: 2,
-	available: true,
+	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/smiling_face_with_hearts.png',
 	imgSize: 256,
@@ -185,14 +240,128 @@ const FRUITS = [{
 }, {
 	id: '64ec4add-ce39-42b4-96cb-33908f3f118d',
 	level: 1,
-	size: BASE_SIZE,
+	size: NORMAL_BASE_SIZE,
+	shape: 'circle',
 	score: 1,
-	available: true,
+	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/heart_suit.png',
 	imgSize: 256,
 	spriteScale: 1.12,
-}] as const;
+}];
+
+const SQUARE_BASE_SIZE = 28;
+const SQUARE_MONOS: Mono[] = [{
+	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
+	level: 10,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 512,
+	dropCandidate: false,
+	sfxPitch: 0.25,
+	img: '/client-assets/drop-and-fusion/keycap_10.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
+	level: 9,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 256,
+	dropCandidate: false,
+	sfxPitch: 0.5,
+	img: '/client-assets/drop-and-fusion/keycap_9.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
+	level: 8,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 128,
+	dropCandidate: false,
+	sfxPitch: 0.75,
+	img: '/client-assets/drop-and-fusion/keycap_8.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
+	level: 7,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 64,
+	dropCandidate: false,
+	sfxPitch: 1,
+	img: '/client-assets/drop-and-fusion/keycap_7.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
+	level: 6,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 32,
+	dropCandidate: false,
+	sfxPitch: 1.5,
+	img: '/client-assets/drop-and-fusion/keycap_6.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
+	level: 5,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 16,
+	dropCandidate: true,
+	sfxPitch: 2,
+	img: '/client-assets/drop-and-fusion/keycap_5.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
+	level: 4,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 8,
+	dropCandidate: true,
+	sfxPitch: 2.5,
+	img: '/client-assets/drop-and-fusion/keycap_4.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
+	level: 3,
+	size: SQUARE_BASE_SIZE * 1.25 * 1.25,
+	shape: 'rectangle',
+	score: 4,
+	dropCandidate: true,
+	sfxPitch: 3,
+	img: '/client-assets/drop-and-fusion/keycap_3.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
+	level: 2,
+	size: SQUARE_BASE_SIZE * 1.25,
+	shape: 'rectangle',
+	score: 2,
+	dropCandidate: true,
+	sfxPitch: 3.5,
+	img: '/client-assets/drop-and-fusion/keycap_2.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}, {
+	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
+	level: 1,
+	size: SQUARE_BASE_SIZE,
+	shape: 'rectangle',
+	score: 1,
+	dropCandidate: true,
+	sfxPitch: 4,
+	img: '/client-assets/drop-and-fusion/keycap_1.png',
+	imgSize: 256,
+	spriteScale: 1.12,
+}];
 
 const GAME_WIDTH = 450;
 const GAME_HEIGHT = 600;
@@ -200,12 +369,13 @@ const PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高い
 
 let viewScaleX = 1;
 let viewScaleY = 1;
-const currentPick = shallowRef<{ id: string; fruit: typeof FRUITS[number] } | null>(null);
-const stock = shallowRef<{ id: string; fruit: typeof FRUITS[number] }[]>([]);
+const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
+const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
 const dropReady = ref(true);
+const gameMode = ref<'normal' | 'square'>('normal');
 const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
@@ -213,7 +383,7 @@ const highScore = ref<number | null>(null);
 class Game extends EventEmitter<{
 	changeScore: (score: number) => void;
 	changeCombo: (combo: number) => void;
-	changeStock: (stock: { id: string; fruit: typeof FRUITS[number] }[]) => void;
+	changeStock: (stock: { id: string; mono: Mono }[]) => void;
 	dropped: () => void;
 	fusioned: (x: number, y: number, score: number) => void;
 	gameOver: () => void;
@@ -228,6 +398,8 @@ class Game extends EventEmitter<{
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
 
+	private monoDefinitions: Mono[] = [];
+
 	/**
 	 * フィールドに出ていて、かつ合体の対象となるアイテム
 	 */
@@ -237,7 +409,7 @@ class Game extends EventEmitter<{
 
 	private latestDroppedAt = 0;
 	private latestFusionedAt = 0;
-	private stock: { id: string; fruit: typeof FRUITS[number] }[] = [];
+	private stock: { id: string; mono: Mono }[] = [];
 
 	private _combo = 0;
 	private get combo() {
@@ -259,8 +431,12 @@ class Game extends EventEmitter<{
 
 	private comboIntervalId: number | null = null;
 
-	constructor() {
+	constructor(opts: {
+		monoDefinitions: Mono[];
+	}) {
 		super();
+
+		this.monoDefinitions = opts.monoDefinitions;
 
 		this.engine = Matter.Engine.create({
 			constraintIterations: 2 * PHYSICS_QUALITY_FACTOR,
@@ -333,11 +509,11 @@ class Game extends EventEmitter<{
 		});
 	}
 
-	private createBody(fruit: typeof FRUITS[number], x: number, y: number) {
-		return Matter.Bodies.circle(x, y, fruit.size / 2, {
-			label: fruit.id,
+	private createBody(mono: Mono, x: number, y: number) {
+		const options: Matter.IBodyDefinition = {
+			label: mono.id,
 			//density: 0.0005,
-			density: fruit.size / 1000,
+			density: mono.size / 1000,
 			restitution: 0.2,
 			frictionAir: 0.01,
 			friction: 0.7,
@@ -346,12 +522,19 @@ class Game extends EventEmitter<{
 			//mass: 0,
 			render: {
 				sprite: {
-					texture: fruit.img,
-					xScale: (fruit.size / fruit.imgSize) * fruit.spriteScale,
-					yScale: (fruit.size / fruit.imgSize) * fruit.spriteScale,
+					texture: mono.img,
+					xScale: (mono.size / mono.imgSize) * mono.spriteScale,
+					yScale: (mono.size / mono.imgSize) * mono.spriteScale,
 				},
 			},
-		});
+		};
+		if (mono.shape === 'circle') {
+			return Matter.Bodies.circle(x, y, mono.size / 2, options);
+		} else if (mono.shape === 'rectangle') {
+			return Matter.Bodies.rectangle(x, y, mono.size, mono.size, options);
+		} else {
+			throw new Error('unrecognized shape');
+		}
 	}
 
 	private fusion(bodyA: Matter.Body, bodyB: Matter.Body) {
@@ -370,11 +553,11 @@ class Game extends EventEmitter<{
 		Matter.Composite.remove(this.engine.world, [bodyA, bodyB]);
 		this.activeBodyIds = this.activeBodyIds.filter(x => x !== bodyA.id && x !== bodyB.id);
 
-		const currentFruit = FRUITS.find(y => y.id === bodyA.label)!;
-		const nextFruit = FRUITS.find(x => x.level === currentFruit.level + 1);
+		const currentMono = this.monoDefinitions.find(y => y.id === bodyA.label)!;
+		const nextMono = this.monoDefinitions.find(x => x.level === currentMono.level + 1);
 
-		if (nextFruit) {
-			const body = this.createBody(nextFruit, newX, newY);
+		if (nextMono) {
+			const body = this.createBody(nextMono, newX, newY);
 			Matter.Composite.add(this.engine.world, body);
 
 			// 連鎖してfusionした場合の分かりやすさのため少し間を置いてからfusion対象になるようにする
@@ -382,11 +565,12 @@ class Game extends EventEmitter<{
 				this.activeBodyIds.push(body.id);
 			}, 100);
 
-			const additionalScore = Math.round(currentFruit.score * (1 + ((this.combo - 1) / 3)));
+			const comboBonus = 1 + ((this.combo - 1) / 5);
+			const additionalScore = Math.round(currentMono.score * comboBonus);
 			this.score += additionalScore;
 
 			const pan = ((newX / GAME_WIDTH) - 0.5) * 2;
-			sound.playRaw('syuilo/bubble2', 1, pan, nextFruit.sfxPitch);
+			sound.playRaw('syuilo/bubble2', 1, pan, nextMono.sfxPitch);
 
 			this.emit('fusioned', newX, newY, additionalScore);
 		} else {
@@ -413,7 +597,7 @@ class Game extends EventEmitter<{
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
 				id: Math.random().toString(),
-				fruit: FRUITS.filter(x => x.available)[Math.floor(Math.random() * FRUITS.filter(x => x.available).length)],
+				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 			});
 		}
 		this.emit('changeStock', this.stock);
@@ -474,12 +658,12 @@ class Game extends EventEmitter<{
 		const st = this.stock.shift()!;
 		this.stock.push({
 			id: Math.random().toString(),
-			fruit: FRUITS.filter(x => x.available)[Math.floor(Math.random() * FRUITS.filter(x => x.available).length)],
+			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 		});
 		this.emit('changeStock', this.stock);
 
-		const x = Math.min(GAME_WIDTH - this.PLAYAREA_MARGIN - (st.fruit.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.fruit.size / 2), _x));
-		const body = this.createBody(st.fruit, x, 50 + st.fruit.size / 2);
+		const x = Math.min(GAME_WIDTH - this.PLAYAREA_MARGIN - (st.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.mono.size / 2), _x));
+		const body = this.createBody(st.mono, x, 50 + st.mono.size / 2);
 		Matter.Composite.add(this.engine.world, body);
 		this.activeBodyIds.push(body.id);
 		this.latestDroppedBodyId = body.id;
@@ -533,9 +717,7 @@ function restart() {
 	score.value = 0;
 	combo.value = 0;
 	comboPrev.value = 0;
-	game = new Game();
-	attachGame();
-	game.start();
+	gameStarted.value = false;
 }
 
 function attachGame() {
@@ -584,36 +766,85 @@ function attachGame() {
 
 			misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
-				key: 'highScore',
+				key: 'highScore:' + gameMode.value,
 				value: highScore.value,
 			});
 		}
 	});
 }
 
-onMounted(async () => {
+async function start() {
 	try {
 		highScore.value = await misskeyApi('i/registry/get', {
 			scope: ['dropAndFusionGame'],
-			key: 'highScore',
+			key: 'highScore:' + gameMode.value,
 		});
 	} catch (err) {
 	}
 
-	game = new Game();
-
+	gameStarted.value = true;
+	game = new Game(gameMode.value === 'normal' ? {
+		monoDefinitions: NORAML_MONOS,
+	} : {
+		monoDefinitions: SQUARE_MONOS,
+	});
 	attachGame();
-
 	game.start();
+}
 
+function getGameImageDriveFile() {
+	return new Promise<Misskey.entities.DriveFile | null>(res => {
+		canvasEl.value?.toBlob(blob => {
+			if (!blob) return res(null);
+			if ($i == null) return res(null);
+			const formData = new FormData();
+			formData.append('file', blob);
+			formData.append('name', `bubble-game-${Date.now()}.png`);
+			formData.append('isSensitive', 'false');
+			formData.append('comment', 'null');
+			formData.append('i', $i.token);
+			if (defaultStore.state.uploadFolder) {
+				formData.append('folderId', defaultStore.state.uploadFolder);
+			}
+
+			window.fetch(apiUrl + '/drive/files/create', {
+				method: 'POST',
+				body: formData,
+			})
+				.then(response => response.json())
+				.then(f => {
+					res(f);
+				});
+		}, 'image/png');
+	});
+}
+
+async function share() {
+	const uploading = getGameImageDriveFile();
+	os.promiseDialog(uploading);
+	const file = await uploading;
+	if (!file) return;
+	os.post({
+		initialText: `#BubbleGame
+MODE: ${gameMode.value}
+SCORE: ${score.value}`,
+		initialFiles: [file],
+	});
+}
+
+useInterval(() => {
+	if (!canvasEl.value) return;
 	const actualCanvasWidth = canvasEl.value.getBoundingClientRect().width;
 	const actualCanvasHeight = canvasEl.value.getBoundingClientRect().height;
 	viewScaleX = actualCanvasWidth / GAME_WIDTH;
 	viewScaleY = actualCanvasHeight / GAME_HEIGHT;
+}, 1000, { immediate: false, afterMounted: true });
+
+onMounted(async () => {
 });
 
 definePageMetadata({
-	title: 'Drop & Fusion',
+	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-apple',
 });
 </script>
@@ -666,6 +897,8 @@ definePageMetadata({
 }
 
 .root {
+	margin: 0 auto;
+	max-width: 600px;
 	user-select: none;
 
 	* {
@@ -737,7 +970,7 @@ definePageMetadata({
 	user-select: none;
 }
 
-.currentFruit {
+.currentMono {
 	position: absolute;
 	margin-top: 80px;
 	z-index: 2;
@@ -758,11 +991,11 @@ definePageMetadata({
 	user-select: none;
 }
 
-.currentFruitArrow {
+.currentMonoArrow {
 	position: absolute;
 	margin-top: 100px;
 	z-index: 3;
-	animation: currentFruitArrow 2s ease infinite;
+	animation: currentMonoArrow 2s ease infinite;
 	pointer-events: none;
 	user-select: none;
 }
@@ -797,7 +1030,7 @@ definePageMetadata({
 	}
 }
 
-@keyframes currentFruitArrow {
+@keyframes currentMonoArrow {
 	0% { transform: translateY(0); }
 	25% { transform: translateY(-8px); }
 	50% { transform: translateY(0); }

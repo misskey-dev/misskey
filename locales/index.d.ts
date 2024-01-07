@@ -1194,6 +1194,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "bubbleGame": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
