@@ -4,167 +4,188 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-  <div :class="$style.root">
-    <div :class="$style.top">
-      <div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }"></div>
-      <button class="_button" :class="$style.instance" @click="openInstanceMenu">
-        <img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
-      </button>
-    </div>
-    <div :class="$style.middle">
-      <MkA :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
-           :activeClass="$style.active" to="/" exact>
-        <i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{
-          i18n.ts.timeline
-        }}</span>
-      </MkA>
-      <template v-for="item in menu">
-        <div v-if="item === '-'" :class="$style.divider"></div>
-        <component :is="navbarItemDef[item].to ? 'MkA' : 'button'"
-                   v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button"
-                   :class="[$style.item, { [$style.active]: gaming === '' && navbarItemDef[item].active, [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
-                   :activeClass="$style.active" :to="navbarItemDef[item].to"
-                   v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
-          <i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
-            :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
-          <span v-if="navbarItemDef[item].indicated"
-                :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]">
+<div :class="$style.root">
+	<div :class="$style.top">
+		<div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }"></div>
+		<button class="_button" :class="$style.instance" @click="openInstanceMenu">
+			<img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
+		</button>
+	</div>
+	<div :class="$style.middle">
+		<MkA
+			:class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+			:activeClass="$style.active" to="/" exact
+		>
+			<i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{
+				i18n.ts.timeline
+			}}</span>
+		</MkA>
+		<template v-for="item in menu">
+			<div v-if="item === '-'" :class="$style.divider"></div>
+			<component
+				:is="navbarItemDef[item].to ? 'MkA' : 'button'"
+				v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button"
+				:class="[$style.item, { [$style.active]: gaming === '' && navbarItemDef[item].active, [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+				:activeClass="$style.active" :to="navbarItemDef[item].to"
+				v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
+			>
+				<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span
+					:class="$style.itemText"
+				>{{ navbarItemDef[item].title }}</span>
+				<span
+					v-if="navbarItemDef[item].indicated"
+					:class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"
+				>
 					<span v-if="navbarItemDef[item].indicateValue && indicatorCounterToggle" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span><i
-             v-else class="_indicatorCircle"></i></span>
-        </component>
-      </template>
-      <div :class="$style.divider"></div>
-      <MkA v-if="$i.isAdmin || $i.isModerator"
-           :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
-           :activeClass="$style.active" to="/admin">
-        <i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
-          :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
-      </MkA>
-      <button
-          :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
-          class="_button" @click="more">
-        <i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
-          i18n.ts.more
-        }}</span>
-        <span v-if="otherMenuItemIndicated"
-              :class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"><i
-            class="_indicatorCircle"></i></span>
-      </button>
-      <MkA :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
-           :activeClass="$style.active" to="/settings">
-        <i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span :class="$style.itemText">{{
-          i18n.ts.settings
-        }}</span>
-      </MkA>
-    </div>
-    <div :class="$style.bottom">
-      <button class="_button"
-              :class="[$style.post ,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}]"
-              data-cy-open-post-form @click="os.post">
-        <i :class="$style.postIcon" class="ti ti-pencil ti-fw"></i><span style="position: relative;">{{
-          i18n.ts.note
-        }}</span>
-      </button>
-      <button class="_button" :class="$style.account" @click="openAccountMenu">
-        <MkAvatar :user="$i" :class="$style.avatar"/>
-        <MkAcct :class="$style.acct" class="_nowrap" :user="$i"/>
-      </button>
-    </div>
-  </div>
+						v-else class="_indicatorCircle"
+					></i></span>
+			</component>
+		</template>
+		<div :class="$style.divider"></div>
+		<MkA
+			v-if="$i.isAdmin || $i.isModerator"
+			:class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+			:activeClass="$style.active" to="/admin"
+		>
+			<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
+				:class="$style.itemText"
+			>{{ i18n.ts.controlPanel }}</span>
+		</MkA>
+		<button
+			:class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+			class="_button" @click="more"
+		>
+			<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
+				i18n.ts.more
+			}}</span>
+			<span
+				v-if="otherMenuItemIndicated"
+				:class="[$style.itemIndicator,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light'}]"
+			><i
+				class="_indicatorCircle"
+			></i></span>
+		</button>
+		<MkA
+			:class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+			:activeClass="$style.active" to="/settings"
+		>
+			<i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span :class="$style.itemText">{{
+				i18n.ts.settings
+			}}</span>
+		</MkA>
+	</div>
+	<div :class="$style.bottom">
+		<button
+			class="_button"
+			:class="[$style.post ,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light',}]"
+			data-cy-open-post-form @click="os.post"
+		>
+			<i :class="$style.postIcon" class="ti ti-pencil ti-fw"></i><span style="position: relative;">{{
+				i18n.ts.note
+			}}</span>
+		</button>
+		<button class="_button" :class="$style.account" @click="openAccountMenu">
+			<MkAvatar :user="$i" :class="$style.avatar"/>
+			<MkAcct :class="$style.acct" class="_nowrap" :user="$i"/>
+		</button>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
-import {computed, defineAsyncComponent, ref, toRef, watch} from 'vue';
-import {openInstanceMenu} from './common.js';
+import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
+import { openInstanceMenu } from './common.js';
 import * as os from '@/os';
-import {navbarItemDef} from '@/navbar.js';
-import {$i, openAccountMenu as openAccountMenu_} from '@/account';
-import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
-import {i18n} from '@/i18n';
-import {instance} from '@/instance';
+import { navbarItemDef } from '@/navbar.js';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
+import { bannerDark, bannerLight, defaultStore, iconDark, iconLight } from '@/store';
+import { i18n } from '@/i18n';
+let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 const indicatorCounterToggle = computed(defaultStore.makeGetterSetter('indicatorCounterToggle'));
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
+
 function hexToRgb(hex) {
-  // 16進数のカラーコードから "#" を除去
-  hex = hex.replace(/^#/, '');
+	// 16進数のカラーコードから "#" を除去
+	hex = hex.replace(/^#/, '');
 
-  // 16進数をRGBに変換
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
+	// 16進数をRGBに変換
+	const r = parseInt(hex.substring(0, 2), 16);
+	const g = parseInt(hex.substring(2, 4), 16);
+	const b = parseInt(hex.substring(4, 6), 16);
 
-  return `${r},${g},${b}`;
+	return `${r},${g},${b}`;
 }
+
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 document.documentElement.style.setProperty('--homeColor', hexToRgb(defaultStore.state.homeColor));
-document.documentElement.style.setProperty("--followerColor",hexToRgb(defaultStore.state.followerColor));
-document.documentElement.style.setProperty("--specifiedColor",hexToRgb(defaultStore.state.specifiedColor))
-document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed+'s');
+document.documentElement.style.setProperty('--followerColor', hexToRgb(defaultStore.state.followerColor));
+document.documentElement.style.setProperty('--specifiedColor', hexToRgb(defaultStore.state.specifiedColor));
+document.documentElement.style.setProperty('--gamingspeed', defaultStore.state.numberOfGamingSpeed + 's');
 
-let gaming = ref()
+let gaming = ref();
 if (darkMode.value) {
-  bannerUrl.value = bannerDark;
-  iconUrl.value = iconDark;
+	bannerUrl.value = bannerDark;
+	iconUrl.value = iconDark;
 } else {
-  bannerUrl.value = bannerLight;
-  iconUrl.value = iconLight;
+	bannerUrl.value = bannerLight;
+	iconUrl.value = iconLight;
 }
 watch(darkMode, () => {
-  if (darkMode.value) {
-    bannerUrl.value = bannerDark;
-    iconUrl.value = iconDark;
-  } else {
-    bannerUrl.value = bannerLight;
-    iconUrl.value = iconLight;
-  }
-})
+	if (darkMode.value) {
+		bannerUrl.value = bannerDark;
+		iconUrl.value = iconDark;
+	} else {
+		bannerUrl.value = bannerLight;
+		iconUrl.value = iconLight;
+	}
+});
 // gaming.valueに新しい値を代入する
 if (darkMode.value && gamingMode.value == true) {
-  gaming.value = 'dark';
+	gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value == true) {
-  gaming.value = 'light';
+	gaming.value = 'light';
 } else {
-  gaming.value = '';
+	gaming.value = '';
 }
 
 watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 
 watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value == true) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value == true) {
-    gaming.value = 'light';
-  } else {
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value == true) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value == true) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 const menu = toRef(defaultStore.state, 'menu');
 const otherMenuItemIndicated = computed(() => {
-  for (const def in navbarItemDef) {
-    if (menu.value.includes(def)) continue;
-    if (navbarItemDef[def].indicated) return true;
-  }
-  return false;
+	for (const def in navbarItemDef) {
+		if (menu.value.includes(def)) continue;
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
 });
 
 function openAccountMenu(ev: MouseEvent) {
-  openAccountMenu_({
-    withExtraOperation: true,
-  }, ev);
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
 }
 
 function more() {
-  os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {}, 'closed');
+	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {}, 'closed');
 }
 </script>
 
@@ -305,7 +326,6 @@ function more() {
       animation: AnimationDark var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1) infinite !important;
     }
   }
-
 
 }
 

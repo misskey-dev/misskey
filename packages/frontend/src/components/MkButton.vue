@@ -4,69 +4,69 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-  <button
-      v-if="!link"
-      ref="el" class="_button"
-      :class="[
-      $style.root,
-      {
-        [$style.inline]: inline,
-        [$style.primary]: primary,
-        [$style.gradate]: gradate,
-        [$style.danger]: danger,
-        [$style.rounded]: rounded,
-        [$style.full]: full,
-        [$style.small]: small,
-        [$style.large]: large,
-        [$style.transparent]: transparent,
-        [$style.asLike]: asLike,
-        [$style.gamingDark]: gaming === 'dark',
-        [$style.gamingLight]: gaming === 'light',
-      }
-    ]"
-      :type="type"
-      :name="name"
-      :value="value"
-      @click="emit('click', $event)"
-      @mousedown="onMousedown"
-  >
-    <div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
-    <div :class="$style.content">
-      <slot></slot>
-    </div>
-  </button>
-  <MkA
-      v-else class="_button"
-      :class="[
-    $style.root,
-    {
-      [$style.inline]: inline,
-      [$style.primary]: primary,
-      [$style.gradate]: gradate,
-      [$style.danger]: danger,
-      [$style.rounded]: rounded,
-      [$style.full]: full,
-      [$style.small]: small,
-      [$style.large]: large,
-      [$style.transparent]: transparent,
-      [$style.asLike]: asLike,
-      [$style.gamingDark]: gaming === 'dark',
-      [$style.gamingLight]: gaming === 'light',
-    }
-  ]"
-      :to="to"
-      @mousedown="onMousedown"
-  >
-    <div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
-    <div :class="$style.content">
-      <slot></slot>
-    </div>
-  </MkA>
+<button
+	v-if="!link"
+	ref="el" class="_button"
+	:class="[
+		$style.root,
+		{
+			[$style.inline]: inline,
+			[$style.primary]: primary,
+			[$style.gradate]: gradate,
+			[$style.danger]: danger,
+			[$style.rounded]: rounded,
+			[$style.full]: full,
+			[$style.small]: small,
+			[$style.large]: large,
+			[$style.transparent]: transparent,
+			[$style.asLike]: asLike,
+			[$style.gamingDark]: gaming === 'dark',
+			[$style.gamingLight]: gaming === 'light',
+		}
+	]"
+	:type="type"
+	:name="name"
+	:value="value"
+	@click="emit('click', $event)"
+	@mousedown="onMousedown"
+>
+	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
+	<div :class="$style.content">
+		<slot></slot>
+	</div>
+</button>
+<MkA
+	v-else class="_button"
+	:class="[
+		$style.root,
+		{
+			[$style.inline]: inline,
+			[$style.primary]: primary,
+			[$style.gradate]: gradate,
+			[$style.danger]: danger,
+			[$style.rounded]: rounded,
+			[$style.full]: full,
+			[$style.small]: small,
+			[$style.large]: large,
+			[$style.transparent]: transparent,
+			[$style.asLike]: asLike,
+			[$style.gamingDark]: gaming === 'dark',
+			[$style.gamingLight]: gaming === 'light',
+		}
+	]"
+	:to="to"
+	@mousedown="onMousedown"
+>
+	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
+	<div :class="$style.content">
+		<slot></slot>
+	</div>
+</MkA>
 </template>
 
 <script lang="ts" setup>
 import { nextTick, onMounted, shallowRef, computed, ref, watch } from 'vue';
-import {defaultStore} from "@/store.js";
+import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
   type?: 'button' | 'submit' | 'reset';
@@ -96,32 +96,32 @@ let gaming = ref(''); // 0-off , 1-dark , 2-light
 // gaming.valueに新しい値を代入する
 
 if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-  gaming.value = 'dark';
+	gaming.value = 'dark';
 } else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-  gaming.value = 'light';
-}else{
-  gaming.value = '';
+	gaming.value = 'light';
+} else {
+	gaming.value = '';
 }
 
 watch(darkMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value && props.primary|| darkMode.value && gamingMode.value && props.gradate) {
-    gaming.value = 'light';
-  }else{
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 
 watch(gamingMode, () => {
-  if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-    gaming.value = 'dark';
-  } else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
-    gaming.value = 'light';
-  }else{
-    gaming.value = '';
-  }
-})
+	if (darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
+		gaming.value = 'dark';
+	} else if (!darkMode.value && gamingMode.value && props.primary || darkMode.value && gamingMode.value && props.gradate ) {
+		gaming.value = 'light';
+	} else {
+		gaming.value = '';
+	}
+});
 const emit = defineEmits<{
   (ev: 'click', payload: MouseEvent): void;
 }>();
@@ -257,6 +257,9 @@ function onMousedown(evt: MouseEvent): void {
           -moz-animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite ;
           animation: AnimationLight var(--gamingspeed) cubic-bezier(0, 0.2, 0.90, 1)  infinite ;
         }
+				&:hover{
+					background: var(--accent);
+				}
       }
 
       &.gamingDark {
