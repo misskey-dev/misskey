@@ -776,14 +776,28 @@ function onTouchend(ev: TouchEvent) {
 
 function onMousemove(ev: MouseEvent) {
 	if (!containerEl.value) return;
+	const rect = containerEl.value.getBoundingClientRect();
 
-	mouseX.value = ev.clientX - containerEl.value.getBoundingClientRect().left;
+	const x = (ev.clientX - rect.left);
+	moveDropper(rect, x);
 }
 
 function onTouchmove(ev: TouchEvent) {
 	if (!containerEl.value) return;
+	const rect = containerEl.value.getBoundingClientRect();
 
-	mouseX.value = ev.touches[0].clientX - containerEl.value.getBoundingClientRect().left;
+	const x = (ev.touches[0].clientX - rect.left);
+	moveDropper(rect, x);
+}
+
+function moveDropper(rect: DOMRect, x: number) {
+	if (x <= rect.width * (25 / 450)) {
+		mouseX.value = rect.width * (25 / 450);
+	} else if (x >= rect.width * (425 / 450)) {
+		mouseX.value = rect.width * (425 / 450);
+	} else {
+		mouseX.value = x;
+	}
 }
 
 function restart() {
