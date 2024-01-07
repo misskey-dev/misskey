@@ -1164,6 +1164,7 @@ _profile:
   username: "Nom d'usuari"
 _exportOrImport:
   allNotes: "Totes les publicacions"
+  clips: "Retalls"
   followingList: "Seguint"
   muteList: "Silencia"
   blockingList: "Bloqueja"
