@@ -10,6 +10,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	secure: true,
 } as const;
 
 export const paramDef = {
@@ -27,11 +28,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private UsersRepository: UsersRepository,
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const user = await this.UsersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');
+			}
+
+			if (me.id === user.id) {
+				throw new Error('自分自身を解除することは出来ません');
 			}
 
 			await this.UsersRepository.update(user.id, {
