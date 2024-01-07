@@ -528,7 +528,7 @@ export const routes = [{
 	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
 }, {
-	path: '/drop-and-fusion',
+	path: '/bubble-game',
 	component: page(() => import('./pages/drop-and-fusion.vue')),
 	loginRequired: true,
 }, {
