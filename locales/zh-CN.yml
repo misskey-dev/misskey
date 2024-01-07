@@ -2072,6 +2072,7 @@ _profile:
 _exportOrImport:
   allNotes: "所有帖子"
   favoritedNotes: "收藏的帖子"
+  clips: "便签"
   followingList: "关注中"
   muteList: "屏蔽"
   blockingList: "拉黑"
