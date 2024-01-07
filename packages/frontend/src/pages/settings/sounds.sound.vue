@@ -32,6 +32,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { playFile, soundsTypes, getSoundDuration } from '@/scripts/sound.js';
 import { selectFile } from '@/scripts/select-file.js';
 
@@ -53,7 +54,7 @@ const fileName = ref<string>('');
 const volume = ref(props.volume);
 
 if (type.value === '_driveFile_' && fileId.value) {
-	const apiRes = await os.api('drive/files/show', {
+	const apiRes = await misskeyApi('drive/files/show', {
 		fileId: fileId.value,
 	});
 	fileName.value = apiRes.name;

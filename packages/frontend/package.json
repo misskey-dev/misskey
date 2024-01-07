@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@discordapp/twemoji": "15.0.2",
 		"@github/webauthn-json": "2.1.1",
+		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
 		"@misskey-dev/browser-image-resizer": "2.2.1-misskey.10",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "5.0.5",
@@ -45,7 +46,6 @@
 		"escape-regexp": "0.0.1",
 		"estree-walker": "3.0.3",
 		"eventemitter3": "5.0.1",
-		"gsap": "3.12.4",
 		"idb-keyval": "6.2.1",
 		"insert-text-at-cursor": "0.3.0",
 		"is-file-animated": "1.0.2",

@@ -13,8 +13,8 @@ import type * as misskey from 'misskey-js';
 describe('FF visibility', () => {
 	let app: INestApplicationContext;
 
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		app = await startServer();
