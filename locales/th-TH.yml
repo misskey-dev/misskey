@@ -2108,6 +2108,7 @@ _profile:
 _exportOrImport:
   allNotes: "โน้ตทั้งหมด"
   favoritedNotes: "บันทึกที่ชื่นชอบ"
+  clips: "คลิป"
   followingList: "กำลังติดตาม"
   muteList: "ปิดเสียง"
   blockingList: "บล็อค"
