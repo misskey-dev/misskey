@@ -1286,6 +1286,7 @@ _profile:
   changeBanner: "Zmeniť banner"
 _exportOrImport:
   allNotes: "Všetky poznámky"
+  clips: "Klip"
   followingList: "Sledujete"
   muteList: "Vypnúť zvuk"
   blockingList: "Zablokovať"
