@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, nextTick, watch, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { alpha } from '@/scripts/color.js';
@@ -74,7 +74,7 @@ async function renderChart() {
 	let values;
 
 	if (props.src === 'notes') {
-		const raw = await os.api('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
+		const raw = await misskeyApi('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
 		values = raw.inc;
 	}
 

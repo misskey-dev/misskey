@@ -5,7 +5,7 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
@@ -92,7 +92,13 @@ export type OperationType = typeof operationTypes[number];
  * @param soundStore サウンド設定
  * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
  */
-export async function loadAudio(soundStore: SoundStore, options?: { useCache?: boolean; }) {
+export async function loadAudio(soundStore: {
+	type: Exclude<SoundType, '_driveFile_'>;
+} | {
+	type: '_driveFile_';
+	fileId: string;
+	fileUrl: string;
+}, options?: { useCache?: boolean; }) {
 	if (_DEV_) console.log('loading audio. opts:', options);
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
@@ -120,7 +126,7 @@ export async function loadAudio(soundStore: SoundStore, options?: { useCache?: b
 		} catch (err) {
 			try {
 				// URLが変わっている可能性があるのでドライブ側からURLを取得するフォールバック
-				const apiRes = await os.api('drive/files/show', {
+				const apiRes = await misskeyApi('drive/files/show', {
 					fileId: soundStore.fileId,
 				});
 				response = await fetch(apiRes.url);
@@ -179,18 +185,31 @@ export async function playFile(soundStore: SoundStore) {
 	createSourceNode(buffer, soundStore.volume)?.start();
 }
 
-export function createSourceNode(buffer: AudioBuffer, volume: number) : AudioBufferSourceNode | null {
+export async function playRaw(type: Exclude<SoundType, '_driveFile_'>, volume = 1, pan = 0, playbackRate = 1) {
+	const buffer = await loadAudio({ type });
+	if (!buffer) return;
+	createSourceNode(buffer, volume, pan, playbackRate)?.start();
+}
+
+export function createSourceNode(buffer: AudioBuffer, volume: number, pan = 0, playbackRate = 1) : AudioBufferSourceNode | null {
 	const masterVolume = defaultStore.state.sound_masterVolume;
 	if (isMute() || masterVolume === 0 || volume === 0) {
 		return null;
 	}
+
+	const panNode = ctx.createStereoPanner();
+	panNode.pan.value = pan;
 
 	const gainNode = ctx.createGain();
 	gainNode.gain.value = masterVolume * volume;
 
 	const soundSource = ctx.createBufferSource();
 	soundSource.buffer = buffer;
-	soundSource.connect(gainNode).connect(ctx.destination);
+	soundSource.playbackRate.value = playbackRate;
+	soundSource
+		.connect(panNode)
+		.connect(gainNode)
+		.connect(ctx.destination);
 
 	return soundSource;
 }

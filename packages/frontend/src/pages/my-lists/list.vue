@@ -57,6 +57,7 @@ import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { mainRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -93,7 +94,7 @@ const membershipsPagination = {
 };
 
 function fetchList() {
-	os.api('users/lists/show', {
+	misskeyApi('users/lists/show', {
 		listId: props.listId,
 	}).then(_list => {
 		list.value = _list;
@@ -121,7 +122,7 @@ async function removeUser(item, ev) {
 		danger: true,
 		action: async () => {
 			if (!list.value) return;
-			os.api('users/lists/pull', {
+			misskeyApi('users/lists/pull', {
 				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
@@ -136,7 +137,7 @@ async function showMembershipMenu(item, ev) {
 		text: item.withReplies ? i18n.ts.hideRepliesToOthersInTimeline : i18n.ts.showRepliesToOthersInTimeline,
 		icon: item.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
 		action: async () => {
-			os.api('users/lists/update-membership', {
+			misskeyApi('users/lists/update-membership', {
 				listId: list.value.id,
 				userId: item.userId,
 				withReplies: !item.withReplies,

@@ -77,7 +77,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
@@ -101,7 +101,7 @@ const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberN
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 function save() {
-	os.api('i/update', {
+	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
 		autoAcceptFollowed: !!autoAcceptFollowed.value,
 		noCrawle: !!noCrawle.value,

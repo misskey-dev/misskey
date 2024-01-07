@@ -10,6 +10,7 @@ import { i18n } from '@/i18n.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { host, url } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
 import { $i, iAmModerator } from '@/account.js';
 import { mainRouter } from '@/router.js';
@@ -131,7 +132,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	}
 
 	async function editMemo(): Promise<void> {
-		const userDetailed = await os.api('users/show', {
+		const userDetailed = await misskeyApi('users/show', {
 			userId: user.id,
 		});
 		const { canceled, result } = await os.form(i18n.ts.editMemo, {

@@ -62,6 +62,7 @@ import * as Misskey from 'misskey-js';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -84,7 +85,7 @@ const error = ref<any>(null);
 
 function fetchFlash() {
 	flash.value = null;
-	os.api('flash/show', {
+	misskeyApi('flash/show', {
 		flashId: props.id,
 	}).then(_flash => {
 		flash.value = _flash;
