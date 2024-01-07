@@ -7,14 +7,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
-		<div v-show="!gameStarted" style="text-align: center;" class="_gaps_s" :class="$style.root">
-			<div>{{ i18n.ts.bubbleGame }}</div>
-			<MkSelect v-model="gameMode">
-				<option value="normal">NORMAL</option>
-				<option value="square">SQUARE</option>
-			</MkSelect>
-			<div>
-				<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+		<div v-show="!gameStarted" :class="$style.root">
+			<div style="text-align: center;" class="_gaps">
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+					</div>
+				</div>
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<div class="_gaps" style="padding: 16px;">
+							<MkSelect v-model="gameMode">
+								<option value="normal">NORMAL</option>
+								<option value="square">SQUARE</option>
+							</MkSelect>
+							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div v-show="gameStarted" class="_gaps_s" :class="$style.root">
@@ -72,9 +82,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
-						<div>GAME OVER!</div>
-						<div>SCORE: <MkNumber :value="score"/></div>
-						<MkButton primary rounded inline @click="share">Share</MkButton>
+						<div class="_gaps_s">
+							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+							<div>SCORE: <MkNumber :value="score"/></div>
+							<div class="_buttonsCenter">
+								<MkButton primary rounded @click="restart">Restart</MkButton>
+								<MkButton primary rounded @click="share">Share</MkButton>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
