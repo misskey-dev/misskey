@@ -17,7 +17,7 @@ import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
 
-export { server as startServer } from '@/boot/common.js';
+export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
 interface UserToken {
 	token: string;
