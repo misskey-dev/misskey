@@ -1671,6 +1671,7 @@ _profile:
 _exportOrImport:
   allNotes: "Toàn bộ tút"
   favoritedNotes: "Bài viết đã thích"
+  clips: "Lưu bài viết"
   followingList: "Đang theo dõi"
   muteList: "Ẩn"
   blockingList: "Chặn"
