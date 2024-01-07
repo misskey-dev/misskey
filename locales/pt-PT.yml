@@ -1402,6 +1402,7 @@ _profile:
   username: "Nome de usuário"
 _exportOrImport:
   favoritedNotes: "Notas nos favoritos"
+  clips: "Clipe"
   followingList: "Seguindo"
   muteList: "Silenciar"
   blockingList: "Bloquear"
