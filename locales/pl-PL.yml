@@ -1234,6 +1234,7 @@ _profile:
 _exportOrImport:
   allNotes: "Wszystkie wpisy"
   favoritedNotes: "Ulubione wpisy"
+  clips: "Klip"
   followingList: "Obserwowani"
   muteList: "Wycisz"
   blockingList: "Zablokuj"
