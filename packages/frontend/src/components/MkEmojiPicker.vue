@@ -221,11 +221,8 @@ watch(q, () => {
 				}
 			}
 		} else {
-			for (const emoji of emojis) {
-				if (emoji.name === newQ) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
+			if (customEmojisMap.has(newQ)) {
+				matches.add(customEmojisMap.get(newQ)!);
 			}
 			if (matches.size >= max) return matches;
 
