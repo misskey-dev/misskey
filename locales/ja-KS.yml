@@ -2108,6 +2108,7 @@ _profile:
 _exportOrImport:
   allNotes: "全てのノート"
   favoritedNotes: "お気に入りにしたノート"
+  clips: "クリップ"
   followingList: "フォロー"
   muteList: "ミュート"
   blockingList: "ブロック"
