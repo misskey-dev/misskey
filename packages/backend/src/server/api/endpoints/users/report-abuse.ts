@@ -63,14 +63,6 @@ export const paramDef = {
 				'violationRights',
 				'violationRightsOther',
 				'other',
-				// for compatibility
-				'personalinfoleak',
-				'selfharm',
-				'criticalbreach',
-				'otherbreach',
-				'violationrights',
-				'violationrightsother',
-				'notlike',
 			],
 		},
 	},
@@ -103,20 +95,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
-			// for compatibility
-			if (ps.category === 'notlike') {
-				return;
-			}
-
-			const categoriesMap: Record<string, typeof paramDef['properties']['category']['enum'][number]> = {
-				'personalinfoleak': 'personalInfoLeak',
-				'selfharm': 'selfHarm',
-				'criticalbreach': 'criticalBreach',
-				'otherbreach': 'otherBreach',
-				'violationrights': 'violationRights',
-				'violationrightsother': 'violationRightsOther',
-			};
-
 			const report = await this.abuseUserReportsRepository.insert({
 				id: this.idService.gen(),
 				targetUserId: user.id,
@@ -124,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
-				category: typeof categoriesMap[ps.category] === 'string' ? categoriesMap[ps.category] : ps.category,
+				category: ps.category,
 			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.queueService.createReportAbuseJob(report);
