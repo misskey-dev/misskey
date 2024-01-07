@@ -42,6 +42,7 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
+	user-select: none;
 	pointer-events: none;
 	position: fixed;
 	width: 128px;
