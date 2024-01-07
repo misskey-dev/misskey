@@ -1954,6 +1954,7 @@ _profile:
 _exportOrImport:
   allNotes: "Alle Notizen"
   favoritedNotes: "Als Favorit markierte Notizen"
+  clips: "Clip erstellen"
   followingList: "Gefolgte Benutzer"
   muteList: "Stummschaltungen"
   blockingList: "Blockierungen"
