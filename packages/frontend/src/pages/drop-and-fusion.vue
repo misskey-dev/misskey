@@ -111,7 +111,6 @@ import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -760,7 +759,7 @@ function attachGame() {
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
 
-			misskeyApi('i/registry/set', {
+			os.api('i/registry/set', {
 				scope: ['dropAndFusionGame'],
 				key: 'highScore:' + gameMode.value,
 				value: highScore.value,
@@ -771,7 +770,7 @@ function attachGame() {
 
 async function start() {
 	try {
-		highScore.value = await misskeyApi('i/registry/get', {
+		highScore.value = await os.api('i/registry/get', {
 			scope: ['dropAndFusionGame'],
 			key: 'highScore:' + gameMode.value,
 		});
