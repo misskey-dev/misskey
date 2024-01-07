@@ -85,6 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_s">
 							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
 							<div>SCORE: <MkNumber :value="score"/></div>
+							<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 							<div class="_buttonsCenter">
 								<MkButton primary rounded @click="restart">Restart</MkButton>
 								<MkButton primary rounded @click="share">Share</MkButton>
@@ -96,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/></b></div>
+						<div>SCORE: <b><MkNumber :value="score"/></b> (MAX CHAIN: <b><MkNumber :value="maxCombo"/></b>)</div>
 						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
 					</div>
 				</div>
@@ -389,6 +390,7 @@ const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
+const maxCombo = ref(0);
 const dropReady = ref(true);
 const gameMode = ref<'normal' | 'square'>('normal');
 const gameOver = ref(false);
@@ -823,6 +825,7 @@ function attachGame() {
 		} else {
 			comboPrev.value = value;
 		}
+		maxCombo.value = Math.max(maxCombo.value, value);
 		combo.value = value;
 	});
 
@@ -936,7 +939,7 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${gameMode.value}
-SCORE: ${score.value}`,
+SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})})`,
 		initialFiles: [file],
 	});
 }
