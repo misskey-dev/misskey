@@ -682,6 +682,7 @@ _profile:
   name: "이럼"
   username: "사용자 이럼"
 _exportOrImport:
+  clips: "클립 맨걸기"
   followingList: "팔로잉"
   muteList: "수ᇚ후기"
   blockingList: "차단하기"
