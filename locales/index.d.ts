@@ -2258,6 +2258,7 @@ export interface Locale {
     "_exportOrImport": {
         "allNotes": string;
         "favoritedNotes": string;
+        "clips": string;
         "followingList": string;
         "muteList": string;
         "blockingList": string;
