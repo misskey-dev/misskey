@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
-		<div class="_gaps_s" :class="$style.root" style="margin: 0 auto;" :style="{ maxWidth: GAME_WIDTH + 'px' }">
+		<div class="_gaps_s" :class="$style.root" style="margin: 0 auto; max-width: 600px;">
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
@@ -221,10 +221,10 @@ class Game extends EventEmitter<{
 	private COMBO_INTERVAL = 1000;
 	public readonly DROP_INTERVAL = 500;
 	private PLAYAREA_MARGIN = 25;
+	private STOCK_MAX = 4;
 	private engine: Matter.Engine;
 	private render: Matter.Render;
 	private runner: Matter.Runner;
-	private detector: Matter.Detector;
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
 
@@ -286,7 +286,7 @@ class Game extends EventEmitter<{
 				wireframeBackground: 'transparent', // transparent to hide
 				wireframes: false,
 				showSleeping: false,
-				pixelRatio: window.devicePixelRatio,
+				pixelRatio: Math.max(2, window.devicePixelRatio),
 			},
 		});
 
@@ -294,8 +294,6 @@ class Game extends EventEmitter<{
 
 		this.runner = Matter.Runner.create();
 		Matter.Runner.run(this.runner, this.engine);
-
-		this.detector = Matter.Detector.create();
 
 		this.engine.world.bodies = [];
 
@@ -412,7 +410,7 @@ class Game extends EventEmitter<{
 	}
 
 	public start() {
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
 				id: Math.random().toString(),
 				fruit: FRUITS.filter(x => x.available)[Math.floor(Math.random() * FRUITS.filter(x => x.available).length)],
@@ -423,8 +421,8 @@ class Game extends EventEmitter<{
 		// TODO: fusion予約状態のアイテムは光らせるなどの演出をすると楽しそう
 		let fusionReservedPairs: { bodyA: Matter.Body; bodyB: Matter.Body }[] = [];
 
-		const minCollisionDepthForSound = 2.5;
-		const maxCollisionDepthForSound = 9;
+		const minCollisionEnergyForSound = 2.5;
+		const maxCollisionEnergyForSound = 9;
 		const soundPitchMax = 4;
 		const soundPitchMin = 0.5;
 
@@ -451,8 +449,8 @@ class Game extends EventEmitter<{
 					}
 				} else {
 					const energy = pairs.collision.depth;
-					if (energy > minCollisionDepthForSound) {
-						const vol = (Math.min(maxCollisionDepthForSound, energy - minCollisionDepthForSound) / maxCollisionDepthForSound) / 4;
+					if (energy > minCollisionEnergyForSound) {
+						const vol = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
 						const pan = ((((bodyA.position.x + bodyB.position.x) / 2) / GAME_WIDTH) - 0.5) * 2;
 						const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
 						sound.playRaw('syuilo/poi1', vol, pan, pitch);
@@ -700,7 +698,6 @@ definePageMetadata({
 	width: 100%;
 	// なんかiOSでちらつく
 	//filter: drop-shadow(0 6px 16px #0007);
-	border-radius: 16px;
 	pointer-events: none;
 	user-select: none;
 }
@@ -710,7 +707,8 @@ definePageMetadata({
 	display: block;
 	z-index: 1;
 	margin-top: -50px;
-	max-width: 100%;
+	width: 100% !important;
+	height: auto !important;
 	pointer-events: none;
 	user-select: none;
 }
