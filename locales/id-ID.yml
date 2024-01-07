@@ -2011,6 +2011,7 @@ _profile:
 _exportOrImport:
   allNotes: "Semua catatan"
   favoritedNotes: "Catatan favorit"
+  clips: "Klip"
   followingList: "Ikuti"
   muteList: "Bisukan"
   blockingList: "Blokir"
