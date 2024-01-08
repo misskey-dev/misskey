@@ -765,41 +765,30 @@ class Game extends EventEmitter<{
 }
 
 let game: Game;
+let containerElRect: DOMRect | null = null;
 
 function onClick(ev: MouseEvent) {
-	if (!containerEl.value) return;
-
-	const rect = containerEl.value.getBoundingClientRect();
-
-	const x = (ev.clientX - rect.left) / viewScaleX;
-
+	if (!containerElRect) return;
+	const x = (ev.clientX - containerElRect.left) / viewScaleX;
 	game.drop(x);
 }
 
 function onTouchend(ev: TouchEvent) {
-	if (!containerEl.value) return;
-
-	const rect = containerEl.value.getBoundingClientRect();
-
-	const x = (ev.changedTouches[0].clientX - rect.left) / viewScaleX;
-
+	if (!containerElRect) return;
+	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScaleX;
 	game.drop(x);
 }
 
 function onMousemove(ev: MouseEvent) {
-	if (!containerEl.value) return;
-	const rect = containerEl.value.getBoundingClientRect();
-
-	const x = (ev.clientX - rect.left);
-	moveDropper(rect, x);
+	if (!containerElRect) return;
+	const x = (ev.clientX - containerElRect.left);
+	moveDropper(containerElRect, x);
 }
 
 function onTouchmove(ev: TouchEvent) {
-	if (!containerEl.value) return;
-	const rect = containerEl.value.getBoundingClientRect();
-
-	const x = (ev.touches[0].clientX - rect.left);
-	moveDropper(rect, x);
+	if (!containerElRect) return;
+	const x = (ev.touches[0].clientX - containerElRect.left);
+	moveDropper(containerElRect, x);
 }
 
 function moveDropper(rect: DOMRect, x: number) {
@@ -970,6 +959,7 @@ useInterval(() => {
 	const actualCanvasHeight = canvasEl.value.getBoundingClientRect().height;
 	viewScaleX = actualCanvasWidth / GAME_WIDTH;
 	viewScaleY = actualCanvasHeight / GAME_HEIGHT;
+	containerElRect = containerEl.value?.getBoundingClientRect() ?? null;
 }, 1000, { immediate: false, afterMounted: true });
 
 onDeactivated(() => {
