@@ -237,9 +237,9 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
-import { useRouter } from '@/router.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { ROLE_POLICIES } from '@/const.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');

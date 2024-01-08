@@ -28,6 +28,7 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 const FALLBACK = '❤';
 const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
@@ -268,7 +269,7 @@ export class ReactionService {
 				}
 			}
 
-			dm.execute();
+			trackPromise(dm.execute());
 		}
 		//#endregion
 	}
@@ -316,7 +317,7 @@ export class ReactionService {
 				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 			dm.addFollowersRecipe();
-			dm.execute();
+			trackPromise(dm.execute());
 		}
 		//#endregion
 	}

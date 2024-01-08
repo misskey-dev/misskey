@@ -379,6 +379,11 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "hCaptchaを有効にする"
 hcaptchaSiteKey: "サイトキー"
 hcaptchaSecretKey: "シークレットキー"
+mcaptcha: "mCaptcha"
+enableMcaptcha: "mCaptchaを有効にする"
+mcaptchaSiteKey: "サイトキー"
+mcaptchaSecretKey: "シークレットキー"
+mcaptchaInstanceUrl: "mCaptchaのインスタンスのURL"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "reCAPTCHAを有効にする"
 recaptchaSiteKey: "サイトキー"
@@ -1184,6 +1189,7 @@ seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
+bubbleGame: "バブルゲーム"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1562,6 +1568,13 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey初心者講座 修了証"
       description: "チュートリアルを完了した"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+      description: "バブルゲームで最も大きいモノを出した"
+    _bubbleGameDoubleExplodingHead:
+      title: "ダブル🤯"
+      description: "バブルゲームで最も大きいモノを2つ同時に出した"
+      flavor: "これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて"
 
 _role:
   new: "ロールの作成"
@@ -2154,6 +2167,7 @@ _profile:
 _exportOrImport:
   allNotes: "全てのノート"
   favoritedNotes: "お気に入りにしたノート"
+  clips: "クリップ"
   followingList: "フォロー"
   muteList: "ミュート"
   blockingList: "ブロック"
