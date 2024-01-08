@@ -281,6 +281,12 @@ type AdminRolesUsersRequest = operations['admin/roles/users']['requestBody']['co
 type AdminRolesUsersResponse = operations['admin/roles/users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRootAddRequest = operations['admin/root/add']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRootRemoveRequest = operations['admin/root/remove']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminSendEmailRequest = operations['admin/send-email']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1133,6 +1139,8 @@ declare namespace entities {
         AdminInviteCreateResponse,
         AdminInviteListRequest,
         AdminInviteListResponse,
+        AdminRootAddRequest,
+        AdminRootRemoveRequest,
         AdminPromoCreateRequest,
         AdminQueueDeliverDelayedResponse,
         AdminQueueInboxDelayedResponse,
