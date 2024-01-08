@@ -1,10 +1,11 @@
-import { Test } from '@nestjs/testing';
 import { portToPid } from 'pid-port';
 import fkill from 'fkill';
 import Fastify from 'fastify';
+import { NestFactory } from '@nestjs/core';
 import { MainModule } from '@/MainModule.js';
 import { ServerService } from '@/server/ServerService.js';
 import { loadConfig } from '@/config.js';
+import { NestLogger } from '@/NestLogger.js';
 
 const config = loadConfig();
 const originEnv = JSON.stringify(process.env);
@@ -19,13 +20,9 @@ async function launch() {
 
 	console.log('starting application...');
 
-	const mainModuleFixture = await Test
-		.createTestingModule({
-			imports: [MainModule],
-		})
-		.compile();
-
-	const app = await mainModuleFixture.createNestApplication().init();
+	const app = await NestFactory.createApplicationContext(MainModule, {
+		logger: new NestLogger(),
+	});
 	const serverService = app.get(ServerService);
 	await serverService.launch();
 
