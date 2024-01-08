@@ -1570,10 +1570,10 @@ _achievements:
       description: "チュートリアルを完了した"
     _bubbleGameExplodingHead:
       title: "🤯"
-      description: "バブルゲームで最も大きいオブジェクトを出した"
+      description: "バブルゲームで最も大きいモノを出した"
     _bubbleGameDoubleExplodingHead:
       title: "ダブル🤯"
-      description: "バブルゲームで最も大きいオブジェクトを2つ同時に出した"
+      description: "バブルゲームで最も大きいモノを2つ同時に出した"
       flavor: "やるやんけ"
 
 _role:
