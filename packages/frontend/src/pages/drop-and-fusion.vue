@@ -77,8 +77,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
 					</Transition>
-					<template v-if="dropReady">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
+					<template v-if="dropReady && currentPick">
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
 						<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
