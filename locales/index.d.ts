@@ -1192,6 +1192,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "bubbleGame": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1655,6 +1656,15 @@ export interface Locale {
             "_tutorialCompleted": {
                 "title": string;
                 "description": string;
+            };
+            "_bubbleGameExplodingHead": {
+                "title": string;
+                "description": string;
+            };
+            "_bubbleGameDoubleExplodingHead": {
+                "title": string;
+                "description": string;
+                "flavor": string;
             };
         };
     };
@@ -2256,6 +2266,7 @@ export interface Locale {
     "_exportOrImport": {
         "allNotes": string;
         "favoritedNotes": string;
+        "clips": string;
         "followingList": string;
         "muteList": string;
         "blockingList": string;

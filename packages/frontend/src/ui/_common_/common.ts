@@ -29,8 +29,8 @@ function toolsMenuItems(): MenuItem[] {
 		icon: 'ti ti-cookie',
 	}, {
 		type: 'link',
-		to: '/drop-and-fusion',
-		text: 'Drop & Fusion',
+		to: '/bubble-game',
+		text: i18n.ts.bubbleGame,
 		icon: 'ti ti-apple',
 	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
