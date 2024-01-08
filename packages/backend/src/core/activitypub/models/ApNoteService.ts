@@ -174,7 +174,7 @@ export class ApNoteService {
 		const apHashtags = extractApHashtags(note.tag);
 
 		const meta = await this.metaService.fetch();
-		const isSensitiveMediaHost = this.utilityService.isSensitiveMediaHost(meta.blockedHosts, this.utilityService.extractDbHost(note.id ?? entryUri));
+		const isSensitiveMediaHost = this.utilityService.isSensitiveMediaHost(meta.sensitiveMediaHosts, this.utilityService.extractDbHost(note.id ?? entryUri));
 
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
