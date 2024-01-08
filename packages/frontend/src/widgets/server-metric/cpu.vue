@@ -20,13 +20,13 @@ import * as Misskey from 'misskey-js';
 import XPie from './pie.vue';
 
 const props = defineProps<{
-	connection: any,
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
 	meta: Misskey.entities.ServerInfoResponse
 }>();
 
 const usage = ref<number>(0);
 
-function onStats(stats) {
+function onStats(stats: Misskey.entities.ServerStats) {
 	usage.value = stats.cpu;
 }
 

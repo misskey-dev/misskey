@@ -45,6 +45,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i, updateAccount } from '@/account.js';
@@ -84,7 +85,7 @@ async function read(announcement) {
 		a.isRead = true;
 		return a;
 	});
-	os.api('i/read-announcement', { announcementId: announcement.id });
+	misskeyApi('i/read-announcement', { announcementId: announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== announcement.id),
 	});
