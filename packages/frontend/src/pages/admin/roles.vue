@@ -233,17 +233,18 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
-import { useRouter } from '@/router.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { ROLE_POLICIES } from '@/const.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');
 
-const roles = await os.api('admin/roles/list');
+const roles = await misskeyApi('admin/roles/list');
 
 const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
 for (const ROLE_POLICY of ROLE_POLICIES) {

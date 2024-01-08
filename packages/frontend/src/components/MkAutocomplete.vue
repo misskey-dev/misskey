@@ -50,6 +50,7 @@ import contains from '@/scripts/contains.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { emojilist, getEmojiName } from '@/scripts/emojilist.js';
 import { i18n } from '@/i18n.js';
@@ -207,7 +208,7 @@ function exec() {
 			users.value = JSON.parse(cache);
 			fetching.value = false;
 		} else {
-			os.api('users/search-by-username-and-host', {
+			misskeyApi('users/search-by-username-and-host', {
 				username: props.q,
 				limit: 10,
 				detail: false,
@@ -230,7 +231,7 @@ function exec() {
 				hashtags.value = hashtags;
 				fetching.value = false;
 			} else {
-				os.api('hashtags/search', {
+				misskeyApi('hashtags/search', {
 					query: props.q,
 					limit: 30,
 				}).then(searchedHashtags => {

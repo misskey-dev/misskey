@@ -140,8 +140,8 @@ const profile = reactive({
 	location: $i.location,
 	birthday: $i.birthday,
 	lang: $i.lang,
-	isBot: $i.isBot,
-	isCat: $i.isCat,
+	isBot: $i.isBot ?? false,
+	isCat: $i.isCat ?? false,
 });
 
 watch(() => profile, () => {
