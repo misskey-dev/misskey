@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 					</Transition>
-					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: mouseX + 'px' }"/>
+					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
 						:leaveActiveClass="$style.transition_picked_leaveActive"
@@ -75,11 +75,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (mouseX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
 					</Transition>
 					<template v-if="dropReady">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
-						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
+						<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
 						<div class="_gaps_s">
@@ -152,7 +152,7 @@ type Mono = {
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
-const mouseX = ref(0);
+const dropperX = ref(0);
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -409,7 +409,7 @@ class Game extends EventEmitter<{
 }> {
 	private COMBO_INTERVAL = 1000;
 	public readonly DROP_INTERVAL = 500;
-	private PLAYAREA_MARGIN = 25;
+	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
 	private loaded = false;
 	private engine: Matter.Engine;
@@ -803,13 +803,7 @@ function onTouchmove(ev: TouchEvent) {
 }
 
 function moveDropper(rect: DOMRect, x: number) {
-	if (x <= rect.width * (25 / 450)) {
-		mouseX.value = rect.width * (25 / 450);
-	} else if (x >= rect.width * (425 / 450)) {
-		mouseX.value = rect.width * (425 / 450);
-	} else {
-		mouseX.value = x;
-	}
+	dropperX.value = Math.min(rect.width * ((GAME_WIDTH - game.PLAYAREA_MARGIN) / GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / GAME_WIDTH), x));
 }
 
 function restart() {
