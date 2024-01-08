@@ -46,13 +46,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:moveClass="$style.transition_stock_move"
 						>
 							<div v-for="x in stock" :key="x.id" style="display: inline-block;">
-								<img :src="x.mono.img" style="width: 32px;"/>
+								<img :src="game.getTextureImageUrl(x.mono)" style="width: 32px;"/>
 							</div>
 						</TransitionGroup>
 					</div>
 				</div>
 			</div>
-			<div :class="$style.main">
+			<div :class="$style.main" @contextmenu.stop.prevent>
 				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 					<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 					<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 					</Transition>
-					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: mouseX + 'px' }"/>
+					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
 						:leaveActiveClass="$style.transition_picked_leaveActive"
@@ -75,16 +75,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="currentPick?.mono.img" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (mouseX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
 					</Transition>
-					<template v-if="dropReady">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
-						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
+					<template v-if="dropReady && currentPick">
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
+						<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
 						<div class="_gaps_s">
 							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
 							<div>SCORE: <MkNumber :value="score"/></div>
+							<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 							<div class="_buttonsCenter">
 								<MkButton primary rounded @click="restart">Restart</MkButton>
 								<MkButton primary rounded @click="share">Share</MkButton>
@@ -96,13 +97,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/></b></div>
+						<div>SCORE: <b><MkNumber :value="score"/></b> (MAX CHAIN: <b><MkNumber :value="maxCombo"/></b>)</div>
 						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
 					</div>
 				</div>
 				<div :class="[$style.frame]" style="margin-left: auto;">
 					<div :class="$style.frameInner" style="text-align: center;">
+						<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
 					</div>
+				</div>
+			</div>
+			<div v-if="showConfig" :class="$style.frame">
+				<div :class="$style.frameInner">
+					<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
+						<template #label>BGM {{ i18n.ts.volume }}</template>
+					</MkRange>
+				</div>
+			</div>
+			<div v-if="showConfig" :class="$style.frame">
+				<div :class="$style.frameInner">
+					<div>Credit</div>
+					<div>BGM: @ys@misskey.design</div>
 				</div>
 			</div>
 			<div :class="$style.frame">
@@ -116,17 +131,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Matter from 'matter-js';
-import { onMounted, ref, shallowRef } from 'vue';
-import { EventEmitter } from 'eventemitter3';
+import { onDeactivated, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import * as sound from '@/scripts/sound.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
+import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -134,23 +147,13 @@ import { useInterval } from '@/scripts/use-interval.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
-
-type Mono = {
-	id: string;
-	level: number;
-	size: number;
-	shape: 'circle' | 'rectangle';
-	score: number;
-	dropCandidate: boolean;
-	sfxPitch: number;
-	img: string;
-	imgSize: number;
-	spriteScale: number;
-};
+import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
+import * as sound from '@/scripts/sound.js';
+import MkRange from '@/components/MkRange.vue';
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
-const mouseX = ref(0);
+const dropperX = ref(0);
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -380,7 +383,6 @@ const SQUARE_MONOS: Mono[] = [{
 
 const GAME_WIDTH = 450;
 const GAME_HEIGHT = 600;
-const PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる、逆に高すぎても何故か不安定になる
 
 let viewScaleX = 1;
 let viewScaleY = 1;
@@ -389,338 +391,44 @@ const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
+const maxCombo = ref(0);
 const dropReady = ref(true);
 const gameMode = ref<'normal' | 'square'>('normal');
 const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
+const showConfig = ref(false);
+const bgmVolume = ref(0.1);
 
-class Game extends EventEmitter<{
-	changeScore: (score: number) => void;
-	changeCombo: (combo: number) => void;
-	changeStock: (stock: { id: string; mono: Mono }[]) => void;
-	dropped: () => void;
-	fusioned: (x: number, y: number, score: number) => void;
-	gameOver: () => void;
-}> {
-	private COMBO_INTERVAL = 1000;
-	public readonly DROP_INTERVAL = 500;
-	private PLAYAREA_MARGIN = 25;
-	private STOCK_MAX = 4;
-	private engine: Matter.Engine;
-	private render: Matter.Render;
-	private runner: Matter.Runner;
-	private overflowCollider: Matter.Body;
-	private isGameOver = false;
-
-	private monoDefinitions: Mono[] = [];
-
-	/**
-	 * フィールドに出ていて、かつ合体の対象となるアイテム
-	 */
-	private activeBodyIds: Matter.Body['id'][] = [];
-
-	private latestDroppedBodyId: Matter.Body['id'] | null = null;
-
-	private latestDroppedAt = 0;
-	private latestFusionedAt = 0;
-	private stock: { id: string; mono: Mono }[] = [];
-
-	private _combo = 0;
-	private get combo() {
-		return this._combo;
-	}
-	private set combo(value: number) {
-		this._combo = value;
-		this.emit('changeCombo', value);
-	}
-
-	private _score = 0;
-	private get score() {
-		return this._score;
-	}
-	private set score(value: number) {
-		this._score = value;
-		this.emit('changeScore', value);
-	}
-
-	private comboIntervalId: number | null = null;
-
-	constructor(opts: {
-		monoDefinitions: Mono[];
-	}) {
-		super();
-
-		this.monoDefinitions = opts.monoDefinitions;
-
-		this.engine = Matter.Engine.create({
-			constraintIterations: 2 * PHYSICS_QUALITY_FACTOR,
-			positionIterations: 6 * PHYSICS_QUALITY_FACTOR,
-			velocityIterations: 4 * PHYSICS_QUALITY_FACTOR,
-			gravity: {
-				x: 0,
-				y: 1,
-			},
-			timing: {
-				timeScale: 2,
-			},
-			enableSleeping: false,
-		});
-
-		this.render = Matter.Render.create({
-			engine: this.engine,
-			canvas: canvasEl.value,
-			options: {
-				width: GAME_WIDTH,
-				height: GAME_HEIGHT,
-				background: 'transparent', // transparent to hide
-				wireframeBackground: 'transparent', // transparent to hide
-				wireframes: false,
-				showSleeping: false,
-				pixelRatio: Math.max(2, window.devicePixelRatio),
-			},
-		});
-
-		Matter.Render.run(this.render);
-
-		this.runner = Matter.Runner.create();
-		Matter.Runner.run(this.runner, this.engine);
-
-		this.engine.world.bodies = [];
-
-		//#region walls
-		const WALL_OPTIONS: Matter.IChamferableBodyDefinition = {
-			isStatic: true,
-			friction: 0.7,
-			slop: 1.0,
-			render: {
-				strokeStyle: 'transparent',
-				fillStyle: 'transparent',
-			},
-		};
-
-		const thickness = 100;
-		Matter.Composite.add(this.engine.world, [
-			Matter.Bodies.rectangle(GAME_WIDTH / 2, GAME_HEIGHT + (thickness / 2) - this.PLAYAREA_MARGIN, GAME_WIDTH, thickness, WALL_OPTIONS),
-			Matter.Bodies.rectangle(GAME_WIDTH + (thickness / 2) - this.PLAYAREA_MARGIN, GAME_HEIGHT / 2, thickness, GAME_HEIGHT, WALL_OPTIONS),
-			Matter.Bodies.rectangle(-((thickness / 2) - this.PLAYAREA_MARGIN), GAME_HEIGHT / 2, thickness, GAME_HEIGHT, WALL_OPTIONS),
-		]);
-		//#endregion
-
-		this.overflowCollider = Matter.Bodies.rectangle(GAME_WIDTH / 2, 0, GAME_WIDTH, 200, {
-			isStatic: true,
-			isSensor: true,
-			render: {
-				strokeStyle: 'transparent',
-				fillStyle: 'transparent',
-			},
-		});
-		Matter.Composite.add(this.engine.world, this.overflowCollider);
-
-		// fit the render viewport to the scene
-		Matter.Render.lookAt(this.render, {
-			min: { x: 0, y: 0 },
-			max: { x: GAME_WIDTH, y: GAME_HEIGHT },
-		});
-	}
-
-	private createBody(mono: Mono, x: number, y: number) {
-		const options: Matter.IBodyDefinition = {
-			label: mono.id,
-			//density: 0.0005,
-			density: mono.size / 1000,
-			restitution: 0.2,
-			frictionAir: 0.01,
-			friction: 0.7,
-			frictionStatic: 5,
-			slop: 1.0,
-			//mass: 0,
-			render: {
-				sprite: {
-					texture: mono.img,
-					xScale: (mono.size / mono.imgSize) * mono.spriteScale,
-					yScale: (mono.size / mono.imgSize) * mono.spriteScale,
-				},
-			},
-		};
-		if (mono.shape === 'circle') {
-			return Matter.Bodies.circle(x, y, mono.size / 2, options);
-		} else if (mono.shape === 'rectangle') {
-			return Matter.Bodies.rectangle(x, y, mono.size, mono.size, options);
-		} else {
-			throw new Error('unrecognized shape');
-		}
-	}
-
-	private fusion(bodyA: Matter.Body, bodyB: Matter.Body) {
-		const now = Date.now();
-		if (this.latestFusionedAt > now - this.COMBO_INTERVAL) {
-			this.combo++;
-		} else {
-			this.combo = 1;
-		}
-		this.latestFusionedAt = now;
-
-		// TODO: 単に位置だけでなくそれぞれの動きベクトルも融合する
-		const newX = (bodyA.position.x + bodyB.position.x) / 2;
-		const newY = (bodyA.position.y + bodyB.position.y) / 2;
-
-		Matter.Composite.remove(this.engine.world, [bodyA, bodyB]);
-		this.activeBodyIds = this.activeBodyIds.filter(x => x !== bodyA.id && x !== bodyB.id);
-
-		const currentMono = this.monoDefinitions.find(y => y.id === bodyA.label)!;
-		const nextMono = this.monoDefinitions.find(x => x.level === currentMono.level + 1);
-
-		if (nextMono) {
-			const body = this.createBody(nextMono, newX, newY);
-			Matter.Composite.add(this.engine.world, body);
-
-			// 連鎖してfusionした場合の分かりやすさのため少し間を置いてからfusion対象になるようにする
-			window.setTimeout(() => {
-				this.activeBodyIds.push(body.id);
-			}, 100);
-
-			const comboBonus = 1 + ((this.combo - 1) / 5);
-			const additionalScore = Math.round(currentMono.score * comboBonus);
-			this.score += additionalScore;
-
-			const pan = ((newX / GAME_WIDTH) - 0.5) * 2;
-			sound.playRaw('syuilo/bubble2', 1, pan, nextMono.sfxPitch);
-
-			this.emit('fusioned', newX, newY, additionalScore);
-		} else {
-			//const VELOCITY = 30;
-			//for (let i = 0; i < 10; i++) {
-			//	const body = createBody(FRUITS.find(x => x.level === (1 + Math.floor(Math.random() * 3)))!, x + ((Math.random() * VELOCITY) - (VELOCITY / 2)), y + ((Math.random() * VELOCITY) - (VELOCITY / 2)));
-			//	Matter.Composite.add(world, body);
-			//	bodies.push(body);
-			//}
-			//sound.playRaw({
-			//	type: 'syuilo/bubble2',
-			//	volume: 1,
-			//});
-		}
-	}
-
-	private gameOver() {
-		this.isGameOver = true;
-		Matter.Runner.stop(this.runner);
-		this.emit('gameOver');
-	}
-
-	public start() {
-		for (let i = 0; i < this.STOCK_MAX; i++) {
-			this.stock.push({
-				id: Math.random().toString(),
-				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
-			});
-		}
-		this.emit('changeStock', this.stock);
-
-		// TODO: fusion予約状態のアイテムは光らせるなどの演出をすると楽しそう
-		let fusionReservedPairs: { bodyA: Matter.Body; bodyB: Matter.Body }[] = [];
-
-		const minCollisionEnergyForSound = 2.5;
-		const maxCollisionEnergyForSound = 9;
-		const soundPitchMax = 4;
-		const soundPitchMin = 0.5;
-
-		Matter.Events.on(this.engine, 'collisionStart', (event) => {
-			for (const pairs of event.pairs) {
-				const { bodyA, bodyB } = pairs;
-				if (bodyA.id === this.overflowCollider.id || bodyB.id === this.overflowCollider.id) {
-					if (bodyA.id === this.latestDroppedBodyId || bodyB.id === this.latestDroppedBodyId) {
-						continue;
-					}
-					this.gameOver();
-					break;
-				}
-				const shouldFusion = (bodyA.label === bodyB.label) && !fusionReservedPairs.some(x => x.bodyA.id === bodyA.id || x.bodyA.id === bodyB.id || x.bodyB.id === bodyA.id || x.bodyB.id === bodyB.id);
-				if (shouldFusion) {
-					if (this.activeBodyIds.includes(bodyA.id) && this.activeBodyIds.includes(bodyB.id)) {
-						this.fusion(bodyA, bodyB);
-					} else {
-						fusionReservedPairs.push({ bodyA, bodyB });
-						window.setTimeout(() => {
-							fusionReservedPairs = fusionReservedPairs.filter(x => x.bodyA.id !== bodyA.id && x.bodyB.id !== bodyB.id);
-							this.fusion(bodyA, bodyB);
-						}, 100);
-					}
-				} else {
-					const energy = pairs.collision.depth;
-					if (energy > minCollisionEnergyForSound) {
-						const vol = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
-						const pan = ((((bodyA.position.x + bodyB.position.x) / 2) / GAME_WIDTH) - 0.5) * 2;
-						const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
-						sound.playRaw('syuilo/poi1', vol, pan, pitch);
-					}
-				}
-			}
-		});
-
-		this.comboIntervalId = window.setInterval(() => {
-			if (this.latestFusionedAt < Date.now() - this.COMBO_INTERVAL) {
-				this.combo = 0;
-			}
-		}, 500);
-	}
-
-	public drop(_x: number) {
-		if (this.isGameOver) return;
-		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) {
-			return;
-		}
-		const st = this.stock.shift()!;
-		this.stock.push({
-			id: Math.random().toString(),
-			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
-		});
-		this.emit('changeStock', this.stock);
-
-		const x = Math.min(GAME_WIDTH - this.PLAYAREA_MARGIN - (st.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.mono.size / 2), _x));
-		const body = this.createBody(st.mono, x, 50 + st.mono.size / 2);
-		Matter.Composite.add(this.engine.world, body);
-		this.activeBodyIds.push(body.id);
-		this.latestDroppedBodyId = body.id;
-		this.latestDroppedAt = Date.now();
-		this.emit('dropped');
-		const pan = ((x / GAME_WIDTH) - 0.5) * 2;
-		sound.playRaw('syuilo/poi2', 1, pan);
-	}
-
-	public dispose() {
-		if (this.comboIntervalId) window.clearInterval(this.comboIntervalId);
-		Matter.Render.stop(this.render);
-		Matter.Runner.stop(this.runner);
-		Matter.World.clear(this.engine.world, false);
-		Matter.Engine.clear(this.engine);
-	}
-}
-
-let game: Game;
+let game: DropAndFusionGame;
+let containerElRect: DOMRect | null = null;
 
 function onClick(ev: MouseEvent) {
-	const rect = containerEl.value!.getBoundingClientRect();
-
-	const x = (ev.clientX - rect.left) / viewScaleX;
-
+	if (!containerElRect) return;
+	const x = (ev.clientX - containerElRect.left) / viewScaleX;
 	game.drop(x);
 }
 
 function onTouchend(ev: TouchEvent) {
-	const rect = containerEl.value!.getBoundingClientRect();
-
-	const x = (ev.changedTouches[0].clientX - rect.left) / viewScaleX;
-
+	if (!containerElRect) return;
+	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScaleX;
 	game.drop(x);
 }
 
 function onMousemove(ev: MouseEvent) {
-	mouseX.value = ev.clientX - containerEl.value!.getBoundingClientRect().left;
+	if (!containerElRect) return;
+	const x = (ev.clientX - containerElRect.left);
+	moveDropper(containerElRect, x);
 }
 
 function onTouchmove(ev: TouchEvent) {
-	mouseX.value = ev.touches[0].clientX - containerEl.value!.getBoundingClientRect().left;
+	if (!containerElRect) return;
+	const x = (ev.touches[0].clientX - containerElRect.left);
+	moveDropper(containerElRect, x);
+}
+
+function moveDropper(rect: DOMRect, x: number) {
+	dropperX.value = Math.min(rect.width * ((GAME_WIDTH - game.PLAYAREA_MARGIN) / GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / GAME_WIDTH), x));
 }
 
 function restart() {
@@ -735,7 +443,7 @@ function restart() {
 	gameStarted.value = false;
 }
 
-function attachGame() {
+function attachGameEvents() {
 	game.addListener('changeScore', value => {
 		score.value = value;
 	});
@@ -746,6 +454,7 @@ function attachGame() {
 		} else {
 			comboPrev.value = value;
 		}
+		maxCombo.value = Math.max(maxCombo.value, value);
 		combo.value = value;
 	});
 
@@ -763,12 +472,26 @@ function attachGame() {
 		}, game.DROP_INTERVAL);
 	});
 
-	game.addListener('fusioned', (x, y, score) => {
+	game.addListener('fusioned', (x, y, scoreDelta) => {
+		if (!canvasEl.value) return;
+
 		const rect = canvasEl.value.getBoundingClientRect();
 		const domX = rect.left + (x * viewScaleX);
 		const domY = rect.top + (y * viewScaleY);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: score }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+	});
+
+	game.addListener('monoAdded', (mono) => {
+		// 実績関連
+		if (mono.level === 10) {
+			claimAchievement('bubbleGameExplodingHead');
+
+			const monos = game.getActiveMonos();
+			if (monos.filter(x => x.level === 10).length >= 2) {
+				claimAchievement('bubbleGameDoubleExplodingHead');
+			}
+		}
 	});
 
 	game.addListener('gameOver', () => {
@@ -788,6 +511,8 @@ function attachGame() {
 	});
 }
 
+let bgmNodes: ReturnType<typeof sound.createSourceNode> = null;
+
 async function start() {
 	try {
 		highScore.value = await misskeyApi('i/registry/get', {
@@ -795,42 +520,85 @@ async function start() {
 			key: 'highScore:' + gameMode.value,
 		});
 	} catch (err) {
+		highScore.value = null;
 	}
 
-	gameStarted.value = true;
-	game = new Game(gameMode.value === 'normal' ? {
-		monoDefinitions: NORAML_MONOS,
-	} : {
-		monoDefinitions: SQUARE_MONOS,
+	game = new DropAndFusionGame({
+		width: GAME_WIDTH,
+		height: GAME_HEIGHT,
+		canvas: canvasEl.value!,
+		...(
+			gameMode.value === 'normal' ? {
+				monoDefinitions: NORAML_MONOS,
+			} : {
+				monoDefinitions: SQUARE_MONOS,
+			}
+		),
 	});
-	attachGame();
-	game.start();
+	attachGameEvents();
+	os.promiseDialog(game.load(), async () => {
+		game.start();
+		gameStarted.value = true;
+
+		if (bgmNodes) {
+			bgmNodes.soundSource.stop();
+			bgmNodes = null;
+		}
+		const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
+		if (!bgmBuffer) return;
+		bgmNodes = sound.createSourceNode(bgmBuffer, bgmVolume.value);
+		if (!bgmNodes) return;
+		bgmNodes.soundSource.loop = true;
+		bgmNodes.soundSource.start();
+	});
 }
+
+watch(bgmVolume, (value) => {
+	if (bgmNodes) {
+		bgmNodes.gainNode.gain.value = value;
+	}
+});
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
-		canvasEl.value?.toBlob(blob => {
-			if (!blob) return res(null);
-			if ($i == null) return res(null);
-			const formData = new FormData();
-			formData.append('file', blob);
-			formData.append('name', `bubble-game-${Date.now()}.png`);
-			formData.append('isSensitive', 'false');
-			formData.append('comment', 'null');
-			formData.append('i', $i.token);
-			if (defaultStore.state.uploadFolder) {
-				formData.append('folderId', defaultStore.state.uploadFolder);
-			}
+		const dcanvas = document.createElement('canvas');
+		dcanvas.width = GAME_WIDTH;
+		dcanvas.height = GAME_HEIGHT;
+		const ctx = dcanvas.getContext('2d');
+		if (!ctx || !canvasEl.value) return res(null);
+		const dimage = new Image();
+		dimage.src = '/client-assets/drop-and-fusion/frame-light.svg';
+		dimage.addEventListener('load', () => {
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.drawImage(dimage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.drawImage(canvasEl.value!, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-			window.fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: formData,
-			})
-				.then(response => response.json())
-				.then(f => {
-					res(f);
-				});
-		}, 'image/png');
+			dcanvas.toBlob(blob => {
+				if (!blob) return res(null);
+				if ($i == null) return res(null);
+				const formData = new FormData();
+				formData.append('file', blob);
+				formData.append('name', `bubble-game-${Date.now()}.png`);
+				formData.append('isSensitive', 'false');
+				formData.append('comment', 'null');
+				formData.append('i', $i.token);
+				if (defaultStore.state.uploadFolder) {
+					formData.append('folderId', defaultStore.state.uploadFolder);
+				}
+
+				window.fetch(apiUrl + '/drive/files/create', {
+					method: 'POST',
+					body: formData,
+				})
+					.then(response => response.json())
+					.then(f => {
+						res(f);
+					});
+			}, 'image/png');
+
+			dcanvas.remove();
+		});
 	});
 }
 
@@ -842,7 +610,7 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${gameMode.value}
-SCORE: ${score.value}`,
+SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})})`,
 		initialFiles: [file],
 	});
 }
@@ -853,9 +621,11 @@ useInterval(() => {
 	const actualCanvasHeight = canvasEl.value.getBoundingClientRect().height;
 	viewScaleX = actualCanvasWidth / GAME_WIDTH;
 	viewScaleY = actualCanvasHeight / GAME_HEIGHT;
+	containerElRect = containerEl.value?.getBoundingClientRect() ?? null;
 }, 1000, { immediate: false, afterMounted: true });
 
-onMounted(async () => {
+onDeactivated(() => {
+	game.dispose();
 });
 
 definePageMetadata({

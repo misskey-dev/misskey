@@ -5,7 +5,6 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
@@ -89,69 +88,35 @@ export type OperationType = typeof operationTypes[number];
 
 /**
  * 音声を読み込む
- * @param soundStore サウンド設定
+ * @param url url
  * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
  */
-export async function loadAudio(soundStore: {
-	type: Exclude<SoundType, '_driveFile_'>;
-} | {
-	type: '_driveFile_';
-	fileId: string;
-	fileUrl: string;
-}, options?: { useCache?: boolean; }) {
+export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
 	if (_DEV_) console.log('loading audio. opts:', options);
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
-		return;
-	}
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (ctx == null) {
 		ctx = new AudioContext();
 	}
 	if (options?.useCache ?? true) {
-		if (soundStore.type === '_driveFile_' && cache.has(soundStore.fileId)) {
+		if (cache.has(url)) {
 			if (_DEV_) console.log('use cache');
-			return cache.get(soundStore.fileId) as AudioBuffer;
-		} else if (cache.has(soundStore.type)) {
-			if (_DEV_) console.log('use cache');
-			return cache.get(soundStore.type) as AudioBuffer;
+			return cache.get(url) as AudioBuffer;
 		}
 	}
 
 	let response: Response;
 
-	if (soundStore.type === '_driveFile_') {
-		try {
-			response = await fetch(soundStore.fileUrl);
-		} catch (err) {
-			try {
-				// URLが変わっている可能性があるのでドライブ側からURLを取得するフォールバック
-				const apiRes = await misskeyApi('drive/files/show', {
-					fileId: soundStore.fileId,
-				});
-				response = await fetch(apiRes.url);
-			} catch (fbErr) {
-				// それでも無理なら諦める
-				return;
-			}
-		}
-	} else {
-		try {
-			response = await fetch(`/client-assets/sounds/${soundStore.type}.mp3`);
-		} catch (err) {
-			return;
-		}
+	try {
+		response = await fetch(url);
+	} catch (err) {
+		return;
 	}
 
 	const arrayBuffer = await response.arrayBuffer();
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
 	if (options?.useCache ?? true) {
-		if (soundStore.type === '_driveFile_') {
-			cache.set(soundStore.fileId, audioBuffer);
-		} else {
-			cache.set(soundStore.type, audioBuffer);
-		}
+		cache.set(url, audioBuffer);
 	}
 
 	return audioBuffer;
@@ -180,18 +145,26 @@ export function play(operationType: OperationType) {
  * @param soundStore サウンド設定
  */
 export async function playFile(soundStore: SoundStore) {
-	const buffer = await loadAudio(soundStore);
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+		return;
+	}
+	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
+	const buffer = await loadAudio(url);
 	if (!buffer) return;
-	createSourceNode(buffer, soundStore.volume)?.start();
+	createSourceNode(buffer, soundStore.volume)?.soundSource.start();
 }
 
-export async function playRaw(type: Exclude<SoundType, '_driveFile_'>, volume = 1, pan = 0, playbackRate = 1) {
-	const buffer = await loadAudio({ type });
+export async function playUrl(url: string, volume = 1, pan = 0, playbackRate = 1) {
+	const buffer = await loadAudio(url);
 	if (!buffer) return;
-	createSourceNode(buffer, volume, pan, playbackRate)?.start();
+	createSourceNode(buffer, volume, pan, playbackRate)?.soundSource.start();
 }
 
-export function createSourceNode(buffer: AudioBuffer, volume: number, pan = 0, playbackRate = 1) : AudioBufferSourceNode | null {
+export function createSourceNode(buffer: AudioBuffer, volume: number, pan = 0, playbackRate = 1): {
+	soundSource: AudioBufferSourceNode;
+	panNode: StereoPannerNode;
+	gainNode: GainNode;
+} | null {
 	const masterVolume = defaultStore.state.sound_masterVolume;
 	if (isMute() || masterVolume === 0 || volume === 0) {
 		return null;
@@ -211,7 +184,7 @@ export function createSourceNode(buffer: AudioBuffer, volume: number, pan = 0, p
 		.connect(gainNode)
 		.connect(ctx.destination);
 
-	return soundSource;
+	return { soundSource, panNode, gainNode };
 }
 
 /**

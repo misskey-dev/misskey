@@ -1569,6 +1569,13 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey初心者講座 修了証"
       description: "チュートリアルを完了した"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+      description: "バブルゲームで最も大きいモノを出した"
+    _bubbleGameDoubleExplodingHead:
+      title: "ダブル🤯"
+      description: "バブルゲームで最も大きいモノを2つ同時に出した"
+      flavor: "これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて"
 
 _role:
   new: "ロールの作成"

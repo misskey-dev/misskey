@@ -15,9 +15,9 @@ import * as Misskey from 'misskey-js';
 import XAntenna from './editor.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
