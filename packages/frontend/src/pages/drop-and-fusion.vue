@@ -46,13 +46,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:moveClass="$style.transition_stock_move"
 						>
 							<div v-for="x in stock" :key="x.id" style="display: inline-block;">
-								<img :src="x.mono.img" style="width: 32px;"/>
+								<img :src="game.getTextureImageUrl(x.mono)" style="width: 32px;"/>
 							</div>
 						</TransitionGroup>
 					</div>
 				</div>
 			</div>
-			<div :class="$style.main">
+			<div :class="$style.main" @contextmenu.stop.prevent>
 				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 					<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 					<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 					</Transition>
-					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: mouseX + 'px' }"/>
+					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
 						:leaveActiveClass="$style.transition_picked_leaveActive"
@@ -75,16 +75,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="currentPick?.mono.img" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (mouseX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
 					</Transition>
-					<template v-if="dropReady">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
-						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
+					<template v-if="dropReady && currentPick">
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
+						<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
 						<div class="_gaps_s">
 							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
 							<div>SCORE: <MkNumber :value="score"/></div>
+							<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 							<div class="_buttonsCenter">
 								<MkButton primary rounded @click="restart">Restart</MkButton>
 								<MkButton primary rounded @click="share">Share</MkButton>
@@ -96,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/></b></div>
+						<div>SCORE: <b><MkNumber :value="score"/></b> (MAX CHAIN: <b><MkNumber :value="maxCombo"/></b>)</div>
 						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
 					</div>
 				</div>
@@ -117,7 +118,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Matter from 'matter-js';
-import { onMounted, ref, shallowRef } from 'vue';
+import { onDeactivated, ref, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -127,6 +128,7 @@ import * as os from '@/os.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
+import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -150,7 +152,7 @@ type Mono = {
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
-const mouseX = ref(0);
+const dropperX = ref(0);
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -389,6 +391,7 @@ const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
+const maxCombo = ref(0);
 const dropReady = ref(true);
 const gameMode = ref<'normal' | 'square'>('normal');
 const gameOver = ref(false);
@@ -396,17 +399,19 @@ const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 
 class Game extends EventEmitter<{
-	changeScore: (score: number) => void;
-	changeCombo: (combo: number) => void;
-	changeStock: (stock: { id: string; mono: Mono }[]) => void;
+	changeScore: (newScore: number) => void;
+	changeCombo: (newCombo: number) => void;
+	changeStock: (newStock: { id: string; mono: Mono }[]) => void;
 	dropped: () => void;
-	fusioned: (x: number, y: number, score: number) => void;
+	fusioned: (x: number, y: number, scoreDelta: number) => void;
+	monoAdded: (mono: Mono) => void;
 	gameOver: () => void;
 }> {
 	private COMBO_INTERVAL = 1000;
 	public readonly DROP_INTERVAL = 500;
-	private PLAYAREA_MARGIN = 25;
+	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
+	private loaded = false;
 	private engine: Matter.Engine;
 	private render: Matter.Render;
 	private runner: Matter.Runner;
@@ -414,6 +419,8 @@ class Game extends EventEmitter<{
 	private isGameOver = false;
 
 	private monoDefinitions: Mono[] = [];
+	private monoTextures: Record<string, Blob> = {};
+	private monoTextureUrls: Record<string, string> = {};
 
 	/**
 	 * フィールドに出ていて、かつ合体の対象となるアイテム
@@ -587,6 +594,7 @@ class Game extends EventEmitter<{
 			const pan = ((newX / GAME_WIDTH) - 0.5) * 2;
 			sound.playRaw('syuilo/bubble2', 1, pan, nextMono.sfxPitch);
 
+			this.emit('monoAdded', nextMono);
 			this.emit('fusioned', newX, newY, additionalScore);
 		} else {
 			//const VELOCITY = 30;
@@ -608,7 +616,40 @@ class Game extends EventEmitter<{
 		this.emit('gameOver');
 	}
 
+	/** テクスチャをすべてキャッシュする */
+	private async loadMonoTextures() {
+		async function loadSingleMonoTexture(mono: Mono, game: Game) {
+			// Matter-js内にキャッシュがある場合はスキップ
+			if (game.render.textures[mono.img]) return;
+			console.log('loading', mono.img);
+
+			let src = mono.img;
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (game.monoTextureUrls[mono.img]) {
+				src = game.monoTextureUrls[mono.img];
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			} else if (game.monoTextures[mono.img]) {
+				src = URL.createObjectURL(game.monoTextures[mono.img]);
+				game.monoTextureUrls[mono.img] = src;
+			} else {
+				const res = await fetch(mono.img);
+				const blob = await res.blob();
+				game.monoTextures[mono.img] = blob;
+				src = URL.createObjectURL(blob);
+				game.monoTextureUrls[mono.img] = src;
+			}
+
+			const image = new Image();
+			image.src = src;
+			game.render.textures[mono.img] = image;
+		}
+
+		return Promise.all(this.monoDefinitions.map(x => loadSingleMonoTexture(x, this)));
+	}
+
 	public start() {
+		if (!this.loaded) throw new Error('game is not loaded yet');
+
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
 				id: Math.random().toString(),
@@ -665,6 +706,31 @@ class Game extends EventEmitter<{
 		}, 500);
 	}
 
+	public async load() {
+		await this.loadMonoTextures();
+		this.loaded = true;
+	}
+
+	public getTextureImageUrl(mono: Mono) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (this.monoTextureUrls[mono.img]) {
+			return this.monoTextureUrls[mono.img];
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		} else if (this.monoTextures[mono.img]) {
+			// Gameクラス内にキャッシュがある場合はそれを使う
+			const out = URL.createObjectURL(this.monoTextures[mono.img]);
+			this.monoTextureUrls[mono.img] = out;
+			return out;
+		} else {
+			return mono.img;
+		}
+	}
+
+	public getActiveMonos() {
+		return this.engine.world.bodies.map(x => this.monoDefinitions.find((mono) => mono.id === x.label)!).filter(x => x !== undefined);
+	}
+
 	public drop(_x: number) {
 		if (this.isGameOver) return;
 		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) {
@@ -684,6 +750,7 @@ class Game extends EventEmitter<{
 		this.latestDroppedBodyId = body.id;
 		this.latestDroppedAt = Date.now();
 		this.emit('dropped');
+		this.emit('monoAdded', st.mono);
 		const pan = ((x / GAME_WIDTH) - 0.5) * 2;
 		sound.playRaw('syuilo/poi2', 1, pan);
 	}
@@ -698,29 +765,34 @@ class Game extends EventEmitter<{
 }
 
 let game: Game;
+let containerElRect: DOMRect | null = null;
 
 function onClick(ev: MouseEvent) {
-	const rect = containerEl.value!.getBoundingClientRect();
-
-	const x = (ev.clientX - rect.left) / viewScaleX;
-
+	if (!containerElRect) return;
+	const x = (ev.clientX - containerElRect.left) / viewScaleX;
 	game.drop(x);
 }
 
 function onTouchend(ev: TouchEvent) {
-	const rect = containerEl.value!.getBoundingClientRect();
-
-	const x = (ev.changedTouches[0].clientX - rect.left) / viewScaleX;
-
+	if (!containerElRect) return;
+	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScaleX;
 	game.drop(x);
 }
 
 function onMousemove(ev: MouseEvent) {
-	mouseX.value = ev.clientX - containerEl.value!.getBoundingClientRect().left;
+	if (!containerElRect) return;
+	const x = (ev.clientX - containerElRect.left);
+	moveDropper(containerElRect, x);
 }
 
 function onTouchmove(ev: TouchEvent) {
-	mouseX.value = ev.touches[0].clientX - containerEl.value!.getBoundingClientRect().left;
+	if (!containerElRect) return;
+	const x = (ev.touches[0].clientX - containerElRect.left);
+	moveDropper(containerElRect, x);
+}
+
+function moveDropper(rect: DOMRect, x: number) {
+	dropperX.value = Math.min(rect.width * ((GAME_WIDTH - game.PLAYAREA_MARGIN) / GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / GAME_WIDTH), x));
 }
 
 function restart() {
@@ -735,7 +807,7 @@ function restart() {
 	gameStarted.value = false;
 }
 
-function attachGame() {
+function attachGameEvents() {
 	game.addListener('changeScore', value => {
 		score.value = value;
 	});
@@ -746,6 +818,7 @@ function attachGame() {
 		} else {
 			comboPrev.value = value;
 		}
+		maxCombo.value = Math.max(maxCombo.value, value);
 		combo.value = value;
 	});
 
@@ -763,12 +836,26 @@ function attachGame() {
 		}, game.DROP_INTERVAL);
 	});
 
-	game.addListener('fusioned', (x, y, score) => {
+	game.addListener('fusioned', (x, y, scoreDelta) => {
+		if (!canvasEl.value) return;
+
 		const rect = canvasEl.value.getBoundingClientRect();
 		const domX = rect.left + (x * viewScaleX);
 		const domY = rect.top + (y * viewScaleY);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: score }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+	});
+
+	game.addListener('monoAdded', (mono) => {
+		// 実績関連
+		if (mono.level === 10) {
+			claimAchievement('bubbleGameExplodingHead');
+
+			const monos = game.getActiveMonos();
+			if (monos.filter(x => x.level === 10).length >= 2) {
+				claimAchievement('bubbleGameDoubleExplodingHead');
+			}
+		}
 	});
 
 	game.addListener('gameOver', () => {
@@ -795,42 +882,61 @@ async function start() {
 			key: 'highScore:' + gameMode.value,
 		});
 	} catch (err) {
+		highScore.value = null;
 	}
 
-	gameStarted.value = true;
 	game = new Game(gameMode.value === 'normal' ? {
 		monoDefinitions: NORAML_MONOS,
 	} : {
 		monoDefinitions: SQUARE_MONOS,
 	});
-	attachGame();
-	game.start();
+	attachGameEvents();
+	os.promiseDialog(game.load(), () => {
+		game.start();
+		gameStarted.value = true;
+	});
 }
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
-		canvasEl.value?.toBlob(blob => {
-			if (!blob) return res(null);
-			if ($i == null) return res(null);
-			const formData = new FormData();
-			formData.append('file', blob);
-			formData.append('name', `bubble-game-${Date.now()}.png`);
-			formData.append('isSensitive', 'false');
-			formData.append('comment', 'null');
-			formData.append('i', $i.token);
-			if (defaultStore.state.uploadFolder) {
-				formData.append('folderId', defaultStore.state.uploadFolder);
-			}
+		const dcanvas = document.createElement('canvas');
+		dcanvas.width = GAME_WIDTH;
+		dcanvas.height = GAME_HEIGHT;
+		const ctx = dcanvas.getContext('2d');
+		if (!ctx || !canvasEl.value) return res(null);
+		const dimage = new Image();
+		dimage.src = '/client-assets/drop-and-fusion/frame-light.svg';
+		dimage.addEventListener('load', () => {
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.drawImage(dimage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.drawImage(canvasEl.value!, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-			window.fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: formData,
-			})
-				.then(response => response.json())
-				.then(f => {
-					res(f);
-				});
-		}, 'image/png');
+			dcanvas.toBlob(blob => {
+				if (!blob) return res(null);
+				if ($i == null) return res(null);
+				const formData = new FormData();
+				formData.append('file', blob);
+				formData.append('name', `bubble-game-${Date.now()}.png`);
+				formData.append('isSensitive', 'false');
+				formData.append('comment', 'null');
+				formData.append('i', $i.token);
+				if (defaultStore.state.uploadFolder) {
+					formData.append('folderId', defaultStore.state.uploadFolder);
+				}
+
+				window.fetch(apiUrl + '/drive/files/create', {
+					method: 'POST',
+					body: formData,
+				})
+					.then(response => response.json())
+					.then(f => {
+						res(f);
+					});
+			}, 'image/png');
+
+			dcanvas.remove();
+		});
 	});
 }
 
@@ -842,7 +948,7 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${gameMode.value}
-SCORE: ${score.value}`,
+SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})})`,
 		initialFiles: [file],
 	});
 }
@@ -853,9 +959,11 @@ useInterval(() => {
 	const actualCanvasHeight = canvasEl.value.getBoundingClientRect().height;
 	viewScaleX = actualCanvasWidth / GAME_WIDTH;
 	viewScaleY = actualCanvasHeight / GAME_HEIGHT;
+	containerElRect = containerEl.value?.getBoundingClientRect() ?? null;
 }, 1000, { immediate: false, afterMounted: true });
 
-onMounted(async () => {
+onDeactivated(() => {
+	game.dispose();
 });
 
 definePageMetadata({
