@@ -24,10 +24,10 @@ import XColumn from './column.vue';
 import { deckStore, Column } from '@/ui/deck/deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
+import { mainRouter } from '@/global/router/main.js';
 
 defineProps<{
 	column: Column;
