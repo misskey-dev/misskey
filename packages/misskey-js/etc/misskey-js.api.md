@@ -2554,7 +2554,7 @@ type QueueStats = {
 };
 
 // @public (undocumented)
-type QueueStatsLog = string[];
+type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
@@ -2628,7 +2628,7 @@ type ServerStats = {
 };
 
 // @public (undocumented)
-type ServerStatsLog = string[];
+type ServerStatsLog = ServerStats[];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
