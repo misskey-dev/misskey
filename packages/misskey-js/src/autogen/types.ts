@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-08T13:32:03.048Z
+ * generatedAt: 2024-01-08T14:11:08.253Z
  */
 
 /**
@@ -3801,7 +3801,9 @@ export type components = {
             votes: number;
           }[];
       }) | null;
-      emojis?: Record<string, never>;
+      emojis?: {
+        [key: string]: string;
+      };
       /**
        * Format: id
        * @example xxxxxxxxxx
@@ -3817,14 +3819,19 @@ export type components = {
       }) | null;
       localOnly?: boolean;
       reactionAcceptance: string | null;
-      reactions: Record<string, never>;
+      reactionEmojis: {
+        [key: string]: string;
+      };
+      reactions: {
+        [key: string]: number;
+      };
       renoteCount: number;
       repliesCount: number;
       uri?: string;
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
-      myReaction?: Record<string, unknown> | null;
+      myReaction?: string | null;
     };
     NoteReaction: {
       /**

@@ -154,6 +154,11 @@ export const packedNoteSchema = {
 		emojis: {
 			type: 'object',
 			optional: true, nullable: false,
+			additionalProperties: {
+				anyOf: [{
+					type: 'string',
+				}],
+			},
 		},
 		channelId: {
 			type: 'string',
@@ -199,9 +204,23 @@ export const packedNoteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		reactionEmojis: {
+			type: 'object',
+			optional: false, nullable: false,
+			additionalProperties: {
+				anyOf: [{
+					type: 'string',
+				}],
+			},
+		},
 		reactions: {
 			type: 'object',
 			optional: false, nullable: false,
+			additionalProperties: {
+				anyOf: [{
+					type: 'number',
+				}],
+			},
 		},
 		renoteCount: {
 			type: 'number',
@@ -233,7 +252,7 @@ export const packedNoteSchema = {
 		},
 
 		myReaction: {
-			type: 'object',
+			type: 'string',
 			optional: true, nullable: true,
 		},
 	},
