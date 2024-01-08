@@ -6,7 +6,13 @@
 process.env.NODE_ENV = 'test';
 
 import { Test } from '@nestjs/testing';
-import { DeleteObjectCommandOutput, DeleteObjectCommand, NoSuchKey, InvalidObjectState, S3Client } from '@aws-sdk/client-s3';
+import {
+	DeleteObjectCommand,
+	DeleteObjectCommandOutput,
+	InvalidObjectState,
+	NoSuchKey,
+	S3Client,
+} from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { DriveService } from '@/core/DriveService.js';
