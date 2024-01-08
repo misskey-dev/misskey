@@ -199,7 +199,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		}
 		this.latestFusionedAt = now;
 
-		// TODO: 単に位置だけでなくそれぞれの動きベクトルも融合する
+		// TODO: 単に位置だけでなくそれぞれの動きベクトルも融合する？
 		const newX = (bodyA.position.x + bodyB.position.x) / 2;
 		const newY = (bodyA.position.y + bodyB.position.y) / 2;
 
@@ -222,8 +222,9 @@ export class DropAndFusionGame extends EventEmitter<{
 			const additionalScore = Math.round(currentMono.score * comboBonus);
 			this.score += additionalScore;
 
+			// TODO: 効果音再生はコンポーネント側の責務なので移動する
 			const pan = ((newX / this.gameWidth) - 0.5) * 2;
-			sound.playRaw('syuilo/bubble2', 1, pan, nextMono.sfxPitch);
+			sound.playUrl('/client-assets/drop-and-fusion/bubble2.mp3', 1, pan, nextMono.sfxPitch);
 
 			this.emit('monoAdded', nextMono);
 			this.emit('fusioned', newX, newY, additionalScore);
@@ -234,7 +235,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			//	Matter.Composite.add(world, body);
 			//	bodies.push(body);
 			//}
-			//sound.playRaw({
+			//sound.playUrl({
 			//	type: 'syuilo/bubble2',
 			//	volume: 1,
 			//});
@@ -321,10 +322,11 @@ export class DropAndFusionGame extends EventEmitter<{
 				} else {
 					const energy = pairs.collision.depth;
 					if (energy > minCollisionEnergyForSound) {
+						// TODO: 効果音再生はコンポーネント側の責務なので移動する
 						const vol = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
 						const pan = ((((bodyA.position.x + bodyB.position.x) / 2) / this.gameWidth) - 0.5) * 2;
 						const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
-						sound.playRaw('syuilo/poi1', vol, pan, pitch);
+						sound.playUrl('/client-assets/drop-and-fusion/poi1.mp3', vol, pan, pitch);
 					}
 				}
 			}
@@ -382,8 +384,10 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.latestDroppedAt = Date.now();
 		this.emit('dropped');
 		this.emit('monoAdded', st.mono);
+
+		// TODO: 効果音再生はコンポーネント側の責務なので移動する
 		const pan = ((x / this.gameWidth) - 0.5) * 2;
-		sound.playRaw('syuilo/poi2', 1, pan);
+		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', 1, pan);
 	}
 
 	public dispose() {

@@ -103,7 +103,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="[$style.frame]" style="margin-left: auto;">
 					<div :class="$style.frameInner" style="text-align: center;">
+						<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
 					</div>
+				</div>
+			</div>
+			<div v-if="showConfig" :class="$style.frame">
+				<div :class="$style.frameInner">
+					<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
+						<template #label>BGM {{ i18n.ts.volume }}</template>
+					</MkRange>
+				</div>
+			</div>
+			<div v-if="showConfig" :class="$style.frame">
+				<div :class="$style.frameInner">
+					<div>Credit</div>
+					<div>BGM: @ys@misskey.design</div>
 				</div>
 			</div>
 			<div :class="$style.frame">
@@ -117,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, ref, shallowRef } from 'vue';
+import { onDeactivated, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -134,6 +148,8 @@ import MkSelect from '@/components/MkSelect.vue';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
 import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
+import * as sound from '@/scripts/sound.js';
+import MkRange from '@/components/MkRange.vue';
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
@@ -381,6 +397,8 @@ const gameMode = ref<'normal' | 'square'>('normal');
 const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
+const showConfig = ref(false);
+const bgmVolume = ref(0.1);
 
 let game: DropAndFusionGame;
 let containerElRect: DOMRect | null = null;
@@ -493,6 +511,8 @@ function attachGameEvents() {
 	});
 }
 
+let bgmNodes: ReturnType<typeof sound.createSourceNode> = null;
+
 async function start() {
 	try {
 		highScore.value = await misskeyApi('i/registry/get', {
@@ -516,11 +536,28 @@ async function start() {
 		),
 	});
 	attachGameEvents();
-	os.promiseDialog(game.load(), () => {
+	os.promiseDialog(game.load(), async () => {
 		game.start();
 		gameStarted.value = true;
+
+		if (bgmNodes) {
+			bgmNodes.soundSource.stop();
+			bgmNodes = null;
+		}
+		const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
+		if (!bgmBuffer) return;
+		bgmNodes = sound.createSourceNode(bgmBuffer, bgmVolume.value);
+		if (!bgmNodes) return;
+		bgmNodes.soundSource.loop = true;
+		bgmNodes.soundSource.start();
 	});
 }
+
+watch(bgmVolume, (value) => {
+	if (bgmNodes) {
+		bgmNodes.gainNode.gain.value = value;
+	}
+});
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
