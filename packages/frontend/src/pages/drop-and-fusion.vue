@@ -587,6 +587,16 @@ function updateSettings<
 	});
 }
 
+function loadImage(url: string) {
+	return new Promise<HTMLImageElement>(res => {
+		const img = new Image();
+		img.src = url;
+		img.addEventListener('load', () => {
+			res(img);
+		});
+	});
+}
+
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
 		const dcanvas = document.createElement('canvas');
@@ -594,13 +604,18 @@ function getGameImageDriveFile() {
 		dcanvas.height = GAME_HEIGHT;
 		const ctx = dcanvas.getContext('2d');
 		if (!ctx || !canvasEl.value) return res(null);
-		const dimage = new Image();
-		dimage.src = '/client-assets/drop-and-fusion/frame-light.svg';
-		dimage.addEventListener('load', () => {
+		Promise.all([
+			loadImage('/client-assets/drop-and-fusion/frame-light.svg'),
+			loadImage('/client-assets/drop-and-fusion/logo.png'),
+		]).then((images) => {
+			const [frame, logo] = images;
 			ctx.fillStyle = '#fff';
 			ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-			ctx.drawImage(dimage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.drawImage(frame, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 			ctx.drawImage(canvasEl.value!, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.globalAlpha = 0.7;
+			ctx.drawImage(logo, GAME_WIDTH * 0.55, 6, GAME_WIDTH * 0.45, GAME_WIDTH * 0.45 * (logo.height / logo.width));
+			ctx.globalAlpha = 1;
 
 			dcanvas.toBlob(blob => {
 				if (!blob) return res(null);
@@ -626,7 +641,8 @@ function getGameImageDriveFile() {
 			}, 'image/png');
 
 			dcanvas.remove();
-		});
+
+		})
 	});
 }
 
