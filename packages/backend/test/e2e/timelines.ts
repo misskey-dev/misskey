@@ -7,7 +7,7 @@
 // pnpm jest -- e2e/timelines.ts
 
 import * as assert from 'assert';
-import { api, post, randomString, signup, sleep, uploadUrl } from '../utils.js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, sleep, uploadUrl } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -320,8 +320,8 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/requests/accept', { userId: alice.id }, bob);
 
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -335,8 +335,8 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/requests/accept', { userId: alice.id }, bob);
 
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 
@@ -750,8 +750,8 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーのノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/requests/accept', { userId: alice.id }, bob);
 
 			const bobNote = await post(bob, { text: 'hi' });
 
@@ -765,8 +765,8 @@ describe('Timelines', () => {
 		test.concurrent('フォローしているリモートユーザーの visibility: home なノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
+			await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 			await api('/following/create', { userId: bob.id }, alice);
-			await api('/following/requests/accept', { userId: alice.id }, bob);
 
 			const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
 

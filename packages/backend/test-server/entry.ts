@@ -57,6 +57,7 @@ async function startControllerEndpoints(port = config.port + 1000) {
 	const fastify = Fastify();
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env', async (req, res) => {
+		console.log(req.body);
 		const key = req.body['key'];
 		if (!key) {
 			res.code(400).send({ success: false });
