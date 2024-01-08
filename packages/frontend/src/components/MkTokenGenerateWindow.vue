@@ -33,7 +33,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
 			<div class="_gaps_s">
-				<MkSwitch v-for="kind in Object.keys(permissions)" :key="kind" v-model="permissions[kind]">{{ i18n.t(`_permissions.${kind}`) }}</MkSwitch>
+				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind]">{{ i18n.t(`_permissions.${kind}`) }}</MkSwitch>
+			</div>
+			<div :class="$style.adminPermissions" v-if="iAmAdmin">
+				<div :class="$style.adminPermissionsHeader"><b>{{ i18n.ts.adminPermission }}</b></div>
+				<div class="_gaps_s">
+					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind]">{{ i18n.t(`_permissions.${kind}`) }}</MkSwitch>
+				</div>
 			</div>
 		</div>
 	</MkSpacer>
@@ -73,20 +79,21 @@ const adminPermissions = Misskey.permissions.filter(p => p.startsWith('read:admi
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 const name = ref(props.initialName);
-const permissions = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
+const permissionSwitches = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
+const permissionSwitchesForAdmin = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {
-		permissions.value[kind] = true;
+		permissionSwitches.value[kind] = true;
 	}
 } else {
 	for (const kind of defaultPermissions) {
-		permissions.value[kind] = false;
+		permissionSwitches.value[kind] = false;
 	}
 
 	if (iAmAdmin) {
 		for (const kind of adminPermissions) {
-			permissions.value[kind] = false;
+			permissionSwitchesForAdmin.value[kind] = false;
 		}
 	}
 }
@@ -94,20 +101,50 @@ if (props.initialPermissions) {
 function ok(): void {
 	emit('done', {
 		name: name.value,
-		permissions: Object.keys(permissions.value).filter(p => permissions.value[p]),
+		permissions: [
+			...Object.keys(permissionSwitches.value).filter(p => permissionSwitches.value[p]),
+			...(iAmAdmin ? Object.keys(permissionSwitchesForAdmin.value).filter(p => permissionSwitchesForAdmin.value[p]) : []),
+		],
 	});
 	dialog.value?.close();
 }
 
 function disableAll(): void {
-	for (const p in permissions.value) {
-		permissions.value[p] = false;
+	for (const p in permissionSwitches.value) {
+		permissionSwitches.value[p] = false;
+	}
+	if (iAmAdmin) {
+		for (const p in permissionSwitchesForAdmin.value) {
+			permissionSwitchesForAdmin.value[p] = false;
+		}
 	}
 }
 
 function enableAll(): void {
-	for (const p in permissions.value) {
-		permissions.value[p] = true;
+	for (const p in permissionSwitches.value) {
+		permissionSwitches.value[p] = true;
+	}
+	if (iAmAdmin) {
+		for (const p in permissionSwitchesForAdmin.value) {
+			permissionSwitchesForAdmin.value[p] = true;
+		}
 	}
 }
 </script>
+
+<style module lang="scss">
+.adminPermissions {
+	margin: 8px -6px 0;
+	padding: 24px 6px 6px;
+	border: 2px solid var(--error);
+	border-radius: calc(var(--radius) / 2);
+}
+
+.adminPermissionsHeader {
+	margin: -34px 0 6px 12px;
+	padding: 0 4px;
+	width: fit-content;
+	color: var(--error);
+	background: var(--panel);
+}
+</style>
