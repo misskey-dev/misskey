@@ -867,10 +867,11 @@ function attachGameEvents() {
 		// 実績関連
 		if (mono.level === 10) {
 			claimAchievement('bubbleGameExplodingHead');
-		}
-		const monos = game.getActiveMonos();
-		if (monos.filter(x => x.level === 10).length >= 2) {
-			claimAchievement('bubbleGameDoubleExplodingHead');
+
+			const monos = game.getActiveMonos();
+			if (monos.filter(x => x.level === 10).length >= 2) {
+				claimAchievement('bubbleGameDoubleExplodingHead');
+			}
 		}
 	});
 
