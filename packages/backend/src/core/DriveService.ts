@@ -655,7 +655,7 @@ export class DriveService {
 	public async updateFile(file: MiDriveFile, values: Partial<MiDriveFile>, updater: MiUser) {
 		const alwaysMarkNsfw = (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw;
 
-		if (values.name && !this.driveFileEntityService.validateFileName(file.name)) {
+		if (values.name != null && !this.driveFileEntityService.validateFileName(values.name)) {
 			throw new DriveService.InvalidFileNameError();
 		}
 
