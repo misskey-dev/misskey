@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2.papi.2
- * generatedAt: 2024-01-08T03:35:41.623Z
+ * version: 2023.12.2.papi.4
+ * generatedAt: 2024-01-08T08:57:37.939Z
  */
 
 import type {
@@ -90,8 +90,6 @@ import type {
 	AdminShowUsersResponse,
 	AdminSuspendUserRequest,
 	AdminUnsuspendUserRequest,
-	AdminRootAdd,
-	AdminRootRemove,
 	AdminUpdateMetaRequest,
 	AdminDeleteAccountRequest,
 	AdminDeleteAccountResponse,
@@ -613,8 +611,6 @@ export type Endpoints = {
 	'admin/show-users': { req: AdminShowUsersRequest; res: AdminShowUsersResponse };
 	'admin/suspend-user': { req: AdminSuspendUserRequest; res: EmptyResponse };
 	'admin/unsuspend-user': { req: AdminUnsuspendUserRequest; res: EmptyResponse };
-	'admin/root/add': { req: AdminRootAdd; res: EmptyResponse };
-	'admin/root/remove': { req: AdminRootRemove; res: EmptyResponse };
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
 	'admin/delete-account': { req: AdminDeleteAccountRequest; res: AdminDeleteAccountResponse };
 	'admin/update-user-note': { req: AdminUpdateUserNoteRequest; res: EmptyResponse };

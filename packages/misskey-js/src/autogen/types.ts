@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.2.papi.2
- * generatedAt: 2024-01-08T03:35:41.414Z
+ * version: 2023.12.2.papi.4
+ * generatedAt: 2024-01-08T08:57:37.696Z
  */
 
 /**
@@ -614,24 +614,6 @@ export type paths = {
      */
     post: operations['admin/unsuspend-user'];
   };
-};
-'/admin/root/add': {
-	/**
-	 * admin/root/add
-	 * @description No description provided.
-	 *
-	 * **Credential required**: *Yes* / **Permission**: *write:admin:root-add*
-	 */
-	post: operations['admin/root/add'];
-};
-'/admin/root/remove': {
-	/**
-	 * admin/root/remove
-	 * @description No description provided.
-	 *
-	 * **Credential required**: *Yes* / **Permission**: *write:admin:root-remove*
-	 */
-	post: operations['admin/root/remove'];
   '/admin/update-meta': {
     /**
      * admin/update-meta
@@ -8318,110 +8300,6 @@ export type operations = {
       };
     };
   };
-	/**
-   * admin/root/add
-   * @description No description provided.
-   *
-   * **Credential required**: *Yes* / **Permission**: *write:admin:root-add*
-   */
-	'admin/root/add': {
-		requestBody: {
-			content: {
-				'application/json': {
-					/** Format: misskey:id */
-					userId: string;
-				};
-			};
-		};
-		responses: {
-			/** @description OK (without any results) */
-			204: {
-				content: never;
-			};
-			/** @description Client error */
-			400: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Authentication error */
-			401: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Forbidden error */
-			403: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description I'm Ai */
-			418: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-		};
-	};
-	/**
-	 * admin/root/remove
-	 * @description No description provided.
-	 *
-	 * **Credential required**: *Yes* / **Permission**: *write:admin:root-remove*
-	 */
-	'admin/root/remove': {
-		requestBody: {
-			content: {
-				'application/json': {
-					/** Format: misskey:id */
-					userId: string;
-				};
-			};
-		};
-		responses: {
-			/** @description OK (without any results) */
-			204: {
-				content: never;
-			};
-			/** @description Client error */
-			400: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Authentication error */
-			401: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Forbidden error */
-			403: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description I'm Ai */
-			418: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-		};
-	};
   /**
    * admin/update-meta
    * @description No description provided.

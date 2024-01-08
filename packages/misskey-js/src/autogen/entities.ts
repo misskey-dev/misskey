@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2.papi.2
- * generatedAt: 2024-01-08T03:35:41.620Z
+ * version: 2023.12.2.papi.4
+ * generatedAt: 2024-01-08T08:57:37.934Z
  */
 
 import { operations } from './types.js';
@@ -92,8 +92,6 @@ export type AdminShowUsersRequest = operations['admin/show-users']['requestBody'
 export type AdminShowUsersResponse = operations['admin/show-users']['responses']['200']['content']['application/json'];
 export type AdminSuspendUserRequest = operations['admin/suspend-user']['requestBody']['content']['application/json'];
 export type AdminUnsuspendUserRequest = operations['admin/unsuspend-user']['requestBody']['content']['application/json'];
-export type AdminRootAdd = operations['admin/root/add']['requestBody']['content']['application/json'];
-export type AdminRootRemove = operations['admin/root/remove']['requestBody']['content']['application/json'];
 export type AdminUpdateMetaRequest = operations['admin/update-meta']['requestBody']['content']['application/json'];
 export type AdminDeleteAccountRequest = operations['admin/delete-account']['requestBody']['content']['application/json'];
 export type AdminDeleteAccountResponse = operations['admin/delete-account']['responses']['200']['content']['application/json'];
