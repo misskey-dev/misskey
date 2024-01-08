@@ -1193,6 +1193,7 @@ export interface Locale {
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
     "bubbleGame": string;
+    "sfx": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

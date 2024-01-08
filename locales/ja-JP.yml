@@ -1190,6 +1190,7 @@ decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
 bubbleGame: "バブルゲーム"
+sfx: "効果音"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

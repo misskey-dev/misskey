@@ -109,9 +109,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-if="showConfig" :class="$style.frame">
 				<div :class="$style.frameInner">
-					<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
-						<template #label>BGM {{ i18n.ts.volume }}</template>
-					</MkRange>
+					<div class="_gaps">
+						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
+							<template #label>BGM {{ i18n.ts.volume }}</template>
+						</MkRange>
+						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
+							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
+						</MkRange>
+					</div>
 				</div>
 			</div>
 			<div v-if="showConfig" :class="$style.frame">
@@ -398,7 +403,8 @@ const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
-const bgmVolume = ref(0.1);
+const bgmVolume = ref(0.25);
+const sfxVolume = ref(1);
 
 let game: DropAndFusionGame;
 let containerElRect: DOMRect | null = null;
@@ -528,6 +534,7 @@ async function start() {
 		width: GAME_WIDTH,
 		height: GAME_HEIGHT,
 		canvas: canvasEl.value!,
+		sfxVolume: sfxVolume.value,
 		...(
 			gameMode.value === 'normal' ? {
 				monoDefinitions: NORAML_MONOS,
@@ -557,6 +564,13 @@ async function start() {
 watch(bgmVolume, (value) => {
 	if (bgmNodes) {
 		bgmNodes.gainNode.gain.value = value;
+	}
+});
+
+watch(sfxVolume, (value) => {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (game) {
+		game.setSfxVolume(value);
 	}
 });
 
@@ -700,7 +714,7 @@ definePageMetadata({
 	border-radius: 10px;
 }
 .frameInner {
-	padding: 4px 8px;
+	padding: 8px;
 	background: #F1E8DC;
 	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
 	border-radius: 6px;

@@ -48,6 +48,8 @@ export class DropAndFusionGame extends EventEmitter<{
 	private monoTextures: Record<string, Blob> = {};
 	private monoTextureUrls: Record<string, string> = {};
 
+	private sfxVolume = 1;
+
 	/**
 	 * フィールドに出ていて、かつ合体の対象となるアイテム
 	 */
@@ -84,12 +86,17 @@ export class DropAndFusionGame extends EventEmitter<{
 		width: number;
 		height: number;
 		monoDefinitions: Mono[];
+		sfxVolume?: number;
 	}) {
 		super();
 
 		this.gameWidth = opts.width;
 		this.gameHeight = opts.height;
 		this.monoDefinitions = opts.monoDefinitions;
+
+		if (opts.sfxVolume) {
+			this.sfxVolume = opts.sfxVolume;
+		}
 
 		this.engine = Matter.Engine.create({
 			constraintIterations: 2 * PHYSICS_QUALITY_FACTOR,
@@ -225,7 +232,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 			// TODO: 効果音再生はコンポーネント側の責務なので移動する
 			const pan = ((newX / this.gameWidth) - 0.5) * 2;
-			sound.playUrl('/client-assets/drop-and-fusion/bubble2.mp3', 1, pan, nextMono.sfxPitch);
+			sound.playUrl('/client-assets/drop-and-fusion/bubble2.mp3', this.sfxVolume, pan, nextMono.sfxPitch);
 
 			this.emit('monoAdded', nextMono);
 			this.emit('fusioned', newX, newY, additionalScore);
@@ -238,7 +245,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			//}
 			//sound.playUrl({
 			//	type: 'syuilo/bubble2',
-			//	volume: 1,
+			//	volume: this.sfxVolume,
 			//});
 		}
 	}
@@ -324,7 +331,7 @@ export class DropAndFusionGame extends EventEmitter<{
 					const energy = pairs.collision.depth;
 					if (energy > minCollisionEnergyForSound) {
 						// TODO: 効果音再生はコンポーネント側の責務なので移動する
-						const vol = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
+						const vol = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4 * this.sfxVolume;
 						const pan = ((((bodyA.position.x + bodyB.position.x) / 2) / this.gameWidth) - 0.5) * 2;
 						const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
 						sound.playUrl('/client-assets/drop-and-fusion/poi1.mp3', vol, pan, pitch);
@@ -343,6 +350,10 @@ export class DropAndFusionGame extends EventEmitter<{
 	public async load() {
 		await this.loadMonoTextures();
 		this.loaded = true;
+	}
+
+	public setSfxVolume(volume: number) {
+		this.sfxVolume = volume;
 	}
 
 	public getTextureImageUrl(mono: Mono) {
@@ -388,7 +399,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 		// TODO: 効果音再生はコンポーネント側の責務なので移動する
 		const pan = ((x / this.gameWidth) - 0.5) * 2;
-		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', 1, pan);
+		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', this.sfxVolume, pan);
 	}
 
 	public dispose() {
