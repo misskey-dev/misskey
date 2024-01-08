@@ -52,13 +52,11 @@ jobs:
       run: pnpm build
     - name: Test
       run: pnpm --filter backend test-and-coverage
-    - name: Rename
-      run: mv ./packages/backend/coverage/coverage-final.json ./packages/backend/coverage/coverage-unit.json
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v3
       with:
-        name: coverage-unit
-        path: ./packages/backend/coverage/coverage-unit.json
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./packages/backend/coverage/coverage-final.json
 
   e2e:
     runs-on: ubuntu-latest
@@ -104,34 +102,8 @@ jobs:
         run: pnpm build
       - name: Test
         run: pnpm --filter backend test-and-coverage:e2e
-      - name: Rename
-        run: mv ./packages/backend/coverage/coverage-final.json ./packages/backend/coverage/coverage-e2e.json
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-e2e
-          path: ./packages/backend/coverage/coverage-e2e.json
-
-  upload-to-codecov:
-    runs-on: ubuntu-latest
-    needs:
-      - unit
-      - e2e
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Download unit artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-unit
-      - name: Download e2e artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-e2e
-      - name: ls
-        run: ls -la
       - name: Upload to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage-unit.json, coverage-e2e.json
+          files: ./packages/backend/coverage/coverage-final.json
