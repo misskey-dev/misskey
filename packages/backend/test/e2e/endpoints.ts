@@ -710,6 +710,18 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
+		test('不正なファイル名で怒られる', async () => {
+			const file = (await uploadFile(alice)).body;
+			const newName = '';
+
+			const res = await api('/drive/files/update', {
+				fileId: file.id,
+				name: newName,
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
 		test('間違ったIDで怒られる', async () => {
 			const res = await api('/drive/files/update', {
 				fileId: 'kyoppie',
