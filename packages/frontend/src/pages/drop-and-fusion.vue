@@ -28,14 +28,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-show="gameStarted" class="_gaps_s" :class="$style.root">
-			<div style="display: flex;">
-				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
+			<div :class="$style.header">
+				<div :class="[$style.frame, $style.headerTitle]">
 					<div :class="$style.frameInner">
 						<b>BUBBLE GAME</b>
 						<div>- {{ gameMode }} -</div>
 					</div>
 				</div>
-				<div :class="[$style.frame, $style.stock]" style="margin-left: auto;">
+				<div :class="[$style.frame, $style.stock]">
 					<div :class="$style.frameInner" style="text-align: center;">
 						NEXT >>>
 						<TransitionGroup
@@ -52,44 +52,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div :class="$style.main" @contextmenu.stop.prevent>
-				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-					<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
-					<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
-					<canvas ref="canvasEl" :class="$style.canvas"/>
-					<Transition
-						:enterActiveClass="$style.transition_combo_enterActive"
-						:leaveActiveClass="$style.transition_combo_leaveActive"
-						:enterFromClass="$style.transition_combo_enterFrom"
-						:leaveToClass="$style.transition_combo_leaveTo"
-						:moveClass="$style.transition_combo_move"
-					>
-						<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
-					</Transition>
-					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
-					<Transition
-						:enterActiveClass="$style.transition_picked_enterActive"
-						:leaveActiveClass="$style.transition_picked_leaveActive"
-						:enterFromClass="$style.transition_picked_enterFrom"
-						:leaveToClass="$style.transition_picked_leaveTo"
-						:moveClass="$style.transition_picked_move"
-						mode="out-in"
-					>
-						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
-					</Transition>
-					<template v-if="dropReady && currentPick">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
-						<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
-					</template>
-					<div v-if="gameOver" :class="$style.gameOverLabel">
-						<div class="_gaps_s">
-							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-							<div>SCORE: <MkNumber :value="score"/></div>
-							<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
-							<div class="_buttonsCenter">
-								<MkButton primary rounded @click="restart">Restart</MkButton>
-								<MkButton primary rounded @click="share">Share</MkButton>
-							</div>
+			<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
+				<canvas ref="canvasEl" :class="$style.canvas"/>
+				<Transition
+					:enterActiveClass="$style.transition_combo_enterActive"
+					:leaveActiveClass="$style.transition_combo_leaveActive"
+					:enterFromClass="$style.transition_combo_enterFrom"
+					:leaveToClass="$style.transition_combo_leaveTo"
+					:moveClass="$style.transition_combo_move"
+				>
+					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
+				</Transition>
+				<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
+				<Transition
+					:enterActiveClass="$style.transition_picked_enterActive"
+					:leaveActiveClass="$style.transition_picked_leaveActive"
+					:enterFromClass="$style.transition_picked_enterFrom"
+					:leaveToClass="$style.transition_picked_leaveTo"
+					:moveClass="$style.transition_picked_move"
+					mode="out-in"
+				>
+					<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
+				</Transition>
+				<template v-if="dropReady && currentPick">
+					<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
+					<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
+				</template>
+				<div v-if="gameOver" :class="$style.gameOverLabel">
+					<div class="_gaps_s">
+						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+						<div>SCORE: <MkNumber :value="score"/></div>
+						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
+						<div class="_buttonsCenter">
+							<MkButton primary rounded @click="restart">Restart</MkButton>
+							<MkButton primary rounded @click="share">Share</MkButton>
 						</div>
 					</div>
 				</div>
@@ -110,19 +108,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="showConfig" :class="$style.frame">
 				<div :class="$style.frameInner">
 					<div class="_gaps">
-						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
+						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
 							<template #label>BGM {{ i18n.ts.volume }}</template>
 						</MkRange>
-						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
+						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
 							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
 						</MkRange>
 					</div>
 				</div>
-			</div>
-			<div v-if="showConfig" :class="$style.frame">
 				<div :class="$style.frameInner">
-					<div>Credit</div>
-					<div>BGM: @ys@misskey.design</div>
+					<div class="_gaps_s">
+						<div><b>Credit</b></div>
+						<div>
+							<div>Logo Illustration: @poteriri@misskey.io</div>
+							<div>BGM: @ys@misskey.design</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div :class="$style.frame">
@@ -403,8 +404,8 @@ const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
-const bgmVolume = ref(0.25);
-const sfxVolume = ref(1);
+const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
+const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
 
 let game: DropAndFusionGame;
 let containerElRect: DOMRect | null = null;
@@ -561,18 +562,30 @@ async function start() {
 	});
 }
 
-watch(bgmVolume, (value) => {
+watch(bgmVolume, (newValue, oldValue) => {
 	if (bgmNodes) {
-		bgmNodes.gainNode.gain.value = value;
+		bgmNodes.gainNode.gain.value = newValue;
 	}
 });
 
-watch(sfxVolume, (value) => {
+watch(sfxVolume, (newValue, oldValue) => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (game) {
-		game.setSfxVolume(value);
+		game.setSfxVolume(newValue);
 	}
 });
+
+function updateSettings<
+	K extends keyof typeof defaultStore.state.dropAndFusion,
+	V extends typeof defaultStore.state.dropAndFusion[K],
+>(key: K, value: V) {
+	const changes: { [P in K]?: V } = {};
+	changes[key] = value;
+	defaultStore.set('dropAndFusion', {
+		...defaultStore.state.dropAndFusion,
+		...changes,
+	});
+}
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
@@ -713,16 +726,45 @@ definePageMetadata({
 	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
 	border-radius: 10px;
 }
+
 .frameInner {
 	padding: 8px;
+	margin-top: 8px;
 	background: #F1E8DC;
 	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
 	border-radius: 6px;
 	color: #693410;
+
+	&:first-child {
+		margin-top: 0;
+	}
 }
 
-.main {
-	position: relative;
+.frameDivider {
+	height: 0;
+	border: none;
+	border-top: 1px solid #693410;
+	border-bottom: 1px solid #ce8a5c;
+}
+
+.header {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto auto;
+	gap: 8px;
+
+	> .headerTitle {
+		text-align: center;
+	}
+
+	@media (min-width: 500px) {
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto;
+
+		> .headerTitle {
+			text-align: start;
+		}
+	}
 }
 
 .mainFrameImg {
@@ -740,7 +782,6 @@ definePageMetadata({
 	position: relative;
 	display: block;
 	z-index: 1;
-	margin-top: -50px;
 	width: 100% !important;
 	height: auto !important;
 	pointer-events: none;
