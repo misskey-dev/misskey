@@ -5,11 +5,11 @@
 
 // NIRAX --- A lightweight router
 
-import { EventEmitter } from 'eventemitter3';
 import { Component, onMounted, shallowRef, ShallowRef } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 
-type RouteDef = {
+export type RouteDef = {
 	path: string;
 	component: Component;
 	query?: Record<string, string>;
@@ -26,6 +26,27 @@ type ParsedPath = (string | {
 	wildcard?: boolean;
 	optional?: boolean;
 })[];
+
+export type RouterEvent = {
+	change: (ctx: {
+		beforePath: string;
+		path: string;
+		resolved: Resolved;
+		key: string;
+	}) => void;
+	replace: (ctx: {
+		path: string;
+		key: string;
+	}) => void;
+	push: (ctx: {
+		beforePath: string;
+		path: string;
+		route: RouteDef | null;
+		props: Map<string, string> | null;
+		key: string;
+	}) => void;
+	same: () => void;
+}
 
 export type Resolved = { route: RouteDef; props: Map<string, string | boolean>; child?: Resolved; };
 
@@ -54,26 +75,85 @@ function parsePath(path: string): ParsedPath {
 	return res;
 }
 
-export class Router extends EventEmitter<{
-	change: (ctx: {
-		beforePath: string;
-		path: string;
-		resolved: Resolved;
-		key: string;
-	}) => void;
-	replace: (ctx: {
-		path: string;
-		key: string;
-	}) => void;
-	push: (ctx: {
-		beforePath: string;
-		path: string;
-		route: RouteDef | null;
-		props: Map<string, string> | null;
-		key: string;
-	}) => void;
-	same: () => void;
-}> {
+export interface IRouter extends EventEmitter<RouterEvent> {
+	current: Resolved;
+	currentRef: ShallowRef<Resolved>;
+	currentRoute: ShallowRef<RouteDef>;
+	navHook: ((path: string, flag?: any) => boolean) | null;
+
+	resolve(path: string): Resolved | null;
+
+	getCurrentPath(): any;
+
+	getCurrentKey(): string;
+
+	push(path: string, flag?: any): void;
+
+	replace(path: string, key?: string | null): void;
+
+	/** @see EventEmitter */
+	eventNames(): Array<EventEmitter.EventNames<RouterEvent>>;
+
+	/** @see EventEmitter */
+	listeners<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T
+	): Array<EventEmitter.EventListener<RouterEvent, T>>;
+
+	/** @see EventEmitter */
+	listenerCount(
+		event: EventEmitter.EventNames<RouterEvent>
+	): number;
+
+	/** @see EventEmitter */
+	emit<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T,
+		...args: EventEmitter.EventArgs<RouterEvent, T>
+	): boolean;
+
+	/** @see EventEmitter */
+	on<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T,
+		fn: EventEmitter.EventListener<RouterEvent, T>,
+		context?: any
+	): this;
+
+	/** @see EventEmitter */
+	addListener<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T,
+		fn: EventEmitter.EventListener<RouterEvent, T>,
+		context?: any
+	): this;
+
+	/** @see EventEmitter */
+	once<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T,
+		fn: EventEmitter.EventListener<RouterEvent, T>,
+		context?: any
+	): this;
+
+	/** @see EventEmitter */
+	removeListener<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T,
+		fn?: EventEmitter.EventListener<RouterEvent, T>,
+		context?: any,
+		once?: boolean | undefined
+	): this;
+
+	/** @see EventEmitter */
+	off<T extends EventEmitter.EventNames<RouterEvent>>(
+		event: T,
+		fn?: EventEmitter.EventListener<RouterEvent, T>,
+		context?: any,
+		once?: boolean | undefined
+	): this;
+
+	/** @see EventEmitter */
+	removeAllListeners(
+		event?: EventEmitter.EventNames<RouterEvent>
+	): this;
+}
+
+export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	private routes: RouteDef[];
 	public current: Resolved;
 	public currentRef: ShallowRef<Resolved> = shallowRef();
@@ -277,7 +357,7 @@ export class Router extends EventEmitter<{
 	}
 }
 
-export function useScrollPositionManager(getScrollContainer: () => HTMLElement, router: Router) {
+export function useScrollPositionManager(getScrollContainer: () => HTMLElement, router: IRouter) {
 	const scrollPosStore = new Map<string, number>();
 
 	onMounted(() => {

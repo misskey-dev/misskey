@@ -183,6 +183,16 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createExportClipsJob(user: ThinUser) {
+		return this.dbQueue.add('exportClips', {
+			user: { id: user.id },
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createExportFavoritesJob(user: ThinUser) {
 		return this.dbQueue.add('exportFavorites', {
 			user: { id: user.id },

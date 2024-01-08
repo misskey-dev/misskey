@@ -17,7 +17,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 5
+  open-pull-requests-limit: 10
   # List dependencies required to be updated together, sharing the same version numbers.
   # Those who simply have the common owner (e.g. @fastify) don't need to be listed.
   groups:
