@@ -2,13 +2,13 @@ import {
 	Antenna,
 	DriveFile,
 	DriveFolder,
-	MeDetailed,
 	Note,
 	Notification,
 	Signin,
 	User,
 	UserDetailed,
 	UserDetailedNotMe,
+	UserLite,
 } from './autogen/models.js';
 import {
 	AnnouncementCreated,
@@ -30,9 +30,9 @@ export type Channels = {
 			reply: (payload: Note) => void;
 			renote: (payload: Note) => void;
 			follow: (payload: UserDetailedNotMe) => void; // 自分が他人をフォローしたとき
-			followed: (payload: UserDetailed) => void; // 他人が自分をフォローしたとき
+			followed: (payload: UserDetailed | UserLite) => void; // 他人が自分をフォローしたとき
 			unfollow: (payload: UserDetailed) => void; // 自分が他人をフォロー解除したとき
-			meUpdated: (payload: MeDetailed) => void;
+			meUpdated: (payload: UserDetailed) => void;
 			pageEvent: (payload: PageEvent) => void;
 			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
 			readAllNotifications: () => void;
