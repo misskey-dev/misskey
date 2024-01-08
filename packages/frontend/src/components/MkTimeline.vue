@@ -132,6 +132,7 @@ function connectChannel() {
 		connection.on('mention', onNote);
 	} else if (props.src === 'list') {
 		connection = stream.useChannel('userList', {
+			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		});
@@ -198,6 +199,7 @@ function updatePaginationQuery() {
 	} else if (props.src === 'list') {
 		endpoint = 'notes/user-list-timeline';
 		query = {
+			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		};
@@ -236,8 +238,9 @@ function refreshEndpointAndChannel() {
 	updatePaginationQuery();
 }
 
+// デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
 // IDが切り替わったら切り替え先のTLを表示させたい
-watch(() => [props.list, props.antenna, props.channel, props.role], refreshEndpointAndChannel);
+watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
 
 // 初回表示用
 refreshEndpointAndChannel();

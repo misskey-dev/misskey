@@ -6,28 +6,20 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, post, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Block', () => {
-	let app: INestApplicationContext;
-
 	// alice blocks bob
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	test('Block作成', async () => {
 		const res = await api('/blocking/create', {
