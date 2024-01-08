@@ -49,6 +49,7 @@ import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import { iAmAdmin, $i, iAmModerator } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;
@@ -68,6 +69,8 @@ const emit = defineEmits<{
 }>();
 
 const defaultPermissions = Misskey.permissions.filter(p => !p.startsWith('read:admin') && !p.startsWith('write:admin'));
+const adminPermissions = Misskey.permissions.filter(p => p.startsWith('read:admin') || p.startsWith('write:admin'));
+
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 const name = ref(props.initialName);
 const permissions = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
@@ -79,6 +82,12 @@ if (props.initialPermissions) {
 } else {
 	for (const kind of defaultPermissions) {
 		permissions.value[kind] = false;
+	}
+
+	if (iAmAdmin) {
+		for (const kind of adminPermissions) {
+			permissions.value[kind] = false;
+		}
 	}
 }
 
