@@ -41,12 +41,25 @@ export default class Logger {
 
 	@bindThis
 	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subContexts: Context[] = [], store = true): void {
-		if (envOption.quiet) return;
+		if (envOption.quiet && !envOption.logJson) return;
 		if (!this.store) store = false;
 		if (level === 'debug') store = false;
 
 		if (this.parentLogger) {
 			this.parentLogger.log(level, message, data, important, [this.context].concat(subContexts), store);
+			return;
+		}
+
+		if (envOption.logJson) {
+			console.log(JSON.stringify({
+				time: new Date().toISOString(),
+				level: level,
+				message: message,
+				data: data,
+				important: important,
+				context: [this.context].concat(subContexts).join('.'),
+				cluster: cluster.isPrimary ? 'primary' : `worker-${cluster.worker!.id}`,
+			}));
 			return;
 		}
 
