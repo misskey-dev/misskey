@@ -8,6 +8,7 @@ import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
+import { hemisphere } from '@/scripts/intl-const.js';
 
 interface PostFormAction {
 	title: string,
@@ -422,7 +423,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	hemisphere: {
 		where: 'device',
-		default: 'N' as 'N' | 'S',
+		default: hemisphere as 'N' | 'S',
 	},
 
 	sound_masterVolume: {
