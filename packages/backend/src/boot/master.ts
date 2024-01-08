@@ -28,7 +28,7 @@ const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 const themeColor = chalk.hex('#86b300');
 
 function greet() {
-	if (!envOption.quiet) {
+	if (!envOption.quiet && !envOption.logJson) {
 		//#region Misskey logo
 		const v = `v${meta.version}`;
 		console.log(themeColor('  _____ _         _           '));
@@ -46,7 +46,7 @@ function greet() {
 	}
 
 	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${meta.version}`, null, true);
+	bootLogger.info(`Misskey v${meta.version}`, { version: meta.version, hostname: os.hostname(), pid: process.pid }, true);
 }
 
 /**
