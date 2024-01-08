@@ -79,10 +79,10 @@ import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { mainRouter } from '@/router.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
+import { mainRouter } from '@/global/router/main.js';
 
 const DESKTOP_THRESHOLD = 1100;
 

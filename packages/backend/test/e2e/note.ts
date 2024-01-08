@@ -8,28 +8,21 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, initTestDb, post, signup, uploadFile, uploadUrl } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
-	let app: INestApplicationContext;
 	let Notes: any;
 
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
-		app = await startServer();
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(MiNote);
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	test('投稿できる', async () => {
 		const post = {
