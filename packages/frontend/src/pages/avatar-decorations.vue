@@ -7,6 +7,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
+		<div class="_gaps">
+			<MkFolder v-for="avatarDecoration in avatarDecorations" :key="avatarDecoration.id ?? avatarDecoration._id" :defaultOpen="avatarDecoration.id == null">
+				<template #label>{{ avatarDecoration.name }}</template>
+				<template #caption>{{ avatarDecoration.description }}</template>
+
+				<div class="_gaps_m">
+					<MkInput v-model="avatarDecoration.name">
+						<template #label>{{ i18n.ts.name }}</template>
+					</MkInput>
+					<MkTextarea v-model="avatarDecoration.description">
+						<template #label>{{ i18n.ts.description }}</template>
+					</MkTextarea>
+					<MkInput v-model="avatarDecoration.url">
+						<template #label>{{ i18n.ts.imageUrl }}</template>
+					</MkInput>
+					<div class="buttons _buttons">
+						<MkButton class="button" inline primary @click="save(avatarDecoration)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+						<MkButton v-if="avatarDecoration.id != null" class="button" inline danger @click="del(avatarDecoration)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+					</div>
+				</div>
+			</MkFolder>
+		</div>
+		<!--
 		<MkFolder>
 			<template #label>ローカル</template>
 			<div class="_gaps">
@@ -56,7 +79,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</div>
 		</MkFolder>
-	</mkspacer>
+		-->
+	</MkSpacer>
 </MkStickyContainer>
 </template>
 
@@ -136,4 +160,3 @@ definePageMetadata({
 	icon: 'ti ti-sparkles',
 });
 </script>
-

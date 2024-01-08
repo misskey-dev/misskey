@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.12.2.papi.dev.2",
+	"version": "2023.12.2.papi.dev.2.hotfix",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
