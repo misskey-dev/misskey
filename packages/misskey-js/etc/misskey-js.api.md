@@ -509,9 +509,9 @@ export type Channels = {
             reply: (payload: Note) => void;
             renote: (payload: Note) => void;
             follow: (payload: UserDetailedNotMe) => void;
-            followed: (payload: UserDetailed) => void;
+            followed: (payload: UserDetailed | UserLite) => void;
             unfollow: (payload: UserDetailed) => void;
-            meUpdated: (payload: MeDetailed) => void;
+            meUpdated: (payload: UserDetailed) => void;
             pageEvent: (payload: PageEvent) => void;
             urlUploadFinished: (payload: {
                 marker: string;
