@@ -75,7 +75,7 @@ function getMeta(html: string): { transactionId: string | undefined, clientName:
 	};
 }
 
-function fetchDecision(transactionId: string, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+function fetchDecision(transactionId: string, user: misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
@@ -90,14 +90,14 @@ function fetchDecision(transactionId: string, user: misskey.entities.MeSignup, {
 	});
 }
 
-async function fetchDecisionFromResponse(response: Response, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+async function fetchDecisionFromResponse(response: Response, user: misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	const { transactionId } = getMeta(await response.text());
 	assert.ok(transactionId);
 
 	return await fetchDecision(transactionId, user, { cancel });
 }
 
-async function fetchAuthorizationCode(user: misskey.entities.MeSignup, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
+async function fetchAuthorizationCode(user: misskey.entities.SignupResponse, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
 	const client = new AuthorizationCode(clientConfig);
 
 	const response = await fetch(client.authorizeURL({
@@ -150,8 +150,8 @@ describe('OAuth', () => {
 	let app: INestApplicationContext;
 	let fastify: FastifyInstance;
 
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
+	let alice: misskey.entities.SignupResponse;
+	let bob: misskey.entities.SignupResponse;
 
 	let sender: (reply: FastifyReply) => void;
 

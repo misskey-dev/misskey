@@ -4,7 +4,7 @@
  */
 
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import { inputText } from '@/os.js';
 import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
 
@@ -19,19 +19,7 @@ export async function install(plugin: Plugin): Promise<void> {
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.id,
 	}), {
-		in: (q): Promise<string> => {
-			return new Promise(ok => {
-				inputText({
-					title: q,
-				}).then(({ canceled, result: a }) => {
-					if (canceled) {
-						ok('');
-					} else {
-						ok(a);
-					}
-				});
-			});
-		},
+		in: aiScriptReadline,
 		out: (value): void => {
 			console.log(value);
 		},

@@ -37,7 +37,7 @@ describe('アンテナ', () => {
 	// - srcのenumにgroupが残っている
 	// - userGroupIdが残っている, isActiveがない
 	type Antenna = misskey.entities.Antenna | Packed<'Antenna'>;
-	type User = misskey.entities.MeSignup;
+	type User = misskey.entities.SignupResponse;
 	type Note = misskey.entities.Note;
 
 	// アンテナを作成できる最小のパラメタ
