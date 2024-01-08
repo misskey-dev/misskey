@@ -45,7 +45,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const PRESET_DEFAULT = `/// @ 0.16.0
 
