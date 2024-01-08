@@ -149,7 +149,7 @@ export type ServerStats = {
 	}
 };
 
-export type ServerStatsLog = string[];
+export type ServerStatsLog = ServerStats[];
 
 export type QueueStats = {
 	deliver: {
@@ -166,7 +166,7 @@ export type QueueStats = {
 	};
 };
 
-export type QueueStatsLog = string[];
+export type QueueStatsLog = QueueStats[];
 
 export type EmojiAdded = {
 	emoji: EmojiDetailed
