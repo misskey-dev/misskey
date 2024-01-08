@@ -382,6 +382,11 @@ export interface Locale {
     "enableHcaptcha": string;
     "hcaptchaSiteKey": string;
     "hcaptchaSecretKey": string;
+    "mcaptcha": string;
+    "enableMcaptcha": string;
+    "mcaptchaSiteKey": string;
+    "mcaptchaSecretKey": string;
+    "mcaptchaInstanceUrl": string;
     "recaptcha": string;
     "enableRecaptcha": string;
     "recaptchaSiteKey": string;
@@ -672,6 +677,7 @@ export interface Locale {
     "other": string;
     "regenerateLoginToken": string;
     "regenerateLoginTokenDescription": string;
+    "theKeywordWhenSearchingForCustomEmoji": string;
     "setMultipleBySeparatingWithSpace": string;
     "fileIdOrUrl": string;
     "behavior": string;
@@ -1187,6 +1193,7 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "bubbleGame": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1650,6 +1657,15 @@ export interface Locale {
             "_tutorialCompleted": {
                 "title": string;
                 "description": string;
+            };
+            "_bubbleGameExplodingHead": {
+                "title": string;
+                "description": string;
+            };
+            "_bubbleGameDoubleExplodingHead": {
+                "title": string;
+                "description": string;
+                "flavor": string;
             };
         };
     };
@@ -2252,6 +2268,7 @@ export interface Locale {
     "_exportOrImport": {
         "allNotes": string;
         "favoritedNotes": string;
+        "clips": string;
         "followingList": string;
         "muteList": string;
         "blockingList": string;

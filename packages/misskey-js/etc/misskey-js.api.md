@@ -281,6 +281,12 @@ type AdminRolesUsersRequest = operations['admin/roles/users']['requestBody']['co
 type AdminRolesUsersResponse = operations['admin/roles/users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRootAddRequest = operations['admin/root/add']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRootRemoveRequest = operations['admin/root/remove']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminSendEmailRequest = operations['admin/send-email']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1034,6 +1040,18 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
+    'signup': {
+        req: SignupRequest;
+        res: SignupResponse;
+    };
+    'signup-pending': {
+        req: SignupPendingRequest;
+        res: SignupPendingResponse;
+    };
+    'signin': {
+        req: SigninRequest;
+        res: SigninResponse;
+    };
 }>;
 
 // @public (undocumented)
@@ -1053,6 +1071,12 @@ declare namespace entities {
         EmojiUpdated,
         EmojiDeleted,
         AnnouncementCreated,
+        SignupRequest,
+        SignupResponse,
+        SignupPendingRequest,
+        SignupPendingResponse,
+        SigninRequest,
+        SigninResponse,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -1115,6 +1139,8 @@ declare namespace entities {
         AdminInviteCreateResponse,
         AdminInviteListRequest,
         AdminInviteListResponse,
+        AdminRootAddRequest,
+        AdminRootRemoveRequest,
         AdminPromoCreateRequest,
         AdminQueueDeliverDelayedResponse,
         AdminQueueInboxDelayedResponse,
@@ -2536,7 +2562,7 @@ type QueueStats = {
 };
 
 // @public (undocumented)
-type QueueStatsLog = string[];
+type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
@@ -2610,10 +2636,51 @@ type ServerStats = {
 };
 
 // @public (undocumented)
-type ServerStatsLog = string[];
+type ServerStatsLog = ServerStats[];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
+
+// @public (undocumented)
+type SigninRequest = {
+    username: string;
+    password: string;
+    token?: string;
+};
+
+// @public (undocumented)
+type SigninResponse = {
+    id: User['id'];
+    i: string;
+};
+
+// @public (undocumented)
+type SignupPendingRequest = {
+    code: string;
+};
+
+// @public (undocumented)
+type SignupPendingResponse = {
+    id: User['id'];
+    i: string;
+};
+
+// @public (undocumented)
+type SignupRequest = {
+    username: string;
+    password: string;
+    host?: string;
+    invitationCode?: string;
+    emailAddress?: string;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+};
+
+// @public (undocumented)
+type SignupResponse = MeDetailed & {
+    token: string;
+};
 
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
