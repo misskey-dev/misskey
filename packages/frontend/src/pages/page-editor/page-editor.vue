@@ -73,10 +73,10 @@ import { url } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFile } from '@/scripts/select-file.js';
-import { mainRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i } from '@/account.js';
+import { mainRouter } from '@/global/router/main.js';
 
 const props = defineProps<{
 	initPageId?: string;
