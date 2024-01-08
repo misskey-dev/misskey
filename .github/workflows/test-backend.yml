@@ -128,8 +128,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-e2e
+      - name: ls
+        run: ls -la
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage-unit.json, coverage-e2e.json
