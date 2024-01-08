@@ -75,7 +75,6 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router.js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -92,6 +91,7 @@ import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
