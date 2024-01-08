@@ -12,7 +12,7 @@ on:
       - packages/backend/**
 
 jobs:
-  validate:
+  validate-api-json:
     runs-on: ubuntu-latest
 
     strategy:
