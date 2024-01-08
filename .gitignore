@@ -41,6 +41,7 @@ docker-compose.yml
 # misskey
 /build
 built
+built-test
 /data
 /.cache-loader
 /db

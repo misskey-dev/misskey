@@ -6,24 +6,20 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { inspect } from 'node:util';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import {
-	signup,
-	post,
-	userList,
-	page,
-	role,
-	startServer,
 	api,
-	successfulApiCall,
 	failedApiCall,
-	uploadFile,
+	post,
+	role,
+	signup,
+	successfulApiCall,
 	testPaginationConsistency,
+	uploadFile,
+	userList,
 } from '../utils.js';
 import type * as misskey from 'misskey-js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
@@ -54,8 +50,6 @@ describe('アンテナ', () => {
 		withReplies: false,
 	};
 
-	let app: INestApplicationContext;
-
 	let root: User;
 	let alice: User;
 	let bob: User;
@@ -78,10 +72,6 @@ describe('アンテナ', () => {
 	let userBlockedByAlice: User;
 	let userMutingAlice: User;
 	let userMutedByAlice: User;
-
-	beforeAll(async () => {
-		app = await startServer();
-	}, 1000 * 60 * 2);
 
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
@@ -135,10 +125,6 @@ describe('アンテナ', () => {
 		await post(userMutedByAlice, { text: 'test' });
 		await api('mute/create', { userId: userMutedByAlice.id }, alice);
 	}, 1000 * 60 * 10);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	beforeEach(async () => {
 		// テスト間で影響し合わないように毎回全部消す。
