@@ -18,9 +18,9 @@ import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	instance?: {
-		faviconUrl?: string
-		name: string
-		themeColor?: string
+		faviconUrl?: string | null
+		name?: string | null
+		themeColor?: string | null
 	}
 }>();
 

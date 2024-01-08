@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<video
 		ref="videoEl"
 		:class="$style.video"
-		:poster="video.thumbnailUrl"
-		:title="video.comment"
+		:poster="video.thumbnailUrl ?? undefined"
+		:title="video.comment ?? undefined"
 		:alt="video.comment"
 		preload="none"
 		controls
@@ -51,7 +51,7 @@ watch(videoEl, () => {
 	if (videoEl.value) {
 		videoEl.value.volume = 0.3;
 		hasAudio(videoEl.value).then(had => {
-			if (!had) {
+			if (!had && videoEl.value) {
 				videoEl.value.loop = videoEl.value.muted = true;
 				videoEl.value.play();
 			}
