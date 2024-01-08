@@ -411,6 +411,7 @@ class Game extends EventEmitter<{
 	public readonly DROP_INTERVAL = 500;
 	private PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
+	private loaded = false;
 	private engine: Matter.Engine;
 	private render: Matter.Render;
 	private runner: Matter.Runner;
@@ -646,7 +647,9 @@ class Game extends EventEmitter<{
 		return Promise.all(this.monoDefinitions.map(x => loadSingleMonoTexture(x, this)));
 	}
 
-	private gameStart() {
+	public start() {
+		if (!this.loaded) throw new Error('game is not loaded yet');
+
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
 				id: Math.random().toString(),
@@ -703,10 +706,9 @@ class Game extends EventEmitter<{
 		}, 500);
 	}
 
-	public start() {
-		os.promiseDialog(this.loadMonoTextures(), () => {
-			this.gameStart();
-		});
+	public async load() {
+		await this.loadMonoTextures();
+		this.loaded = true;
 	}
 
 	public getTextureImageUrl(mono: Mono) {
@@ -822,7 +824,7 @@ function restart() {
 	gameStarted.value = false;
 }
 
-function attachGame() {
+function attachGameEvents() {
 	game.addListener('changeScore', value => {
 		score.value = value;
 	});
@@ -899,14 +901,16 @@ async function start() {
 		highScore.value = null;
 	}
 
-	gameStarted.value = true;
 	game = new Game(gameMode.value === 'normal' ? {
 		monoDefinitions: NORAML_MONOS,
 	} : {
 		monoDefinitions: SQUARE_MONOS,
 	});
-	attachGame();
-	game.start();
+	attachGameEvents();
+	os.promiseDialog(game.load(), () => {
+		game.start();
+		gameStarted.value = true;
+	});
 }
 
 function getGameImageDriveFile() {
