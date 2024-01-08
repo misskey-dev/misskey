@@ -440,6 +440,7 @@ function restart() {
 	score.value = 0;
 	combo.value = 0;
 	comboPrev.value = 0;
+	bgmNodes?.soundSource.stop();
 	gameStarted.value = false;
 }
 
@@ -610,8 +611,9 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${gameMode.value}
-SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})})`,
+SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})`,
 		initialFiles: [file],
+		instant: true,
 	});
 }
 
@@ -625,7 +627,7 @@ useInterval(() => {
 }, 1000, { immediate: false, afterMounted: true });
 
 onDeactivated(() => {
-	game.dispose();
+	restart();
 });
 
 definePageMetadata({

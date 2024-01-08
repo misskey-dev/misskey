@@ -183,6 +183,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		};
 		if (mono.shape === 'circle') {
 			return Matter.Bodies.circle(x, y, mono.size / 2, options);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		} else if (mono.shape === 'rectangle') {
 			return Matter.Bodies.rectangle(x, y, mono.size, mono.size, options);
 		} else {
