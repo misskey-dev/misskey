@@ -244,6 +244,7 @@ const info = ref<any>();
 const ips = ref<Misskey.entities.AdminGetUserIpsResponse | null>(null);
 const ap = ref<any>(null);
 const moderator = ref(false);
+const root = ref(false);
 const silenced = ref(false);
 const suspended = ref(false);
 const moderationNote = ref('');
@@ -275,6 +276,7 @@ function createFetcher() {
 		info.value = _info;
 		ips.value = _ips;
 		moderator.value = info.value.isModerator;
+		root.value = info.value.isRoot;
 		silenced.value = info.value.isSilenced;
 		suspended.value = info.value.isSuspended;
 		moderationNote.value = info.value.moderationNote;
@@ -332,9 +334,9 @@ async function toggleRoot(v) {
 		text: v ? 'rootにしますか？' : 'rootを外しますか？',
 	});
 	if (confirm.canceled) {
-		root = !v;
+		root.value = !v;
 	} else {
-		await os.api(v ? 'admin/root/add' : 'admin/root/remove', { userId: user.id });
+		await misskeyApi(v ? 'admin/root/add' : 'admin/root/remove', { userId: user.value.id });
 		await refreshUser();
 	}
 }

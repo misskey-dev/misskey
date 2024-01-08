@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2
- * generatedAt: 2024-01-07T09:49:34.543Z
+ * version: 2023.12.2.papi.2
+ * generatedAt: 2024-01-08T03:26:43.129Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -510,6 +510,30 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *read:admin:invite-codes*
      */
     request<E extends 'admin/invite/list', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes*
+     */
+    request<E extends 'admin/root/add', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes*
+     */
+    request<E extends 'admin/root/remove', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
