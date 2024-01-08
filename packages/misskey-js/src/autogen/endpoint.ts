@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-02T08:53:57.445Z
+ * generatedAt: 2024-01-07T15:22:15.626Z
  */
 
 import type {
@@ -745,6 +745,7 @@ export type Endpoints = {
 	'i/export-following': { req: IExportFollowingRequest; res: EmptyResponse };
 	'i/export-mute': { req: EmptyRequest; res: EmptyResponse };
 	'i/export-notes': { req: EmptyRequest; res: EmptyResponse };
+	'i/export-clips': { req: EmptyRequest; res: EmptyResponse };
 	'i/export-favorites': { req: EmptyRequest; res: EmptyResponse };
 	'i/export-user-lists': { req: EmptyRequest; res: EmptyResponse };
 	'i/export-antennas': { req: EmptyRequest; res: EmptyResponse };
