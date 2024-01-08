@@ -117,6 +117,39 @@ export const packedNoteSchema = {
 		poll: {
 			type: 'object',
 			optional: true, nullable: true,
+			properties: {
+				expiresAt: {
+					type: 'string',
+					optional: true, nullable: true,
+					format: 'date-time',
+				},
+				multiple: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				choices: {
+					type: 'array',
+					optional: false, nullable: false,
+					items: {
+						type: 'object',
+						optional: false, nullable: false,
+						properties: {
+							isVoted: {
+								type: 'boolean',
+								optional: false, nullable: false,
+							},
+							text: {
+								type: 'string',
+								optional: false, nullable: false,
+							},
+							votes: {
+								type: 'number',
+								optional: false, nullable: false,
+							},
+						},
+					},
+				},
+			},
 		},
 		emojis: {
 			type: 'object',

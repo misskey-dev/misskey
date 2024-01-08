@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-08T06:48:04.940Z
+ * generatedAt: 2024-01-08T13:32:03.048Z
  */
 
 /**
@@ -3791,7 +3791,16 @@ export type components = {
       fileIds?: string[];
       files?: components['schemas']['DriveFile'][];
       tags?: string[];
-      poll?: Record<string, unknown> | null;
+      poll?: ({
+        /** Format: date-time */
+        expiresAt?: string | null;
+        multiple: boolean;
+        choices: {
+            isVoted: boolean;
+            text: string;
+            votes: number;
+          }[];
+      }) | null;
       emojis?: Record<string, never>;
       /**
        * Format: id
