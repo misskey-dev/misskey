@@ -286,7 +286,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.gameOver();
 	}
 
-	public gameOver() {
+	private gameOver() {
 		this.isGameOver = true;
 		if (this.tickRaf) window.cancelAnimationFrame(this.tickRaf);
 		this.tickRaf = null;
