@@ -641,8 +641,7 @@ function getGameImageDriveFile() {
 			}, 'image/png');
 
 			dcanvas.remove();
-
-		})
+		});
 	});
 }
 
