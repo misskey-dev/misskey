@@ -35,9 +35,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>- {{ gameMode }} -</div>
 					</div>
 				</div>
-				<div :class="[$style.frame, $style.stock]">
-					<div :class="$style.frameInner" style="text-align: center;">
-						NEXT >>>
+				<div :class="[$style.frame, $style.frameH]">
+					<div :class="$style.frameInner">
+						<MkButton inline @click="hold">HOLD</MkButton>
+						<img v-if="holdingStock" :src="game.getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
+					</div>
+					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
 						<TransitionGroup
 							:enterActiveClass="$style.transition_stock_enterActive"
 							:leaveActiveClass="$style.transition_stock_leaveActive"
@@ -45,9 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:leaveToClass="$style.transition_stock_leaveTo"
 							:moveClass="$style.transition_stock_move"
 						>
-							<div v-for="x in stock" :key="x.id" style="display: inline-block;">
-								<img :src="game.getTextureImageUrl(x.mono)" style="width: 32px;"/>
-							</div>
+							<img v-for="x in stock" :key="x.id" :src="game.getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
 						</TransitionGroup>
 					</div>
 				</div>
@@ -158,10 +159,6 @@ import { $i } from '@/account.js';
 import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
-
-const containerEl = shallowRef<HTMLElement>();
-const canvasEl = shallowRef<HTMLCanvasElement>();
-const dropperX = ref(0);
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -393,8 +390,15 @@ const GAME_WIDTH = 450;
 const GAME_HEIGHT = 600;
 
 let viewScale = 1;
+let game: DropAndFusionGame;
+let containerElRect: DOMRect | null = null;
+
+const containerEl = shallowRef<HTMLElement>();
+const canvasEl = shallowRef<HTMLCanvasElement>();
+const dropperX = ref(0);
 const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
 const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
+const holdingStock = shallowRef<{ id: string; mono: Mono } | null>(null);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
@@ -407,9 +411,6 @@ const highScore = ref<number | null>(null);
 const showConfig = ref(false);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
-
-let game: DropAndFusionGame;
-let containerElRect: DOMRect | null = null;
 
 function onClick(ev: MouseEvent) {
 	if (!containerElRect) return;
@@ -437,6 +438,10 @@ function onTouchmove(ev: TouchEvent) {
 
 function moveDropper(rect: DOMRect, x: number) {
 	dropperX.value = Math.min(rect.width * ((GAME_WIDTH - game.PLAYAREA_MARGIN) / GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / GAME_WIDTH), x));
+}
+
+function hold() {
+	game.hold();
 }
 
 function restart() {
@@ -470,6 +475,10 @@ function attachGameEvents() {
 	game.addListener('changeStock', value => {
 		currentPick.value = JSON.parse(JSON.stringify(value[0]));
 		stock.value = JSON.parse(JSON.stringify(value.slice(1)));
+	});
+
+	game.addListener('changeHolding', value => {
+		holdingStock.value = value;
 	});
 
 	game.addListener('dropped', () => {
@@ -742,6 +751,11 @@ definePageMetadata({
 	border-radius: 10px;
 }
 
+.frameH {
+	display: flex;
+	gap: 6px;
+}
+
 .frameInner {
 	padding: 8px;
 	margin-top: 8px;
@@ -763,6 +777,8 @@ definePageMetadata({
 }
 
 .header {
+	position: relative;
+	z-index: 10;
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto auto;
@@ -805,7 +821,7 @@ definePageMetadata({
 
 .gameContainer {
 	position: relative;
-	margin-top: -50px;
+	margin-top: -20px;
 }
 
 .stock {
