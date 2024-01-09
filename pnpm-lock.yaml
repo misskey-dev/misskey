@@ -787,6 +787,9 @@ importers:
       sass:
         specifier: 1.69.5
         version: 1.69.5
+      seedrandom:
+        specifier: ^3.0.5
+        version: 3.0.5
       shiki:
         specifier: 0.14.7
         version: 0.14.7
@@ -7401,7 +7404,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@swc/core': ^1.2.66
-      chokidar: ^3.5.1
+      chokidar: 3.5.3
     peerDependenciesMeta:
       chokidar:
         optional: true
