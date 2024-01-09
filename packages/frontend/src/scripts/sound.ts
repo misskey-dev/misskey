@@ -148,27 +148,32 @@ export async function playFile(soundStore: SoundStore) {
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
 	}
+	const masterVolume = defaultStore.state.sound_masterVolume;
+	if (isMute() || masterVolume === 0 || soundStore.volume === 0) {
+		return;
+	}
 	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
 	const buffer = await loadAudio(url);
 	if (!buffer) return;
-	createSourceNode(buffer, soundStore.volume)?.soundSource.start();
+	createSourceNode(buffer, soundStore.volume).soundSource.start();
 }
 
 export async function playUrl(url: string, volume = 1, pan = 0, playbackRate = 1) {
+	const masterVolume = defaultStore.state.sound_masterVolume;
+	if (isMute() || masterVolume === 0 || volume === 0) {
+		return;
+	}
 	const buffer = await loadAudio(url);
 	if (!buffer) return;
-	createSourceNode(buffer, volume, pan, playbackRate)?.soundSource.start();
+	createSourceNode(buffer, volume, pan, playbackRate).soundSource.start();
 }
 
 export function createSourceNode(buffer: AudioBuffer, volume: number, pan = 0, playbackRate = 1): {
 	soundSource: AudioBufferSourceNode;
 	panNode: StereoPannerNode;
 	gainNode: GainNode;
-} | null {
+} {
 	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (isMute() || masterVolume === 0 || volume === 0) {
-		return null;
-	}
 
 	const panNode = ctx.createStereoPanner();
 	panNode.pan.value = pan;

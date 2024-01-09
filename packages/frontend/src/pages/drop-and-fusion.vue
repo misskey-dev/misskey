@@ -529,7 +529,7 @@ function attachGameEvents() {
 	});
 }
 
-let bgmNodes: ReturnType<typeof sound.createSourceNode> = null;
+let bgmNodes: ReturnType<typeof sound.createSourceNode> | null = null;
 
 async function start() {
 	try {
