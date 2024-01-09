@@ -45,12 +45,13 @@ export class DropAndFusionGame extends EventEmitter<{
 	public readonly DROP_INTERVAL = 500;
 	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
-	private METTER_ENGINE_UPDATE_DELTA = 1000 / 60; // 60fps
+	private TICK_DELTA = 1000 / 60; // 60fps
 	private loaded = false;
 	private frame = 0;
 	private engine: Matter.Engine;
 	private render: Matter.Render;
-	private matterEngineUpdateRaf: ReturnType<typeof requestAnimationFrame> | null = null;
+	private tickRaf: ReturnType<typeof requestAnimationFrame> | null = null;
+	private tickCallbackQueue: { frame: number; callback: () => void; }[] = [];
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
 	private gameWidth: number;
@@ -237,9 +238,12 @@ export class DropAndFusionGame extends EventEmitter<{
 			Matter.Composite.add(this.engine.world, body);
 
 			// 連鎖してfusionした場合の分かりやすさのため少し間を置いてからfusion対象になるようにする
-			window.setTimeout(() => {
-				this.activeBodyIds.push(body.id);
-			}, 100);
+			this.tickCallbackQueue.push({
+				frame: this.frame + 100,
+				callback: () => {
+					this.activeBodyIds.push(body.id);
+				},
+			});
 
 			const comboBonus = 1 + ((this.combo - 1) / 5);
 			const additionalScore = Math.round(currentMono.score * comboBonus);
@@ -271,8 +275,8 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	private gameOver() {
 		this.isGameOver = true;
-		if (this.matterEngineUpdateRaf) window.cancelAnimationFrame(this.matterEngineUpdateRaf);
-		this.matterEngineUpdateRaf = null;
+		if (this.tickRaf) window.cancelAnimationFrame(this.tickRaf);
+		this.tickRaf = null;
 		this.emit('gameOver');
 	}
 
@@ -342,10 +346,13 @@ export class DropAndFusionGame extends EventEmitter<{
 						this.fusion(bodyA, bodyB);
 					} else {
 						fusionReservedPairs.push({ bodyA, bodyB });
-						window.setTimeout(() => {
-							fusionReservedPairs = fusionReservedPairs.filter(x => x.bodyA.id !== bodyA.id && x.bodyB.id !== bodyB.id);
-							this.fusion(bodyA, bodyB);
-						}, 100);
+						this.tickCallbackQueue.push({
+							frame: this.frame + 100,
+							callback: () => {
+								fusionReservedPairs = fusionReservedPairs.filter(x => x.bodyA.id !== bodyA.id && x.bodyB.id !== bodyB.id);
+								this.fusion(bodyA, bodyB);
+							},
+						});
 					}
 				} else {
 					const energy = pairs.collision.depth;
@@ -371,11 +378,9 @@ export class DropAndFusionGame extends EventEmitter<{
 		}, 500);
 
 		if (logs) {
-			let playingFrame = 0;
-
 			const playTick = () => {
-				playingFrame++;
-				const log = logs.find(x => x.frame === playingFrame - 1);
+				this.frame++;
+				const log = logs.find(x => x.frame === this.frame - 1);
 				if (log) {
 					switch (log.operation) {
 						case 'drop': {
@@ -390,8 +395,16 @@ export class DropAndFusionGame extends EventEmitter<{
 							break;
 					}
 				}
+				this.tickCallbackQueue = this.tickCallbackQueue.filter(x => {
+					if (x.frame === this.frame) {
+						x.callback();
+						return false;
+					} else {
+						return true;
+					}
+				});
 
-				Matter.Engine.update(this.engine, this.METTER_ENGINE_UPDATE_DELTA);
+				Matter.Engine.update(this.engine, this.TICK_DELTA);
 
 				window.requestAnimationFrame(playTick);
 			};
@@ -408,8 +421,16 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	private tick() {
 		this.frame++;
-		Matter.Engine.update(this.engine, this.METTER_ENGINE_UPDATE_DELTA);
-		this.matterEngineUpdateRaf = window.requestAnimationFrame(this.tick);
+		this.tickCallbackQueue = this.tickCallbackQueue.filter(x => {
+			if (x.frame === this.frame) {
+				x.callback();
+				return false;
+			} else {
+				return true;
+			}
+		});
+		Matter.Engine.update(this.engine, this.TICK_DELTA);
+		this.tickRaf = window.requestAnimationFrame(this.tick);
 	}
 
 	public async load() {
@@ -506,8 +527,8 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	public dispose() {
 		if (this.comboIntervalId) window.clearInterval(this.comboIntervalId);
-		if (this.matterEngineUpdateRaf) window.cancelAnimationFrame(this.matterEngineUpdateRaf);
-		this.matterEngineUpdateRaf = null;
+		if (this.tickRaf) window.cancelAnimationFrame(this.tickRaf);
+		this.tickRaf = null;
 		Matter.Render.stop(this.render);
 		Matter.World.clear(this.engine.world, false);
 		Matter.Engine.clear(this.engine);
