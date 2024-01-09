@@ -61,6 +61,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	private monoTextureUrls: Record<string, string> = {};
 	private rng: () => number;
 	private logs: Log[] = [];
+	private replaying = false;
 
 	private sfxVolume = 1;
 
@@ -313,6 +314,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	public start(logs?: Log[]) {
 		if (!this.loaded) throw new Error('game is not loaded yet');
+		if (logs) this.replaying = true;
 
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
@@ -464,7 +466,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	public drop(_x: number) {
 		if (this.isGameOver) return;
-		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) return;
+		if (!this.replaying && (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL)) return;
 
 		const head = this.stock.shift()!;
 		this.stock.push({
