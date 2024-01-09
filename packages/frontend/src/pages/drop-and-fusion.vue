@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: gameOver }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: gameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 				<canvas ref="canvasEl" :class="$style.canvas"/>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 				</Transition>
-				<div :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+				<div v-if="!gameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
 					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.dropGuide"/>
 					</template>
 				</div>
-				<div v-if="gameOver" :class="$style.gameOverLabel">
+				<div v-if="gameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
 						<div>SCORE: <MkNumber :value="score"/></div>
@@ -101,6 +101,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary rounded @click="replay">Replay</MkButton>
 							<MkButton primary rounded @click="share">Share</MkButton>
 						</div>
+					</div>
+				</div>
+				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> REPLAYING</span></div>
+			</div>
+			<div v-if="replaying" style="display: flex;">
+				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
+					<div :class="$style.frameInner">
+						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END REPLAY</MkButton>
 					</div>
 				</div>
 			</div>
@@ -140,7 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.frame">
 				<div :class="$style.frameInner">
-					<MkButton @click="restart">Restart</MkButton>
+					<MkButton @click="retry">Retry</MkButton>
 				</div>
 			</div>
 		</div>
@@ -403,6 +411,7 @@ let viewScale = 1;
 let game: DropAndFusionGame;
 let containerElRect: DOMRect | null = null;
 let seed: string;
+let logs: ReturnType<DropAndFusionGame['getLogs']> | null = null;
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
@@ -459,6 +468,10 @@ function hold() {
 	game.hold();
 }
 
+function retry() {
+	game.gameOver();
+}
+
 function restart() {
 	game.dispose();
 	gameOver.value = false;
@@ -474,7 +487,6 @@ function restart() {
 
 function replay() {
 	replaying.value = true;
-	const logs = game.getLogs();
 	game.dispose();
 	game = new DropAndFusionGame({
 		width: GAME_WIDTH,
@@ -490,9 +502,15 @@ function replay() {
 			}
 		),
 	});
+	attachGameEvents();
 	os.promiseDialog(game.load(), async () => {
-		game.start(logs);
+		game.start(logs!);
 	});
+}
+
+function endReplay() {
+	replaying.value = false;
+	game.dispose();
 }
 
 function attachGameEvents() {
@@ -520,6 +538,8 @@ function attachGameEvents() {
 	});
 
 	game.addListener('dropped', () => {
+		if (replaying.value) return;
+
 		dropReady.value = false;
 		window.setTimeout(() => {
 			if (!gameOver.value) {
@@ -539,6 +559,8 @@ function attachGameEvents() {
 	});
 
 	game.addListener('monoAdded', (mono) => {
+		if (replaying.value) return;
+
 		// 実績関連
 		if (mono.level === 10) {
 			claimAchievement('bubbleGameExplodingHead');
@@ -551,6 +573,9 @@ function attachGameEvents() {
 	});
 
 	game.addListener('gameOver', () => {
+		if (replaying.value) return;
+
+		logs = game.getLogs();
 		currentPick.value = null;
 		dropReady.value = false;
 		gameOver.value = true;
@@ -951,6 +976,28 @@ definePageMetadata({
 	.canvas {
 		filter: grayscale(1);
 	}
+}
+
+.replayIndicator {
+	position: absolute;
+	z-index: 10;
+	left: 10px;
+	bottom: 10px;
+	padding: 6px 8px;
+	color: #f00;
+	background: #0008;
+	border-radius: 6px;
+	pointer-events: none;
+}
+
+.replayIndicatorText {
+	animation: replayIndicator-blink 2s infinite;
+}
+
+@keyframes replayIndicator-blink {
+	0% { opacity: 1; }
+	50% { opacity: 0; }
+	100% { opacity: 1; }
 }
 
 @keyframes currentMonoArrow {
