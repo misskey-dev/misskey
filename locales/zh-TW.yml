@@ -1559,6 +1559,11 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey新手講座 結業證書"
       description: "已完成教學課程"
+    _bubbleGameExplodingHead:
+      description: "氣泡遊戲中最大的物體出現了"
+    _bubbleGameDoubleExplodingHead:
+      title: "雙重🤯"
+      description: "氣泡遊戲中最大的物體同時出現了兩個"
 _role:
   new: "建立角色"
   edit: "編輯角色"
