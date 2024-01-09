@@ -28,6 +28,9 @@ type Log = {
 } | {
 	frame: number;
 	operation: 'hold';
+} | {
+	frame: number;
+	operation: 'surrender';
 };
 
 export class DropAndFusionGame extends EventEmitter<{
@@ -274,6 +277,15 @@ export class DropAndFusionGame extends EventEmitter<{
 		}
 	}
 
+	public surrender() {
+		this.logs.push({
+			frame: this.frame,
+			operation: 'surrender',
+		});
+
+		this.gameOver();
+	}
+
 	public gameOver() {
 		this.isGameOver = true;
 		if (this.tickRaf) window.cancelAnimationFrame(this.tickRaf);
@@ -391,6 +403,10 @@ export class DropAndFusionGame extends EventEmitter<{
 						}
 						case 'hold': {
 							this.hold();
+							break;
+						}
+						case 'surrender': {
+							this.surrender();
 							break;
 						}
 						default:

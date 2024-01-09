@@ -148,7 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.frame">
 				<div :class="$style.frameInner">
-					<MkButton @click="retry">Retry</MkButton>
+					<MkButton @click="surrender">Retry</MkButton>
 				</div>
 			</div>
 		</div>
@@ -468,8 +468,8 @@ function hold() {
 	game.hold();
 }
 
-function retry() {
-	game.gameOver();
+function surrender() {
+	game.surrender();
 }
 
 function restart() {
