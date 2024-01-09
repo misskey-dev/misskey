@@ -24,20 +24,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
 					</div>
+					<div :class="$style.frameInner">
+						<div class="_gaps" style="padding: 16px;">
+							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
+							<MkSwitch v-model="mute">
+								<template #label>{{ i18n.ts.mute }}</template>
+							</MkSwitch>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div v-show="gameStarted" class="_gaps_s" :class="$style.root">
-			<div style="display: flex;">
-				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
+			<div :class="$style.header">
+				<div :class="[$style.frame, $style.headerTitle]">
 					<div :class="$style.frameInner">
 						<b>BUBBLE GAME</b>
 						<div>- {{ gameMode }} -</div>
 					</div>
 				</div>
-				<div :class="[$style.frame, $style.stock]" style="margin-left: auto;">
-					<div :class="$style.frameInner" style="text-align: center;">
-						NEXT >>>
+				<div :class="[$style.frame, $style.frameH]">
+					<div :class="$style.frameInner">
+						<MkButton inline small @click="hold">HOLD</MkButton>
+						<img v-if="holdingStock" :src="game.getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
+					</div>
+					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
 						<TransitionGroup
 							:enterActiveClass="$style.transition_stock_enterActive"
 							:leaveActiveClass="$style.transition_stock_leaveActive"
@@ -45,28 +56,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:leaveToClass="$style.transition_stock_leaveTo"
 							:moveClass="$style.transition_stock_move"
 						>
-							<div v-for="x in stock" :key="x.id" style="display: inline-block;">
-								<img :src="game.getTextureImageUrl(x.mono)" style="width: 32px;"/>
-							</div>
+							<img v-for="x in stock" :key="x.id" :src="game.getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
 						</TransitionGroup>
 					</div>
 				</div>
 			</div>
-			<div :class="$style.main" @contextmenu.stop.prevent>
-				<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-					<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
-					<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
-					<canvas ref="canvasEl" :class="$style.canvas"/>
-					<Transition
-						:enterActiveClass="$style.transition_combo_enterActive"
-						:leaveActiveClass="$style.transition_combo_leaveActive"
-						:enterFromClass="$style.transition_combo_enterFrom"
-						:leaveToClass="$style.transition_combo_leaveTo"
-						:moveClass="$style.transition_combo_move"
-					>
-						<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
-					</Transition>
-					<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
+			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: gameOver }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
+				<canvas ref="canvasEl" :class="$style.canvas"/>
+				<Transition
+					:enterActiveClass="$style.transition_combo_enterActive"
+					:leaveActiveClass="$style.transition_combo_leaveActive"
+					:enterFromClass="$style.transition_combo_enterFrom"
+					:leaveToClass="$style.transition_combo_leaveTo"
+					:moveClass="$style.transition_combo_move"
+				>
+					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
+				</Transition>
+				<div :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
 						:leaveActiveClass="$style.transition_picked_leaveActive"
@@ -75,21 +84,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.size * viewScale) / 2) + 'px', left: -((currentPick?.mono.size * viewScale) / 2) + 'px', width: `${currentPick?.mono.size * viewScale}px` }"/>
 					</Transition>
 					<template v-if="dropReady && currentPick">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
-						<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
+						<div :class="$style.dropGuide"/>
 					</template>
-					<div v-if="gameOver" :class="$style.gameOverLabel">
-						<div class="_gaps_s">
-							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-							<div>SCORE: <MkNumber :value="score"/></div>
-							<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
-							<div class="_buttonsCenter">
-								<MkButton primary rounded @click="restart">Restart</MkButton>
-								<MkButton primary rounded @click="share">Share</MkButton>
-							</div>
+				</div>
+				<div v-if="gameOver" :class="$style.gameOverLabel">
+					<div class="_gaps_s">
+						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+						<div>SCORE: <MkNumber :value="score"/></div>
+						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
+						<div class="_buttonsCenter">
+							<MkButton primary rounded @click="restart">Restart</MkButton>
+							<MkButton primary rounded @click="share">Share</MkButton>
 						</div>
 					</div>
 				</div>
@@ -109,15 +118,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-if="showConfig" :class="$style.frame">
 				<div :class="$style.frameInner">
-					<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.0025" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true">
-						<template #label>BGM {{ i18n.ts.volume }}</template>
-					</MkRange>
+					<div class="_gaps">
+						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
+							<template #label>BGM {{ i18n.ts.volume }}</template>
+						</MkRange>
+						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
+							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
+						</MkRange>
+					</div>
 				</div>
-			</div>
-			<div v-if="showConfig" :class="$style.frame">
 				<div :class="$style.frameInner">
-					<div>Credit</div>
-					<div>BGM: @ys@misskey.design</div>
+					<div class="_gaps_s">
+						<div><b>Credit</b></div>
+						<div>
+							<div>Ai-chan illustration: @poteriri@misskey.io</div>
+							<div>BGM: @ys@misskey.design</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div :class="$style.frame">
@@ -150,10 +167,7 @@ import { $i } from '@/account.js';
 import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
-
-const containerEl = shallowRef<HTMLElement>();
-const canvasEl = shallowRef<HTMLCanvasElement>();
-const dropperX = ref(0);
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -384,10 +398,16 @@ const SQUARE_MONOS: Mono[] = [{
 const GAME_WIDTH = 450;
 const GAME_HEIGHT = 600;
 
-let viewScaleX = 1;
-let viewScaleY = 1;
+let viewScale = 1;
+let game: DropAndFusionGame;
+let containerElRect: DOMRect | null = null;
+
+const containerEl = shallowRef<HTMLElement>();
+const canvasEl = shallowRef<HTMLCanvasElement>();
+const dropperX = ref(0);
 const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
 const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
+const holdingStock = shallowRef<{ id: string; mono: Mono } | null>(null);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
@@ -398,20 +418,19 @@ const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
-const bgmVolume = ref(0.1);
-
-let game: DropAndFusionGame;
-let containerElRect: DOMRect | null = null;
+const mute = ref(false);
+const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
+const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
 
 function onClick(ev: MouseEvent) {
 	if (!containerElRect) return;
-	const x = (ev.clientX - containerElRect.left) / viewScaleX;
+	const x = (ev.clientX - containerElRect.left) / viewScale;
 	game.drop(x);
 }
 
 function onTouchend(ev: TouchEvent) {
 	if (!containerElRect) return;
-	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScaleX;
+	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScale;
 	game.drop(x);
 }
 
@@ -431,6 +450,10 @@ function moveDropper(rect: DOMRect, x: number) {
 	dropperX.value = Math.min(rect.width * ((GAME_WIDTH - game.PLAYAREA_MARGIN) / GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / GAME_WIDTH), x));
 }
 
+function hold() {
+	game.hold();
+}
+
 function restart() {
 	game.dispose();
 	gameOver.value = false;
@@ -440,6 +463,7 @@ function restart() {
 	score.value = 0;
 	combo.value = 0;
 	comboPrev.value = 0;
+	bgmNodes?.soundSource.stop();
 	gameStarted.value = false;
 }
 
@@ -463,6 +487,10 @@ function attachGameEvents() {
 		stock.value = JSON.parse(JSON.stringify(value.slice(1)));
 	});
 
+	game.addListener('changeHolding', value => {
+		holdingStock.value = value;
+	});
+
 	game.addListener('dropped', () => {
 		dropReady.value = false;
 		window.setTimeout(() => {
@@ -476,8 +504,8 @@ function attachGameEvents() {
 		if (!canvasEl.value) return;
 
 		const rect = canvasEl.value.getBoundingClientRect();
-		const domX = rect.left + (x * viewScaleX);
-		const domY = rect.top + (y * viewScaleY);
+		const domX = rect.left + (x * viewScale);
+		const domY = rect.top + (y * viewScale);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
 		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
 	});
@@ -511,7 +539,7 @@ function attachGameEvents() {
 	});
 }
 
-let bgmNodes: ReturnType<typeof sound.createSourceNode> = null;
+let bgmNodes: ReturnType<typeof sound.createSourceNode> | null = null;
 
 async function start() {
 	try {
@@ -527,6 +555,7 @@ async function start() {
 		width: GAME_WIDTH,
 		height: GAME_HEIGHT,
 		canvas: canvasEl.value!,
+		sfxVolume: mute.value ? 0 : sfxVolume.value,
 		...(
 			gameMode.value === 'normal' ? {
 				monoDefinitions: NORAML_MONOS,
@@ -546,18 +575,49 @@ async function start() {
 		}
 		const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
 		if (!bgmBuffer) return;
-		bgmNodes = sound.createSourceNode(bgmBuffer, bgmVolume.value);
+		bgmNodes = sound.createSourceNode(bgmBuffer, {
+			volume: mute.value ? 0 : bgmVolume.value,
+		});
 		if (!bgmNodes) return;
 		bgmNodes.soundSource.loop = true;
 		bgmNodes.soundSource.start();
 	});
 }
 
-watch(bgmVolume, (value) => {
+watch(bgmVolume, (newValue, oldValue) => {
 	if (bgmNodes) {
-		bgmNodes.gainNode.gain.value = value;
+		bgmNodes.gainNode.gain.value = mute.value ? 0 : newValue;
 	}
 });
+
+watch(sfxVolume, (newValue, oldValue) => {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (game) {
+		game.setSfxVolume(mute.value ? 0 : newValue);
+	}
+});
+
+function updateSettings<
+	K extends keyof typeof defaultStore.state.dropAndFusion,
+	V extends typeof defaultStore.state.dropAndFusion[K],
+>(key: K, value: V) {
+	const changes: { [P in K]?: V } = {};
+	changes[key] = value;
+	defaultStore.set('dropAndFusion', {
+		...defaultStore.state.dropAndFusion,
+		...changes,
+	});
+}
+
+function loadImage(url: string) {
+	return new Promise<HTMLImageElement>(res => {
+		const img = new Image();
+		img.src = url;
+		img.addEventListener('load', () => {
+			res(img);
+		});
+	});
+}
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
@@ -566,13 +626,18 @@ function getGameImageDriveFile() {
 		dcanvas.height = GAME_HEIGHT;
 		const ctx = dcanvas.getContext('2d');
 		if (!ctx || !canvasEl.value) return res(null);
-		const dimage = new Image();
-		dimage.src = '/client-assets/drop-and-fusion/frame-light.svg';
-		dimage.addEventListener('load', () => {
+		Promise.all([
+			loadImage('/client-assets/drop-and-fusion/frame-light.svg'),
+			loadImage('/client-assets/drop-and-fusion/logo.png'),
+		]).then((images) => {
+			const [frame, logo] = images;
 			ctx.fillStyle = '#fff';
 			ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-			ctx.drawImage(dimage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.drawImage(frame, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 			ctx.drawImage(canvasEl.value!, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.globalAlpha = 0.7;
+			ctx.drawImage(logo, GAME_WIDTH * 0.55, 6, GAME_WIDTH * 0.45, GAME_WIDTH * 0.45 * (logo.height / logo.width));
+			ctx.globalAlpha = 1;
 
 			dcanvas.toBlob(blob => {
 				if (!blob) return res(null);
@@ -610,22 +675,22 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${gameMode.value}
-SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})})`,
+SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})`,
 		initialFiles: [file],
+		instant: true,
 	});
 }
 
 useInterval(() => {
 	if (!canvasEl.value) return;
 	const actualCanvasWidth = canvasEl.value.getBoundingClientRect().width;
-	const actualCanvasHeight = canvasEl.value.getBoundingClientRect().height;
-	viewScaleX = actualCanvasWidth / GAME_WIDTH;
-	viewScaleY = actualCanvasHeight / GAME_HEIGHT;
+	if (actualCanvasWidth === 0) return;
+	viewScale = actualCanvasWidth / GAME_WIDTH;
 	containerElRect = containerEl.value?.getBoundingClientRect() ?? null;
 }, 1000, { immediate: false, afterMounted: true });
 
 onDeactivated(() => {
-	game.dispose();
+	restart();
 });
 
 definePageMetadata({
@@ -697,16 +762,52 @@ definePageMetadata({
 	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
 	border-radius: 10px;
 }
+
+.frameH {
+	display: flex;
+	gap: 6px;
+}
+
 .frameInner {
-	padding: 4px 8px;
+	padding: 8px;
+	margin-top: 8px;
 	background: #F1E8DC;
 	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
 	border-radius: 6px;
 	color: #693410;
+
+	&:first-child {
+		margin-top: 0;
+	}
 }
 
-.main {
+.frameDivider {
+	height: 0;
+	border: none;
+	border-top: 1px solid #693410;
+	border-bottom: 1px solid #ce8a5c;
+}
+
+.header {
 	position: relative;
+	z-index: 10;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto auto;
+	gap: 8px;
+
+	> .headerTitle {
+		text-align: center;
+	}
+
+	@media (min-width: 500px) {
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto;
+
+		> .headerTitle {
+			text-align: start;
+		}
+	}
 }
 
 .mainFrameImg {
@@ -724,15 +825,15 @@ definePageMetadata({
 	position: relative;
 	display: block;
 	z-index: 1;
-	margin-top: -50px;
 	width: 100% !important;
 	height: auto !important;
 	pointer-events: none;
 	user-select: none;
 }
 
-.container {
+.gameContainer {
 	position: relative;
+	margin-top: -20px;
 }
 
 .stock {
@@ -755,45 +856,51 @@ definePageMetadata({
 	user-select: none;
 }
 
-.currentMono {
+.dropperContainer {
 	position: absolute;
-	margin-top: 80px;
+	top: 0;
+	height: 100%;
 	z-index: 2;
-	filter: drop-shadow(0 6px 16px #0007);
 	pointer-events: none;
 	user-select: none;
+	will-change: left;
+}
+
+.currentMono {
+	position: absolute;
+	display: block;
+	bottom: 88%;
+	z-index: 2;
+	filter: drop-shadow(0 6px 16px #0007);
 }
 
 .dropper {
-	position: absolute;
+	position: relative;
 	top: 0;
 	width: 70px;
 	margin-top: -10px;
 	margin-left: -30px;
 	z-index: 2;
 	filter: drop-shadow(0 6px 16px #0007);
-	pointer-events: none;
-	user-select: none;
 }
 
 .currentMonoArrow {
 	position: absolute;
-	margin-top: 100px;
+	width: 20px;
+	bottom: 80%;
+	left: -10px;
 	z-index: 3;
 	animation: currentMonoArrow 2s ease infinite;
-	pointer-events: none;
-	user-select: none;
 }
 
 .dropGuide {
 	position: absolute;
-	top: 120px;
 	z-index: 3;
+	bottom: 0;
 	width: 3px;
-	height: calc(100% - 120px);
+	margin-left: -2px;
+	height: 85%;
 	background: #f002;
-	pointer-events: none;
-	user-select: none;
 }
 
 .gameOverLabel {
