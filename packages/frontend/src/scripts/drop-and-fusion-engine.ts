@@ -239,7 +239,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 			// 連鎖してfusionした場合の分かりやすさのため少し間を置いてからfusion対象になるようにする
 			this.tickCallbackQueue.push({
-				frame: this.frame + 100,
+				frame: this.frame + 6,
 				callback: () => {
 					this.activeBodyIds.push(body.id);
 				},
@@ -347,7 +347,7 @@ export class DropAndFusionGame extends EventEmitter<{
 					} else {
 						fusionReservedPairs.push({ bodyA, bodyB });
 						this.tickCallbackQueue.push({
-							frame: this.frame + 100,
+							frame: this.frame + 6,
 							callback: () => {
 								fusionReservedPairs = fusionReservedPairs.filter(x => x.bodyA.id !== bodyA.id && x.bodyB.id !== bodyB.id);
 								this.fusion(bodyA, bodyB);
