@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-09T08:01:45.248Z
+ * generatedAt: 2024-01-09T09:35:04.429Z
  */
 
 /**
@@ -3785,7 +3785,8 @@ export type components = {
       reply?: components['schemas']['Note'] | null;
       renote?: components['schemas']['Note'] | null;
       isHidden?: boolean;
-      visibility: string;
+      /** @enum {string} */
+      visibility: 'public' | 'home' | 'followers' | 'specified';
       mentions?: string[];
       visibleUserIds?: string[];
       fileIds?: string[];

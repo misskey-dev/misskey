@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-09T08:01:45.377Z
+ * generatedAt: 2024-01-09T09:35:04.546Z
  */
 
 import { operations } from './types.js';
