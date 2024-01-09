@@ -57,7 +57,7 @@ export default class Logger {
 				message: message,
 				data: data,
 				important: important,
-				context: [this.context].concat(subContexts).join('.'),
+				context: [this.context].concat(subContexts).map(d => d.name).join('.'),
 				cluster: cluster.isPrimary ? 'primary' : `worker-${cluster.worker!.id}`,
 			}));
 			return;
