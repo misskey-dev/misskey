@@ -1194,6 +1194,7 @@ export interface Locale {
     "enableQuickAddMfmFunction": string;
     "bubbleGame": string;
     "sfx": string;
+    "soundWillBePlayed": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

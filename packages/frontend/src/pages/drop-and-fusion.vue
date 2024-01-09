@@ -24,6 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
 					</div>
+					<div :class="$style.frameInner">
+						<div class="_gaps" style="padding: 16px;">
+							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
+							<MkSwitch v-model="mute">
+								<template #label>{{ i18n.ts.mute }}</template>
+							</MkSwitch>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -159,6 +167,7 @@ import { $i } from '@/account.js';
 import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -409,6 +418,7 @@ const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
+const mute = ref(false);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
 
@@ -545,7 +555,7 @@ async function start() {
 		width: GAME_WIDTH,
 		height: GAME_HEIGHT,
 		canvas: canvasEl.value!,
-		sfxVolume: sfxVolume.value,
+		sfxVolume: mute.value ? 0 : sfxVolume.value,
 		...(
 			gameMode.value === 'normal' ? {
 				monoDefinitions: NORAML_MONOS,
@@ -565,7 +575,9 @@ async function start() {
 		}
 		const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
 		if (!bgmBuffer) return;
-		bgmNodes = sound.createSourceNode(bgmBuffer, bgmVolume.value);
+		bgmNodes = sound.createSourceNode(bgmBuffer, {
+			volume: mute.value ? 0 : bgmVolume.value,
+		});
 		if (!bgmNodes) return;
 		bgmNodes.soundSource.loop = true;
 		bgmNodes.soundSource.start();
@@ -574,14 +586,14 @@ async function start() {
 
 watch(bgmVolume, (newValue, oldValue) => {
 	if (bgmNodes) {
-		bgmNodes.gainNode.gain.value = newValue;
+		bgmNodes.gainNode.gain.value = mute.value ? 0 : newValue;
 	}
 });
 
 watch(sfxVolume, (newValue, oldValue) => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (game) {
-		game.setSfxVolume(newValue);
+		game.setSfxVolume(mute.value ? 0 : newValue);
 	}
 });
 
