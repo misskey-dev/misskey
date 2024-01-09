@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div ref="containerEl" :class="[$style.container, { [$style.gameOver]: gameOver }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: gameOver }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 				<canvas ref="canvasEl" :class="$style.canvas"/>
@@ -65,21 +65,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 				</Transition>
-				<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>
-				<Transition
-					:enterActiveClass="$style.transition_picked_enterActive"
-					:leaveActiveClass="$style.transition_picked_leaveActive"
-					:enterFromClass="$style.transition_picked_enterFrom"
-					:leaveToClass="$style.transition_picked_leaveTo"
-					:moveClass="$style.transition_picked_move"
-					mode="out-in"
-				>
-					<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (dropperX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
-				</Transition>
-				<template v-if="dropReady && currentPick">
-					<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick.mono.size / 2) + 10 + 'px', left: (dropperX - 10) + 'px', width: `20px` }"/>
-					<div :class="$style.dropGuide" :style="{ left: (dropperX - 2) + 'px' }"/>
-				</template>
+				<div :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
+					<Transition
+						:enterActiveClass="$style.transition_picked_enterActive"
+						:leaveActiveClass="$style.transition_picked_leaveActive"
+						:enterFromClass="$style.transition_picked_enterFrom"
+						:leaveToClass="$style.transition_picked_leaveTo"
+						:moveClass="$style.transition_picked_move"
+						mode="out-in"
+					>
+						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.size * viewScale) / 2) + 'px', left: -((currentPick?.mono.size * viewScale) / 2) + 'px', width: `${currentPick?.mono.size * viewScale}px` }"/>
+					</Transition>
+					<template v-if="dropReady && currentPick">
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
+						<div :class="$style.dropGuide"/>
+					</template>
+				</div>
 				<div v-if="gameOver" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
@@ -390,8 +392,7 @@ const SQUARE_MONOS: Mono[] = [{
 const GAME_WIDTH = 450;
 const GAME_HEIGHT = 600;
 
-let viewScaleX = 1;
-let viewScaleY = 1;
+let viewScale = 1;
 const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
 const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
 const score = ref(0);
@@ -412,13 +413,13 @@ let containerElRect: DOMRect | null = null;
 
 function onClick(ev: MouseEvent) {
 	if (!containerElRect) return;
-	const x = (ev.clientX - containerElRect.left) / viewScaleX;
+	const x = (ev.clientX - containerElRect.left) / viewScale;
 	game.drop(x);
 }
 
 function onTouchend(ev: TouchEvent) {
 	if (!containerElRect) return;
-	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScaleX;
+	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScale;
 	game.drop(x);
 }
 
@@ -484,8 +485,8 @@ function attachGameEvents() {
 		if (!canvasEl.value) return;
 
 		const rect = canvasEl.value.getBoundingClientRect();
-		const domX = rect.left + (x * viewScaleX);
-		const domY = rect.top + (y * viewScaleY);
+		const domX = rect.left + (x * viewScale);
+		const domY = rect.top + (y * viewScale);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
 		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
 	});
@@ -641,8 +642,7 @@ function getGameImageDriveFile() {
 			}, 'image/png');
 
 			dcanvas.remove();
-
-		})
+		});
 	});
 }
 
@@ -663,9 +663,8 @@ SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})`,
 useInterval(() => {
 	if (!canvasEl.value) return;
 	const actualCanvasWidth = canvasEl.value.getBoundingClientRect().width;
-	const actualCanvasHeight = canvasEl.value.getBoundingClientRect().height;
-	viewScaleX = actualCanvasWidth / GAME_WIDTH;
-	viewScaleY = actualCanvasHeight / GAME_HEIGHT;
+	if (actualCanvasWidth === 0) return;
+	viewScale = actualCanvasWidth / GAME_WIDTH;
 	containerElRect = containerEl.value?.getBoundingClientRect() ?? null;
 }, 1000, { immediate: false, afterMounted: true });
 
@@ -804,8 +803,9 @@ definePageMetadata({
 	user-select: none;
 }
 
-.container {
+.gameContainer {
 	position: relative;
+	margin-top: -50px;
 }
 
 .stock {
@@ -828,45 +828,51 @@ definePageMetadata({
 	user-select: none;
 }
 
-.currentMono {
+.dropperContainer {
 	position: absolute;
-	margin-top: 80px;
+	top: 0;
+	height: 100%;
 	z-index: 2;
-	filter: drop-shadow(0 6px 16px #0007);
 	pointer-events: none;
 	user-select: none;
+	will-change: left;
+}
+
+.currentMono {
+	position: absolute;
+	display: block;
+	bottom: 88%;
+	z-index: 2;
+	filter: drop-shadow(0 6px 16px #0007);
 }
 
 .dropper {
-	position: absolute;
+	position: relative;
 	top: 0;
 	width: 70px;
 	margin-top: -10px;
 	margin-left: -30px;
 	z-index: 2;
 	filter: drop-shadow(0 6px 16px #0007);
-	pointer-events: none;
-	user-select: none;
 }
 
 .currentMonoArrow {
 	position: absolute;
-	margin-top: 100px;
+	width: 20px;
+	bottom: 80%;
+	left: -10px;
 	z-index: 3;
 	animation: currentMonoArrow 2s ease infinite;
-	pointer-events: none;
-	user-select: none;
 }
 
 .dropGuide {
 	position: absolute;
-	top: 120px;
 	z-index: 3;
+	bottom: 0;
 	width: 3px;
-	height: calc(100% - 120px);
+	margin-left: -2px;
+	height: 85%;
 	background: #f002;
-	pointer-events: none;
-	user-select: none;
 }
 
 .gameOverLabel {
