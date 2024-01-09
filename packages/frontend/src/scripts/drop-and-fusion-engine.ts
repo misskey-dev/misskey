@@ -20,17 +20,17 @@ export type Mono = {
 	spriteScale: number;
 };
 
-const PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる、逆に高すぎても何故か不安定になる
-
 export class DropAndFusionGame extends EventEmitter<{
 	changeScore: (newScore: number) => void;
 	changeCombo: (newCombo: number) => void;
 	changeStock: (newStock: { id: string; mono: Mono }[]) => void;
+	changeHolding: (newHolding: { id: string; mono: Mono } | null) => void;
 	dropped: () => void;
 	fusioned: (x: number, y: number, scoreDelta: number) => void;
 	monoAdded: (mono: Mono) => void;
 	gameOver: () => void;
 }> {
+	private PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる、逆に高すぎても何故か不安定になる
 	private COMBO_INTERVAL = 1000;
 	public readonly DROP_INTERVAL = 500;
 	public readonly PLAYAREA_MARGIN = 25;
@@ -48,6 +48,8 @@ export class DropAndFusionGame extends EventEmitter<{
 	private monoTextures: Record<string, Blob> = {};
 	private monoTextureUrls: Record<string, string> = {};
 
+	private sfxVolume = 1;
+
 	/**
 	 * フィールドに出ていて、かつ合体の対象となるアイテム
 	 */
@@ -58,6 +60,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	private latestDroppedAt = 0;
 	private latestFusionedAt = 0;
 	private stock: { id: string; mono: Mono }[] = [];
+	private holding: { id: string; mono: Mono } | null = null;
 
 	private _combo = 0;
 	private get combo() {
@@ -84,6 +87,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		width: number;
 		height: number;
 		monoDefinitions: Mono[];
+		sfxVolume?: number;
 	}) {
 		super();
 
@@ -91,10 +95,14 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.gameHeight = opts.height;
 		this.monoDefinitions = opts.monoDefinitions;
 
+		if (opts.sfxVolume) {
+			this.sfxVolume = opts.sfxVolume;
+		}
+
 		this.engine = Matter.Engine.create({
-			constraintIterations: 2 * PHYSICS_QUALITY_FACTOR,
-			positionIterations: 6 * PHYSICS_QUALITY_FACTOR,
-			velocityIterations: 4 * PHYSICS_QUALITY_FACTOR,
+			constraintIterations: 2 * this.PHYSICS_QUALITY_FACTOR,
+			positionIterations: 6 * this.PHYSICS_QUALITY_FACTOR,
+			velocityIterations: 4 * this.PHYSICS_QUALITY_FACTOR,
 			gravity: {
 				x: 0,
 				y: 1,
@@ -183,6 +191,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		};
 		if (mono.shape === 'circle') {
 			return Matter.Bodies.circle(x, y, mono.size / 2, options);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		} else if (mono.shape === 'rectangle') {
 			return Matter.Bodies.rectangle(x, y, mono.size, mono.size, options);
 		} else {
@@ -224,7 +233,11 @@ export class DropAndFusionGame extends EventEmitter<{
 
 			// TODO: 効果音再生はコンポーネント側の責務なので移動する
 			const pan = ((newX / this.gameWidth) - 0.5) * 2;
-			sound.playUrl('/client-assets/drop-and-fusion/bubble2.mp3', 1, pan, nextMono.sfxPitch);
+			sound.playUrl('/client-assets/drop-and-fusion/bubble2.mp3', {
+				volume: this.sfxVolume,
+				pan,
+				playbackRate: nextMono.sfxPitch,
+			});
 
 			this.emit('monoAdded', nextMono);
 			this.emit('fusioned', newX, newY, additionalScore);
@@ -237,7 +250,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			//}
 			//sound.playUrl({
 			//	type: 'syuilo/bubble2',
-			//	volume: 1,
+			//	volume: this.sfxVolume,
 			//});
 		}
 	}
@@ -323,10 +336,14 @@ export class DropAndFusionGame extends EventEmitter<{
 					const energy = pairs.collision.depth;
 					if (energy > minCollisionEnergyForSound) {
 						// TODO: 効果音再生はコンポーネント側の責務なので移動する
-						const vol = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
+						const vol = ((Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4) * this.sfxVolume;
 						const pan = ((((bodyA.position.x + bodyB.position.x) / 2) / this.gameWidth) - 0.5) * 2;
 						const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
-						sound.playUrl('/client-assets/drop-and-fusion/poi1.mp3', vol, pan, pitch);
+						sound.playUrl('/client-assets/drop-and-fusion/poi1.mp3', {
+							volume: vol,
+							pan,
+							playbackRate: pitch,
+						});
 					}
 				}
 			}
@@ -342,6 +359,10 @@ export class DropAndFusionGame extends EventEmitter<{
 	public async load() {
 		await this.loadMonoTextures();
 		this.loaded = true;
+	}
+
+	public setSfxVolume(volume: number) {
+		this.sfxVolume = volume;
 	}
 
 	public getTextureImageUrl(mono: Mono) {
@@ -369,25 +390,53 @@ export class DropAndFusionGame extends EventEmitter<{
 		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) {
 			return;
 		}
-		const st = this.stock.shift()!;
+		const head = this.stock.shift()!;
 		this.stock.push({
 			id: Math.random().toString(),
 			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 		});
 		this.emit('changeStock', this.stock);
 
-		const x = Math.min(this.gameWidth - this.PLAYAREA_MARGIN - (st.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.mono.size / 2), _x));
-		const body = this.createBody(st.mono, x, 50 + st.mono.size / 2);
+		const x = Math.min(this.gameWidth - this.PLAYAREA_MARGIN - (head.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (head.mono.size / 2), _x));
+		const body = this.createBody(head.mono, x, 50 + head.mono.size / 2);
 		Matter.Composite.add(this.engine.world, body);
 		this.activeBodyIds.push(body.id);
 		this.latestDroppedBodyId = body.id;
 		this.latestDroppedAt = Date.now();
 		this.emit('dropped');
-		this.emit('monoAdded', st.mono);
+		this.emit('monoAdded', head.mono);
 
 		// TODO: 効果音再生はコンポーネント側の責務なので移動する
 		const pan = ((x / this.gameWidth) - 0.5) * 2;
-		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', 1, pan);
+		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', {
+			volume: this.sfxVolume,
+			pan,
+		});
+	}
+
+	public hold() {
+		if (this.isGameOver) return;
+
+		if (this.holding) {
+			const head = this.stock.shift()!;
+			this.stock.unshift(this.holding);
+			this.holding = head;
+			this.emit('changeHolding', this.holding);
+			this.emit('changeStock', this.stock);
+		} else {
+			const head = this.stock.shift()!;
+			this.holding = head;
+			this.stock.push({
+				id: Math.random().toString(),
+				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
+			});
+			this.emit('changeHolding', this.holding);
+			this.emit('changeStock', this.stock);
+		}
+
+		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+			volume: this.sfxVolume,
+		});
 	}
 
 	public dispose() {
