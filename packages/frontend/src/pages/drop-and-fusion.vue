@@ -131,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_s">
 						<div><b>Credit</b></div>
 						<div>
-							<div>Logo Illustration: @poteriri@misskey.io</div>
+							<div>Ai-chan illustration: @poteriri@misskey.io</div>
 							<div>BGM: @ys@misskey.design</div>
 						</div>
 					</div>
