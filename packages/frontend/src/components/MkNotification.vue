@@ -6,10 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.head">
-		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
-		<MkAvatar v-else-if="notification.type === 'note'" :class="$style.icon" :user="notification.note.user" link preview/>
-		<MkAvatar v-else-if="notification.type === 'roleAssigned'" :class="$style.icon" :user="$i" link preview/>
-		<MkAvatar v-else-if="notification.type === 'achievementEarned'" :class="$style.icon" :user="$i" link preview/>
+		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type) && $i" :class="$style.icon" :user="$i" link preview/>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
 		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
@@ -26,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_quote]: notification.type === 'quote',
 				[$style.t_pollEnded]: notification.type === 'pollEnded',
 				[$style.t_achievementEarned]: notification.type === 'achievementEarned',
+				[$style.t_roleAssigned]: notification.type === 'roleAssigned' && !notification.role?.iconUrl,
 			}]"
 		>
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
@@ -37,12 +36,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<i v-else-if="notification.type === 'achievementEarned'" class="ti ti-medal"></i>
-			<img v-else-if="notification.type === 'roleAssigned'" style="height: 1.3em; vertical-align: -22%;" :src="notification.role.iconUrl" alt=""/>
+			<template v-else-if="notification.type === 'roleAssigned'">
+				<img v-if="notification.role?.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="notification.role.iconUrl" alt=""/>
+				<i v-else class="ti ti-badges"></i>
+			</template>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<MkReactionIcon
 				v-else-if="notification.type === 'reaction'"
 				:withTooltip="true"
-				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
+				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction ?? ':heart@.:'"
 				:noStyle="true"
 				style="width: 100%; height: 100%;"
 			/>
@@ -51,53 +53,56 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.tail">
 		<header :class="$style.header">
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
-			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
+			<span v-else-if="notification.type === 'note'">
+				{{ i18n.ts._notification.newNote }}
+				<template v-if="notification.note">: <MkUserName :user="notification.note.user"/></template>
+			</span>
 			<span v-else-if="notification.type === 'roleAssigned'">{{ i18n.ts._notification.roleAssigned }}</span>
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
-			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.t('_notification.reactedBySomeUsers', { n: notification.reactions.length }) }}</span>
-			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.t('_notification.renotedBySomeUsers', { n: notification.users.length }) }}</span>
+			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.t('_notification.reactedBySomeUsers', { n: notification.reactions?.length ?? '?' }) }}</span>
+			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.t('_notification.renotedBySomeUsers', { n: notification.users?.length ?? '?' }) }}</span>
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
 		<div>
 			<MkA v-if="notification.type === 'reaction' || notification.type === 'reaction:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note?.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
-			<MkA v-else-if="notification.type === 'renote' || notification.type === 'renote:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
+			<MkA v-else-if="notification.type === 'renote' || notification.type === 'renote:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note?.renote)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :author="notification.note.renote.user"/>
+				<Mfm :text="getNoteSummary(notification.note?.renote)" :plain="true" :nowrap="true" :author="notification.note?.renote?.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'reply'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note?.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'mention'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note?.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'quote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note?.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'note'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note?.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'pollEnded'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note?.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<div v-else-if="notification.type === 'roleAssigned'" :class="$style.text">
-				{{ notification.role.name }}
+				{{ notification.role?.name }}
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
 			</MkA>
 			<template v-else-if="notification.type === 'follow'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>
-				<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div>
+				<div v-if="full"><MkFollowButton v-if="notification.user" :user="notification.user" :full="true"/></div>
 			</template>
 			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
 			<template v-else-if="notification.type === 'receiveFollowRequest'">
@@ -109,11 +114,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<span v-else-if="notification.type === 'test'" :class="$style.text">{{ i18n.ts._notification.notificationWillBeDisplayedLikeThis }}</span>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
-				<Mfm :text="notification.body" :nowrap="false"/>
+				<Mfm v-if="notification.body" :text="notification.body" :nowrap="false"/>
 			</span>
 
 			<div v-if="notification.type === 'reaction:grouped'">
-				<div v-for="reaction of notification.reactions" :class="$style.reactionsItem">
+				<div v-for="reaction of notification.reactions" :key="reaction.reaction" :class="$style.reactionsItem">
 					<MkAvatar :class="$style.reactionsItemAvatar" :user="reaction.user" link preview/>
 					<div :class="$style.reactionsItemReaction">
 						<MkReactionIcon
@@ -126,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-else-if="notification.type === 'renote:grouped'">
-				<div v-for="user of notification.users" :class="$style.reactionsItem">
+				<div v-for="user of notification.users" :key="user.id" :class="$style.reactionsItem">
 					<MkAvatar :class="$style.reactionsItemAvatar" :user="user" link preview/>
 				</div>
 			</div>
@@ -161,11 +166,13 @@ const props = withDefaults(defineProps<{
 const followRequestDone = ref(false);
 
 const acceptFollowRequest = () => {
+	if (!props.notification.user) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/accept', { userId: props.notification.user.id });
 };
 
 const rejectFollowRequest = () => {
+	if (!props.notification.user) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
 };
@@ -280,6 +287,12 @@ const rejectFollowRequest = () => {
 .t_achievementEarned {
 	padding: 3px;
 	background: #cb9a11;
+	pointer-events: none;
+}
+
+.t_roleAssigned {
+	padding: 3px;
+	background: #88a6b7;
 	pointer-events: none;
 }
 
