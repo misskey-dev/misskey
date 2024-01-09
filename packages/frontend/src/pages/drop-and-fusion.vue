@@ -153,7 +153,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.frame">
 				<div :class="$style.frameInner">
-					<MkButton @click="surrender">Retry</MkButton>
+					<MkButton danger @click="surrender">Retry</MkButton>
 				</div>
 			</div>
 		</div>
@@ -474,7 +474,12 @@ function hold() {
 	game.hold();
 }
 
-function surrender() {
+async function surrender() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
 	game.surrender();
 }
 
