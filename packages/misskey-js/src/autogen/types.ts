@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-08T14:11:08.253Z
+ * generatedAt: 2024-01-09T07:45:28.095Z
  */
 
 /**
@@ -3497,6 +3497,7 @@ export type components = {
         }[];
       isBot?: boolean;
       isCat?: boolean;
+      isLocked?: boolean;
       instance?: {
         name: string | null;
         softwareName: string | null;
@@ -3877,6 +3878,7 @@ export type components = {
           reaction: string;
         }[] | null;
       users?: components['schemas']['UserLite'][] | null;
+      role?: components['schemas']['Role'] | null;
     };
     DriveFile: {
       /**
