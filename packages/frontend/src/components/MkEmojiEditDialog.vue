@@ -68,11 +68,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkSwitch v-model="isSensitive">{{ i18n.ts.isSensitive }}</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-          <MkSwitch v-model="isNotifyIsHome">
-              {{ i18n.ts.isNotifyIsHome }}
-          </MkSwitch>
-
-
+				<MkSwitch v-model="isNotifyIsHome">
+					{{ i18n.ts.isNotifyIsHome }}
+				</MkSwitch>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
@@ -87,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, ref, watch} from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { DriveFile } from 'misskey-js/built/entities.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -166,11 +164,12 @@ async function done() {
 		isSensitive: isSensitive.value,
 		localOnly: localOnly.value,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
-    };
+		isNotifyIsHome: isNotifyIsHome.value,
+	};
 
-    if (file.value) {
-        params.fileId = file.value.id;
-    }
+	if (file.value) {
+		params.fileId = file.value.id;
+	}
 	if (props.emoji) {
 		if (isRequest.value) {
 			await os.apiWithDialog('admin/emoji/update-request', {
