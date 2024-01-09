@@ -17,16 +17,4 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  # PNPM has an issue with dependabot. See:
-  # https://github.com/dependabot/dependabot-core/issues/7258
-  # https://github.com/pnpm/pnpm/issues/6530
-  # TODO: Restore this when the issue is solved
   open-pull-requests-limit: 0
-  groups:
-    swc:
-      patterns:
-        - "@swc/*"
-    storybook:
-      patterns:
-        - "storybook*"
-        - "@storybook/*"

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setTimeout } from 'node:timers/promises';
 import process from 'node:process';
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
@@ -13,6 +12,7 @@ import { DI } from './di-symbols.js';
 import { Config, loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
+import { allSettled } from './misc/promise-tracker.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const $config: Provider = {
@@ -34,7 +34,7 @@ const $meilisearch: Provider = {
 	useFactory: (config: Config) => {
 		if (config.meilisearch) {
 			return new MeiliSearch({
-				host: `${config.meilisearch.ssl ? 'https' : 'http' }://${config.meilisearch.host}:${config.meilisearch.port}`,
+				host: `${config.meilisearch.ssl ? 'https' : 'http'}://${config.meilisearch.host}:${config.meilisearch.port}`,
 				apiKey: config.meilisearch.apiKey,
 			});
 		} else {
@@ -128,17 +128,12 @@ export class GlobalModule implements OnApplicationShutdown {
 		@Inject(DI.redisForPub) private redisForPub: Redis.Redis,
 		@Inject(DI.redisForSub) private redisForSub: Redis.Redis,
 		@Inject(DI.redisForTimelines) private redisForTimelines: Redis.Redis,
-	) {}
+	) { }
 
 	public async dispose(): Promise<void> {
-		if (process.env.NODE_ENV === 'test') {
-			// XXX:
-			// Shutting down the existing connections causes errors on Jest as
-			// Misskey has asynchronous postgres/redis connections that are not
-			// awaited.
-			// Let's wait for some random time for them to finish.
-			await setTimeout(5000);
-		}
+		// Wait for all potential DB queries
+		await allSettled();
+		// And then disconnect from DB
 		await Promise.all([
 			this.db.destroy(),
 			this.redisClient.disconnect(),

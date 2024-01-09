@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.wordMute }}</template>
 
-		<XWordMute/>
+		<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
 	</MkFolder>
 
 	<MkFolder>
@@ -128,8 +128,12 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { infoImageUrl } from '@/instance.js';
+import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
+
+const $i = signinRequired();
 
 const renoteMutingPagination = {
 	endpoint: 'renote-mute/list' as const,
@@ -205,6 +209,10 @@ async function toggleBlockItem(item) {
 	} else {
 		expandedBlockItems.value.push(item.id);
 	}
+}
+
+async function saveMutedWords(mutedWords: (string | string[])[]) {
+	await misskeyApi('i/update', { mutedWords });
 }
 
 const headerActions = computed(() => []);

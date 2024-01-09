@@ -164,6 +164,7 @@ import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
 import * as sound from '@/scripts/sound.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, noteViewInterruptors } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
@@ -270,7 +271,7 @@ const keymap = {
 };
 
 provide('react', (reaction: string) => {
-	os.api('notes/reactions/create', {
+	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
 		reaction: reaction,
 	});
@@ -291,7 +292,7 @@ if (props.mock) {
 
 if (!props.mock) {
 	useTooltip(renoteButton, async (showing) => {
-		const renotes = await os.api('notes/renotes', {
+		const renotes = await misskeyApi('notes/renotes', {
 			noteId: appearNote.value.id,
 			limit: 11,
 		});
@@ -337,13 +338,13 @@ function react(viaKeyboard = false): void {
 	pleaseLogin();
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
-		sound.play('reaction');
+		sound.playMisskeySfx('reaction');
 
 		if (props.mock) {
 			return;
 		}
 
-		os.api('notes/reactions/create', {
+		misskeyApi('notes/reactions/create', {
 			noteId: appearNote.value.id,
 			reaction: '❤️',
 		});
@@ -357,14 +358,14 @@ function react(viaKeyboard = false): void {
 	} else {
 		blur();
 		reactionPicker.show(reactButton.value, reaction => {
-			sound.play('reaction');
+			sound.playMisskeySfx('reaction');
 
 			if (props.mock) {
 				emit('reaction', reaction);
 				return;
 			}
 
-			os.api('notes/reactions/create', {
+			misskeyApi('notes/reactions/create', {
 				noteId: appearNote.value.id,
 				reaction: reaction,
 			});
@@ -386,7 +387,7 @@ function undoReact(note): void {
 		return;
 	}
 
-	os.api('notes/reactions/delete', {
+	misskeyApi('notes/reactions/delete', {
 		noteId: note.id,
 	});
 }
@@ -446,7 +447,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 			icon: 'ti ti-trash',
 			danger: true,
 			action: () => {
-				os.api('notes/delete', {
+				misskeyApi('notes/delete', {
 					noteId: note.value.id,
 				});
 				isDeleted.value = true;
@@ -492,7 +493,7 @@ function focusAfter() {
 }
 
 function readPromo() {
-	os.api('promo/read', {
+	misskeyApi('promo/read', {
 		noteId: appearNote.value.id,
 	});
 	isDeleted.value = true;

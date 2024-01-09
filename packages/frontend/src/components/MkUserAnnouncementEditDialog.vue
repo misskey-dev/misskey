@@ -72,6 +72,7 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -152,7 +153,7 @@ async function del(): Promise<void> {
 	});
 	if (canceled) return;
 
-	os.api('admin/announcements/delete', {
+	misskeyApi('admin/announcements/delete', {
 		id: props.announcement.id,
 	}).then(() => {
 		emit('done', {

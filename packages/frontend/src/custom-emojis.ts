@@ -5,7 +5,7 @@
 
 import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { api, apiGet } from '@/os.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { get, set, exist } from '@/scripts/idb-proxy.js';
 
@@ -52,12 +52,12 @@ export async function fetchCustomEmojis(force = false) {
 
 	let res;
 	if (force) {
-		res = await api('emojis', {});
+		res = await misskeyApi('emojis', {});
 	} else {
 		const emojiCacheExist = await exist('emojis');
 		const lastFetchedAt = await get('lastEmojisFetchedAt');
 		if (lastFetchedAt && (now - lastFetchedAt) < 1000 * 60 * 60 && emojiCacheExist) return;
-		res = await apiGet('emojis', {});
+		res = await misskeyApiGet('emojis', {});
 	}
 
 	customEmojis.value = res.emojis;

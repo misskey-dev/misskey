@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted, ref } from 'vue';
-import type { summaly } from 'summaly';
+import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

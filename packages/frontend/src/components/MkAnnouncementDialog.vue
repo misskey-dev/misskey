@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -55,7 +56,7 @@ async function gotIt(): Promise<void> {
 	}
 
 	modal.value.close();
-	os.api('i/read-announcement', { announcementId: props.announcement.id });
+	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
 	});

@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2-io
- * generatedAt: 2023-12-28T08:11:13.114Z
+ * version: 2023.12.2-io.2c
+ * generatedAt: 2024-01-09T17:42:52.871Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -2288,6 +2288,18 @@ declare module '../api.js' {
      * **Credential required**: *Yes*
      */
     request<E extends 'i/export-notes', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes*
+     */
+    request<E extends 'i/export-clips', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

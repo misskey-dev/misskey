@@ -123,17 +123,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, ref, computed } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os.js';
 import number from '@/filters/number.js';
 import bytes from '@/filters/bytes.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const stats = ref<any>({});
 
 onMounted(() => {
-	os.api('users/stats', {
+	misskeyApi('users/stats', {
 		userId: $i!.id,
 	}).then(response => {
 		stats.value = response;
