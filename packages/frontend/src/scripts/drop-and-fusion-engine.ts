@@ -291,6 +291,11 @@ export class DropAndFusionGame extends EventEmitter<{
 		if (this.tickRaf) window.cancelAnimationFrame(this.tickRaf);
 		this.tickRaf = null;
 		this.emit('gameOver');
+
+		// TODO: 効果音再生はコンポーネント側の責務なので移動する
+		sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
+			volume: this.sfxVolume,
+		});
 	}
 
 	/** テクスチャをすべてキャッシュする */
