@@ -123,7 +123,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, ref, computed } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os.js';
 import number from '@/filters/number.js';
 import bytes from '@/filters/bytes.js';
 import { $i } from '@/account.js';

@@ -5,19 +5,17 @@
 
 import * as fs from 'node:fs';
 import { Writable } from 'node:stream';
-import { Inject, Injectable, StreamableFile } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { ClipNotesRepository, ClipsRepository, MiClip, MiClipNote, MiUser, NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
+import type { ClipNotesRepository, ClipsRepository, MiClip, MiClipNote, MiUser, PollsRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';

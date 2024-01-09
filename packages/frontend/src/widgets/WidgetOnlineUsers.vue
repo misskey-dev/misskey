@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';

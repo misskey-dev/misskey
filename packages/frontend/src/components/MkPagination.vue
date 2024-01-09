@@ -45,7 +45,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll.js';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility.js';

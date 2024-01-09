@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, watch, onUnmounted, provide, shallowRef } from 'vue';
 import { Connection } from 'misskey-js/built/streaming.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
