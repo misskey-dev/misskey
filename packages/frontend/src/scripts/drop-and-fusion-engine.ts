@@ -408,7 +408,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 				Matter.Engine.update(this.engine, this.TICK_DELTA);
 
-				window.requestAnimationFrame(playTick);
+				this.tickRaf = window.requestAnimationFrame(playTick);
 			};
 
 			playTick();

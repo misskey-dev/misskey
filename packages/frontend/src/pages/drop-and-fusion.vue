@@ -97,13 +97,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>SCORE: <MkNumber :value="score"/></div>
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 						<div class="_buttonsCenter">
-							<MkButton primary rounded @click="restart">Restart</MkButton>
-							<MkButton primary rounded @click="replay">Replay</MkButton>
-							<MkButton primary rounded @click="share">Share</MkButton>
+							<MkButton primary rounded @click="restart">{{ i18n.ts.ok }}</MkButton>
+							<MkButton primary rounded @click="replay">{{ i18n.ts.replay }}</MkButton>
+							<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
 						</div>
 					</div>
 				</div>
-				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> REPLAYING</span></div>
+				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
 			</div>
 			<div v-if="replaying" style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
@@ -573,7 +573,10 @@ function attachGameEvents() {
 	});
 
 	game.addListener('gameOver', () => {
-		if (replaying.value) return;
+		if (replaying.value) {
+			endReplay();
+			return;
+		}
 
 		logs = game.getLogs();
 		currentPick.value = null;

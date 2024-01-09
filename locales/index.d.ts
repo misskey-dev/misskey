@@ -1195,6 +1195,8 @@ export interface Locale {
     "bubbleGame": string;
     "sfx": string;
     "soundWillBePlayed": string;
+    "replay": string;
+    "replaying": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
