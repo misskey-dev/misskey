@@ -98,6 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 						<div class="_buttonsCenter">
 							<MkButton primary rounded @click="restart">Restart</MkButton>
+							<MkButton primary rounded @click="replay">Replay</MkButton>
 							<MkButton primary rounded @click="share">Share</MkButton>
 						</div>
 					</div>
@@ -401,6 +402,7 @@ const GAME_HEIGHT = 600;
 let viewScale = 1;
 let game: DropAndFusionGame;
 let containerElRect: DOMRect | null = null;
+let seed: string;
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
@@ -418,18 +420,21 @@ const gameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
+const replaying = ref(false);
 const mute = ref(false);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
 
 function onClick(ev: MouseEvent) {
 	if (!containerElRect) return;
+	if (replaying.value) return;
 	const x = (ev.clientX - containerElRect.left) / viewScale;
 	game.drop(x);
 }
 
 function onTouchend(ev: TouchEvent) {
 	if (!containerElRect) return;
+	if (replaying.value) return;
 	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScale;
 	game.drop(x);
 }
@@ -465,6 +470,29 @@ function restart() {
 	comboPrev.value = 0;
 	bgmNodes?.soundSource.stop();
 	gameStarted.value = false;
+}
+
+function replay() {
+	replaying.value = true;
+	const logs = game.getLogs();
+	game.dispose();
+	game = new DropAndFusionGame({
+		width: GAME_WIDTH,
+		height: GAME_HEIGHT,
+		canvas: canvasEl.value!,
+		seed: seed,
+		sfxVolume: mute.value ? 0 : sfxVolume.value,
+		...(
+			gameMode.value === 'normal' ? {
+				monoDefinitions: NORAML_MONOS,
+			} : {
+				monoDefinitions: SQUARE_MONOS,
+			}
+		),
+	});
+	os.promiseDialog(game.load(), async () => {
+		game.start(logs);
+	});
 }
 
 function attachGameEvents() {
@@ -551,10 +579,13 @@ async function start() {
 		highScore.value = null;
 	}
 
+	seed = Date.now().toString();
+
 	game = new DropAndFusionGame({
 		width: GAME_WIDTH,
 		height: GAME_HEIGHT,
 		canvas: canvasEl.value!,
+		seed: seed,
 		sfxVolume: mute.value ? 0 : sfxVolume.value,
 		...(
 			gameMode.value === 'normal' ? {

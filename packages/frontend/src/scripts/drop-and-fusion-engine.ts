@@ -5,6 +5,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import * as Matter from 'matter-js';
+import seedrandom from 'seedrandom';
 import * as sound from '@/scripts/sound.js';
 
 export type Mono = {
@@ -18,6 +19,15 @@ export type Mono = {
 	img: string;
 	imgSize: number;
 	spriteScale: number;
+};
+
+type Log = {
+	frame: number;
+	operation: 'drop';
+	x: number;
+} | {
+	frame: number;
+	operation: 'hold';
 };
 
 export class DropAndFusionGame extends EventEmitter<{
@@ -35,18 +45,21 @@ export class DropAndFusionGame extends EventEmitter<{
 	public readonly DROP_INTERVAL = 500;
 	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
+	private METTER_ENGINE_UPDATE_DELTA = 1000 / 60; // 60fps
 	private loaded = false;
+	private frame = 0;
 	private engine: Matter.Engine;
 	private render: Matter.Render;
-	private runner: Matter.Runner;
+	private matterEngineUpdateRaf: ReturnType<typeof requestAnimationFrame> | null = null;
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
-
 	private gameWidth: number;
 	private gameHeight: number;
 	private monoDefinitions: Mono[] = [];
 	private monoTextures: Record<string, Blob> = {};
 	private monoTextureUrls: Record<string, string> = {};
+	private rng: () => number;
+	private logs: Log[] = [];
 
 	private sfxVolume = 1;
 
@@ -87,13 +100,17 @@ export class DropAndFusionGame extends EventEmitter<{
 		width: number;
 		height: number;
 		monoDefinitions: Mono[];
+		seed: string;
 		sfxVolume?: number;
 	}) {
 		super();
 
+		this.tick = this.tick.bind(this);
+
 		this.gameWidth = opts.width;
 		this.gameHeight = opts.height;
 		this.monoDefinitions = opts.monoDefinitions;
+		this.rng = seedrandom(opts.seed);
 
 		if (opts.sfxVolume) {
 			this.sfxVolume = opts.sfxVolume;
@@ -128,9 +145,6 @@ export class DropAndFusionGame extends EventEmitter<{
 		});
 
 		Matter.Render.run(this.render);
-
-		this.runner = Matter.Runner.create();
-		Matter.Runner.run(this.runner, this.engine);
 
 		this.engine.world.bodies = [];
 
@@ -244,7 +258,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		} else {
 			//const VELOCITY = 30;
 			//for (let i = 0; i < 10; i++) {
-			//	const body = createBody(FRUITS.find(x => x.level === (1 + Math.floor(Math.random() * 3)))!, x + ((Math.random() * VELOCITY) - (VELOCITY / 2)), y + ((Math.random() * VELOCITY) - (VELOCITY / 2)));
+			//	const body = createBody(FRUITS.find(x => x.level === (1 + Math.floor(this.rng() * 3)))!, x + ((this.rng() * VELOCITY) - (VELOCITY / 2)), y + ((this.rng() * VELOCITY) - (VELOCITY / 2)));
 			//	Matter.Composite.add(world, body);
 			//	bodies.push(body);
 			//}
@@ -257,7 +271,8 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	private gameOver() {
 		this.isGameOver = true;
-		Matter.Runner.stop(this.runner);
+		if (this.matterEngineUpdateRaf) window.cancelAnimationFrame(this.matterEngineUpdateRaf);
+		this.matterEngineUpdateRaf = null;
 		this.emit('gameOver');
 	}
 
@@ -292,13 +307,13 @@ export class DropAndFusionGame extends EventEmitter<{
 		return Promise.all(this.monoDefinitions.map(x => loadSingleMonoTexture(x, this)));
 	}
 
-	public start() {
+	public start(logs?: Log[]) {
 		if (!this.loaded) throw new Error('game is not loaded yet');
 
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
-				id: Math.random().toString(),
-				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
+				id: this.rng().toString(),
+				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(this.rng() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 			});
 		}
 		this.emit('changeStock', this.stock);
@@ -354,6 +369,47 @@ export class DropAndFusionGame extends EventEmitter<{
 				this.combo = 0;
 			}
 		}, 500);
+
+		if (logs) {
+			let playingFrame = 0;
+
+			const playTick = () => {
+				playingFrame++;
+				const log = logs.find(x => x.frame === playingFrame - 1);
+				if (log) {
+					switch (log.operation) {
+						case 'drop': {
+							this.drop(log.x);
+							break;
+						}
+						case 'hold': {
+							this.hold();
+							break;
+						}
+						default:
+							break;
+					}
+				}
+
+				Matter.Engine.update(this.engine, this.METTER_ENGINE_UPDATE_DELTA);
+
+				window.requestAnimationFrame(playTick);
+			};
+
+			playTick();
+		} else {
+			this.tick();
+		}
+	}
+
+	public getLogs() {
+		return this.logs;
+	}
+
+	private tick() {
+		this.frame++;
+		Matter.Engine.update(this.engine, this.METTER_ENGINE_UPDATE_DELTA);
+		this.matterEngineUpdateRaf = window.requestAnimationFrame(this.tick);
 	}
 
 	public async load() {
@@ -391,13 +447,18 @@ export class DropAndFusionGame extends EventEmitter<{
 
 		const head = this.stock.shift()!;
 		this.stock.push({
-			id: Math.random().toString(),
-			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
+			id: this.rng().toString(),
+			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(this.rng() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 		});
 		this.emit('changeStock', this.stock);
 
-		const x = Math.min(this.gameWidth - this.PLAYAREA_MARGIN - (head.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (head.mono.size / 2), _x));
+		const x = Math.round(Math.min(this.gameWidth - this.PLAYAREA_MARGIN - (head.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (head.mono.size / 2), _x)));
 		const body = this.createBody(head.mono, x, 50 + head.mono.size / 2);
+		this.logs.push({
+			frame: this.frame,
+			operation: 'drop',
+			x,
+		});
 		Matter.Composite.add(this.engine.world, body);
 		this.activeBodyIds.push(body.id);
 		this.latestDroppedBodyId = body.id;
@@ -416,6 +477,11 @@ export class DropAndFusionGame extends EventEmitter<{
 	public hold() {
 		if (this.isGameOver) return;
 
+		this.logs.push({
+			frame: this.frame,
+			operation: 'hold',
+		});
+
 		if (this.holding) {
 			const head = this.stock.shift()!;
 			this.stock.unshift(this.holding);
@@ -426,8 +492,8 @@ export class DropAndFusionGame extends EventEmitter<{
 			const head = this.stock.shift()!;
 			this.holding = head;
 			this.stock.push({
-				id: Math.random().toString(),
-				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
+				id: this.rng().toString(),
+				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(this.rng() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 			});
 			this.emit('changeHolding', this.holding);
 			this.emit('changeStock', this.stock);
@@ -440,8 +506,9 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	public dispose() {
 		if (this.comboIntervalId) window.clearInterval(this.comboIntervalId);
+		if (this.matterEngineUpdateRaf) window.cancelAnimationFrame(this.matterEngineUpdateRaf);
+		this.matterEngineUpdateRaf = null;
 		Matter.Render.stop(this.render);
-		Matter.Runner.stop(this.runner);
 		Matter.World.clear(this.engine.world, false);
 		Matter.Engine.clear(this.engine);
 	}
