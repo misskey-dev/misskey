@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="[$style.frame, $style.frameH]">
 					<div :class="$style.frameInner">
-						<MkButton inline @click="hold">HOLD</MkButton>
+						<MkButton inline small @click="hold">HOLD</MkButton>
 						<img v-if="holdingStock" :src="game.getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
 					</div>
 					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">

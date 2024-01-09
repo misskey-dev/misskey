@@ -433,6 +433,10 @@ export class DropAndFusionGame extends EventEmitter<{
 			this.emit('changeHolding', this.holding);
 			this.emit('changeStock', this.stock);
 		}
+
+		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+			volume: this.sfxVolume,
+		});
 	}
 
 	public dispose() {
