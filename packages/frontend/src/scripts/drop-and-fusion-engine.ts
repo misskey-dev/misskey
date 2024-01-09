@@ -387,9 +387,8 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	public drop(_x: number) {
 		if (this.isGameOver) return;
-		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) {
-			return;
-		}
+		if (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL) return;
+
 		const head = this.stock.shift()!;
 		this.stock.push({
 			id: Math.random().toString(),
@@ -435,7 +434,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		}
 
 		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
-			volume: this.sfxVolume,
+			volume: 0.5 * this.sfxVolume,
 		});
 	}
 
