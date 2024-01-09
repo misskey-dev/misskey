@@ -1202,6 +1202,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "若有大量活动公告，可能会造成用户体验可能下降。请考虑归档已完成的公告。"
   readConfirmTitle: "标记为已读？"
   readConfirmText: "阅读“{title}”的内容并将其标记为已读。"
+  shouldNotBeUsedToPresentPermanentInfo: "我们建议使用公告来发布临时性的流动信息而不是固定的常规信息，因为这可能损害用户体验，尤其是对于新用户而言。"
   dialogAnnouncementUxWarn: "同时存在 2 个或以上的对话框公告极有可能对用户体验产生负面的影响，建议谨慎使用。"
   silence: "不发送通知"
   silenceDescription: "开启后，此条公告将不会发送通知，也不强制用户阅读。"
@@ -1253,10 +1254,36 @@ _initialTutorial:
     description2: "可以随时在屏幕顶部在每个时间线之间切换。"
     description3: "另外，还有列表时间线和频道时间线。请参阅{link}了解更多详细信息。"
   _postNote:
+    title: "帖子发布设置"
+    description1: "在 Misskey 发布帖子时，您可以设置各种选项。 提交表单如下所示。\n"
+    _visibility:
+      description: "您可以限制谁可以看到您的帖子。"
+      public: "向所有用户公开。\n"
+      home: "仅在本地时间线上发布。 您还可以从关注者、个人资料访问者和转贴中查看其他用户。"
+      followers: "仅对关注者可见。 除了您自己之外，没有人可以转贴，并且只有您的关注者可以查看它。\n"
+      direct: "它将仅向指定用户公开，并且他们也会收到通知。 您可以使用它来代替私信。\n"
+      doNotSendConfidencialOnDirect1: "发送敏感信息时请注意。\n"
+      doNotSendConfidencialOnDirect2: "目标服务器的管理员可以看到发布的内容，因此如果您向不受信任的服务器上的用户发送私信，则在处理敏感信息时需要小心。"
+      localOnly: "我们不会将帖子联合到其他服务器。 无论上述公开范围如何，其他服务器上的用户将无法通过此设置直接查看帖子。\n"
     _cw:
+      title: "隐藏内容 (CW)\n"
+      description: "将显示“注释”中写入的内容而不是正文。 单击“查看更多”以显示文本。\n"
       _exampleNote:
         cw: "深夜报复社会"
         note: "茨了带巧克力的甜甜圈🍩😋"
+      useCases: "用于按照服务器指南的要求指定注释，或对剧透内容和敏感文字进行自主规制。"
+  _howToMakeAttachmentsSensitive:
+    title: "如何将附件标注为敏感内容？"
+    description: "对于服务器指南要求的附件或不应完整保留的附件，请添加“敏感”标志。\n"
+    tryThisFile: "尝试将附加到此表单的图像标注为敏感！"
+    _exampleNote:
+      note: "我错误地打开了纳豆的盖子......\n"
+    method: "要标注附件为敏感内容，请单击该文件以打开菜单，然后单击“设置为敏感”。"
+    sensitiveSucceeded: "附加文件时，请务必根据服务器的指南适当设置敏感程度。\n"
+    doItToContinue: "如果您将图像设置为敏感，您将能够继续。\n"
+  _done:
+    title: "恭喜您，已经完成了教程🎉\n"
+    description: "这里介绍的只是其中一小部分的功能。 要了解更多有关如何使用 Misskey 的更多信息，请访问 {link}。"
 _timelineDescription:
   home: "首页时间线可以查看您关注的账户的帖子。"
   local: "本地时间线可以查看这个服务器上所有用户发表的帖子。"
@@ -1536,6 +1563,8 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey 初学者课程 结业证书"
       description: "完成了教学"
+    _bubbleGameExplodingHead:
+      title: "🤯"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -1953,6 +1982,7 @@ _permissions:
   "read:admin:emoji": "查看表情文字"
   "write:admin:queue": "编辑作业队列"
   "read:admin:queue": "查看作业队列相关情报"
+  "write:admin:promo": "运营推广说明"
   "write:admin:drive": "编辑用户网盘"
   "read:admin:drive": "查看用户网盘相关情报"
   "read:admin:stream": "使用管理员用的 Websocket API"
@@ -2204,6 +2234,7 @@ _notification:
   pollEnded: "问卷调查结果已生成。"
   newNote: "新的帖子"
   unreadAntennaNote: "天线 {name}"
+  roleAssigned: "授予的角色"
   emptyPushNotificationMessage: "推送通知已更新"
   achievementEarned: "获得成就"
   testNotification: "测试通知"
@@ -2212,6 +2243,7 @@ _notification:
   notificationWillBeDisplayedLikeThis: "通知将会这样表示"
   reactedBySomeUsers: "{n} 人回应了"
   renotedBySomeUsers: "{n} 人转发了"
+  followedBySomeUsers: "被 {n} 人关注"
   _types:
     all: "全部"
     note: "用户的新帖子"
@@ -2224,6 +2256,7 @@ _notification:
     pollEnded: "问卷调查结束"
     receiveFollowRequest: "收到关注请求"
     followRequestAccepted: "关注请求已通过"
+    roleAssigned: "授予的角色"
     achievementEarned: "取得的成就"
     app: "关联应用的通知"
   _actions:
@@ -2306,6 +2339,8 @@ _moderationLogTypes:
   deleteGlobalAnnouncement: "删除全体通知"
   deleteUserAnnouncement: "删除用户通知"
   resetPassword: "重置密码"
+  suspendRemoteInstance: "停止远程服务器"
+  unsuspendRemoteInstance: "恢复远程服务器"
   markSensitiveDriveFile: "标记网盘文件为敏感媒体"
   unmarkSensitiveDriveFile: "取消标记网盘文件为敏感媒体"
   resolveAbuseReport: "处理举报"
@@ -2339,6 +2374,7 @@ _externalResourceInstaller:
     base: "基本配色方案"
   _vendorInfo:
     title: "来源信息"
+    endpoint: "参考端点"
     hashVerify: "确认文件完整性"
   _errors:
     _invalidParams:
@@ -2369,7 +2405,13 @@ _externalResourceInstaller:
 _dataSaver:
   _media:
     title: "加载媒体"
+    description: "防止自动加载图像和视频。 点击隐藏的图像/视频即可加载它们。\n"
   _avatar:
     title: "头像"
+    description: "图标图像的动画将停止。 由于动画图片的文件大小可能比普通图像大，这可以进一步减少数据流量。"
+  _urlPreview:
+    title: "URL预览缩略图\n"
+    description: "将不再加载 URL 预览缩略图。"
   _code:
     title: "代码高亮"
+    description: "如果使用了代码高亮标记，例如在 MFM 中，则在点击之前不会加载。 代码高亮要求加载每种高亮语言的定义文件，由于这些文件不再自动加载，因此有望减少数据传输量。"
