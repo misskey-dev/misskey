@@ -495,7 +495,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		});
 		this.emit('changeStock', this.stock);
 
-		const x = Math.round(Math.min(this.gameWidth - this.PLAYAREA_MARGIN - (head.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (head.mono.size / 2), _x)));
+		const x = Math.min(this.gameWidth - this.PLAYAREA_MARGIN - (head.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (head.mono.size / 2), Math.round(_x)));
 		const body = this.createBody(head.mono, x, 50 + head.mono.size / 2);
 		this.logs.push({
 			frame: this.frame,
