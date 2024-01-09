@@ -86,5 +86,10 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 			},
 		},
+		role: {
+			type: 'object',
+			ref: 'Role',
+			optional: true, nullable: true,
+		},
 	},
 } as const;
