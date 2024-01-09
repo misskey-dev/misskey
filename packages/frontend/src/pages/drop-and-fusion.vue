@@ -153,7 +153,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.frame">
 				<div :class="$style.frameInner">
-					<MkButton danger @click="surrender">Retry</MkButton>
+					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
+					<MkButton v-else full @click="retry">Retry</MkButton>
 				</div>
 			</div>
 		</div>
@@ -483,15 +484,22 @@ async function surrender() {
 	game.surrender();
 }
 
+async function retry() {
+	end();
+	await start();
+}
+
 function end() {
 	game.dispose();
 	isGameOver.value = false;
+	replaying.value = false;
 	currentPick.value = null;
 	dropReady.value = true;
 	stock.value = [];
 	score.value = 0;
 	combo.value = 0;
 	comboPrev.value = 0;
+	maxCombo.value = 0;
 	bgmNodes?.soundSource.stop();
 	gameStarted.value = false;
 }
