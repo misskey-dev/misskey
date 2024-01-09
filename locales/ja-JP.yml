@@ -1192,6 +1192,7 @@ enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
 bubbleGame: "バブルゲーム"
 sfx: "効果音"
 soundWillBePlayed: "サウンドが再生されます"
+showReplay: "リプレイを見る"
 replay: "リプレイ"
 replaying: "リプレイ中"
 

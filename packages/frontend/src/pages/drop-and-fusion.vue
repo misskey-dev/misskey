@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: gameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 				<canvas ref="canvasEl" :class="$style.canvas"/>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 				</Transition>
-				<div v-if="!gameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+				<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
 					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
@@ -91,16 +91,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.dropGuide"/>
 					</template>
 				</div>
-				<div v-if="gameOver && !replaying" :class="$style.gameOverLabel">
+				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
 						<div>SCORE: <MkNumber :value="score"/></div>
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
-						<div class="_buttonsCenter">
-							<MkButton primary rounded @click="restart">{{ i18n.ts.ok }}</MkButton>
-							<MkButton primary rounded @click="replay">{{ i18n.ts.replay }}</MkButton>
-							<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
-						</div>
 					</div>
 				</div>
 				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
@@ -109,6 +104,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
 						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END REPLAY</MkButton>
+					</div>
+				</div>
+			</div>
+			<div v-if="isGameOver" :class="$style.frame">
+				<div :class="$style.frameInner">
+					<div class="_buttonsCenter">
+						<MkButton primary rounded @click="end">{{ i18n.ts.done }}</MkButton>
+						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
+						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
+						<MkButton rounded @click="exportLog">Copy replay data</MkButton>
 					</div>
 				</div>
 			</div>
@@ -177,6 +182,7 @@ import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const NORMAL_BASE_SIZE = 30;
 const NORAML_MONOS: Mono[] = [{
@@ -425,7 +431,7 @@ const comboPrev = ref(0);
 const maxCombo = ref(0);
 const dropReady = ref(true);
 const gameMode = ref<'normal' | 'square'>('normal');
-const gameOver = ref(false);
+const isGameOver = ref(false);
 const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
@@ -472,9 +478,9 @@ function surrender() {
 	game.surrender();
 }
 
-function restart() {
+function end() {
 	game.dispose();
-	gameOver.value = false;
+	isGameOver.value = false;
 	currentPick.value = null;
 	dropReady.value = true;
 	stock.value = [];
@@ -513,6 +519,17 @@ function endReplay() {
 	game.dispose();
 }
 
+function exportLog() {
+	if (!logs) return;
+	const data = JSON.stringify({
+		seed: seed,
+		date: new Date().toISOString(),
+		logs: logs,
+	});
+	copyToClipboard(data);
+	os.success();
+}
+
 function attachGameEvents() {
 	game.addListener('changeScore', value => {
 		score.value = value;
@@ -542,7 +559,7 @@ function attachGameEvents() {
 
 		dropReady.value = false;
 		window.setTimeout(() => {
-			if (!gameOver.value) {
+			if (!isGameOver.value) {
 				dropReady.value = true;
 			}
 		}, game.DROP_INTERVAL);
@@ -581,7 +598,7 @@ function attachGameEvents() {
 		logs = game.getLogs();
 		currentPick.value = null;
 		dropReady.value = false;
-		gameOver.value = true;
+		isGameOver.value = true;
 
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
@@ -749,7 +766,7 @@ useInterval(() => {
 }, 1000, { immediate: false, afterMounted: true });
 
 onDeactivated(() => {
-	restart();
+	end();
 });
 
 definePageMetadata({
