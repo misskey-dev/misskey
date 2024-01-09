@@ -16,7 +16,7 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { chartVLine } from '@/scripts/chart-vline.js';
 import { alpha } from '@/scripts/color.js';
 import { initChart } from '@/scripts/init-chart.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 initChart();
 
@@ -40,7 +40,7 @@ const getDate = (ymd: string) => {
 };
 
 onMounted(async () => {
-	let raw = await os.api('retention', { });
+	let raw = await misskeyApi('retention', { });
 
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 

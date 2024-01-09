@@ -129,11 +129,12 @@ import bytes from '@/filters/bytes.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const stats = ref<any>({});
 
 onMounted(() => {
-	os.api('users/stats', {
+	misskeyApi('users/stats', {
 		userId: $i!.id,
 	}).then(response => {
 		stats.value = response;

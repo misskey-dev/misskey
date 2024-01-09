@@ -38,6 +38,7 @@ import { ref } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { i18n } from '@/i18n.js';
@@ -95,8 +96,8 @@ const setSrc = (src) => {
 const choose = async (ev) => {
 	menuOpened.value = true;
 	const [antennas, lists] = await Promise.all([
-		os.api('antennas/list'),
-		os.api('users/lists/list'),
+		misskeyApi('antennas/list'),
+		misskeyApi('users/lists/list'),
 	]);
 	const antennaItems = antennas.map(antenna => ({
 		text: antenna.name,

@@ -3,9 +3,20 @@ name: Lint
 on:
   push:
     branches:
-      - master
-      - develop
+      - io
+    paths:
+      - packages/backend/**
+      - packages/frontend/**
+      - packages/sw/**
+      - packages/misskey-js/**
+      - packages/shared/.eslintrc.js
   pull_request:
+    paths:
+      - packages/backend/**
+      - packages/frontend/**
+      - packages/sw/**
+      - packages/misskey-js/**
+      - packages/shared/.eslintrc.js
 
 jobs:
   pnpm_install:
@@ -44,7 +55,7 @@ jobs:
         submodules: true
     - uses: pnpm/action-setup@v2
       with:
-        version: 7
+        version: 8
         run_install: false
     - uses: actions/setup-node@v4.0.1
       with:
@@ -70,7 +81,7 @@ jobs:
         submodules: true
     - uses: pnpm/action-setup@v2
       with:
-        version: 7
+        version: 8
         run_install: false
     - uses: actions/setup-node@v4.0.1
       with:

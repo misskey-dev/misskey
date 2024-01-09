@@ -3,9 +3,21 @@ name: Test (frontend)
 on:
   push:
     branches:
-      - master
-      - develop
+      - io
+    paths:
+      - packages/frontend/**
+      # for permissions
+      - packages/misskey-js/**
+      # for e2e
+      - packages/backend/**
+
   pull_request:
+    paths:
+      - packages/frontend/**
+      # for permissions
+      - packages/misskey-js/**
+      # for e2e
+      - packages/backend/**
 
 jobs:
   vitest:
@@ -80,7 +92,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 7
+        version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4.0.1

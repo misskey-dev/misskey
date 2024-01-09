@@ -73,6 +73,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
 	user: Misskey.entities.User;
@@ -106,7 +107,7 @@ function muteUser() {
 }
 
 function refreshUserInfo() {
-	os.api('users/show', { userId: props.user.id })
+	misskeyApi('users/show', { userId: props.user.id })
 		.then((res) => {
 			fullUserInfo.value = res;
 		});
@@ -132,7 +133,7 @@ function send() {
 		comment: comment.value,
 		category: category.value,
 	}, undefined).then(res => {
-		os.api('users/show', { userId: props.user.id })
+		misskeyApi('users/show', { userId: props.user.id })
 			.then((res) => {
 				fullUserInfo.value = res;
 				uiWindow.value?.close();

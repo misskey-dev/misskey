@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XAntenna from './editor.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache } from '@/cache.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
@@ -32,7 +32,7 @@ function onAntennaUpdated() {
 	router.push('/my/antennas');
 }
 
-os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
 	antenna.value = antennaResponse;
 });
 

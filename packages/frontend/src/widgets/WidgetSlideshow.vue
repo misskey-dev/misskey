@@ -22,6 +22,7 @@ import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 
@@ -77,7 +78,7 @@ const change = () => {
 const fetch = () => {
 	fetching.value = true;
 
-	os.api('drive/files', {
+	misskeyApi('drive/files', {
 		folderId: widgetProps.folderId,
 		type: 'image/*',
 		limit: 100,
