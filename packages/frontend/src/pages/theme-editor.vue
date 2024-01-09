@@ -190,7 +190,7 @@ function applyThemeCode() {
 async function saveAs() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.name,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 

@@ -80,7 +80,7 @@ function show(file) {
 async function find() {
 	const { canceled, result: q } = await os.inputText({
 		title: i18n.ts.fileIdOrUrl,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 

@@ -241,7 +241,7 @@ function changeProfile(ev: MouseEvent) {
 			action: async () => {
 				const { canceled, result: name } = await os.inputText({
 					title: i18n.ts._deck.profile,
-					allowEmpty: false,
+					minLength: 1,
 				});
 				if (canceled) return;
 
