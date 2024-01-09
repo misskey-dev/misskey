@@ -424,7 +424,9 @@ export class DropAndFusionGame extends EventEmitter<{
 
 				Matter.Engine.update(this.engine, this.TICK_DELTA);
 
-				this.tickRaf = window.requestAnimationFrame(playTick);
+				if (!this.isGameOver) {
+					this.tickRaf = window.requestAnimationFrame(playTick);
+				}
 			};
 
 			playTick();
@@ -448,7 +450,9 @@ export class DropAndFusionGame extends EventEmitter<{
 			}
 		});
 		Matter.Engine.update(this.engine, this.TICK_DELTA);
-		this.tickRaf = window.requestAnimationFrame(this.tick);
+		if (!this.isGameOver) {
+			this.tickRaf = window.requestAnimationFrame(this.tick);
+		}
 	}
 
 	public async load() {
