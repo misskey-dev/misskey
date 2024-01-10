@@ -55,7 +55,7 @@ const el = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex('high');
 
 function setPosition() {
-	if (!el.value || !props.targetElement) return;
+	if (!el.value) return;
 	const data = calcPopupPosition(el.value, {
 		anchorElement: props.targetElement,
 		direction: props.direction,
