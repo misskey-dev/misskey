@@ -7,14 +7,12 @@ on:
       - develop
 
 jobs:
-  get-changelog:
+  check-changelog:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     strategy:
       matrix:
-        changelog-name: [CHANGELOG-base.md, CHANGELOG-head.md]
+        changelog-name: [ CHANGELOG-base.md, CHANGELOG-head.md ]
         include:
           - changelog-name: CHANGELOG-base.md
             ref: ${{ github.base_ref }}
@@ -22,43 +20,25 @@ jobs:
             ref: refs/pull/${{ github.event.number }}/merge
 
     steps:
-    - uses: actions/checkout@v4.1.1
-      with:
-        ref: ${{ matrix.ref }}
-    - name: Rename CHANGELOG.md
-      run: mv CHANGELOG.md ${{ matrix.changelog-name }}
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.changelog-name }}
-        path: ${{ matrix.changelog-name }}
-
-  check-changelog:
-    runs-on: ubuntu-latest
-    needs:
-      - get-changelog
-    steps:
-      - name: Checkout
+      - name: Checkout base
         uses: actions/checkout@v4.1.1
-      - name: Use Node.js
+        with:
+          ref: ${{ github.base_ref }}
+      - name: Extract CHANGELOG-base.md
+        run: cp CHANGELOG.md CHANGELOG-base.md
+
+      - name: Checkout head
+        run: git checkout refs/pull/${{ github.event.number }}/merge
+      - name: Extract CHANGELOG-head.md
+        run: cp CHANGELOG.md CHANGELOG-head.md
+
+      - name: Move to Checker directory
+        run: mv CHANGELOG-*.md scripts/changelog-checker
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4.0.1
         with:
           node-version-file: '.node-version'
-
-      - name: Get CHANGELOG-base.md
-        uses: actions/download-artifact@v4
-        with:
-          name: CHANGELOG-base.md
-      - name: Get CHANGELOG-head.md
-        uses: actions/download-artifact@v4
-        with:
-          name: CHANGELOG-head.md
-
-      - name: ls
-        run: ls -la
-
-      - name: Move to Working directory
-        run: mv CHANGELOG-*.md scripts/changelog-checker
 
       - name: Setup Checker
         run: npm i
