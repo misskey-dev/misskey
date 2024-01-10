@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
 		<div v-show="!gameStarted" :class="$style.root">
-			<div style="text-align: center;" class="_gaps">
-				<div :class="$style.frame">
+			<div class="_gaps">
+				<div :class="$style.frame" style="text-align: center;">
 					<div :class="$style.frameInner">
 						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 					</div>
 				</div>
-				<div :class="$style.frame">
+				<div :class="$style.frame" style="text-align: center;">
 					<div :class="$style.frameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<MkSelect v-model="gameMode">
@@ -31,6 +31,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.mute }}</template>
 							</MkSwitch>
 						</div>
+					</div>
+				</div>
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<div>{{ i18n.ts._bubbleGame.howToPlay }}</div>
+						<ol>
+							<li>{{ i18n.ts._bubbleGame._howToPlay.section1 }}</li>
+							<li>{{ i18n.ts._bubbleGame._howToPlay.section2 }}</li>
+							<li>{{ i18n.ts._bubbleGame._howToPlay.section3 }}</li>
+						</ol>
 					</div>
 				</div>
 			</div>
