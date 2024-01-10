@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-09T09:35:04.429Z
+ * generatedAt: 2024-01-10T06:14:28.186Z
  */
 
 /**
@@ -25455,7 +25455,14 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': unknown;
+          'application/json': {
+              /** Format: date-time */
+              createdAt: string;
+              users: number;
+              data: {
+                [key: string]: number;
+              };
+            }[];
         };
       };
       /** @description Client error */
