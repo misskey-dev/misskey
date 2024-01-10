@@ -1197,6 +1197,13 @@ showReplay: "リプレイを見る"
 replay: "リプレイ"
 replaying: "リプレイ中"
 
+_bubbleGame:
+  howToPlay: "遊び方"
+  _howToPlay:
+    section1: "位置を調整してハコにモノを落とします。"
+    section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
+    section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
+
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点で存在するユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"

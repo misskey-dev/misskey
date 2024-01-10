@@ -33,6 +33,7 @@ type Log = {
 	operation: 'surrender';
 };
 
+// TODO: インスタンスを作り直さなくてもゲームをリスタートできるようにする
 export class DropAndFusionGame extends EventEmitter<{
 	changeScore: (newScore: number) => void;
 	changeCombo: (newCombo: number) => void;
@@ -307,7 +308,6 @@ export class DropAndFusionGame extends EventEmitter<{
 		async function loadSingleMonoTexture(mono: Mono, game: DropAndFusionGame) {
 			// Matter-js内にキャッシュがある場合はスキップ
 			if (game.render.textures[mono.img]) return;
-			console.log('loading', mono.img);
 
 			let src = mono.img;
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
