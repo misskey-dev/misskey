@@ -10,15 +10,6 @@ jobs:
   check-changelog:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        changelog-name: [ CHANGELOG-base.md, CHANGELOG-head.md ]
-        include:
-          - changelog-name: CHANGELOG-base.md
-            ref: ${{ github.base_ref }}
-          - changelog-name: CHANGELOG-head.md
-            ref: refs/pull/${{ github.event.number }}/merge
-
     steps:
       - name: Checkout base
         uses: actions/checkout@v4.1.1
