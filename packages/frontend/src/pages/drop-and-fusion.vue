@@ -103,7 +103,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="replaying" style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END REPLAY</MkButton>
+						<div class="_buttonsCenter">
+							<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END REPLAY</MkButton>
+							<MkButton :primary="replayPlaybackRate === 2" @click="replayPlaybackRate = replayPlaybackRate === 2 ? 1 : 2"><i class="ti ti-player-track-next"></i> x2</MkButton>
+							<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -437,9 +441,14 @@ const gameStarted = ref(false);
 const highScore = ref<number | null>(null);
 const showConfig = ref(false);
 const replaying = ref(false);
+const replayPlaybackRate = ref(1);
 const mute = ref(false);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
+
+watch(replayPlaybackRate, (newValue) => {
+	game.replayPlaybackRate = newValue;
+});
 
 function onClick(ev: MouseEvent) {
 	if (!containerElRect) return;
@@ -493,6 +502,7 @@ function end() {
 	game.dispose();
 	isGameOver.value = false;
 	replaying.value = false;
+	replayPlaybackRate.value = 1;
 	currentPick.value = null;
 	dropReady.value = true;
 	stock.value = [];
