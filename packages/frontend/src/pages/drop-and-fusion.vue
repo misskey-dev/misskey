@@ -1028,6 +1028,7 @@ definePageMetadata({
 	bottom: 10px;
 	padding: 6px 8px;
 	color: #f00;
+	font-weight: bold;
 	background: #0008;
 	border-radius: 6px;
 	pointer-events: none;

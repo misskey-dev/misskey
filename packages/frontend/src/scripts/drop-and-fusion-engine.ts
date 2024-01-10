@@ -157,6 +157,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 		//#region walls
 		const WALL_OPTIONS: Matter.IChamferableBodyDefinition = {
+			label: '_wall_',
 			isStatic: true,
 			friction: 0.7,
 			slop: 1.0,
@@ -254,12 +255,14 @@ export class DropAndFusionGame extends EventEmitter<{
 			const additionalScore = Math.round(currentMono.score * comboBonus);
 			this.score += additionalScore;
 
-			// TODO: 効果音再生はコンポーネント側の責務なので移動する
-			const pan = ((newX / this.gameWidth) - 0.5) * 2;
+			// TODO: 効果音再生はコンポーネント側の責務なので移動するべき？
+			const panV = newX - this.PLAYAREA_MARGIN;
+			const panW = this.gameWidth - this.PLAYAREA_MARGIN - this.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
 			sound.playUrl('/client-assets/drop-and-fusion/bubble2.mp3', {
 				volume: this.sfxVolume,
 				pan,
-				playbackRate: nextMono.sfxPitch,
+				playbackRate: nextMono.sfxPitch * this.replayPlaybackRate,
 			});
 
 			this.emit('monoAdded', nextMono);
@@ -293,7 +296,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.tickRaf = null;
 		this.emit('gameOver');
 
-		// TODO: 効果音再生はコンポーネント側の責務なので移動する
+		// TODO: 効果音再生はコンポーネント側の責務なので移動するべき？
 		sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
 			volume: this.sfxVolume,
 		});
@@ -377,14 +380,19 @@ export class DropAndFusionGame extends EventEmitter<{
 				} else {
 					const energy = pairs.collision.depth;
 					if (energy > minCollisionEnergyForSound) {
-						// TODO: 効果音再生はコンポーネント側の責務なので移動する
+						// TODO: 効果音再生はコンポーネント側の責務なので移動するべき？
 						const vol = ((Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4) * this.sfxVolume;
-						const pan = ((((bodyA.position.x + bodyB.position.x) / 2) / this.gameWidth) - 0.5) * 2;
+						const panV =
+							pairs.bodyA.label === '_wall_' ? bodyB.position.x - this.PLAYAREA_MARGIN :
+							pairs.bodyB.label === '_wall_' ? bodyA.position.x - this.PLAYAREA_MARGIN :
+							((bodyA.position.x + bodyB.position.x) / 2) - this.PLAYAREA_MARGIN;
+						const panW = this.gameWidth - this.PLAYAREA_MARGIN - this.PLAYAREA_MARGIN;
+						const pan = ((panV / panW) - 0.5) * 2;
 						const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
 						sound.playUrl('/client-assets/drop-and-fusion/poi1.mp3', {
 							volume: vol,
 							pan,
-							playbackRate: pitch,
+							playbackRate: pitch * this.replayPlaybackRate,
 						});
 					}
 				}
@@ -518,11 +526,14 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.emit('dropped');
 		this.emit('monoAdded', head.mono);
 
-		// TODO: 効果音再生はコンポーネント側の責務なので移動する
-		const pan = ((x / this.gameWidth) - 0.5) * 2;
+		// TODO: 効果音再生はコンポーネント側の責務なので移動するべき？
+		const panV = x - this.PLAYAREA_MARGIN;
+		const panW = this.gameWidth - this.PLAYAREA_MARGIN - this.PLAYAREA_MARGIN;
+		const pan = ((panV / panW) - 0.5) * 2;
 		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', {
 			volume: this.sfxVolume,
 			pan,
+			playbackRate: this.replayPlaybackRate,
 		});
 	}
 

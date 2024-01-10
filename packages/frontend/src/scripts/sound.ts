@@ -99,7 +99,6 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
 	}
 	if (options?.useCache ?? true) {
 		if (cache.has(url)) {
-			if (_DEV_) console.log('use cache');
 			return cache.get(url) as AudioBuffer;
 		}
 	}
@@ -128,7 +127,6 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (_DEV_) console.log('play', operationType, sound);
 	if (sound.type == null || !canPlay) return;
 
 	canPlay = false;
