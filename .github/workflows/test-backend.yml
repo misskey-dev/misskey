@@ -5,7 +5,15 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/backend/**
+      # for permissions
+      - packages/misskey-js/**
   pull_request:
+    paths:
+      - packages/backend/**
+      # for permissions
+      - packages/misskey-js/**
 
 jobs:
   unit:
