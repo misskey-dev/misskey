@@ -373,7 +373,7 @@ function react(viaKeyboard = false): void {
 	pleaseLogin();
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
-		sound.play('reaction');
+		sound.playMisskeySfx('reaction');
 
 		misskeyApi('notes/reactions/create', {
 			noteId: appearNote.value.id,
@@ -389,7 +389,7 @@ function react(viaKeyboard = false): void {
 	} else {
 		blur();
 		reactionPicker.show(reactButton.value, reaction => {
-			sound.play('reaction');
+			sound.playMisskeySfx('reaction');
 
 			misskeyApi('notes/reactions/create', {
 				noteId: appearNote.value.id,
