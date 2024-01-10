@@ -38,7 +38,7 @@ const { handler: externalTooltipHandler } = useChartTooltip({
 });
 
 async function renderChart() {
-	if (!rootEl.value || !chartEl.value) return;
+	if (!rootEl.value) return;
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
@@ -101,6 +101,8 @@ async function renderChart() {
 	const min = Math.max(0, Math.min(...values) - 1);
 
 	const marginEachCell = 4;
+
+	if (!chartEl.value) return;
 
 	chartInstance = new Chart(chartEl.value, {
 		type: 'matrix',

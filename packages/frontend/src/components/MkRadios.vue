@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { VNode, defineComponent, h, ref, watch } from 'vue';
+import { as } from 'vitest/dist/reporters-5f784f42.js';
 import MkRadio from './MkRadio.vue';
 
 export default defineComponent({
@@ -35,7 +36,7 @@ export default defineComponent({
 			h('div', {
 				class: 'body',
 			}, options.map(option => h(MkRadio, {
-				key: option.key,
+				key: option.key as string,
 				value: option.props?.value,
 				modelValue: value.value,
 				'onUpdate:modelValue': _v => value.value = _v,
