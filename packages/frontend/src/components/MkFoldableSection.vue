@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="div" :class="$style.root">
+<div ref="rootEl" :class="$style.root">
 	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</header>
 	<Transition
-		:name="defaultStore.state.animation ? 'folder-toggle' : ''"
+		:name="defaultStore.state.animation ? $style['folder-toggle'] : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<{
 	expanded: true,
 });
 
-const div = shallowRef<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 const bg = ref<string>();
 const showBody = ref((props.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`) === 't') : props.expanded);
 
@@ -55,7 +55,7 @@ watch(showBody, () => {
 function enter(element: Element) {
 	const el = element as HTMLElement;
 	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = 'unset';
+	el.style.height = '0';
 	el.offsetHeight; // reflow
 	el.style.height = elementHeight + 'px';
 }
@@ -89,7 +89,7 @@ onMounted(() => {
 		}
 	}
 
-	const rawBg = getParentBg(div.value);
+	const rawBg = getParentBg(rootEl.value);
 	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	_bg.setAlpha(0.85);
 	bg.value = _bg.toRgbString();
@@ -97,15 +97,15 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.folder-toggle-enter-active, .folder-toggle-leave-active {
-	overflow-y: clip;
-	transition: opacity 0.5s, height 0.5s !important;
-}
-.folder-toggle-enter-from {
-	opacity: 0;
-}
-.folder-toggle-leave-to {
-	opacity: 0;
+.folder-toggle {
+	&:global(-enter-active), &:global(-leave-active) {
+		overflow-y: clip;
+		transition: opacity 0.5s, height 0.5s !important;
+	}
+
+	&:global(-enter-from), &:global(-leave-to) {
+		opacity: 0;
+	}
 }
 
 .root {
