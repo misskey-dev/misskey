@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-adaptive-bg :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
+<div v-adaptive-bg :class="[$style.root, { yellow: isSilenced, red: isSuspended, gray: false }]">
 	<MkAvatar class="avatar" :user="user" indicator/>
 	<div class="body">
 		<span class="name"><MkUserName class="name" :user="user"/></span>
@@ -28,9 +28,20 @@ const props = withDefaults(defineProps<{
 	withChart: true,
 });
 
+const isSilenced = ref(false);
+const isSuspended = ref(false);
+
 const chartValues = ref<number[] | null>(null);
 
 onMounted(() => {
+	if ('isSilenced' in props.user) {
+		isSilenced.value = props.user.isSilenced;
+	}
+
+	if ('isSuspended' in props.user) {
+		isSuspended.value = props.user.isSuspended;
+	}
+
 	if (props.withChart) {
 		misskeyApiGet('charts/user/notes', { userId: props.user.id, limit: 16 + 1, span: 'day' }).then(res => {
 			// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
