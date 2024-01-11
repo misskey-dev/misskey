@@ -48,9 +48,9 @@ export function checkNewTopic(base: Release[], head: Release[]): Result {
 	}
 
 	const headLatest = head[0];
-	for (let relCnt = 0; relCnt < base.length; relCnt++) {
-		const baseItem = base[relCnt];
-		const headItem = head[relCnt];
+	for (let relIdx = 0; relIdx < base.length; relIdx++) {
+		const baseItem = base[relIdx];
+		const headItem = head[relIdx];
 		if (baseItem.releaseName !== headItem.releaseName) {
 			// リリースの順番が変わってると成立しないのでエラーにする
 			return Result.ofFailed(`Release is different. base:${baseItem.releaseName}, head:${headItem.releaseName}`);
@@ -64,9 +64,9 @@ export function checkNewTopic(base: Release[], head: Release[]): Result {
 			}
 		} else {
 			// カテゴリ数の変動はないのでリスト項目の数をチェック
-			for (let catCnt = 0; catCnt < baseItem.categories.length; catCnt++) {
-				const baseCategory = baseItem.categories[catCnt];
-				const headCategory = headItem.categories[catCnt];
+			for (let catIdx = 0; catIdx < baseItem.categories.length; catIdx++) {
+				const baseCategory = baseItem.categories[catIdx];
+				const headCategory = headItem.categories[catIdx];
 
 				if (baseCategory.categoryName !== headCategory.categoryName) {
 					// カテゴリの順番が変わっていると成立しないのでエラーにする
