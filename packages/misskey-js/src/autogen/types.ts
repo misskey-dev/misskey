@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-11T15:54:10.066Z
+ * generatedAt: 2024-01-11T16:39:49.139Z
  */
 
 /**
@@ -3656,32 +3656,7 @@ export type components = {
           unlockedAt: number;
         }[];
       loggedInDays: number;
-      policies: {
-        gtlAvailable: boolean;
-        ltlAvailable: boolean;
-        canPublicNote: boolean;
-        canInvite: boolean;
-        inviteLimit: number;
-        inviteLimitCycle: number;
-        inviteExpirationTime: number;
-        canManageCustomEmojis: boolean;
-        canManageAvatarDecorations: boolean;
-        canSearchNotes: boolean;
-        canUseTranslator: boolean;
-        canHideAds: boolean;
-        driveCapacityMb: number;
-        alwaysMarkNsfw: boolean;
-        pinLimit: number;
-        antennaLimit: number;
-        wordMuteLimit: number;
-        webhookLimit: number;
-        clipLimit: number;
-        noteEachClipsLimit: number;
-        userListLimit: number;
-        userEachUserListsLimit: number;
-        rateLimitFactor: number;
-        avatarDecorationLimit: number;
-      };
+      policies: components['schemas']['RolePolicies'];
       email?: string | null;
       emailVerified?: boolean | null;
       securityKeysList?: {
