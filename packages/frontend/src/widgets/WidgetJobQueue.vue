@@ -104,10 +104,7 @@ const jammedAudioBuffer = ref<AudioBuffer | null>(null);
 const jammedSoundNodePlaying = ref<boolean>(false);
 
 if (defaultStore.state.sound_masterVolume) {
-	sound.loadAudio({
-		type: 'syuilo/queue-jammed',
-		volume: 1,
-	}).then(buf => {
+	sound.loadAudio('/client-assets/sounds/syuilo/queue-jammed.mp3').then(buf => {
 		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
 		jammedAudioBuffer.value = buf;
 	});
@@ -126,7 +123,7 @@ const onStats = (stats) => {
 		current[domain].delayed = stats[domain].delayed;
 
 		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
-			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, 1);
+			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, {}).soundSource;
 			if (soundNode) {
 				jammedSoundNodePlaying.value = true;
 				soundNode.onended = () => jammedSoundNodePlaying.value = false;

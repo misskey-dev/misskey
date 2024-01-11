@@ -226,7 +226,18 @@ watch(q, () => {
                 }
             }
         } else {
-            for (const emoji of emojis) {
+            if (customEmojisMap.has(newQ)) {
+				matches.add(customEmojisMap.get(newQ)!);
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.aliases.some(alias => alias === newQ)) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;for (const emoji of emojis) {
                 if (emoji.name.startsWith(newQ)) {
                     matches.add(emoji);
                     if (matches.size >= max) break;

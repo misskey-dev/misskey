@@ -144,7 +144,7 @@ class DeliverManager {
 		}
 
 		// deliver
-		this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
 	}
 }
 

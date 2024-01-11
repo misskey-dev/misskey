@@ -36,7 +36,8 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/global/router/supplier.js';
+
 import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store.js";
 

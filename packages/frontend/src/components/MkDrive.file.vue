@@ -45,10 +45,10 @@ import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { useRouter } from '@/router.js';
 import { getDriveFileMenu, getDriveMultiFileMenu } from '@/scripts/get-drive-file-menu.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { deviceKind } from '@/scripts/device-kind.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 

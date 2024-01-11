@@ -657,6 +657,7 @@ export interface Locale {
     "small": string;
     "generateAccessToken": string;
     "permission": string;
+    "adminPermission": string;
     "enableAll": string;
     "disableAll": string;
     "tokenRequested": string;
@@ -1236,6 +1237,20 @@ export interface Locale {
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
     "bubbleGame": string;
+    "sfx": string;
+    "soundWillBePlayed": string;
+    "showReplay": string;
+    "replay": string;
+    "replaying": string;
+    "ranking": string;
+    "_bubbleGame": {
+        "howToPlay": string;
+        "_howToPlay": {
+            "section1": string;
+            "section2": string;
+            "section3": string;
+        };
+    };
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1699,6 +1714,15 @@ export interface Locale {
             "_tutorialCompleted": {
                 "title": string;
                 "description": string;
+            };
+            "_bubbleGameExplodingHead": {
+                "title": string;
+                "description": string;
+            };
+            "_bubbleGameDoubleExplodingHead": {
+                "title": string;
+                "description": string;
+                "flavor": string;
             };
         };
     };
