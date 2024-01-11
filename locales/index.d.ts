@@ -1206,11 +1206,20 @@ export interface Locale {
     "showReplay": string;
     "replay": string;
     "replaying": string;
+    "ranking": string;
     "abuseReportCategory": string;
     "selectCategory": string;
     "reportComplete": string;
     "blockThisUser": string;
     "muteThisUser": string;
+    "_bubbleGame": {
+        "howToPlay": string;
+        "_howToPlay": {
+            "section1": string;
+            "section2": string;
+            "section3": string;
+        };
+    };
     "_abuseReportMsgs": {
         "rightsAbuseCantAccept": string;
     };

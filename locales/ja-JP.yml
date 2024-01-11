@@ -1203,11 +1203,19 @@ soundWillBePlayed: "サウンドが再生されます"
 showReplay: "リプレイを見る"
 replay: "リプレイ"
 replaying: "リプレイ中"
+ranking: "ランキング"
 abuseReportCategory: "通報の種類"
 selectCategory: "カテゴリを選択"
 reportComplete: "通報完了"
 blockThisUser: "このユーザーをブロックする"
 muteThisUser: "このユーザーをミュートする"
+
+_bubbleGame:
+  howToPlay: "遊び方"
+  _howToPlay:
+    section1: "位置を調整してハコにモノを落とします。"
+    section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
+    section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
 
 _abuseReportMsgs:
   rightsAbuseCantAccept: "申し訳ございません。権利侵害の通報は権利者ご本人からのみ受け付けております。"
