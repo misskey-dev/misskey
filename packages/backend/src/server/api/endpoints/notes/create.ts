@@ -197,6 +197,7 @@ export const paramDef = {
 				nullable: false,
 			},
 		},
+		required: ['text'],
 	},
 } as const;
 
