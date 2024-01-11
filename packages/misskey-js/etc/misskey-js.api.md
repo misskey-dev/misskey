@@ -586,6 +586,7 @@ export type Channels = {
         params: {
             listId: string;
             withFiles?: boolean;
+            withRenotes?: boolean;
         };
         events: {
             note: (payload: Note) => void;
