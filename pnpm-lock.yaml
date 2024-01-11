@@ -686,8 +686,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(rollup@4.9.1)
       '@syuilo/aiscript':
-        specifier: 0.16.0
-        version: 0.16.0
+        specifier: 0.17.0
+        version: 0.17.0
       '@tabler/icons-webfont':
         specifier: 2.44.0
         version: 2.44.0
@@ -787,6 +787,9 @@ importers:
       sass:
         specifier: 1.69.5
         version: 1.69.5
+      seedrandom:
+        specifier: ^3.0.5
+        version: 3.0.5
       shiki:
         specifier: 0.14.7
         version: 0.14.7
@@ -7401,7 +7404,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@swc/core': ^1.2.66
-      chokidar: ^3.5.1
+      chokidar: 3.5.3
     peerDependenciesMeta:
       chokidar:
         optional: true
@@ -7646,8 +7649,8 @@ packages:
     dev: false
     optional: true
 
-  /@syuilo/aiscript@0.16.0:
-    resolution: {integrity: sha512-CXvoWOq6kmOSUQtKv0IEf7Ebfkk5PO1LxAgLqgRRPgssPvDvINCXu/gFNXKdapkFMkmX+Gj8qjemKR1vnUS4ZA==}
+  /@syuilo/aiscript@0.17.0:
+    resolution: {integrity: sha512-3JtQ1rWJHMxQ3153zLCXMUOwrOgjPPYGBl0dPHhR0ohm4tn7okMQRugxMCT0t3YxByemb9FfiM6TUjd0tEGxdA==}
     dependencies:
       seedrandom: 3.0.5
       stringz: 2.1.0
