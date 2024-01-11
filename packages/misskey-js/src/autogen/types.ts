@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-10T06:14:28.186Z
+ * generatedAt: 2024-01-11T05:49:42.042Z
  */
 
 /**
@@ -3742,8 +3742,10 @@ export type components = {
       text: string;
       title: string;
       imageUrl: string | null;
-      icon: string;
-      display: string;
+      /** @enum {string} */
+      icon: 'info' | 'warning' | 'error' | 'success';
+      /** @enum {string} */
+      display: 'dialog' | 'normal' | 'banner';
       needConfirmationToRead: boolean;
       silence: boolean;
       forYou: boolean;
