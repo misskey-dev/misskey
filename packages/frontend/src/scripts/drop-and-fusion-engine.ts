@@ -32,7 +32,6 @@ type Log = {
 	operation: 'surrender';
 };
 
-// TODO: インスタンスを作り直さなくてもゲームをリスタートできるようにする
 export class DropAndFusionGame extends EventEmitter<{
 	changeScore: (newScore: number) => void;
 	changeCombo: (newCombo: number) => void;
@@ -46,12 +45,14 @@ export class DropAndFusionGame extends EventEmitter<{
 }> {
 	private PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる、逆に高すぎても何故か不安定になる
 	private COMBO_INTERVAL = 60; // frame
+	public readonly GAME_VERSION = 1;
 	public readonly GAME_WIDTH = 450;
 	public readonly GAME_HEIGHT = 600;
 	public readonly DROP_INTERVAL = 500;
 	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
 	private TICK_DELTA = 1000 / 60; // 60fps
+
 	public frame = 0;
 	public engine: Matter.Engine;
 	private tickCallbackQueue: { frame: number; callback: () => void; }[] = [];
@@ -156,6 +157,10 @@ export class DropAndFusionGame extends EventEmitter<{
 		Matter.Composite.add(this.engine.world, this.overflowCollider);
 	}
 
+	private msToFrame(ms: number) {
+		return Math.round(ms / this.TICK_DELTA);
+	}
+
 	private createBody(mono: Mono, x: number, y: number) {
 		const options: Matter.IBodyDefinition = {
 			label: mono.id,
@@ -209,7 +214,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 			// 連鎖してfusionした場合の分かりやすさのため少し間を置いてからfusion対象になるようにする
 			this.tickCallbackQueue.push({
-				frame: this.frame + 6,
+				frame: this.frame + this.msToFrame(100),
 				callback: () => {
 					this.activeBodyIds.push(body.id);
 				},
@@ -261,7 +266,7 @@ export class DropAndFusionGame extends EventEmitter<{
 				} else {
 					this.fusionReservedPairs.push({ bodyA, bodyB });
 					this.tickCallbackQueue.push({
-						frame: this.frame + 6,
+						frame: this.frame + this.msToFrame(100),
 						callback: () => {
 							this.fusionReservedPairs = this.fusionReservedPairs.filter(x => x.bodyA.id !== bodyA.id && x.bodyB.id !== bodyB.id);
 							this.fusion(bodyA, bodyB);
@@ -394,6 +399,66 @@ export class DropAndFusionGame extends EventEmitter<{
 			this.emit('changeHolding', this.holding);
 			this.emit('changeStock', this.stock);
 		}
+	}
+
+	public static serializeLogs(logs: Log[]) {
+		const _logs: number[][] = [];
+
+		for (let i = 0; i < logs.length; i++) {
+			const log = logs[i];
+			const frameDelta = i === 0 ? log.frame : log.frame - logs[i - 1].frame;
+
+			switch (log.operation) {
+				case 'drop':
+					_logs.push([frameDelta, 0, log.x]);
+					break;
+				case 'hold':
+					_logs.push([frameDelta, 1]);
+					break;
+				case 'surrender':
+					_logs.push([frameDelta, 2]);
+					break;
+			}
+		}
+
+		return _logs;
+	}
+
+	public static deserializeLogs(logs: number[][]) {
+		const _logs: Log[] = [];
+
+		let frame = 0;
+
+		for (const log of logs) {
+			const frameDelta = log[0];
+			frame += frameDelta;
+
+			const operation = log[1];
+
+			switch (operation) {
+				case 0:
+					_logs.push({
+						frame,
+						operation: 'drop',
+						x: log[2],
+					});
+					break;
+				case 1:
+					_logs.push({
+						frame,
+						operation: 'hold',
+					});
+					break;
+				case 2:
+					_logs.push({
+						frame,
+						operation: 'surrender',
+					});
+					break;
+			}
+		}
+
+		return _logs;
 	}
 
 	public dispose() {

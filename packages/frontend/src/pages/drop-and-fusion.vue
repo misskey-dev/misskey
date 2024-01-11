@@ -40,6 +40,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<div class="_gaps_s" style="padding: 16px;">
+							<div><b>{{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
+							<div v-if="ranking" class="_gaps_s">
+								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
+									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
+									<MkUserName :user="r.user" :nowrap="true"/>
+									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} pt</b>
+								</div>
+							</div>
+							<div v-else>{{ i18n.ts.loading }}</div>
+						</div>
+					</div>
+				</div>
+				<div :class="$style.frame">
 					<div :class="$style.frameInner" style="padding: 16px;">
 						<div style="font-weight: bold;">{{ i18n.ts._bubbleGame.howToPlay }}</div>
 						<ol>
@@ -70,17 +85,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import XGame from './drop-and-fusion.game.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
 const gameMode = ref<'normal' | 'square'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
+const ranking = ref(null);
+
+watch(gameMode, async () => {
+	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });
+}, { immediate: true });
 
 async function start() {
 	gameStarted.value = true;
@@ -148,5 +169,14 @@ definePageMetadata({
 	border: none;
 	border-top: 1px solid #693410;
 	border-bottom: 1px solid #ce8a5c;
+}
+
+.rankingRecord {
+	display: flex;
+	line-height: 24px;
+	padding-top: 4px;
+	white-space: nowrap;
+	overflow: visible;
+	text-overflow: ellipsis;
 }
 </style>

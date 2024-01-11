@@ -679,9 +679,11 @@ function endReplay() {
 function exportLog() {
 	if (!logs) return;
 	const data = JSON.stringify({
-		seed: seed,
-		date: new Date().toISOString(),
-		logs: logs,
+		v: game.GAME_VERSION,
+		m: props.gameMode,
+		s: seed,
+		d: new Date().toISOString(),
+		l: DropAndFusionGame.serializeLogs(logs),
 	});
 	copyToClipboard(data);
 	os.success();
@@ -723,8 +725,15 @@ function getGameImageDriveFile() {
 			const [frame, logo] = images;
 			ctx.fillStyle = '#fff';
 			ctx.fillRect(0, 0, game.GAME_WIDTH, game.GAME_HEIGHT);
+
 			ctx.drawImage(frame, 0, 0, game.GAME_WIDTH, game.GAME_HEIGHT);
 			ctx.drawImage(canvasEl.value!, 0, 0, game.GAME_WIDTH, game.GAME_HEIGHT);
+
+			ctx.fillStyle = '#000';
+			ctx.font = '16px bold sans-serif';
+			ctx.textBaseline = 'top';
+			ctx.fillText(`SCORE: ${score.value.toLocaleString()}`, 10, 10);
+
 			ctx.globalAlpha = 0.7;
 			ctx.drawImage(logo, game.GAME_WIDTH * 0.55, 6, game.GAME_WIDTH * 0.45, game.GAME_WIDTH * 0.45 * (logo.height / logo.width));
 			ctx.globalAlpha = 1;
@@ -765,7 +774,7 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${props.gameMode}
-SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})`,
+SCORE: ${score.value.toLocaleString()} (MAX CHAIN: ${maxCombo.value})`,
 		initialFiles: [file],
 		instant: true,
 	});
@@ -858,6 +867,14 @@ function attachGameEvents() {
 		currentPick.value = null;
 		dropReady.value = false;
 		isGameOver.value = true;
+
+		misskeyApi('bubble-game/register', {
+			seed,
+			score: score.value,
+			gameMode: props.gameMode,
+			gameVersion: game.GAME_VERSION,
+			logs: DropAndFusionGame.serializeLogs(logs),
+		});
 
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
