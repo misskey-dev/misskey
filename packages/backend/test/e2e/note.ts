@@ -161,6 +161,13 @@ describe('Note', () => {
 		assert.strictEqual(deleteRes.status, 204);
 	});
 
+	test('text: nullのみだと怒られる', async () => {
+		const res = await api('/notes/create', {
+			text: null,
+		}, alice);
+		assert.strictEqual(res.status, 400);
+	});
+
 	test('文字数ぎりぎりで怒られない', async () => {
 		const post = {
 			text: '!'.repeat(MAX_NOTE_TEXT_LENGTH), // 3000文字
