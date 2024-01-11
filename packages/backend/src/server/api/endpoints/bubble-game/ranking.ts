@@ -11,8 +11,6 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
-	tags: [],
-
 	allowGet: true,
 	cacheSec: 60,
 
