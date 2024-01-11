@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<option value="ap-requests-deliver-failed">AP Requests: deliverFailed</option>
 		</MkSelect>
 		<div class="_panel" :class="$style.heatmap">
-			<MkHeatmap :src="heatmapSrc"/>
+			<MkHeatmap :src="heatmapSrc" :label="'Read & Write'"/>
 		</div>
 	</MkFoldableSection>
 
@@ -92,7 +92,7 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import MkHeatmap from '@/components/MkHeatmap.vue';
+import MkHeatmap, { type HeatmapSource } from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
@@ -103,7 +103,7 @@ initChart();
 const chartLimit = 500;
 const chartSpan = ref<'hour' | 'day'>('hour');
 const chartSrc = ref('active-users');
-const heatmapSrc = ref('active-users');
+const heatmapSrc = ref<HeatmapSource>('active-users');
 const subDoughnutEl = shallowRef<HTMLCanvasElement>();
 const pubDoughnutEl = shallowRef<HTMLCanvasElement>();
 
