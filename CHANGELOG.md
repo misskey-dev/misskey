@@ -36,7 +36,7 @@
 - Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
 - Enhance: クリップをエクスポートできるように
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
-- Fix: `notes/create`で`text: null`のみのリクエストに対して400を返すように
+- Fix: `notes/create`で`text: null`のみのリクエストや空白文字のみで構成された`text`に対して400を返すように
 
 ## 2023.12.2
 
