@@ -48,6 +48,11 @@ describe('api:notes/create', () => {
 				expect(v({ text: await tooLong }))
 					.toBe(INVALID);
 			});
+
+			test('whitespace-only post', () => {
+				expect(v({ text: ' ' }))
+					.toBe(INVALID);
+			});
 		});
 
 		describe('cw', () => {
