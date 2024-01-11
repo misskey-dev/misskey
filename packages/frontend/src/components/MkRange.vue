@@ -43,6 +43,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: number): void;
+	(ev: 'dragEnded', value: number): void;
 }>();
 
 const containerEl = shallowRef<HTMLElement>();
@@ -143,6 +144,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 		// 値が変わってたら通知
 		if (beforeValue !== finalValue.value) {
 			emit('update:modelValue', finalValue.value);
+			emit('dragEnded', finalValue.value);
 		}
 	};
 

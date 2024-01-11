@@ -83,7 +83,7 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 		}, 6000);
 	}
 
-	sound.play('notification');
+	sound.playMisskeySfx('notification');
 }
 
 if ($i) {
