@@ -15,8 +15,10 @@ import { AttestationFormat, isoCBOR } from '@simplewebauthn/server/helpers';
 import { DI } from '@/di-symbols.js';
 import type { UserSecurityKeysRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
+import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { MiUser } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type {
@@ -31,6 +33,8 @@ import type {
 
 @Injectable()
 export class WebAuthnService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -42,7 +46,9 @@ export class WebAuthnService {
 		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
 		private metaService: MetaService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('webauthn');
 	}
 
 	@bindThis
@@ -118,7 +124,7 @@ export class WebAuthnService {
 				requireUserVerification: true,
 			});
 		} catch (error) {
-			console.error(error);
+			this.logger.error('Failed to verify registration response', { error });
 			throw new IdentifiableError('5c1446f8-8ca7-4d31-9f39-656afe9c5d87', 'verification failed');
 		}
 
@@ -228,7 +234,7 @@ export class WebAuthnService {
 				requireUserVerification: true,
 			});
 		} catch (error) {
-			console.error(error);
+			this.logger.error('Failed to verify authentication response', { error });
 			throw new IdentifiableError('b18c89a7-5b5e-4cec-bb5b-0419f332d430', 'verification failed');
 		}
 

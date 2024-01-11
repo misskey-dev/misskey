@@ -65,7 +65,7 @@ export async function masterMain() {
 		//await connectDb();
 		if (config.pidFile) fs.writeFileSync(config.pidFile, process.pid.toString());
 	} catch (e) {
-		bootLogger.error('Fatal error occurred during initialization', null, true);
+		bootLogger.error('Fatal error occurred during initialization', { error: e }, true);
 		process.exit(1);
 	}
 
@@ -124,7 +124,7 @@ function loadConfigBoot(): Config {
 		config = loadConfig();
 	} catch (exception) {
 		if (typeof exception === 'string') {
-			configLogger.error(exception);
+			configLogger.error(exception, null, true);
 			process.exit(1);
 		} else if ((exception as any).code === 'ENOENT') {
 			configLogger.error('Configuration file not found', null, true);

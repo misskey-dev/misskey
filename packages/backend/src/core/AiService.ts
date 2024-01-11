@@ -11,6 +11,8 @@ import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
+import { LoggerService } from '@/core/LoggerService.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -20,11 +22,14 @@ let isSupportedCpu: undefined | boolean = undefined;
 
 @Injectable()
 export class AiService {
+	private logger: Logger;
 	private model: nsfw.NSFWJS;
 	private modelLoadMutex: Mutex = new Mutex();
 
 	constructor(
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('ai');
 	}
 
 	@bindThis
@@ -36,7 +41,7 @@ export class AiService {
 			}
 
 			if (!isSupportedCpu) {
-				console.error('This CPU cannot use TensorFlow.');
+				this.logger.error('This CPU cannot use TensorFlow.');
 				return null;
 			}
 
@@ -59,7 +64,7 @@ export class AiService {
 				image.dispose();
 			}
 		} catch (err) {
-			console.error(err);
+			this.logger.error('Failed to detect sensitive', { error: err });
 			return null;
 		}
 	}

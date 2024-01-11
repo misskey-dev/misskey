@@ -126,6 +126,7 @@ export class ApNoteService {
 				resolver: { history: resolver.getHistory() },
 				value,
 				object,
+				error: err
 			});
 			throw new Error('invalid note');
 		}

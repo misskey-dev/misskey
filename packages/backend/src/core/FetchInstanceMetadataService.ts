@@ -116,7 +116,7 @@ export class FetchInstanceMetadataService {
 
 			this.logger.succ(`Successfuly updated metadata of ${instance.host}`);
 		} catch (e) {
-			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
+			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`, { error: e });
 		} finally {
 			await this.unlock(host);
 		}
@@ -160,7 +160,7 @@ export class FetchInstanceMetadataService {
 
 			return info as NodeInfo;
 		} catch (err) {
-			this.logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${err}`);
+			this.logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${err}`, { error: err });
 
 			throw err;
 		}

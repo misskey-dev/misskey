@@ -301,7 +301,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
 			.then(_emojis => _emojis.map(emoji => emoji.name))
 			.catch(err => {
-				this.logger.error('error occurred while fetching user emojis', { stack: err });
+				this.logger.error('error occurred while fetching user emojis', { error: err });
 				return [];
 			});
 		//#endregion
@@ -369,7 +369,7 @@ export class ApPersonService implements OnModuleInit {
 
 				user = u as MiRemoteUser;
 			} else {
-				this.logger.error(e instanceof Error ? e : new Error(e as string));
+				this.logger.error('error occurred while creating user', { error: e });
 				throw e;
 			}
 		}
@@ -402,7 +402,7 @@ export class ApPersonService implements OnModuleInit {
 			// Register to the cache
 			this.cacheService.uriPersonCache.set(user.uri, user);
 		} catch (err) {
-			this.logger.error('error occurred while fetching user avatar/banner', { stack: err });
+			this.logger.error('error occurred while fetching user avatar/banner', { error: err });
 		}
 		//#endregion
 

@@ -783,9 +783,8 @@ export class ClientServerService {
 				path: request.routeOptions.url,
 				params: request.params,
 				query: request.query,
-				code: error.name,
-				stack: error.stack,
 				id: errId,
+				error,
 			});
 			reply.code(500);
 			reply.header('Cache-Control', 'max-age=10, must-revalidate');

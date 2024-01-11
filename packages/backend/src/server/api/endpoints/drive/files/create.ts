@@ -6,10 +6,12 @@
 import ms from 'ms';
 import { Injectable } from '@nestjs/common';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
+import type Logger from '@/logger.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { DriveService } from '@/core/DriveService.js';
 import { ApiError } from '../../../error.js';
 
@@ -73,9 +75,12 @@ export const paramDef = {
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	private logger: Logger;
+
 	constructor(
 		private driveFileEntityService: DriveFileEntityService,
 		private metaService: MetaService,
+		private loggerService: LoggerService,
 		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me, _, file, cleanup, ip, headers) => {
@@ -109,9 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 				return await this.driveFileEntityService.pack(driveFile, me, { self: true });
 			} catch (err) {
-				if (err instanceof Error || typeof err === 'string') {
-					console.error(err);
-				}
+				this.logger.error('Failed to create drive file', { error: err });
 				if (err instanceof IdentifiableError) {
 					if (err.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
 					if (err.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
@@ -121,5 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				cleanup!();
 			}
 		});
+
+		this.logger = this.loggerService.getLogger('api:drive:files:create');
 	}
 }

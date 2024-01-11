@@ -138,8 +138,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			name: typeof name === 'string' ? name : id,
 		};
 	} catch (err) {
-		console.error(err);
-		logger.error('Error while fetching client information', { err });
+		logger.error('Error while fetching client information', { error: err });
 		if (err instanceof StatusError) {
 			throw new AuthorizationError('Failed to fetch client information', 'invalid_request');
 		} else {

@@ -403,7 +403,7 @@ export class DriveService {
 				})
 			.catch(
 				err => {
-					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
+					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, { error: err });
 				},
 			);
 	}
@@ -620,7 +620,7 @@ export class DriveService {
 						userId: user ? user.id : IsNull(),
 					}) as MiDriveFile;
 				} else {
-					this.registerLogger.error(err as Error);
+					this.registerLogger.error(`failed to register ${file.uri}`, { error: err });
 					throw err;
 				}
 			}
@@ -863,7 +863,7 @@ export class DriveService {
 		} catch (err) {
 			this.downloaderLogger.error(`Failed to create drive file: ${err}`, {
 				url: url,
-				e: err,
+				error: err,
 			});
 			throw err;
 		} finally {

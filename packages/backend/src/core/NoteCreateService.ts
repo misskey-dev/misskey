@@ -32,10 +32,12 @@ import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import type Logger from '@/logger.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { WebhookService } from '@/core/WebhookService.js';
@@ -149,6 +151,7 @@ type Option = {
 
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
+	private logger: Logger;
 	#shutdownController = new AbortController();
 
 	constructor(
@@ -217,7 +220,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private instanceChart: InstanceChart,
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
-	) { }
+		private loggerService: LoggerService,
+	) {
+		this.logger = this.loggerService.getLogger('note:create');
+	}
 
 	@bindThis
 	public async create(user: {
@@ -472,7 +478,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				throw err;
 			}
 
-			console.error(e);
+			this.logger.error(`Failed to create note: ${e}`, { error: e });
 
 			throw e;
 		}

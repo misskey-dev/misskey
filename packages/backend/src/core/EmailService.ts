@@ -148,7 +148,7 @@ export class EmailService {
 
 			this.logger.info(`Message sent: ${info.messageId}`);
 		} catch (err) {
-			this.logger.error(err as Error);
+			this.logger.error('Failed to send email', { error: err });
 			throw err;
 		}
 	}
@@ -286,18 +286,18 @@ export class EmailService {
 					Authorization: truemailAuthKey
 				},
 			});
-			
+
 			const json = (await res.json()) as {
 				email: string;
 				success: boolean;
-				errors?: { 
+				errors?: {
 					list_match?: string;
 					regex?: string;
 					mx?: string;
 					smtp?: string;
 				} | null;
 			};
-			
+
 			if (json.email === undefined || (json.email !== undefined && json.errors?.regex)) {
 				return {
 						valid: false,
@@ -322,7 +322,7 @@ export class EmailService {
 					reason: json.errors?.list_match as T || 'blacklist',
 				};
 			}
-			
+
 			return {
 				valid: true,
 				reason: null,

@@ -88,16 +88,25 @@ export default class Logger {
 		if (data != null) {
 			args.push(data);
 		}
-		console.log(...args);
+
+		if (level === 'error' || level === 'warning') {
+			console.error(...args);
+		} else {
+			console.log(...args);
+		}
 	}
 
 	@bindThis
 	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
 			data = data ?? {};
-			data.e = x;
+			data.error = x;
+
 			this.log('error', x.toString(), data, important);
 		} else if (typeof x === 'object') {
+			data = data ?? {};
+			data.error = data.error ?? x;
+
 			this.log('error', `${(x as any).message ?? (x as any).name ?? x}`, data, important);
 		} else {
 			this.log('error', `${x}`, data, important);
@@ -105,8 +114,20 @@ export default class Logger {
 	}
 
 	@bindThis
-	public warn(message: string, data?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
-		this.log('warning', message, data, important);
+	public warn(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
+		if (x instanceof Error) {
+			data = data ?? {};
+			data.error = x;
+
+			this.log('warning', x.toString(), data, important);
+		} else if (typeof x === 'object') {
+			data = data ?? {};
+			data.error = data.error ?? x;
+
+			this.log('warning', `${(x as any).message ?? (x as any).name ?? x}`, data, important);
+		} else {
+			this.log('warning', `${x}`, data, important);
+		}
 	}
 
 	@bindThis

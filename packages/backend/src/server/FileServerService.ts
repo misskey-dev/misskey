@@ -96,7 +96,7 @@ export class FileServerService {
 
 	@bindThis
 	private async errorHandler(request: FastifyRequest<{ Params?: { [x: string]: any }; Querystring?: { [x: string]: any }; }>, reply: FastifyReply, err?: any) {
-		this.logger.error(`${err}`);
+		this.logger.error('file server error', { error: err });
 
 		reply.header('Cache-Control', 'max-age=300');
 

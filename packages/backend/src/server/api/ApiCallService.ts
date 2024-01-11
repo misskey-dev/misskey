@@ -371,14 +371,13 @@ export class ApiCallService implements OnApplicationShutdown {
 				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					ep: ep.name,
 					ps: data,
-					e: {
+					id: errId,
+					error: {
 						message: err.message,
 						code: err.name,
 						stack: err.stack,
-						id: errId,
 					},
 				});
-				console.error(err, errId);
 				throw new ApiError(null, {
 					e: {
 						message: err.message,
