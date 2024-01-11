@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-11T05:49:42.042Z
+ * generatedAt: 2024-01-11T15:54:10.066Z
  */
 
 /**
@@ -4300,129 +4300,40 @@ export type components = {
       /** @example false */
       canEditMembersByModerator: boolean;
       policies: {
-        pinLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canInvite: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        clipLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canHideAds: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        inviteLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        antennaLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        gtlAvailable: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        ltlAvailable: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        webhookLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canPublicNote: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        userListLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        wordMuteLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        alwaysMarkNsfw: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canSearchNotes: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        driveCapacityMb: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        rateLimitFactor: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        inviteLimitCycle: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        noteEachClipsLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        inviteExpirationTime: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canManageCustomEmojis: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        userEachUserListsLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canManageAvatarDecorations: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canUseTranslator: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        avatarDecorationLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
+        [key: string]: {
+          value?: number | boolean;
+          priority?: number;
+          useDefault?: boolean;
         };
       };
       usersCount: number;
     });
+    RolePolicies: {
+      gtlAvailable: boolean;
+      ltlAvailable: boolean;
+      canPublicNote: boolean;
+      canInvite: boolean;
+      inviteLimit: number;
+      inviteLimitCycle: number;
+      inviteExpirationTime: number;
+      canManageCustomEmojis: boolean;
+      canManageAvatarDecorations: boolean;
+      canSearchNotes: boolean;
+      canUseTranslator: boolean;
+      canHideAds: boolean;
+      driveCapacityMb: number;
+      alwaysMarkNsfw: boolean;
+      pinLimit: number;
+      antennaLimit: number;
+      wordMuteLimit: number;
+      webhookLimit: number;
+      clipLimit: number;
+      noteEachClipsLimit: number;
+      userListLimit: number;
+      userEachUserListsLimit: number;
+      rateLimitFactor: number;
+      avatarDecorationLimit: number;
+    };
   };
   responses: never;
   parameters: never;
@@ -18925,6 +18836,7 @@ export type operations = {
             privacyPolicyUrl: string | null;
             serverRules: string[];
             themeColor: string | null;
+            policies: components['schemas']['RolePolicies'];
           };
         };
       };

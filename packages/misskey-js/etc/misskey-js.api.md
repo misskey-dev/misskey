@@ -1645,7 +1645,8 @@ declare namespace entities {
         Flash,
         Signin,
         RoleLite,
-        Role
+        Role,
+        RolePolicies
     }
 }
 export { entities }
@@ -2590,6 +2591,9 @@ type Role = components['schemas']['Role'];
 
 // @public (undocumented)
 type RoleLite = components['schemas']['RoleLite'];
+
+// @public (undocumented)
+type RolePolicies = components['schemas']['RolePolicies'];
 
 // @public (undocumented)
 type RolesListResponse = operations['roles/list']['responses']['200']['content']['application/json'];

@@ -26,37 +26,12 @@ import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { Packed, KeyOf } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
-export type RolePolicies = {
-	gtlAvailable: boolean;
-	ltlAvailable: boolean;
-	canPublicNote: boolean;
-	canInvite: boolean;
-	inviteLimit: number;
-	inviteLimitCycle: number;
-	inviteExpirationTime: number;
-	canManageCustomEmojis: boolean;
-	canManageAvatarDecorations: boolean;
-	canSearchNotes: boolean;
-	canUseTranslator: boolean;
-	canHideAds: boolean;
-	driveCapacityMb: number;
-	alwaysMarkNsfw: boolean;
-	pinLimit: number;
-	antennaLimit: number;
-	wordMuteLimit: number;
-	webhookLimit: number;
-	clipLimit: number;
-	noteEachClipsLimit: number;
-	userListLimit: number;
-	userEachUserListsLimit: number;
-	rateLimitFactor: number;
-	avatarDecorationLimit: number;
-};
+export type RolePolicies = Packed<'RolePolicies'>;
 
 export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
@@ -305,7 +280,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		const roles = await this.getUserRoles(userId);
 
-		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
+		function calc<T extends KeyOf<'RolePolicies'>>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
 			if (roles.length === 0) return basePolicies[name];
 
 			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });

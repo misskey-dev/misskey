@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-11T05:49:42.159Z
+ * generatedAt: 2024-01-11T15:54:10.190Z
  */
 
 import { components } from './types.js';
@@ -42,3 +42,4 @@ export type Flash = components['schemas']['Flash'];
 export type Signin = components['schemas']['Signin'];
 export type RoleLite = components['schemas']['RoleLite'];
 export type Role = components['schemas']['Role'];
+export type RolePolicies = components['schemas']['RolePolicies'];

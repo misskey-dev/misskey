@@ -37,7 +37,7 @@ import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/jso
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
-import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
+import { packedRoleLiteSchema, packedRoleSchema, packedRolePoliciesSchema } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
 
 export const refs = {
@@ -79,9 +79,13 @@ export const refs = {
 	Signin: packedSigninSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
+	RolePolicies: packedRolePoliciesSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
+
+export type KeyOf<x extends keyof typeof refs> = PropertiesToUnion<typeof refs[x]>;
+type PropertiesToUnion<p extends Schema> = p['properties'] extends NonNullable<Obj> ? keyof p['properties'] : never;
 
 type TypeStringef = 'null' | 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =
