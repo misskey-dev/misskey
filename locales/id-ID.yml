@@ -1186,6 +1186,7 @@ seasonalScreenEffect: "Efek layar musiman"
 decorate: "Dekor"
 addMfmFunction: "Tambahkan dekorasi"
 enableQuickAddMfmFunction: "Tampilkan pemilih MFM tingkat lanjut"
+lastNDays: "{n} hari terakhir"
 _announcement:
   forExistingUsers: "Hanya pengguna yang telah ada"
   forExistingUsersDescription: "Pengumuman ini akan dimunculkan ke pengguna yang sudah ada dari titik waktu publikasi jika dinyalakan. Apabila dimatikan, mereka yang baru mendaftar setelah publikasi ini akan juga melihatnya."
