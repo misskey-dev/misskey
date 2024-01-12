@@ -920,6 +920,7 @@ icon: "Avatar"
 replies: "Odpovedať"
 renotes: "Preposlať"
 flip: "Preklopiť"
+lastNDays: "Posledných {n} dní"
 _role:
   priority: "Priorita"
   _priority:
