@@ -304,12 +304,11 @@ onDeactivated(() => {
 	.controlButton {
 		padding: 6px;
 		border-radius: calc(var(--radius) / 2);
-		transition: color .2s ease-in-out,background-color .2s ease-in-out;
 		font-size: 1.05rem;
 
 		&:hover {
-			color: var(--fgOnAccent);
-			background-color: var(--accent);
+			color: var(--accent);
+			background-color: var(--accentedBg);
 		}
 	}
 }
