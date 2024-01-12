@@ -1186,6 +1186,7 @@ seasonalScreenEffect: "เอฟเฟกต์หน้าจอตามฤด
 decorate: "ตกแต่ง"
 addMfmFunction: "เพิ่มการตกแต่ง"
 enableQuickAddMfmFunction: "แสดงตัวจิ้มเลือก MFM ขั้นสูง"
+lastNDays: "ล่าสุด {n} วันที่แล้ว"
 _announcement:
   forExistingUsers: "ผู้ใช้งานที่มีอยู่เท่านั้น"
   forExistingUsersDescription: "การประกาศนี้จะแสดงต่อผู้ใช้ที่มีอยู่ ณ จุดที่เผยแพร่นั้นๆถ้าหากเปิดใช้งาน ถ้าหากปิดใช้งานผู้ที่กำลังสมัครใหม่หลังจากโพสต์แล้วนั้นก็จะเห็นเช่นกัน"
