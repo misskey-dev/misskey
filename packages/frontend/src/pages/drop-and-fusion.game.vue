@@ -1088,7 +1088,7 @@ function attachGameEvents() {
 		if (type === 'fusion') {
 			if (props.gameMode === 'yen') {
 				sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
-					volume: 0.3 * params.volume * sfxVolume.value,
+					volume: 0.25 * params.volume * sfxVolume.value,
 					pan: params.pan,
 					playbackRate: (params.pitch / 4) * replayPlaybackRate.value,
 				});
@@ -1104,7 +1104,7 @@ function attachGameEvents() {
 				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
 					volume: params.volume * sfxVolume.value,
 					pan: params.pan,
-					playbackRate: params.pitch * replayPlaybackRate.value,
+					playbackRate: Math.max(1, params.pitch) * replayPlaybackRate.value,
 				});
 			} else {
 				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
