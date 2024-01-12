@@ -47,7 +47,7 @@ export class DropAndFusionGame extends EventEmitter<{
 }> {
 	private PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高いがガタガタして安定しなくなる、逆に高すぎても何故か不安定になる
 	private COMBO_INTERVAL = 60; // frame
-	public readonly GAME_VERSION = 1;
+	public readonly GAME_VERSION = 2;
 	public readonly GAME_WIDTH = 450;
 	public readonly GAME_HEIGHT = 600;
 	public readonly DROP_INTERVAL = 500;
