@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSelect v-model="gameMode">
 								<option value="normal">NORMAL</option>
 								<option value="square">SQUARE</option>
+								<option value="yen">YEN</option>
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
@@ -42,12 +43,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.frame">
 					<div :class="$style.frameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
+							<div><b>{{ i18n.t('lastNDays', { n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
 									<MkUserName :user="r.user" :nowrap="true"/>
-									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} pt</b>
+									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} {{ gameMode === 'yen' ? '円' : 'pt' }}</b>
 								</div>
 							</div>
 							<div v-else>{{ i18n.ts.loading }}</div>
@@ -94,7 +95,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
-const gameMode = ref<'normal' | 'square'>('normal');
+const gameMode = ref<'normal' | 'square' | 'yen'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
 const ranking = ref(null);

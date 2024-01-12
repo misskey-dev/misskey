@@ -1197,6 +1197,7 @@ showReplay: "リプレイを見る"
 replay: "リプレイ"
 replaying: "リプレイ中"
 ranking: "ランキング"
+lastNDays: "直近{n}日"
 
 _bubbleGame:
   howToPlay: "遊び方"
