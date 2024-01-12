@@ -67,6 +67,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #icon><i class="ti ti-device-gamepad-2"></i></template>
+				<template #label>Misskey Games</template>
+
+				<!-- ▼項目が増えてきたらdefaultOpenを取る -->
+				<MkFolder :defaultOpen="true">
+					<template #icon><i class="ti ti-apple"></i></template>
+					<template #label>{{ i18n.ts.bubbleGame }}</template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="enableDropAndFusionMaxPlayTime">
+							<template #label>{{ i18n.ts._maxPlayTime.enableMaxPlayTime }}</template>
+						</MkSwitch>
+						<MkInput v-if="enableDropAndFusionMaxPlayTime" v-model="dropAndFusionMaxPlayTime" type="number" manualSave>
+							<template #label>{{ i18n.ts._maxPlayTime.maxPlayTime }}</template>
+							<template #suffix>{{ i18n.t('_hms.m', { m: '' }) }}</template>
+						</MkInput>
+					</div>
+				</MkFolder>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -85,7 +106,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -107,6 +129,17 @@ const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
 const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
+const enableDropAndFusionMaxPlayTime = ref(defaultStore.state.dropAndFusionPlayTime.maxPlayTime !== null);
+const dropAndFusionMaxPlayTime = computed({
+	get: () => defaultStore.reactiveState.dropAndFusionPlayTime.value.maxPlayTime === null ? null : defaultStore.reactiveState.dropAndFusionPlayTime.value.maxPlayTime / 60,
+	set: (value: number | null) => {
+		defaultStore.set('dropAndFusionPlayTime', {
+			...defaultStore.state.dropAndFusionPlayTime,
+			maxPlayTime: value === null ? null : value * 60,
+		});
+		os.success();
+	},
+});
 
 async function deleteAccount() {
 	{
@@ -156,6 +189,12 @@ watch([
 	enableCondensedLineForAcct,
 ], async () => {
 	await reloadAsk();
+});
+
+watch(enableDropAndFusionMaxPlayTime, (to) => {
+	if (!to) {
+		dropAndFusionMaxPlayTime.value = null;
+	}
 });
 
 const headerActions = computed(() => []);

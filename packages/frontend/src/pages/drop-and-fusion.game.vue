@@ -570,6 +570,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'end'): void;
+	(ev: 'gameover'): void;
 }>();
 
 const monoDefinitions =
@@ -734,8 +735,8 @@ function tickReplay() {
 }
 
 async function start() {
-	await loadMonoTextures();
 	renderer = createRendererInstance(game);
+	await loadMonoTextures();
 	Matter.Render.lookAt(renderer, {
 		min: { x: 0, y: 0 },
 		max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
@@ -1063,6 +1064,7 @@ function attachGameEvents() {
 		dropReady.value = false;
 		isGameOver.value = true;
 
+		emit('gameover');
 		misskeyApi('bubble-game/register', {
 			seed,
 			score: score.value,
@@ -1130,11 +1132,13 @@ onMounted(async () => {
 
 onUnmounted(() => {
 	dispose();
+	emit('end');
 	bgmNodes?.soundSource.stop();
 });
 
 onDeactivated(() => {
 	dispose();
+	emit('end');
 	bgmNodes?.soundSource.stop();
 });
 

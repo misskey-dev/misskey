@@ -28,7 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 							</MkSelect>
-							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+							<div class="_gaps_s">
+								<MkButton primary gradate large rounded inline :disabled="!canPlay" @click="start">{{ i18n.ts.start }}</MkButton>
+								<div v-if="!canPlay" style="font-size: 90%; font-weight: 700; color: var(--error);">{{ i18n.ts._playTime.youCannotPlayItToday }}</div>
+								<div v-else style="font-size: 90%; font-weight: 700; opacity: .7">{{ i18n.t('_playTime.youPlayedForX', { time: hms(todayPlayTime * 1000, { textFormat: 'locale', enableSeconds: false }) }) }}</div>
+							</div>
 						</div>
 					</div>
 					<div :class="$style.frameInner">
@@ -52,6 +56,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 							</div>
 							<div v-else>{{ i18n.ts.loading }}</div>
+						</div>
+					</div>
+					<div :class="$style.frameInner">
+						<div class="_gaps_s" style="padding: 16px;">
+							<div><b>{{ i18n.ts.playTime }}</b></div>
+							<div class="_gaps_s">
+								<div :class="$style.rankingRecord">
+									<div>{{ i18n.ts.today }}</div>
+									<b style="margin-left: auto;">{{ hms(todayPlayTime * 1000, { textFormat: 'locale' }) }}</b>
+								</div>
+								<div :class="$style.rankingRecord">
+									<div>{{ i18n.ts.total }}</div>
+									<b style="margin-left: auto;">{{ hms(defaultStore.state.dropAndFusionPlayTime.total * 1000, { textFormat: 'locale' }) }}</b>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -79,14 +98,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-else>
-			<XGame :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
+			<XGame :gameMode="gameMode" :mute="mute" @gameover="onGameover" @end="onGameEnd"/>
 		</div>
 	</Transition>
 </MkSpacer>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import XGame from './drop-and-fusion.game.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -94,11 +113,31 @@ import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { hms } from '@/filters/hms.js';
 
 const gameMode = ref<'normal' | 'square' | 'yen'>('normal');
 const gameStarted = ref(false);
+const isGameover = ref(false);
 const mute = ref(false);
 const ranking = ref(null);
+
+const today = new Date();
+const gameStartedAt = ref<Date>();
+today.setHours(0, 0, 0, 0);
+if (defaultStore.state.dropAndFusionPlayTime.updatedAt && new Date(defaultStore.state.dropAndFusionPlayTime.updatedAt) < today) {
+	defaultStore.set('dropAndFusionPlayTime', {
+		...defaultStore.state.dropAndFusionPlayTime,
+		today: 0,
+		updatedAt: new Date().toISOString(),
+	});
+}
+const todayPlayTime = ref(defaultStore.state.dropAndFusionPlayTime.today);
+
+const canPlay = computed(() => {
+	if (defaultStore.reactiveState.dropAndFusionPlayTime.value.maxPlayTime === null) return true;
+	return todayPlayTime.value < defaultStore.reactiveState.dropAndFusionPlayTime.value.maxPlayTime;
+});
 
 watch(gameMode, async () => {
 	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });
@@ -106,9 +145,26 @@ watch(gameMode, async () => {
 
 async function start() {
 	gameStarted.value = true;
+	gameStartedAt.value = new Date();
+}
+
+function onGameover() {
+	if (!gameStartedAt.value || isGameover.value) return;
+	isGameover.value = true;
+
+	const playTime = (new Date().getTime() - gameStartedAt.value.getTime()) / 1000;
+	todayPlayTime.value += playTime;
+	defaultStore.set('dropAndFusionPlayTime', {
+		...defaultStore.state.dropAndFusionPlayTime,
+		today: todayPlayTime.value,
+		total: defaultStore.state.dropAndFusionPlayTime.total + playTime,
+		updatedAt: new Date().toISOString(),
+	});
 }
 
 function onGameEnd() {
+	// ▼終了処理をせずにページを離れた際などでもちゃんと記録されるようにする
+	onGameover();
 	gameStarted.value = false;
 }
 

@@ -778,6 +778,7 @@ createdAt: "作成日時"
 updatedAt: "更新日時"
 saveConfirm: "保存しますか？"
 deleteConfirm: "削除しますか？"
+disableConfirm: "無効化しますか？"
 invalidValue: "有効な値ではありません。"
 registry: "レジストリ"
 closeAccount: "アカウントを閉鎖する"
@@ -1198,6 +1199,15 @@ replay: "リプレイ"
 replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
+playTime: "プレイ時間"
+
+_playTime:
+  youPlayedForX: "今日は{time}プレイしています"
+  youCannotPlayItToday: "今日のプレイ可能時間を過ぎました。"
+
+_maxPlayTime:
+  enableMaxPlayTime: "1日あたりの最大プレイ時間を設定する"
+  maxPlayTime: "最大プレイ時間"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2502,3 +2512,9 @@ _dataSaver:
   _code:
     title: "コードハイライト"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
+
+_hms:
+  h: "{h}時間"
+  m: "{m}分"
+  s: "{s}秒"
+  ms: "{ms}"

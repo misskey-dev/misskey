@@ -52,6 +52,18 @@ export type SoundStore = {
 	volume: number;
 }
 
+/** Misskey Games プレイ時間の保持用 */
+export type GamePlayTimeStore = {
+	/** きょうのプレイ時間（秒） */
+	today: number;
+	/** プレイ時間更新（ISO8601） */
+	updatedAt: string | null;
+	/** トータルのプレイ時間（秒） */
+	total: number;
+	/** 1日にプレイできる最大の時間（秒） */
+	maxPlayTime: number | null;
+};
+
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -426,6 +438,15 @@ export const defaultStore = markRaw(new Storage('base', {
 			bgmVolume: 0.25,
 			sfxVolume: 1,
 		},
+	},
+	dropAndFusionPlayTime: {
+		where: 'account',
+		default: {
+			today: 0,
+			updatedAt: null,
+			total: 0,
+			maxPlayTime: null,
+		} as GamePlayTimeStore,
 	},
 
 	sound_masterVolume: {

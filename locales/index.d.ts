@@ -781,6 +781,7 @@ export interface Locale {
     "updatedAt": string;
     "saveConfirm": string;
     "deleteConfirm": string;
+    "disableConfirm": string;
     "invalidValue": string;
     "registry": string;
     "closeAccount": string;
@@ -1201,6 +1202,15 @@ export interface Locale {
     "replaying": string;
     "ranking": string;
     "lastNDays": string;
+    "playTime": string;
+    "_playTime": {
+        "youPlayedForX": string;
+        "youCannotPlayItToday": string;
+    };
+    "_maxPlayTime": {
+        "enableMaxPlayTime": string;
+        "maxPlayTime": string;
+    };
     "_bubbleGame": {
         "howToPlay": string;
         "_howToPlay": {
@@ -2621,6 +2631,12 @@ export interface Locale {
             "title": string;
             "description": string;
         };
+    };
+    "_hms": {
+        "h": string;
+        "m": string;
+        "s": string;
+        "ms": string;
     };
 }
 declare const locales: {
