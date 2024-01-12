@@ -1095,6 +1095,7 @@ icon: "Avatar"
 replies: "Odpovědět"
 renotes: "Přeposlat"
 flip: "Otočit"
+lastNDays: "Posledních {n} dnů"
 _initialAccountSetting:
   accountCreated: "Váš účet byl úspěšně vytvořen!"
   letsStartAccountSetup: "Pro začátek si nastavte svůj profil."
