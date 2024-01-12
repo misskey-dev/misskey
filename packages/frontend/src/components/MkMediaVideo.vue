@@ -88,7 +88,7 @@ import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import bytes from '@/filters/bytes.js';
-import hms from '@/filters/hms.js';
+import { hms } from '@/filters/hms.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

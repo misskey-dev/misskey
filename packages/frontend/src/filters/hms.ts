@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export default (ms: number, enableMs = false) => {
+export function hms (ms: number, enableMs = false) {
 	const res: string[] = [];
 
 	// ミリ秒を秒に変換
@@ -28,7 +28,7 @@ export default (ms: number, enableMs = false) => {
 
 	// 結果を返す
 	return res.join(':') + (enableMs ? '.' + format(Math.floor(mili / 10)) : '');
-};
+}
 
 function format(n: number) {
 	return n.toString().padStart(2, '0');
