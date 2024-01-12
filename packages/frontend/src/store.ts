@@ -427,6 +427,12 @@ export const defaultStore = markRaw(new Storage('base', {
 			sfxVolume: 1,
 		},
 	},
+	mediaPlayer: {
+		where: 'device',
+		default: {
+			volume: 0.5,
+		},
+	},
 
 	sound_masterVolume: {
 		where: 'device',

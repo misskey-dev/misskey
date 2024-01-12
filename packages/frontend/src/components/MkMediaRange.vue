@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <!-- Media系専用のinput range -->
 <template>
 <div :class="$style.controlsSeekbar" :style="sliderBgWhite ? '--sliderBg: rgba(255,255,255,.25);' : '--sliderBg: var(--scrollbarHandle);'">
-	<progress v-if="buffer !== undefined" :class="$style.buffer" :value="isNaN(buffer) ? 0 : buffer" min="0" max="1">% buffered</progress>
-	<input v-model="model" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any"/>
+	<progress v-if="buffer !== undefined" :class="$style.buffer" :value="isNaN(buffer) ? 0 : buffer" min="0" max="1">{{ Math.round(buffer * 100) }}% buffered</progress>
+	<input v-model="model" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any" @change="emit('dragEnded', modelValue)"/>
 </div>
 </template>
 
@@ -21,6 +21,10 @@ withDefaults(defineProps<{
 	buffer: undefined,
 	sliderBgWhite: false,
 });
+
+const emit = defineEmits<{
+	(ev: 'dragEnded', value: number): void;
+}>();
 
 // eslint-disable-next-line no-undef
 const model = defineModel({ required: true }) as ModelRef<string | number>;

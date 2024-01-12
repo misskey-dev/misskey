@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-model="volume"
 					:sliderBgWhite="true"
 					:class="$style.volumeSeekbar"
+					@dragEnded="saveVolume"
 				/>
 			</div>
 			<MkMediaRange
@@ -176,7 +177,7 @@ const rangePercent = computed({
 		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.5);
+const volume = ref(defaultStore.state.mediaPlayer.volume);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!videoEl.value) return 0;
@@ -240,6 +241,13 @@ function toggleMute() {
 	} else {
 		volume.value = 0;
 	}
+}
+
+function saveVolume(newVolume: number) {
+	defaultStore.set('mediaPlayer', {
+		...defaultStore.state.mediaPlayer,
+		volume: newVolume,
+	});
 }
 
 let onceInit = false;
