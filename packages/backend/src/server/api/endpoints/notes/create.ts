@@ -138,7 +138,6 @@ export const paramDef = {
 			minLength: 1,
 			maxLength: MAX_NOTE_TEXT_LENGTH,
 			nullable: true,
-			pattern: '[^\\s]+',
 		},
 		fileIds: {
 			type: 'array',
