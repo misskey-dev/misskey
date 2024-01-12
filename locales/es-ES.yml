@@ -1197,6 +1197,7 @@ showReplay: "Ver reproducción"
 replay: "Reproducir"
 replaying: "Reproduciendo"
 ranking: "Clasificación"
+lastNDays: "Últimos {n} días"
 _bubbleGame:
   howToPlay: "Cómo jugar"
 _announcement:
