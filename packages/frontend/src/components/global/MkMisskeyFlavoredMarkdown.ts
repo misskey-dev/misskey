@@ -258,10 +258,10 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 					}
 					case 'border': {
 						let color = validColor(token.props.args.color);
-						color = `#${color}` ?? 'var(--accent)';
+						color = color ? `#${color}` : 'var(--accent)';
 						let width = parseFloat(token.props.args.width ?? '1');
 						let radius = parseFloat(token.props.args.radius ?? '0');
-						style = `border: ${width}px solid ${color}; border-radius: ${radius}`;
+						style = `border: ${width}px solid ${color}; border-radius: ${radius}px`;
 						break;
 					}
 					case 'ruby': {
