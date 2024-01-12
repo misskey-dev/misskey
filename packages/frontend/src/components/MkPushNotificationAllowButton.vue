@@ -45,7 +45,8 @@ import { ref } from 'vue';
 import { $i, getAccounts } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance.js';
-import { api, apiWithDialog, promiseDialog } from '@/os.js';
+import { apiWithDialog, promiseDialog } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 defineProps<{
@@ -82,7 +83,7 @@ function subscribe() {
 			pushSubscription.value = subscription;
 
 			// Register
-			pushRegistrationInServer.value = await api('sw/register', {
+			pushRegistrationInServer.value = await misskeyApi('sw/register', {
 				endpoint: subscription.endpoint,
 				auth: encode(subscription.getKey('auth')),
 				publickey: encode(subscription.getKey('p256dh')),
@@ -159,7 +160,7 @@ if (navigator.serviceWorker == null) {
 			supported.value = true;
 
 			if (pushSubscription.value) {
-				const res = await api('sw/show-registration', {
+				const res = await misskeyApi('sw/show-registration', {
 					endpoint: pushSubscription.value.endpoint,
 				});
 

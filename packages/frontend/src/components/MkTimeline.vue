@@ -11,13 +11,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:pagination="paginationQuery"
 		:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
 		@queue="emit('queue', $event)"
-		@status="prComponent.setDisabled($event)"
+		@status="prComponent?.setDisabled($event)"
 	/>
 </MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, ref } from 'vue';
+import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
 import { Connection } from 'misskey-js/built/streaming.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
@@ -62,12 +62,14 @@ type TimelineQueryType = {
   roleId?: string
 }
 
-const prComponent = ref<InstanceType<typeof MkPullToRefresh>>();
-const tlComponent = ref<InstanceType<typeof MkNotes>>();
+const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
+const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
 
 let tlNotesCount = 0;
 
-const prepend = note => {
+function prepend(note) {
+	if (tlComponent.value == null) return;
+
 	tlNotesCount++;
 
 	if (instance.notesPerOneAd > 0 && tlNotesCount % instance.notesPerOneAd === 0) {
@@ -79,9 +81,9 @@ const prepend = note => {
 	emit('note');
 
 	if (props.sound) {
-		sound.play($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 	}
-};
+}
 
 let connection: Connection;
 let connection2: Connection;
@@ -130,6 +132,7 @@ function connectChannel() {
 		connection.on('mention', onNote);
 	} else if (props.src === 'list') {
 		connection = stream.useChannel('userList', {
+			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		});
@@ -196,6 +199,7 @@ function updatePaginationQuery() {
 	} else if (props.src === 'list') {
 		endpoint = 'notes/user-list-timeline';
 		query = {
+			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		};
@@ -234,8 +238,9 @@ function refreshEndpointAndChannel() {
 	updatePaginationQuery();
 }
 
+// デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
 // IDが切り替わったら切り替え先のTLを表示させたい
-watch(() => [props.list, props.antenna, props.channel, props.role], refreshEndpointAndChannel);
+watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
 
 // 初回表示用
 refreshEndpointAndChannel();
@@ -246,6 +251,8 @@ onUnmounted(() => {
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
+		if (tlComponent.value == null) return;
+
 		tlNotesCount = 0;
 
 		tlComponent.value.pagingComponent?.reload().then(() => {

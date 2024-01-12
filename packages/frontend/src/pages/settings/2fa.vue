@@ -80,8 +80,10 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
+
+const $i = signinRequired();
 
 // メモ: 各エンドポイントはmeUpdatedを発行するため、refreshAccountは不要
 
@@ -91,7 +93,7 @@ withDefaults(defineProps<{
 	first: false,
 });
 
-const usePasswordLessLogin = computed(() => $i?.usePasswordLessLogin ?? false);
+const usePasswordLessLogin = computed(() => $i.usePasswordLessLogin ?? false);
 
 async function registerTOTP(): Promise<void> {
 	const auth = await os.authenticateDialog();

@@ -156,7 +156,7 @@ export class EmailService {
 	@bindThis
 	public async validateEmailForAccount(emailAddress: string): Promise<{
 		available: boolean;
-		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned';
+		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
 	}> {
 		const meta = await this.metaService.fetch();
 
@@ -173,6 +173,8 @@ export class EmailService {
 		if (meta.enableActiveEmailValidation) {
 			if (meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
 				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
+			} else if (meta.enableTruemailApi && meta.truemailInstance && meta.truemailAuthKey != null) {
+				validated = await this.trueMail(meta.truemailInstance, emailAddress, meta.truemailAuthKey);
 			} else {
 				validated = await validateEmail({
 					email: emailAddress,
@@ -201,6 +203,8 @@ export class EmailService {
 			validated.reason === 'disposable' ? 'disposable' :
 			validated.reason === 'mx' ? 'mx' :
 			validated.reason === 'smtp' ? 'smtp' :
+			validated.reason === 'network' ? 'network' :
+			validated.reason === 'blacklist' ? 'blacklist' :
 			null,
 		};
 	}
@@ -264,5 +268,68 @@ export class EmailService {
 			valid: true,
 			reason: null,
 		};
+	}
+
+	private async trueMail<T>(truemailInstance: string, emailAddress: string, truemailAuthKey: string): Promise<{
+		valid: boolean;
+		reason: 'used' | 'format' | 'blacklist' | 'mx' | 'smtp' | 'network' | T | null;
+	}> {
+		const endpoint = truemailInstance + '?email=' + emailAddress;
+		try {
+			const res = await this.httpRequestService.send(endpoint, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json',
+					Authorization: truemailAuthKey
+				},
+			});
+			
+			const json = (await res.json()) as {
+				email: string;
+				success: boolean;
+				errors?: { 
+					list_match?: string;
+					regex?: string;
+					mx?: string;
+					smtp?: string;
+				} | null;
+			};
+			
+			if (json.email === undefined || (json.email !== undefined && json.errors?.regex)) {
+				return {
+						valid: false,
+						reason: 'format',
+				};
+			}
+			if (json.errors?.smtp) {
+				return {
+					valid: false,
+					reason: 'smtp',
+				};
+			}
+			if (json.errors?.mx) {
+				return {
+					valid: false,
+					reason: 'mx',
+				};
+			}
+			if (!json.success) {
+				return {
+					valid: false,
+					reason: json.errors?.list_match as T || 'blacklist',
+				};
+			}
+			
+			return {
+				valid: true,
+				reason: null,
+			};
+		} catch (error) {
+			return {
+				valid: false,
+				reason: 'network',
+			};
+		}
 	}
 }

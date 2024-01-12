@@ -16,6 +16,7 @@ import { defineAsyncComponent, ref, computed } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -25,7 +26,7 @@ function generateToken() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {}, {
 		done: async result => {
 			const { name, permissions } = result;
-			const { token } = await os.api('miauth/gen-token', {
+			const { token } = await misskeyApi('miauth/gen-token', {
 				session: null,
 				name: name,
 				permission: permissions,
