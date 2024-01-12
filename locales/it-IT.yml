@@ -1182,6 +1182,7 @@ remainingN: "Rimangono: {n}"
 overwriteContentConfirm: "Vuoi davvero sostituire l'attuale contenuto?"
 seasonalScreenEffect: "Schermate in base alla stagione"
 decorate: "Decora"
+lastNDays: "Ultimi {n} giorni"
 _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
