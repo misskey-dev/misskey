@@ -1186,6 +1186,7 @@ seasonalScreenEffect: "季節にあった画面の動き"
 decorate: "デコる"
 addMfmFunction: "装飾つける"
 enableQuickAddMfmFunction: "ややこしいMFMのピッカーを出す"
+lastNDays: "直近{n}日"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "オンにしたらこのお知らせができた時点でおる人らにだけお知らせが行くで。切ったらこの知らせが行ったあとにアカウント作った人にもちゃんとお知らせが行くで。"
