@@ -101,7 +101,7 @@ const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNot
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
-let filenameRandomize = computed(defaultStore.makeGetterSetter('filenameRandomize'));
+const filenameRandomize = computed(defaultStore.makeGetterSetter('filenameRandomize'));
 
 function save() {
 	os.api('i/update', {
