@@ -1175,6 +1175,7 @@ doReaction: "Add reaction"
 code: "Code"
 reloadRequiredToApplySettings: "Reloading is required to apply the settings."
 decorate: "Decorate"
+lastNDays: "Last {n} days"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
