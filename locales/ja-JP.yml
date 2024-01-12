@@ -631,6 +631,7 @@ medium: "中"
 small: "小"
 generateAccessToken: "アクセストークンの発行"
 permission: "権限"
+adminPermission: "管理者権限"
 enableAll: "全て有効にする"
 disableAll: "全て無効にする"
 tokenRequested: "アカウントへのアクセス許可"
@@ -1190,6 +1191,20 @@ decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
 bubbleGame: "バブルゲーム"
+sfx: "効果音"
+soundWillBePlayed: "サウンドが再生されます"
+showReplay: "リプレイを見る"
+replay: "リプレイ"
+replaying: "リプレイ中"
+ranking: "ランキング"
+lastNDays: "直近{n}日"
+
+_bubbleGame:
+  howToPlay: "遊び方"
+  _howToPlay:
+    section1: "位置を調整してハコにモノを落とします。"
+    section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
+    section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1568,6 +1583,13 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey初心者講座 修了証"
       description: "チュートリアルを完了した"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+      description: "バブルゲームで最も大きいモノを出した"
+    _bubbleGameDoubleExplodingHead:
+      title: "ダブル🤯"
+      description: "バブルゲームで最も大きいモノを2つ同時に出した"
+      flavor: "これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて"
 
 _role:
   new: "ロールの作成"

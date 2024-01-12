@@ -474,6 +474,18 @@ type BlockingListRequest = operations['blocking/list']['requestBody']['content']
 type BlockingListResponse = operations['blocking/list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRegisterResponse = operations['bubble-game/register']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type Channel = components['schemas']['Channel'];
 
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
@@ -1607,6 +1619,10 @@ declare namespace entities {
         FetchExternalResourcesRequest,
         FetchExternalResourcesResponse,
         RetentionResponse,
+        BubbleGameRegisterRequest,
+        BubbleGameRegisterResponse,
+        BubbleGameRankingRequest,
+        BubbleGameRankingResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -2554,7 +2570,7 @@ type QueueStats = {
 };
 
 // @public (undocumented)
-type QueueStatsLog = string[];
+type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute/create']['requestBody']['content']['application/json'];
@@ -2628,7 +2644,7 @@ type ServerStats = {
 };
 
 // @public (undocumented)
-type ServerStatsLog = string[];
+type ServerStatsLog = ServerStats[];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];

@@ -6,25 +6,17 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, startServer, simpleGet } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, signup, simpleGet } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('FF visibility', () => {
-	let app: INestApplicationContext;
-
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
-		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
 
 	test('followingVisibility, followersVisibility がともに public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
 		await api('/i/update', {
