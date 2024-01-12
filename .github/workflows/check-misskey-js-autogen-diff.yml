@@ -1,0 +1,81 @@
+name: Report Misskey JS autogen Diff
+
+on:
+  workflow_run:
+    types: [completed]
+    workflows:
+      - Get api.json from Misskey # get-api-diff.yml
+
+jobs:
+  compare-diff:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      pull-requests: write
+
+    env:
+      node_version: 20.10.0
+      api_json_names: "api-base.json api-head.json"
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Download artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("api-artifact-") || artifact.name == "api-artifact"
+            });
+            await Promise.all(matchArtifacts.map(async (artifact) => {
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+            }));
+      - name: Extract all artifacts
+        run: |
+          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d artifacts ';'
+          ls -la
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          cache: pnpm
+
+      - name: install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: build autogen
+        run: |-
+          for name in $(echo $api_json_names)
+          do
+            checksum=$(mktemp)
+            mv artifacts/$name packages/misskey-js/generator/api.json
+
+            cd packages/misskey-js/generator
+            pnpm run generate
+            find built -type f -exec sh -c 'echo $(sed -E "s/^\s+\*\s+generatedAt:.+$//" {} | sha256sum | cut -d" " -f 1) {}' \; > $checksum
+            cd ../../..
+            cp $checksum ${name}_checksum
+          done
+
+      - name: check checksum
+        run: diff $(echo -n .checksum .checksum2 | awk -v RS=" " '{ printf "%s_checksum ", $0 }')
