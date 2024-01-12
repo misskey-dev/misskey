@@ -1202,6 +1202,7 @@ export interface Locale {
     "replay": string;
     "replaying": string;
     "ranking": string;
+    "lastNDays": string;
     "_bubbleGame": {
         "howToPlay": string;
         "_howToPlay": {
