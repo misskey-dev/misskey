@@ -912,6 +912,7 @@ icon: "Аватар"
 replies: "Відповісти"
 renotes: "Поширити"
 flip: "Перевернути"
+lastNDays: "Останні {n} днів"
 _achievements:
   earnedAt: "Відкрито"
   _types:
