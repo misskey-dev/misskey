@@ -20,6 +20,7 @@
 
 ### Client
 - Feat: 新しいゲームを追加
+- Feat: 枠線をつけるMFM`$[border.width=1,style=solid,color=fff,radius=0 ...]`を追加
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
 - Enhance: チャンネルノートのピン留めをノートのメニューからできるように
 - Enhance: 管理者の場合はAPI tokenの発行画面で管理機能に関する権限を付与できるように
