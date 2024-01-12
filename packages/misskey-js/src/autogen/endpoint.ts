@@ -542,6 +542,10 @@ import type {
 	FetchExternalResourcesRequest,
 	FetchExternalResourcesResponse,
 	RetentionResponse,
+	BubbleGameRegisterRequest,
+	BubbleGameRegisterResponse,
+	BubbleGameRankingRequest,
+	BubbleGameRankingResponse,
 } from './entities.js';
 
 export type Endpoints = {
@@ -905,4 +909,6 @@ export type Endpoints = {
 	'fetch-rss': { req: FetchRssRequest; res: FetchRssResponse };
 	'fetch-external-resources': { req: FetchExternalResourcesRequest; res: FetchExternalResourcesResponse };
 	'retention': { req: EmptyRequest; res: RetentionResponse };
+	'bubble-game/register': { req: BubbleGameRegisterRequest; res: BubbleGameRegisterResponse };
+	'bubble-game/ranking': { req: BubbleGameRankingRequest; res: BubbleGameRankingResponse };
 }

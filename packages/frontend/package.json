@@ -24,7 +24,7 @@
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "5.0.5",
 		"@rollup/pluginutils": "5.1.0",
-		"@syuilo/aiscript": "0.16.0",
+		"@syuilo/aiscript": "0.17.0",
 		"@tabler/icons-webfont": "2.44.0",
 		"@twemoji/parser": "15.0.0",
 		"@vitejs/plugin-vue": "5.0.2",

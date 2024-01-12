@@ -92,14 +92,12 @@ export type OperationType = typeof operationTypes[number];
  * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
  */
 export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
-	if (_DEV_) console.log('loading audio. opts:', options);
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (ctx == null) {
 		ctx = new AudioContext();
 	}
 	if (options?.useCache ?? true) {
 		if (cache.has(url)) {
-			if (_DEV_) console.log('use cache');
 			return cache.get(url) as AudioBuffer;
 		}
 	}
@@ -128,7 +126,6 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (_DEV_) console.log('play', operationType, sound);
 	if (sound.type == null || !canPlay) return;
 
 	canPlay = false;
