@@ -1196,6 +1196,7 @@ soundWillBePlayed: "將播放音效"
 showReplay: "觀看重播"
 replay: "重播"
 replaying: "重播中"
+ranking: "排行榜"
 _bubbleGame:
   howToPlay: "玩法說明"
   _howToPlay:
