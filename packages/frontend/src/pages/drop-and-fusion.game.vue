@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="isGameOver" :class="$style.frame">
 				<div :class="$style.frameInner">
 					<div class="_buttonsCenter">
-						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.done }}</MkButton>
+						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
 						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
 						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
 						<MkButton rounded @click="exportLog">Copy replay data</MkButton>
@@ -953,9 +953,8 @@ async function share() {
 	const file = await uploading;
 	if (!file) return;
 	os.post({
-		initialText: `#BubbleGame
-MODE: ${props.gameMode}
-SCORE: ${score.value.toLocaleString()} (MAX CHAIN: ${maxCombo.value})`,
+		initialText: `#BubbleGame (${props.gameMode})
+SCORE: ${score.value.toLocaleString()}${props.gameMode === 'yen' ? '円' : 'pt'}`,
 		initialFiles: [file],
 		instant: true,
 	});
@@ -986,6 +985,7 @@ function attachGameEvents() {
 
 		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
 			volume: 0.5 * sfxVolume.value,
+			playbackRate: replayPlaybackRate.value,
 		});
 	});
 
@@ -1024,7 +1024,7 @@ function attachGameEvents() {
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (props.gameMode === 'yen' ? '円' : '') }, {}, 'end');
 	});
 
 	game.addListener('monoAdded', (mono) => {
