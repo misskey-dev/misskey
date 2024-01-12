@@ -1012,6 +1012,7 @@ icon: "الصورة الرمزية"
 replies: "رد"
 renotes: "أعد النشر"
 flip: "اقلب"
+lastNDays: "آخر {n} أيام"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
   letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."
