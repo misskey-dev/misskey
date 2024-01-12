@@ -1085,16 +1085,35 @@ function attachGameEvents() {
 	game.addListener('sfx', (type, params) => {
 		if (props.mute) return;
 
-		const soundUrl =
-			type === 'fusion' ? '/client-assets/drop-and-fusion/bubble2.mp3' :
-			type === 'collision' ? '/client-assets/drop-and-fusion/poi1.mp3' :
-			null as never;
-
-		sound.playUrl(soundUrl, {
-			volume: params.volume * sfxVolume.value,
-			pan: params.pan,
-			playbackRate: params.pitch * replayPlaybackRate.value,
-		});
+		if (type === 'fusion') {
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
+					volume: 0.3 * params.volume * sfxVolume.value,
+					pan: params.pan,
+					playbackRate: (params.pitch / 4) * replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
+					volume: params.volume * sfxVolume.value,
+					pan: params.pan,
+					playbackRate: params.pitch * replayPlaybackRate.value,
+				});
+			}
+		} else if (type === 'collision') {
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
+					volume: params.volume * sfxVolume.value,
+					pan: params.pan,
+					playbackRate: params.pitch * replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
+					volume: params.volume * sfxVolume.value,
+					pan: params.pan,
+					playbackRate: params.pitch * replayPlaybackRate.value,
+				});
+			}
+		}
 	});
 }
 
