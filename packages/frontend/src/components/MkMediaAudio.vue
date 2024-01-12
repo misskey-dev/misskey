@@ -264,6 +264,22 @@ onDeactivated(() => {
 	overflow: clip;
 }
 
+.sensitive {
+	position: relative;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--warn);
+	}
+}
+
 .hidden {
 	width: 100%;
 	background: none;
