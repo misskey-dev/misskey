@@ -1162,6 +1162,7 @@ remainingN: "Restants : {n}"
 overwriteContentConfirm: "Voulez-vous remplacer le contenu actuel ?"
 seasonalScreenEffect: "Effet d'écran saisonnier"
 decorate: "Décorer"
+lastNDays: "Derniers {n} jours"
 _announcement:
   forExistingUsers: "Pour les utilisateurs existants seulement"
   readConfirmTitle: "Marquer comme lu ?"
