@@ -110,6 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.frameInner">
 						<div>SCORE: <b><MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b></div>
 						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b><b v-else>-</b></div>
+						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
 					</div>
 				</div>
 				<div :class="[$style.frame]" style="margin-left: auto;">
@@ -609,6 +610,7 @@ const dropReady = ref(true);
 const isGameOver = ref(false);
 const gameLoaded = ref(false);
 const highScore = ref<number | null>(null);
+const yenTotal = ref<number | null>(null);
 const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
@@ -1071,6 +1073,15 @@ function attachGameEvents() {
 			logs: DropAndFusionGame.serializeLogs(logs),
 		});
 
+		if (props.gameMode === 'yen') {
+			yenTotal.value = (yenTotal.value ?? 0) + score.value;
+			misskeyApi('i/registry/set', {
+				scope: ['dropAndFusionGame'],
+				key: 'yenTotal',
+				value: yenTotal.value,
+			});
+		}
+
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
 
@@ -1133,6 +1144,25 @@ onMounted(async () => {
 		});
 	} catch (err) {
 		highScore.value = null;
+	}
+
+	if (props.gameMode === 'yen') {
+		try {
+			yenTotal.value = await misskeyApi('i/registry/get', {
+				scope: ['dropAndFusionGame'],
+				key: 'yenTotal',
+			});
+		} catch (err) {
+			if (err.code === 'NO_SUCH_KEY') {
+				// nop
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.cannotLoad,
+				});
+				return;
+			}
+		}
 	}
 
 	await start();
