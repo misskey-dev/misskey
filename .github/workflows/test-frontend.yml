@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.5.1]
+        node-version: [20.10.0]
 
     steps:
     - uses: actions/checkout@v4.1.1
@@ -25,7 +25,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -51,12 +51,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20.5.1]
+        node-version: [20.10.0]
         browser: [chrome]
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:15
         ports:
           - 54312:5432
         env:
@@ -83,7 +83,7 @@ jobs:
         version: 7
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -108,12 +108,12 @@ jobs:
         wait-on: 'http://localhost:61812'
         headed: true
         browser: ${{ matrix.browser }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: ${{ matrix.browser }}-cypress-screenshots
         path: cypress/screenshots
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ matrix.browser }}-cypress-videos

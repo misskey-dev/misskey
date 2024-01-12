@@ -1,23 +1,15 @@
 {
-    "search.exclude": {
-        "**/node_modules": true
-    },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "files.associations": {
-        "*.test.ts": "typescript"
-    },
-    "jest.jestCommandLine": "pnpm run jest",
-    "jest.autoRun": "off",
-    "sqltools.connections": [
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 5432,
-            "driver": "PostgreSQL",
-            "name": "misskey",
-            "database": "misskey",
-            "username": "postgres",
-            "password": "postgres"
-        }
-    ]
+	"search.exclude": {
+		"**/node_modules": true
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"files.associations": {
+		"*.test.ts": "typescript"
+	},
+	"jest.jestCommandLine": "pnpm run jest",
+	"jest.autoRun": "off",
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit"
+	},
+	"editor.formatOnSave": false
 }

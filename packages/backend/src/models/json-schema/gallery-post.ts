@@ -22,14 +22,6 @@ export const packedGalleryPostSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		title: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		description: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
 		userId: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -39,6 +31,14 @@ export const packedGalleryPostSchema = {
 			type: 'object',
 			ref: 'UserLite',
 			optional: false, nullable: false,
+		},
+		title: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		description: {
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		fileIds: {
 			type: 'array',
@@ -69,6 +69,14 @@ export const packedGalleryPostSchema = {
 		isSensitive: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		likedCount: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
+		isLiked: {
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 	},
 } as const;

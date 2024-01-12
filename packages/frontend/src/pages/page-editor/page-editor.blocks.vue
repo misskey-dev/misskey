@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
+import * as Misskey from 'misskey-js';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
@@ -34,11 +35,11 @@ function getComponent(type: string) {
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
-	modelValue: any[];
+	modelValue: Misskey.entities.Page['content'];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any[]): void;
+	(ev: 'update:modelValue', value: Misskey.entities.Page['content']): void;
 }>();
 
 function updateItem(v) {

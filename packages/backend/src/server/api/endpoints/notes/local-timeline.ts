@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiNote, NotesRepository, FollowingsRepository } from '@/models/_.js';
+import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -13,11 +13,10 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
+import { FunoutTimelineService } from '@/core/FunoutTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -39,6 +38,12 @@ export const meta = {
 			code: 'LTL_DISABLED',
 			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd',
 		},
+
+		bothWithRepliesAndWithFiles: {
+			message: 'Specifying both withReplies and withFiles is not supported',
+			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
+			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793',
+		},
 	},
 } as const;
 
@@ -49,10 +54,10 @@ export const paramDef = {
 		withRenotes: { type: 'boolean', default: true },
 		withReplies: { type: 'boolean', default: false },
 		withBelowPublic: { type: 'boolean', default: false },
-		excludeNsfw: { type: 'boolean', default: false },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 	},
@@ -86,10 +91,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.ltlDisabled);
 			}
 
+			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
+
 			const serverSettings = await this.metaService.fetch();
 
 			if (!serverSettings.enableFanoutTimeline) {
-				return await this.getFromDb({
+				const timeline = await this.getFromDb({
 					untilId,
 					sinceId,
 					limit: ps.limit,
@@ -177,20 +184,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 
 				return await this.noteEntityService.packMany(redisTimeline, me);
-			} else {
-				if (serverSettings.enableFanoutTimelineDbFallback) { // fallback to db
-					return await this.getFromDb({
-						untilId,
-						sinceId,
-						limit: ps.limit,
-						withFiles: ps.withFiles,
-						withReplies: ps.withReplies,
-						withBelowPublic: ps.withBelowPublic,
-					}, me);
-				} else {
-					return [];
-				}
 			}
+
+			const timeline = await this.fanoutTimelineEndpointService.timeline({
+				untilId,
+				sinceId,
+				limit: ps.limit,
+				allowPartial: ps.allowPartial,
+				me,
+				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
+				redisTimelines:
+					ps.withFiles ? ['localTimelineWithFiles']
+					: ps.withReplies ? ['localTimeline', 'localTimelineWithReplies']
+					: me ? ['localTimeline', `localTimelineWithReplyTo:${me.id}`]
+					: ['localTimeline'],
+				alwaysIncludeMyNotes: true,
+				excludePureRenotes: !ps.withRenotes,
+				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
+					untilId,
+					sinceId,
+					limit,
+					withFiles: ps.withFiles,
+					withReplies: ps.withReplies,
+					withBelowPublic: ps.withBelowPublic,
+				}, me),
+			});
+
+			process.nextTick(() => {
+				if (me) {
+					this.activeUsersChart.read(me);
+				}
+			});
+
+			return timeline;
 		});
 	}
 
@@ -256,14 +282,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}));
 		}
 
-		const timeline = await query.limit(ps.limit).getMany();
-
-		process.nextTick(() => {
-			if (me) {
-				this.activeUsersChart.read(me);
-			}
-		});
-
-		return await this.noteEntityService.packMany(timeline, me);
+		return await query.limit(ps.limit).getMany();
 	}
 }

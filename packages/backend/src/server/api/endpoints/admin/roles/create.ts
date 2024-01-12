@@ -13,6 +13,13 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:roles',
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Role',
+	},
 } as const;
 
 export const paramDef = {

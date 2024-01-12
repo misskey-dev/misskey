@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<MkTextarea v-model="code" tall>
+	<MkCodeEditor v-model="code" lang="is">
 		<template #label>{{ i18n.ts.code }}</template>
-	</MkTextarea>
+	</MkCodeEditor>
 
 	<div>
 		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import { nextTick, ref, computed } from 'vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
@@ -49,9 +49,9 @@ async function install() {
 	}
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts._plugin.install,

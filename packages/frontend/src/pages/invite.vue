@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in (items as Misskey.entities.Invite[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
+						<MkInviteCode v-for="item in (items as Misskey.entities.InviteCode[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
 					</div>
 				</template>
 			</MkPagination>

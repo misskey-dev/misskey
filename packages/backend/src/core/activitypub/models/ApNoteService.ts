@@ -92,6 +92,10 @@ export class ApNoteService {
 			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
 		}
 
+		if (object.published && !this.idService.isSafeT(new Date(object.published).valueOf())) {
+			return new Error('invalid Note: published timestamp is malformed');
+		}
+
 		return null;
 	}
 

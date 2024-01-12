@@ -19,14 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, provide, shallowRef } from 'vue';
+import { ComputedRef, provide, shallowRef, ref } from 'vue';
 import XColumn from './column.vue';
 import { deckStore, Column } from '@/ui/deck/deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import { useScrollPositionManager } from '@/nirax';
+import { useScrollPositionManager } from '@/nirax.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 
 defineProps<{
@@ -35,11 +35,11 @@ defineProps<{
 }>();
 
 const contents = shallowRef<HTMLElement>();
-let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
+const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
-	pageMetadata = info;
+	pageMetadata.value = info;
 });
 
 /*

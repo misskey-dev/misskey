@@ -6,6 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { GalleryPostsRepository, GalleryLikesRepository } from '@/models/_.js';
+import { FeaturedService, GALLERY_POSTS_RANKING_WINDOW } from '@/core/FeaturedService.js';
+import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -49,6 +51,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.galleryLikesRepository)
 		private galleryLikesRepository: GalleryLikesRepository,
+
+		private featuredService: FeaturedService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const post = await this.galleryPostsRepository.findOneBy({ id: ps.postId });
@@ -67,6 +72,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Delete like
 			await this.galleryLikesRepository.delete(exist.id);
+
+			// ランキング更新
+			if (Date.now() - this.idService.parse(post.id).date.getTime() < GALLERY_POSTS_RANKING_WINDOW) {
+				await this.featuredService.updateGalleryPostsRanking(post.id, -1);
+			}
 
 			this.galleryPostsRepository.decrement({ id: post.id }, 'likedCount', 1);
 		});

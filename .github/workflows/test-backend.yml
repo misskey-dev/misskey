@@ -13,11 +13,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.5.1]
+        node-version: [20.10.0]
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:15
         ports:
           - 54312:5432
         env:
@@ -38,7 +38,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
