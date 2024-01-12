@@ -11,12 +11,12 @@ let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
 let canPlay = true;
 
-export const soundsTypes = [
+const defaultSoundsTypes = [
 	// 音声なし
 	null,
 
 	// ドライブの音声
-	...($i?.policies.canUseDriveFileInSoundSettings ? ['_driveFile_'] : []),
+	'_driveFile_',
 
 	// プリインストール
 	'syuilo/n-aec',
@@ -71,6 +71,8 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba6',
 	'noizenecio/kick_gaba7',
 ] as const;
+
+export const soundsTypes = ($i && $i.policies.canUseDriveFileInSoundSettings) ? defaultSoundsTypes : defaultSoundsTypes.filter(s => s !== '_driveFile_');
 
 export const operationTypes = [
 	'noteMy',
