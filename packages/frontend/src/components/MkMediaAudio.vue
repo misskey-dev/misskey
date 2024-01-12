@@ -162,7 +162,7 @@ function togglePlayPause() {
 
 function toggleMute() {
 	if (volume.value === 0) {
-		volume.value = .5;
+		volume.value = defaultStore.state.mediaPlayer.volume;
 	} else {
 		volume.value = 0;
 	}
