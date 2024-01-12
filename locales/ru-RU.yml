@@ -1082,6 +1082,7 @@ replies: "Ответы"
 renotes: "Репост"
 loadReplies: "Показать ответы"
 flip: "Переворот"
+lastNDays: "Последние {n} сут"
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
   letsStartAccountSetup: "Давайте настроим вашу учётную запись."
