@@ -1129,6 +1129,7 @@ seasonalScreenEffect: "Efectes de pantalla segons les estacions"
 decorate: "Decorar"
 addMfmFunction: "Afegeix funcions MFM"
 enableQuickAddMfmFunction: "Activar accés ràpid per afegir funcions MFM"
+lastNDays: "Últims {n} dies"
 _announcement:
   forExistingUsers: "Anunci per usuaris registrats"
   forExistingUsersDescription: "Aquest avís només es mostrarà als usuaris existents fins al moment de la publicació. Si no també es mostrarà als usuaris que es registrin després de la publicació."
