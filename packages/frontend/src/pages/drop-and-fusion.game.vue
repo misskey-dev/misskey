@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="[$style.frame, $style.frameH]">
 					<div :class="$style.frameInner">
 						<MkButton inline small @click="hold">HOLD</MkButton>
-						<img v-if="holdingStock" :src="game.getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
+						<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
 					</div>
 					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
 						<TransitionGroup
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:leaveToClass="$style.transition_stock_leaveTo"
 							:moveClass="$style.transition_stock_move"
 						>
-							<img v-for="x in stock" :key="x.id" :src="game.getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
+							<img v-for="x in stock" :key="x.id" :src="getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
 						</TransitionGroup>
 					</div>
 				</div>
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="game.getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.size * viewScale) / 2) + 'px', left: -((currentPick?.mono.size * viewScale) / 2) + 'px', width: `${currentPick?.mono.size * viewScale}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.size * viewScale) / 2) + 'px', left: -((currentPick?.mono.size * viewScale) / 2) + 'px', width: `${currentPick?.mono.size * viewScale}px` }"/>
 					</Transition>
 					<template v-if="dropReady && currentPick">
 						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
@@ -81,14 +81,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
 			</div>
-			<div v-if="replaying" style="display: flex;">
-				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
-					<div :class="$style.frameInner">
-						<div class="_buttonsCenter">
-							<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END REPLAY</MkButton>
-							<MkButton :primary="replayPlaybackRate === 2" @click="replayPlaybackRate = replayPlaybackRate === 2 ? 1 : 2"><i class="ti ti-player-track-next"></i> x2</MkButton>
-							<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
-						</div>
+			<div v-if="replaying" :class="$style.frame">
+				<div :class="$style.frameInner">
+					<div style="background: #0004;">
+						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
+					</div>
+				</div>
+				<div :class="$style.frameInner">
+					<div class="_buttonsCenter">
+						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
+						<MkButton :primary="replayPlaybackRate === 2" @click="replayPlaybackRate = replayPlaybackRate === 2 ? 1 : 2"><i class="ti ti-player-track-next"></i> x2</MkButton>
+						<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
 					</div>
 				</div>
 			</div>
@@ -140,6 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -385,9 +389,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }];
 
-const GAME_WIDTH = 450;
-const GAME_HEIGHT = 600;
-
 const props = defineProps<{
 	gameMode: 'normal' | 'square';
 	mute: boolean;
@@ -397,12 +398,23 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
+const monoDefinitions = props.gameMode === 'normal' ? NORAML_MONOS : SQUARE_MONOS;
+
 let viewScale = 1;
-let game: DropAndFusionGame;
+let seed: string = Date.now().toString();
 let containerElRect: DOMRect | null = null;
-let seed: string;
 let logs: ReturnType<DropAndFusionGame['getLogs']> | null = null;
+let endedAtFrame = 0;
 let bgmNodes: ReturnType<typeof sound.createSourceNode> | null = null;
+let renderer: Matter.Render | null = null;
+let monoTextures: Record<string, Blob> = {};
+let monoTextureUrls: Record<string, string> = {};
+let tickRaf: number | null = null;
+let game = new DropAndFusionGame({
+	seed: seed,
+	monoDefinitions,
+});
+attachGameEvents();
 
 const containerEl = shallowRef<HTMLElement>();
 const canvasEl = shallowRef<HTMLCanvasElement>();
@@ -421,6 +433,7 @@ const highScore = ref<number | null>(null);
 const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
+const currentFrame = ref(0);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
 
@@ -434,50 +447,125 @@ watch(bgmVolume, (newValue) => {
 	}
 });
 
-watch(sfxVolume, (newValue) => {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (game) {
-		game.setSfxVolume(props.mute ? 0 : newValue);
-	}
-});
-
-function createGameInstance() {
-	return new DropAndFusionGame({
-		width: GAME_WIDTH,
-		height: GAME_HEIGHT,
+function createRendererInstance(game: DropAndFusionGame) {
+	return Matter.Render.create({
+		engine: game.engine,
 		canvas: canvasEl.value!,
-		seed: seed,
-		sfxVolume: props.mute ? 0 : sfxVolume.value,
-		...(
-			props.gameMode === 'normal' ? {
-				monoDefinitions: NORAML_MONOS,
-			} : {
-				monoDefinitions: SQUARE_MONOS,
-			}
-		),
+		options: {
+			width: game.GAME_WIDTH,
+			height: game.GAME_HEIGHT,
+			background: 'transparent', // transparent to hide
+			wireframeBackground: 'transparent', // transparent to hide
+			wireframes: false,
+			showSleeping: false,
+			pixelRatio: Math.max(2, window.devicePixelRatio),
+		},
 	});
 }
 
-async function start() {
-	seed = Date.now().toString();
+function loadMonoTextures() {
+	async function loadSingleMonoTexture(mono: Mono) {
+		if (renderer == null) return;
 
-	game = createGameInstance();
-	attachGameEvents();
-	await game.load();
+		// Matter-js内にキャッシュがある場合はスキップ
+		if (renderer.textures[mono.img]) return;
+
+		let src = mono.img;
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (monoTextureUrls[mono.img]) {
+			src = monoTextureUrls[mono.img];
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		} else if (monoTextures[mono.img]) {
+			src = URL.createObjectURL(monoTextures[mono.img]);
+			monoTextureUrls[mono.img] = src;
+		} else {
+			const res = await fetch(mono.img);
+			const blob = await res.blob();
+			monoTextures[mono.img] = blob;
+			src = URL.createObjectURL(blob);
+			monoTextureUrls[mono.img] = src;
+		}
+
+		const image = new Image();
+		image.src = src;
+		renderer.textures[mono.img] = image;
+	}
+
+	return Promise.all(monoDefinitions.map(x => loadSingleMonoTexture(x)));
+}
+
+function getTextureImageUrl(mono: Mono) {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (monoTextureUrls[mono.img]) {
+		return monoTextureUrls[mono.img];
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	} else if (monoTextures[mono.img]) {
+		// Gameクラス内にキャッシュがある場合はそれを使う
+		const out = URL.createObjectURL(monoTextures[mono.img]);
+		monoTextureUrls[mono.img] = out;
+		return out;
+	} else {
+		return mono.img;
+	}
+}
+
+function tick() {
+	const hasNextTick = game.tick();
+	if (hasNextTick) {
+		tickRaf = window.requestAnimationFrame(tick);
+	} else {
+		tickRaf = null;
+	}
+}
+
+function tickReplay() {
+	let hasNextTick;
+	for (let i = 0; i < replayPlaybackRate.value; i++) {
+		const log = logs!.find(x => x.frame === game.frame);
+		if (log) {
+			switch (log.operation) {
+				case 'drop': {
+					game.drop(log.x);
+					break;
+				}
+				case 'hold': {
+					game.hold();
+					break;
+				}
+				case 'surrender': {
+					game.surrender();
+					break;
+				}
+				default:
+					break;
+			}
+		}
+
+		hasNextTick = game.tick();
+		currentFrame.value = game.frame;
+		if (!hasNextTick) break;
+	}
+
+	if (hasNextTick) {
+		tickRaf = window.requestAnimationFrame(tickReplay);
+	} else {
+		tickRaf = null;
+	}
+}
+
+async function start() {
+	await loadMonoTextures();
+	renderer = createRendererInstance(game);
+	Matter.Render.lookAt(renderer, {
+		min: { x: 0, y: 0 },
+		max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
+	});
+	Matter.Render.run(renderer);
 	game.start();
+	window.requestAnimationFrame(tick);
 
 	gameLoaded.value = true;
-
-	if (bgmNodes == null) {
-		const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
-		if (!bgmBuffer) return;
-		bgmNodes = sound.createSourceNode(bgmBuffer, {
-			volume: props.mute ? 0 : bgmVolume.value,
-		});
-		if (!bgmNodes) return;
-		bgmNodes.soundSource.loop = true;
-		bgmNodes.soundSource.start();
-	}
 }
 
 function onClick(ev: MouseEvent) {
@@ -507,7 +595,7 @@ function onTouchmove(ev: TouchEvent) {
 }
 
 function moveDropper(rect: DOMRect, x: number) {
-	dropperX.value = Math.min(rect.width * ((GAME_WIDTH - game.PLAYAREA_MARGIN) / GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / GAME_WIDTH), x));
+	dropperX.value = Math.min(rect.width * ((game.GAME_WIDTH - game.PLAYAREA_MARGIN) / game.GAME_WIDTH), Math.max(rect.width * (game.PLAYAREA_MARGIN / game.GAME_WIDTH), x));
 }
 
 function hold() {
@@ -525,11 +613,17 @@ async function surrender() {
 
 async function restart() {
 	reset();
+	game = new DropAndFusionGame({
+		seed: seed,
+		monoDefinitions,
+	});
+	attachGameEvents();
 	await start();
 }
 
 function reset() {
-	game.dispose();
+	dispose();
+	seed = Date.now().toString();
 	isGameOver.value = false;
 	replaying.value = false;
 	replayPlaybackRate.value = 1;
@@ -544,9 +638,12 @@ function reset() {
 	gameLoaded.value = false;
 }
 
-function end() {
+function dispose() {
 	game.dispose();
-	bgmNodes?.soundSource.stop();
+	Matter.Render.stop(renderer);
+	if (tickRaf) {
+		window.cancelAnimationFrame(tickRaf);
+	}
 }
 
 function backToTitle() {
@@ -555,110 +652,41 @@ function backToTitle() {
 
 function replay() {
 	replaying.value = true;
-	game.dispose();
-	game = createGameInstance();
+	dispose();
+	game = new DropAndFusionGame({
+		seed: seed,
+		monoDefinitions,
+		replaying: true,
+	});
 	attachGameEvents();
-	os.promiseDialog(game.load(), async () => {
-		game.start(logs!);
+	os.promiseDialog(loadMonoTextures(), async () => {
+		renderer = createRendererInstance(game);
+		Matter.Render.lookAt(renderer, {
+			min: { x: 0, y: 0 },
+			max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
+		});
+		Matter.Render.run(renderer);
+		game.start();
+		window.requestAnimationFrame(tickReplay);
 	});
 }
 
 function endReplay() {
 	replaying.value = false;
-	game.dispose();
+	dispose();
 }
 
 function exportLog() {
 	if (!logs) return;
 	const data = JSON.stringify({
-		seed: seed,
-		date: new Date().toISOString(),
-		logs: logs,
+		v: game.GAME_VERSION,
+		m: props.gameMode,
+		s: seed,
+		d: new Date().toISOString(),
+		l: DropAndFusionGame.serializeLogs(logs),
 	});
 	copyToClipboard(data);
 	os.success();
-}
-
-function attachGameEvents() {
-	game.addListener('changeScore', value => {
-		score.value = value;
-	});
-
-	game.addListener('changeCombo', value => {
-		if (value === 0) {
-			comboPrev.value = combo.value;
-		} else {
-			comboPrev.value = value;
-		}
-		maxCombo.value = Math.max(maxCombo.value, value);
-		combo.value = value;
-	});
-
-	game.addListener('changeStock', value => {
-		currentPick.value = JSON.parse(JSON.stringify(value[0]));
-		stock.value = JSON.parse(JSON.stringify(value.slice(1)));
-	});
-
-	game.addListener('changeHolding', value => {
-		holdingStock.value = value;
-	});
-
-	game.addListener('dropped', () => {
-		if (replaying.value) return;
-
-		dropReady.value = false;
-		window.setTimeout(() => {
-			if (!isGameOver.value) {
-				dropReady.value = true;
-			}
-		}, game.DROP_INTERVAL);
-	});
-
-	game.addListener('fusioned', (x, y, scoreDelta) => {
-		if (!canvasEl.value) return;
-
-		const rect = canvasEl.value.getBoundingClientRect();
-		const domX = rect.left + (x * viewScale);
-		const domY = rect.top + (y * viewScale);
-		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
-	});
-
-	game.addListener('monoAdded', (mono) => {
-		if (replaying.value) return;
-
-		// 実績関連
-		if (mono.level === 10) {
-			claimAchievement('bubbleGameExplodingHead');
-
-			const monos = game.getActiveMonos();
-			if (monos.filter(x => x.level === 10).length >= 2) {
-				claimAchievement('bubbleGameDoubleExplodingHead');
-			}
-		}
-	});
-
-	game.addListener('gameOver', () => {
-		if (replaying.value) {
-			endReplay();
-			return;
-		}
-
-		logs = game.getLogs();
-		currentPick.value = null;
-		dropReady.value = false;
-		isGameOver.value = true;
-
-		if (score.value > (highScore.value ?? 0)) {
-			highScore.value = score.value;
-
-			misskeyApi('i/registry/set', {
-				scope: ['dropAndFusionGame'],
-				key: 'highScore:' + props.gameMode,
-				value: highScore.value,
-			});
-		}
-	});
 }
 
 function updateSettings<
@@ -686,8 +714,8 @@ function loadImage(url: string) {
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
 		const dcanvas = document.createElement('canvas');
-		dcanvas.width = GAME_WIDTH;
-		dcanvas.height = GAME_HEIGHT;
+		dcanvas.width = game.GAME_WIDTH;
+		dcanvas.height = game.GAME_HEIGHT;
 		const ctx = dcanvas.getContext('2d');
 		if (!ctx || !canvasEl.value) return res(null);
 		Promise.all([
@@ -696,11 +724,18 @@ function getGameImageDriveFile() {
 		]).then((images) => {
 			const [frame, logo] = images;
 			ctx.fillStyle = '#fff';
-			ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-			ctx.drawImage(frame, 0, 0, GAME_WIDTH, GAME_HEIGHT);
-			ctx.drawImage(canvasEl.value!, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+			ctx.fillRect(0, 0, game.GAME_WIDTH, game.GAME_HEIGHT);
+
+			ctx.drawImage(frame, 0, 0, game.GAME_WIDTH, game.GAME_HEIGHT);
+			ctx.drawImage(canvasEl.value!, 0, 0, game.GAME_WIDTH, game.GAME_HEIGHT);
+
+			ctx.fillStyle = '#000';
+			ctx.font = '16px bold sans-serif';
+			ctx.textBaseline = 'top';
+			ctx.fillText(`SCORE: ${score.value.toLocaleString()}`, 10, 10);
+
 			ctx.globalAlpha = 0.7;
-			ctx.drawImage(logo, GAME_WIDTH * 0.55, 6, GAME_WIDTH * 0.45, GAME_WIDTH * 0.45 * (logo.height / logo.width));
+			ctx.drawImage(logo, game.GAME_WIDTH * 0.55, 6, game.GAME_WIDTH * 0.45, game.GAME_WIDTH * 0.45 * (logo.height / logo.width));
 			ctx.globalAlpha = 1;
 
 			dcanvas.toBlob(blob => {
@@ -739,9 +774,132 @@ async function share() {
 	os.post({
 		initialText: `#BubbleGame
 MODE: ${props.gameMode}
-SCORE: ${score.value} (MAX CHAIN: ${maxCombo.value})`,
+SCORE: ${score.value.toLocaleString()} (MAX CHAIN: ${maxCombo.value})`,
 		initialFiles: [file],
 		instant: true,
+	});
+}
+
+function attachGameEvents() {
+	game.addListener('changeScore', value => {
+		score.value = value;
+	});
+
+	game.addListener('changeCombo', value => {
+		if (value === 0) {
+			comboPrev.value = combo.value;
+		} else {
+			comboPrev.value = value;
+		}
+		maxCombo.value = Math.max(maxCombo.value, value);
+		combo.value = value;
+	});
+
+	game.addListener('changeStock', value => {
+		currentPick.value = JSON.parse(JSON.stringify(value[0]));
+		stock.value = JSON.parse(JSON.stringify(value.slice(1)));
+	});
+
+	game.addListener('changeHolding', value => {
+		holdingStock.value = value;
+
+		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+			volume: 0.5 * sfxVolume.value,
+		});
+	});
+
+	game.addListener('dropped', (x) => {
+		const panV = x - game.PLAYAREA_MARGIN;
+		const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+		const pan = ((panV / panW) - 0.5) * 2;
+		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', {
+			volume: sfxVolume.value,
+			pan,
+			playbackRate: replayPlaybackRate.value,
+		});
+
+		if (replaying.value) return;
+
+		dropReady.value = false;
+		window.setTimeout(() => {
+			if (!isGameOver.value) {
+				dropReady.value = true;
+			}
+		}, game.DROP_INTERVAL);
+	});
+
+	game.addListener('fusioned', (x, y, scoreDelta) => {
+		if (!canvasEl.value) return;
+
+		const rect = canvasEl.value.getBoundingClientRect();
+		const domX = rect.left + (x * viewScale);
+		const domY = rect.top + (y * viewScale);
+		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+	});
+
+	game.addListener('monoAdded', (mono) => {
+		if (replaying.value) return;
+
+		// 実績関連
+		if (mono.level === 10) {
+			claimAchievement('bubbleGameExplodingHead');
+
+			const monos = game.getActiveMonos();
+			if (monos.filter(x => x.level === 10).length >= 2) {
+				claimAchievement('bubbleGameDoubleExplodingHead');
+			}
+		}
+	});
+
+	game.addListener('gameOver', () => {
+		sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
+			volume: sfxVolume.value,
+		});
+
+		if (replaying.value) {
+			endReplay();
+			return;
+		}
+
+		logs = game.getLogs();
+		endedAtFrame = game.frame;
+		currentPick.value = null;
+		dropReady.value = false;
+		isGameOver.value = true;
+
+		misskeyApi('bubble-game/register', {
+			seed,
+			score: score.value,
+			gameMode: props.gameMode,
+			gameVersion: game.GAME_VERSION,
+			logs: DropAndFusionGame.serializeLogs(logs),
+		});
+
+		if (score.value > (highScore.value ?? 0)) {
+			highScore.value = score.value;
+
+			misskeyApi('i/registry/set', {
+				scope: ['dropAndFusionGame'],
+				key: 'highScore:' + props.gameMode,
+				value: highScore.value,
+			});
+		}
+	});
+
+	game.addListener('sfx', (type, params) => {
+		if (props.mute) return;
+
+		const soundUrl =
+			type === 'fusion' ? '/client-assets/drop-and-fusion/bubble2.mp3' :
+			type === 'collision' ? '/client-assets/drop-and-fusion/poi1.mp3' :
+			null as never;
+
+		sound.playUrl(soundUrl, {
+			volume: params.volume * sfxVolume.value,
+			pan: params.pan,
+			playbackRate: params.pitch * replayPlaybackRate.value,
+		});
 	});
 }
 
@@ -749,7 +907,7 @@ useInterval(() => {
 	if (!canvasEl.value) return;
 	const actualCanvasWidth = canvasEl.value.getBoundingClientRect().width;
 	if (actualCanvasWidth === 0) return;
-	viewScale = actualCanvasWidth / GAME_WIDTH;
+	viewScale = actualCanvasWidth / game.GAME_WIDTH;
 	containerElRect = containerEl.value?.getBoundingClientRect() ?? null;
 }, 1000, { immediate: false, afterMounted: true });
 
@@ -763,15 +921,26 @@ onMounted(async () => {
 		highScore.value = null;
 	}
 
-	start();
+	await start();
+
+	const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
+	if (!bgmBuffer) return;
+	bgmNodes = sound.createSourceNode(bgmBuffer, {
+		volume: props.mute ? 0 : bgmVolume.value,
+	});
+	if (!bgmNodes) return;
+	bgmNodes.soundSource.loop = true;
+	bgmNodes.soundSource.start();
 });
 
 onUnmounted(() => {
-	end();
+	dispose();
+	bgmNodes?.soundSource.stop();
 });
 
 onDeactivated(() => {
-	end();
+	dispose();
+	bgmNodes?.soundSource.stop();
 });
 
 definePageMetadata({
