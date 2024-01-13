@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
             <template #value>
               <div v-if="emoji.aliases.length === 0">{{ i18n.ts.none }}</div>
               <div v-else :class="$style.aliases">
-                <span :class="$style.alias" v-for="alias in emoji.aliases" :key="alias">
+                <span v-for="alias in emoji.aliases" :key="alias" :class="$style.alias">
                   {{ alias }}
                 </span>
               </div>
