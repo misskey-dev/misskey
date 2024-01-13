@@ -40,9 +40,9 @@ function menu(ev) {
 	}, {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
-		action: () => {
+		action: async () => {
 			os.popup(MkCustomEmojiDetailedDialog, {
-				emoji: misskeyApiGet('emojis', {
+				emoji: await misskeyApiGet('emoji', {
 					name: props.emoji.name,
 				})
 			}, {

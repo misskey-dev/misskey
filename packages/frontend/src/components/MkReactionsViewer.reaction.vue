@@ -102,6 +102,7 @@ async function toggleReaction() {
 
 async function menu(ev) {
 	if (!canToggle.value) return;
+	if (!props.reaction.includes(":")) return;
 	os.popupMenu([{
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
