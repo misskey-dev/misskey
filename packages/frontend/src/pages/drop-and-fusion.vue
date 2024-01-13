@@ -4,16 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800">
-	<Transition
-		:enterActiveClass="$style.transition_zoom_enterActive"
-		:leaveActiveClass="$style.transition_zoom_leaveActive"
-		:enterFromClass="$style.transition_zoom_enterFrom"
-		:leaveToClass="$style.transition_zoom_leaveTo"
-		:moveClass="$style.transition_zoom_move"
-		mode="out-in"
-	>
-		<div v-if="!gameStarted" :class="$style.root">
+<Transition
+	:enterActiveClass="$style.transition_zoom_enterActive"
+	:leaveActiveClass="$style.transition_zoom_leaveActive"
+	:enterFromClass="$style.transition_zoom_enterFrom"
+	:leaveToClass="$style.transition_zoom_leaveTo"
+	:moveClass="$style.transition_zoom_move"
+	mode="out-in"
+>
+	<MkSpacer v-if="!gameStarted" :contentMax="800">
+		<div :class="$style.root">
 			<div class="_gaps">
 				<div :class="$style.frame" style="text-align: center;">
 					<div :class="$style.frameInner">
@@ -78,11 +78,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<div v-else>
-			<XGame :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
-		</div>
-	</Transition>
-</MkSpacer>
+	</MkSpacer>
+	<XGame v-else :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
+</Transition>
 </template>
 
 <script lang="ts" setup>
