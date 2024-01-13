@@ -686,7 +686,7 @@ function reset() {
 	comboPrev.value = 0;
 	maxCombo.value = 0;
 	gameLoaded.value = false;
-	readyGo.value = false;
+	readyGo.value = null;
 }
 
 function dispose() {
