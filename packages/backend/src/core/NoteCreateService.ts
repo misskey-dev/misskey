@@ -325,6 +325,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
 			}
 			data.text = data.text.trim();
+			if (data.text === '') {
+				data.text = null;
+			}
 		} else {
 			data.text = null;
 		}

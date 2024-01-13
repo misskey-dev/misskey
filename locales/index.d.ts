@@ -1199,6 +1199,9 @@ export interface Locale {
     "showReplay": string;
     "replay": string;
     "replaying": string;
+    "ranking": string;
+    "lastNDays": string;
+    "backToTitle": string;
     "_bubbleGame": {
         "howToPlay": string;
         "_howToPlay": {

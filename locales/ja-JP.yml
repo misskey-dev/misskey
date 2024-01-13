@@ -1196,6 +1196,9 @@ soundWillBePlayed: "サウンドが再生されます"
 showReplay: "リプレイを見る"
 replay: "リプレイ"
 replaying: "リプレイ中"
+ranking: "ランキング"
+lastNDays: "直近{n}日"
+backToTitle: "タイトルへ"
 
 _bubbleGame:
   howToPlay: "遊び方"
