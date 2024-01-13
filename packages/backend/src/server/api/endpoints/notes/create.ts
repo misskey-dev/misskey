@@ -191,7 +191,7 @@ export const paramDef = {
 	then: {
 		properties: {
 			text: {
-				type: ['string', 'null'],
+				type: 'string',
 				minLength: 1,
 				maxLength: MAX_NOTE_TEXT_LENGTH,
 				pattern: '[^\\s]+',
