@@ -852,7 +852,7 @@ function attachGameEvents() {
 			if (!isGameOver.value) {
 				dropReady.value = true;
 			}
-		}, game.DROP_INTERVAL);
+		}, game.frameToMs(game.DROP_COOLTIME));
 	});
 
 	game.addListener('fusioned', (x, y, nextMono, scoreDelta) => {

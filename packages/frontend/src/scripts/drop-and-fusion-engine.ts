@@ -295,7 +295,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	public readonly GAME_VERSION = 2;
 	public readonly GAME_WIDTH = 450;
 	public readonly GAME_HEIGHT = 600;
-	public readonly DROP_INTERVAL = 500;
+	public readonly DROP_COOLTIME = 30; // frame
 	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
 	private TICK_DELTA = 1000 / 60; // 60fps
@@ -323,7 +323,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	 */
 	private fusionReservedPairs: { bodyA: Matter.Body; bodyB: Matter.Body }[] = [];
 
-	private latestDroppedAt = 0;
+	private latestDroppedAt = 0; // frame
 	private latestFusionedAt = 0; // frame
 	private stock: { id: string; mono: Mono }[] = [];
 	private holding: { id: string; mono: Mono } | null = null;
@@ -426,8 +426,12 @@ export class DropAndFusionGame extends EventEmitter<{
 		Matter.Composite.add(this.engine.world, this.overflowCollider);
 	}
 
-	private msToFrame(ms: number) {
+	public msToFrame(ms: number) {
 		return Math.round(ms / this.TICK_DELTA);
+	}
+
+	public frameToMs(frame: number) {
+		return frame * this.TICK_DELTA;
 	}
 
 	private createBody(mono: Mono, x: number, y: number) {
@@ -461,7 +465,6 @@ export class DropAndFusionGame extends EventEmitter<{
 		}
 		this.latestFusionedAt = this.frame;
 
-		// TODO: 単に位置だけでなくそれぞれの動きベクトルも融合する？
 		const newX = (bodyA.position.x + bodyB.position.x) / 2;
 		const newY = (bodyA.position.y + bodyB.position.y) / 2;
 
@@ -608,8 +611,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	public drop(_x: number) {
 		if (this.isGameOver) return;
-		// TODO: フレームで計算するようにすればリプレイかどうかのチェックは不要になる
-		if (!this.replaying && (Date.now() - this.latestDroppedAt < this.DROP_INTERVAL)) return;
+		if (this.frame - this.latestDroppedAt < this.DROP_COOLTIME) return;
 
 		const head = this.stock.shift()!;
 		this.stock.push({
@@ -629,7 +631,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		Matter.Composite.add(this.engine.world, body);
 
 		this.fusionReadyBodyIds.push(body.id);
-		this.latestDroppedAt = Date.now();
+		this.latestDroppedAt = this.frame;
 
 		this.emit('dropped', x);
 		this.emit('monoAdded', head.mono);
