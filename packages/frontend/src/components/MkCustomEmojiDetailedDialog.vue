@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           <MkKeyValue :copy="emoji.url">
             <template #key>{{ i18n.ts.emojiUrl }}</template>
             <template #value>
-              <a :href="emoji.url" target="_blank">{{ emoji.url }}</a>
+              <a :href="emoji.url" rel="nofollow noopener" target="_blank">{{ emoji.url }}</a>
             </template>
           </MkKeyValue>
         </div>
