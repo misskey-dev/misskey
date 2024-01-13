@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as os from '@/os.js';
 import * as Misskey from 'misskey-js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
@@ -41,7 +42,9 @@ function menu(ev) {
 		icon: 'ti ti-info-circle',
 		action: () => {
 			os.popup(MkCustomEmojiDetailedDialog, {
-				emoji: props.emoji,
+				emoji: misskeyApiGet('emojis', {
+					name: props.emoji.name,
+				})
 			}, {
 				anchor: ev.target,
 			});

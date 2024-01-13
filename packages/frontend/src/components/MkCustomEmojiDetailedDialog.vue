@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           <MkKeyValue>
             <template #key>{{ i18n.ts.tags }}</template>
             <template #value>
-              <div v-if="emoji.aliases.length === 0">なし</div>
+              <div v-if="emoji.aliases.length === 0">{{ i18n.ts.none }}</div>
               <div v-else :class="$style.aliases">
                 <span :class="$style.alias" v-for="alias in emoji.aliases" :key="alias">
                   {{ alias }}
@@ -38,6 +38,10 @@ SPDX-License-Identifier: AGPL-3.0-only
           <MkKeyValue>
             <template #key>{{ i18n.ts.localOnly }}</template>
             <template #value>{{ emoji.localOnly ? i18n.ts.yes : i18n.ts.no }}</template>
+          </MkKeyValue>
+          <MkKeyValue>
+            <template #key>{{ i18n.ts.license }}</template>
+            <template #value>{{ emoji.license ?? i18n.ts.none }}</template>
           </MkKeyValue>
           <MkKeyValue :copy="emoji.url">
             <template #key>{{ i18n.ts.emojiUrl }}</template>
