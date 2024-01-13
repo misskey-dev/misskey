@@ -43,7 +43,7 @@ html
 			}
 
 	body
-		a#a(href=`https://${host}` target="_blank")
+		a#a(href=`https://${host}` rel="noopener" target="_blank")
 			header#banner(style=`background-image: url(${meta.bannerUrl})`)
 				div#title= meta.name || host
 		div#content

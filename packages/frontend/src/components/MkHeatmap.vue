@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, nextTick, watch, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
+import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
@@ -23,9 +24,16 @@ import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
-const props = defineProps<{
-	src: string;
-}>();
+export type HeatmapSource = 'active-users' | 'notes' | 'ap-requests-inbox-received' | 'ap-requests-deliver-succeeded' | 'ap-requests-deliver-failed';
+
+const props = withDefaults(defineProps<{
+	src: HeatmapSource;
+	user?: Misskey.entities.User;
+	label?: string;
+}>(), {
+	user: undefined,
+	label: '',
+});
 
 const rootEl = shallowRef<HTMLDivElement>(null);
 const chartEl = shallowRef<HTMLCanvasElement>(null);
@@ -75,8 +83,13 @@ async function renderChart() {
 		const raw = await misskeyApi('charts/active-users', { limit: chartLimit, span: 'day' });
 		values = raw.readWrite;
 	} else if (props.src === 'notes') {
-		const raw = await misskeyApi('charts/notes', { limit: chartLimit, span: 'day' });
-		values = raw.local.inc;
+		if (props.user) {
+			const raw = await misskeyApi('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
+			values = raw.inc;
+		} else {
+			const raw = await misskeyApi('charts/notes', { limit: chartLimit, span: 'day' });
+			values = raw.local.inc;
+		}
 	} else if (props.src === 'ap-requests-inbox-received') {
 		const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.inboxReceived;
@@ -105,7 +118,7 @@ async function renderChart() {
 		type: 'matrix',
 		data: {
 			datasets: [{
-				label: 'Read & Write',
+				label: props.label,
 				data: format(values),
 				pointRadius: 0,
 				borderWidth: 0,
@@ -128,6 +141,9 @@ async function renderChart() {
 					const a = c.chart.chartArea ?? {};
 					return (a.bottom - a.top) / 7 - marginEachCell;
 				},
+			/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
+			}] satisfies ChartData[],
+			 */
 			}],
 		},
 		options: {
@@ -195,7 +211,7 @@ async function renderChart() {
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							return ['Active: ' + v.v];
+							return [v.v];
 						},
 					},
 					//mode: 'index',

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.inline]: inline }]">
-	<a v-if="external" :class="$style.main" class="_button" :href="to" target="_blank">
+	<a v-if="external" :class="$style.main" class="_button" :href="to" rel="nofollow noopener" target="_blank">
 		<span :class="$style.icon"><slot name="icon"></slot></span>
 		<span :class="$style.text"><slot></slot></span>
 		<span :class="$style.suffix">

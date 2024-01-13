@@ -27,10 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps">
 							<I18n :src="i18n.ts._2fa.step1" tag="div">
 								<template #a>
-									<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
+									<a href="https://authy.com/" rel="nofollow noopener" target="_blank" class="_link">Authy</a>
 								</template>
 								<template #b>
-									<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
+									<a href="https://support.google.com/accounts/answer/1066447" rel="nofollow noopener" target="_blank" class="_link">Google Authenticator</a>
 								</template>
 							</I18n>
 							<div>{{ i18n.ts._2fa.step2 }}<br>{{ i18n.ts._2fa.step2Click }}</div>
