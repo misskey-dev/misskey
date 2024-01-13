@@ -35,8 +35,10 @@
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
 - Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
 - Enhance: クリップをエクスポートできるように
+- Enhance: `api.json`のOpenAPI Specificationを3.1.0に更新
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
-- Fix: `notes/create`で`text: null`のみのリクエストや空白文字のみで構成された`text`に対して400を返すように
+- Fix: `notes/create`で、`text`が空白文字のみで構成されているか`null`であって、かつ`text`だけであるリクエストに対するレスポンスが400になるように変更
+- Fix: `notes/create`で、`text`が空白文字のみで構成されていてかつリノート、ファイルまたは投票を含んでいるリクエストに対するレスポンスの`text`が`""`から`null`になるように変更
 
 ## 2023.12.2
 
