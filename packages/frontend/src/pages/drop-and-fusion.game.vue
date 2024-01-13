@@ -8,141 +8,135 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="!gameLoaded" :class="$style.loadingScreen">
 		Loading...
 	</div>
-	<Transition
-		:enterActiveClass="$style.transition_zoom_enterActive"
-		:leaveActiveClass="$style.transition_zoom_leaveActive"
-		:enterFromClass="$style.transition_zoom_enterFrom"
-		:leaveToClass="$style.transition_zoom_leaveTo"
-		:moveClass="$style.transition_zoom_move"
-		mode="out-in"
-	>
-		<div v-show="gameLoaded" class="_gaps_s">
-			<div :class="$style.header">
-				<div :class="[$style.frame, $style.headerTitle]">
-					<div :class="$style.frameInner">
-						<b>BUBBLE GAME</b>
-						<div>- {{ gameMode }} -</div>
-					</div>
-				</div>
-				<div :class="[$style.frame, $style.frameH]">
-					<div :class="$style.frameInner">
-						<MkButton inline small @click="hold">HOLD</MkButton>
-						<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
-					</div>
-					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
-						<TransitionGroup
-							:enterActiveClass="$style.transition_stock_enterActive"
-							:leaveActiveClass="$style.transition_stock_leaveActive"
-							:enterFromClass="$style.transition_stock_enterFrom"
-							:leaveToClass="$style.transition_stock_leaveTo"
-							:moveClass="$style.transition_stock_move"
-						>
-							<img v-for="x in stock" :key="x.id" :src="getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
-						</TransitionGroup>
-					</div>
+	<!-- ↓に対してTransitionコンポーネントを使うと何故かkeyを指定していてもキャッシュが効かず様々なコンポーネントが都度再評価されてパフォーマンスが低下する -->
+	<div v-show="gameLoaded" class="_gaps_s">
+		<div :class="$style.header">
+			<div :class="[$style.frame, $style.headerTitle]">
+				<div :class="$style.frameInner">
+					<b>BUBBLE GAME</b>
+					<div>- {{ gameMode }} -</div>
 				</div>
 			</div>
-			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
-				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
-				<canvas ref="canvasEl" :class="$style.canvas"/>
-				<Transition
-					:enterActiveClass="$style.transition_combo_enterActive"
-					:leaveActiveClass="$style.transition_combo_leaveActive"
-					:enterFromClass="$style.transition_combo_enterFrom"
-					:leaveToClass="$style.transition_combo_leaveTo"
-					:moveClass="$style.transition_combo_move"
-				>
-					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
-				</Transition>
-				<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
-					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
-					<Transition
-						:enterActiveClass="$style.transition_picked_enterActive"
-						:leaveActiveClass="$style.transition_picked_leaveActive"
-						:enterFromClass="$style.transition_picked_enterFrom"
-						:leaveToClass="$style.transition_picked_leaveTo"
-						:moveClass="$style.transition_picked_move"
-						mode="out-in"
+			<div :class="[$style.frame, $style.frameH]">
+				<div :class="$style.frameInner">
+					<MkButton inline small @click="hold">HOLD</MkButton>
+					<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
+				</div>
+				<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
+					<TransitionGroup
+						:enterActiveClass="$style.transition_stock_enterActive"
+						:leaveActiveClass="$style.transition_stock_leaveActive"
+						:enterFromClass="$style.transition_stock_enterFrom"
+						:leaveToClass="$style.transition_stock_leaveTo"
+						:moveClass="$style.transition_stock_move"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.sizeY * viewScale) / 2) + 'px', left: -((currentPick?.mono.sizeX * viewScale) / 2) + 'px', width: `${currentPick?.mono.sizeX * viewScale}px` }"/>
-					</Transition>
-					<template v-if="dropReady && currentPick">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
-						<div :class="$style.dropGuide"/>
-					</template>
-				</div>
-				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
-					<div class="_gaps_s">
-						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>SCORE: <MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</div>
-						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
-					</div>
-				</div>
-				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
-			</div>
-			<div v-if="replaying" :class="$style.frame">
-				<div :class="$style.frameInner">
-					<div style="background: #0004;">
-						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
-					</div>
-				</div>
-				<div :class="$style.frameInner">
-					<div class="_buttonsCenter">
-						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
-						<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
-						<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
-					</div>
-				</div>
-			</div>
-			<div v-if="isGameOver" :class="$style.frame">
-				<div :class="$style.frameInner">
-					<div class="_buttonsCenter">
-						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.done }}</MkButton>
-						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
-						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
-						<MkButton rounded @click="exportLog">Copy replay data</MkButton>
-					</div>
-				</div>
-			</div>
-			<div style="display: flex;">
-				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
-					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b></div>
-						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b><b v-else>-</b></div>
-					</div>
-				</div>
-				<div :class="[$style.frame]" style="margin-left: auto;">
-					<div :class="$style.frameInner" style="text-align: center;">
-						<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
-					</div>
-				</div>
-			</div>
-			<div v-if="showConfig" :class="$style.frame">
-				<div :class="$style.frameInner">
-					<div class="_gaps">
-						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
-							<template #label>BGM {{ i18n.ts.volume }}</template>
-						</MkRange>
-						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
-							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
-						</MkRange>
-					</div>
-				</div>
-			</div>
-			<div :class="$style.frame">
-				<div :class="$style.frameInner">
-					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
-					<MkButton v-else full @click="restart">Retry</MkButton>
+						<img v-for="x in stock" :key="x.id" :src="getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
+					</TransitionGroup>
 				</div>
 			</div>
 		</div>
-	</Transition>
+		<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+			<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+			<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
+			<canvas ref="canvasEl" :class="$style.canvas"/>
+			<Transition
+				:enterActiveClass="$style.transition_combo_enterActive"
+				:leaveActiveClass="$style.transition_combo_leaveActive"
+				:enterFromClass="$style.transition_combo_enterFrom"
+				:leaveToClass="$style.transition_combo_leaveTo"
+				:moveClass="$style.transition_combo_move"
+			>
+				<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
+			</Transition>
+			<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+				<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
+				<Transition
+					:enterActiveClass="$style.transition_picked_enterActive"
+					:leaveActiveClass="$style.transition_picked_leaveActive"
+					:enterFromClass="$style.transition_picked_enterFrom"
+					:leaveToClass="$style.transition_picked_leaveTo"
+					:moveClass="$style.transition_picked_move"
+					mode="out-in"
+				>
+					<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.sizeY * viewScale) / 2) + 'px', left: -((currentPick?.mono.sizeX * viewScale) / 2) + 'px', width: `${currentPick?.mono.sizeX * viewScale}px` }"/>
+				</Transition>
+				<template v-if="dropReady && currentPick">
+					<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
+					<div :class="$style.dropGuide"/>
+				</template>
+			</div>
+			<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
+				<div class="_gaps_s">
+					<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+					<div>SCORE: <MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</div>
+					<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
+					<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
+				</div>
+			</div>
+			<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
+		</div>
+		<div v-if="replaying" :class="$style.frame">
+			<div :class="$style.frameInner">
+				<div style="background: #0004;">
+					<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
+				</div>
+			</div>
+			<div :class="$style.frameInner">
+				<div class="_buttonsCenter">
+					<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
+					<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
+					<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
+				</div>
+			</div>
+		</div>
+		<div v-if="isGameOver" :class="$style.frame">
+			<div :class="$style.frameInner">
+				<div class="_buttonsCenter">
+					<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
+					<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
+					<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
+					<MkButton rounded @click="exportLog">Copy replay data</MkButton>
+				</div>
+			</div>
+		</div>
+		<div style="display: flex;">
+			<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
+				<div :class="$style.frameInner">
+					<div>SCORE: <b><MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b></div>
+					<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b><b v-else>-</b></div>
+					<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
+				</div>
+			</div>
+			<div :class="[$style.frame]" style="margin-left: auto;">
+				<div :class="$style.frameInner" style="text-align: center;">
+					<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
+				</div>
+			</div>
+		</div>
+		<div v-if="showConfig" :class="$style.frame">
+			<div :class="$style.frameInner">
+				<div class="_gaps">
+					<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
+						<template #label>BGM {{ i18n.ts.volume }}</template>
+					</MkRange>
+					<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
+						<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
+					</MkRange>
+				</div>
+			</div>
+		</div>
+		<div :class="$style.frame">
+			<div :class="$style.frameInner">
+				<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
+				<MkButton v-else full @click="restart">Retry</MkButton>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -163,15 +157,17 @@ import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
-const NORMAL_BASE_SIZE = 30;
-const NORAML_MONOS: Mono[] = [{
+type FrontendMonoDefinition = {
+	id: string;
+	img: string;
+	imgSizeX: number;
+	imgSizeY: number;
+	spriteScale: number;
+	sfxPitch: number;
+};
+
+const NORAML_MONOS: FrontendMonoDefinition[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
-	level: 10,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 512,
-	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/exploding_head.png',
 	imgSizeX: 256,
@@ -179,12 +175,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'be9f38d2-b267-4b1a-b420-904e22e80568',
-	level: 9,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 256,
-	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/face_with_symbols_on_mouth.png',
 	imgSizeX: 256,
@@ -192,12 +182,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'beb30459-b064-4888-926b-f572e4e72e0c',
-	level: 8,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 128,
-	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/cold_face.png',
 	imgSizeX: 256,
@@ -205,12 +189,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'feab6426-d9d8-49ae-849c-048cdbb6cdf0',
-	level: 7,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 64,
-	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/zany_face.png',
 	imgSizeX: 256,
@@ -218,12 +196,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'd6d8fed6-6d18-4726-81a1-6cf2c974df8a',
-	level: 6,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 32,
-	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/pleading_face.png',
 	imgSizeX: 256,
@@ -231,12 +203,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '249c728e-230f-4332-bbbf-281c271c75b2',
-	level: 5,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 16,
-	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/face_with_open_mouth.png',
 	imgSizeX: 256,
@@ -244,12 +210,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '23d67613-d484-4a93-b71e-3e81b19d6186',
-	level: 4,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 8,
-	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/smiling_face_with_sunglasses.png',
 	imgSizeX: 256,
@@ -257,12 +217,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '3cbd0add-ad7d-4685-bad0-29f6dddc0b99',
-	level: 3,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25,
-	shape: 'circle',
-	score: 4,
-	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/grinning_squinting_face.png',
 	imgSizeX: 256,
@@ -270,12 +224,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '8f86d4f4-ee02-41bf-ad38-1ce0ae457fb5',
-	level: 2,
-	sizeX: NORMAL_BASE_SIZE * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25,
-	shape: 'circle',
-	score: 2,
-	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/smiling_face_with_hearts.png',
 	imgSizeX: 256,
@@ -283,12 +231,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '64ec4add-ce39-42b4-96cb-33908f3f118d',
-	level: 1,
-	sizeX: NORMAL_BASE_SIZE,
-	sizeY: NORMAL_BASE_SIZE,
-	shape: 'circle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/heart_suit.png',
 	imgSizeX: 256,
@@ -296,16 +238,8 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }];
 
-const YEN_BASE_SIZE = 30;
-const YEN_SATSU_BASE_SIZE = 70;
-const YEN_MONOS: Mono[] = [{
+const YEN_MONOS: FrontendMonoDefinition[] = [{
 	id: '880f9bd9-802f-4135-a7e1-fd0e0331f726',
-	level: 10,
-	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_SATSU_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 10000,
-	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/10000yen.png',
 	imgSizeX: 512,
@@ -313,12 +247,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: 'e807beb6-374a-4314-9cc2-aa5f17d96b6b',
-	level: 9,
-	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25 * 1.25,
-	sizeY: YEN_SATSU_BASE_SIZE * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 5000,
-	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/5000yen.png',
 	imgSizeX: 512,
@@ -326,12 +254,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '033445b7-8f90-4fc9-beca-71a9e87cb530',
-	level: 8,
-	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25,
-	sizeY: YEN_SATSU_BASE_SIZE * 1.25,
-	shape: 'rectangle',
-	score: 2000,
-	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/2000yen.png',
 	imgSizeX: 512,
@@ -339,12 +261,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '410a09ec-5f7f-46f6-b26f-cbca4ccbd091',
-	level: 7,
-	sizeX: YEN_SATSU_BASE_SIZE * 2,
-	sizeY: YEN_SATSU_BASE_SIZE,
-	shape: 'rectangle',
-	score: 1000,
-	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/1000yen.png',
 	imgSizeX: 512,
@@ -352,12 +268,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '2aae82bc-3fa4-49ad-a6b5-94d888e809f5',
-	level: 6,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 500,
-	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/500yen.png',
 	imgSizeX: 256,
@@ -365,12 +275,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: 'a619bd67-d08f-4cc0-8c7e-c8072a4950cd',
-	level: 5,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 100,
-	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/100yen.png',
 	imgSizeX: 256,
@@ -378,12 +282,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: 'c1c5d8e4-17d6-4455-befd-12154d731faa',
-	level: 4,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 50,
-	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/50yen.png',
 	imgSizeX: 256,
@@ -391,12 +289,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '7082648c-e428-44c4-887a-25c07a8ebdd5',
-	level: 3,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25,
-	shape: 'circle',
-	score: 10,
-	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/10yen.png',
 	imgSizeX: 256,
@@ -404,12 +296,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '0d8d40d5-e6e0-4d26-8a95-b8d842363379',
-	level: 2,
-	sizeX: YEN_BASE_SIZE * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25,
-	shape: 'circle',
-	score: 5,
-	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/5yen.png',
 	imgSizeX: 256,
@@ -417,12 +303,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '9dec1b38-d99d-40de-8288-37367b983d0d',
-	level: 1,
-	sizeX: YEN_BASE_SIZE,
-	sizeY: YEN_BASE_SIZE,
-	shape: 'circle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/1yen.png',
 	imgSizeX: 256,
@@ -430,15 +310,8 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }];
 
-const SQUARE_BASE_SIZE = 28;
-const SQUARE_MONOS: Mono[] = [{
+const SQUARE_MONOS: FrontendMonoDefinition[] = [{
 	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
-	level: 10,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 512,
-	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/keycap_10.png',
 	imgSizeX: 256,
@@ -446,12 +319,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
-	level: 9,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 256,
-	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/keycap_9.png',
 	imgSizeX: 256,
@@ -459,12 +326,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
-	level: 8,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 128,
-	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/keycap_8.png',
 	imgSizeX: 256,
@@ -472,12 +333,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
-	level: 7,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 64,
-	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/keycap_7.png',
 	imgSizeX: 256,
@@ -485,12 +340,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
-	level: 6,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 32,
-	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/keycap_6.png',
 	imgSizeX: 256,
@@ -498,12 +347,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
-	level: 5,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 16,
-	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/keycap_5.png',
 	imgSizeX: 256,
@@ -511,12 +354,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
-	level: 4,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 8,
-	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/keycap_4.png',
 	imgSizeX: 256,
@@ -524,12 +361,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
-	level: 3,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 4,
-	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/keycap_3.png',
 	imgSizeX: 256,
@@ -537,12 +368,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
-	level: 2,
-	sizeX: SQUARE_BASE_SIZE * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25,
-	shape: 'rectangle',
-	score: 2,
-	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/keycap_2.png',
 	imgSizeX: 256,
@@ -550,12 +375,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
-	level: 1,
-	sizeX: SQUARE_BASE_SIZE,
-	sizeY: SQUARE_BASE_SIZE,
-	shape: 'rectangle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/keycap_1.png',
 	imgSizeX: 256,
@@ -572,11 +391,23 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-const monoDefinitions =
-	props.gameMode === 'normal' ? NORAML_MONOS :
-	props.gameMode === 'square' ? SQUARE_MONOS :
-	props.gameMode === 'yen' ? YEN_MONOS :
-	[] as never;
+const monoDefinitions = computed(() => {
+	return props.gameMode === 'normal' ? NORAML_MONOS :
+		props.gameMode === 'square' ? SQUARE_MONOS :
+		props.gameMode === 'yen' ? YEN_MONOS :
+		[] as never;
+});
+
+function getMonoRenderOptions(mono: Mono) {
+	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
+	return {
+		sprite: {
+			texture: def.img,
+			xScale: (mono.sizeX / def.imgSizeX) * def.spriteScale,
+			yScale: (mono.sizeY / def.imgSizeY) * def.spriteScale,
+		},
+	};
+}
 
 let viewScale = 1;
 let seed: string = Date.now().toString();
@@ -590,8 +421,8 @@ let monoTextureUrls: Record<string, string> = {};
 let tickRaf: number | null = null;
 let game = new DropAndFusionGame({
 	seed: seed,
-	monoDefinitions,
-	hasComboBonus: props.gameMode !== 'yen',
+	gameMode: props.gameMode,
+	getMonoRenderOptions,
 });
 attachGameEvents();
 
@@ -609,6 +440,7 @@ const dropReady = ref(true);
 const isGameOver = ref(false);
 const gameLoaded = ref(false);
 const highScore = ref<number | null>(null);
+const yenTotal = ref<number | null>(null);
 const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
@@ -643,7 +475,7 @@ function createRendererInstance(game: DropAndFusionGame) {
 }
 
 function loadMonoTextures() {
-	async function loadSingleMonoTexture(mono: Mono) {
+	async function loadSingleMonoTexture(mono: FrontendMonoDefinition) {
 		if (renderer == null) return;
 
 		// Matter-js内にキャッシュがある場合はスキップ
@@ -670,22 +502,24 @@ function loadMonoTextures() {
 		renderer.textures[mono.img] = image;
 	}
 
-	return Promise.all(monoDefinitions.map(x => loadSingleMonoTexture(x)));
+	return Promise.all(monoDefinitions.value.map(x => loadSingleMonoTexture(x)));
 }
 
 function getTextureImageUrl(mono: Mono) {
+	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
+
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (monoTextureUrls[mono.img]) {
-		return monoTextureUrls[mono.img];
+	if (monoTextureUrls[def.img]) {
+		return monoTextureUrls[def.img];
 
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	} else if (monoTextures[mono.img]) {
+	} else if (monoTextures[def.img]) {
 		// Gameクラス内にキャッシュがある場合はそれを使う
-		const out = URL.createObjectURL(monoTextures[mono.img]);
-		monoTextureUrls[mono.img] = out;
+		const out = URL.createObjectURL(monoTextures[def.img]);
+		monoTextureUrls[def.img] = out;
 		return out;
 	} else {
-		return mono.img;
+		return def.img;
 	}
 }
 
@@ -734,8 +568,8 @@ function tickReplay() {
 }
 
 async function start() {
-	await loadMonoTextures();
 	renderer = createRendererInstance(game);
+	await loadMonoTextures();
 	Matter.Render.lookAt(renderer, {
 		min: { x: 0, y: 0 },
 		max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
@@ -794,8 +628,8 @@ async function restart() {
 	reset();
 	game = new DropAndFusionGame({
 		seed: seed,
-		monoDefinitions,
-		hasComboBonus: props.gameMode !== 'yen',
+		gameMode: props.gameMode,
+		getMonoRenderOptions,
 	});
 	attachGameEvents();
 	await start();
@@ -835,8 +669,8 @@ function replay() {
 	dispose();
 	game = new DropAndFusionGame({
 		seed: seed,
-		monoDefinitions,
-		hasComboBonus: props.gameMode !== 'yen',
+		gameMode: props.gameMode,
+		getMonoRenderOptions,
 		replaying: true,
 	});
 	attachGameEvents();
@@ -913,7 +747,7 @@ function getGameImageDriveFile() {
 			ctx.fillStyle = '#000';
 			ctx.font = '16px bold sans-serif';
 			ctx.textBaseline = 'top';
-			ctx.fillText(`SCORE: ${score.value.toLocaleString()}`, 10, 10);
+			ctx.fillText(`SCORE: ${score.value.toLocaleString()}${props.gameMode === 'yen' ? '円' : 'pt'}`, 10, 10);
 
 			ctx.globalAlpha = 0.7;
 			ctx.drawImage(logo, game.GAME_WIDTH * 0.55, 6, game.GAME_WIDTH * 0.45, game.GAME_WIDTH * 0.45 * (logo.height / logo.width));
@@ -953,9 +787,8 @@ async function share() {
 	const file = await uploading;
 	if (!file) return;
 	os.post({
-		initialText: `#BubbleGame
-MODE: ${props.gameMode}
-SCORE: ${score.value.toLocaleString()} (MAX CHAIN: ${maxCombo.value})`,
+		initialText: `#BubbleGame (${props.gameMode})
+SCORE: ${score.value.toLocaleString()}${props.gameMode === 'yen' ? '円' : 'pt'}`,
 		initialFiles: [file],
 		instant: true,
 	});
@@ -984,27 +817,32 @@ function attachGameEvents() {
 	game.addListener('changeHolding', value => {
 		holdingStock.value = value;
 
-		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
-			volume: 0.5 * sfxVolume.value,
-		});
+		if (!props.mute) {
+			sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+				volume: 0.5 * sfxVolume.value,
+				playbackRate: replayPlaybackRate.value,
+			});
+		}
 	});
 
 	game.addListener('dropped', (x) => {
-		const panV = x - game.PLAYAREA_MARGIN;
-		const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
-		const pan = ((panV / panW) - 0.5) * 2;
-		if (props.gameMode === 'yen') {
-			sound.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
-				volume: sfxVolume.value,
-				pan,
-				playbackRate: replayPlaybackRate.value,
-			});
-		} else {
-			sound.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
-				volume: sfxVolume.value,
-				pan,
-				playbackRate: replayPlaybackRate.value,
-			});
+		if (!props.mute) {
+			const panV = x - game.PLAYAREA_MARGIN;
+			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
+					volume: sfxVolume.value,
+					pan,
+					playbackRate: replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
+					volume: sfxVolume.value,
+					pan,
+					playbackRate: replayPlaybackRate.value,
+				});
+			}
 		}
 
 		if (replaying.value) return;
@@ -1017,14 +855,73 @@ function attachGameEvents() {
 		}, game.DROP_INTERVAL);
 	});
 
-	game.addListener('fusioned', (x, y, scoreDelta) => {
+	game.addListener('fusioned', (x, y, nextMono, scoreDelta) => {
 		if (!canvasEl.value) return;
 
 		const rect = canvasEl.value.getBoundingClientRect();
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (props.gameMode === 'yen' ? '円' : '') }, {}, 'end');
+
+		if (nextMono) {
+			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;
+			if (!props.mute) {
+				const panV = x - game.PLAYAREA_MARGIN;
+				const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+				const pan = ((panV / panW) - 0.5) * 2;
+				const pitch = def.sfxPitch;
+				if (props.gameMode === 'yen') {
+					sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
+						volume: 0.25 * sfxVolume.value,
+						pan: pan,
+						playbackRate: (pitch / 4) * replayPlaybackRate.value,
+					});
+				} else {
+					sound.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
+						volume: sfxVolume.value,
+						pan: pan,
+						playbackRate: pitch * replayPlaybackRate.value,
+					});
+				}
+			}
+		} else {
+			if (!props.mute) {
+				// TODO: 融合後のモノがない場合でも何らかの効果音を再生
+			}
+		}
+	});
+
+	const minCollisionEnergyForSound = 2.5;
+	const maxCollisionEnergyForSound = 9;
+	const soundPitchMax = 4;
+	const soundPitchMin = 0.5;
+
+	game.addListener('collision', (energy, bodyA, bodyB) => {
+		if (!props.mute && (energy > minCollisionEnergyForSound)) {
+			const volume = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
+			const panV =
+				bodyA.label === '_wall_' ? bodyB.position.x - game.PLAYAREA_MARGIN :
+				bodyB.label === '_wall_' ? bodyA.position.x - game.PLAYAREA_MARGIN :
+				((bodyA.position.x + bodyB.position.x) / 2) - game.PLAYAREA_MARGIN;
+			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
+			const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
+
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
+					volume: volume * sfxVolume.value,
+					pan: pan,
+					playbackRate: Math.max(1, pitch) * replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
+					volume: volume * sfxVolume.value,
+					pan: pan,
+					playbackRate: pitch * replayPlaybackRate.value,
+				});
+			}
+		}
 	});
 
 	game.addListener('monoAdded', (mono) => {
@@ -1042,14 +939,16 @@ function attachGameEvents() {
 	});
 
 	game.addListener('gameOver', () => {
-		if (props.gameMode === 'yen') {
-			sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
-				volume: 0.5 * sfxVolume.value,
-			});
-		} else {
-			sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
-				volume: sfxVolume.value,
-			});
+		if (!props.mute) {
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
+					volume: 0.5 * sfxVolume.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
+					volume: sfxVolume.value,
+				});
+			}
 		}
 
 		if (replaying.value) {
@@ -1071,6 +970,15 @@ function attachGameEvents() {
 			logs: DropAndFusionGame.serializeLogs(logs),
 		});
 
+		if (props.gameMode === 'yen') {
+			yenTotal.value = (yenTotal.value ?? 0) + score.value;
+			misskeyApi('i/registry/set', {
+				scope: ['dropAndFusionGame'],
+				key: 'yenTotal',
+				value: yenTotal.value,
+			});
+		}
+
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
 
@@ -1080,21 +988,6 @@ function attachGameEvents() {
 				value: highScore.value,
 			});
 		}
-	});
-
-	game.addListener('sfx', (type, params) => {
-		if (props.mute) return;
-
-		const soundUrl =
-			type === 'fusion' ? '/client-assets/drop-and-fusion/bubble2.mp3' :
-			type === 'collision' ? '/client-assets/drop-and-fusion/poi1.mp3' :
-			null as never;
-
-		sound.playUrl(soundUrl, {
-			volume: params.volume * sfxVolume.value,
-			pan: params.pan,
-			playbackRate: params.pitch * replayPlaybackRate.value,
-		});
 	});
 }
 
@@ -1114,6 +1007,25 @@ onMounted(async () => {
 		});
 	} catch (err) {
 		highScore.value = null;
+	}
+
+	if (props.gameMode === 'yen') {
+		try {
+			yenTotal.value = await misskeyApi('i/registry/get', {
+				scope: ['dropAndFusionGame'],
+				key: 'yenTotal',
+			});
+		} catch (err: any) {
+			if (err.code === 'NO_SUCH_KEY') {
+				// nop
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.cannotLoad,
+				});
+				return;
+			}
+		}
 	}
 
 	await start();
