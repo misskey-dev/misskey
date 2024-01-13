@@ -308,7 +308,6 @@ export class DropAndFusionGame extends EventEmitter<{
 	private gameMode: 'normal' | 'yen' | 'square';
 	private rng: () => number;
 	private logs: Log[] = [];
-	private replaying = false;
 
 	/**
 	 * フィールドに出ていて、かつ合体の対象となるアイテム
@@ -364,7 +363,6 @@ export class DropAndFusionGame extends EventEmitter<{
 	constructor(env: {
 		seed: string;
 		gameMode: DropAndFusionGame['gameMode'];
-		replaying?: boolean;
 		getMonoRenderOptions?: (mono: Mono) => Partial<Matter.IBodyRenderOptions>;
 	}) {
 		super();
@@ -373,7 +371,6 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.tick = this.tick.bind(this);
 		//#endregion
 
-		this.replaying = !!env.replaying;
 		this.gameMode = env.gameMode;
 		this.getMonoRenderOptions = env.getMonoRenderOptions ?? null;
 		this.rng = seedrandom(env.seed);

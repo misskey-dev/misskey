@@ -671,7 +671,6 @@ function replay() {
 		seed: seed,
 		gameMode: props.gameMode,
 		getMonoRenderOptions,
-		replaying: true,
 	});
 	attachGameEvents();
 	os.promiseDialog(loadMonoTextures(), async () => {
