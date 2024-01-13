@@ -1003,10 +1003,10 @@ function attachGameEvents() {
 					});
 				}
 			}
-		} else {
-			if (!props.mute) {
-				// TODO: 融合後のモノがない場合でも何らかの効果音を再生
-			}
+		//} else {
+		//	if (!props.mute) {
+		//		// TODO: 融合後のモノがない場合でも何らかの効果音を再生
+		//	}
 		}
 	});
 

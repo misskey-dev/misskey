@@ -59,14 +59,14 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 
 	const validTime = (t: string | null | undefined) => {
 		if (t == null) return null;
-		return t.match(/^[0-9.]+s$/) ? t : null;
+		return RegExp(/^[0-9.]+s$/).exec(t) ? t : null;
 	};
-	
+
 	const validColor = (c: string | null | undefined): string | null => {
 		if (c == null) return null;
-		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
+		return RegExp(/^[0-9a-f]{3,6}$/i).exec(c) ? c : null;
 	};
-	
+
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
 
 	/**

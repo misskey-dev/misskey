@@ -26,7 +26,6 @@ function main() {
 
 	if (!result.success) {
 		abort(result.message);
-		return;
 	}
 }
 

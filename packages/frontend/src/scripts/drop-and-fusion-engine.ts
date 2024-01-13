@@ -530,6 +530,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			case 'yen': return YEN_MONOS;
 			case 'square': return SQUARE_MONOS;
 			case 'sweets': return SWEETS_MONOS;
+			default: throw new Error('unknown game mode');
 		}
 	}
 
@@ -743,7 +744,6 @@ export class DropAndFusionGame extends EventEmitter<{
 					this.gameOver();
 					break;
 				}
-				continue;
 			}
 		}
 	}
