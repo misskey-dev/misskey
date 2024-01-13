@@ -1243,6 +1243,8 @@ export interface Locale {
     "replay": string;
     "replaying": string;
     "ranking": string;
+    "lastNDays": string;
+    "backToTitle": string;
     "_bubbleGame": {
         "howToPlay": string;
         "_howToPlay": {

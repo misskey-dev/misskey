@@ -12,8 +12,6 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
-	tags: [],
-
 	requireCredential: true,
 
 	kind: 'write:account',
