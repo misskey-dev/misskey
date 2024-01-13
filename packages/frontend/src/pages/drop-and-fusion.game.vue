@@ -8,138 +8,130 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="!gameLoaded" :class="$style.loadingScreen">
 		Loading...
 	</div>
-	<Transition
-		:enterActiveClass="$style.transition_zoom_enterActive"
-		:leaveActiveClass="$style.transition_zoom_leaveActive"
-		:enterFromClass="$style.transition_zoom_enterFrom"
-		:leaveToClass="$style.transition_zoom_leaveTo"
-		:moveClass="$style.transition_zoom_move"
-		mode="out-in"
-	>
-		<div v-show="gameLoaded" class="_gaps_s">
-			<div :class="$style.header">
-				<div :class="[$style.frame, $style.headerTitle]">
-					<div :class="$style.frameInner">
-						<b>BUBBLE GAME</b>
-						<div>- {{ gameMode }} -</div>
-					</div>
-				</div>
-				<div :class="[$style.frame, $style.frameH]">
-					<div :class="$style.frameInner">
-						<MkButton inline small @click="hold">HOLD</MkButton>
-						<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
-					</div>
-					<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
-						<TransitionGroup
-							:enterActiveClass="$style.transition_stock_enterActive"
-							:leaveActiveClass="$style.transition_stock_leaveActive"
-							:enterFromClass="$style.transition_stock_enterFrom"
-							:leaveToClass="$style.transition_stock_leaveTo"
-							:moveClass="$style.transition_stock_move"
-						>
-							<img v-for="x in stock" :key="x.id" :src="getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
-						</TransitionGroup>
-					</div>
+	<!-- ↓に対してTransitionコンポーネントを使うと何故かkeyを指定していてもキャッシュが効かず様々なコンポーネントが都度再評価されてパフォーマンスが低下する -->
+	<div v-show="gameLoaded" class="_gaps_s">
+		<div :class="$style.header">
+			<div :class="[$style.frame, $style.headerTitle]">
+				<div :class="$style.frameInner">
+					<b>BUBBLE GAME</b>
+					<div>- {{ gameMode }} -</div>
 				</div>
 			</div>
-			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
-				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
-				<canvas ref="canvasEl" :class="$style.canvas"/>
-				<Transition
-					:enterActiveClass="$style.transition_combo_enterActive"
-					:leaveActiveClass="$style.transition_combo_leaveActive"
-					:enterFromClass="$style.transition_combo_enterFrom"
-					:leaveToClass="$style.transition_combo_leaveTo"
-					:moveClass="$style.transition_combo_move"
-				>
-					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
-				</Transition>
-				<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
-					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
-					<Transition
-						:enterActiveClass="$style.transition_picked_enterActive"
-						:leaveActiveClass="$style.transition_picked_leaveActive"
-						:enterFromClass="$style.transition_picked_enterFrom"
-						:leaveToClass="$style.transition_picked_leaveTo"
-						:moveClass="$style.transition_picked_move"
-						mode="out-in"
+			<div :class="[$style.frame, $style.frameH]">
+				<div :class="$style.frameInner">
+					<MkButton inline small @click="hold">HOLD</MkButton>
+					<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
+				</div>
+				<div :class="[$style.frameInner, $style.stock]" style="text-align: center;">
+					<TransitionGroup
+						:enterActiveClass="$style.transition_stock_enterActive"
+						:leaveActiveClass="$style.transition_stock_leaveActive"
+						:enterFromClass="$style.transition_stock_enterFrom"
+						:leaveToClass="$style.transition_stock_leaveTo"
+						:moveClass="$style.transition_stock_move"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.sizeY * viewScale) / 2) + 'px', left: -((currentPick?.mono.sizeX * viewScale) / 2) + 'px', width: `${currentPick?.mono.sizeX * viewScale}px` }"/>
-					</Transition>
-					<template v-if="dropReady && currentPick">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
-						<div :class="$style.dropGuide"/>
-					</template>
-				</div>
-				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
-					<div class="_gaps_s">
-						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>SCORE: <MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</div>
-						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
-						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
-					</div>
-				</div>
-				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
-			</div>
-			<div v-if="replaying" :class="$style.frame">
-				<div :class="$style.frameInner">
-					<div style="background: #0004;">
-						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
-					</div>
-				</div>
-				<div :class="$style.frameInner">
-					<div class="_buttonsCenter">
-						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
-						<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
-						<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
-					</div>
-				</div>
-			</div>
-			<div v-if="isGameOver" :class="$style.frame">
-				<div :class="$style.frameInner">
-					<div class="_buttonsCenter">
-						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
-						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
-						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
-						<MkButton rounded @click="exportLog">Copy replay data</MkButton>
-					</div>
-				</div>
-			</div>
-			<div style="display: flex;">
-				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
-					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b></div>
-						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b><b v-else>-</b></div>
-						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
-					</div>
-				</div>
-				<div :class="[$style.frame]" style="margin-left: auto;">
-					<div :class="$style.frameInner" style="text-align: center;">
-						<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
-					</div>
-				</div>
-			</div>
-			<div v-if="showConfig" :class="$style.frame">
-				<div :class="$style.frameInner">
-					<div class="_gaps">
-						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
-							<template #label>BGM {{ i18n.ts.volume }}</template>
-						</MkRange>
-						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
-							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
-						</MkRange>
-					</div>
-				</div>
-			</div>
-			<div :class="$style.frame">
-				<div :class="$style.frameInner">
-					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
-					<MkButton v-else full @click="restart">Retry</MkButton>
+						<img v-for="x in stock" :key="x.id" :src="getTextureImageUrl(x.mono)" style="width: 32px; vertical-align: bottom;"/>
+					</TransitionGroup>
 				</div>
 			</div>
 		</div>
-	</Transition>
+		<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+			<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+			<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
+			<canvas ref="canvasEl" :class="$style.canvas"/>
+			<Transition
+				:enterActiveClass="$style.transition_combo_enterActive"
+				:leaveActiveClass="$style.transition_combo_leaveActive"
+				:enterFromClass="$style.transition_combo_enterFrom"
+				:leaveToClass="$style.transition_combo_leaveTo"
+				:moveClass="$style.transition_combo_move"
+			>
+				<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
+			</Transition>
+			<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+				<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
+				<Transition
+					:enterActiveClass="$style.transition_picked_enterActive"
+					:leaveActiveClass="$style.transition_picked_leaveActive"
+					:enterFromClass="$style.transition_picked_enterFrom"
+					:leaveToClass="$style.transition_picked_leaveTo"
+					:moveClass="$style.transition_picked_move"
+					mode="out-in"
+				>
+					<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.sizeY * viewScale) / 2) + 'px', left: -((currentPick?.mono.sizeX * viewScale) / 2) + 'px', width: `${currentPick?.mono.sizeX * viewScale}px` }"/>
+				</Transition>
+				<template v-if="dropReady && currentPick">
+					<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
+					<div :class="$style.dropGuide"/>
+				</template>
+			</div>
+			<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
+				<div class="_gaps_s">
+					<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+					<div>SCORE: <MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</div>
+					<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
+					<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
+				</div>
+			</div>
+			<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
+		</div>
+		<div v-if="replaying" :class="$style.frame">
+			<div :class="$style.frameInner">
+				<div style="background: #0004;">
+					<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
+				</div>
+			</div>
+			<div :class="$style.frameInner">
+				<div class="_buttonsCenter">
+					<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
+					<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
+					<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
+				</div>
+			</div>
+		</div>
+		<div v-if="isGameOver" :class="$style.frame">
+			<div :class="$style.frameInner">
+				<div class="_buttonsCenter">
+					<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
+					<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
+					<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
+					<MkButton rounded @click="exportLog">Copy replay data</MkButton>
+				</div>
+			</div>
+		</div>
+		<div style="display: flex;">
+			<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
+				<div :class="$style.frameInner">
+					<div>SCORE: <b><MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b></div>
+					<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b><b v-else>-</b></div>
+					<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
+				</div>
+			</div>
+			<div :class="[$style.frame]" style="margin-left: auto;">
+				<div :class="$style.frameInner" style="text-align: center;">
+					<div @click="showConfig = !showConfig"><i class="ti ti-settings"></i></div>
+				</div>
+			</div>
+		</div>
+		<div v-if="showConfig" :class="$style.frame">
+			<div :class="$style.frameInner">
+				<div class="_gaps">
+					<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
+						<template #label>BGM {{ i18n.ts.volume }}</template>
+					</MkRange>
+					<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
+						<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
+					</MkRange>
+				</div>
+			</div>
+		</div>
+		<div :class="$style.frame">
+			<div :class="$style.frameInner">
+				<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
+				<MkButton v-else full @click="restart">Retry</MkButton>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
