@@ -8,7 +8,7 @@ import endpoints, { IEndpoint } from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
-export function genOpenapiSpec(config: Config) {
+export function genOpenapiSpec(config: Config, skipGet = false) {
 	const spec = {
 		openapi: '3.1.0',
 
@@ -210,12 +210,7 @@ export function genOpenapiSpec(config: Config) {
 		};
 
 		spec.paths['/' + endpoint.name] = {
-			...(endpoint.meta.allowGet ? {
-				get: {
-					...info,
-					operationId: 'get/' + endpoint.name,
-				},
-			} : {}),
+			...(!skipGet && endpoint.meta.allowGet ? { get: info } : {}),
 			post: info,
 		};
 	}
