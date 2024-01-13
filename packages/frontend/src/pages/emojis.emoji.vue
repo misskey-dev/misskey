@@ -16,9 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
 	emoji: {
@@ -30,6 +30,7 @@ const props = defineProps<{
 }>();
 
 function menu(ev) {
+
 	os.popupMenu([{
 		type: 'label',
 		text: ':' + props.emoji.name + ':',
@@ -44,11 +45,10 @@ function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: () => {
-			misskeyApiGet('emoji', { name: props.emoji.name }).then(res => {
-				os.alert({
-					type: 'info',
-					text: `Name: ${res.name}\nAliases: ${res.aliases.join(' ')}\nCategory: ${res.category}\nisSensitive: ${res.isSensitive}\nlocalOnly: ${res.localOnly}\nLicense: ${res.license}\nURL: ${res.url}`,
-				});
+			os.popup(MkCustomEmojiDetailedDialog, {
+				emoji: props.emoji,
+			}, {
+				anchor: ev.target,
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
