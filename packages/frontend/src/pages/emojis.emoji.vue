@@ -26,7 +26,6 @@ const props = defineProps<{
 }>();
 
 function menu(ev) {
-
 	os.popupMenu([{
 		type: 'label',
 		text: ':' + props.emoji.name + ':',
