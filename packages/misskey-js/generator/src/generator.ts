@@ -330,7 +330,7 @@ async function main() {
 	await mkdir(generatePath, { recursive: true });
 
 	const openApiJsonPath = './api.json';
-	const openApiDocs = await OpenAPIParser.validate(openApiJsonPath) as OpenAPIV3_1.Document;
+	const openApiDocs = await OpenAPIParser.parse(openApiJsonPath) as OpenAPIV3_1.Document;
 
 	const typeFileName = './built/autogen/types.ts';
 	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);

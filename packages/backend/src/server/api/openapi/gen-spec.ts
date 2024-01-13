@@ -211,10 +211,7 @@ export function genOpenapiSpec(config: Config) {
 
 		spec.paths['/' + endpoint.name] = {
 			...(endpoint.meta.allowGet ? {
-				get: {
-					...info,
-					operationId: 'get/' + endpoint.name,
-				},
+				get: info,
 			} : {}),
 			post: info,
 		};
