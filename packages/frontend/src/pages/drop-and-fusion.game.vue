@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 				</Transition>
-				<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+				<div v-if="!isGameOver && !replaying && readyGo !== 'ready'" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
 					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
