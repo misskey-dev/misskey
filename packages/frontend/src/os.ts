@@ -24,7 +24,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import MkSwitch from "@/components/MkSwitch.vue";
+import MkSwitch from '@/components/MkSwitch.vue';
 
 export const openingWindowsCount = ref(0);
 
@@ -220,7 +220,7 @@ export function switch1(props: {
 	text?: string | null;
 	okText?: string;
 	cancelText?: string;
-}): Promise<{ canceled: boolean , result: boolean }> {
+}): Promise<{ canceled: boolean, result: boolean }> {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			...props,
@@ -437,7 +437,20 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser(opts: { includeSelf?: boolean } = {}) {
+export async function selectUser(opts: { includeSelf?: boolean, multiple?: boolean, } = {}) {
+	return new Promise((resolve, reject) => {
+		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
+			includeSelf: opts.includeSelf,
+			multiple: opts.multiple,
+		}, {
+			ok: user => {
+				resolve(user);
+			},
+		}, 'closed');
+	});
+}
+
+export async function multipleSelectUser(opts: { includeSelf?: boolean } = {}) {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,

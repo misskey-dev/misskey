@@ -104,14 +104,22 @@ function fetchList() {
 }
 
 function addUser() {
-	os.selectUser().then(user => {
+	os.selectUser( { multiple: true }).then(user => {
 		if (!list.value) return;
-		os.apiWithDialog('users/lists/push', {
-			listId: list.value.id,
-			userId: user.id,
-		}).then(() => {
-			paginationEl.value.reload();
-		});
+		if (Array.isArray(user)) {
+			user.forEach(u => {
+				misskeyApi('users/lists/push', {
+					listId: list.value.id,
+					userId: u.id,
+				});
+			});
+		} else if (typeof user === 'string') {
+			os.apiWithDialog('users/lists/push', {
+				listId: list.value.id,
+				userId: user.id,
+			});
+		}
+		paginationEl.value.reload();
 	});
 }
 
