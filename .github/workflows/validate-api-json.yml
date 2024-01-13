@@ -33,8 +33,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - name: Install swagger-cli
-      run: npm i -g swagger-cli
+    - name: Install Redocly CLI
+      run: npm i -g @redocly/cli
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
@@ -44,4 +44,4 @@ jobs:
     - name: Build and generate
       run: pnpm build && pnpm --filter backend generate-api-json
     - name: Validation
-      run: swagger-cli validate ./packages/backend/built/api.json
+      run: npx @redocly/cli lint --extends=minimal ./packages/backend/built/api.json
