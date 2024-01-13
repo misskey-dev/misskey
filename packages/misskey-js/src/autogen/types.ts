@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-11T14:29:04.681Z
+ * generatedAt: 2024-01-12T06:37:05.148Z
  */
 
 /**
@@ -3693,6 +3693,7 @@ export type components = {
         canManageAvatarDecorations: boolean;
         canSearchNotes: boolean;
         canUseTranslator: boolean;
+        canUseDriveFileInSoundSettings: boolean;
         canHideAds: boolean;
         driveCapacityMb: number;
         alwaysMarkNsfw: boolean;
@@ -4387,6 +4388,11 @@ export type components = {
           useDefault: boolean;
         };
         canManageAvatarDecorations: {
+          value: number | boolean;
+          priority: number;
+          useDefault: boolean;
+        };
+        canUseDriveFileInSoundSettings: {
           value: number | boolean;
           priority: number;
           useDefault: boolean;

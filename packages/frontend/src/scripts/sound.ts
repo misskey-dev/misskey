@@ -5,12 +5,13 @@
 
 import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
 let canPlay = true;
 
-export const soundsTypes = [
+const defaultSoundsTypes = [
 	// 音声なし
 	null,
 
@@ -70,6 +71,8 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba6',
 	'noizenecio/kick_gaba7',
 ] as const;
+
+export const soundsTypes = ($i && $i.policies.canUseDriveFileInSoundSettings) ? defaultSoundsTypes : defaultSoundsTypes.filter(s => s !== '_driveFile_');
 
 export const operationTypes = [
 	'noteMy',
@@ -142,7 +145,7 @@ export function playMisskeySfx(operationType: OperationType) {
  * @param soundStore サウンド設定
  */
 export async function playMisskeySfxFile(soundStore: SoundStore) {
-	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && (!$i?.policies.canUseDriveFileInSoundSettings || !soundStore.fileUrl))) {
 		return;
 	}
 	const masterVolume = defaultStore.state.sound_masterVolume;

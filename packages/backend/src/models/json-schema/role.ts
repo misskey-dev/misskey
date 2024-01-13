@@ -144,6 +144,7 @@ export const packedRoleSchema = {
 						canManageCustomEmojis: rolePolicyValue,
 						userEachUserListsLimit: rolePolicyValue,
 						canManageAvatarDecorations: rolePolicyValue,
+						canUseDriveFileInSoundSettings: rolePolicyValue,
 						canUseTranslator: rolePolicyValue,
 						avatarDecorationLimit: rolePolicyValue,
 					},
