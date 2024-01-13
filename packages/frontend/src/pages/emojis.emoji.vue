@@ -14,19 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import * as os from '@/os.js';
+import * as Misskey from 'misskey-js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
-	emoji: {
-		name: string;
-		aliases: string[];
-		category: string;
-		url: string;
-	};
+  emoji: Misskey.entities.EmojiDetailed;
 }>();
 
 function menu(ev) {

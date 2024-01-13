@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
             <template #value>{{ emoji.localOnly ? i18n.ts.yes : i18n.ts.no }}</template>
           </MkKeyValue>
           <MkKeyValue :copy="emoji.url">
-            <template #key>{{ "画像URL" }}</template>
+            <template #key>{{ i18n.ts.emojiUrl }}</template>
             <template #value>
               <a :href="emoji.url" target="_blank">{{ emoji.url }}</a>
             </template>
@@ -58,14 +58,7 @@ import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 const props = defineProps<{
-  emoji: {
-    name: string;
-    aliases: string;
-    category: string;
-    isSensitive: boolean;
-    localOnly: boolean; 
-    url: string;
-  }
+  emoji: Misskey.entities.EmojiDetailed,
 }>();
 const emit = defineEmits<{
 	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
