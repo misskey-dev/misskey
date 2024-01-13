@@ -1207,6 +1207,8 @@ export interface Locale {
     "replay": string;
     "replaying": string;
     "ranking": string;
+    "lastNDays": string;
+    "backToTitle": string;
     "abuseReportCategory": string;
     "selectCategory": string;
     "reportComplete": string;

@@ -20,6 +20,8 @@
 
 ### Client
 - Feat: 新しいゲームを追加
+- Feat: 絵文字の詳細ダイアログを追加
+- Feat: 枠線をつけるMFM`$[border.width=1,style=solid,color=fff,radius=0 ...]`を追加
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
 - Enhance: チャンネルノートのピン留めをノートのメニューからできるように
 - Enhance: 管理者の場合はAPI tokenの発行画面で管理機能に関する権限を付与できるように
@@ -35,7 +37,10 @@
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
 - Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
 - Enhance: クリップをエクスポートできるように
+- Enhance: `api.json`のOpenAPI Specificationを3.1.0に更新
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
+- Fix: `notes/create`で、`text`が空白文字のみで構成されているか`null`であって、かつ`text`だけであるリクエストに対するレスポンスが400になるように変更
+- Fix: `notes/create`で、`text`が空白文字のみで構成されていてかつリノート、ファイルまたは投票を含んでいるリクエストに対するレスポンスの`text`が`""`から`null`になるように変更
 
 ## 2023.12.2
 

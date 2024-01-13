@@ -4,19 +4,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
-	<div v-if="!gameLoaded" :class="$style.loadingScreen">
-		Loading...
-	</div>
-	<Transition
-		:enterActiveClass="$style.transition_zoom_enterActive"
-		:leaveActiveClass="$style.transition_zoom_leaveActive"
-		:enterFromClass="$style.transition_zoom_enterFrom"
-		:leaveToClass="$style.transition_zoom_leaveTo"
-		:moveClass="$style.transition_zoom_move"
-		mode="out-in"
-	>
+<MkSpacer :contentMax="800">
+	<div :class="$style.root">
+		<div v-if="!gameLoaded" :class="$style.loadingScreen">
+			<div>
+				Loading...
+			</div>
+		</div>
+		<!-- ↓に対してTransitionコンポーネントを使うと何故かkeyを指定していてもキャッシュが効かず様々なコンポーネントが都度再評価されてパフォーマンスが低下する -->
 		<div v-show="gameLoaded" class="_gaps_s">
+			<div v-if="readyGo === 'ready'" :class="$style.readyGo_bg">
+			</div>
+			<Transition
+				:enterActiveClass="$style.transition_zoom_enterActive"
+				:leaveActiveClass="$style.transition_zoom_leaveActive"
+				:enterFromClass="$style.transition_zoom_enterFrom"
+				:leaveToClass="$style.transition_zoom_leaveTo"
+				:moveClass="$style.transition_zoom_move"
+				mode="default"
+			>
+				<div v-if="readyGo === 'ready'" :class="$style.readyGo_ready">
+					<img src="/client-assets/drop-and-fusion/ready.png" :class="$style.readyGo_img"/>
+				</div>
+				<div v-else-if="readyGo === 'go'" :class="$style.readyGo_go">
+					<img src="/client-assets/drop-and-fusion/go.png" :class="$style.readyGo_img"/>
+				</div>
+			</Transition>
+
 			<div :class="$style.header">
 				<div :class="[$style.frame, $style.headerTitle]">
 					<div :class="$style.frameInner">
@@ -42,6 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
+
 			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
@@ -55,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<div v-show="combo > 1" :class="$style.combo" :style="{ fontSize: `${100 + ((comboPrev - 2) * 15)}%` }">{{ comboPrev }} Chain!</div>
 				</Transition>
-				<div v-if="!isGameOver && !replaying" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
+				<div v-if="!isGameOver && !replaying && readyGo !== 'ready'" :class="$style.dropperContainer" :style="{ left: dropperX + 'px' }">
 					<!--<img v-if="currentPick" src="/client-assets/drop-and-fusion/dropper.png" :class="$style.dropper" :style="{ left: dropperX + 'px' }"/>-->
 					<Transition
 						:enterActiveClass="$style.transition_picked_enterActive"
@@ -65,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.size * viewScale) / 2) + 'px', left: -((currentPick?.mono.size * viewScale) / 2) + 'px', width: `${currentPick?.mono.size * viewScale}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="getTextureImageUrl(currentPick.mono)" :class="$style.currentMono" :style="{ marginBottom: -((currentPick?.mono.sizeY * viewScale) / 2) + 'px', left: -((currentPick?.mono.sizeX * viewScale) / 2) + 'px', width: `${currentPick?.mono.sizeX * viewScale}px` }"/>
 					</Transition>
 					<template v-if="dropReady && currentPick">
 						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
@@ -75,12 +90,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>SCORE: <MkNumber :value="score"/></div>
+						<div>SCORE: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
+						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
 					</div>
 				</div>
 				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
 			</div>
+
 			<div v-if="replaying" :class="$style.frame">
 				<div :class="$style.frameInner">
 					<div style="background: #0004;">
@@ -90,26 +107,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.frameInner">
 					<div class="_buttonsCenter">
 						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> END</MkButton>
-						<MkButton :primary="replayPlaybackRate === 2" @click="replayPlaybackRate = replayPlaybackRate === 2 ? 1 : 2"><i class="ti ti-player-track-next"></i> x2</MkButton>
 						<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
+						<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
 					</div>
 				</div>
 			</div>
+
 			<div v-if="isGameOver" :class="$style.frame">
 				<div :class="$style.frameInner">
 					<div class="_buttonsCenter">
-						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.done }}</MkButton>
+						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
 						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
 						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
 						<MkButton rounded @click="exportLog">Copy replay data</MkButton>
 					</div>
 				</div>
 			</div>
+
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/></b> (MAX CHAIN: <b><MkNumber :value="maxCombo"/></b>)</div>
-						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/></b><b v-else>-</b></div>
+						<div>SCORE: <b><MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</b></div>
+						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
+						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
 					</div>
 				</div>
 				<div :class="[$style.frame]" style="margin-left: auto;">
@@ -118,6 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
+
 			<div v-if="showConfig" :class="$style.frame">
 				<div :class="$style.frameInner">
 					<div class="_gaps">
@@ -130,6 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
+
 			<div :class="$style.frame">
 				<div :class="$style.frameInner">
 					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">Surrender</MkButton>
@@ -137,12 +159,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</Transition>
-</div>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -163,234 +185,305 @@ import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
-const NORMAL_BASE_SIZE = 30;
-const NORAML_MONOS: Mono[] = [{
+type FrontendMonoDefinition = {
+	id: string;
+	img: string;
+	imgSizeX: number;
+	imgSizeY: number;
+	spriteScale: number;
+	sfxPitch: number;
+};
+
+const NORAML_MONOS: FrontendMonoDefinition[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
-	level: 10,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 512,
-	dropCandidate: false,
 	sfxPitch: 0.25,
-	img: '/client-assets/drop-and-fusion/exploding_head.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/exploding_head.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'be9f38d2-b267-4b1a-b420-904e22e80568',
-	level: 9,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 256,
-	dropCandidate: false,
 	sfxPitch: 0.5,
-	img: '/client-assets/drop-and-fusion/face_with_symbols_on_mouth.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/face_with_symbols_on_mouth.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'beb30459-b064-4888-926b-f572e4e72e0c',
-	level: 8,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 128,
-	dropCandidate: false,
 	sfxPitch: 0.75,
-	img: '/client-assets/drop-and-fusion/cold_face.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/cold_face.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'feab6426-d9d8-49ae-849c-048cdbb6cdf0',
-	level: 7,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 64,
-	dropCandidate: false,
 	sfxPitch: 1,
-	img: '/client-assets/drop-and-fusion/zany_face.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/zany_face.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'd6d8fed6-6d18-4726-81a1-6cf2c974df8a',
-	level: 6,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 32,
-	dropCandidate: false,
 	sfxPitch: 1.5,
-	img: '/client-assets/drop-and-fusion/pleading_face.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/pleading_face.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '249c728e-230f-4332-bbbf-281c271c75b2',
-	level: 5,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 16,
-	dropCandidate: true,
 	sfxPitch: 2,
-	img: '/client-assets/drop-and-fusion/face_with_open_mouth.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/face_with_open_mouth.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '23d67613-d484-4a93-b71e-3e81b19d6186',
-	level: 4,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 8,
-	dropCandidate: true,
 	sfxPitch: 2.5,
-	img: '/client-assets/drop-and-fusion/smiling_face_with_sunglasses.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/smiling_face_with_sunglasses.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '3cbd0add-ad7d-4685-bad0-29f6dddc0b99',
-	level: 3,
-	size: NORMAL_BASE_SIZE * 1.25 * 1.25,
-	shape: 'circle',
-	score: 4,
-	dropCandidate: true,
 	sfxPitch: 3,
-	img: '/client-assets/drop-and-fusion/grinning_squinting_face.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/grinning_squinting_face.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '8f86d4f4-ee02-41bf-ad38-1ce0ae457fb5',
-	level: 2,
-	size: NORMAL_BASE_SIZE * 1.25,
-	shape: 'circle',
-	score: 2,
-	dropCandidate: true,
 	sfxPitch: 3.5,
-	img: '/client-assets/drop-and-fusion/smiling_face_with_hearts.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/smiling_face_with_hearts.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '64ec4add-ce39-42b4-96cb-33908f3f118d',
-	level: 1,
-	size: NORMAL_BASE_SIZE,
-	shape: 'circle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
-	img: '/client-assets/drop-and-fusion/heart_suit.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/normal_monos/heart_suit.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }];
 
-const SQUARE_BASE_SIZE = 28;
-const SQUARE_MONOS: Mono[] = [{
-	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
-	level: 10,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 512,
-	dropCandidate: false,
+const YEN_MONOS: FrontendMonoDefinition[] = [{
+	id: '880f9bd9-802f-4135-a7e1-fd0e0331f726',
 	sfxPitch: 0.25,
-	img: '/client-assets/drop-and-fusion/keycap_10.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/yen_monos/10000yen.png',
+	imgSizeX: 512,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: 'e807beb6-374a-4314-9cc2-aa5f17d96b6b',
+	sfxPitch: 0.5,
+	img: '/client-assets/drop-and-fusion/yen_monos/5000yen.png',
+	imgSizeX: 512,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: '033445b7-8f90-4fc9-beca-71a9e87cb530',
+	sfxPitch: 0.75,
+	img: '/client-assets/drop-and-fusion/yen_monos/2000yen.png',
+	imgSizeX: 512,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: '410a09ec-5f7f-46f6-b26f-cbca4ccbd091',
+	sfxPitch: 1,
+	img: '/client-assets/drop-and-fusion/yen_monos/1000yen.png',
+	imgSizeX: 512,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: '2aae82bc-3fa4-49ad-a6b5-94d888e809f5',
+	sfxPitch: 1.5,
+	img: '/client-assets/drop-and-fusion/yen_monos/500yen.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: 'a619bd67-d08f-4cc0-8c7e-c8072a4950cd',
+	sfxPitch: 2,
+	img: '/client-assets/drop-and-fusion/yen_monos/100yen.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: 'c1c5d8e4-17d6-4455-befd-12154d731faa',
+	sfxPitch: 2.5,
+	img: '/client-assets/drop-and-fusion/yen_monos/50yen.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: '7082648c-e428-44c4-887a-25c07a8ebdd5',
+	sfxPitch: 3,
+	img: '/client-assets/drop-and-fusion/yen_monos/10yen.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: '0d8d40d5-e6e0-4d26-8a95-b8d842363379',
+	sfxPitch: 3.5,
+	img: '/client-assets/drop-and-fusion/yen_monos/5yen.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}, {
+	id: '9dec1b38-d99d-40de-8288-37367b983d0d',
+	sfxPitch: 4,
+	img: '/client-assets/drop-and-fusion/yen_monos/1yen.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 0.97,
+}];
+
+const SQUARE_MONOS: FrontendMonoDefinition[] = [{
+	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
+	sfxPitch: 0.25,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_10.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
-	level: 9,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 256,
-	dropCandidate: false,
 	sfxPitch: 0.5,
-	img: '/client-assets/drop-and-fusion/keycap_9.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_9.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
-	level: 8,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 128,
-	dropCandidate: false,
 	sfxPitch: 0.75,
-	img: '/client-assets/drop-and-fusion/keycap_8.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_8.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
-	level: 7,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 64,
-	dropCandidate: false,
 	sfxPitch: 1,
-	img: '/client-assets/drop-and-fusion/keycap_7.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_7.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
-	level: 6,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 32,
-	dropCandidate: false,
 	sfxPitch: 1.5,
-	img: '/client-assets/drop-and-fusion/keycap_6.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_6.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
-	level: 5,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 16,
-	dropCandidate: true,
 	sfxPitch: 2,
-	img: '/client-assets/drop-and-fusion/keycap_5.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_5.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
-	level: 4,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 8,
-	dropCandidate: true,
 	sfxPitch: 2.5,
-	img: '/client-assets/drop-and-fusion/keycap_4.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_4.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
-	level: 3,
-	size: SQUARE_BASE_SIZE * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 4,
-	dropCandidate: true,
 	sfxPitch: 3,
-	img: '/client-assets/drop-and-fusion/keycap_3.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_3.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
-	level: 2,
-	size: SQUARE_BASE_SIZE * 1.25,
-	shape: 'rectangle',
-	score: 2,
-	dropCandidate: true,
 	sfxPitch: 3.5,
-	img: '/client-assets/drop-and-fusion/keycap_2.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_2.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
-	level: 1,
-	size: SQUARE_BASE_SIZE,
-	shape: 'rectangle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
-	img: '/client-assets/drop-and-fusion/keycap_1.png',
-	imgSize: 256,
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_1.png',
+	imgSizeX: 256,
+	imgSizeY: 256,
+	spriteScale: 1.12,
+}];
+
+const SWEETS_MONOS: FrontendMonoDefinition[] = [{
+	id: '77f724c0-88be-4aeb-8e1a-a00ed18e3844',
+	sfxPitch: 0.25,
+	img: '/client-assets/drop-and-fusion/sweets_monos/shortcake_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'f3468ef4-2e1e-4906-8795-f147f39f7e1f',
+	sfxPitch: 0.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/pancakes_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'bcb41129-6f2d-44ee-89d3-86eb2df564ba',
+	sfxPitch: 0.75,
+	img: '/client-assets/drop-and-fusion/sweets_monos/shaved_ice_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'f058e1ad-1981-409b-b3a7-302de0a43744',
+	sfxPitch: 1,
+	img: '/client-assets/drop-and-fusion/sweets_monos/soft_ice_cream_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'd22cfe38-5a3b-4b9c-a1a6-907930a3d732',
+	sfxPitch: 1.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/doughnut_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '79867083-a073-427e-ae82-07a70d9f3b4f',
+	sfxPitch: 2,
+	img: '/client-assets/drop-and-fusion/sweets_monos/custard_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '2e152a12-a567-4100-b4d4-d15d81ba47b1',
+	sfxPitch: 2.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/chocolate_bar_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '12250376-2258-4716-8eec-b3a7239461fc',
+	sfxPitch: 3,
+	img: '/client-assets/drop-and-fusion/sweets_monos/lollipop_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '4d4f2668-4be7-44a3-aa3a-856df6e25aa6',
+	sfxPitch: 3.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/candy_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'c9984b40-4045-44c3-b260-d47b7b4625b2',
+	sfxPitch: 4,
+	img: '/client-assets/drop-and-fusion/sweets_monos/cookie_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
 	spriteScale: 1.12,
 }];
 
 const props = defineProps<{
-	gameMode: 'normal' | 'square';
+	gameMode: 'normal' | 'square' | 'yen' | 'sweets';
 	mute: boolean;
 }>();
 
@@ -398,7 +491,32 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-const monoDefinitions = props.gameMode === 'normal' ? NORAML_MONOS : SQUARE_MONOS;
+const monoDefinitions = computed(() => {
+	return props.gameMode === 'normal' ? NORAML_MONOS :
+		props.gameMode === 'square' ? SQUARE_MONOS :
+		props.gameMode === 'yen' ? YEN_MONOS :
+		props.gameMode === 'sweets' ? SWEETS_MONOS :
+		[] as never;
+});
+
+function getScoreUnit(gameMode: string) {
+	return gameMode === 'normal' ? 'pt' :
+		gameMode === 'square' ? 'pt' :
+		gameMode === 'yen' ? '円' :
+		gameMode === 'sweets' ? 'kcal' :
+		'' as never;
+}
+
+function getMonoRenderOptions(mono: Mono) {
+	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
+	return {
+		sprite: {
+			texture: def.img,
+			xScale: (mono.sizeX / def.imgSizeX) * def.spriteScale,
+			yScale: (mono.sizeY / def.imgSizeY) * def.spriteScale,
+		},
+	};
+}
 
 let viewScale = 1;
 let seed: string = Date.now().toString();
@@ -412,7 +530,8 @@ let monoTextureUrls: Record<string, string> = {};
 let tickRaf: number | null = null;
 let game = new DropAndFusionGame({
 	seed: seed,
-	monoDefinitions,
+	gameMode: props.gameMode,
+	getMonoRenderOptions,
 });
 attachGameEvents();
 
@@ -429,7 +548,9 @@ const maxCombo = ref(0);
 const dropReady = ref(true);
 const isGameOver = ref(false);
 const gameLoaded = ref(false);
+const readyGo = ref<'ready' | 'go' | null>('ready');
 const highScore = ref<number | null>(null);
+const yenTotal = ref<number | null>(null);
 const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
@@ -464,7 +585,7 @@ function createRendererInstance(game: DropAndFusionGame) {
 }
 
 function loadMonoTextures() {
-	async function loadSingleMonoTexture(mono: Mono) {
+	async function loadSingleMonoTexture(mono: FrontendMonoDefinition) {
 		if (renderer == null) return;
 
 		// Matter-js内にキャッシュがある場合はスキップ
@@ -491,22 +612,24 @@ function loadMonoTextures() {
 		renderer.textures[mono.img] = image;
 	}
 
-	return Promise.all(monoDefinitions.map(x => loadSingleMonoTexture(x)));
+	return Promise.all(monoDefinitions.value.map(x => loadSingleMonoTexture(x)));
 }
 
 function getTextureImageUrl(mono: Mono) {
+	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
+
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (monoTextureUrls[mono.img]) {
-		return monoTextureUrls[mono.img];
+	if (monoTextureUrls[def.img]) {
+		return monoTextureUrls[def.img];
 
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	} else if (monoTextures[mono.img]) {
+	} else if (monoTextures[def.img]) {
 		// Gameクラス内にキャッシュがある場合はそれを使う
-		const out = URL.createObjectURL(monoTextures[mono.img]);
-		monoTextureUrls[mono.img] = out;
+		const out = URL.createObjectURL(monoTextures[def.img]);
+		monoTextureUrls[def.img] = out;
 		return out;
 	} else {
-		return mono.img;
+		return def.img;
 	}
 }
 
@@ -555,8 +678,8 @@ function tickReplay() {
 }
 
 async function start() {
-	await loadMonoTextures();
 	renderer = createRendererInstance(game);
+	await loadMonoTextures();
 	Matter.Render.lookAt(renderer, {
 		min: { x: 0, y: 0 },
 		max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
@@ -566,6 +689,13 @@ async function start() {
 	window.requestAnimationFrame(tick);
 
 	gameLoaded.value = true;
+
+	window.setTimeout(() => {
+		readyGo.value = 'go';
+		window.setTimeout(() => {
+			readyGo.value = null;
+		}, 1000);
+	}, 1500);
 }
 
 function onClick(ev: MouseEvent) {
@@ -615,7 +745,8 @@ async function restart() {
 	reset();
 	game = new DropAndFusionGame({
 		seed: seed,
-		monoDefinitions,
+		gameMode: props.gameMode,
+		getMonoRenderOptions,
 	});
 	attachGameEvents();
 	await start();
@@ -636,11 +767,12 @@ function reset() {
 	comboPrev.value = 0;
 	maxCombo.value = 0;
 	gameLoaded.value = false;
+	readyGo.value = null;
 }
 
 function dispose() {
 	game.dispose();
-	Matter.Render.stop(renderer);
+	if (renderer) Matter.Render.stop(renderer);
 	if (tickRaf) {
 		window.cancelAnimationFrame(tickRaf);
 	}
@@ -655,8 +787,8 @@ function replay() {
 	dispose();
 	game = new DropAndFusionGame({
 		seed: seed,
-		monoDefinitions,
-		replaying: true,
+		gameMode: props.gameMode,
+		getMonoRenderOptions,
 	});
 	attachGameEvents();
 	os.promiseDialog(loadMonoTextures(), async () => {
@@ -732,7 +864,7 @@ function getGameImageDriveFile() {
 			ctx.fillStyle = '#000';
 			ctx.font = '16px bold sans-serif';
 			ctx.textBaseline = 'top';
-			ctx.fillText(`SCORE: ${score.value.toLocaleString()}`, 10, 10);
+			ctx.fillText(`SCORE: ${score.value.toLocaleString()}${getScoreUnit(props.gameMode)}`, 10, 10);
 
 			ctx.globalAlpha = 0.7;
 			ctx.drawImage(logo, game.GAME_WIDTH * 0.55, 6, game.GAME_WIDTH * 0.45, game.GAME_WIDTH * 0.45 * (logo.height / logo.width));
@@ -772,9 +904,8 @@ async function share() {
 	const file = await uploading;
 	if (!file) return;
 	os.post({
-		initialText: `#BubbleGame
-MODE: ${props.gameMode}
-SCORE: ${score.value.toLocaleString()} (MAX CHAIN: ${maxCombo.value})`,
+		initialText: `#BubbleGame (${props.gameMode})
+SCORE: ${score.value.toLocaleString()}${getScoreUnit(props.gameMode)}`,
 		initialFiles: [file],
 		instant: true,
 	});
@@ -803,20 +934,33 @@ function attachGameEvents() {
 	game.addListener('changeHolding', value => {
 		holdingStock.value = value;
 
-		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
-			volume: 0.5 * sfxVolume.value,
-		});
+		if (!props.mute) {
+			sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+				volume: 0.5 * sfxVolume.value,
+				playbackRate: replayPlaybackRate.value,
+			});
+		}
 	});
 
 	game.addListener('dropped', (x) => {
-		const panV = x - game.PLAYAREA_MARGIN;
-		const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
-		const pan = ((panV / panW) - 0.5) * 2;
-		sound.playUrl('/client-assets/drop-and-fusion/poi2.mp3', {
-			volume: sfxVolume.value,
-			pan,
-			playbackRate: replayPlaybackRate.value,
-		});
+		if (!props.mute) {
+			const panV = x - game.PLAYAREA_MARGIN;
+			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
+					volume: sfxVolume.value,
+					pan,
+					playbackRate: replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
+					volume: sfxVolume.value,
+					pan,
+					playbackRate: replayPlaybackRate.value,
+				});
+			}
+		}
 
 		if (replaying.value) return;
 
@@ -825,17 +969,77 @@ function attachGameEvents() {
 			if (!isGameOver.value) {
 				dropReady.value = true;
 			}
-		}, game.DROP_INTERVAL);
+		}, game.frameToMs(game.DROP_COOLTIME));
 	});
 
-	game.addListener('fusioned', (x, y, scoreDelta) => {
+	game.addListener('fusioned', (x, y, nextMono, scoreDelta) => {
 		if (!canvasEl.value) return;
 
 		const rect = canvasEl.value.getBoundingClientRect();
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
+		const scoreUnit = getScoreUnit(props.gameMode);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {}, 'end');
+
+		if (nextMono) {
+			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;
+			if (!props.mute) {
+				const panV = x - game.PLAYAREA_MARGIN;
+				const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+				const pan = ((panV / panW) - 0.5) * 2;
+				const pitch = def.sfxPitch;
+				if (props.gameMode === 'yen') {
+					sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
+						volume: 0.25 * sfxVolume.value,
+						pan: pan,
+						playbackRate: (pitch / 4) * replayPlaybackRate.value,
+					});
+				} else {
+					sound.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
+						volume: sfxVolume.value,
+						pan: pan,
+						playbackRate: pitch * replayPlaybackRate.value,
+					});
+				}
+			}
+		} else {
+			if (!props.mute) {
+				// TODO: 融合後のモノがない場合でも何らかの効果音を再生
+			}
+		}
+	});
+
+	const minCollisionEnergyForSound = 2.5;
+	const maxCollisionEnergyForSound = 9;
+	const soundPitchMax = 4;
+	const soundPitchMin = 0.5;
+
+	game.addListener('collision', (energy, bodyA, bodyB) => {
+		if (!props.mute && (energy > minCollisionEnergyForSound)) {
+			const volume = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
+			const panV =
+				bodyA.label === '_wall_' ? bodyB.position.x - game.PLAYAREA_MARGIN :
+				bodyB.label === '_wall_' ? bodyA.position.x - game.PLAYAREA_MARGIN :
+				((bodyA.position.x + bodyB.position.x) / 2) - game.PLAYAREA_MARGIN;
+			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
+			const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
+
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
+					volume: volume * sfxVolume.value,
+					pan: pan,
+					playbackRate: Math.max(1, pitch) * replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
+					volume: volume * sfxVolume.value,
+					pan: pan,
+					playbackRate: pitch * replayPlaybackRate.value,
+				});
+			}
+		}
 	});
 
 	game.addListener('monoAdded', (mono) => {
@@ -853,9 +1057,17 @@ function attachGameEvents() {
 	});
 
 	game.addListener('gameOver', () => {
-		sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
-			volume: sfxVolume.value,
-		});
+		if (!props.mute) {
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
+					volume: 0.5 * sfxVolume.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
+					volume: sfxVolume.value,
+				});
+			}
+		}
 
 		if (replaying.value) {
 			endReplay();
@@ -876,6 +1088,15 @@ function attachGameEvents() {
 			logs: DropAndFusionGame.serializeLogs(logs),
 		});
 
+		if (props.gameMode === 'yen') {
+			yenTotal.value = (yenTotal.value ?? 0) + score.value;
+			misskeyApi('i/registry/set', {
+				scope: ['dropAndFusionGame'],
+				key: 'yenTotal',
+				value: yenTotal.value,
+			});
+		}
+
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
 
@@ -885,21 +1106,6 @@ function attachGameEvents() {
 				value: highScore.value,
 			});
 		}
-	});
-
-	game.addListener('sfx', (type, params) => {
-		if (props.mute) return;
-
-		const soundUrl =
-			type === 'fusion' ? '/client-assets/drop-and-fusion/bubble2.mp3' :
-			type === 'collision' ? '/client-assets/drop-and-fusion/poi1.mp3' :
-			null as never;
-
-		sound.playUrl(soundUrl, {
-			volume: params.volume * sfxVolume.value,
-			pan: params.pan,
-			playbackRate: params.pitch * replayPlaybackRate.value,
-		});
 	});
 }
 
@@ -920,6 +1126,42 @@ onMounted(async () => {
 	} catch (err) {
 		highScore.value = null;
 	}
+
+	if (props.gameMode === 'yen') {
+		try {
+			yenTotal.value = await misskeyApi('i/registry/get', {
+				scope: ['dropAndFusionGame'],
+				key: 'yenTotal',
+			});
+		} catch (err: any) {
+			if (err.code === 'NO_SUCH_KEY') {
+				// nop
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.cannotLoad,
+				});
+				return;
+			}
+		}
+	}
+
+	/*
+const getVerticesFromSvg = async (path: string) => {
+	const svgDoc = await fetch(path)
+		.then((response) => response.text())
+		.then((svgString) => {
+			const parser = new DOMParser();
+			return parser.parseFromString(svgString, 'image/svg+xml');
+		});
+	const pathDatas = svgDoc.querySelectorAll('path');
+	if (!pathDatas) return;
+	const vertices = Array.from(pathDatas).map((pathData) => {
+		return Matter.Svg.pathToVertices(pathData);
+	});
+	return vertices;
+};
+*/
 
 	await start();
 
@@ -1020,6 +1262,36 @@ definePageMetadata({
 .loadingScreen {
 	text-align: center;
 	padding: 32px;
+}
+
+.readyGo_bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100;
+	backdrop-filter: blur(4px);
+}
+
+.readyGo_ready,
+.readyGo_go {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 101;
+	pointer-events: none;
+}
+
+.readyGo_img {
+	display: block;
+	width: 250px;
+	max-width: 100%;
 }
 
 .frame {
@@ -1173,10 +1445,15 @@ definePageMetadata({
 	position: absolute;
 	z-index: 10;
 	top: 50%;
-	width: 100%;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: calc(100% - 50px);
+	max-width: 320px;
 	padding: 16px;
 	box-sizing: border-box;
 	background: #0007;
+	border-radius: 16px;
 	color: #fff;
 	text-align: center;
 	font-weight: bold;
