@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
-import SwaggerParser from '@apidevtools/swagger-parser';
+import OpenAPIParser from '@readme/openapi-parser';
 import openapiTS from 'openapi-typescript';
 
 function generateVersionHeaderComment(openApiDocs: OpenAPIV3_1.Document): string {
@@ -330,7 +330,7 @@ async function main() {
 	await mkdir(generatePath, { recursive: true });
 
 	const openApiJsonPath = './api.json';
-	const openApiDocs = await SwaggerParser.validate(openApiJsonPath) as OpenAPIV3_1.Document;
+	const openApiDocs = await OpenAPIParser.validate(openApiJsonPath) as OpenAPIV3_1.Document;
 
 	const typeFileName = './built/autogen/types.ts';
 	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);

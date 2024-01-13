@@ -56,7 +56,7 @@ export function genOpenapiSpec(config: Config) {
 			}
 		}
 
-		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
+		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res, 'res') : {};
 
 		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
 
@@ -71,7 +71,7 @@ export function genOpenapiSpec(config: Config) {
 		}
 
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = { ...endpoint.params };
+		const schema = { ...convertSchemaToOpenApiSchema(endpoint.params, 'param') };
 
 		if (endpoint.meta.requireFile) {
 			schema.properties = {
@@ -210,7 +210,12 @@ export function genOpenapiSpec(config: Config) {
 		};
 
 		spec.paths['/' + endpoint.name] = {
-			...(endpoint.meta.allowGet ? { get: info } : {}),
+			...(endpoint.meta.allowGet ? {
+				get: {
+					...info,
+					operationId: 'get/' + endpoint.name,
+				},
+			} : {}),
 			post: info,
 		};
 	}
