@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -165,15 +165,17 @@ import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
-const NORMAL_BASE_SIZE = 30;
-const NORAML_MONOS: Mono[] = [{
+type FrontendMonoDefinition = {
+	id: string;
+	img: string;
+	imgSizeX: number;
+	imgSizeY: number;
+	spriteScale: number;
+	sfxPitch: number;
+};
+
+const NORAML_MONOS: FrontendMonoDefinition[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
-	level: 10,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 512,
-	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/exploding_head.png',
 	imgSizeX: 256,
@@ -181,12 +183,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'be9f38d2-b267-4b1a-b420-904e22e80568',
-	level: 9,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 256,
-	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/face_with_symbols_on_mouth.png',
 	imgSizeX: 256,
@@ -194,12 +190,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'beb30459-b064-4888-926b-f572e4e72e0c',
-	level: 8,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 128,
-	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/cold_face.png',
 	imgSizeX: 256,
@@ -207,12 +197,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'feab6426-d9d8-49ae-849c-048cdbb6cdf0',
-	level: 7,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 64,
-	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/zany_face.png',
 	imgSizeX: 256,
@@ -220,12 +204,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'd6d8fed6-6d18-4726-81a1-6cf2c974df8a',
-	level: 6,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 32,
-	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/pleading_face.png',
 	imgSizeX: 256,
@@ -233,12 +211,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '249c728e-230f-4332-bbbf-281c271c75b2',
-	level: 5,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 16,
-	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/face_with_open_mouth.png',
 	imgSizeX: 256,
@@ -246,12 +218,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '23d67613-d484-4a93-b71e-3e81b19d6186',
-	level: 4,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 8,
-	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/smiling_face_with_sunglasses.png',
 	imgSizeX: 256,
@@ -259,12 +225,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '3cbd0add-ad7d-4685-bad0-29f6dddc0b99',
-	level: 3,
-	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25 * 1.25,
-	shape: 'circle',
-	score: 4,
-	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/grinning_squinting_face.png',
 	imgSizeX: 256,
@@ -272,12 +232,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '8f86d4f4-ee02-41bf-ad38-1ce0ae457fb5',
-	level: 2,
-	sizeX: NORMAL_BASE_SIZE * 1.25,
-	sizeY: NORMAL_BASE_SIZE * 1.25,
-	shape: 'circle',
-	score: 2,
-	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/smiling_face_with_hearts.png',
 	imgSizeX: 256,
@@ -285,12 +239,6 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '64ec4add-ce39-42b4-96cb-33908f3f118d',
-	level: 1,
-	sizeX: NORMAL_BASE_SIZE,
-	sizeY: NORMAL_BASE_SIZE,
-	shape: 'circle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/heart_suit.png',
 	imgSizeX: 256,
@@ -298,16 +246,8 @@ const NORAML_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }];
 
-const YEN_BASE_SIZE = 30;
-const YEN_SATSU_BASE_SIZE = 70;
-const YEN_MONOS: Mono[] = [{
+const YEN_MONOS: FrontendMonoDefinition[] = [{
 	id: '880f9bd9-802f-4135-a7e1-fd0e0331f726',
-	level: 10,
-	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_SATSU_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 10000,
-	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/10000yen.png',
 	imgSizeX: 512,
@@ -315,12 +255,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: 'e807beb6-374a-4314-9cc2-aa5f17d96b6b',
-	level: 9,
-	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25 * 1.25,
-	sizeY: YEN_SATSU_BASE_SIZE * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 5000,
-	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/5000yen.png',
 	imgSizeX: 512,
@@ -328,12 +262,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '033445b7-8f90-4fc9-beca-71a9e87cb530',
-	level: 8,
-	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25,
-	sizeY: YEN_SATSU_BASE_SIZE * 1.25,
-	shape: 'rectangle',
-	score: 2000,
-	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/2000yen.png',
 	imgSizeX: 512,
@@ -341,12 +269,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '410a09ec-5f7f-46f6-b26f-cbca4ccbd091',
-	level: 7,
-	sizeX: YEN_SATSU_BASE_SIZE * 2,
-	sizeY: YEN_SATSU_BASE_SIZE,
-	shape: 'rectangle',
-	score: 1000,
-	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/1000yen.png',
 	imgSizeX: 512,
@@ -354,12 +276,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '2aae82bc-3fa4-49ad-a6b5-94d888e809f5',
-	level: 6,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 500,
-	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/500yen.png',
 	imgSizeX: 256,
@@ -367,12 +283,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: 'a619bd67-d08f-4cc0-8c7e-c8072a4950cd',
-	level: 5,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 100,
-	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/100yen.png',
 	imgSizeX: 256,
@@ -380,12 +290,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: 'c1c5d8e4-17d6-4455-befd-12154d731faa',
-	level: 4,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 50,
-	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/50yen.png',
 	imgSizeX: 256,
@@ -393,12 +297,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '7082648c-e428-44c4-887a-25c07a8ebdd5',
-	level: 3,
-	sizeX: YEN_BASE_SIZE * 1.25 * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25 * 1.25,
-	shape: 'circle',
-	score: 10,
-	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/10yen.png',
 	imgSizeX: 256,
@@ -406,12 +304,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '0d8d40d5-e6e0-4d26-8a95-b8d842363379',
-	level: 2,
-	sizeX: YEN_BASE_SIZE * 1.25,
-	sizeY: YEN_BASE_SIZE * 1.25,
-	shape: 'circle',
-	score: 5,
-	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/5yen.png',
 	imgSizeX: 256,
@@ -419,12 +311,6 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }, {
 	id: '9dec1b38-d99d-40de-8288-37367b983d0d',
-	level: 1,
-	sizeX: YEN_BASE_SIZE,
-	sizeY: YEN_BASE_SIZE,
-	shape: 'circle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/1yen.png',
 	imgSizeX: 256,
@@ -432,15 +318,8 @@ const YEN_MONOS: Mono[] = [{
 	spriteScale: 0.97,
 }];
 
-const SQUARE_BASE_SIZE = 28;
-const SQUARE_MONOS: Mono[] = [{
+const SQUARE_MONOS: FrontendMonoDefinition[] = [{
 	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
-	level: 10,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 512,
-	dropCandidate: false,
 	sfxPitch: 0.25,
 	img: '/client-assets/drop-and-fusion/keycap_10.png',
 	imgSizeX: 256,
@@ -448,12 +327,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
-	level: 9,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 256,
-	dropCandidate: false,
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/keycap_9.png',
 	imgSizeX: 256,
@@ -461,12 +334,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
-	level: 8,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 128,
-	dropCandidate: false,
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/keycap_8.png',
 	imgSizeX: 256,
@@ -474,12 +341,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
-	level: 7,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 64,
-	dropCandidate: false,
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/keycap_7.png',
 	imgSizeX: 256,
@@ -487,12 +348,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
-	level: 6,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 32,
-	dropCandidate: false,
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/keycap_6.png',
 	imgSizeX: 256,
@@ -500,12 +355,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
-	level: 5,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 16,
-	dropCandidate: true,
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/keycap_5.png',
 	imgSizeX: 256,
@@ -513,12 +362,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
-	level: 4,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 8,
-	dropCandidate: true,
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/keycap_4.png',
 	imgSizeX: 256,
@@ -526,12 +369,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
-	level: 3,
-	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25 * 1.25,
-	shape: 'rectangle',
-	score: 4,
-	dropCandidate: true,
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/keycap_3.png',
 	imgSizeX: 256,
@@ -539,12 +376,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
-	level: 2,
-	sizeX: SQUARE_BASE_SIZE * 1.25,
-	sizeY: SQUARE_BASE_SIZE * 1.25,
-	shape: 'rectangle',
-	score: 2,
-	dropCandidate: true,
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/keycap_2.png',
 	imgSizeX: 256,
@@ -552,12 +383,6 @@ const SQUARE_MONOS: Mono[] = [{
 	spriteScale: 1.12,
 }, {
 	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
-	level: 1,
-	sizeX: SQUARE_BASE_SIZE,
-	sizeY: SQUARE_BASE_SIZE,
-	shape: 'rectangle',
-	score: 1,
-	dropCandidate: true,
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/keycap_1.png',
 	imgSizeX: 256,
@@ -574,11 +399,23 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-const monoDefinitions =
-	props.gameMode === 'normal' ? NORAML_MONOS :
-	props.gameMode === 'square' ? SQUARE_MONOS :
-	props.gameMode === 'yen' ? YEN_MONOS :
-	[] as never;
+const monoDefinitions = computed(() => {
+	return props.gameMode === 'normal' ? NORAML_MONOS :
+		props.gameMode === 'square' ? SQUARE_MONOS :
+		props.gameMode === 'yen' ? YEN_MONOS :
+		[] as never;
+});
+
+function getMonoRenderOptions(mono: Mono) {
+	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
+	return {
+		sprite: {
+			texture: def.img,
+			xScale: (mono.sizeX / def.imgSizeX) * def.spriteScale,
+			yScale: (mono.sizeY / def.imgSizeY) * def.spriteScale,
+		},
+	};
+}
 
 let viewScale = 1;
 let seed: string = Date.now().toString();
@@ -592,8 +429,8 @@ let monoTextureUrls: Record<string, string> = {};
 let tickRaf: number | null = null;
 let game = new DropAndFusionGame({
 	seed: seed,
-	monoDefinitions,
-	hasComboBonus: props.gameMode !== 'yen',
+	gameMode: props.gameMode,
+	getMonoRenderOptions,
 });
 attachGameEvents();
 
@@ -646,7 +483,7 @@ function createRendererInstance(game: DropAndFusionGame) {
 }
 
 function loadMonoTextures() {
-	async function loadSingleMonoTexture(mono: Mono) {
+	async function loadSingleMonoTexture(mono: FrontendMonoDefinition) {
 		if (renderer == null) return;
 
 		// Matter-js内にキャッシュがある場合はスキップ
@@ -673,22 +510,24 @@ function loadMonoTextures() {
 		renderer.textures[mono.img] = image;
 	}
 
-	return Promise.all(monoDefinitions.map(x => loadSingleMonoTexture(x)));
+	return Promise.all(monoDefinitions.value.map(x => loadSingleMonoTexture(x)));
 }
 
 function getTextureImageUrl(mono: Mono) {
+	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
+
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (monoTextureUrls[mono.img]) {
-		return monoTextureUrls[mono.img];
+	if (monoTextureUrls[def.img]) {
+		return monoTextureUrls[def.img];
 
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	} else if (monoTextures[mono.img]) {
+	} else if (monoTextures[def.img]) {
 		// Gameクラス内にキャッシュがある場合はそれを使う
-		const out = URL.createObjectURL(monoTextures[mono.img]);
-		monoTextureUrls[mono.img] = out;
+		const out = URL.createObjectURL(monoTextures[def.img]);
+		monoTextureUrls[def.img] = out;
 		return out;
 	} else {
-		return mono.img;
+		return def.img;
 	}
 }
 
@@ -797,8 +636,8 @@ async function restart() {
 	reset();
 	game = new DropAndFusionGame({
 		seed: seed,
-		monoDefinitions,
-		hasComboBonus: props.gameMode !== 'yen',
+		gameMode: props.gameMode,
+		getMonoRenderOptions,
 	});
 	attachGameEvents();
 	await start();
@@ -838,8 +677,8 @@ function replay() {
 	dispose();
 	game = new DropAndFusionGame({
 		seed: seed,
-		monoDefinitions,
-		hasComboBonus: props.gameMode !== 'yen',
+		gameMode: props.gameMode,
+		getMonoRenderOptions,
 		replaying: true,
 	});
 	attachGameEvents();
@@ -986,28 +825,32 @@ function attachGameEvents() {
 	game.addListener('changeHolding', value => {
 		holdingStock.value = value;
 
-		sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
-			volume: 0.5 * sfxVolume.value,
-			playbackRate: replayPlaybackRate.value,
-		});
+		if (!props.mute) {
+			sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+				volume: 0.5 * sfxVolume.value,
+				playbackRate: replayPlaybackRate.value,
+			});
+		}
 	});
 
 	game.addListener('dropped', (x) => {
-		const panV = x - game.PLAYAREA_MARGIN;
-		const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
-		const pan = ((panV / panW) - 0.5) * 2;
-		if (props.gameMode === 'yen') {
-			sound.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
-				volume: sfxVolume.value,
-				pan,
-				playbackRate: replayPlaybackRate.value,
-			});
-		} else {
-			sound.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
-				volume: sfxVolume.value,
-				pan,
-				playbackRate: replayPlaybackRate.value,
-			});
+		if (!props.mute) {
+			const panV = x - game.PLAYAREA_MARGIN;
+			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
+					volume: sfxVolume.value,
+					pan,
+					playbackRate: replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
+					volume: sfxVolume.value,
+					pan,
+					playbackRate: replayPlaybackRate.value,
+				});
+			}
 		}
 
 		if (replaying.value) return;
@@ -1020,7 +863,7 @@ function attachGameEvents() {
 		}, game.DROP_INTERVAL);
 	});
 
-	game.addListener('fusioned', (x, y, scoreDelta) => {
+	game.addListener('fusioned', (x, y, nextMono, scoreDelta) => {
 		if (!canvasEl.value) return;
 
 		const rect = canvasEl.value.getBoundingClientRect();
@@ -1028,6 +871,65 @@ function attachGameEvents() {
 		const domY = rect.top + (y * viewScale);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
 		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (props.gameMode === 'yen' ? '円' : '') }, {}, 'end');
+
+		if (nextMono) {
+			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;
+			if (!props.mute) {
+				const panV = x - game.PLAYAREA_MARGIN;
+				const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+				const pan = ((panV / panW) - 0.5) * 2;
+				const pitch = def.sfxPitch;
+				if (props.gameMode === 'yen') {
+					sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
+						volume: 0.25 * sfxVolume.value,
+						pan: pan,
+						playbackRate: (pitch / 4) * replayPlaybackRate.value,
+					});
+				} else {
+					sound.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
+						volume: sfxVolume.value,
+						pan: pan,
+						playbackRate: pitch * replayPlaybackRate.value,
+					});
+				}
+			}
+		} else {
+			if (!props.mute) {
+				// TODO: 融合後のモノがない場合でも何らかの効果音を再生
+			}
+		}
+	});
+
+	const minCollisionEnergyForSound = 2.5;
+	const maxCollisionEnergyForSound = 9;
+	const soundPitchMax = 4;
+	const soundPitchMin = 0.5;
+
+	game.addListener('collision', (energy, bodyA, bodyB) => {
+		if (!props.mute && (energy > minCollisionEnergyForSound)) {
+			const volume = (Math.min(maxCollisionEnergyForSound, energy - minCollisionEnergyForSound) / maxCollisionEnergyForSound) / 4;
+			const panV =
+				bodyA.label === '_wall_' ? bodyB.position.x - game.PLAYAREA_MARGIN :
+				bodyB.label === '_wall_' ? bodyA.position.x - game.PLAYAREA_MARGIN :
+				((bodyA.position.x + bodyB.position.x) / 2) - game.PLAYAREA_MARGIN;
+			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
+			const pan = ((panV / panW) - 0.5) * 2;
+			const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
+
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
+					volume: volume * sfxVolume.value,
+					pan: pan,
+					playbackRate: Math.max(1, pitch) * replayPlaybackRate.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
+					volume: volume * sfxVolume.value,
+					pan: pan,
+					playbackRate: pitch * replayPlaybackRate.value,
+				});
+			}
+		}
 	});
 
 	game.addListener('monoAdded', (mono) => {
@@ -1045,14 +947,16 @@ function attachGameEvents() {
 	});
 
 	game.addListener('gameOver', () => {
-		if (props.gameMode === 'yen') {
-			sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
-				volume: 0.5 * sfxVolume.value,
-			});
-		} else {
-			sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
-				volume: sfxVolume.value,
-			});
+		if (!props.mute) {
+			if (props.gameMode === 'yen') {
+				sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
+					volume: 0.5 * sfxVolume.value,
+				});
+			} else {
+				sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
+					volume: sfxVolume.value,
+				});
+			}
 		}
 
 		if (replaying.value) {
@@ -1093,40 +997,6 @@ function attachGameEvents() {
 			});
 		}
 	});
-
-	game.addListener('sfx', (type, params) => {
-		if (props.mute) return;
-
-		if (type === 'fusion') {
-			if (props.gameMode === 'yen') {
-				sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
-					volume: 0.25 * params.volume * sfxVolume.value,
-					pan: params.pan,
-					playbackRate: (params.pitch / 4) * replayPlaybackRate.value,
-				});
-			} else {
-				sound.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
-					volume: params.volume * sfxVolume.value,
-					pan: params.pan,
-					playbackRate: params.pitch * replayPlaybackRate.value,
-				});
-			}
-		} else if (type === 'collision') {
-			if (props.gameMode === 'yen') {
-				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
-					volume: params.volume * sfxVolume.value,
-					pan: params.pan,
-					playbackRate: Math.max(1, params.pitch) * replayPlaybackRate.value,
-				});
-			} else {
-				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
-					volume: params.volume * sfxVolume.value,
-					pan: params.pan,
-					playbackRate: params.pitch * replayPlaybackRate.value,
-				});
-			}
-		}
-	});
 }
 
 useInterval(() => {
@@ -1153,7 +1023,7 @@ onMounted(async () => {
 				scope: ['dropAndFusionGame'],
 				key: 'yenTotal',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			if (err.code === 'NO_SUCH_KEY') {
 				// nop
 			} else {
