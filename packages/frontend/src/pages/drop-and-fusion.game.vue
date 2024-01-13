@@ -77,6 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
 						<div>SCORE: <MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</div>
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
+						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
 					</div>
 				</div>
 				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
@@ -736,8 +737,8 @@ function tickReplay() {
 }
 
 async function start() {
-	await loadMonoTextures();
 	renderer = createRendererInstance(game);
+	await loadMonoTextures();
 	Matter.Render.lookAt(renderer, {
 		min: { x: 0, y: 0 },
 		max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
@@ -915,7 +916,7 @@ function getGameImageDriveFile() {
 			ctx.fillStyle = '#000';
 			ctx.font = '16px bold sans-serif';
 			ctx.textBaseline = 'top';
-			ctx.fillText(`SCORE: ${score.value.toLocaleString()}`, 10, 10);
+			ctx.fillText(`SCORE: ${score.value.toLocaleString()}${props.gameMode === 'yen' ? '円' : 'pt'}`, 10, 10);
 
 			ctx.globalAlpha = 0.7;
 			ctx.drawImage(logo, game.GAME_WIDTH * 0.55, 6, game.GAME_WIDTH * 0.45, game.GAME_WIDTH * 0.45 * (logo.height / logo.width));
