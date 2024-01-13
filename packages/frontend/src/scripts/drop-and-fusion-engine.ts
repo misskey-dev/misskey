@@ -12,7 +12,8 @@ export type Mono = {
 	level: number;
 	sizeX: number;
 	sizeY: number;
-	shape: 'circle' | 'rectangle';
+	shape: 'circle' | 'rectangle' | 'custom';
+	vertices?: Matter.Vector[][];
 	score: number;
 	dropCandidate: boolean;
 };
@@ -279,6 +280,202 @@ const SQUARE_MONOS: Mono[] = [{
 	dropCandidate: true,
 }];
 
+const SWEETS_BASE_SIZE = 30;
+// TODO: custom shape vertices
+const SWEETS_MONOS: Mono[] = [{
+	id: '77f724c0-88be-4aeb-8e1a-a00ed18e3844',
+	level: 10,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 512,
+	dropCandidate: false,
+}, {
+	id: 'f3468ef4-2e1e-4906-8795-f147f39f7e1f',
+	level: 9,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 256,
+	dropCandidate: false,
+}, {
+	id: 'bcb41129-6f2d-44ee-89d3-86eb2df564ba',
+	level: 8,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 128,
+	dropCandidate: false,
+}, {
+	id: 'f058e1ad-1981-409b-b3a7-302de0a43744',
+	level: 7,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 64,
+	dropCandidate: false,
+}, {
+	id: 'd22cfe38-5a3b-4b9c-a1a6-907930a3d732',
+	level: 6,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 32,
+	dropCandidate: false,
+}, {
+	id: '79867083-a073-427e-ae82-07a70d9f3b4f',
+	level: 5,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 8,
+				'y': 15,
+			},
+			{
+				'x': 24,
+				'y': 15,
+			},
+			{
+				'x': 26,
+				'y': 26,
+			},
+			{
+				'x': 30,
+				'y': 26,
+			},
+			{
+				'x': 24.7,
+				'y': 30,
+			},
+			{
+				'x': 7.34,
+				'y': 30,
+			},
+			{
+				'x': 2,
+				'y': 26,
+			},
+			{
+				'x': 6,
+				'y': 26,
+			},
+		],
+	],
+	score: 16,
+	dropCandidate: true,
+}, {
+	id: '2e152a12-a567-4100-b4d4-d15d81ba47b1',
+	level: 4,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25,
+	shape: 'circle',
+	score: 8,
+	dropCandidate: true,
+}, {
+	id: '12250376-2258-4716-8eec-b3a7239461fc',
+	level: 3,
+	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25,
+	shape: 'circle',
+	score: 4,
+	dropCandidate: true,
+}, {
+	id: '4d4f2668-4be7-44a3-aa3a-856df6e25aa6',
+	level: 2,
+	sizeX: SWEETS_BASE_SIZE * 1.25,
+	sizeY: SWEETS_BASE_SIZE * 1.25,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 12,
+				'y': 1.9180000000000001,
+			},
+			{
+				'x': 4,
+				'y': 4,
+			},
+			{
+				'x': 2.016,
+				'y': 12,
+			},
+			{
+				'x': 6,
+				'y': 13.375,
+			},
+			{
+				'x': 6,
+				'y': 18,
+			},
+			{
+				'x': 8,
+				'y': 22,
+			},
+			{
+				'x': 12,
+				'y': 25.372,
+			},
+			{
+				'x': 16.008,
+				'y': 26,
+			},
+			{
+				'x': 19,
+				'y': 25.372,
+			},
+			{
+				'x': 20,
+				'y': 30,
+			},
+			{
+				'x': 28,
+				'y': 27,
+			},
+			{
+				'x': 30,
+				'y': 20,
+			},
+			{
+				'x': 25.473,
+				'y': 19,
+			},
+			{
+				'x': 26,
+				'y': 15,
+			},
+			{
+				'x': 24,
+				'y': 10,
+			},
+			{
+				'x': 20,
+				'y': 7,
+			},
+			{
+				'x': 16.008,
+				'y': 6,
+			},
+			{
+				'x': 13,
+				'y': 6,
+			},
+		],
+	],
+	score: 2,
+	dropCandidate: true,
+}, {
+	id: 'c9984b40-4045-44c3-b260-d47b7b4625b2',
+	level: 1,
+	sizeX: SWEETS_BASE_SIZE,
+	sizeY: SWEETS_BASE_SIZE,
+	shape: 'circle',
+	score: 1,
+	dropCandidate: true,
+}];
+
 export class DropAndFusionGame extends EventEmitter<{
 	changeScore: (newScore: number) => void;
 	changeCombo: (newCombo: number) => void;
@@ -305,7 +502,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	private tickCallbackQueue: { frame: number; callback: () => void; }[] = [];
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
-	private gameMode: 'normal' | 'yen' | 'square';
+	private gameMode: 'normal' | 'yen' | 'square' | 'sweets';
 	private rng: () => number;
 	private logs: Log[] = [];
 
@@ -329,12 +526,10 @@ export class DropAndFusionGame extends EventEmitter<{
 
 	private get monoDefinitions() {
 		switch (this.gameMode) {
-			case 'normal':
-				return NORAML_MONOS;
-			case 'yen':
-				return YEN_MONOS;
-			case 'square':
-				return SQUARE_MONOS;
+			case 'normal': return NORAML_MONOS;
+			case 'yen': return YEN_MONOS;
+			case 'square': return SQUARE_MONOS;
+			case 'sweets': return SWEETS_MONOS;
 		}
 	}
 
@@ -449,6 +644,11 @@ export class DropAndFusionGame extends EventEmitter<{
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		} else if (mono.shape === 'rectangle') {
 			return Matter.Bodies.rectangle(x, y, mono.sizeX, mono.sizeY, options);
+		} else if (mono.shape === 'custom') {
+			return Matter.Bodies.fromVertices(x, y, mono.vertices!.map(i => i.map(j => ({
+				x: (j.x / 32) * mono.sizeX,
+				y: (j.y / 32) * mono.sizeY,
+			}))), options);
 		} else {
 			throw new Error('unrecognized shape');
 		}

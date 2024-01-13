@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>SCORE: <MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</div>
+						<div>SCORE: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
 					</div>
@@ -127,8 +127,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div :class="$style.frame" style="flex: 1; margin-right: 10px;">
 					<div :class="$style.frameInner">
-						<div>SCORE: <b><MkNumber :value="score"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b></div>
-						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ gameMode === 'yen' ? '円' : 'pt' }}</b><b v-else>-</b></div>
+						<div>SCORE: <b><MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</b></div>
+						<div>HIGH SCORE: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
 						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b v-if="yenTotal"><MkNumber :value="yenTotal"/>円</b><b v-else>-</b></div>
 					</div>
 				</div>
@@ -197,70 +197,70 @@ type FrontendMonoDefinition = {
 const NORAML_MONOS: FrontendMonoDefinition[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
 	sfxPitch: 0.25,
-	img: '/client-assets/drop-and-fusion/exploding_head.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/exploding_head.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'be9f38d2-b267-4b1a-b420-904e22e80568',
 	sfxPitch: 0.5,
-	img: '/client-assets/drop-and-fusion/face_with_symbols_on_mouth.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/face_with_symbols_on_mouth.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'beb30459-b064-4888-926b-f572e4e72e0c',
 	sfxPitch: 0.75,
-	img: '/client-assets/drop-and-fusion/cold_face.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/cold_face.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'feab6426-d9d8-49ae-849c-048cdbb6cdf0',
 	sfxPitch: 1,
-	img: '/client-assets/drop-and-fusion/zany_face.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/zany_face.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'd6d8fed6-6d18-4726-81a1-6cf2c974df8a',
 	sfxPitch: 1.5,
-	img: '/client-assets/drop-and-fusion/pleading_face.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/pleading_face.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '249c728e-230f-4332-bbbf-281c271c75b2',
 	sfxPitch: 2,
-	img: '/client-assets/drop-and-fusion/face_with_open_mouth.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/face_with_open_mouth.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '23d67613-d484-4a93-b71e-3e81b19d6186',
 	sfxPitch: 2.5,
-	img: '/client-assets/drop-and-fusion/smiling_face_with_sunglasses.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/smiling_face_with_sunglasses.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '3cbd0add-ad7d-4685-bad0-29f6dddc0b99',
 	sfxPitch: 3,
-	img: '/client-assets/drop-and-fusion/grinning_squinting_face.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/grinning_squinting_face.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '8f86d4f4-ee02-41bf-ad38-1ce0ae457fb5',
 	sfxPitch: 3.5,
-	img: '/client-assets/drop-and-fusion/smiling_face_with_hearts.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/smiling_face_with_hearts.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '64ec4add-ce39-42b4-96cb-33908f3f118d',
 	sfxPitch: 4,
-	img: '/client-assets/drop-and-fusion/heart_suit.png',
+	img: '/client-assets/drop-and-fusion/normal_monos/heart_suit.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
@@ -269,70 +269,70 @@ const NORAML_MONOS: FrontendMonoDefinition[] = [{
 const YEN_MONOS: FrontendMonoDefinition[] = [{
 	id: '880f9bd9-802f-4135-a7e1-fd0e0331f726',
 	sfxPitch: 0.25,
-	img: '/client-assets/drop-and-fusion/10000yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/10000yen.png',
 	imgSizeX: 512,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: 'e807beb6-374a-4314-9cc2-aa5f17d96b6b',
 	sfxPitch: 0.5,
-	img: '/client-assets/drop-and-fusion/5000yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/5000yen.png',
 	imgSizeX: 512,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: '033445b7-8f90-4fc9-beca-71a9e87cb530',
 	sfxPitch: 0.75,
-	img: '/client-assets/drop-and-fusion/2000yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/2000yen.png',
 	imgSizeX: 512,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: '410a09ec-5f7f-46f6-b26f-cbca4ccbd091',
 	sfxPitch: 1,
-	img: '/client-assets/drop-and-fusion/1000yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/1000yen.png',
 	imgSizeX: 512,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: '2aae82bc-3fa4-49ad-a6b5-94d888e809f5',
 	sfxPitch: 1.5,
-	img: '/client-assets/drop-and-fusion/500yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/500yen.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: 'a619bd67-d08f-4cc0-8c7e-c8072a4950cd',
 	sfxPitch: 2,
-	img: '/client-assets/drop-and-fusion/100yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/100yen.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: 'c1c5d8e4-17d6-4455-befd-12154d731faa',
 	sfxPitch: 2.5,
-	img: '/client-assets/drop-and-fusion/50yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/50yen.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: '7082648c-e428-44c4-887a-25c07a8ebdd5',
 	sfxPitch: 3,
-	img: '/client-assets/drop-and-fusion/10yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/10yen.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: '0d8d40d5-e6e0-4d26-8a95-b8d842363379',
 	sfxPitch: 3.5,
-	img: '/client-assets/drop-and-fusion/5yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/5yen.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 0.97,
 }, {
 	id: '9dec1b38-d99d-40de-8288-37367b983d0d',
 	sfxPitch: 4,
-	img: '/client-assets/drop-and-fusion/1yen.png',
+	img: '/client-assets/drop-and-fusion/yen_monos/1yen.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 0.97,
@@ -341,77 +341,149 @@ const YEN_MONOS: FrontendMonoDefinition[] = [{
 const SQUARE_MONOS: FrontendMonoDefinition[] = [{
 	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
 	sfxPitch: 0.25,
-	img: '/client-assets/drop-and-fusion/keycap_10.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_10.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
 	sfxPitch: 0.5,
-	img: '/client-assets/drop-and-fusion/keycap_9.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_9.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
 	sfxPitch: 0.75,
-	img: '/client-assets/drop-and-fusion/keycap_8.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_8.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
 	sfxPitch: 1,
-	img: '/client-assets/drop-and-fusion/keycap_7.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_7.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '1092e069-fe1a-450b-be97-b5d477ec398c',
 	sfxPitch: 1.5,
-	img: '/client-assets/drop-and-fusion/keycap_6.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_6.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
 	sfxPitch: 2,
-	img: '/client-assets/drop-and-fusion/keycap_5.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_5.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'ea8a61af-e350-45f7-ba6a-366fcd65692a',
 	sfxPitch: 2.5,
-	img: '/client-assets/drop-and-fusion/keycap_4.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_4.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
 	sfxPitch: 3,
-	img: '/client-assets/drop-and-fusion/keycap_3.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_3.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
 	sfxPitch: 3.5,
-	img: '/client-assets/drop-and-fusion/keycap_2.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_2.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }, {
 	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
 	sfxPitch: 4,
-	img: '/client-assets/drop-and-fusion/keycap_1.png',
+	img: '/client-assets/drop-and-fusion/square_monos/keycap_1.png',
 	imgSizeX: 256,
 	imgSizeY: 256,
 	spriteScale: 1.12,
 }];
 
+const SWEETS_MONOS: FrontendMonoDefinition[] = [{
+	id: '77f724c0-88be-4aeb-8e1a-a00ed18e3844',
+	sfxPitch: 0.25,
+	img: '/client-assets/drop-and-fusion/sweets_monos/shortcake_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'f3468ef4-2e1e-4906-8795-f147f39f7e1f',
+	sfxPitch: 0.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/pancakes_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'bcb41129-6f2d-44ee-89d3-86eb2df564ba',
+	sfxPitch: 0.75,
+	img: '/client-assets/drop-and-fusion/sweets_monos/shaved_ice_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'f058e1ad-1981-409b-b3a7-302de0a43744',
+	sfxPitch: 1,
+	img: '/client-assets/drop-and-fusion/sweets_monos/soft_ice_cream_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'd22cfe38-5a3b-4b9c-a1a6-907930a3d732',
+	sfxPitch: 1.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/doughnut_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '79867083-a073-427e-ae82-07a70d9f3b4f',
+	sfxPitch: 2,
+	img: '/client-assets/drop-and-fusion/sweets_monos/custard_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '2e152a12-a567-4100-b4d4-d15d81ba47b1',
+	sfxPitch: 2.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/chocolate_bar_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '12250376-2258-4716-8eec-b3a7239461fc',
+	sfxPitch: 3,
+	img: '/client-assets/drop-and-fusion/sweets_monos/lollipop_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: '4d4f2668-4be7-44a3-aa3a-856df6e25aa6',
+	sfxPitch: 3.5,
+	img: '/client-assets/drop-and-fusion/sweets_monos/candy_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}, {
+	id: 'c9984b40-4045-44c3-b260-d47b7b4625b2',
+	sfxPitch: 4,
+	img: '/client-assets/drop-and-fusion/sweets_monos/cookie_color.svg',
+	imgSizeX: 32,
+	imgSizeY: 32,
+	spriteScale: 1.12,
+}];
+
 const props = defineProps<{
-	gameMode: 'normal' | 'square' | 'yen';
+	gameMode: 'normal' | 'square' | 'yen' | 'sweets';
 	mute: boolean;
 }>();
 
@@ -423,8 +495,17 @@ const monoDefinitions = computed(() => {
 	return props.gameMode === 'normal' ? NORAML_MONOS :
 		props.gameMode === 'square' ? SQUARE_MONOS :
 		props.gameMode === 'yen' ? YEN_MONOS :
+		props.gameMode === 'sweets' ? SWEETS_MONOS :
 		[] as never;
 });
+
+function getScoreUnit(gameMode: string) {
+	return gameMode === 'normal' ? 'pt' :
+		gameMode === 'square' ? 'pt' :
+		gameMode === 'yen' ? '円' :
+		gameMode === 'sweets' ? 'kcal' :
+		'' as never;
+}
 
 function getMonoRenderOptions(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
@@ -783,7 +864,7 @@ function getGameImageDriveFile() {
 			ctx.fillStyle = '#000';
 			ctx.font = '16px bold sans-serif';
 			ctx.textBaseline = 'top';
-			ctx.fillText(`SCORE: ${score.value.toLocaleString()}${props.gameMode === 'yen' ? '円' : 'pt'}`, 10, 10);
+			ctx.fillText(`SCORE: ${score.value.toLocaleString()}${getScoreUnit(props.gameMode)}`, 10, 10);
 
 			ctx.globalAlpha = 0.7;
 			ctx.drawImage(logo, game.GAME_WIDTH * 0.55, 6, game.GAME_WIDTH * 0.45, game.GAME_WIDTH * 0.45 * (logo.height / logo.width));
@@ -824,7 +905,7 @@ async function share() {
 	if (!file) return;
 	os.post({
 		initialText: `#BubbleGame (${props.gameMode})
-SCORE: ${score.value.toLocaleString()}${props.gameMode === 'yen' ? '円' : 'pt'}`,
+SCORE: ${score.value.toLocaleString()}${getScoreUnit(props.gameMode)}`,
 		initialFiles: [file],
 		instant: true,
 	});
@@ -897,8 +978,9 @@ function attachGameEvents() {
 		const rect = canvasEl.value.getBoundingClientRect();
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
+		const scoreUnit = getScoreUnit(props.gameMode);
 		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (props.gameMode === 'yen' ? '円' : '') }, {}, 'end');
+		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {}, 'end');
 
 		if (nextMono) {
 			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;
@@ -1063,6 +1145,23 @@ onMounted(async () => {
 			}
 		}
 	}
+
+	/*
+const getVerticesFromSvg = async (path: string) => {
+	const svgDoc = await fetch(path)
+		.then((response) => response.text())
+		.then((svgString) => {
+			const parser = new DOMParser();
+			return parser.parseFromString(svgString, 'image/svg+xml');
+		});
+	const pathDatas = svgDoc.querySelectorAll('path');
+	if (!pathDatas) return;
+	const vertices = Array.from(pathDatas).map((pathData) => {
+		return Matter.Svg.pathToVertices(pathData);
+	});
+	return vertices;
+};
+*/
 
 	await start();
 
