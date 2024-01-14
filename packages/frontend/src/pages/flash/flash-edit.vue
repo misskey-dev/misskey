@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
 			</MkInput>
-			<MkTextarea v-model="summary">
+			<MkTextarea v-model="summary" :mfmAutocomplete="true" :mfmPreview="true">
 				<template #label>{{ i18n.ts._play.summary }}</template>
 			</MkTextarea>
 			<MkButton primary @click="selectPreset">{{ i18n.ts.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
