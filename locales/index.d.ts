@@ -1209,6 +1209,7 @@ export interface Locale {
             "section2": string;
             "section3": string;
         };
+        "askRanking": string;
     };
     "_announcement": {
         "forExistingUsers": string;

@@ -1071,7 +1071,7 @@ function attachGameEvents() {
 		}
 	});
 
-	game.addListener('gameOver', () => {
+	game.addListener('gameOver', async () => {
 		if (!props.mute) {
 			if (props.gameMode === 'yen') {
 				sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
@@ -1095,13 +1095,15 @@ function attachGameEvents() {
 		dropReady.value = false;
 		isGameOver.value = true;
 
-		misskeyApi('bubble-game/register', {
-			seed,
-			score: score.value,
-			gameMode: props.gameMode,
-			gameVersion: game.GAME_VERSION,
-			logs: DropAndFusionGame.serializeLogs(logs),
-		});
+		if(os.confirm({title: i18n.ts._bubbleGame.askRanking, okText: i18n.ts.yes, cancelText: i18n.ts.no})){
+			misskeyApi('bubble-game/register', {
+				seed,
+				score: score.value,
+				gameMode: props.gameMode,
+				gameVersion: game.GAME_VERSION,
+				logs: DropAndFusionGame.serializeLogs(logs),
+			});
+		}
 
 		if (props.gameMode === 'yen') {
 			yenTotal.value = (yenTotal.value ?? 0) + score.value;
