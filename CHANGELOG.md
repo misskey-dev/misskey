@@ -28,6 +28,7 @@
 - Enhance: AiScriptを0.17.0に更新　[CHANGELOG](https://github.com/aiscript-dev/aiscript/blob/bb89d132b633a622d3cb0eff0d0cc7e476c0cfdd/CHANGELOG.md)
   - 配列の範囲外・非整数のインデックスへの代入が完全禁止になるので注意
 - Enhance: 絵文字ピッカー・オートコンプリートで、完全一致した絵文字を優先的に表示するように
+- Enhance: Playの説明欄にMFMを使えるように
 - Fix: ネイティブモードの絵文字がモノクロにならないように
 - Fix: v2023.12.0で追加された「モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能」が管理画面上で正しく表示されていない問題を修正
 - Fix: AiScriptの`readline`関数が不正な値を返すことがある問題のv2023.12.0時点での修正がPlay以外に適用されていないのを修正
@@ -41,6 +42,7 @@
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
 - Fix: `notes/create`で、`text`が空白文字のみで構成されているか`null`であって、かつ`text`だけであるリクエストに対するレスポンスが400になるように変更
 - Fix: `notes/create`で、`text`が空白文字のみで構成されていてかつリノート、ファイルまたは投票を含んでいるリクエストに対するレスポンスの`text`が`""`から`null`になるように変更
+- Fix: ipv4とipv6の両方が利用可能な環境でallowedPrivateNetworksが設定されていた場合プライベートipの検証ができていなかった問題を修正
 
 ## 2023.12.2
 
