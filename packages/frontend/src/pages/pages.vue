@@ -36,17 +36,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
-let tab = $ref('featured');
+const tab = ref('featured');
 
 const featuredPagesPagination = {
 	endpoint: 'pages/featured' as const,
@@ -65,13 +65,13 @@ function create() {
 	router.push('/pages/new');
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'featured',
 	title: i18n.ts._pages.featured,
 	icon: 'ti ti-flare',

@@ -30,12 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 
 const props = defineProps<{
@@ -44,7 +43,7 @@ const props = defineProps<{
 
 const isLong = shouldCollapsed(props.note, []);
 
-const collapsed = $ref(isLong);
+const collapsed = ref(isLong);
 </script>
 
 <style lang="scss" module>

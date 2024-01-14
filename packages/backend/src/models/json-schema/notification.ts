@@ -42,13 +42,9 @@ export const packedNotificationSchema = {
 			type: 'string',
 			optional: true, nullable: true,
 		},
-		choice: {
-			type: 'number',
-			optional: true, nullable: true,
-		},
-		invitation: {
-			type: 'object',
-			optional: true, nullable: true,
+		achievement: {
+			type: 'string',
+			optional: true, nullable: false,
 		},
 		body: {
 			type: 'string',
@@ -81,14 +77,14 @@ export const packedNotificationSchema = {
 				required: ['user', 'reaction'],
 			},
 		},
-	},
-	users: {
-		type: 'array',
-		optional: true, nullable: true,
-		items: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: false, nullable: false,
+		users: {
+			type: 'array',
+			optional: true, nullable: true,
+			items: {
+				type: 'object',
+				ref: 'UserLite',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;

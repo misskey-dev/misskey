@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.5.1]
+        node-version: [20.10.0]
 
     steps:
     - uses: actions/checkout@v4.1.1
@@ -28,7 +28,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

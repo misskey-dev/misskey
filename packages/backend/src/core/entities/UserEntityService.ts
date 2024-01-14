@@ -332,13 +332,13 @@ export class UserEntityService implements OnModuleInit {
 		const profile = opts.detail ? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id })) : null;
 
 		const followingCount = profile == null ? null :
-			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
-			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
+			(profile.followingVisibility === 'public') || isMe ? user.followingCount :
+			(profile.followingVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
 			null;
 
 		const followersCount = profile == null ? null :
-			(profile.ffVisibility === 'public') || isMe ? user.followersCount :
-			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
+			(profile.followersVisibility === 'public') || isMe ? user.followersCount :
+			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
 		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
@@ -362,6 +362,8 @@ export class UserEntityService implements OnModuleInit {
 				id: ud.id,
 				angle: ud.angle || undefined,
 				flipH: ud.flipH || undefined,
+				offsetX: ud.offsetX || undefined,
+				offsetY: ud.offsetY || undefined,
 				url: decorations.find(d => d.id === ud.id)!.url,
 			}))) : [],
 			isBot: user.isBot,
@@ -415,7 +417,8 @@ export class UserEntityService implements OnModuleInit {
 				pinnedPageId: profile!.pinnedPageId,
 				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,
 				publicReactions: profile!.publicReactions,
-				ffVisibility: profile!.ffVisibility,
+				followersVisibility: profile!.followersVisibility,
+				followingVisibility: profile!.followingVisibility,
 				twoFactorEnabled: profile!.twoFactorEnabled,
 				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled
@@ -473,6 +476,7 @@ export class UserEntityService implements OnModuleInit {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				unreadNotificationsCount: notificationsInfo?.unreadCount,
 				mutedWords: profile!.mutedWords,
+				hardMutedWords: profile!.hardMutedWords,
 				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: [], // 後方互換性のため
 				notificationRecieveConfig: profile!.notificationRecieveConfig,

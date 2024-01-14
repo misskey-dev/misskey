@@ -18,6 +18,7 @@ export const meta = {
 
 	requireCredential: false,
 	requireAdmin: true,
+	kind: 'read:admin:roles',
 
 	errors: {
 		noSuchRole: {
@@ -26,6 +27,20 @@ export const meta = {
 			id: '224eff5e-2488-4b18-b3e7-f50d94421648',
 		},
 	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				id: { type: 'string', format: 'misskey:id' },
+				createdAt: { type: 'string', format: 'date-time' },
+				user: { ref: 'UserDetailed' },
+				expiresAt: { type: 'string', format: 'date-time', nullable: true },
+			},
+			required: ['id', 'createdAt', 'user'],
+		},
+	}
 } as const;
 
 export const paramDef = {
@@ -78,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: assign.id,
 				createdAt: this.idService.parse(assign.id).date.toISOString(),
 				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
-				expiresAt: assign.expiresAt,
+				expiresAt: assign.expiresAt?.toISOString() ?? null,
 			})));
 		});
 	}

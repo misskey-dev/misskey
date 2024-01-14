@@ -4,7 +4,24 @@
  */
 
 const fs = require('fs');
-const meta = require('../package.json');
+const packageJsonPath = __dirname + '/../package.json'
 
-fs.mkdirSync(__dirname + '/../built', { recursive: true });
-fs.writeFileSync(__dirname + '/../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+function build() {
+	try {
+		const json = fs.readFileSync(packageJsonPath, 'utf-8')
+		const meta = JSON.parse(json);
+		fs.mkdirSync(__dirname + '/../built', { recursive: true });
+		fs.writeFileSync(__dirname + '/../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+	} catch (e) {
+		console.error(e)
+	}
+}
+
+build();
+
+if (process.argv.includes("--watch")) {
+	fs.watch(packageJsonPath, (event, filename) => {
+		console.log(`update ${filename} ...`)
+		build()
+	})
+}

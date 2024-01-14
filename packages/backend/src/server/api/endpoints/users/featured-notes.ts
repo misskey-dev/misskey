@@ -9,6 +9,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -46,8 +48,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const userIdsWhoBlockingMe = me ? await this.cacheService.userBlockedCache.fetch(me.id) : new Set<string>();
+
+			// early return if me is blocked by requesting user
+			if (userIdsWhoBlockingMe.has(ps.userId)) {
+				return [];
+			}
+
 			let noteIds = await this.featuredService.getPerUserNotesRanking(ps.userId, 50);
 
 			noteIds.sort((a, b) => a > b ? -1 : 1);
@@ -60,6 +70,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
+			const [
+				userIdsWhoMeMuting,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+			]) : [new Set<string>()];
+
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
@@ -69,10 +85,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			const notes = await query.getMany();
-			notes.sort((a, b) => a.id > b.id ? -1 : 1);
+			const notes = (await query.getMany()).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
 
-			// TODO: ミュート等考慮
+				return true;
+			});
+
+			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

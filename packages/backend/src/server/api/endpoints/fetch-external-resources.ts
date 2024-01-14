@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
+	secure: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -30,6 +31,18 @@ export const meta = {
 			message: 'Hash did not match.',
 			code: 'EXT_RESOURCE_HASH_DIDNT_MATCH',
 			id: '693ba8ba-b486-40df-a174-72f8279b56a4',
+		},
+	},
+
+	res: {
+		type: 'object',
+		properties: {
+			type: {
+				type: 'string',
+			},
+			data: {
+				type: 'string',
+			},
 		},
 	},
 } as const;

@@ -24,6 +24,8 @@ import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-d
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
+import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
+import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
@@ -206,6 +208,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportClips from './endpoints/i/export-clips.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
@@ -361,6 +364,8 @@ import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
+import * as ep___bubbleGame_register from './endpoints/bubble-game/register.js';
+import * as ep___bubbleGame_ranking from './endpoints/bubble-game/ranking.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -383,6 +388,8 @@ const $admin_avatarDecorations_delete: Provider = { provide: 'ep:admin/avatar-de
 const $admin_avatarDecorations_list: Provider = { provide: 'ep:admin/avatar-decorations/list', useClass: ep___admin_avatarDecorations_list.default };
 const $admin_avatarDecorations_update: Provider = { provide: 'ep:admin/avatar-decorations/update', useClass: ep___admin_avatarDecorations_update.default };
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
+const $admin_unsetUserAvatar: Provider = { provide: 'ep:admin/unset-user-avatar', useClass: ep___admin_unsetUserAvatar.default };
+const $admin_unsetUserBanner: Provider = { provide: 'ep:admin/unset-user-banner', useClass: ep___admin_unsetUserBanner.default };
 const $admin_drive_cleanRemoteFiles: Provider = { provide: 'ep:admin/drive/clean-remote-files', useClass: ep___admin_drive_cleanRemoteFiles.default };
 const $admin_drive_cleanup: Provider = { provide: 'ep:admin/drive/cleanup', useClass: ep___admin_drive_cleanup.default };
 const $admin_drive_files: Provider = { provide: 'ep:admin/drive/files', useClass: ep___admin_drive_files.default };
@@ -565,6 +572,7 @@ const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass:
 const $i_exportFollowing: Provider = { provide: 'ep:i/export-following', useClass: ep___i_exportFollowing.default };
 const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_exportMute.default };
 const $i_exportNotes: Provider = { provide: 'ep:i/export-notes', useClass: ep___i_exportNotes.default };
+const $i_exportClips: Provider = { provide: 'ep:i/export-clips', useClass: ep___i_exportClips.default };
 const $i_exportFavorites: Provider = { provide: 'ep:i/export-favorites', useClass: ep___i_exportFavorites.default };
 const $i_exportUserLists: Provider = { provide: 'ep:i/export-user-lists', useClass: ep___i_exportUserLists.default };
 const $i_exportAntennas: Provider = { provide: 'ep:i/export-antennas', useClass: ep___i_exportAntennas.default };
@@ -720,6 +728,8 @@ const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass:
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $fetchExternalResources: Provider = { provide: 'ep:fetch-external-resources', useClass: ep___fetchExternalResources.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
+const $bubbleGame_register: Provider = { provide: 'ep:bubble-game/register', useClass: ep___bubbleGame_register.default };
+const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useClass: ep___bubbleGame_ranking.default };
 
 @Module({
 	imports: [
@@ -746,6 +756,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_avatarDecorations_list,
 		$admin_avatarDecorations_update,
 		$admin_deleteAllFilesOfAUser,
+		$admin_unsetUserAvatar,
+		$admin_unsetUserBanner,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
 		$admin_drive_files,
@@ -928,6 +940,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportClips,
 		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_exportAntennas,
@@ -1083,6 +1096,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$fetchRss,
 		$fetchExternalResources,
 		$retention,
+		$bubbleGame_register,
+		$bubbleGame_ranking,
 	],
 	exports: [
 		$admin_meta,
@@ -1103,6 +1118,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_avatarDecorations_list,
 		$admin_avatarDecorations_update,
 		$admin_deleteAllFilesOfAUser,
+		$admin_unsetUserAvatar,
+		$admin_unsetUserBanner,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
 		$admin_drive_files,
@@ -1285,6 +1302,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportClips,
 		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_exportAntennas,
@@ -1437,6 +1455,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$fetchRss,
 		$fetchExternalResources,
 		$retention,
+		$bubbleGame_register,
+		$bubbleGame_ranking,
 	],
 })
 export class EndpointsModule {}

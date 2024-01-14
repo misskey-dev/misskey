@@ -108,6 +108,18 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableMcaptcha: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			mcaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			mcaptchaInstanceUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableRecaptcha: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -164,19 +176,33 @@ export const meta = {
 					type: 'object',
 					optional: false, nullable: false,
 					properties: {
-						place: {
+						id: {
 							type: 'string',
 							optional: false, nullable: false,
+							format: 'id',
+							example: 'xxxxxxxxxx',
 						},
 						url: {
 							type: 'string',
 							optional: false, nullable: false,
 							format: 'url',
 						},
+						place: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+						ratio: {
+							type: 'number',
+							optional: false, nullable: false,
+						},
 						imageUrl: {
 							type: 'string',
 							optional: false, nullable: false,
 							format: 'url',
+						},
+						dayOfWeek: {
+							type: 'integer',
+							optional: false, nullable: false,
 						},
 					},
 				},
@@ -250,6 +276,33 @@ export const meta = {
 					},
 				},
 			},
+			backgroundImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			impressumUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			logoImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			privacyPolicyUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			serverRules: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
+			themeColor: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	},
 } as const;
@@ -310,6 +363,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableMcaptcha: instance.enableMcaptcha,
+				mcaptchaSiteKey: instance.mcaptchaSitekey,
+				mcaptchaInstanceUrl: instance.mcaptchaInstanceUrl,
 				enableRecaptcha: instance.enableRecaptcha,
 				recaptchaSiteKey: instance.recaptchaSiteKey,
 				enableTurnstile: instance.enableTurnstile,

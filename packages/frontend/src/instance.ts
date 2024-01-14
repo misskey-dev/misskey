@@ -5,7 +5,7 @@
 
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
-import { api } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
 
@@ -15,7 +15,7 @@ const cached = miLocalStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(cached ? JSON.parse(cached) : {
+export const instance: Misskey.entities.MetaResponse = reactive(cached ? JSON.parse(cached) : {
 	// TODO: set default values
 });
 
@@ -26,7 +26,7 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
 export async function fetchInstance() {
-	const meta = await api('meta', {
+	const meta = await misskeyApi('meta', {
 		detail: false,
 	});
 

@@ -11,7 +11,7 @@
 			"decoratorMetadata": true
 		},
 		"experimental": {
-			"keepImportAttributes": true
+			"keepImportAssertions": true
 		},
 		"baseUrl": "src",
 		"paths": {
