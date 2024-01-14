@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header v-if="!inline" :class="$style.codeBlockHeader">
-	<button>
+	<button class="_button">
 		<i class="ti ti-dots"></i>
 	</button>
 </header>
@@ -44,7 +44,7 @@ const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'))
 
 <style module lang="scss">
 .codeBlockHeader {
-	text-align: left;
+	text-align: right;
 }
 
 .codeInlineRoot {
