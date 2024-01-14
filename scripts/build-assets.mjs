@@ -9,9 +9,11 @@ import cssnano from 'cssnano';
 import postcss from 'postcss';
 import * as terser from 'terser';
 
-import locales from '../locales/index.js';
+import { build as buildLocales } from '../locales/index.js';
 import generateDTS from '../locales/generateDTS.js';
 import meta from '../package.json' assert { type: "json" };
+
+let locales = buildLocales();
 
 async function copyFrontendFonts() {
   await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
@@ -89,10 +91,13 @@ async function build() {
 await build();
 
 if (process.argv.includes("--watch")) {
-  const watcher = fs.watch('./packages', { recursive: true });
-  for await (const event of watcher) {
-    if (/^[a-z]+\/src/.test(event.filename)) {
-      await build();
-    }
-  }
+	const watcher = fs.watch('./locales');
+	for await (const event of watcher) {
+		const filename = event.filename?.replaceAll('\\', '/');
+		if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
+			console.log(`update ${filename} ...`)
+			locales = buildLocales();
+			await copyFrontendLocales()
+		}
+	}
 }

@@ -9,7 +9,7 @@ import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import rename from 'rename';
 import sharp from 'sharp';
-import { sharpBmp } from 'sharp-read-bmp';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import type { Config } from '@/config.js';
 import type { MiDriveFile, DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -61,6 +61,9 @@ export class FileServerService {
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
+			if (process.env.NODE_ENV === 'development') {
+				reply.header('Access-Control-Allow-Origin', '*');
+			}
 			done();
 		});
 

@@ -6,31 +6,48 @@
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
 
-export function convertSchemaToOpenApiSchema(schema: Schema) {
-	const res: any = schema;
+export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 'res') {
+	// optional, nullable, refはスキーマ定義に含まれないので分離しておく
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { optional, nullable, ref, ...res }: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {
-		res.required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
+		if (type === 'res') {
+			const required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
+			if (required.length > 0) {
+			// 空配列は許可されない
+				res.required = required;
+			}
+		}
 
 		for (const k of Object.keys(schema.properties)) {
-			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k]);
+			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k], type);
 		}
 	}
 
 	if (schema.type === 'array' && schema.items) {
-		res.items = convertSchemaToOpenApiSchema(schema.items);
+		res.items = convertSchemaToOpenApiSchema(schema.items, type);
 	}
 
-	if (schema.anyOf) res.anyOf = schema.anyOf.map(convertSchemaToOpenApiSchema);
-	if (schema.oneOf) res.oneOf = schema.oneOf.map(convertSchemaToOpenApiSchema);
-	if (schema.allOf) res.allOf = schema.allOf.map(convertSchemaToOpenApiSchema);
+	for (const o of ['anyOf', 'oneOf', 'allOf'] as const) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		if (o in schema) res[o] = schema[o]!.map(schema => convertSchemaToOpenApiSchema(schema, type));
+	}
 
-	if (schema.ref) {
+	if (type === 'res' && schema.ref) {
 		const $ref = `#/components/schemas/${schema.ref}`;
 		if (schema.nullable || schema.optional) {
 			res.allOf = [{ $ref }];
 		} else {
 			res.$ref = $ref;
+		}
+	}
+
+	if (schema.nullable) {
+		if (Array.isArray(schema.type) && !schema.type.includes('null')) {
+			res.type.push('null');
+		} else if (typeof schema.type === 'string') {
+			res.type = [res.type, 'null'];
 		}
 	}
 
@@ -66,6 +83,6 @@ export const schemas = {
 	},
 
 	...Object.fromEntries(
-		Object.entries(refs).map(([key, schema]) => [key, convertSchemaToOpenApiSchema(schema)]),
+		Object.entries(refs).map(([key, schema]) => [key, convertSchemaToOpenApiSchema(schema, 'res')]),
 	),
 };

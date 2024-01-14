@@ -15,6 +15,7 @@ export type PageMetadata = {
 	icon?: string | null;
 	avatar?: Misskey.entities.User | null;
 	userName?: Misskey.entities.User | null;
+	needWideArea?: boolean;
 };
 
 export function definePageMetadata(metadata: PageMetadata | null | Ref<PageMetadata | null> | ComputedRef<PageMetadata | null>): void {

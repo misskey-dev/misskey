@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineAsyncComponent, inject, onMounted, watch } from 'vue';
+import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@/os.js';
@@ -42,12 +42,12 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-const children = $ref(deepClone(props.modelValue.children ?? []));
+const children = ref(deepClone(props.modelValue.children ?? []));
 
-watch($$(children), () => {
+watch(children, () => {
 	emit('update:modelValue', {
 		...props.modelValue,
-		children,
+		children: children.value,
 	});
 }, {
 	deep: true,
@@ -75,7 +75,7 @@ async function add() {
 	if (canceled) return;
 
 	const id = uuid();
-	children.push({ id, type });
+	children.value.push({ id, type });
 }
 
 onMounted(() => {

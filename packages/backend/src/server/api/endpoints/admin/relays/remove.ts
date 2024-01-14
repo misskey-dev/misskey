@@ -12,6 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:relays',
 } as const;
 
 export const paramDef = {

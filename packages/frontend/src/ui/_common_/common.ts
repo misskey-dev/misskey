@@ -27,6 +27,11 @@ function toolsMenuItems(): MenuItem[] {
 		to: '/clicker',
 		text: '🍮👈',
 		icon: 'ti ti-cookie',
+	}, {
+		type: 'link',
+		to: '/bubble-game',
+		text: i18n.ts.bubbleGame,
+		icon: 'ti ti-apple',
 	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
 		to: '/custom-emojis-manager',
@@ -64,7 +69,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.charts,
 		icon: 'ti ti-chart-line',
 		to: '/about#charts',
-	}, null, {
+	}, { type: 'divider' }, {
 		type: 'link',
 		text: i18n.ts.ads,
 		icon: 'ti ti-ad',
@@ -79,35 +84,35 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.tools,
 		icon: 'ti ti-tool',
 		children: toolsMenuItems(),
-	}, null, (instance.impressumUrl) ? {
+	}, { type: 'divider' }, (instance.impressumUrl) ? {
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
 		action: () => {
-			window.open(instance.impressumUrl, '_blank');
+			window.open(instance.impressumUrl, '_blank', 'noopener');
 		},
 	} : undefined, (instance.tosUrl) ? {
 		text: i18n.ts.termsOfService,
 		icon: 'ti ti-notebook',
 		action: () => {
-			window.open(instance.tosUrl, '_blank');
+			window.open(instance.tosUrl, '_blank', 'noopener');
 		},
 	} : undefined, (instance.privacyPolicyUrl) ? {
 		text: i18n.ts.privacyPolicy,
 		icon: 'ti ti-shield-lock',
 		action: () => {
-			window.open(instance.privacyPolicyUrl, '_blank');
-		},
+			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
+		},AD
 	} : undefined, true ? {
 		text: i18n.ts.toServiceArt,
 		icon: 'ti ti-help-circle',
 		action: () => {
 			window.open('https://service.misskey.art', '_blank');
 		},
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : null, {
+	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.html', '_blank');
+			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
 	}, ($i) ? {
 		text: i18n.ts._initialTutorial.launchTutorial,

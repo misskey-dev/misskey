@@ -172,13 +172,33 @@ export const paramDef = {
 		},
 	},
 	// (re)note with text, files and poll are optional
-	anyOf: [
-		{ required: ['text'] },
-		{ required: ['renoteId'] },
-		{ required: ['fileIds'] },
-		{ required: ['mediaIds'] },
-		{ required: ['poll'] },
-	],
+	if: {
+		properties: {
+			renoteId: {
+				type: 'null',
+			},
+			fileIds: {
+				type: 'null',
+			},
+			mediaIds: {
+				type: 'null',
+			},
+			poll: {
+				type: 'null',
+			},
+		},
+	},
+	then: {
+		properties: {
+			text: {
+				type: 'string',
+				minLength: 1,
+				maxLength: MAX_NOTE_TEXT_LENGTH,
+				pattern: '[^\\s]+',
+			},
+		},
+		required: ['text'],
+	},
 } as const;
 
 @Injectable()
@@ -262,7 +282,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (renote.channelId && renote.channelId !== ps.channelId) {
 					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
 					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
-					const renoteChannel = await this.channelsRepository.findOneById(renote.channelId);
+					const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
 					if (renoteChannel == null) {
 						// リノートしたいノートが書き込まれているチャンネルが無い
 						throw new ApiError(meta.errors.noSuchChannel);

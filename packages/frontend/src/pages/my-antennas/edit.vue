@@ -10,16 +10,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XAntenna from './editor.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache } from '@/cache';
+import { antennasCache } from '@/cache.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
-let antenna: any = $ref(null);
+const antenna = ref<Misskey.entities.Antenna | null>(null);
 
 const props = defineProps<{
 	antennaId: string
@@ -30,8 +32,8 @@ function onAntennaUpdated() {
 	router.push('/my/antennas');
 }
 
-os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
-	antenna = antennaResponse;
+misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+	antenna.value = antennaResponse;
 });
 
 definePageMetadata({

@@ -17,6 +17,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:resolve-abuse-user-report',
 } as const;
 
 export const paramDef = {

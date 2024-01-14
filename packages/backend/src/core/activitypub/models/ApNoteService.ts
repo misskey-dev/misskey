@@ -92,6 +92,10 @@ export class ApNoteService {
 			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
 		}
 
+		if (object.published && !this.idService.isSafeT(new Date(object.published).valueOf())) {
+			return new Error('invalid Note: published timestamp is malformed');
+		}
+
 		return null;
 	}
 
@@ -212,7 +216,7 @@ export class ApNoteService {
 					return { status: 'ok', res };
 				} catch (e) {
 					return {
-						status: (e instanceof StatusError && e.isClientError) ? 'permerror' : 'temperror',
+						status: (e instanceof StatusError && !e.isRetryable) ? 'permerror' : 'temperror',
 					};
 				}
 			};

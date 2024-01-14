@@ -10,8 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	class="_button"
 	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
+	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="$style.icon" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -21,13 +22,16 @@ import { computed, inject, onMounted, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import * as os from '@/os.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { $i } from '@/account.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -59,28 +63,34 @@ async function toggleReaction() {
 		});
 		if (confirm.canceled) return;
 
+		if (oldReaction !== props.reaction) {
+			sound.playMisskeySfx('reaction');
+		}
+
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count - 1));
 			return;
 		}
 
-		os.api('notes/reactions/delete', {
+		misskeyApi('notes/reactions/delete', {
 			noteId: props.note.id,
 		}).then(() => {
 			if (oldReaction !== props.reaction) {
-				os.api('notes/reactions/create', {
+				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
 					reaction: props.reaction,
 				});
 			}
 		});
 	} else {
+		sound.playMisskeySfx('reaction');
+
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
 			return;
 		}
 
-		os.api('notes/reactions/create', {
+		misskeyApi('notes/reactions/create', {
 			noteId: props.note.id,
 			reaction: props.reaction,
 		});
@@ -88,6 +98,22 @@ async function toggleReaction() {
 			claimAchievement('reactWithoutRead');
 		}
 	}
+}
+
+async function menu(ev) {
+	if (!canToggle.value) return;
+	if (!props.reaction.includes(":")) return;
+	os.popupMenu([{
+		text: i18n.ts.info,
+		icon: 'ti ti-info-circle',
+		action: async () => {
+			os.popup(MkCustomEmojiDetailedDialog, {
+				emoji: await misskeyApiGet('emoji', {
+					name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
+				}),
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 function anime() {
@@ -110,7 +136,7 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
-		const reactions = await os.apiGet('notes/reactions', {
+		const reactions = await misskeyApiGet('notes/reactions', {
 			noteId: props.note.id,
 			type: props.reaction,
 			limit: 10,
@@ -132,12 +158,14 @@ if (!mock) {
 
 <style lang="scss" module>
 .root {
-	display: inline-block;
+	display: inline-flex;
 	height: 42px;
 	margin: 2px;
 	padding: 0 6px;
 	font-size: 1.5em;
 	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
 
 	&.canToggle {
 		background: var(--buttonBg);
@@ -176,7 +204,7 @@ if (!mock) {
 	&.reacted, &.reacted:hover {
 		background: var(--accentedBg);
 		color: var(--accent);
-		box-shadow: 0 0 0px 1px var(--accent) inset;
+		box-shadow: 0 0 0 1px var(--accent) inset;
 
 		> .count {
 			color: var(--accent);
@@ -188,8 +216,9 @@ if (!mock) {
 	}
 }
 
-.icon {
-	max-width: 150px;
+.limitWidth {
+	max-width: 70px;
+	object-fit: contain;
 }
 
 .count {

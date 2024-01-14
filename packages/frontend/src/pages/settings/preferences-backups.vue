@@ -43,6 +43,7 @@ import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { useStream } from '@/stream.js';
@@ -54,22 +55,24 @@ import { miLocalStorage } from '@/local-storage.js';
 const { t, ts } = i18n;
 
 const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
+	'collapseRenotes',
 	'menu',
 	'visibility',
 	'localOnly',
 	'statusbars',
 	'widgets',
 	'tl',
+	'pinnedUserLists',
 	'overridedDeviceKind',
 	'serverDisconnectedBehavior',
-	'collapseRenotes',
-	'showNoteActionsOnlyHover',
 	'nsfw',
+	'highlightSensitiveMedia',
 	'animation',
 	'animatedMfm',
 	'advancedMfm',
 	'loadRawImages',
 	'imageNewTab',
+	'dataSaver',
 	'disableShowingAnimatedImages',
 	'emojiStyle',
 	'disableDrawer',
@@ -81,17 +84,36 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'useReactionPickerForContextMenu',
 	'showGapBetweenNotesInTimeline',
 	'instanceTicker',
-	'reactionPickerSize',
-	'reactionPickerWidth',
-	'reactionPickerHeight',
-	'reactionPickerUseDrawerForMobile',
+	'emojiPickerScale',
+	'emojiPickerWidth',
+	'emojiPickerHeight',
+	'emojiPickerUseDrawerForMobile',
 	'defaultSideView',
 	'menuDisplay',
 	'reportError',
 	'squareAvatars',
+	'showAvatarDecorations',
 	'numberOfPageCache',
+	'showNoteActionsOnlyHover',
+	'showClipButtonInNoteFooter',
+	'reactionsDisplaySize',
+	'forceShowAds',
 	'aiChanMode',
+	'devMode',
 	'mediaListWithOneImageAppearance',
+	'notificationPosition',
+	'notificationStackAxis',
+	'enableCondensedLineForAcct',
+	'keepScreenOn',
+	'defaultWithReplies',
+	'disableStreamingTimeline',
+	'useGroupedNotifications',
+	'sound_masterVolume',
+	'sound_note',
+	'sound_noteMy',
+	'sound_notification',
+	'sound_antenna',
+	'sound_channel',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',
@@ -123,7 +145,7 @@ const connection = $i && useStream().useChannel('main');
 
 const profiles = ref<Record<string, Profile> | null>(null);
 
-os.api('i/registry/get-all', { scope })
+misskeyApi('i/registry/get-all', { scope })
 	.then(res => {
 		profiles.value = res || {};
 	});
@@ -385,7 +407,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles.value[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles.value[profileId].name}.json`,
-	}, null, {
+	}, { type: 'divider' }, {
 		text: ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(profileId),
@@ -393,7 +415,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		text: ts._preferencesBackups.save,
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
-	}, null, {
+	}, { type: 'divider' }, {
 		text: ts.delete,
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),

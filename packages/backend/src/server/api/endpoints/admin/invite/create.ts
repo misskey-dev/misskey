@@ -18,6 +18,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:invite-codes',
 
 	errors: {
 		invalidDateTime: {
@@ -33,13 +34,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			properties: {
-				code: {
-					type: 'string',
-					optional: false, nullable: false,
-					example: 'GR6S02ERUA5VR',
-				},
-			},
+			ref: 'InviteCode',
 		},
 	},
 } as const;

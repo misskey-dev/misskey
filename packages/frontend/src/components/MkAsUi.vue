@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</div>
 	<span v-else-if="c.type === 'text'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }">{{ c.text }}</span>
-	<Mfm v-else-if="c.type === 'mfm'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }" :text="c.text"/>
+	<Mfm v-else-if="c.type === 'mfm'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }" :text="c.text" @clickEv="c.onClickEv"/>
 	<MkButton v-else-if="c.type === 'button'" :primary="c.primary" :rounded="c.rounded" :disabled="c.disabled" :small="size === 'small'" inline @click="c.onClick">{{ c.text }}</MkButton>
 	<div v-else-if="c.type === 'buttons'" class="_buttons" :style="{ justifyContent: align }">
 		<MkButton v-for="button in c.buttons" :primary="button.primary" :rounded="button.rounded" :disabled="button.disabled" inline :small="size === 'small'" @click="button.onClick">{{ button.text }}</MkButton>
@@ -43,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			fixed
 			:instant="true"
 			:initialText="c.form.text"
+			:initialCw="c.form.cw"
 		/>
 	</div>
 	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
@@ -60,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { Ref } from 'vue';
+import { Ref, ref } from 'vue';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -87,16 +88,17 @@ function g(id) {
 	return props.components.find(x => x.value.id === id).value;
 }
 
-let valueForSwitch = $ref(c.default ?? false);
+const valueForSwitch = ref(c.default ?? false);
 
 function onSwitchUpdate(v) {
-	valueForSwitch = v;
+	valueForSwitch.value = v;
 	if (c.onChange) c.onChange(v);
 }
 
 function openPostForm() {
 	os.post({
 		initialText: c.form.text,
+		initialCw: c.form.cw,
 		instant: true,
 	});
 }

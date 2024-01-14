@@ -8,20 +8,8 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { inspect } from 'node:util';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { Packed } from '@/misc/json-schema.js';
-import {
-	signup,
-	post,
-	page,
-	role,
-	startServer,
-	api,
-	successfulApiCall,
-	failedApiCall,
-	uploadFile,
-} from '../utils.js';
+import { api, page, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
@@ -112,7 +100,8 @@ describe('ユーザー', () => {
 			pinnedPageId: user.pinnedPageId,
 			pinnedPage: user.pinnedPage,
 			publicReactions: user.publicReactions,
-			ffVisibility: user.ffVisibility,
+			followingVisibility: user.followingVisibility,
+			followersVisibility: user.followersVisibility,
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
@@ -168,6 +157,7 @@ describe('ユーザー', () => {
 			hasPendingReceivedFollowRequest: user.hasPendingReceivedFollowRequest,
 			unreadAnnouncements: user.unreadAnnouncements,
 			mutedWords: user.mutedWords,
+			hardMutedWords: user.hardMutedWords,
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
 			notificationRecieveConfig: user.notificationRecieveConfig,
@@ -182,8 +172,6 @@ describe('ユーザー', () => {
 			} : {}),
 		});
 	};
-
-	let app: INestApplicationContext;
 
 	let root: User;
 	let alice: User;
@@ -227,10 +215,6 @@ describe('ユーザー', () => {
 	let userRnMutedByAlice: User;
 	let userFollowRequesting: User;
 	let userFollowRequested: User;
-
-	beforeAll(async () => {
-		app = await startServer();
-	}, 1000 * 60 * 2);
 
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
@@ -319,10 +303,6 @@ describe('ユーザー', () => {
 		await api('following/create', { userId: userFollowRequested.id }, userFollowRequesting);
 	}, 1000 * 60 * 10);
 
-	afterAll(async () => {
-		await app.close();
-	});
-
 	beforeEach(async () => {
 		alice = {
 			...alice,
@@ -385,7 +365,8 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.pinnedPageId, null);
 		assert.strictEqual(response.pinnedPage, null);
 		assert.strictEqual(response.publicReactions, true);
-		assert.strictEqual(response.ffVisibility, 'public');
+		assert.strictEqual(response.followingVisibility, 'public');
+		assert.strictEqual(response.followersVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
 		assert.strictEqual(response.securityKeys, false);
@@ -494,9 +475,12 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ alwaysMarkNsfw: false }) },
 		{ parameters: (): object => ({ autoSensitive: true }) },
 		{ parameters: (): object => ({ autoSensitive: false }) },
-		{ parameters: (): object => ({ ffVisibility: 'private' }) },
-		{ parameters: (): object => ({ ffVisibility: 'followers' }) },
-		{ parameters: (): object => ({ ffVisibility: 'public' }) },
+		{ parameters: (): object => ({ followingVisibility: 'private' }) },
+		{ parameters: (): object => ({ followingVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followingVisibility: 'public' }) },
+		{ parameters: (): object => ({ followersVisibility: 'private' }) },
+		{ parameters: (): object => ({ followersVisibility: 'followers' }) },
+		{ parameters: (): object => ({ followersVisibility: 'public' }) },
 		{ parameters: (): object => ({ mutedWords: Array(19).fill(['xxxxx']) }) },
 		{ parameters: (): object => ({ mutedWords: [['x'.repeat(194)]] }) },
 		{ parameters: (): object => ({ mutedWords: [] }) },

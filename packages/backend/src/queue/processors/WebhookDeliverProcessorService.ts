@@ -71,7 +71,7 @@ export class WebhookDeliverProcessorService {
 
 			if (res instanceof StatusError) {
 				// 4xx
-				if (res.isClientError) {
+				if (!res.isRetryable) {
 					throw new Bull.UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
 				}
 

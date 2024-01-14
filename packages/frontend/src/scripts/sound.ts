@@ -3,13 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { SoundStore } from '@/store.js';
 import { defaultStore } from '@/store.js';
 
-const ctx = new AudioContext();
+let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
+let canPlay = true;
 
 export const soundsTypes = [
+	// 音声なし
 	null,
+
+	// ドライブの音声
+	'_driveFile_',
+
+	// プリインストール
 	'syuilo/n-aec',
 	'syuilo/n-aec-4va',
 	'syuilo/n-aec-4vb',
@@ -38,6 +46,8 @@ export const soundsTypes = [
 	'syuilo/waon',
 	'syuilo/popo',
 	'syuilo/triple',
+	'syuilo/bubble1',
+	'syuilo/bubble2',
 	'syuilo/poi1',
 	'syuilo/poi2',
 	'syuilo/pirori',
@@ -61,46 +71,163 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba7',
 ] as const;
 
-export async function getAudio(file: string, useCache = true) {
-	if (useCache && cache.has(file)) {
-		return cache.get(file)!;
+export const operationTypes = [
+	'noteMy',
+	'note',
+	'antenna',
+	'channel',
+	'notification',
+	'reaction',
+] as const;
+
+/** サウンドの種類 */
+export type SoundType = typeof soundsTypes[number];
+
+/** スプライトの種類 */
+export type OperationType = typeof operationTypes[number];
+
+/**
+ * 音声を読み込む
+ * @param url url
+ * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
+ */
+export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (ctx == null) {
+		ctx = new AudioContext();
+	}
+	if (options?.useCache ?? true) {
+		if (cache.has(url)) {
+			return cache.get(url) as AudioBuffer;
+		}
 	}
 
-	const response = await fetch(`/client-assets/sounds/${file}.mp3`);
+	let response: Response;
+
+	try {
+		response = await fetch(url);
+	} catch (err) {
+		return;
+	}
+
 	const arrayBuffer = await response.arrayBuffer();
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
-	if (useCache) {
-		cache.set(file, audioBuffer);
+	if (options?.useCache ?? true) {
+		cache.set(url, audioBuffer);
 	}
 
 	return audioBuffer;
 }
 
-export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioElement {
-	const masterVolume = defaultStore.state.sound_masterVolume;
-	audio.volume = masterVolume - ((1 - volume) * masterVolume);
-	return audio;
+/**
+ * 既定のスプライトを再生する
+ * @param type スプライトの種類を指定
+ */
+export function playMisskeySfx(operationType: OperationType) {
+	const sound = defaultStore.state[`sound_${operationType}`];
+	if (sound.type == null || !canPlay) return;
+
+	canPlay = false;
+	playMisskeySfxFile(sound).finally(() => {
+		// ごく短時間に音が重複しないように
+		setTimeout(() => {
+			canPlay = true;
+		}, 25);
+	});
 }
 
-export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
-	const sound = defaultStore.state[`sound_${type}`];
-	if (_DEV_) console.log('play', type, sound);
-	if (sound.type == null) return;
-	playFile(sound.type, sound.volume);
-}
-
-export async function playFile(file: string, volume: number) {
-	const masterVolume = defaultStore.state.sound_masterVolume;
-	if (masterVolume === 0 || volume === 0) {
+/**
+ * サウンド設定形式で指定された音声を再生する
+ * @param soundStore サウンド設定
+ */
+export async function playMisskeySfxFile(soundStore: SoundStore) {
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return;
 	}
+	const masterVolume = defaultStore.state.sound_masterVolume;
+	if (isMute() || masterVolume === 0 || soundStore.volume === 0) {
+		return;
+	}
+	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
+	const buffer = await loadAudio(url);
+	if (!buffer) return;
+	const volume = soundStore.volume * masterVolume;
+	createSourceNode(buffer, { volume }).soundSource.start();
+}
+
+export async function playUrl(url: string, opts: {
+	volume?: number;
+	pan?: number;
+	playbackRate?: number;
+}) {
+	if (opts.volume === 0) {
+		return;
+	}
+	const buffer = await loadAudio(url);
+	if (!buffer) return;
+	createSourceNode(buffer, opts).soundSource.start();
+}
+
+export function createSourceNode(buffer: AudioBuffer, opts: {
+	volume?: number;
+	pan?: number;
+	playbackRate?: number;
+}): {
+	soundSource: AudioBufferSourceNode;
+	panNode: StereoPannerNode;
+	gainNode: GainNode;
+} {
+	const panNode = ctx.createStereoPanner();
+	panNode.pan.value = opts.pan ?? 0;
 
 	const gainNode = ctx.createGain();
-	gainNode.gain.value = masterVolume * volume;
+
+	gainNode.gain.value = opts.volume ?? 1;
 
 	const soundSource = ctx.createBufferSource();
-	soundSource.buffer = await getAudio(file);
-	soundSource.connect(gainNode).connect(ctx.destination);
-	soundSource.start();
+	soundSource.buffer = buffer;
+	soundSource.playbackRate.value = opts.playbackRate ?? 1;
+	soundSource
+		.connect(panNode)
+		.connect(gainNode)
+		.connect(ctx.destination);
+
+	return { soundSource, panNode, gainNode };
+}
+
+/**
+ * 音声の長さをミリ秒で取得する
+ * @param file ファイルのURL（ドライブIDではない）
+ */
+export async function getSoundDuration(file: string): Promise<number> {
+	const audioEl = document.createElement('audio');
+	audioEl.src = file;
+	return new Promise((resolve) => {
+		const si = setInterval(() => {
+			if (audioEl.readyState > 0) {
+				resolve(audioEl.duration * 1000);
+				clearInterval(si);
+				audioEl.remove();
+			}
+		}, 100);
+	});
+}
+
+/**
+ * ミュートすべきかどうかを判断する
+ */
+export function isMute(): boolean {
+	if (defaultStore.state.sound_notUseSound) {
+		// サウンドを出力しない
+		return true;
+	}
+
+	// noinspection RedundantIfStatementJS
+	if (defaultStore.state.sound_useSoundOnlyWhenActive && document.visibilityState === 'hidden') {
+		// ブラウザがアクティブな時のみサウンドを出力する
+		return true;
+	}
+
+	return false;
 }

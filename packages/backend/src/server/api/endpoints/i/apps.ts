@@ -13,6 +13,37 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+				name: {
+					type: 'string',
+				},
+				createdAt: {
+					type: 'string',
+					format: 'date-time',
+				},
+				lastUsedAt: {
+					type: 'string',
+					format: 'date-time',
+				},
+				permission: {
+					type: 'array',
+					uniqueItems: true,
+					items: {
+						type: 'string'
+					},
+				}
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -50,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: token.id,
 				name: token.name ?? token.app?.name,
 				createdAt: this.idService.parse(token.id).date.toISOString(),
-				lastUsedAt: token.lastUsedAt,
+				lastUsedAt: token.lastUsedAt?.toISOString(),
 				permission: token.permission,
 			})));
 		});
