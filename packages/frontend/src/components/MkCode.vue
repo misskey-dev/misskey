@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <header v-if="!inline" :class="$style.codeBlockHeader">
 	<button :class="$style.headerButton" class="_button" @click="copy">
-		<i class="ti ti-dots"></i>
+		<i class="ti ti-copy"></i>
 	</button>
 </header>
 <Suspense>
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 	<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
 		<div :class="$style.codePlaceholderContainer">
-			<div><i class="ti ti-copy"></i> {{ i18n.ts.code }}</div>
+			<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
 			<div>{{ i18n.ts.clickToShow }}</div>
 		</div>
 	</button>
