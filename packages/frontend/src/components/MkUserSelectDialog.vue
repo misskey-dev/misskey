@@ -80,9 +80,9 @@ const props = defineProps<{
 
 const username = ref('');
 const host = ref('');
-const users = ref<Misskey.entities.User[]>([]);
-const recentUsers = ref<Misskey.entities.User[]>([]);
-const selected = ref<Misskey.entities.User | null>(null);
+const users = ref<Misskey.entities.UserLite[]>([]);
+const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
+const selected = ref<Misskey.entities.UserLite | null>(null);
 const dialogEl = ref();
 
 const search = () => {
@@ -103,15 +103,10 @@ const search = () => {
 const ok = async () => {
 	if (selected.value == null) return;
 
-	// isUserDetailed
-	if ('url' in selected.value) {
-		emit('ok', selected.value);
-	} else {
-		const user = await misskeyApi('users/show', {
-			userId: selected.value.id,
-		});
-		emit('ok', user);
-	}
+	const user = await misskeyApi('users/show', {
+		userId: selected.value.id,
+	});
+	emit('ok', user);
 
 	dialogEl.value.close();
 
