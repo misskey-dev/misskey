@@ -14,6 +14,8 @@ export interface Locale {
     "forgotPassword": string;
     "fetchingAsApObject": string;
     "ok": string;
+    "setDefaultProfileConfirm": string;
+    "emojiPickerProfile": string;
     "notificationIndicator": string;
     "hanntenn": string;
     "hanntennInfo": string;
@@ -1767,6 +1769,7 @@ export interface Locale {
         };
         "_options": {
             "gtlAvailable": string;
+            "emojiPickerProfileLimit": string;
             "ltlAvailable": string;
             "canPublicNote": string;
             "canEditNote": string;

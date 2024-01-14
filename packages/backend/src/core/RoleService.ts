@@ -59,6 +59,7 @@ export type RolePolicies = {
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
+	emojiPickerProfileLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -74,7 +75,6 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageCustomEmojis: false,
 	canRequestCustomEmojis: false,
 	canManageAvatarDecorations: false,
-	canRequestCustomEmojis: false,
 	canSearchNotes: false,
 	canUseTranslator: true,
 	canHideAds: false,
@@ -90,6 +90,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
+	emojiPickerProfileLimit: 2,
 };
 
 @Injectable()
@@ -355,6 +356,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+			emojiPickerProfileLimit: calc('emojiPickerProfileLimit', vs => Math.max(...vs)),
 		};
 	}
 

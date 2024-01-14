@@ -72,6 +72,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+              <MkFolder v-if="matchQuery([i18n.ts._role._options.emojiPickerProfileLimit, 'pickerProfileDefault'])">
+                  <template #label>{{ i18n.ts._role._options.emojiPickerProfileLimit }}</template>
+                  <template #suffix>{{ policies.emojiPickerProfileLimit }}</template>
+                  <MkInput v-model="policies.emojiPickerProfileLimit" type="number">
+                  </MkInput>
+              </MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimit, 'inviteLimit'])">
 							<template #label>{{ i18n.ts._role._options.inviteLimit }}</template>
 							<template #suffix>{{ policies.inviteLimit }}</template>

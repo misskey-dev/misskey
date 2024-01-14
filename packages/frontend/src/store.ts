@@ -58,11 +58,10 @@ export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
-export const bannerDark='https://files.prismisskey.space/misskey/e088c6d1-b07f-4312-8d41-fee2f64071e9.png'
-export const bannerLight ='https://files.prismisskey.space/misskey/85500d2f-41a9-48ff-a737-65d6fdf74604.png'
-export const iconDark='https://files.prismisskey.space/misskey/484efc68-de41-4786-b2b6-e5085c31c2c4.webp'
-export const iconLight='https://files.prismisskey.space/misskey/c3d722fe-379f-4c85-9414-90c232d53237.webp'
-
+export const bannerDark = 'https://files.prismisskey.space/misskey/e088c6d1-b07f-4312-8d41-fee2f64071e9.png';
+export const bannerLight = 'https://files.prismisskey.space/misskey/85500d2f-41a9-48ff-a737-65d6fdf74604.png';
+export const iconDark = 'https://files.prismisskey.space/misskey/484efc68-de41-4786-b2b6-e5085c31c2c4.webp';
+export const iconLight = 'https://files.prismisskey.space/misskey/c3d722fe-379f-4c85-9414-90c232d53237.webp';
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -128,6 +127,74 @@ export const defaultStore = markRaw(new Storage('base', {
 	pinnedEmojis: {
 		where: 'account',
 		default: [],
+	},
+	reactions1: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis1: {
+		where: 'account',
+		default: [],
+	},
+	reactions2: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis2: {
+		where: 'account',
+		default: [],
+	},
+	reactions3: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis3: {
+		where: 'account',
+		default: [],
+	},
+	reactions4: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis4: {
+		where: 'account',
+		default: [],
+	},
+	reactions5: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	pinnedEmojis5: {
+		where: 'account',
+		default: [],
+	},
+	pickerProfileName: {
+		where: 'account',
+		default: 'default',
+	},
+	pickerProfileName1: {
+		where: 'account',
+		default: '1',
+	},
+	pickerProfileName2: {
+		where: 'account',
+		default: '2',
+	},
+	pickerProfileName3: {
+		where: 'account',
+		default: '3',
+	},
+	pickerProfileName4: {
+		where: 'account',
+		default: '4',
+	},
+	pickerProfileName5: {
+		where: 'account',
+		default: '5',
+	},
+	pickerProfileDefault: {
+		where: 'account',
+		default: 1,
 	},
 	reactionAcceptance: {
 		where: 'account',
@@ -296,19 +363,19 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	gamingType: {
 		where: 'device',
-    default: 'dark',
+		default: 'dark',
 	},
 	indicatorCounterToggle: {
 		where: 'device',
 		default: 'true',
 	},
-	bannerUrl:{
+	bannerUrl: {
 		where: 'device',
-		default: bannerDark
+		default: bannerDark,
 	},
-	iconUrl:{
+	iconUrl: {
 		where: 'device',
-		default: iconDark
+		default: iconDark,
 	},
 	instanceTicker: {
 		where: 'device',
@@ -334,9 +401,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: [] as string[],
 	},
-	enablehanntenn:{
-		where:'device',
-		default: false
+	enablehanntenn: {
+		where: 'device',
+		default: false,
 	},
 	recentlyUsedUsers: {
 		where: 'device',
@@ -378,39 +445,39 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 3,
 	},
-	specifiedColor:{
+	specifiedColor: {
 		where: 'device',
 		default: '#FFFF64',
 	},
-	followerColor:{
+	followerColor: {
 		where: 'device',
 		default: '#FF00FF',
 	},
-	homeColor:{
+	homeColor: {
 		where: 'device',
 		default: '#00FFFF',
 	},
-	localOnlyColor:{
-		where:'device',
-		default: '#2b2c41'
+	localOnlyColor: {
+		where: 'device',
+		default: '#2b2c41',
 	},
 	numberOfGamingSpeed: {
 		where: 'device',
 		default: 44,
 	},
-	onlyAndWithSave:{
+	onlyAndWithSave: {
 		where: 'device',
 		default: false,
 	},
-	onlyFiles:{
+	onlyFiles: {
 		where: 'device',
 		default: false,
 	},
-	withReplies:{
+	withReplies: {
 		where: 'device',
 		default: true,
 	},
-	withRenotes:{
+	withRenotes: {
 		where: 'device',
 		default: true,
 	},
@@ -422,15 +489,15 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	showMediaTimeline:{
+	showMediaTimeline: {
 		where: 'device',
 		default: true,
 	},
-	showGlobalTimeline:{
+	showGlobalTimeline: {
 		where: 'device',
 		default: true,
 	},
-	showVisibilityColor:{
+	showVisibilityColor: {
 		where: 'device',
 		default: false,
 	},
@@ -556,7 +623,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
 }));
-
 
 // TODO: 他のタブと永続化されたstateを同期
 
