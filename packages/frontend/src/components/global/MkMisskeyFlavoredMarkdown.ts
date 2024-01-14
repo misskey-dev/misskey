@@ -64,6 +64,11 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
 
+	const validColor = (c: unknown): string | null => {
+		if (typeof c !== 'string') return null;
+		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
+	};
+
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
 
 	/**
@@ -242,15 +247,29 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						break;
 					}
 					case 'fg': {
-						let color = token.props.args.color;
-						if (typeof color !== 'string' || !/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						let color = validColor(token.props.args.color);
+						color = color ?? 'f00';
 						style = `color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
 					case 'bg': {
-						let color = token.props.args.color;
-						if (typeof color !== 'string' || !/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						let color = validColor(token.props.args.color);
+						color = color ?? 'f00';
 						style = `background-color: #${color}; overflow-wrap: anywhere;`;
+						break;
+					}
+					case 'border': {
+						let color = validColor(token.props.args.color);
+						color = color ? `#${color}` : 'var(--accent)';
+						let b_style = token.props.args.style;
+						if (
+							typeof b_style !== 'string' ||
+							!['hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset']
+								.includes(b_style)
+						) b_style = 'solid';
+						const width = safeParseFloat(token.props.args.width) ?? 1;
+						const radius = safeParseFloat(token.props.args.radius) ?? 0;
+						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px`;
 						break;
 					}
 					case 'ruby': {
