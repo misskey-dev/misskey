@@ -16,7 +16,7 @@ export function deepClone<T extends Cloneable>(x: T): T {
 		if (Array.isArray(x)) return x.map(deepClone) as T;
 		const obj = {} as Record<string, Cloneable>;
 		for (const [k, v] of Object.entries(x)) {
-			obj[k] = deepClone(v);
+			if (v !== undefined) obj[k] = deepClone(v);
 		}
 		return obj as T;
 	} else {
