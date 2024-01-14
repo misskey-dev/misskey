@@ -4,6 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<header v-if="!inline" :class="$style.codeBlockHeader">
+	<button>
+		<i class="ti ti-dots"></i>
+	</button>
+</header>
 <Suspense>
 	<template #fallback>
 		<MkLoading v-if="!inline ?? true"/>
@@ -38,6 +43,10 @@ const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'))
 </script>
 
 <style module lang="scss">
+.codeBlockHeader {
+	text-align: left;
+}
+
 .codeInlineRoot {
 	display: inline-block;
 	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
