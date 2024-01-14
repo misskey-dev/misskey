@@ -52,7 +52,7 @@ function copy() {
 <style module lang="scss">
 .codeBlockHeader {
 	text-align: right;
-	&.headerButton {
+	.headerButton {
 		margin: 0;
 		padding: 8px;
 		opacity: 0.7;
