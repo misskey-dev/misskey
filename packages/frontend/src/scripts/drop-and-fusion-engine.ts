@@ -14,6 +14,7 @@ export type Mono = {
 	sizeY: number;
 	shape: 'circle' | 'rectangle' | 'custom';
 	vertices?: Matter.Vector[][];
+	verticesSize?: number;
 	score: number;
 	dropCandidate: boolean;
 };
@@ -280,47 +281,439 @@ const SQUARE_MONOS: Mono[] = [{
 	dropCandidate: true,
 }];
 
-const SWEETS_BASE_SIZE = 30;
-// TODO: custom shape vertices
+const SWEETS_BASE_SIZE = 40;
 const SWEETS_MONOS: Mono[] = [{
 	id: '77f724c0-88be-4aeb-8e1a-a00ed18e3844',
 	level: 10,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 512,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 14,
+				'y': 2,
+			},
+			{
+				'x': 2,
+				'y': 13,
+			},
+			{
+				'x': 2,
+				'y': 31,
+			},
+			{
+				'x': 30,
+				'y': 23,
+			},
+			{
+				'x': 30,
+				'y': 7,
+			},
+			{
+				'x': 29,
+				'y': 6,
+			},
+			{
+				'x': 20,
+				'y': 4,
+			},
+			{
+				'x': 17,
+				'y': 3,
+			},
+			{
+				'x': 16,
+				'y': 2,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 400,
 	dropCandidate: false,
 }, {
 	id: 'f3468ef4-2e1e-4906-8795-f147f39f7e1f',
 	level: 9,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 256,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 15,
+				'y': 2,
+			},
+			{
+				'x': 14,
+				'y': 3,
+			},
+			{
+				'x': 8,
+				'y': 4,
+			},
+			{
+				'x': 6,
+				'y': 5,
+			},
+			{
+				'x': 4,
+				'y': 8,
+			},
+			{
+				'x': 4,
+				'y': 15,
+			},
+			{
+				'x': 2,
+				'y': 19,
+			},
+			{
+				'x': 2,
+				'y': 22.36,
+			},
+			{
+				'x': 3,
+				'y': 25,
+			},
+			{
+				'x': 5,
+				'y': 28,
+			},
+			{
+				'x': 10,
+				'y': 30,
+			},
+			{
+				'x': 22,
+				'y': 30,
+			},
+			{
+				'x': 27,
+				'y': 28,
+			},
+			{
+				'x': 29,
+				'y': 25,
+			},
+			{
+				'x': 30,
+				'y': 22,
+			},
+			{
+				'x': 30,
+				'y': 19,
+			},
+			{
+				'x': 28,
+				'y': 15,
+			},
+			{
+				'x': 28,
+				'y': 8,
+			},
+			{
+				'x': 26,
+				'y': 5,
+			},
+			{
+				'x': 24,
+				'y': 4,
+			},
+			{
+				'x': 18,
+				'y': 3,
+			},
+			{
+				'x': 17,
+				'y': 2,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 380,
 	dropCandidate: false,
 }, {
 	id: 'bcb41129-6f2d-44ee-89d3-86eb2df564ba',
 	level: 8,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 128,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 15,
+				'y': 2,
+			},
+			{
+				'x': 11,
+				'y': 3,
+			},
+			{
+				'x': 8,
+				'y': 6,
+			},
+			{
+				'x': 7,
+				'y': 8,
+			},
+			{
+				'x': 6,
+				'y': 11,
+			},
+			{
+				'x': 6,
+				'y': 13,
+			},
+			{
+				'x': 7,
+				'y': 16,
+			},
+			{
+				'x': 8,
+				'y': 18,
+			},
+			{
+				'x': 15,
+				'y': 30,
+			},
+			{
+				'x': 17,
+				'y': 30,
+			},
+			{
+				'x': 24,
+				'y': 18,
+			},
+			{
+				'x': 25,
+				'y': 16,
+			},
+			{
+				'x': 26,
+				'y': 13,
+			},
+			{
+				'x': 26,
+				'y': 11,
+			},
+			{
+				'x': 25,
+				'y': 8,
+			},
+			{
+				'x': 24,
+				'y': 6,
+			},
+			{
+				'x': 21,
+				'y': 3,
+			},
+			{
+				'x': 17,
+				'y': 2,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 300,
 	dropCandidate: false,
 }, {
 	id: 'f058e1ad-1981-409b-b3a7-302de0a43744',
 	level: 7,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 64,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 17,
+				'y': 2.541,
+			},
+			{
+				'x': 14,
+				'y': 5.402,
+			},
+			{
+				'x': 10,
+				'y': 7,
+			},
+			{
+				'x': 10,
+				'y': 10.367,
+			},
+			{
+				'x': 8,
+				'y': 11,
+			},
+			{
+				'x': 8,
+				'y': 14,
+			},
+			{
+				'x': 5.781,
+				'y': 16.265,
+			},
+			{
+				'x': 6.594,
+				'y': 19.627,
+			},
+			{
+				'x': 9.414,
+				'y': 21,
+			},
+			{
+				'x': 12,
+				'y': 29.988,
+			},
+			{
+				'x': 21,
+				'y': 29.988,
+			},
+			{
+				'x': 22.016,
+				'y': 22.629,
+			},
+			{
+				'x': 23,
+				'y': 21.772,
+			},
+			{
+				'x': 23,
+				'y': 19.202,
+			},
+			{
+				'x': 25.783,
+				'y': 17.473,
+			},
+			{
+				'x': 25.783,
+				'y': 14.727,
+			},
+			{
+				'x': 24,
+				'y': 13.173,
+			},
+			{
+				'x': 24,
+				'y': 10.367,
+			},
+			{
+				'x': 22,
+				'y': 9.233,
+			},
+			{
+				'x': 22,
+				'y': 6.454,
+			},
+			{
+				'x': 18,
+				'y': 5,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 300,
 	dropCandidate: false,
 }, {
 	id: 'd22cfe38-5a3b-4b9c-a1a6-907930a3d732',
 	level: 6,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 32,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 15,
+				'y': 2,
+			},
+			{
+				'x': 11,
+				'y': 3,
+			},
+			{
+				'x': 8,
+				'y': 5,
+			},
+			{
+				'x': 7,
+				'y': 6,
+			},
+			{
+				'x': 5,
+				'y': 9,
+			},
+			{
+				'x': 4,
+				'y': 12,
+			},
+			{
+				'x': 4,
+				'y': 20,
+			},
+			{
+				'x': 5,
+				'y': 23,
+			},
+			{
+				'x': 7,
+				'y': 26,
+			},
+			{
+				'x': 11,
+				'y': 29,
+			},
+			{
+				'x': 14,
+				'y': 30,
+			},
+			{
+				'x': 18,
+				'y': 30,
+			},
+			{
+				'x': 21,
+				'y': 29,
+			},
+			{
+				'x': 25,
+				'y': 26,
+			},
+			{
+				'x': 27,
+				'y': 23,
+			},
+			{
+				'x': 28,
+				'y': 20,
+			},
+			{
+				'x': 28,
+				'y': 12,
+			},
+			{
+				'x': 27,
+				'y': 9,
+			},
+			{
+				'x': 25,
+				'y': 6,
+			},
+			{
+				'x': 24,
+				'y': 5,
+			},
+			{
+				'x': 21,
+				'y': 3,
+			},
+			{
+				'x': 17,
+				'y': 2,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 250,
 	dropCandidate: false,
 }, {
 	id: '79867083-a073-427e-ae82-07a70d9f3b4f',
@@ -331,56 +724,163 @@ const SWEETS_MONOS: Mono[] = [{
 	vertices: [
 		[
 			{
-				'x': 8,
+				'x': 9,
 				'y': 15,
 			},
 			{
-				'x': 24,
+				'x': 23,
 				'y': 15,
-			},
-			{
-				'x': 26,
-				'y': 26,
 			},
 			{
 				'x': 30,
-				'y': 26,
+				'y': 27,
 			},
 			{
-				'x': 24.7,
+				'x': 25.7,
 				'y': 30,
 			},
 			{
-				'x': 7.34,
+				'x': 6.34,
 				'y': 30,
 			},
 			{
 				'x': 2,
-				'y': 26,
-			},
-			{
-				'x': 6,
-				'y': 26,
+				'y': 27,
 			},
 		],
 	],
-	score: 16,
+	verticesSize: 32,
+	score: 200,
 	dropCandidate: true,
 }, {
 	id: '2e152a12-a567-4100-b4d4-d15d81ba47b1',
 	level: 4,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25,
-	shape: 'circle',
-	score: 8,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 12,
+				'y': 2,
+			},
+			{
+				'x': 2,
+				'y': 12,
+			},
+			{
+				'x': 2,
+				'y': 14,
+			},
+			{
+				'x': 18,
+				'y': 30,
+			},
+			{
+				'x': 20,
+				'y': 30,
+			},
+			{
+				'x': 30,
+				'y': 20,
+			},
+			{
+				'x': 30,
+				'y': 18,
+			},
+			{
+				'x': 14,
+				'y': 2,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 200,
 	dropCandidate: true,
 }, {
 	id: '12250376-2258-4716-8eec-b3a7239461fc',
 	level: 3,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25,
 	sizeY: SWEETS_BASE_SIZE * 1.25 * 1.25,
-	shape: 'circle',
-	score: 4,
+	shape: 'custom',
+	vertices: [
+		[
+			{
+				'x': 12,
+				'y': 2,
+			},
+			{
+				'x': 7,
+				'y': 3,
+			},
+			{
+				'x': 3,
+				'y': 7,
+			},
+			{
+				'x': 2,
+				'y': 12,
+			},
+			{
+				'x': 3,
+				'y': 16,
+			},
+			{
+				'x': 5,
+				'y': 19,
+			},
+			{
+				'x': 8,
+				'y': 21,
+			},
+			{
+				'x': 12,
+				'y': 22,
+			},
+			{
+				'x': 18,
+				'y': 21,
+			},
+			{
+				'x': 27,
+				'y': 30,
+			},
+			{
+				'x': 30,
+				'y': 30,
+			},
+			{
+				'x': 30,
+				'y': 27,
+			},
+			{
+				'x': 21,
+				'y': 18,
+			},
+			{
+				'x': 22,
+				'y': 14.25,
+			},
+			{
+				'x': 22,
+				'y': 11,
+			},
+			{
+				'x': 21,
+				'y': 8,
+			},
+			{
+				'x': 19,
+				'y': 5,
+			},
+			{
+				'x': 16.5,
+				'y': 3,
+			},
+		],
+	],
+	verticesSize: 32,
+	score: 120,
 	dropCandidate: true,
 }, {
 	id: '4d4f2668-4be7-44a3-aa3a-856df6e25aa6',
@@ -392,14 +892,14 @@ const SWEETS_MONOS: Mono[] = [{
 		[
 			{
 				'x': 12,
-				'y': 1.9180000000000001,
+				'y': 1.9,
 			},
 			{
 				'x': 4,
 				'y': 4,
 			},
 			{
-				'x': 2.016,
+				'x': 2,
 				'y': 12,
 			},
 			{
@@ -419,7 +919,7 @@ const SWEETS_MONOS: Mono[] = [{
 				'y': 25.372,
 			},
 			{
-				'x': 16.008,
+				'x': 16,
 				'y': 26,
 			},
 			{
@@ -455,7 +955,7 @@ const SWEETS_MONOS: Mono[] = [{
 				'y': 7,
 			},
 			{
-				'x': 16.008,
+				'x': 16,
 				'y': 6,
 			},
 			{
@@ -464,7 +964,8 @@ const SWEETS_MONOS: Mono[] = [{
 			},
 		],
 	],
-	score: 2,
+	verticesSize: 32,
+	score: 20,
 	dropCandidate: true,
 }, {
 	id: 'c9984b40-4045-44c3-b260-d47b7b4625b2',
@@ -472,7 +973,7 @@ const SWEETS_MONOS: Mono[] = [{
 	sizeX: SWEETS_BASE_SIZE,
 	sizeY: SWEETS_BASE_SIZE,
 	shape: 'circle',
-	score: 1,
+	score: 30,
 	dropCandidate: true,
 }];
 
@@ -524,7 +1025,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	private stock: { id: string; mono: Mono }[] = [];
 	private holding: { id: string; mono: Mono } | null = null;
 
-	private get monoDefinitions() {
+	public get monoDefinitions() {
 		switch (this.gameMode) {
 			case 'normal': return NORAML_MONOS;
 			case 'yen': return YEN_MONOS;
@@ -646,8 +1147,8 @@ export class DropAndFusionGame extends EventEmitter<{
 			return Matter.Bodies.rectangle(x, y, mono.sizeX, mono.sizeY, options);
 		} else if (mono.shape === 'custom') {
 			return Matter.Bodies.fromVertices(x, y, mono.vertices!.map(i => i.map(j => ({
-				x: (j.x / 32) * mono.sizeX,
-				y: (j.y / 32) * mono.sizeY,
+				x: (j.x / mono.verticesSize!) * mono.sizeX,
+				y: (j.y / mono.verticesSize!) * mono.sizeY,
 			}))), options);
 		} else {
 			throw new Error('unrecognized shape');
@@ -687,7 +1188,8 @@ export class DropAndFusionGame extends EventEmitter<{
 			this.emit('monoAdded', nextMono);
 		}
 
-		const comboBonus = this.gameMode === 'yen' ? 1 : 1 + ((this.combo - 1) / 5);
+		const hasComboBonus = this.gameMode !== 'yen' && this.gameMode !== 'sweets';
+		const comboBonus = hasComboBonus ? 1 + ((this.combo - 1) / 5) : 1;
 		const additionalScore = Math.round(currentMono.score * comboBonus);
 		this.score += additionalScore;
 
