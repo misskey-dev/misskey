@@ -331,8 +331,8 @@ const routes = [{
 	path: '/registry',
 	component: page(() => import('@/pages/registry.vue')),
 }, {
-	path: '/install-extentions',
-	component: page(() => import('@/pages/install-extentions.vue')),
+	path: '/install-extensions',
+	component: page(() => import('@/pages/install-extensions.vue')),
 	loginRequired: true,
 }, {
 	path: '/admin/user/:userId',
