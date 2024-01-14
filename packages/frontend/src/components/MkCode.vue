@@ -56,12 +56,9 @@ function copy() {
 	right: 8px;
 	opacity: 0.7;
 
-	&:not(:last-child) {
-		margin-right: 28px;
-	}
-
 	&:hover {
 		color: var(--fgHighlighted);
+		opacity: 1;
 	}
 }
 
