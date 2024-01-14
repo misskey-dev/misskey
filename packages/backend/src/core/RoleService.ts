@@ -31,7 +31,34 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
-export const DEFAULT_POLICIES = {
+export type RolePolicies = {
+	gtlAvailable: boolean;
+	ltlAvailable: boolean;
+	canPublicNote: boolean;
+	canInvite: boolean;
+	inviteLimit: number;
+	inviteLimitCycle: number;
+	inviteExpirationTime: number;
+	canManageCustomEmojis: boolean;
+	canManageAvatarDecorations: boolean;
+	canSearchNotes: boolean;
+	canUseTranslator: boolean;
+	canHideAds: boolean;
+	driveCapacityMb: number;
+	alwaysMarkNsfw: boolean;
+	pinLimit: number;
+	antennaLimit: number;
+	wordMuteLimit: number;
+	webhookLimit: number;
+	clipLimit: number;
+	noteEachClipsLimit: number;
+	userListLimit: number;
+	userEachUserListsLimit: number;
+	rateLimitFactor: number;
+	avatarDecorationLimit: number;
+};
+
+export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
@@ -57,8 +84,6 @@ export const DEFAULT_POLICIES = {
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
 };
-
-export type RolePolicies = typeof DEFAULT_POLICIES;
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown, OnModuleInit {
