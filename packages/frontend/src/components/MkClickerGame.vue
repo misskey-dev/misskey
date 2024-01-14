@@ -29,8 +29,8 @@ import { claimAchievement } from '@/scripts/achievements.js';
 
 const saveData = game.saveData;
 const puddings = computed(() => saveData.value?.puddings);
-let cps = $ref(0);
-let prevPuddings = $ref(0);
+let cps = ref(0);
+let prevPuddings = ref(0);
 
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
@@ -50,7 +50,7 @@ function onClick(ev: MouseEvent) {
 useInterval(() => {
 	const diff = saveData.value!.puddings - prevPuddings.value;
 	cps.value = diff;
-	prevPuddings = saveData.value!.puddings;
+	prevPuddings.value = saveData.value!.puddings;
 }, 1000, {
 	immediate: false,
 	afterMounted: true,

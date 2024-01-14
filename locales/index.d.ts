@@ -424,6 +424,7 @@ export interface Locale {
     "exploreFediverse": string;
     "popularTags": string;
     "userList": string;
+    "toServiceArt": string;
     "about": string;
     "aboutMisskey": string;
     "administrator": string;
@@ -1171,7 +1172,6 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
-		"toServiceArt": string;
     "avatarDecorations": string;
     "attach": string;
     "detach": string;
@@ -1868,8 +1868,8 @@ export interface Locale {
         "contributors": string;
         "allContributors": string;
         "source": string;
-				"originalSource": string;
-				"ioSource": string;
+        "originalSource": string;
+        "ioSource": string;
         "translation": string;
         "donate": string;
         "morePatrons": string;
@@ -2327,7 +2327,7 @@ export interface Locale {
     "_timelines": {
         "home": string;
         "local": string;
-				"media": string;
+        "media": string;
         "social": string;
         "global": string;
     };
