@@ -26,14 +26,12 @@ import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { Packed, KeyOf } from '@/misc/json-schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
-export type RolePolicies = Packed<'RolePolicies'>;
-
-export const DEFAULT_POLICIES: RolePolicies = {
+export const DEFAULT_POLICIES = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
@@ -59,6 +57,8 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
 };
+
+export type RolePolicies = typeof DEFAULT_POLICIES;
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown, OnModuleInit {
@@ -280,7 +280,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		const roles = await this.getUserRoles(userId);
 
-		function calc<T extends KeyOf<'RolePolicies'>>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
+		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
 			if (roles.length === 0) return basePolicies[name];
 
 			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
