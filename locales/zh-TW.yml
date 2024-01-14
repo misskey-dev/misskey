@@ -1198,6 +1198,7 @@ replay: "重播"
 replaying: "重播中"
 ranking: "排行榜"
 lastNDays: "過去 {n} 天"
+backToTitle: "回到遊戲標題頁"
 _bubbleGame:
   howToPlay: "玩法說明"
   _howToPlay:
