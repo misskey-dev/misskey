@@ -1200,6 +1200,7 @@ replay: "リプレイ"
 replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
+backToTitle: "タイトルへ"
 
 _bubbleGame:
   howToPlay: "遊び方"

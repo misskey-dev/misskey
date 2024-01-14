@@ -4,16 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800">
-	<Transition
-		:enterActiveClass="$style.transition_zoom_enterActive"
-		:leaveActiveClass="$style.transition_zoom_leaveActive"
-		:enterFromClass="$style.transition_zoom_enterFrom"
-		:leaveToClass="$style.transition_zoom_leaveTo"
-		:moveClass="$style.transition_zoom_move"
-		mode="out-in"
-	>
-		<div v-if="!gameStarted" :class="$style.root">
+<Transition
+	:enterActiveClass="$style.transition_zoom_enterActive"
+	:leaveActiveClass="$style.transition_zoom_leaveActive"
+	:enterFromClass="$style.transition_zoom_enterFrom"
+	:leaveToClass="$style.transition_zoom_leaveTo"
+	:moveClass="$style.transition_zoom_move"
+	mode="out-in"
+>
+	<MkSpacer v-if="!gameStarted" :contentMax="800">
+		<div :class="$style.root">
 			<div class="_gaps">
 				<div :class="$style.frame" style="text-align: center;">
 					<div :class="$style.frameInner">
@@ -27,6 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="normal">NORMAL</option>
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
+								<option value="sweets">SWEETS</option>
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
@@ -48,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
 									<MkUserName :user="r.user" :nowrap="true"/>
-									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} {{ gameMode === 'yen' ? '円' : 'pt' }}</b>
+									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} {{ getScoreUnit(gameMode) }}</b>
 								</div>
 							</div>
 							<div v-else>{{ i18n.ts.loading }}</div>
@@ -78,15 +79,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<div v-else>
-			<XGame :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
-		</div>
-	</Transition>
-</MkSpacer>
+	</MkSpacer>
+	<XGame v-else :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
+</Transition>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import XGame from './drop-and-fusion.game.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -95,7 +94,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
-const gameMode = ref<'normal' | 'square' | 'yen'>('normal');
+const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
 const ranking = ref(null);
@@ -103,6 +102,14 @@ const ranking = ref(null);
 watch(gameMode, async () => {
 	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });
 }, { immediate: true });
+
+function getScoreUnit(gameMode: string) {
+	return gameMode === 'normal' ? 'pt' :
+		gameMode === 'square' ? 'pt' :
+		gameMode === 'yen' ? '円' :
+		gameMode === 'sweets' ? 'kcal' :
+		'' as never;
+}
 
 async function start() {
 	gameStarted.value = true;
