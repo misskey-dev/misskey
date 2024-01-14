@@ -93,6 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>SCORE: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
 						<div>MAX CHAIN: <MkNumber :value="maxCombo"/></div>
 						<div v-if="gameMode === 'yen'">TOTAL EARNINGS: <b><MkNumber :value="yenTotal ?? score"/>円</b></div>
+						<div v-if="gameMode === 'sweets'"><b>おにぎり<MkNumber :value="score / 130"/>個分</b></div>
 					</div>
 				</div>
 				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
@@ -148,6 +149,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
 							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
 						</MkRange>
+					</div>
+				</div>
+			</div>
+
+			<div :class="$style.frame">
+				<div :class="$style.frameInner">
+					<div>FUSION RECIPE</div>
+					<div>
+						<div v-for="(mono, i) in game.monoDefinitions.sort((a, b) => a.level - b.level)" :key="mono.id" style="display: inline-block;">
+							<img :src="getTextureImageUrl(mono)" style="width: 32px; vertical-align: bottom;"/>
+							<div v-if="i < game.monoDefinitions.length - 1" style="display: inline-block; margin-left: 4px; vertical-align: bottom;"><i class="ti ti-arrow-big-right"></i></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -416,70 +429,70 @@ const SWEETS_MONOS: FrontendMonoDefinition[] = [{
 	img: '/client-assets/drop-and-fusion/sweets_monos/shortcake_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: 'f3468ef4-2e1e-4906-8795-f147f39f7e1f',
 	sfxPitch: 0.5,
 	img: '/client-assets/drop-and-fusion/sweets_monos/pancakes_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: 'bcb41129-6f2d-44ee-89d3-86eb2df564ba',
 	sfxPitch: 0.75,
 	img: '/client-assets/drop-and-fusion/sweets_monos/shaved_ice_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: 'f058e1ad-1981-409b-b3a7-302de0a43744',
 	sfxPitch: 1,
 	img: '/client-assets/drop-and-fusion/sweets_monos/soft_ice_cream_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: 'd22cfe38-5a3b-4b9c-a1a6-907930a3d732',
 	sfxPitch: 1.5,
 	img: '/client-assets/drop-and-fusion/sweets_monos/doughnut_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: '79867083-a073-427e-ae82-07a70d9f3b4f',
 	sfxPitch: 2,
 	img: '/client-assets/drop-and-fusion/sweets_monos/custard_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: '2e152a12-a567-4100-b4d4-d15d81ba47b1',
 	sfxPitch: 2.5,
 	img: '/client-assets/drop-and-fusion/sweets_monos/chocolate_bar_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: '12250376-2258-4716-8eec-b3a7239461fc',
 	sfxPitch: 3,
 	img: '/client-assets/drop-and-fusion/sweets_monos/lollipop_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: '4d4f2668-4be7-44a3-aa3a-856df6e25aa6',
 	sfxPitch: 3.5,
 	img: '/client-assets/drop-and-fusion/sweets_monos/candy_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }, {
 	id: 'c9984b40-4045-44c3-b260-d47b7b4625b2',
 	sfxPitch: 4,
 	img: '/client-assets/drop-and-fusion/sweets_monos/cookie_color.svg',
 	imgSizeX: 32,
 	imgSizeY: 32,
-	spriteScale: 1.12,
+	spriteScale: 1,
 }];
 
 const props = defineProps<{
@@ -510,11 +523,13 @@ function getScoreUnit(gameMode: string) {
 function getMonoRenderOptions(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
 	return {
+
 		sprite: {
 			texture: def.img,
 			xScale: (mono.sizeX / def.imgSizeX) * def.spriteScale,
 			yScale: (mono.sizeY / def.imgSizeY) * def.spriteScale,
 		},
+
 	};
 }
 
@@ -1147,21 +1162,25 @@ onMounted(async () => {
 	}
 
 	/*
-const getVerticesFromSvg = async (path: string) => {
-	const svgDoc = await fetch(path)
-		.then((response) => response.text())
-		.then((svgString) => {
-			const parser = new DOMParser();
-			return parser.parseFromString(svgString, 'image/svg+xml');
+	const getVerticesFromSvg = async (path: string) => {
+		const svgDoc = await fetch(path)
+			.then((response) => response.text())
+			.then((svgString) => {
+				const parser = new DOMParser();
+				return parser.parseFromString(svgString, 'image/svg+xml');
+			});
+		const pathDatas = svgDoc.querySelectorAll('path');
+		if (!pathDatas) return;
+		const vertices = Array.from(pathDatas).map((pathData) => {
+			return Matter.Svg.pathToVertices(pathData);
 		});
-	const pathDatas = svgDoc.querySelectorAll('path');
-	if (!pathDatas) return;
-	const vertices = Array.from(pathDatas).map((pathData) => {
-		return Matter.Svg.pathToVertices(pathData);
+		return vertices;
+	};
+
+	getVerticesFromSvg('/client-assets/drop-and-fusion/sweets_monos/verts/doughnut_color.svg').then((vertices) => {
+		console.log('doughnut_color', vertices);
 	});
-	return vertices;
-};
-*/
+	*/
 
 	await start();
 
