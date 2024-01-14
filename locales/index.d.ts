@@ -1171,6 +1171,7 @@ export interface Locale {
     "privacyPolicy": string;
     "privacyPolicyUrl": string;
     "tosAndPrivacyPolicy": string;
+		"toServiceArt": string;
     "avatarDecorations": string;
     "attach": string;
     "detach": string;

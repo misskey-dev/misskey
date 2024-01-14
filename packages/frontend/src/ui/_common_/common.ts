@@ -101,7 +101,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		icon: 'ti ti-shield-lock',
 		action: () => {
 			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
-		},AD
+		},
 	} : undefined, true ? {
 		text: i18n.ts.toServiceArt,
 		icon: 'ti ti-help-circle',
