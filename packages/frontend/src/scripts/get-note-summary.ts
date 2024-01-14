@@ -11,7 +11,7 @@ import { i18n } from '@/i18n.js';
  * @param {*} note (packされた)投稿
  */
 export const getNoteSummary = (note?: Misskey.entities.Note | null): string => {
-	if (!note) {
+	if (note == null) {
 		return '';
 	}
 
