@@ -40,11 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i, updateAccount } from '@/account.js';
@@ -84,15 +85,15 @@ async function read(announcement) {
 		a.isRead = true;
 		return a;
 	});
-	os.api('i/read-announcement', { announcementId: announcement.id });
+	misskeyApi('i/read-announcement', { announcementId: announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== announcement.id),
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'current',
 	title: i18n.ts.currentAnnouncements,
 	icon: 'ti ti-flare',

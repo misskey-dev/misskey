@@ -6,33 +6,22 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, post, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { api, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('API visibility', () => {
-	let app: INestApplicationContext;
-
-	beforeAll(async () => {
-		app = await startServer();
-	}, 1000 * 60 * 2);
-
-	afterAll(async () => {
-		await app.close();
-	});
-
 	describe('Note visibility', () => {
 		//#region vars
 		/** ヒロイン */
-		let alice: misskey.entities.MeSignup;
+		let alice: misskey.entities.SignupResponse;
 		/** フォロワー */
-		let follower: misskey.entities.MeSignup;
+		let follower: misskey.entities.SignupResponse;
 		/** 非フォロワー */
-		let other: misskey.entities.MeSignup;
+		let other: misskey.entities.SignupResponse;
 		/** 非フォロワーでもリプライやメンションをされた人 */
-		let target: misskey.entities.MeSignup;
+		let target: misskey.entities.SignupResponse;
 		/** specified mentionでmentionを飛ばされる人 */
-		let target2: misskey.entities.MeSignup;
+		let target2: misskey.entities.SignupResponse;
 
 		/** public-post */
 		let pub: any;

@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
@@ -29,8 +29,8 @@ import { claimAchievement } from '@/scripts/achievements.js';
 
 const saveData = game.saveData;
 const puddings = computed(() => saveData.value?.puddings);
-let cps = $ref(0);
-let prevPuddings = $ref(0);
+let cps = ref(0);
+let prevPuddings = ref(0);
 
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
@@ -48,9 +48,9 @@ function onClick(ev: MouseEvent) {
 }
 
 useInterval(() => {
-	const diff = saveData.value!.puddings - prevPuddings;
-	cps = diff;
-	prevPuddings = saveData.value!.puddings;
+	const diff = saveData.value!.puddings - prevPuddings.value;
+	cps.value = diff;
+	prevPuddings.value = saveData.value!.puddings;
 }, 1000, {
 	immediate: false,
 	afterMounted: true,
@@ -63,7 +63,7 @@ useInterval(game.save, 1000 * 5, {
 
 onMounted(async () => {
 	await game.load();
-	prevPuddings = saveData.value!.puddings;
+	prevPuddings.value = saveData.value!.puddings;
 });
 
 onUnmounted(() => {

@@ -11,20 +11,26 @@ import { miLocalStorage } from '@/local-storage.js';
 import { MenuButton } from '@/types/menu.js';
 import { del, get, set } from '@/scripts/idb-proxy.js';
 import { apiUrl } from '@/config.js';
-import { waiting, api, popup, popupMenu, success, alert } from '@/os.js';
+import { waiting, popup, popupMenu, success, alert } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-type Account = Misskey.entities.MeDetailed;
+type Account = Misskey.entities.MeDetailed & { token: string };
 
 const accountData = miLocalStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
 export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
-export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;
+
+export function signinRequired() {
+	if ($i == null) throw new Error('signin required');
+	return $i;
+}
 
 export let notesCount = $i == null ? 0 : $i.notesCount;
 export function incNotesCount() {
@@ -246,7 +252,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id));
-	const accountsPromise = api('users/show', { userIds: storedAccounts.map(x => x.id) });
+	const accountsPromise = misskeyApi('users/show', { userIds: storedAccounts.map(x => x.id) });
 
 	function createItem(account: Misskey.entities.UserDetailed) {
 		return {
@@ -284,7 +290,7 @@ export async function openAccountMenu(opts: {
 			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,
 			avatar: $i,
-		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+		}, { type: 'divider' }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent' as const,
 			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,

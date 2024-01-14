@@ -14,6 +14,36 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+				name: {
+					type: 'string',
+				},
+				callbackUrl: {
+					type: 'string',
+					nullable: true,
+				},
+				permission: {
+					type: 'array',
+					uniqueItems: true,
+					items: {
+						type: 'string'
+					},
+				},
+				isAuthorized: {
+					type: 'boolean',
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

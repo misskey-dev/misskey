@@ -8,6 +8,8 @@ import getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode/';
 import { popup } from '@/os.js';
 
+export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag';
+
 export class Autocomplete {
 	private suggestion: {
 		x: Ref<number>;
@@ -19,6 +21,7 @@ export class Autocomplete {
 	private currentType: string;
 	private textRef: Ref<string>;
 	private opening: boolean;
+	private onlyType: SuggestionType[];
 
 	private get text(): string {
 		// Use raw .value to get the latest value
@@ -35,7 +38,7 @@ export class Autocomplete {
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
-	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
+	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>, onlyType?: SuggestionType[]) {
 		//#region BIND
 		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);
@@ -46,6 +49,7 @@ export class Autocomplete {
 		this.textarea = textarea;
 		this.textRef = textRef;
 		this.opening = false;
+		this.onlyType = onlyType ?? ['user', 'hashtag', 'emoji', 'mfmTag'];
 
 		this.attach();
 	}
@@ -95,7 +99,7 @@ export class Autocomplete {
 
 		let opened = false;
 
-		if (isMention) {
+		if (isMention && this.onlyType.includes('user')) {
 			const username = text.substring(mentionIndex + 1);
 			if (username !== '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
@@ -106,7 +110,7 @@ export class Autocomplete {
 			}
 		}
 
-		if (isHashtag && !opened) {
+		if (isHashtag && !opened && this.onlyType.includes('hashtag')) {
 			const hashtag = text.substring(hashtagIndex + 1);
 			if (!hashtag.includes(' ')) {
 				this.open('hashtag', hashtag);
@@ -114,7 +118,7 @@ export class Autocomplete {
 			}
 		}
 
-		if (isEmoji && !opened) {
+		if (isEmoji && !opened && this.onlyType.includes('emoji')) {
 			const emoji = text.substring(emojiIndex + 1);
 			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);
@@ -122,7 +126,7 @@ export class Autocomplete {
 			}
 		}
 
-		if (isMfmTag && !opened) {
+		if (isMfmTag && !opened && this.onlyType.includes('mfmTag')) {
 			const mfmTag = text.substring(mfmTagIndex + 1);
 			if (!mfmTag.includes(' ')) {
 				this.open('mfmTag', mfmTag.replace('[', ''));

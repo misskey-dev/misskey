@@ -19,24 +19,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, computed } from 'vue';
 import type * as Misskey from 'misskey-js';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
-const storedAccounts = ref<any>(null);
+const storedAccounts = ref<{ id: string, token: string }[] | null>(null);
 const accounts = ref<Misskey.entities.UserDetailed[]>([]);
 
 const init = async () => {
 	getAccounts().then(accounts => {
 		storedAccounts.value = accounts.filter(x => x.id !== $i!.id);
 
-		return os.api('users/show', {
+		return misskeyApi('users/show', {
 			userIds: storedAccounts.value.map(x => x.id),
 		});
 	}).then(response => {
@@ -101,9 +102,9 @@ function switchAccountWithToken(token: string) {
 	login(token);
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.accounts,

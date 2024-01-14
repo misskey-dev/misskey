@@ -15,8 +15,8 @@ import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { FilterUnionByProperty, notificationTypes } from '@/types.js';
+import { RoleEntityService } from './RoleEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 
@@ -27,7 +27,7 @@ const NOTE_REQUIRED_GROUPED_NOTIFICATION_TYPES = new Set(['note', 'mention', 're
 export class NotificationEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private noteEntityService: NoteEntityService;
-	private customEmojiService: CustomEmojiService;
+	private roleEntityService: RoleEntityService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -43,14 +43,13 @@ export class NotificationEntityService implements OnModuleInit {
 
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,
-		//private customEmojiService: CustomEmojiService,
 	) {
 	}
 
 	onModuleInit() {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
-		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
+		this.roleEntityService = this.moduleRef.get('RoleEntityService');
 	}
 
 	@bindThis
@@ -81,6 +80,7 @@ export class NotificationEntityService implements OnModuleInit {
 					detail: false,
 				})
 		) : undefined;
+		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
 
 		return await awaitAll({
 			id: notification.id,
@@ -91,6 +91,9 @@ export class NotificationEntityService implements OnModuleInit {
 			...(noteIfNeed != null ? { note: noteIfNeed } : {}),
 			...(notification.type === 'reaction' ? {
 				reaction: notification.reaction,
+			} : {}),
+			...(notification.type === 'roleAssigned' ? {
+				role: role,
 			} : {}),
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,
@@ -198,12 +201,14 @@ export class NotificationEntityService implements OnModuleInit {
 			});
 		} else if (notification.type === 'renote:grouped') {
 			const users = await Promise.all(notification.userIds.map(userId => {
-				const user = hint?.packedUsers != null
-					? hint.packedUsers.get(userId)
-					: this.userEntityService.pack(userId!, { id: meId }, {
-						detail: false,
-					});
-				return user;
+				const packedUser = hint?.packedUsers != null ? hint.packedUsers.get(userId) : null;
+				if (packedUser) {
+					return packedUser;
+				}
+
+				return this.userEntityService.pack(userId, { id: meId }, {
+					detail: false,
+				});
 			}));
 			return await awaitAll({
 				id: notification.id,
@@ -214,6 +219,8 @@ export class NotificationEntityService implements OnModuleInit {
 			});
 		}
 
+		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId) : undefined;
+
 		return await awaitAll({
 			id: notification.id,
 			createdAt: new Date(notification.createdAt).toISOString(),
@@ -223,6 +230,9 @@ export class NotificationEntityService implements OnModuleInit {
 			...(noteIfNeed != null ? { note: noteIfNeed } : {}),
 			...(notification.type === 'reaction' ? {
 				reaction: notification.reaction,
+			} : {}),
+			...(notification.type === 'roleAssigned' ? {
+				role: role,
 			} : {}),
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,

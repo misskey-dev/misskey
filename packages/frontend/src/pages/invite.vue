@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in (items as Misskey.entities.Invite[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
+						<MkInviteCode v-for="item in (items as Misskey.entities.InviteCode[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
 					</div>
 				</template>
 			</MkPagination>
@@ -40,6 +40,7 @@ import { computed, ref, shallowRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
@@ -68,7 +69,7 @@ const resetCycle = computed<null | string>(() => {
 });
 
 async function create() {
-	const ticket = await os.api('invite/create');
+	const ticket = await misskeyApi('invite/create');
 	os.alert({
 		type: 'success',
 		title: i18n.ts.inviteCodeCreated,
@@ -87,7 +88,7 @@ function deleted(id: string) {
 }
 
 async function update() {
-	currentInviteLimit.value = (await os.api('invite/limit')).remaining;
+	currentInviteLimit.value = (await misskeyApi('invite/limit')).remaining;
 }
 
 update();

@@ -12,8 +12,17 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
-
 	secure: true,
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'Signin',
+		},
+	},
 } as const;
 
 export const paramDef = {

@@ -10,15 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import XAntenna from './editor.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/router.js';
 import { antennasCache } from '@/cache.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
-let draft = $ref({
+const draft = ref({
 	name: '',
 	src: 'all',
 	userListId: null,

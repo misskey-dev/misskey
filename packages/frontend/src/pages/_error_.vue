@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { version } from '@/config.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -42,29 +42,29 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-let loaded = $ref(false);
-let serverIsDead = $ref(false);
-let meta = $ref<Misskey.entities.LiteInstanceMetadata | null>(null);
+const loaded = ref(false);
+const serverIsDead = ref(false);
+const meta = ref<Misskey.entities.MetaResponse | null>(null);
 
-os.api('meta', {
+misskeyApi('meta', {
 	detail: false,
 }).then(res => {
-	loaded = true;
-	serverIsDead = false;
-	meta = res;
+	loaded.value = true;
+	serverIsDead.value = false;
+	meta.value = res;
 	miLocalStorage.setItem('v', res.version);
 }, () => {
-	loaded = true;
-	serverIsDead = true;
+	loaded.value = true;
+	serverIsDead.value = true;
 });
 
 function reload() {
 	unisonReload();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.error,

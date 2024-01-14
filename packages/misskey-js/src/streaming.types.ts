@@ -1,6 +1,23 @@
-import type { Antenna, CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User, UserGroup } from './entities.js';
-
-type FIXME = any;
+import {
+	Antenna,
+	DriveFile,
+	DriveFolder,
+	MeDetailed,
+	Note,
+	Notification,
+	Signin,
+	User,
+} from './autogen/models.js';
+import {
+	AnnouncementCreated,
+	EmojiAdded, EmojiDeleted,
+	EmojiUpdated,
+	PageEvent,
+	QueueStats,
+	QueueStatsLog,
+	ServerStats,
+	ServerStatsLog,
+} from './entities.js';
 
 export type Channels = {
 	main: {
@@ -22,16 +39,11 @@ export type Channels = {
 			readAllUnreadMentions: () => void;
 			unreadSpecifiedNote: (payload: Note['id']) => void;
 			readAllUnreadSpecifiedNotes: () => void;
-			readAllMessagingMessages: () => void;
-			messagingMessage: (payload: MessagingMessage) => void;
-			unreadMessagingMessage: (payload: MessagingMessage) => void;
 			readAllAntennas: () => void;
 			unreadAntenna: (payload: Antenna) => void;
 			readAllAnnouncements: () => void;
 			myTokenRegenerated: () => void;
-			reversiNoInvites: () => void;
-			reversiInvited: (payload: FIXME) => void;
-			signin: (payload: FIXME) => void;
+			signin: (payload: Signin) => void;
 			registryUpdated: (payload: {
 				scope?: string[];
 				key: string;
@@ -39,58 +51,116 @@ export type Channels = {
 			}) => void;
 			driveFileCreated: (payload: DriveFile) => void;
 			readAntenna: (payload: Antenna) => void;
+			receiveFollowRequest: (payload: User) => void;
+			announcementCreated: (payload: AnnouncementCreated) => void;
 		};
 		receives: null;
 	};
 	homeTimeline: {
-		params: null;
+		params: {
+			withRenotes?: boolean;
+			withFiles?: boolean;
+		};
 		events: {
 			note: (payload: Note) => void;
 		};
 		receives: null;
 	};
 	localTimeline: {
-		params: null;
+		params: {
+			withRenotes?: boolean;
+			withReplies?: boolean;
+			withFiles?: boolean;
+		};
 		events: {
 			note: (payload: Note) => void;
 		};
 		receives: null;
 	};
 	hybridTimeline: {
-		params: null;
+		params: {
+			withRenotes?: boolean;
+			withReplies?: boolean;
+			withFiles?: boolean;
+		};
 		events: {
 			note: (payload: Note) => void;
 		};
 		receives: null;
 	};
 	globalTimeline: {
-		params: null;
+		params: {
+			withRenotes?: boolean;
+			withFiles?: boolean;
+		};
 		events: {
 			note: (payload: Note) => void;
 		};
 		receives: null;
 	};
-	messaging: {
+	userList: {
 		params: {
-			otherparty?: User['id'] | null;
-			group?: UserGroup['id'] | null;
+			listId: string;
+			withFiles?: boolean;
 		};
 		events: {
-			message: (payload: MessagingMessage) => void;
-			deleted: (payload: MessagingMessage['id']) => void;
-			read: (payload: MessagingMessage['id'][]) => void;
-			typers: (payload: User[]) => void;
+			note: (payload: Note) => void;
 		};
-		receives: {
-			read: {
-				id: MessagingMessage['id'];
-			};
+		receives: null;
+	};
+	hashtag: {
+		params: {
+			q?: string;
 		};
+		events: {
+			note: (payload: Note) => void;
+		};
+		receives: null;
+	};
+	roleTimeline: {
+		params: {
+			roleId: string;
+		};
+		events: {
+			note: (payload: Note) => void;
+		};
+		receives: null;
+	};
+	antenna: {
+		params: {
+			antennaId: string;
+		};
+		events: {
+			note: (payload: Note) => void;
+		};
+		receives: null;
+	};
+	channel: {
+		params: {
+			channelId: string;
+		};
+		events: {
+			note: (payload: Note) => void;
+		};
+		receives: null;
+	};
+	drive: {
+		params: null;
+		events: {
+			fileCreated: (payload: DriveFile) => void;
+			fileDeleted: (payload: DriveFile['id']) => void;
+			fileUpdated: (payload: DriveFile) => void;
+			folderCreated: (payload: DriveFolder) => void;
+			folderDeleted: (payload: DriveFolder['id']) => void;
+			folderUpdated: (payload: DriveFile) => void;
+		};
+		receives: null;
 	};
 	serverStats: {
 		params: null;
 		events: {
-			stats: (payload: FIXME) => void;
+			stats: (payload: ServerStats) => void;
+			statsLog: (payload: ServerStatsLog) => void;
 		};
 		receives: {
 			requestLog: {
@@ -102,7 +172,8 @@ export type Channels = {
 	queueStats: {
 		params: null;
 		events: {
-			stats: (payload: FIXME) => void;
+			stats: (payload: QueueStats) => void;
+			statsLog: (payload: QueueStatsLog) => void;
 		};
 		receives: {
 			requestLog: {
@@ -111,30 +182,39 @@ export type Channels = {
 			};
 		};
 	};
+	admin: {
+		params: null;
+		events: {
+			newAbuseUserReport: {
+				id: string;
+				targetUserId: string;
+				reporterId: string;
+				comment: string;
+			}
+		};
+		receives: null;
+	}
 };
 
 export type NoteUpdatedEvent = {
-	id: Note['id'];
 	type: 'reacted';
 	body: {
 		reaction: string;
+		emoji: string | null;
 		userId: User['id'];
 	};
 } | {
-	id: Note['id'];
 	type: 'unreacted';
 	body: {
 		reaction: string;
 		userId: User['id'];
 	};
 } | {
-	id: Note['id'];
 	type: 'deleted';
 	body: {
 		deletedAt: string;
 	};
 } | {
-	id: Note['id'];
 	type: 'pollVoted';
 	body: {
 		choice: number;
@@ -144,7 +224,8 @@ export type NoteUpdatedEvent = {
 
 export type BroadcastEvents = {
 	noteUpdated: (payload: NoteUpdatedEvent) => void;
-	emojiAdded: (payload: {
-		emoji: CustomEmoji;
-	}) => void;
+	emojiAdded: (payload: EmojiAdded) => void;
+	emojiUpdated: (payload: EmojiUpdated) => void;
+	emojiDeleted: (payload: EmojiDeleted) => void;
+	announcementCreated: (payload: AnnouncementCreated) => void;
 };
