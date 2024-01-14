@@ -1095,13 +1095,13 @@ function attachGameEvents() {
 		dropReady.value = false;
 		isGameOver.value = true;
 
-		if (
-			os.confirm({
-				title: i18n.ts._bubbleGame.askRanking,
-				okText: i18n.ts.yes,
-				cancelText: i18n.ts.no,
-			})
-		) {
+		const registerScore = await os.confirm({
+			title: i18n.ts._bubbleGame.askRanking,
+			okText: i18n.ts.yes,
+			cancelText: i18n.ts.no,
+		});
+		
+		if (registerScore) {
 			misskeyApi('bubble-game/register', {
 				seed,
 				score: score.value,
