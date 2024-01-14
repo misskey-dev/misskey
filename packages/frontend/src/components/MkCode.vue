@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header v-if="!inline" :class="$style.codeBlockHeader">
-	<button class="_button">
+	<button :class="$style.headerButton" class="_button" @click="copy">
 		<i class="ti ti-dots"></i>
 	</button>
 </header>
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 	<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
 		<div :class="$style.codePlaceholderContainer">
-			<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
+			<div><i class="ti ti-copy"></i> {{ i18n.ts.code }}</div>
 			<div>{{ i18n.ts.clickToShow }}</div>
 		</div>
 	</button>
@@ -27,9 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
+import * as os from '@/os.js';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 defineProps<{
 	code: string;
@@ -40,11 +42,29 @@ defineProps<{
 const show = ref(!defaultStore.state.dataSaver.code);
 
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
+
+function copy() {
+	copyToClipboard(props.code);
+	os.success();
+}
 </script>
 
 <style module lang="scss">
 .codeBlockHeader {
 	text-align: right;
+	&.headerButton {
+		margin: 0;
+		padding: 8px;
+		opacity: 0.7;
+
+		&:not(:last-child) {
+			margin-right: 28px;
+		}
+
+		&:hover {
+			color: var(--fgHighlighted);
+		}
+	}
 }
 
 .codeInlineRoot {
