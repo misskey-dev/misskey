@@ -55,7 +55,7 @@ function copy() {
 
 	.headerButton {
 		margin: 0;
-		padding: 0 8px;
+		padding: 4px 8px 0 8px;
 		opacity: 0.7;
 
 		&:not(:last-child) {
