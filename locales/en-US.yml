@@ -1175,6 +1175,9 @@ doReaction: "Add reaction"
 code: "Code"
 reloadRequiredToApplySettings: "Reloading is required to apply the settings."
 decorate: "Decorate"
+bubbleGame: "Bubble Game"
+sfx: "Sound Effects"
+replay: "Replay"
 lastNDays: "Last {n} days"
 _announcement:
   forExistingUsers: "Existing users only"
@@ -1546,6 +1549,10 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey Elementary Course Diploma"
       description: "Tutorial completed"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+    _bubbleGameDoubleExplodingHead:
+      title: "Double🤯"
 _role:
   new: "New role"
   edit: "Edit role"
