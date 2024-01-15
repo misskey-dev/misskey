@@ -1061,6 +1061,8 @@ limitWidthOfReaction: "リアクションの最大横幅を制限し、縮小し
 noteIdOrUrl: "ノートIDまたはURL"
 video: "動画"
 videos: "動画"
+audio: "音声"
+audioFiles: "音声"
 dataSaver: "データセーバー"
 accountMigration: "アカウントの移行"
 accountMoved: "このユーザーは新しいアカウントに移行しました："

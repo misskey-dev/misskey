@@ -13,6 +13,7 @@ import type { MiDriveFile } from './DriveFile.js';
 @Entity('note')
 @Index('IDX_NOTE_TAGS', { synchronize: false })
 @Index('IDX_NOTE_MENTIONS', { synchronize: false })
+@Index('IDX_NOTE_FILE_IDS', { synchronize: false })
 @Index('IDX_NOTE_VISIBLE_USER_IDS', { synchronize: false })
 export class MiNote {
 	@PrimaryColumn(id())
