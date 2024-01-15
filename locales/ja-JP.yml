@@ -1199,6 +1199,7 @@ replay: "リプレイ"
 replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
+backToTitle: "タイトルへ"
 playTime: "プレイ時間"
 
 _playTime:

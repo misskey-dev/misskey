@@ -1202,6 +1202,7 @@ export interface Locale {
     "replaying": string;
     "ranking": string;
     "lastNDays": string;
+    "backToTitle": string;
     "playTime": string;
     "_playTime": {
         "youPlayedForX": string;
