@@ -1064,6 +1064,8 @@ export interface Locale {
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
+    "audio": string;
+    "audioFiles": string;
     "dataSaver": string;
     "accountMigration": string;
     "accountMoved": string;
