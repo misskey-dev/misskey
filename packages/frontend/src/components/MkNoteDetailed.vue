@@ -147,7 +147,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
-			<MkPagination :pagination="repliesPagination">
+			<MkPagination :pagination="repliesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
 				</template>
@@ -181,7 +181,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-		<div v-if="tab === 'quotes'" :class="$style.tab_quotes">
+		<div v-if="tab === 'quotes'" :class="$style.tab_quotes" :disableAutoLoad="true">
 			<MkPagination :pagination="quotesPagination">
 				<template #default="{ items }">
 					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
