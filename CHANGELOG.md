@@ -20,6 +20,7 @@
 
 ### Client
 - Feat: 新しいゲームを追加
+- Feat: 音声・映像プレイヤーを追加
 - Feat: 絵文字の詳細ダイアログを追加
 - Feat: 枠線をつけるMFM`$[border.width=1,style=solid,color=fff,radius=0 ...]`を追加
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
@@ -38,6 +39,7 @@
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
 - Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
 - Enhance: クリップをエクスポートできるように
+- Enhance: `/files`のファイルに対してHTTP Rangeリクエストを行えるように
 - Enhance: `api.json`のOpenAPI Specificationを3.1.0に更新
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
 - Fix: `notes/create`で、`text`が空白文字のみで構成されているか`null`であって、かつ`text`だけであるリクエストに対するレスポンスが400になるように変更
