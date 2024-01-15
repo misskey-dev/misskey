@@ -34,12 +34,15 @@ const isSuspended = ref(false);
 const chartValues = ref<number[] | null>(null);
 
 onMounted(() => {
-	if ('isSilenced' in props.user) {
+	// isUserDetailed
+	if ('url' in props.user) {
 		isSilenced.value = props.user.isSilenced;
-	}
-
-	if ('isSuspended' in props.user) {
 		isSuspended.value = props.user.isSuspended;
+	} else {
+		misskeyApiGet('users/show', { userId: props.user.id }).then(res => {
+			isSilenced.value = res.isSilenced;
+			isSuspended.value = res.isSuspended;
+		});
 	}
 
 	if (props.withChart) {
