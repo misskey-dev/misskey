@@ -464,4 +464,3 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 		style: props.nowrap ? 'white-space: pre; word-wrap: normal; overflow: hidden; text-overflow: ellipsis;' : 'white-space: pre-wrap;',
 	}, genEl(rootAst, props.rootScale ?? 1));
 }
-																		
