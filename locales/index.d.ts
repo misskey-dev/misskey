@@ -382,6 +382,11 @@ export interface Locale {
     "enableHcaptcha": string;
     "hcaptchaSiteKey": string;
     "hcaptchaSecretKey": string;
+    "mcaptcha": string;
+    "enableMcaptcha": string;
+    "mcaptchaSiteKey": string;
+    "mcaptchaSecretKey": string;
+    "mcaptchaInstanceUrl": string;
     "recaptcha": string;
     "enableRecaptcha": string;
     "recaptchaSiteKey": string;
@@ -629,6 +634,7 @@ export interface Locale {
     "small": string;
     "generateAccessToken": string;
     "permission": string;
+    "adminPermission": string;
     "enableAll": string;
     "disableAll": string;
     "tokenRequested": string;
@@ -1055,6 +1061,8 @@ export interface Locale {
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
+    "audio": string;
+    "audioFiles": string;
     "dataSaver": string;
     "accountMigration": string;
     "accountMoved": string;
@@ -1187,8 +1195,25 @@ export interface Locale {
     "decorate": string;
     "addMfmFunction": string;
     "enableQuickAddMfmFunction": string;
+    "bubbleGame": string;
+    "sfx": string;
+    "soundWillBePlayed": string;
+    "showReplay": string;
+    "replay": string;
+    "replaying": string;
+    "ranking": string;
+    "lastNDays": string;
+    "backToTitle": string;
     "withSensitive": string;
     "userSaysSomethingSensitive": string;
+    "_bubbleGame": {
+        "howToPlay": string;
+        "_howToPlay": {
+            "section1": string;
+            "section2": string;
+            "section3": string;
+        };
+    };
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1652,6 +1677,15 @@ export interface Locale {
             "_tutorialCompleted": {
                 "title": string;
                 "description": string;
+            };
+            "_bubbleGameExplodingHead": {
+                "title": string;
+                "description": string;
+            };
+            "_bubbleGameDoubleExplodingHead": {
+                "title": string;
+                "description": string;
+                "flavor": string;
             };
         };
     };
@@ -2253,6 +2287,7 @@ export interface Locale {
     "_exportOrImport": {
         "allNotes": string;
         "favoritedNotes": string;
+        "clips": string;
         "followingList": string;
         "muteList": string;
         "blockingList": string;
