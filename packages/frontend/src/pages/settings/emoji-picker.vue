@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<MkSelect v-model="nowProfileId">
 		<template #label>{{ i18n.ts.emojiPickerProfile }}</template>
-		<option v-for="a in profileMax" :key="a" :value="a">{{ a }}. {{ defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`] }} </option>
+		<option v-for="a in profileMax" :key="a" :value="a">{{ a }}. {{ defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`] }} {{ nowDefaultProfileId === a ? `(${i18n.ts.default})`: '' }} </option>
 	</MkSelect>
 	<MkInput v-model="profileName">
 		<template #label>{{ i18n.ts.name }}</template>
@@ -170,6 +170,9 @@ const nowProfileId = ref(defaultStore.state.pickerProfileDefault);
 const $i = signinRequired();
 const profileMax = $i.policies.emojiPickerProfileLimit;
 const profileName = ref(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
+const nowDefaultProfileId = ref(defaultStore.state['pickerProfileDefault']);
+const nowDefaultProfileName = ref();
+nowDefaultProfileName.value = deepClone(defaultStore.state[`pickerProfileName${nowDefaultProfileId.value > 1 ? nowDefaultProfileId.value - 1 : ''}`]);
 pinnedEmojisForReaction.value = deepClone(defaultStore.state[`reactions${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
 pinnedEmojis.value = deepClone(defaultStore.state[`pinnedEmojis${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
 profileName.value = deepClone(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
@@ -273,6 +276,8 @@ async function setDefaultProfile() {
 		text: i18n.ts.setDefaultProfileConfirm,
 	});
 	if (canceled) return;
+	nowDefaultProfileId.value = nowProfileId.value;
+	nowDefaultProfileName.value = deepClone(defaultStore.state[`pickerProfileName${nowProfileId.value > 1 ? nowProfileId.value - 1 : ''}`]);
 	await defaultStore.set('pickerProfileDefault', nowProfileId.value);
 }
 
