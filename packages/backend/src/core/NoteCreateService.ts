@@ -716,6 +716,46 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async appendNoteVisibleUser(user: {
+		id: MiUser['id'];
+		username: MiUser['username'];
+		host: MiUser['host'];
+		isBot: MiUser['isBot'];
+		isCat: MiUser['isCat'];
+	}, note: MiNote, additionalUserId: MiLocalUser['id']) {
+		if (note.visibility !== 'specified') return;
+		if (note.visibleUserIds.includes(additionalUserId)) return;
+
+		const additionalUser = await this.usersRepository.findOneByOrFail({ id: additionalUserId, host: IsNull() });
+
+		// ノートのvisibleUserIdsを更新
+		await this.notesRepository.update(note.id, {
+			visibleUserIds: () => `array_append("visibleUserIds", '${additionalUser.id}')`,
+		});
+
+		// 新しい対象ユーザーにだけ処理が行われるようにする
+		note.visibleUserIds = [additionalUser.id];
+
+		// FanoutTimelineに追加
+		this.pushToTl(note, user);
+
+		// 未読として追加
+		this.noteReadService.insertNoteUnread(additionalUser.id, note, {
+			isSpecified: true,
+			isMentioned: false,
+		});
+
+		// ストリームに流す
+		const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
+		this.globalEventService.publishNotesStream(noteObj);
+
+		// 通知を作成
+		const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+		await this.createMentionedEvents([additionalUser], note, nm);
+		nm.notify();
+	}
+
+	@bindThis
 	private isQuote(note: Option): note is Option & { renote: MiNote } {
 		// sync with misc/is-quote.ts
 		return !!note.renote && (!!note.text || !!note.cw || (!!note.files && !!note.files.length) || !!note.poll);

@@ -5,11 +5,11 @@
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { In } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository } from '@/models/_.js';
+import type { UsersRepository, PollsRepository, EmojisRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { MiRemoteUser } from '@/models/User.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type { MiEmoji } from '@/models/Emoji.js';
@@ -45,6 +45,9 @@ export class ApNoteService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
@@ -113,7 +116,7 @@ export class ApNoteService {
 	 * Noteを作成します。
 	 */
 	@bindThis
-	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<MiNote | null> {
+	public async createNote(value: string | IObject, resolver?: Resolver, silent = false, additionalTo?: MiLocalUser['id']): Promise<MiNote | null> {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
@@ -162,6 +165,13 @@ export class ApNoteService {
 		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
 		let visibility = noteAudience.visibility;
 		const visibleUsers = noteAudience.visibleUsers;
+
+		if (additionalTo) {
+			const additionalUser = await this.usersRepository.findOneBy({ id: additionalTo, host: IsNull() });
+			if (additionalUser && !visibleUsers.some(x => x.id === additionalUser.id)) {
+				visibleUsers.push(additionalUser);
+			}
+		}
 
 		// Audience (to, cc) が指定されてなかった場合
 		if (visibility === 'specified' && visibleUsers.length === 0) {

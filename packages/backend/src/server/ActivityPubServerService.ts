@@ -100,7 +100,8 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private inbox(request: FastifyRequest, reply: FastifyReply) {
+	private async inbox(request: FastifyRequest, reply: FastifyReply) {
+		const userId = (request.params as { user: string; } | undefined)?.user;
 		let signature;
 
 		try {
@@ -162,14 +163,23 @@ export class ActivityPubServerService {
 			}
 		}
 
+		const user = userId ? await this.usersRepository.findOneBy({
+			id: userId,
+			host: IsNull(),
+		}) : null;
+
+		if (userId && user == null) {
+			reply.code(404);
+			return;
+		}
+
 		const activity = request.body as IActivity;
 		if (!activity.type || !signature.keyId) {
 			reply.code(400);
 			return;
 		}
 
-		this.queueService.inbox(activity, signature);
-
+		await this.queueService.inbox(user, activity, signature);
 		reply.code(202);
 	}
 
@@ -553,7 +563,7 @@ export class ActivityPubServerService {
 		//#region Routing
 		// inbox (limit: 64kb)
 		fastify.post('/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
-		fastify.post('/users/:user/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post<{ Params: { user: string; }; }>('/users/:user/inbox', { config: { rawBody: true }, bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
 
 		// note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {

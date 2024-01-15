@@ -180,7 +180,7 @@ export class InboxProcessorService {
 		});
 
 		// アクティビティを処理
-		await this.apInboxService.performActivity(authUser.user, activity);
+		await this.apInboxService.performActivity(authUser.user, activity, job.data.user?.id);
 		return 'ok';
 	}
 }

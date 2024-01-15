@@ -137,8 +137,9 @@ export class QueueService {
 	}
 
 	@bindThis
-	public inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
+	public inbox(user: ThinUser | null, activity: IActivity, signature: httpSignature.IParsedSignature) {
 		const data = {
+			user: user ?? undefined,
 			activity: activity,
 			signature,
 		};
