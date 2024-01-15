@@ -4,6 +4,7 @@
  */
 
 import cluster from 'node:cluster';
+import util from 'node:util';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
@@ -11,12 +12,47 @@ import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 import type { KEYWORD } from 'color-convert/conversions.js';
 
+util.inspect.defaultOptions = envOption.logJson ? {
+	showHidden: false,
+	depth: null,
+	colors: false,
+	customInspect: true,
+	showProxy: false,
+	maxArrayLength: null,
+	maxStringLength: null,
+	breakLength: Infinity,
+	compact: true,
+	sorted: false,
+	getters: false,
+	numericSeparator: false,
+} : {
+	showHidden: false,
+	depth: null,
+	colors: true,
+	customInspect: true,
+	showProxy: false,
+	maxArrayLength: null,
+	maxStringLength: null,
+	breakLength: Infinity,
+	compact: true,
+	sorted: false,
+	getters: false,
+	numericSeparator: false,
+};
+
 type Context = {
 	name: string;
 	color?: KEYWORD;
 };
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
+
+function inspect(_: string, value: any): null | string | number | boolean {
+	if (value === null || value === undefined) return null;
+	if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+	if (value instanceof Date) return value.toISOString();
+	return util.inspect(value);
+}
 
 // eslint-disable-next-line import/no-default-export
 export default class Logger {
@@ -59,7 +95,7 @@ export default class Logger {
 				important: important,
 				context: [this.context].concat(subContexts).map(d => d.name).join('.'),
 				cluster: cluster.isPrimary ? 'primary' : `worker-${cluster.worker!.id}`,
-			}));
+			}, inspect));
 			return;
 		}
 
@@ -86,7 +122,7 @@ export default class Logger {
 
 		const args: unknown[] = [important ? chalk.bold(log) : log];
 		if (data != null) {
-			args.push(data);
+			args.push(JSON.stringify(data, inspect, 2));
 		}
 
 		if (level === 'error' || level === 'warning') {

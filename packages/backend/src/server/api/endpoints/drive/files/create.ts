@@ -113,13 +113,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					requestHeaders: instance.enableIpLogging ? headers : null,
 				});
 				return await this.driveFileEntityService.pack(driveFile, me, { self: true });
-			} catch (err) {
-				this.logger.error('Failed to create drive file', { error: err });
-				if (err instanceof IdentifiableError) {
-					if (err.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
-					if (err.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
+			} catch (e) {
+				this.logger.error('Failed to create drive file', { error: e });
+				if (e instanceof IdentifiableError) {
+					if (e.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
+					if (e.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
 				}
-				throw new ApiError();
+				const err = e as Error;
+				throw new ApiError(
+					{
+						message: 'Failed to create drive file.',
+						code: 'FAILED_TO_CREATE_DRIVE_FILE',
+						id: '6708863c-6791-4487-aa01-2d682c6e7db0',
+					},
+					{
+						e: {
+							message: err.message,
+							code: err.name,
+						}
+					}
+				);
 			} finally {
 				cleanup!();
 			}

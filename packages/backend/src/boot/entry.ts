@@ -71,7 +71,7 @@ if (!envOption.quiet) {
 // Display detail of uncaught exception
 process.on('uncaughtException', err => {
 	try {
-		logger.error('Uncaught exception', { error: err });
+		logger.error(`Uncaught exception: ${err.message}`, { error: err });
 	} catch { }
 });
 

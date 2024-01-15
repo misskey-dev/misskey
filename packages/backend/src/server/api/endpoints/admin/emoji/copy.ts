@@ -77,8 +77,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// Create file
 				driveFile = await this.driveService.uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
 			} catch (e) {
-				// TODO: need to return Drive Error
-				throw new ApiError();
+				const err = e as Error;
+				throw new ApiError(
+					{
+						message: 'Failed to upload image from URL.',
+						code: 'FAILED_TO_UPLOAD_IMAGE_FROM_URL',
+						id: '5c77c4d7-0f68-48f9-8694-8453a2294840',
+					},
+					{
+						e: {
+							message: err.message,
+							code: err.name,
+						}
+					}
+				);
 			}
 
 			// Duplication Check
