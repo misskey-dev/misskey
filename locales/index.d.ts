@@ -1144,6 +1144,7 @@ export interface Locale {
     "useSecurityKey": string;
     "replies": string;
     "renotes": string;
+    "quotes": string;
     "loadReplies": string;
     "loadConversation": string;
     "pinnedList": string;
