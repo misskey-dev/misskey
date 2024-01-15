@@ -65,11 +65,12 @@ definePageMetadata(computed(() => ({
 .footer {
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+	background: var(--acrylicBg);
 	border-top: solid 0.5px var(--divider);
 	display: flex;
 }
 
 .button {
-		margin: 0 auto var(--margin) auto;
+	margin: 0 auto;
 }
 </style>
