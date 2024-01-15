@@ -421,11 +421,18 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	hemisphere: {
+	dropAndFusion: {
+		where: 'device',
+		default: {
+			bgmVolume: 0.25,
+			sfxVolume: 1,
+		},
+	},
+  hemisphere: {
 		where: 'device',
 		default: hemisphere as 'N' | 'S',
-	},
-
+  },
+  
 	sound_masterVolume: {
 		where: 'device',
 		default: 0.3,

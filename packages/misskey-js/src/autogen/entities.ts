@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-07T15:22:15.624Z
+ * generatedAt: 2024-01-13T04:31:38.775Z
  */
 
 import { operations } from './types.js';
@@ -542,3 +542,7 @@ export type FetchRssResponse = operations['fetch-rss']['responses']['200']['cont
 export type FetchExternalResourcesRequest = operations['fetch-external-resources']['requestBody']['content']['application/json'];
 export type FetchExternalResourcesResponse = operations['fetch-external-resources']['responses']['200']['content']['application/json'];
 export type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+export type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
+export type BubbleGameRegisterResponse = operations['bubble-game/register']['responses']['200']['content']['application/json'];
+export type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
+export type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
