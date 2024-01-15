@@ -149,7 +149,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="!repliesLoaded" style="padding: 16px">
 				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
 			</div>
-			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+			<MkPagination v-else :pagination="repliesPagination" :disableAutoLoad="true">
+				<template #default="{ items: replies }">
+					<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
@@ -280,7 +284,6 @@ const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
-const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i.id);
 
 const keymap = {
@@ -301,6 +304,14 @@ provide('react', (reaction: string) => {
 
 const tab = ref('replies');
 const reactionTabType = ref<string | null>(null);
+
+const repliesPagination = computed(() => ({
+	endpoint: 'notes/children',
+	limit: 10,
+	params: {
+		noteId: appearNote.value.id,
+	},
+}));
 
 const renotesPagination = computed(() => ({
 	endpoint: 'notes/renotes',
@@ -469,12 +480,6 @@ const repliesLoaded = ref(false);
 
 function loadReplies() {
 	repliesLoaded.value = true;
-	misskeyApi('notes/children', {
-		noteId: appearNote.value.id,
-		limit: 30,
-	}).then(res => {
-		replies.value = res;
-	});
 }
 
 const conversationLoaded = ref(false);
