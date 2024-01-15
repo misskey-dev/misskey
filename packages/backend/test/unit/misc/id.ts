@@ -4,13 +4,13 @@
  */
 
 import { ulid } from 'ulid';
-import { describe, test, expect } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { aidRegExp, genAid, parseAid } from '@/misc/id/aid.js';
 import { aidxRegExp, genAidx, parseAidx } from '@/misc/id/aidx.js';
 import { genMeid, meidRegExp, parseMeid } from '@/misc/id/meid.js';
 import { genMeidg, meidgRegExp, parseMeidg } from '@/misc/id/meidg.js';
 import { genObjectId, objectIdRegExp, parseObjectId } from '@/misc/id/object-id.js';
-import { ulidRegExp, parseUlid } from '@/misc/id/ulid.js';
+import { parseUlid, ulidRegExp } from '@/misc/id/ulid.js';
 
 describe('misc:id', () => {
 	test('aid', () => {

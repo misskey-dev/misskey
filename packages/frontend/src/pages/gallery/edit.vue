@@ -47,9 +47,10 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
@@ -107,7 +108,7 @@ async function del() {
 }
 
 watch(() => props.postId, () => {
-	init.value = () => props.postId ? os.api('gallery/posts/show', {
+	init.value = () => props.postId ? misskeyApi('gallery/posts/show', {
 		postId: props.postId,
 	}).then(post => {
 		files.value = post.files ?? [];

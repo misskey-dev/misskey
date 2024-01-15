@@ -379,6 +379,11 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "hCaptchaを有効にする"
 hcaptchaSiteKey: "サイトキー"
 hcaptchaSecretKey: "シークレットキー"
+mcaptcha: "mCaptcha"
+enableMcaptcha: "mCaptchaを有効にする"
+mcaptchaSiteKey: "サイトキー"
+mcaptchaSecretKey: "シークレットキー"
+mcaptchaInstanceUrl: "mCaptchaのインスタンスのURL"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "reCAPTCHAを有効にする"
 recaptchaSiteKey: "サイトキー"
@@ -626,6 +631,7 @@ medium: "中"
 small: "小"
 generateAccessToken: "アクセストークンの発行"
 permission: "権限"
+adminPermission: "管理者権限"
 enableAll: "全て有効にする"
 disableAll: "全て無効にする"
 tokenRequested: "アカウントへのアクセス許可"
@@ -669,6 +675,7 @@ useGlobalSettingDesc: "オンにすると、アカウントの通知設定が使
 other: "その他"
 regenerateLoginToken: "ログイントークンを再生成"
 regenerateLoginTokenDescription: "ログインに使用される内部トークンを再生成します。通常この操作を行う必要はありません。再生成すると、全てのデバイスでログアウトされます。"
+theKeywordWhenSearchingForCustomEmoji: "カスタム絵文字を検索する時のキーワードになります。"
 setMultipleBySeparatingWithSpace: "スペースで区切って複数設定できます。"
 fileIdOrUrl: "ファイルIDまたはURL"
 behavior: "動作"
@@ -1183,6 +1190,22 @@ seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
 addMfmFunction: "装飾を追加"
 enableQuickAddMfmFunction: "高度なMFMのピッカーを表示する"
+bubbleGame: "バブルゲーム"
+sfx: "効果音"
+soundWillBePlayed: "サウンドが再生されます"
+showReplay: "リプレイを見る"
+replay: "リプレイ"
+replaying: "リプレイ中"
+ranking: "ランキング"
+lastNDays: "直近{n}日"
+backToTitle: "タイトルへ"
+
+_bubbleGame:
+  howToPlay: "遊び方"
+  _howToPlay:
+    section1: "位置を調整してハコにモノを落とします。"
+    section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
+    section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1561,6 +1584,13 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey初心者講座 修了証"
       description: "チュートリアルを完了した"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+      description: "バブルゲームで最も大きいモノを出した"
+    _bubbleGameDoubleExplodingHead:
+      title: "ダブル🤯"
+      description: "バブルゲームで最も大きいモノを2つ同時に出した"
+      flavor: "これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて"
 
 _role:
   new: "ロールの作成"
@@ -2153,6 +2183,7 @@ _profile:
 _exportOrImport:
   allNotes: "全てのノート"
   favoritedNotes: "お気に入りにしたノート"
+  clips: "クリップ"
   followingList: "フォロー"
   muteList: "ミュート"
   blockingList: "ブロック"

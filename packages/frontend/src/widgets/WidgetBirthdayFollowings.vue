@@ -28,7 +28,7 @@ import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
@@ -87,7 +87,7 @@ const actualFetch = () => {
 	const now = new Date();
 	now.setHours(0, 0, 0, 0);
 	fetching.value = true;
-	os.api('users/following', {
+	misskeyApi('users/following', {
 		limit: 18,
 		birthday: `${now.getFullYear().toString().padStart(4, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`,
 		userId: $i.id,
