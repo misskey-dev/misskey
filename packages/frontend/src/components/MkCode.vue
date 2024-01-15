@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div :class="$style.codeRoot">
 	<button :class="$style.codeBlockCopyButton" class="_button" @click="copy">
 		<i class="ti ti-copy"></i>
 	</button>
@@ -50,6 +50,10 @@ function copy() {
 </script>
 
 <style module lang="scss">
+.codeRoot {
+	position: relative;
+}
+
 .codeBlockCopyButton {
 	position: absolute;
 	top: 8px;
