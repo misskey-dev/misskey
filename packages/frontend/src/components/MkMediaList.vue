@@ -68,7 +68,7 @@ async function calcAspectRatio() {
 	}
 
 	const ratioMax = (ratio: number) => {
-		if (!img.properties.width || !img.properties.height) return '';
+		if (img.properties.width == null || img.properties.height == null) return '';
 		return `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
 	};
 
