@@ -266,7 +266,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						) b_style = 'solid';
 						const width = parseFloat(token.props.args.width ?? '1');
 						const radius = parseFloat(token.props.args.radius ?? '0');
-						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px`;
+						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px;${token.props.args.clip ? ' overflow: clip;' : ''}`;
 						break;
 					}
 					case 'ruby': {
@@ -464,3 +464,4 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 		style: props.nowrap ? 'white-space: pre; word-wrap: normal; overflow: hidden; text-overflow: ellipsis;' : 'white-space: pre-wrap;',
 	}, genEl(rootAst, props.rootScale ?? 1));
 }
+																		
