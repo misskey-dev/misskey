@@ -870,7 +870,7 @@ function insertMention() {
 async function insertEmoji(ev: MouseEvent) {
 	textAreaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
-	if (!target) return;
+	if (target == null) return;
 	emojiPicker.show(
 		target as HTMLElement,
 		emoji => {
@@ -884,7 +884,7 @@ async function insertEmoji(ev: MouseEvent) {
 }
 
 async function insertMfmFunction(ev: MouseEvent) {
-	if (!textareaEl.value) return;
+	if (textareaEl.value == null) return;
 	mfmFunctionPicker(
 		ev.currentTarget ?? ev.target,
 		textareaEl.value,

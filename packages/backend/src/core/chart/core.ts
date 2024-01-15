@@ -99,9 +99,9 @@ export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatt
 		const key = keys.shift();
 		const nextKey = keys[0];
 
-		if (!key) return;
+		if (key == null) return;
 
-		if (!parent.properties[key]) {
+		if (parent.properties[key] == null) {
 			parent.properties[key] = nextKey ? {
 				type: 'object',
 				properties: {},

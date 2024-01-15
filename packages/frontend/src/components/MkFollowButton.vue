@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <button
 	class="_button"
-	:class="[$style.root, { [$style.wait]: wait || !targetUser, [$style.active]: targetUser?.isFollowing || targetUser?.hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
-	:disabled="wait || !targetUser"
+	:class="[$style.root, { [$style.wait]: wait || targetUser == null, [$style.active]: targetUser?.isFollowing || targetUser?.hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
+	:disabled="wait || targetUser == null"
 	@click="onClick"
 >
 	<template v-if="!wait && targetUser">
@@ -68,7 +68,7 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 }
 
 async function onClick() {
-	if (!targetUser.value) return;
+	if (targetUser.value == null) return;
 	wait.value = true;
 
 	try {

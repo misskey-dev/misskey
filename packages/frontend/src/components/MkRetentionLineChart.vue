@@ -47,7 +47,7 @@ onMounted(async () => {
 	const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
 	const color = accent.toHex();
 
-	if (!chartEl.value) return;
+	if (chartEl.value == null) return;
 
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',

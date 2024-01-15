@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</button>
 		</template>
-		<span v-if="!items2 || items2.length === 0" :class="[$style.none, $style.item]">
+		<span v-if="items2 == null || items2.length === 0" :class="[$style.none, $style.item]">
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>

@@ -33,7 +33,7 @@ const align = 'left';
 const SCROLLBAR_THICKNESS = 16;
 
 function setPosition() {
-	if (!el.value) return;
+	if (el.value == null) return;
 	const rootRect = props.rootElement.getBoundingClientRect();
 	const parentRect = props.targetElement.getBoundingClientRect();
 	const myRect = el.value.getBoundingClientRect();

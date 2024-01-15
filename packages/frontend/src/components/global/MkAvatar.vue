@@ -111,7 +111,7 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
-	if (!props.user.avatarBlurhash) return;
+	if (props.user.avatarBlurhash == null) return;
 	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,

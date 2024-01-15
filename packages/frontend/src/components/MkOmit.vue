@@ -27,7 +27,7 @@ const omitted = ref(false);
 const ignoreOmit = ref(false);
 
 const calcOmit = () => {
-	if (omitted.value || ignoreOmit.value || !content.value) return;
+	if (omitted.value || ignoreOmit.value || content.value == null) return;
 	omitted.value = content.value.offsetHeight > props.maxHeight;
 };
 

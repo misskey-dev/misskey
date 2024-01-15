@@ -125,7 +125,7 @@ const selectedValue = ref(props.select?.default ?? null);
 const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'charactersBelow'>(() => {
 	if (props.input) {
 		if (props.input.minLength) {
-			if (!inputValue.value || (inputValue.value as string).length < props.input.minLength) {
+			if (inputValue.value == null || (inputValue.value as string).length < props.input.minLength) {
 				return 'charactersBelow';
 			}
 		}

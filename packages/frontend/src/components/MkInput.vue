@@ -143,7 +143,7 @@ watch(v, () => {
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 useInterval(() => {
-	if (!inputEl.value) return;
+	if (inputEl.value == null) return;
 
 	if (prefixEl.value) {
 		if (prefixEl.value.offsetWidth) {

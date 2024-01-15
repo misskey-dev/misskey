@@ -67,13 +67,13 @@ const onKeydown = (evt) => {
 };
 
 const ro = new ResizeObserver((entries, observer) => {
-	if (!rootEl.value || !headerEl.value) return;
+	if (rootEl.value == null || headerEl.value == null) return;
 	bodyWidth.value = rootEl.value.offsetWidth;
 	bodyHeight.value = rootEl.value.offsetHeight - headerEl.value.offsetHeight;
 });
 
 onMounted(() => {
-	if (!rootEl.value || !headerEl.value) return;
+	if (rootEl.value == null || headerEl.value == null) return;
 	bodyWidth.value = rootEl.value.offsetWidth;
 	bodyHeight.value = rootEl.value.offsetHeight - headerEl.value.offsetHeight;
 	ro.observe(rootEl.value);

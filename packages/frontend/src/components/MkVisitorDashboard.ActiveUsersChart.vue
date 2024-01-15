@@ -69,7 +69,7 @@ async function renderChart() {
 
 	const max = Math.max(...raw.read);
 
-	if (!chartEl.value) return;
+	if (chartEl.value == null) return;
 
 	chartInstance = new Chart(chartEl.value, {
 		type: 'bar',

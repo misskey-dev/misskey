@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_quote]: notification.type === 'quote',
 				[$style.t_pollEnded]: notification.type === 'pollEnded',
 				[$style.t_achievementEarned]: notification.type === 'achievementEarned',
-				[$style.t_roleAssigned]: notification.type === 'roleAssigned' && !notification.role?.iconUrl,
+				[$style.t_roleAssigned]: notification.type === 'roleAssigned' && notification.role?.iconUrl == null,
 			}]"
 		>
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
@@ -166,13 +166,13 @@ const props = withDefaults(defineProps<{
 const followRequestDone = ref(false);
 
 const acceptFollowRequest = () => {
-	if (!props.notification.user) return;
+	if (props.notification.user == null) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/accept', { userId: props.notification.user.id });
 };
 
 const rejectFollowRequest = () => {
-	if (!props.notification.user) return;
+	if (props.notification.user == null) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
 };
