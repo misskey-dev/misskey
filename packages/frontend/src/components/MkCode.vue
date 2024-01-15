@@ -55,14 +55,14 @@ function copy() {
 }
 
 .codeBlockCopyButton {
+	color: #D4D4D4;
 	position: absolute;
 	top: 8px;
 	right: 8px;
-	opacity: 0.7;
+	opacity: 0.5;
 
 	&:hover {
-		color: var(--fgHighlighted);
-		opacity: 1;
+		opacity: 0.8;
 	}
 }
 
