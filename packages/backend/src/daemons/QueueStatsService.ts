@@ -15,7 +15,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
 
-const interval = 10000;
+const interval = 30000;
 
 @Injectable()
 export class QueueStatsService implements OnApplicationShutdown {
