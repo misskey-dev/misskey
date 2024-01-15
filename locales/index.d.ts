@@ -1104,6 +1104,8 @@ export interface Locale {
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
+    "audio": string;
+    "audioFiles": string;
     "dataSaver": string;
     "cellularWithDataSaver": string;
     "UltimateDataSaver": string;

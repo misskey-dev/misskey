@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-11T14:29:04.681Z
+ * generatedAt: 2024-01-13T04:31:38.633Z
  */
 
 /**
@@ -3816,7 +3816,7 @@ export type components = {
       fileIds?: string[];
       files?: components['schemas']['DriveFile'][];
       tags?: string[];
-      poll?: Record<string, unknown> | null;
+      poll?: Record<string, never> | null;
       /**
        * Format: id
        * @example xxxxxxxxxx
@@ -3839,7 +3839,7 @@ export type components = {
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
-      myReaction?: Record<string, unknown> | null;
+      myReaction?: Record<string, never> | null;
     };
     NoteReaction: {
       /**
