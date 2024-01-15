@@ -12,7 +12,7 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 
 function toolsMenuItems(): MenuItem[] {
-	return[{
+	return [{
 		type: 'link',
 		to: '/scratchpad',
 		text: i18n.ts.scratchpad,
@@ -27,6 +27,11 @@ function toolsMenuItems(): MenuItem[] {
 		to: '/clicker',
 		text: '●👈',
 		icon: 'ti ti-cookie',
+	}, {
+		type: 'link',
+		to: '/bubble-game',
+		text: i18n.ts.bubbleGame,
+		icon: 'ti ti-apple',
 	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
 		to: '/custom-emojis-manager',
