@@ -66,8 +66,8 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-eye-off',
 }]);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.instanceBlocking,
 	icon: 'ti ti-ban',
-});
+}));
 </script>

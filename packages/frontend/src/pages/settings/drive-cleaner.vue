@@ -117,10 +117,10 @@ function onContextMenu(ev: MouseEvent, file): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.drivecleaner,
 	icon: 'ti ti-trash',
-});
+}));
 </script>
 
 <style lang="scss" module>
