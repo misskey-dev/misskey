@@ -9,13 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 
-	<MkSpacer v-if="tab === 'info'" :contentMax="800">
-		<XFileInfo :fileId="fileId"/>
-	</MkSpacer>
+	<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkSpacer v-if="tab === 'info'" key="info" :contentMax="800">
+			<XFileInfo :fileId="fileId"/>
+		</MkSpacer>
 
-	<MkSpacer v-else-if="tab === 'notes'" :contentMax="800">
-		<XNotes :fileId="fileId"/>
-	</MkSpacer>
+		<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800">
+			<XNotes :fileId="fileId"/>
+		</MkSpacer>
+	</MkLRSwipe>
 </MkStickyContainer>
 </template>
 
@@ -23,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkLRSwipe from '@/components/MkLRSwipe.vue';
 
 const props = defineProps<{
 	fileId: string;
@@ -32,6 +35,10 @@ const XFileInfo = defineAsyncComponent(() => import('./drive.file.info.vue'));
 const XNotes = defineAsyncComponent(() => import('./drive.file.notes.vue'));
 
 const tab = ref('info');
+
+function onSwipe(key: string) {
+	tab.value = key;
+}
 
 const headerActions = computed(() => []);
 

@@ -6,17 +6,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<div>
-		<div v-if="tab === 'featured'">
+	<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<div v-if="tab === 'featured'" key="featured">
 			<XFeatured/>
 		</div>
-		<div v-else-if="tab === 'users'">
+		<div v-else-if="tab === 'users'" key="users">
 			<XUsers/>
 		</div>
-		<div v-else-if="tab === 'roles'">
+		<div v-else-if="tab === 'roles'" key="roles">
 			<XRoles/>
 		</div>
-	</div>
+	</MkLRSwipe>
 </MkStickyContainer>
 </template>
 
@@ -26,6 +26,7 @@ import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
 import XRoles from './explore.roles.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkLRSwipe from '@/components/MkLRSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 
@@ -38,6 +39,10 @@ const props = withDefaults(defineProps<{
 
 const tab = ref(props.initialTab);
 const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
+
+function onSwipe(newKey: string) {
+	tab.value = newKey;
+}
 
 watch(() => props.tag, () => {
 	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);

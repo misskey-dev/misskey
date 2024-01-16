@@ -155,6 +155,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
 				<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
+				<MkSwitch v-model="enableXSwipe">{{ i18n.ts.enableXSwipe }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -296,6 +297,7 @@ const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
+const enableXSwipe = computed(defaultStore.makeGetterSetter('enableXSwipe'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

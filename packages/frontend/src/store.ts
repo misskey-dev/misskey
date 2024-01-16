@@ -427,6 +427,10 @@ export const defaultStore = markRaw(new Storage('base', {
 			sfxVolume: 1,
 		},
 	},
+	enableXSwipe: {
+		where: 'device',
+		default: true,
+	},
 
 	sound_masterVolume: {
 		where: 'device',
