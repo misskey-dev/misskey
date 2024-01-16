@@ -80,8 +80,9 @@ import { MiUserMemo } from '@/models/UserMemo.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 
 import { Config } from '@/config.js';
-import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { envOption } from './env.js';
+import MisskeyLogger from '@/logger.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -90,6 +91,8 @@ const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 class MyCustomLogger implements Logger {
 	@bindThis
 	private highlight(sql: string) {
+		if (envOption.logJson) return sql;
+
 		return highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
 		});
@@ -97,7 +100,7 @@ class MyCustomLogger implements Logger {
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+		sqlLogger.info(this.highlight(query));
 	}
 
 	@bindThis
