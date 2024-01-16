@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           <MkKeyValue :copy="emoji.url">
             <template #key>{{ i18n.ts.emojiUrl }}</template>
             <template #value>
-              <a :href="emoji.url" target="_blank">{{ emoji.url }}</a>
+              <MkLink :url="emoji.url" target="_blank">{{ emoji.url }}</MkLink>
             </template>
           </MkKeyValue>
         </div>
@@ -61,6 +61,7 @@ import { defineProps, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkLink from './MkLink.vue';
 const props = defineProps<{
   emoji: Misskey.entities.EmojiDetailed,
 }>();
