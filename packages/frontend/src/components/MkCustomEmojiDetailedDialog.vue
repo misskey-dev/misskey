@@ -10,9 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
       <MkSpacer>
         <div style="display: flex; flex-direction: column; gap: 1em;">
           <div :class="$style.emojiImgWrapper">
-            <MkCustomEmoji :name="emoji.name" :normal="true" style="height: 100%;"></MkCustomEmoji>
+            <MkCustomEmoji :name="emoji.name" :normal="true" :useOriginalSize="true" style="height: 100%;"></MkCustomEmoji>
           </div>
-          <MkKeyValue>
+          <MkKeyValue :copy="`:${emoji.name}:`">
             <template #key>{{ i18n.ts.name }}</template>
             <template #value>{{ emoji.name }}</template>
           </MkKeyValue>
@@ -94,6 +94,7 @@ const cancel = () => {
 
 .alias {
   display: inline-block;
+  word-break: break-all;
   padding: 3px 10px;
   background-color: var(--X5);
   border: solid 1px var(--divider);
