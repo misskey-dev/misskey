@@ -748,11 +748,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// ストリームに流す
 		const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 		this.globalEventService.publishNotesStream(noteObj);
-
-		// 通知を作成
-		const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
-		await this.createMentionedEvents([additionalUser], note, nm);
-		nm.notify();
 	}
 
 	@bindThis
