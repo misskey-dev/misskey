@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
           </MkKeyValue>
           <MkKeyValue>
             <template #key>{{ i18n.ts.license }}</template>
-            <template #value>{{ emoji.license ?? i18n.ts.none }}</template>
+            <template #value><Mfm :text="emoji.license ?? i18n.ts.none" /></template>
           </MkKeyValue>
           <MkKeyValue :copy="emoji.url">
             <template #key>{{ i18n.ts.emojiUrl }}</template>
