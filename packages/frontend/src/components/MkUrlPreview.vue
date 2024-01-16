@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onUnmounted, ref } from 'vue';
+import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
 import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@/config.js';
 import { i18n } from '@/i18n.js';
@@ -92,11 +92,8 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
-import { useRouter } from '@/global/router/supplier.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
-
-const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -134,7 +131,7 @@ const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
 
-router.addListener('change', () => {
+onDeactivated(() => {
 	playerEnabled.value = false;
 });
 
