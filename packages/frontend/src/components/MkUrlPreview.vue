@@ -92,8 +92,11 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -130,6 +133,10 @@ const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
+
+router.addListener('change', () => {
+	playerEnabled.value = false;
+});
 
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
