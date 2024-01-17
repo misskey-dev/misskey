@@ -568,7 +568,7 @@ const PRISMISSKEY_MONOS: FrontendMonoDefinition[] = [{
 	spriteScale: 1.5,
 }];
 const props = defineProps<{
-	gameMode: 'normal' | 'square' | 'yen' | 'sweets' | 'prismisskey';
+	gameMode: 'normal' | 'square' | 'yen' | 'sweets' | 'prismisskey' | 'space';
 	mute: boolean;
 }>();
 
@@ -581,6 +581,7 @@ const monoDefinitions = computed(() => {
 		props.gameMode === 'square' ? SQUARE_MONOS :
 		props.gameMode === 'yen' ? YEN_MONOS :
 		props.gameMode === 'sweets' ? SWEETS_MONOS :
+		props.gameMode === 'space' ? NORAML_MONOS :
 		props.gameMode === 'prismisskey' ? PRISMISSKEY_MONOS :
 		[] as never;
 });
