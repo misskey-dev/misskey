@@ -125,10 +125,11 @@ export const MFM_PARAMS = {
 	position: ['x=', 'y='],
 	fg: ['color='],
 	bg: ['color='],
+  border: ['width=', 'style=', 'color=', 'radius='],
 	font: ['serif', 'monospace', 'cursive', 'fantasy', 'emoji', 'math'],
 	blur: [],
 	rainbow: ['speed=', 'delay='],
 	rotate: ['deg='],
 	ruby: [],
 	unixtime: [],
-} as Record<string, string[]>;
+} as Record<typeof MFM_TAGS[number], string[]>;
