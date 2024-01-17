@@ -739,12 +739,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// FanoutTimelineに追加
 		this.pushToTl(note, user);
 
-		// 未読として追加
-		this.noteReadService.insertNoteUnread(additionalUser.id, note, {
-			isSpecified: true,
-			isMentioned: false,
-		});
-
 		// ストリームに流す
 		const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 		this.globalEventService.publishNotesStream(noteObj);
