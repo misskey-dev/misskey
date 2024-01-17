@@ -185,6 +185,9 @@ importers:
       content-disposition:
         specifier: 0.5.4
         version: 0.5.4
+      crc-32:
+        specifier: ^1.2.2
+        version: 1.2.2
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
