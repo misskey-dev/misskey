@@ -63,8 +63,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.invalidSeed);
 			}
 
-			// シードが古すぎる(1時間以上前)のも弾く
-			if (seedDate.getTime() < now.getTime() - 1000 * 60 * 60) {
+			// シードが古すぎる(5時間以上前)のも弾く
+			if (seedDate.getTime() < now.getTime() - 1000 * 60 * 60 * 5) {
 				throw new ApiError(meta.errors.invalidSeed);
 			}
 
