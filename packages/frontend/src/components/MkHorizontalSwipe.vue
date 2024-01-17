@@ -63,7 +63,7 @@ const isSwipingForClass = ref(false);
 let swipeAborted = false;
 
 function touchStart(event: TouchEvent) {
-	if (!defaultStore.reactiveState.enableXSwipe.value) return;
+	if (!defaultStore.reactiveState.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 1) return;
 
@@ -72,7 +72,7 @@ function touchStart(event: TouchEvent) {
 }
 
 function touchMove(event: TouchEvent) {
-	if (!defaultStore.reactiveState.enableXSwipe.value) return;
+	if (!defaultStore.reactiveState.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 1) return;
 
@@ -121,7 +121,7 @@ function touchEnd(event: TouchEvent) {
 		return;
 	}
 
-	if (!defaultStore.reactiveState.enableXSwipe.value) return;
+	if (!defaultStore.reactiveState.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 0) return;
 
