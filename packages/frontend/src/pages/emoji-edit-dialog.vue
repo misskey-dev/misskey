@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
 					</template>
 				</MkInput>
-				<MkInput v-model="license">
+				<MkInput v-model="license" :mfmAutocomplete="true">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
 				<MkFolder>
