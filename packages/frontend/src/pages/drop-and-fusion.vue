@@ -85,7 +85,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XGame from './drop-and-fusion.game.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -97,11 +98,13 @@ import { misskeyApiGet } from '@/scripts/misskey-api.js';
 const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
-const ranking = ref(null);
+const ranking = ref<Misskey.entities.BubbleGameRankingResponse>();
 
-watch(gameMode, async () => {
+watch(gameMode, async () => refreshRanking(), { immediate: true });
+
+async function refreshRanking() {
 	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });
-}, { immediate: true });
+}
 
 function getScoreUnit(gameMode: string) {
 	return gameMode === 'normal' ? 'pt' :
@@ -115,8 +118,9 @@ async function start() {
 	gameStarted.value = true;
 }
 
-function onGameEnd() {
+async function onGameEnd() {
 	gameStarted.value = false;
+	await refreshRanking();
 }
 
 definePageMetadata({

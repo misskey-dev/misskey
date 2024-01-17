@@ -53,6 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				where: {
 					gameMode: ps.gameMode,
 					seededAt: MoreThan(new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)),
+					isPrivate: false,
 				},
 				order: {
 					score: 'DESC',

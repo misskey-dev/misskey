@@ -42,6 +42,7 @@ export const paramDef = {
 		logs: { type: 'array' },
 		gameMode: { type: 'string' },
 		gameVersion: { type: 'integer' },
+		isPrivate: { type: 'boolean' },
 	},
 	required: ['score', 'seed', 'logs', 'gameMode', 'gameVersion'],
 } as const;
@@ -78,6 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				gameMode: ps.gameMode,
 				gameVersion: ps.gameVersion,
 				isVerified: false,
+				isPrivate: ps.isPrivate,
 			});
 		});
 	}

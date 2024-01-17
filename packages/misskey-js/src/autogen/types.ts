@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-13T04:31:38.633Z
+ * generatedAt: 2024-01-17T11:31:18.494Z
  */
 
 /**
@@ -25436,6 +25436,7 @@ export type operations = {
           logs: unknown[];
           gameMode: string;
           gameVersion: number;
+          isPrivate?: boolean;
         };
       };
     };

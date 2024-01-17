@@ -1096,24 +1096,24 @@ function attachGameEvents() {
 		isGameOver.value = true;
 
 		const registerScore = await os.confirm({
+			type: 'question',
 			title: i18n.ts._bubbleGame.askRanking,
 			okText: i18n.ts.yes,
 			cancelText: i18n.ts.no,
 		});
-		
-		if (registerScore) {
-			misskeyApi('bubble-game/register', {
-				seed,
-				score: score.value,
-				gameMode: props.gameMode,
-				gameVersion: game.GAME_VERSION,
-				logs: DropAndFusionGame.serializeLogs(logs),
-			});
-		}
+
+		await misskeyApi('bubble-game/register', {
+			seed,
+			score: score.value,
+			gameMode: props.gameMode,
+			gameVersion: game.GAME_VERSION,
+			logs: DropAndFusionGame.serializeLogs(logs),
+			isPrivate: registerScore.canceled,
+		});
 
 		if (props.gameMode === 'yen') {
 			yenTotal.value = (yenTotal.value ?? 0) + score.value;
-			misskeyApi('i/registry/set', {
+			await misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
 				key: 'yenTotal',
 				value: yenTotal.value,
@@ -1122,8 +1122,7 @@ function attachGameEvents() {
 
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
-
-			misskeyApi('i/registry/set', {
+			await misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
 				key: 'highScore:' + props.gameMode,
 				value: highScore.value,
