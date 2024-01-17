@@ -1,17 +1,3 @@
-<!--
-## 2023.x.x (unreleased)
-
-### General
--
-
-### Client
-- 
-
-### Server
--
-
--->
-
 ## 202x.x.x (Unreleased)
 
 ### General
