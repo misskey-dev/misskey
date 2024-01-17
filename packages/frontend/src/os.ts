@@ -5,12 +5,11 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api.js';
-export { pendingApiRequestsCount, api, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
@@ -33,7 +32,7 @@ export const apiWithDialog = ((
 	data: Record<string, any> = {},
 	token?: string | null | undefined,
 ) => {
-	const promise = api(endpoint, data, token);
+	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
 		let title = null;
 		let text = err.message + '\n' + (err as any).id;
@@ -83,7 +82,7 @@ export const apiWithDialog = ((
 	});
 
 	return promise;
-}) as typeof api;
+}) as typeof misskeyApi;
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
@@ -621,7 +620,7 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		const data = new FormData();
 		data.append('md5', getMD5(fileData));
 
-		os.api('drive/files/find-by-hash', {
+		api('drive/files/find-by-hash', {
 			md5: getMD5(fileData)
 		}).then(resp => {
 			resolve(resp.length > 0 ? resp[0] : null);

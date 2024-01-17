@@ -21,6 +21,7 @@ class UserListChannel extends Channel {
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;
 	private withFiles: boolean;
+	private withRenotes: boolean;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
@@ -39,6 +40,7 @@ class UserListChannel extends Channel {
 	public async init(params: any) {
 		this.listId = params.listId as string;
 		this.withFiles = params.withFiles ?? false;
+		this.withRenotes = params.withRenotes ?? true;
 
 		// Check existence and owner
 		const listExist = await this.userListsRepository.exist({
@@ -103,6 +105,8 @@ class UserListChannel extends Channel {
 				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
 			}
 		}
+
+		if (note.renote && note.text == null && (note.fileIds == null || note.fileIds.length === 0) && !this.withRenotes) return;
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
