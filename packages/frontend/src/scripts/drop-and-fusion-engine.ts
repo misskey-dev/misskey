@@ -31,7 +31,7 @@ type Log = {
 	operation: 'surrender';
 };
 
-const NORMAL_BASE_SIZE = 30;
+const NORMAL_BASE_SIZE = 32;
 const NORAML_MONOS: Mono[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
 	level: 10,
@@ -114,7 +114,7 @@ const NORAML_MONOS: Mono[] = [{
 	dropCandidate: true,
 }];
 
-const YEN_BASE_SIZE = 30;
+const YEN_BASE_SIZE = 32;
 const YEN_SATSU_BASE_SIZE = 70;
 const YEN_MONOS: Mono[] = [{
 	id: '880f9bd9-802f-4135-a7e1-fd0e0331f726',
@@ -1003,7 +1003,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	private tickCallbackQueue: { frame: number; callback: () => void; }[] = [];
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
-	private gameMode: 'normal' | 'yen' | 'square' | 'sweets';
+	private gameMode: 'normal' | 'yen' | 'square' | 'sweets' | 'space';
 	private rng: () => number;
 	private logs: Log[] = [];
 
@@ -1031,6 +1031,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			case 'yen': return YEN_MONOS;
 			case 'square': return SQUARE_MONOS;
 			case 'sweets': return SWEETS_MONOS;
+			case 'space': return NORAML_MONOS;
 		}
 	}
 
@@ -1071,13 +1072,15 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.getMonoRenderOptions = env.getMonoRenderOptions ?? null;
 		this.rng = seedrandom(env.seed);
 
+		// sweetsモードは重いため
+		const physicsQualityFactor = this.gameMode === 'sweets' ? 4 : this.PHYSICS_QUALITY_FACTOR;
 		this.engine = Matter.Engine.create({
-			constraintIterations: 2 * this.PHYSICS_QUALITY_FACTOR,
-			positionIterations: 6 * this.PHYSICS_QUALITY_FACTOR,
-			velocityIterations: 4 * this.PHYSICS_QUALITY_FACTOR,
+			constraintIterations: 2 * physicsQualityFactor,
+			positionIterations: 6 * physicsQualityFactor,
+			velocityIterations: 4 * physicsQualityFactor,
 			gravity: {
 				x: 0,
-				y: 1,
+				y: this.gameMode === 'space' ? 0.0125 : 1,
 			},
 			timing: {
 				timeScale: 2,
@@ -1092,7 +1095,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			label: '_wall_',
 			isStatic: true,
 			friction: 0.7,
-			slop: 1.0,
+			slop: this.gameMode === 'space' ? 0.01 : 0.7,
 			render: {
 				strokeStyle: 'transparent',
 				fillStyle: 'transparent',
@@ -1130,13 +1133,12 @@ export class DropAndFusionGame extends EventEmitter<{
 	private createBody(mono: Mono, x: number, y: number) {
 		const options: Matter.IBodyDefinition = {
 			label: mono.id,
-			//density: 0.0005,
-			density: ((mono.sizeX + mono.sizeY) / 2) / 1000,
-			restitution: 0.2,
-			frictionAir: 0.01,
-			friction: 0.7,
-			frictionStatic: 5,
-			slop: 1.0,
+			density: this.gameMode === 'space' ? 0.01 : ((mono.sizeX * mono.sizeY) / 10000),
+			restitution: this.gameMode === 'space' ? 0.5 : 0.2,
+			frictionAir: this.gameMode === 'space' ? 0 : 0.01,
+			friction: this.gameMode === 'space' ? 0.5 : 0.7,
+			frictionStatic: this.gameMode === 'space' ? 0 : 5,
+			slop: this.gameMode === 'space' ? 0.01 : 0.7,
 			//mass: 0,
 			render: this.getMonoRenderOptions ? this.getMonoRenderOptions(mono) : undefined,
 		};
@@ -1327,6 +1329,15 @@ export class DropAndFusionGame extends EventEmitter<{
 			operation: 'drop',
 			x: inputX,
 		});
+
+		// add force
+		if (this.gameMode === 'space') {
+			Matter.Body.applyForce(body, body.position, {
+				x: 0,
+				y: (Math.PI * head.mono.sizeX * head.mono.sizeY) / 65536,
+			});
+		}
+
 		Matter.Composite.add(this.engine.world, body);
 
 		this.fusionReadyBodyIds.push(body.id);
