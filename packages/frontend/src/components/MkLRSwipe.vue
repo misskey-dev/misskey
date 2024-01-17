@@ -134,12 +134,10 @@ function touchEnd(event: TouchEvent) {
 			if (props.tabs[currentTabIndex.value - 1] && !props.tabs[currentTabIndex.value - 1].onClick) {
 				emit('swiped', props.tabs[currentTabIndex.value - 1].key, 'right');
 			}
-			console.log('swiped right');
 		} else {
 			if (props.tabs[currentTabIndex.value + 1] && !props.tabs[currentTabIndex.value + 1].onClick) {
 				emit('swiped', props.tabs[currentTabIndex.value + 1].key, 'left');
 			}
-			console.log('swiped left');
 		}
 	}
 
