@@ -269,7 +269,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						) b_style = 'solid';
 						const width = safeParseFloat(token.props.args.width) ?? 1;
 						const radius = safeParseFloat(token.props.args.radius) ?? 0;
-						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px`;
+						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px;${token.props.args.noclip ? '' : ' overflow: clip;'}`;
 						break;
 					}
 					case 'ruby': {
