@@ -43,7 +43,7 @@ const MIN_SWIPE_DISTANCE = 50;
 const SWIPE_DISTANCE_THRESHOLD = 125;
 
 // スワイプを中断するY方向の移動距離
-const SWIPE_ABORT_Y_THRESHOLD = 50;
+const SWIPE_ABORT_Y_THRESHOLD = 75;
 
 // スワイプできる最大の距離
 const MAX_SWIPE_DISTANCE = 150;
