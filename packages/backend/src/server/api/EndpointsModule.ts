@@ -283,6 +283,7 @@ import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
+import * as ep___notes_anyLocalTimeline from './endpoints/notes/any-local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
 import * as ep___notes_polls_recommendation from './endpoints/notes/polls/recommendation.js';
 import * as ep___notes_polls_vote from './endpoints/notes/polls/vote.js';
@@ -600,7 +601,7 @@ const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep_
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
 const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
-const $i_userstats: Provider = { provide: 'ep:i/stats', useClass: ep___users_user_stats.default }
+const $i_userstats: Provider = { provide: 'ep:i/stats', useClass: ep___users_user_stats.default };
 const $i_notificationsGrouped: Provider = { provide: 'ep:i/notifications-grouped', useClass: ep___i_notificationsGrouped.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
@@ -658,6 +659,7 @@ const $notes_featured: Provider = { provide: 'ep:notes/featured', useClass: ep__
 const $notes_globalTimeline: Provider = { provide: 'ep:notes/global-timeline', useClass: ep___notes_globalTimeline.default };
 const $notes_hybridTimeline: Provider = { provide: 'ep:notes/hybrid-timeline', useClass: ep___notes_hybridTimeline.default };
 const $notes_localTimeline: Provider = { provide: 'ep:notes/local-timeline', useClass: ep___notes_localTimeline.default };
+const $notes_anyLocalTimeline: Provider = { provide: 'ep:notes/any-local-timeline', useClass: ep___notes_anyLocalTimeline.default };
 const $notes_mentions: Provider = { provide: 'ep:notes/mentions', useClass: ep___notes_mentions.default };
 const $notes_polls_recommendation: Provider = { provide: 'ep:notes/polls/recommendation', useClass: ep___notes_polls_recommendation.default };
 const $notes_polls_vote: Provider = { provide: 'ep:notes/polls/vote', useClass: ep___notes_polls_vote.default };
@@ -783,8 +785,8 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$admin_drive_files,
 		$admin_drive_showFile,
 		$admin_emoji_addAliasesBulk,
-        $admin_emoji_setlocalOnlyBulk,
-        $admin_emoji_setisSensitiveBulk,
+		$admin_emoji_setlocalOnlyBulk,
+		$admin_emoji_setisSensitiveBulk,
 		$admin_emoji_add,
 		$admin_emoji_addRequest,
 		$admin_emoji_copy,
@@ -866,7 +868,7 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
-        $i_userstats,
+		$i_userstats,
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
@@ -1036,6 +1038,7 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$notes_globalTimeline,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
+		$notes_anyLocalTimeline,
 		$notes_mentions,
 		$notes_polls_recommendation,
 		$notes_polls_vote,
@@ -1168,12 +1171,12 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
 		$admin_emoji_setLicenseBulk,
-        $admin_emoji_setlocalOnlyBulk,
-        $admin_emoji_setisSensitiveBulk,
+		$admin_emoji_setlocalOnlyBulk,
+		$admin_emoji_setisSensitiveBulk,
 		$admin_emoji_update,
 		$admin_emoji_updateRequest,
 		$admin_federation_deleteAllFiles,
-        $i_userstats,
+		$i_userstats,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
 		$admin_federation_updateInstance,
@@ -1408,6 +1411,7 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$notes_globalTimeline,
 		$notes_hybridTimeline,
 		$notes_localTimeline,
+		$notes_anyLocalTimeline,
 		$notes_mentions,
 		$notes_polls_recommendation,
 		$notes_polls_vote,
