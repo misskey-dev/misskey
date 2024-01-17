@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 								<option value="sweets">SWEETS</option>
-                                <option value="prismisskey">PRISMISSKEY</option>
+								<option value="prismisskey">PRISMISSKEY</option>
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
@@ -72,8 +72,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_s" style="padding: 16px;">
 							<div><b>Credit</b></div>
 							<div>
-								<div>Ai-chan illustration: @poteriri@misskey.io</div>
-								<div>BGM: @ys@misskey.design</div>
+								<div>Ai-chan illustration: <MkA href="/@poteriri@misskey.io">@poteriri@misskey.io</MkA></div>
+								<div>BGM: <MkA href="/@ys@misskey.design">@ys@misskey.design</MkA></div>
+								<div>Emoji Thanks: <MkA to="/@User2_Moo@prismisskey.space">@User2_Moo@prismisskey.space</MkA></div>
+								<div>Emoji Thanks: <MkA to="/@z_n_jin@prismisskey.space">@z_n_jin@prismisskey.space</MkA></div>
+								<div>Emoji Thanks: <MkA to="/@nekomimi@prismisskey.space">@nekomimi@prismisskey.space</MkA></div>
 							</div>
 						</div>
 					</div>
@@ -109,7 +112,7 @@ function getScoreUnit(gameMode: string) {
 		gameMode === 'square' ? 'pt' :
 		gameMode === 'yen' ? '円' :
 		gameMode === 'sweets' ? 'kcal' :
-            gameMode === 'prismisskey' ? 'pt' :
+		gameMode === 'prismisskey' ? 'pt' :
 		'' as never;
 }
 

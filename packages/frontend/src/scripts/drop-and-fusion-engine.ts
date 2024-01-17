@@ -1563,7 +1563,7 @@ export class DropAndFusionGame extends EventEmitter<{
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
 				id: this.rng().toString(),
-				mono: this.monoDefinitions[7],
+				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(this.rng() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 			});
 		}
 		this.emit('changeStock', this.stock);
