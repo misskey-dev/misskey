@@ -152,6 +152,9 @@ function connectChannel() {
 			roleId: props.role,
 		});
 	}
+	if (props.src.startsWith('custom-timeline')) {
+		return;
+	}
 	if (props.src !== 'directs' || props.src !== 'mentions') connection.on('note', prepend);
 }
 
@@ -189,13 +192,13 @@ function updatePaginationQuery() {
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
 		};
-	}else if (props.src === 'global') {
+	} else if (props.src === 'global') {
 		endpoint = 'notes/global-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 		};
-	}else if(props.src === 'media'){
+	} else if (props.src === 'media') {
 		endpoint = 'notes/hybrid-timeline';
 		query = {
 			withFiles: true,
@@ -227,7 +230,13 @@ function updatePaginationQuery() {
 		query = {
 			roleId: props.role,
 		};
-	} else {
+	} else if (props.src.startsWith('custom-timeline')) {
+        endpoint = "notes/any-local-timeline";
+        query = {
+            host: defaultStore.state[`remoteLocalTimelineDomain${props.src.split("-")[2]}`],
+            remoteToken:defaultStore.state[`remoteLocalTimelineToken${props.src.split("-")[2]}`]
+        };
+    }else {
 		endpoint = null;
 		query = null;
 	}
