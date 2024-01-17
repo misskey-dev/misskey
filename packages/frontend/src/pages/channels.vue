@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
-		<MkLRSwipe v-model:tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'search'" key="search">
 				<div class="_gaps">
 					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 				</MkPagination>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -60,7 +60,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/global/router/supplier.js';
@@ -77,10 +77,6 @@ const tab = ref('featured');
 const searchQuery = ref('');
 const searchType = ref('nameAndDescription');
 const channelPagination = ref();
-
-function onSwipe(newKey: string) {
-	tab.value = newKey;
-}
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';

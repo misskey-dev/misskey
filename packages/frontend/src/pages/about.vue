@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 			<div class="_gaps_m">
 				<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
 			<MkInstanceStats/>
 		</MkSpacer>
-	</MkLRSwipe>
+	</MkHorizontalSwipe>
 </MkStickyContainer>
 </template>
 
@@ -116,7 +116,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
@@ -132,10 +132,6 @@ const props = withDefaults(defineProps<{
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const tab = ref(props.initialTab);
-
-function onSwipe(key: string) {
-	tab.value = key;
-}
 
 watch(tab, () => {
 	if (tab.value === 'charts') {

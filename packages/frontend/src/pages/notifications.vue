@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'all'" key="all">
 				<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
 			</div>
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'directNotes'" key="directNotes">
 				<MkNotes :pagination="directNotesPagination"/>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -48,10 +48,6 @@ const directNotesPagination = {
 		visibility: 'specified',
 	},
 };
-
-function onSwipe(newKey: string) {
-	tab.value = newKey;
-}
 
 function setFilter(ev) {
 	const typeItems = notificationTypes.map(t => ({

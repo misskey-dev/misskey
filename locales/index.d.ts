@@ -1204,7 +1204,7 @@ export interface Locale {
     "ranking": string;
     "lastNDays": string;
     "backToTitle": string;
-    "enableXSwipe": string;
+    "enableHorizontalSwipe": string;
     "_bubbleGame": {
         "howToPlay": string;
         "_howToPlay": {

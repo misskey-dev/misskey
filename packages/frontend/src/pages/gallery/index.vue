@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="1400">
-		<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'explore'" key="explore">
 				<MkFoldableSection class="_margin">
 					<template #header><i class="ti ti-clock"></i>{{ i18n.ts.recentPosts }}</template>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkPagination>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -51,7 +51,7 @@ import { watch, ref, computed } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/global/router/supplier.js';

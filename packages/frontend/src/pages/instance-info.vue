@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="instance" :contentMax="600" :marginMin="16" :marginMax="32">
-		<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'overview'" key="overview" class="_gaps_m">
 				<div class="fnfelxur">
 					<img :src="faviconUrl" alt="" class="icon"/>
@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkObjectView tall :value="instance">
 				</MkObjectView>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -138,7 +138,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { dateString } from '@/filters/date.js';
 
@@ -147,10 +147,6 @@ const props = defineProps<{
 }>();
 
 const tab = ref('overview');
-
-function onSwipe(key: string) {
-	tab.value = key;
-}
 
 const chartSrc = ref('instance-requests');
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
-		<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'featured'" key="featured">
 				<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
 					<div class="_gaps">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkPagination>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -42,7 +42,7 @@ import { computed, ref } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/global/router/supplier.js';
@@ -50,10 +50,6 @@ import { useRouter } from '@/global/router/supplier.js';
 const router = useRouter();
 
 const tab = ref('featured');
-
-function onSwipe(key: string) {
-	tab.value = key;
-}
 
 const featuredPagesPagination = {
 	endpoint: 'pages/featured' as const,

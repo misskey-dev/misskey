@@ -25,8 +25,10 @@ import { defaultStore } from '@/store.js';
 
 const rootEl = shallowRef<HTMLDivElement>();
 
+// eslint-disable-next-line no-undef
+const tabModel = defineModel<string>('tab');
+
 const props = defineProps<{
-	tab: string;
 	tabs: Tab[];
 }>();
 
@@ -53,7 +55,7 @@ const MAX_SWIPE_DISTANCE = 150;
 let startScreenX: number | null = null;
 let startScreenY: number | null = null;
 
-const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === props.tab));
+const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === tabModel.value));
 
 const pullDistance = ref(0);
 const isSwiping = ref(false);
@@ -132,10 +134,12 @@ function touchEnd(event: TouchEvent) {
 	if (Math.abs(distance) > SWIPE_DISTANCE_THRESHOLD) {
 		if (distance > 0) {
 			if (props.tabs[currentTabIndex.value - 1] && !props.tabs[currentTabIndex.value - 1].onClick) {
+				tabModel.value = props.tabs[currentTabIndex.value - 1].key;
 				emit('swiped', props.tabs[currentTabIndex.value - 1].key, 'right');
 			}
 		} else {
 			if (props.tabs[currentTabIndex.value + 1] && !props.tabs[currentTabIndex.value + 1].onClick) {
+				tabModel.value = props.tabs[currentTabIndex.value + 1].key;
 				emit('swiped', props.tabs[currentTabIndex.value + 1].key, 'left');
 			}
 		}
@@ -150,7 +154,7 @@ function touchEnd(event: TouchEvent) {
 
 const transitionName = ref<'swipeAnimationLeft' | 'swipeAnimationRight' | undefined>(undefined);
 
-watch(() => props.tab, (newTab, oldTab) => {
+watch(tabModel, (newTab, oldTab) => {
 	const newIndex = props.tabs.findIndex(tab => tab.key === newTab);
 	const oldIndex = props.tabs.findIndex(tab => tab.key === oldTab);
 

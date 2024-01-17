@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
 	<MkSpacer :contentMax="800">
-		<MkLRSwipe :tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
 			<div :key="src + withRenotes + withReplies + onlyFiles" ref="rootEl" v-hotkey.global="keymap">
 				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</div>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -39,7 +39,7 @@ import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -70,13 +70,6 @@ const src = computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src 
 const withRenotes = ref(true);
 const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);
 const onlyFiles = ref(false);
-
-function onSwipe(newKey: string): void {
-	const index = headerTabs.value.findIndex(tab => tab.key === newKey);
-	if (index === -1) return;
-	const tab = headerTabs.value[index];
-	src.value = tab.key;
-}
 
 watch(src, () => {
 	queue.value = 0;

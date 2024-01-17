@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700" :class="$style.main">
-		<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="channel && tab === 'overview'" key="overview" class="_gaps">
 				<div class="_panel" :class="$style.bannerContainer">
 					<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
 				</div>
 			</div>
-		</MkLRSwipe>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
@@ -89,7 +89,7 @@ import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
@@ -103,10 +103,6 @@ const props = defineProps<{
 }>();
 
 const tab = ref('overview');
-
-function onSwipe(key: string) {
-	tab.value = key;
-}
 
 const channel = ref<Misskey.entities.Channel | null>(null);
 const favorited = ref(false);

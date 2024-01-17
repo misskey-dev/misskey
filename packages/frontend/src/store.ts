@@ -427,7 +427,7 @@ export const defaultStore = markRaw(new Storage('base', {
 			sfxVolume: 1,
 		},
 	},
-	enableXSwipe: {
+	enableHorizontalSwipe: {
 		where: 'device',
 		default: true,
 	},

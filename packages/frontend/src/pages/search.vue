@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 
-	<MkLRSwipe :tab="tab" :tabs="headerTabs" @swiped="onSwipe">
+	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'note'" key="note" :contentMax="800">
 			<div v-if="notesSearchAvailable">
 				<XNote/>
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer v-else-if="tab === 'user'" key="user" :contentMax="800">
 			<XUser/>
 		</MkSpacer>
-	</MkLRSwipe>
+	</MkHorizontalSwipe>
 </MkStickyContainer>
 </template>
 
@@ -31,16 +31,12 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import MkInfo from '@/components/MkInfo.vue';
-import MkLRSwipe from '@/components/MkLRSwipe.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));
 const XUser = defineAsyncComponent(() => import('./search.user.vue'));
 
 const tab = ref('note');
-
-function onSwipe(newKey: string) {
-	tab.value = newKey;
-}
 
 const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
