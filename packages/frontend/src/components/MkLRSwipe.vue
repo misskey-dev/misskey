@@ -34,17 +34,31 @@ const emit = defineEmits<{
 	(ev: 'swiped', newKey: string, direction: 'left' | 'right'): void;
 }>();
 
+// ▼ しきい値 ▼ //
+
+// スワイプと判定される最小の距離
 const MIN_SWIPE_DISTANCE = 50;
+
+// スワイプ時の動作を発火する最小の距離
 const SWIPE_DISTANCE_THRESHOLD = 150;
+
+// スワイプを中断するY方向の移動距離
+const SWIPE_ABORT_Y_THRESHOLD = 50;
+
+// スワイプできる最大の距離
 const MAX_SWIPE_DISTANCE = 200;
 
+// ▲ しきい値 ▲ //
+
 let startScreenX: number | null = null;
+let startScreenY: number | null = null;
 
 const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === props.tab));
 
 const pullDistance = ref(0);
 const isSwiping = ref(false);
 const isSwipingForClass = ref(false);
+let swipeAborted = false;
 
 function touchStart(event: TouchEvent) {
 	if (!defaultStore.reactiveState.enableXSwipe.value) return;
@@ -52,6 +66,7 @@ function touchStart(event: TouchEvent) {
 	if (event.touches.length !== 1) return;
 
 	startScreenX = event.touches[0].screenX;
+	startScreenY = event.touches[0].screenY;
 }
 
 function touchMove(event: TouchEvent) {
@@ -59,31 +74,51 @@ function touchMove(event: TouchEvent) {
 
 	if (event.touches.length !== 1) return;
 
-	if (startScreenX == null) return;
+	if (startScreenX == null || startScreenY == null) return;
 
-	let distance = event.touches[0].screenX - startScreenX;
+	if (swipeAborted) return;
 
-	if (Math.abs(distance) < MIN_SWIPE_DISTANCE) return;
-	if (Math.abs(distance) > MAX_SWIPE_DISTANCE) return;
+	let distanceX = event.touches[0].screenX - startScreenX;
+	let distanceY = event.touches[0].screenY - startScreenY;
+
+	if (Math.abs(distanceY) > SWIPE_ABORT_Y_THRESHOLD) {
+		swipeAborted = true;
+
+		pullDistance.value = 0;
+		isSwiping.value = false;
+		setTimeout(() => {
+			isSwipingForClass.value = false;
+		}, 400);
+
+		return;
+	}
+
+	if (Math.abs(distanceX) < MIN_SWIPE_DISTANCE) return;
+	if (Math.abs(distanceX) > MAX_SWIPE_DISTANCE) return;
 
 	if (currentTabIndex.value === 0 || props.tabs[currentTabIndex.value - 1].onClick) {
-		distance = Math.min(distance, 0);
+		distanceX = Math.min(distanceX, 0);
 	}
 	if (currentTabIndex.value === props.tabs.length - 1 || props.tabs[currentTabIndex.value + 1].onClick) {
-		distance = Math.max(distance, 0);
+		distanceX = Math.max(distanceX, 0);
 	}
-	if (distance === 0) return;
+	if (distanceX === 0) return;
 
 	isSwiping.value = true;
 	isSwipingForClass.value = true;
 	nextTick(() => {
 		// グリッチを控えるため、1.5px以上の差がないと更新しない
-		if (Math.abs(distance - pullDistance.value) < 1.5) return;
-		pullDistance.value = distance;
+		if (Math.abs(distanceX - pullDistance.value) < 1.5) return;
+		pullDistance.value = distanceX;
 	});
 }
 
 function touchEnd(event: TouchEvent) {
+	if (swipeAborted) {
+		swipeAborted = false;
+		return;
+	}
+
 	if (!defaultStore.reactiveState.enableXSwipe.value) return;
 
 	if (event.touches.length !== 0) return;
