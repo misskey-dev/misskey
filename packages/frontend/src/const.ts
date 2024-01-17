@@ -125,7 +125,7 @@ export const MFM_PARAMS = {
 	position: ['x=', 'y='],
 	fg: ['color='],
 	bg: ['color='],
-  border: ['width=', 'style=', 'color=', 'radius='],
+  border: ['width=', 'style=', 'color=', 'radius=', 'noclip'],
 	font: ['serif', 'monospace', 'cursive', 'fantasy', 'emoji', 'math'],
 	blur: [],
 	rainbow: ['speed=', 'delay='],
