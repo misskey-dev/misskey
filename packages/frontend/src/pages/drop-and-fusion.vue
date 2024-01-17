@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 								<option value="sweets">SWEETS</option>
+								<!--<option value="space">SPACE</option>-->
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
@@ -95,7 +96,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
-const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets'>('normal');
+const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
 const ranking = ref<Misskey.entities.BubbleGameRankingResponse>();
@@ -111,6 +112,7 @@ function getScoreUnit(gameMode: string) {
 		gameMode === 'square' ? 'pt' :
 		gameMode === 'yen' ? '円' :
 		gameMode === 'sweets' ? 'kcal' :
+		gameMode === 'space' ? 'pt' :
 		'' as never;
 }
 

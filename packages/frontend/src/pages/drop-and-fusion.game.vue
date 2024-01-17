@@ -496,7 +496,7 @@ const SWEETS_MONOS: FrontendMonoDefinition[] = [{
 }];
 
 const props = defineProps<{
-	gameMode: 'normal' | 'square' | 'yen' | 'sweets';
+	gameMode: 'normal' | 'square' | 'yen' | 'sweets' | 'space';
 	mute: boolean;
 }>();
 
@@ -509,6 +509,7 @@ const monoDefinitions = computed(() => {
 		props.gameMode === 'square' ? SQUARE_MONOS :
 		props.gameMode === 'yen' ? YEN_MONOS :
 		props.gameMode === 'sweets' ? SWEETS_MONOS :
+		props.gameMode === 'space' ? NORAML_MONOS :
 		[] as never;
 });
 

@@ -20,8 +20,10 @@
 
 ### Client
 - Feat: 新しいゲームを追加
+- Feat: 音声・映像プレイヤーを追加
 - Feat: 絵文字の詳細ダイアログを追加
 - Feat: 枠線をつけるMFM`$[border.width=1,style=solid,color=fff,radius=0 ...]`を追加
+  - デフォルトで枠線からはみ出る部分が隠されるようにしました。初期と同じ挙動にするには`$[border.noclip`が必要です
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
 - Enhance: チャンネルノートのピン留めをノートのメニューからできるように
 - Enhance: 管理者の場合はAPI tokenの発行画面で管理機能に関する権限を付与できるように
@@ -29,20 +31,24 @@
   - 配列の範囲外・非整数のインデックスへの代入が完全禁止になるので注意
 - Enhance: 絵文字ピッカー・オートコンプリートで、完全一致した絵文字を優先的に表示するように
 - Enhance: Playの説明欄にMFMを使えるように
+- Enhance: チャンネルノートの場合は詳細ページからその前後のノートを見れるように
 - Fix: ネイティブモードの絵文字がモノクロにならないように
 - Fix: v2023.12.0で追加された「モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能」が管理画面上で正しく表示されていない問題を修正
 - Fix: AiScriptの`readline`関数が不正な値を返すことがある問題のv2023.12.0時点での修正がPlay以外に適用されていないのを修正
 - Fix: v2023.12.1で追加された`$[clickable ...]`および`onClickEv`が正しく機能していないのを修正
+- Enhance: ページ遷移時にPlayerを閉じるように
 
 ### Server
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
 - Enhance: ActivityPub Deliver queueでBodyを事前処理するように (#12916)
 - Enhance: クリップをエクスポートできるように
+- Enhance: `/files`のファイルに対してHTTP Rangeリクエストを行えるように
 - Enhance: `api.json`のOpenAPI Specificationを3.1.0に更新
 - Fix: `drive/files/update`でファイル名のバリデーションが機能していない問題を修正
 - Fix: `notes/create`で、`text`が空白文字のみで構成されているか`null`であって、かつ`text`だけであるリクエストに対するレスポンスが400になるように変更
 - Fix: `notes/create`で、`text`が空白文字のみで構成されていてかつリノート、ファイルまたは投票を含んでいるリクエストに対するレスポンスの`text`が`""`から`null`になるように変更
 - Fix: ipv4とipv6の両方が利用可能な環境でallowedPrivateNetworksが設定されていた場合プライベートipの検証ができていなかった問題を修正
+- Fix: properly handle cc followers
 
 ## 2023.12.2
 

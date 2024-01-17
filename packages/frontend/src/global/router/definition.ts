@@ -524,6 +524,10 @@ const routes = [{
 	component: page(() => import('@/pages/antenna-timeline.vue')),
 	loginRequired: true,
 }, {
+	path: '/games',
+	component: page(() => import('@/pages/games.vue')),
+	loginRequired: true,
+}, {
 	path: '/clicker',
 	component: page(() => import('@/pages/clicker.vue')),
 	loginRequired: true,
