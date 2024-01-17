@@ -132,4 +132,4 @@ export const MFM_PARAMS = {
 	rotate: ['deg='],
 	ruby: [],
 	unixtime: [],
-} as Record<string, string[]>;
+} as Record<typeof MFM_TAGS[number], string[]>;
