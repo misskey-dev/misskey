@@ -1728,8 +1728,8 @@ _preferencesBackups:
   invalidFile: "无效的的文件格式。"
 _registry:
   scope: "范围"
-  key: "主要"
-  keys: "主要"
+  key: "键"
+  keys: "键"
   domain: "域"
   createKey: "创建键"
 _aboutMisskey:
@@ -2419,7 +2419,7 @@ _dataSaver:
     description: "防止自动加载图像和视频。 点击隐藏的图像/视频即可加载它们。\n"
   _avatar:
     title: "头像"
-    description: "图标图像的动画将停止。 由于动画图片的文件大小可能比普通图像大，这可以进一步减少数据流量。"
+    description: "停止播放头像的动画。 由于动画图片的文件大小可能比普通图像大，这可以进一步减少数据流量。"
   _urlPreview:
     title: "URL预览缩略图\n"
     description: "将不再加载 URL 预览缩略图。"
