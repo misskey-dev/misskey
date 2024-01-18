@@ -257,6 +257,14 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						style = `background-color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
+					case 'color': {
+						const fg = validColor(token.props.args.fg);
+						const bg = validColor(token.props.args.bg);
+						style = ''
+							+ (fg ? `color: #${fg};` : '')
+							+ (bg ? `background-color: #${bg};` : '');
+						break;
+					}
 					case 'border': {
 						let color = validColor(token.props.args.color);
 						color = color ? `#${color}` : 'var(--accent)';
