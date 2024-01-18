@@ -165,7 +165,7 @@ export interface ReversiEventTypes {
 		game: Packed<'ReversiGame'>;
 	};
 	invited: {
-		game: Packed<'ReversiGame'>;
+		game: Packed<'ReversiMatching'>;
 	};
 }
 

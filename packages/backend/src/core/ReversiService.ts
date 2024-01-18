@@ -89,10 +89,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			const packed = await this.reversiGameEntityService.pack(game, { id: exist.parentId });
 			this.globalEventService.publishReversiStream(exist.parentId, 'matched', { game: packed });
 
-			const other = await this.reversiMatchingsRepository.countBy({
-				childId: me.id,
-			});
-
 			return game;
 		} else {
 			const child = targetUser;
@@ -168,9 +164,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				}
 
 				function getRandomMap() {
-					const mapCount = Object.entries(maps).length;
+					const mapCount = Object.entries(Reversi.maps).length;
 					const rnd = Math.floor(Math.random() * mapCount);
-					return Object.values(maps)[rnd].data;
+					return Object.values(Reversi.maps)[rnd].data;
 				}
 
 				const map = freshGame.map != null ? freshGame.map : getRandomMap();
