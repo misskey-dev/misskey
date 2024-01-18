@@ -63,7 +63,7 @@ const history = ref<{ path: string; key: any; }[]>([{
 	key: windowRouter.getCurrentKey(),
 }]);
 const buttonsLeft = computed(() => {
-	const buttons: any[] = [];
+	const buttons = [];
 
 	if (history.value.length > 1) {
 		buttons.push({
