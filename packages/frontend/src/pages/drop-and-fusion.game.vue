@@ -1098,7 +1098,7 @@ function attachGameEvents() {
 
 		const registerScore = await os.confirm({
 			type: 'question',
-			title: i18n.ts._bubbleGame.askRanking,
+			text: i18n.ts._bubbleGame.askRanking,
 			okText: i18n.ts.yes,
 			cancelText: i18n.ts.no,
 		});
