@@ -6,24 +6,31 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ReversiService } from '@/core/ReversiService.js';
-import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
-	requireCredential: false,
+	requireCredential: true,
+
+	kind: 'write:account',
 
 	errors: {
 		noSuchGame: {
 			message: 'No such game.',
 			code: 'NO_SUCH_GAME',
-			id: 'f13a03db-fae1-46c9-87f3-43c8165419e1',
+			id: 'ace0b11f-e0a6-4076-a30d-e8284c81b2df',
 		},
-	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'ReversiGame',
+		alreadyEnded: {
+			message: 'That game has already ended.',
+			code: 'ALREADY_ENDED',
+			id: '6c2ad4a6-cbf1-4a5b-b187-b772826cfc6d',
+		},
+
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '6e04164b-a992-4c93-8489-2123069973e1',
+		},
 	},
 } as const;
 
@@ -39,7 +46,6 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private reversiService: ReversiService,
-		private reversiGameEntityService: ReversiGameEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const game = await this.reversiService.get(ps.gameId);
@@ -48,7 +54,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchGame);
 			}
 
-			return await this.reversiGameEntityService.pack(game, me);
+			if (game.isEnded) {
+				throw new ApiError(meta.errors.alreadyEnded);
+			}
+
+			if ((game.user1Id !== me.id) && (game.user2Id !== me.id)) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			await this.reversiService.surrender(game, me);
 		});
 	}
 }

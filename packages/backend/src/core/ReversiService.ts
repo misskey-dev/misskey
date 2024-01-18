@@ -301,6 +301,25 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
+	public async surrender(game: MiReversiGame, user: MiUser) {
+		if (game.isEnded) return;
+		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
+
+		const winnerId = game.user1Id === user.id ? game.user2Id : game.user1Id;
+
+		await this.reversiGamesRepository.update(game.id, {
+			surrendered: user.id,
+			isEnded: true,
+			winnerId: winnerId,
+		});
+
+		this.globalEventService.publishReversiGameStream(game.id, 'ended', {
+			winnerId: winnerId,
+			game: await this.reversiGameEntityService.pack(game.id, user),
+		});
+	}
+
+	@bindThis
 	public async get(id: MiReversiGame['id']) {
 		return this.reversiGamesRepository.findOneBy({ id });
 	}
