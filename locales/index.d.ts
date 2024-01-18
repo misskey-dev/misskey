@@ -2635,12 +2635,6 @@ export interface Locale {
             "description": string;
         };
     };
-    "_hms": {
-        "h": string;
-        "m": string;
-        "s": string;
-        "ms": string;
-    };
 }
 declare const locales: {
     [lang: string]: Locale;
