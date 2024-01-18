@@ -46,17 +46,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ComputedRef, onMounted, provide, ref, computed, shallowRef } from 'vue';
+import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef } from 'vue';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { mainRouter } from '@/global/router/main.js';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
@@ -71,8 +71,8 @@ const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 const showMenuOnTop = computed(() => defaultStore.state.menuDisplay === 'top');
 const live2d = shallowRef<HTMLIFrameElement>();
-const widgetsLeft = ref();
-const widgetsRight = ref();
+const widgetsLeft = ref<HTMLElement>();
+const widgetsRight = ref<HTMLElement>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
@@ -84,7 +84,7 @@ provideMetadataReceiver((info) => {
 provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
-function attachSticky(el) {
+function attachSticky(el: HTMLElement) {
 	const sticky = new StickySidebar(el, 0, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);

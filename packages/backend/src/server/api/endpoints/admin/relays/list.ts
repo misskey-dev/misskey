@@ -12,6 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:relays',
 
 	res: {
 		type: 'array',

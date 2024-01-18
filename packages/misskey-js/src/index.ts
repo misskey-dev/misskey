@@ -16,7 +16,8 @@ export const permissions = consts.permissions;
 export const notificationTypes = consts.notificationTypes;
 export const noteVisibilities = consts.noteVisibilities;
 export const mutedNoteReasons = consts.mutedNoteReasons;
-export const ffVisibility = consts.ffVisibility;
+export const followingVisibilities = consts.followingVisibilities;
+export const followersVisibilities = consts.followersVisibilities;
 export const moderationLogTypes = consts.moderationLogTypes;
 
 // api extractor not supported yet

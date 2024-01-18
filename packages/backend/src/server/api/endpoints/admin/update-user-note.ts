@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:user-note',
 } as const;
 
 export const paramDef = {

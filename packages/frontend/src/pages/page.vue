@@ -77,9 +77,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { url } from '@/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -99,8 +101,8 @@ const props = defineProps<{
 	username: string;
 }>();
 
-const page = ref(null);
-const error = ref(null);
+const page = ref<Misskey.entities.Page | null>(null);
+const error = ref<any>(null);
 const otherPostsPagination = {
 	endpoint: 'users/pages' as const,
 	limit: 6,
@@ -112,7 +114,7 @@ const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
 	page.value = null;
-	os.api('pages/show', {
+	misskeyApi('pages/show', {
 		name: props.pageName,
 		username: props.username,
 	}).then(async _page => {

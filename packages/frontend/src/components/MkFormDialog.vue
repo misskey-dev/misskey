@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<MkSpacer :marginMin="20" :marginMax="32">
-		<div class="_gaps_m">
+		<div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
@@ -55,6 +55,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</template>
 		</div>
+		<div v-else class="_fullinfo">
+			<img :src="infoImageUrl" class="_ghost"/>
+			<div>{{ i18n.ts.nothing }}</div>
+		</div>
 	</MkSpacer>
 </MkModalWindow>
 </template>
@@ -70,6 +74,7 @@ import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	title: string;

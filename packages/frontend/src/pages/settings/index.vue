@@ -28,16 +28,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { ComputedRef, Ref, computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
 import { clearCache } from '@/scripts/clear-cache.js';
 import { instance } from '@/instance.js';
-import { useRouter } from '@/router.js';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -46,7 +46,7 @@ const indexInfo = {
 };
 const INFO = ref(indexInfo);
 const el = shallowRef<HTMLElement | null>(null);
-const childInfo = ref(null);
+const childInfo: Ref<ComputedRef<PageMetadata> | null> = ref(null);
 
 const router = useRouter();
 

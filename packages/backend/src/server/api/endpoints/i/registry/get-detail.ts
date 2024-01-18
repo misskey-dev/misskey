@@ -10,6 +10,7 @@ import { ApiError } from '../../../error.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'read:account',
 
 	errors: {
 		noSuchKey: {
@@ -18,6 +19,10 @@ export const meta = {
 			id: '97a1e8e7-c0f7-47d2-957a-92e61256e01a',
 		},
 	},
+
+	res: {
+		type: 'object',
+	}
 } as const;
 
 export const paramDef = {

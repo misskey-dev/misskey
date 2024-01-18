@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
@@ -58,12 +58,12 @@ const props = withDefaults(defineProps<{
 
 const tab = ref(props.page);
 const user = ref<null | Misskey.entities.UserDetailed>(null);
-const error = ref(null);
+const error = ref<any>(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user.value = null;
-	os.api('users/show', Misskey.acct.parse(props.acct)).then(u => {
+	misskeyApi('users/show', Misskey.acct.parse(props.acct)).then(u => {
 		user.value = u;
 	}).catch(err => {
 		error.value = err;
