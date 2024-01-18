@@ -180,13 +180,10 @@ export interface ReversiGameEventTypes {
 		key: string;
 		value: any;
 	};
-	message: {
-		message: string;
-	};
-	set: {
+	putStone: {
 		pos: number;
 	};
-	check: {
+	syncState: {
 		crc32: string;
 	};
 	started: {

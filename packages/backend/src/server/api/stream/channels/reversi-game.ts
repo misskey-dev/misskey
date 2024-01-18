@@ -4,12 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as CRC32 from 'crc-32';
-import type { MiReversiGame, MiUser, ReversiGamesRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { MiReversiGame, ReversiGamesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ReversiService } from '@/core/ReversiService.js';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ReversiGameChannel extends Channel {
@@ -21,6 +20,7 @@ class ReversiGameChannel extends Channel {
 	constructor(
 		private reversiService: ReversiService,
 		private reversiGamesRepository: ReversiGamesRepository,
+		private reversiGameEntityService: ReversiGameEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -46,9 +46,8 @@ class ReversiGameChannel extends Channel {
 			case 'accept': this.accept(true); break;
 			case 'cancelAccept': this.accept(false); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
-			case 'message': this.message(body); break;
 			case 'putStone': this.putStone(body.pos); break;
-			case 'check': this.check(body.crc32); break;
+			case 'syncState': this.syncState(body.crc32); break;
 		}
 	}
 
@@ -61,17 +60,6 @@ class ReversiGameChannel extends Channel {
 		if (game == null) throw new Error('game not found');
 
 		this.reversiService.updateSettings(game, this.user, key, value);
-	}
-
-	@bindThis
-	private async message(message: any) {
-		if (this.user == null) return;
-
-		message.id = Math.random();
-		publishReversiGameStream(this.gameId!, 'message', {
-			userId: this.user.id,
-			message,
-		});
 	}
 
 	@bindThis
@@ -96,14 +84,15 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async check(crc32: string | number) {
+	private async syncState(crc32: string | number) {
+		// TODO: キャッシュしたい
 		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
 		if (game == null) throw new Error('game not found');
 
 		if (!game.isStarted) return;
 
 		if (crc32.toString() !== game.crc32) {
-			this.send('rescue', await ReversiGames.pack(game, this.user));
+			this.send('rescue', await this.reversiGameEntityService.pack(game, this.user));
 		}
 	}
 
@@ -125,6 +114,7 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 		private reversiGamesRepository: ReversiGamesRepository,
 
 		private reversiService: ReversiService,
+		private reversiGameEntityService: ReversiGameEntityService,
 	) {
 	}
 
@@ -133,6 +123,7 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 		return new ReversiGameChannel(
 			this.reversiService,
 			this.reversiGamesRepository,
+			this.reversiGameEntityService,
 			id,
 			connection,
 		);
