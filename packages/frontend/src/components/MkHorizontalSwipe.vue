@@ -11,7 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@touchmove="touchMove"
 	@touchend="touchEnd"
 >
-	<Transition :name="transitionName" :class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]" :style="`--swipe: ${pullDistance}px;`">
+	<Transition
+		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
+		:enterActiveClass="$style.swipeAnimation_enterActive"
+		:leaveActiveClass="$style.swipeAnimation_leaveActive"
+		:enterFromClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_enterFrom : $style.swipeAnimationRight_enterFrom"
+		:leaveToClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_leaveTo : $style.swipeAnimationRight_leaveTo"
+		:style="`--swipe: ${pullDistance}px;`"
+	>
 		<!-- 【注意】slot内の最上位要素に動的にkeyを設定すること -->
 		<!-- 各最上位要素にユニークなkeyの指定がないとTransitionがうまく動きません -->
 		<slot></slot>
@@ -179,20 +186,18 @@ watch(tabModel, (newTab, oldTab) => {
 		grid-area: 1 / 1 / 2 / 2;
 		transform: translateX(var(--swipe));
 
-		&:global(.swipeAnimationLeft-enter-active),
-		&:global(.swipeAnimationRight-enter-active),
-		&:global(.swipeAnimationLeft-leave-active),
-		&:global(.swipeAnimationRight-leave-active) {
+		&.swipeAnimation_enterActive,
+		&.swipeAnimation_leaveActive {
 			transition: transform .3s cubic-bezier(0.65, 0.05, 0.36, 1);
 		}
 
-		&:global(.swipeAnimationRight-leave-to),
-		&:global(.swipeAnimationLeft-enter-from) {
+		&.swipeAnimationRight_leaveTo,
+		&.swipeAnimationLeft_enterFrom {
 			transform: translateX(calc(100% + 24px));
 		}
 
-		&:global(.swipeAnimationRight-enter-from),
-		&:global(.swipeAnimationLeft-leave-to) {
+		&.swipeAnimationRight_enterFrom,
+		&.swipeAnimationLeft_leaveTo {
 			transform: translateX(calc(-100% - 24px));
 		}
 	}
