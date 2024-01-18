@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h } from 'vue';
+import { VNode, h, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
@@ -13,6 +13,7 @@ import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkCode from '@/components/MkCode.vue';
+import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
@@ -43,8 +44,12 @@ type MfmProps = {
 	enableEmojiMenuReaction?: boolean;
 };
 
+type MfmEvents = {
+	clickEv(id: string): void;
+};
+
 // eslint-disable-next-line import/no-default-export
-export default function(props: MfmProps) {
+export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -57,7 +62,12 @@ export default function(props: MfmProps) {
 		if (t == null) return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
-
+	
+	const validColor = (c: string | null | undefined): string | null => {
+		if (c == null) return null;
+		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
+	};
+	
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
 
 	/**
@@ -236,15 +246,28 @@ export default function(props: MfmProps) {
 						break;
 					}
 					case 'fg': {
-						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
-						style = `color: #${color};`;
+						let color = validColor(token.props.args.color);
+						color = color ?? 'f00';
+						style = `color: #${color}; overflow-wrap: anywhere;`;
 						break;
 					}
 					case 'bg': {
-						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
-						style = `background-color: #${color};`;
+						let color = validColor(token.props.args.color);
+						color = color ?? 'f00';
+						style = `background-color: #${color}; overflow-wrap: anywhere;`;
+						break;
+					}
+					case 'border': {
+						let color = validColor(token.props.args.color);
+						color = color ? `#${color}` : 'var(--accent)';
+						let b_style = token.props.args.style;
+						if (
+							!['hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset']
+								.includes(b_style)
+						) b_style = 'solid';
+						const width = parseFloat(token.props.args.width ?? '1');
+						const radius = parseFloat(token.props.args.radius ?? '0');
+						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px;${token.props.args.noclip ? '' : ' overflow: clip;'}`;
 						break;
 					}
 					case 'ruby': {
@@ -280,6 +303,13 @@ export default function(props: MfmProps) {
 								mode: 'detail',
 							}),
 						]);
+					}
+					case 'clickable': {
+						return h('span', { onClick(ev: MouseEvent): void {
+							ev.stopPropagation();
+							ev.preventDefault();
+							context.emit('clickEv', token.props.args.ev ?? '');
+						} }, genEl(token.children, scale));
 					}
 				}
 				if (style === undefined) {
@@ -344,10 +374,9 @@ export default function(props: MfmProps) {
 			}
 
 			case 'inlineCode': {
-				return [h(MkCode, {
+				return [h(MkCodeInline, {
 					key: Math.random(),
 					code: token.props.code,
-					inline: true,
 				})];
 			}
 

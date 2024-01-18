@@ -57,10 +57,11 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	antenna: any
+	antenna: Misskey.entities.Antenna
 }>();
 
 const emit = defineEmits<{
@@ -70,8 +71,8 @@ const emit = defineEmits<{
 }>();
 
 const name = ref<string>(props.antenna.name);
-const src = ref<string>(props.antenna.src);
-const userListId = ref<any>(props.antenna.userListId);
+const src = ref<Misskey.entities.AntennasCreateRequest['src']>(props.antenna.src);
+const userListId = ref<string | null>(props.antenna.userListId);
 const users = ref<string>(props.antenna.users.join('\n'));
 const keywords = ref<string>(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
 const excludeKeywords = ref<string>(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
@@ -80,11 +81,11 @@ const localOnly = ref<boolean>(props.antenna.localOnly);
 const withReplies = ref<boolean>(props.antenna.withReplies);
 const withFile = ref<boolean>(props.antenna.withFile);
 const notify = ref<boolean>(props.antenna.notify);
-const userLists = ref<any>(null);
+const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
 	if (src.value === 'list' && userLists.value === null) {
-		userLists.value = await os.api('users/lists/list');
+		userLists.value = await misskeyApi('users/lists/list');
 	}
 });
 
@@ -107,8 +108,7 @@ async function saveAntenna() {
 		await os.apiWithDialog('antennas/create', antennaData);
 		emit('created');
 	} else {
-		antennaData['antennaId'] = props.antenna.id;
-		await os.apiWithDialog('antennas/update', antennaData);
+		await os.apiWithDialog('antennas/update', { ...antennaData, antennaId: props.antenna.id });
 		emit('updated');
 	}
 }
@@ -120,7 +120,7 @@ async function deleteAntenna() {
 	});
 	if (canceled) return;
 
-	await os.api('antennas/delete', {
+	await misskeyApi('antennas/delete', {
 		antennaId: props.antenna.id,
 	});
 

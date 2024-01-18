@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="700">
 		<div v-if="tab === 'search'">
 			<div class="_gaps">
-				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
 				<MkRadios v-model="searchType" @update:modelValue="search()">
@@ -58,9 +58,9 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 

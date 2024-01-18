@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { permissions } from 'misskey-js';
 import type { Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
 
@@ -208,6 +209,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportClips from './endpoints/i/export-clips.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
@@ -363,6 +365,8 @@ import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___fetchExternalResources from './endpoints/fetch-external-resources.js';
 import * as ep___retention from './endpoints/retention.js';
+import * as ep___bubbleGame_register from './endpoints/bubble-game/register.js';
+import * as ep___bubbleGame_ranking from './endpoints/bubble-game/ranking.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -567,6 +571,7 @@ const eps = [
 	['i/export-following', ep___i_exportFollowing],
 	['i/export-mute', ep___i_exportMute],
 	['i/export-notes', ep___i_exportNotes],
+	['i/export-clips', ep___i_exportClips],
 	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
 	['i/export-antennas', ep___i_exportAntennas],
@@ -722,9 +727,11 @@ const eps = [
 	['fetch-rss', ep___fetchRss],
 	['fetch-external-resources', ep___fetchExternalResources],
 	['retention', ep___retention],
+	['bubble-game/register', ep___bubbleGame_register],
+	['bubble-game/ranking', ep___bubbleGame_ranking],
 ];
 
-export interface IEndpointMeta {
+interface IEndpointMetaBase {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
 
 	readonly tags?: ReadonlyArray<string>;
@@ -822,6 +829,23 @@ export interface IEndpointMeta {
 	 */
 	readonly cacheSec?: number;
 }
+
+export type IEndpointMeta = (Omit<IEndpointMetaBase, 'requireCrential' | 'requireModerator' | 'requireAdmin'> & {
+	requireCredential?: false,
+	requireAdmin?: false,
+	requireModerator?: false,
+}) | (Omit<IEndpointMetaBase, 'secure'> & {
+	secure: true,
+}) | (Omit<IEndpointMetaBase, 'requireCredential' | 'kind'> & {
+	requireCredential: true,
+	kind: (typeof permissions)[number],
+}) | (Omit<IEndpointMetaBase, 'requireModerator' | 'kind'> & {
+	requireModerator: true,
+	kind: (typeof permissions)[number],
+}) | (Omit<IEndpointMetaBase, 'requireAdmin' | 'kind'> & {
+	requireAdmin: true,
+	kind: (typeof permissions)[number],
+})
 
 export interface IEndpoint {
 	name: string;

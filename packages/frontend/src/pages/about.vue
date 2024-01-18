@@ -103,6 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
 import { version, host } from '@/config.js';
@@ -113,7 +114,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -126,7 +127,7 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
-const stats = ref(null);
+const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const tab = ref(props.initialTab);
 
 watch(tab, () => {
@@ -135,7 +136,7 @@ watch(tab, () => {
 	}
 });
 
-const initStats = () => os.api('stats', {
+const initStats = () => misskeyApi('stats', {
 }).then((res) => {
 	stats.value = res;
 });

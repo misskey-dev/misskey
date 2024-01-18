@@ -72,7 +72,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
-const particles = ref([]);
+const particles = ref<{
+	id: string,
+	x: number,
+	y: number,
+	size: number,
+	dur: number,
+	color: string
+}[]>([]);
 const el = shallowRef<HTMLElement>();
 const width = ref(0);
 const height = ref(0);

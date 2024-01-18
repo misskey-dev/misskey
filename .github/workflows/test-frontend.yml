@@ -5,7 +5,20 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/frontend/**
+      # for permissions
+      - packages/misskey-js/**
+      # for e2e
+      - packages/backend/**
+
   pull_request:
+    paths:
+      - packages/frontend/**
+      # for permissions
+      - packages/misskey-js/**
+      # for e2e
+      - packages/backend/**
 
 jobs:
   vitest:
@@ -25,7 +38,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -56,7 +69,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:15
         ports:
           - 54312:5432
         env:
@@ -83,7 +96,7 @@ jobs:
         version: 7
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.0
+      uses: actions/setup-node@v4.0.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

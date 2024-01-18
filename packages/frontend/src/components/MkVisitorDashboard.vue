@@ -53,7 +53,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XTimeline from './welcome.timeline.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -61,20 +60,20 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import number from '@/filters/number.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
 const meta = ref<Misskey.entities.MetaResponse | null>(null);
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
-os.api('meta', { detail: true }).then(_meta => {
+misskeyApi('meta', { detail: true }).then(_meta => {
 	meta.value = _meta;
 });
 
-os.api('stats', {}).then((res) => {
+misskeyApi('stats', {}).then((res) => {
 	stats.value = res;
 });
 
@@ -125,13 +124,13 @@ function showMenu(ev) {
 		text: i18n.ts.help,
 		icon: 'ti ti-help-circle',
 		action: () => {
-			window.open('https://misskey-hub.net/help.md', '_blank', 'noopener');
+			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function exploreOtherServers() {
-	window.open('https://join.misskey.page/instances', '_blank', 'noopener');
+	window.open('https://misskey-hub.net/servers/', '_blank', 'noopener');
 }
 </script>
 

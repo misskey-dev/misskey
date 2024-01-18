@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { ImageBlock } from './block.type';
+import { ImageBlock } from './block.type.js';
 import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{

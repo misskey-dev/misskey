@@ -219,6 +219,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	enableQuickAddMfmFunction: {
+		where: 'device',
+		default: false,
+	},
 	loadRawImages: {
 		where: 'device',
 		default: false,
@@ -415,6 +419,13 @@ export const defaultStore = markRaw(new Storage('base', {
 	enableSeasonalScreenEffect: {
 		where: 'device',
 		default: false,
+	},
+	dropAndFusion: {
+		where: 'device',
+		default: {
+			bgmVolume: 0.25,
+			sfxVolume: 1,
+		},
 	},
 
 	sound_masterVolume: {

@@ -39,13 +39,7 @@ import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
-import MkInfo from '@/components/MkInfo.vue';
-import { instanceName } from '@/config.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import number from '@/filters/number.js';
-import MkNumber from '@/components/MkNumber.vue';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
@@ -59,11 +53,11 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 	return getProxiedImageUrl(instance.iconUrl, 'preview');
 }
 
-os.api('meta', { detail: true }).then(_meta => {
+misskeyApi('meta', { detail: true }).then(_meta => {
 	meta.value = _meta;
 });
 
-os.apiGet('federation/instances', {
+misskeyApiGet('federation/instances', {
 	sort: '+pubSub',
 	limit: 20,
 }).then(_instances => {

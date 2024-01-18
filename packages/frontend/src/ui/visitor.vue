@@ -70,17 +70,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ComputedRef, onMounted, provide, ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XCommon from './_common_/common.vue';
-import { host, instanceName } from '@/config.js';
+import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { mainRouter } from '@/router.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
+import { mainRouter } from '@/global/router/main.js';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -104,7 +106,7 @@ const isTimelineAvailable = ref(instance.policies?.ltlAvailable || instance.poli
 const showMenu = ref(false);
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 const narrow = ref(window.innerWidth < 1280);
-const meta = ref();
+const meta = ref<Misskey.entities.MetaResponse>();
 
 const keymap = computed(() => {
 	return {
@@ -120,7 +122,7 @@ const keymap = computed(() => {
 
 const root = computed(() => mainRouter.currentRoute.value.name === 'index');
 
-os.api('meta', { detail: true }).then(res => {
+misskeyApi('meta', { detail: true }).then(res => {
 	meta.value = res;
 });
 

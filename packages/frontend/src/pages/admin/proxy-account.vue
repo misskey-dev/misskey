@@ -22,23 +22,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const proxyAccount = ref<any>(null);
-const proxyAccountId = ref<any>(null);
+const proxyAccount = ref<Misskey.entities.UserDetailed | null>(null);
+const proxyAccountId = ref<string | null>(null);
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	proxyAccountId.value = meta.proxyAccountId;
 	if (proxyAccountId.value) {
-		proxyAccount.value = await os.api('users/show', { userId: proxyAccountId.value });
+		proxyAccount.value = await misskeyApi('users/show', { userId: proxyAccountId.value });
 	}
 }
 
