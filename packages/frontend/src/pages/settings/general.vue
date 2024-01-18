@@ -159,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 	<MkFoldableSection :defaultOpen="false" class="item">
-		<template #header>{{ i18n.ts.behavior }}</template>
+        <template #header>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -216,93 +216,102 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkFoldableSection>
+    <MkFoldableSection>
 
+        <template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
+        <div class="_gaps_m">
+            <MkFoldableSection>
+                <template #header>{{ i18n.ts.accessToken }} の発行の仕方</template>
+            <img width="400" href="https://files.prismisskey.space/misskey/676e4b79-7897-4ea9-b074-a98139312f76.gif">
+            </MkFoldableSection>
+            <div v-if="maxLocalTimeline >= 1" >
+                <MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
+                    <template #label>{{ i18n.ts.name }}</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineDomain1" placeholder="prismisskey.space">
+                    <template #label>サーバーURL</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineToken1" placeholder="">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>{{ i18n.ts.accessToken }}</template>
+                </MkInput>
+                <MkSwitch v-model="remoteLocalTimelineEnable1">
+                    {{ i18n.ts.enable }}
+                </MkSwitch>
+            </div>
+            <div v-if="maxLocalTimeline >= 2" >
+                <MkInput v-model="remoteLocalTimelineName2" placeholder="prismisskey">
+                    <template #label>{{ i18n.ts.name }}</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineDomain2" placeholder="prismisskey.space">
+                    <template #label>サーバーURL</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineToken2" placeholder="">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>{{ i18n.ts.accessToken }}</template>
+                </MkInput>
+                <MkSwitch v-model="remoteLocalTimelineEnable2">
+                    {{ i18n.ts.enable }}
+                </MkSwitch>
+            </div>
+
+            <div v-if="maxLocalTimeline >= 3" >
+                <MkInput v-model="remoteLocalTimelineName3" placeholder="prismisskey">
+                    <template #label>{{ i18n.ts.name }}</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineDomain3" placeholder="prismisskey.space">
+                    <template #label>サーバーURL</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineToken3" placeholder="">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>{{ i18n.ts.accessToken }}</template>
+                </MkInput>
+                <MkSwitch v-model="remoteLocalTimelineEnable3">
+                    {{ i18n.ts.enable }}
+                </MkSwitch>
+            </div>
+
+            <div v-if="maxLocalTimeline >= 4" >
+                <MkInput v-model="remoteLocalTimelineName4" placeholder="prismisskey">
+                    <template #label>{{ i18n.ts.name }}</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineDomain4" placeholder="prismisskey.space">
+                    <template #label>サーバーURL</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineToken4" placeholder="">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>{{ i18n.ts.accessToken }}</template>
+                </MkInput>
+                <MkSwitch v-model="remoteLocalTimelineEnable4">
+                    {{ i18n.ts.enable }}
+                </MkSwitch>
+            </div>
+
+            <div v-if="maxLocalTimeline >= 5"  >
+                <MkInput v-model="remoteLocalTimelineName5" placeholder="prismisskey">
+                    <template #label>{{ i18n.ts.name }}</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineDomain5" placeholder="prismisskey.space">
+                    <template #label>サーバーURL</template>
+                </MkInput>
+                <MkInput v-model="remoteLocalTimelineToken5" placeholder="">
+                    <template #prefix><i class="ti ti-key"></i></template>
+                    <template #label>{{ i18n.ts.accessToken }}</template>
+                </MkInput>
+                <MkSwitch v-model="remoteLocalTimelineEnable5">
+                    {{ i18n.ts.enable }}
+                </MkSwitch>
+            </div>
+
+            <MkButton @click="remoteLocaltimelineSave">
+                {{ i18n.ts.save }}
+            </MkButton>
+        </div>
+    </MkFoldableSection>
 	<FormSection>
 		<template #label>{{ i18n.ts.other }}</template>
 
 		<div class="_gaps">
-			<MkFolder>
-				<template #label>リモートのローカルタイムラインをTLの上のバーのやつに表示する</template>
-				<div style="padding: 0 16px;">
-					<div v-if="maxLocalTimeline >= 1" style="padding: 16px 0 ;" >
-                        <MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
-                            <template #label>{{i18n.ts.name}}</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineDomain1" placeholder="prismisskey.space">
-                            <template #label>instance Url</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineToken1" placeholder="">
-                            <template #prefix><i class="ti ti-key"></i></template>
-                            <template #label>Token</template>
-                        </MkInput>
-                        <MkSwitch v-model="remoteLocalTimelineEnable1">
-                            {{ i18n.ts.enable }}
-                        </MkSwitch>
-					</div>
-					<div v-if="maxLocalTimeline >= 2" style="padding: 16px 0 ;" >
-                        <MkInput v-model="remoteLocalTimelineName2" placeholder="prismisskey">
-                            <template #label>{{i18n.ts.name}}</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineDomain2" placeholder="prismisskey.space">
-                            <template #label>instance Url</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineToken2" placeholder="">
-                            <template #prefix><i class="ti ti-key"></i></template>
-                            <template #label>Token</template>
-                        </MkInput>
-                        <MkSwitch v-model="remoteLocalTimelineEnable2">
-                        {{ i18n.ts.enable }}
-                    </MkSwitch>
-					</div>
-                    <div v-if="maxLocalTimeline >= 3" style="padding: 16px 0 ;" >
-                        <MkInput v-model="remoteLocalTimelineName3" placeholder="prismisskey">
-                            <template #label>{{i18n.ts.name}}</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineDomain3" placeholder="prismisskey.space">
-                            <template #label>instance Url</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineToken3" placeholder="">
-                            <template #prefix><i class="ti ti-key"></i></template>
-                            <template #label>Token</template>
-                        </MkInput>
-                        <MkSwitch v-model="remoteLocalTimelineEnable3">
-                            {{ i18n.ts.enable }}
-                        </MkSwitch>
-					</div>
-                    <div v-if="maxLocalTimeline >= 4" style="padding: 16px 0 ;" >
-                        <MkInput v-model="remoteLocalTimelineName4" placeholder="prismisskey">
-                            <template #label>{{i18n.ts.name}}</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineDomain4" placeholder="prismisskey.space"/>
-						<MkInput v-model="remoteLocalTimelineToken4" placeholder="">
-                            <template #prefix><i class="ti ti-key"></i></template>
-                            <template #label>Token</template>
-                        </MkInput>
-                        <MkSwitch v-model="remoteLocalTimelineEnable4">
-                            {{ i18n.ts.enable }}
-                        </MkSwitch>
-					</div>
-                    <div v-if="maxLocalTimeline >= 5" style="padding: 16px 0 ;" >
-                        <MkInput v-model="remoteLocalTimelineName5" placeholder="prismisskey">
-                            <template #label>{{i18n.ts.name}}</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineDomain5" placeholder="prismisskey.space">
-                            <template #label>instance Url</template>
-                        </MkInput>
-						<MkInput v-model="remoteLocalTimelineToken5" placeholder="">
-                            <template #prefix><i class="ti ti-key"></i></template>
-                            <template #label>Token</template>
-                        </MkInput>
-                        <MkSwitch v-model="remoteLocalTimelineEnable5">
-                            {{ i18n.ts.enable }}
-                        </MkSwitch>
-
-					</div>
-                    <MkButton @click="remoteLocaltimelineSave">
-                        {{ i18n.ts.save}}
-                    </MkButton>
-				</div>
-			</MkFolder>
 			<MkFolder>
 				<template #label>{{ i18n.ts.additionalEmojiDictionary }}</template>
 				<div class="_buttons">
@@ -507,26 +516,26 @@ watch([
 });
 
 async function remoteLocaltimelineSave() {
-    os.alert({
-        type: 'success',
-        text: i18n.ts.saved,
-    });
-    defaultStore.set('remoteLocalTimelineDomain1', remoteLocalTimelineDomain1.value);
-    defaultStore.set('remoteLocalTimelineToken1', remoteLocalTimelineToken1.value);
-    defaultStore.set('remoteLocalTimelineDomain2', remoteLocalTimelineDomain2.value);
-    defaultStore.set('remoteLocalTimelineToken2', remoteLocalTimelineToken2.value);
-    defaultStore.set('remoteLocalTimelineDomain3', remoteLocalTimelineDomain3.value);
-    defaultStore.set('remoteLocalTimelineToken3', remoteLocalTimelineToken3.value);
-    defaultStore.set('remoteLocalTimelineDomain4', remoteLocalTimelineDomain4.value);
-    defaultStore.set('remoteLocalTimelineToken4', remoteLocalTimelineToken4.value);
-    defaultStore.set('remoteLocalTimelineDomain5', remoteLocalTimelineDomain5.value);
-    defaultStore.set('remoteLocalTimelineToken5', remoteLocalTimelineToken5.value);
-    defaultStore.set('remoteLocalTimelineName1', remoteLocalTimelineName1.value);
-    defaultStore.set('remoteLocalTimelineName2', remoteLocalTimelineName2.value);
-    defaultStore.set('remoteLocalTimelineName3', remoteLocalTimelineName3.value);
-    defaultStore.set('remoteLocalTimelineName4', remoteLocalTimelineName4.value);
-    defaultStore.set('remoteLocalTimelineName5', remoteLocalTimelineName5.value);
-		await reloadAsk();
+	os.alert({
+		type: 'success',
+		text: i18n.ts.saved,
+	});
+	defaultStore.set('remoteLocalTimelineDomain1', remoteLocalTimelineDomain1.value);
+	defaultStore.set('remoteLocalTimelineToken1', remoteLocalTimelineToken1.value);
+	defaultStore.set('remoteLocalTimelineDomain2', remoteLocalTimelineDomain2.value);
+	defaultStore.set('remoteLocalTimelineToken2', remoteLocalTimelineToken2.value);
+	defaultStore.set('remoteLocalTimelineDomain3', remoteLocalTimelineDomain3.value);
+	defaultStore.set('remoteLocalTimelineToken3', remoteLocalTimelineToken3.value);
+	defaultStore.set('remoteLocalTimelineDomain4', remoteLocalTimelineDomain4.value);
+	defaultStore.set('remoteLocalTimelineToken4', remoteLocalTimelineToken4.value);
+	defaultStore.set('remoteLocalTimelineDomain5', remoteLocalTimelineDomain5.value);
+	defaultStore.set('remoteLocalTimelineToken5', remoteLocalTimelineToken5.value);
+	defaultStore.set('remoteLocalTimelineName1', remoteLocalTimelineName1.value);
+	defaultStore.set('remoteLocalTimelineName2', remoteLocalTimelineName2.value);
+	defaultStore.set('remoteLocalTimelineName3', remoteLocalTimelineName3.value);
+	defaultStore.set('remoteLocalTimelineName4', remoteLocalTimelineName4.value);
+	defaultStore.set('remoteLocalTimelineName5', remoteLocalTimelineName5.value);
+	await reloadAsk();
 }
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;

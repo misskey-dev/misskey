@@ -658,6 +658,7 @@ export interface Locale {
     "medium": string;
     "small": string;
     "generateAccessToken": string;
+    "accessToken": string;
     "permission": string;
     "adminPermission": string;
     "enableAll": string;
