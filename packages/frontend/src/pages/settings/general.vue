@@ -216,13 +216,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkFoldableSection>
-    <MkFoldableSection>
+    <MkFoldableSection  :defaultOpen="false">
 
         <template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
         <div class="_gaps_m">
-            <MkFoldableSection>
+            <MkFoldableSection  :defaultOpen="false">
                 <template #header>{{ i18n.ts.accessToken }} の発行の仕方</template>
-            <img width="400" href="https://files.prismisskey.space/misskey/676e4b79-7897-4ea9-b074-a98139312f76.gif">
+            <img width="400" src="https://files.prismisskey.space/misskey/676e4b79-7897-4ea9-b074-a98139312f76.gif">
             </MkFoldableSection>
             <div v-if="maxLocalTimeline >= 1" >
                 <MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
