@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<code v-if="inline" :class="$style.codeInlineRoot">{{ code }}</code>
-<div v-else :class="$style.codeBlockRoot">
+<div :class="$style.codeBlockRoot">
 	<button :class="$style.codeBlockCopyButton" class="_button" @click="copy">
 		<i class="ti ti-copy"></i>
 	</button>
@@ -36,7 +35,6 @@ import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 const props = defineProps<{
 	code: string;
 	lang?: string;
-	inline?: boolean;
 }>();
 
 const show = ref(!defaultStore.state.dataSaver.code);
@@ -64,16 +62,6 @@ function copy() {
 	&:hover {
 		opacity: 0.8;
 	}
-}
-
-.codeInlineRoot {
-	display: inline-block;
-	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-	overflow-wrap: anywhere;
-	color: #D4D4D4;
-	background: #1E1E1E;
-	padding: .1em;
-	border-radius: .3em;
 }
 
 .codeBlockFallbackRoot {
