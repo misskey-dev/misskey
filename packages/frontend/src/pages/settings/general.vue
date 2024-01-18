@@ -511,7 +511,6 @@ async function remoteLocaltimelineSave() {
         type: 'success',
         text: i18n.ts.saved,
     });
-    await reloadAsk();
     defaultStore.set('remoteLocalTimelineDomain1', remoteLocalTimelineDomain1.value);
     defaultStore.set('remoteLocalTimelineToken1', remoteLocalTimelineToken1.value);
     defaultStore.set('remoteLocalTimelineDomain2', remoteLocalTimelineDomain2.value);
@@ -527,7 +526,7 @@ async function remoteLocaltimelineSave() {
     defaultStore.set('remoteLocalTimelineName3', remoteLocalTimelineName3.value);
     defaultStore.set('remoteLocalTimelineName4', remoteLocalTimelineName4.value);
     defaultStore.set('remoteLocalTimelineName5', remoteLocalTimelineName5.value);
-
+		await reloadAsk();
 }
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
