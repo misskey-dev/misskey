@@ -63,7 +63,7 @@ const history = ref<{ path: string; key: any; }[]>([{
 	key: windowRouter.getCurrentKey(),
 }]);
 const buttonsLeft = computed(() => {
-	const buttons = [];
+	const buttons: any[] = [];
 
 	if (history.value.length > 1) {
 		buttons.push({
@@ -92,6 +92,13 @@ const reloadCount = ref(0);
 windowRouter.addListener('push', ctx => {
 	history.value.push({ path: ctx.path, key: ctx.key });
 });
+
+windowRouter.addListener('replace', ctx => {
+	history.value.pop();
+	history.value.push({ path: ctx.path, key: ctx.key });
+});
+
+windowRouter.init();
 
 provide('router', windowRouter);
 provideMetadataReceiver((info) => {

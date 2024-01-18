@@ -5,6 +5,7 @@
 
 import { App, AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
 import { IRouter, Router } from '@/nirax.js';
+import type { RouteDef } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -15,7 +16,7 @@ const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
-const routes = [{
+const routes: RouteDef[] = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
 }, {
@@ -332,6 +333,10 @@ const routes = [{
 	component: page(() => import('@/pages/registry.vue')),
 }, {
 	path: '/install-extentions',
+	redirect: '/install-extensions',
+	loginRequired: true,
+}, {
+	path: '/install-extensions',
 	component: page(() => import('@/pages/install-extentions.vue')),
 	loginRequired: true,
 }, {
@@ -561,8 +566,6 @@ export function setupRouter(app: App) {
 
 	const mainRouter = createRouterImpl(location.pathname + location.search + location.hash);
 
-	window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
-
 	window.addEventListener('popstate', (event) => {
 		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
 	});
@@ -570,6 +573,12 @@ export function setupRouter(app: App) {
 	mainRouter.addListener('push', ctx => {
 		window.history.pushState({ key: ctx.key }, '', ctx.path);
 	});
+
+	mainRouter.addListener('replace', ctx => {
+		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.init();
 
 	setMainRouter(mainRouter);
 }
