@@ -93,10 +93,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				childId: me.id,
 			});
 
-			if (other === 0) {
-				publishMainStream(me.id, 'reversiNoInvites');
-			}
-
 			return game;
 		} else {
 			const child = targetUser;
@@ -113,7 +109,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 			const packed = await this.reversiMatchingsEntityService.pack(matching, child);
 			this.globalEventService.publishReversiStream(child.id, 'invited', { game: packed });
-			publishMainStream(child.id, 'reversiInvited', packed);
 
 			return null;
 		}
