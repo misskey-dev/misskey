@@ -69,8 +69,9 @@ export class I18n<T extends ILocale> {
 		return this.locale as Ts<T>;
 	}
 
-	// string にしているのは、ドット区切りでのパス指定を許可するため
-	// なるべくこのメソッド使うよりもlocale直接参照の方がvueのキャッシュ効いてパフォーマンスが良いかも
+	/**
+	 * @deprecated なるべくこのメソッド使うよりも locale 直接参照の方が vue のキャッシュ効いてパフォーマンスが良いかも
+	 */
 	public t<TKey extends FlattenKeys<T, string>>(key: TKey): string;
 	public t<TKey extends FlattenKeys<T, ParameterizedString<string>>>(key: TKey, args: { readonly [_ in ParametersOf<T, TKey>]: string | number }): string;
 	public t(key: string, args?: { readonly [_: string]: string | number }) {
