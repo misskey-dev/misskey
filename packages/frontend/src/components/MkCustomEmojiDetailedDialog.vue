@@ -10,9 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
       <MkSpacer>
         <div style="display: flex; flex-direction: column; gap: 1em;">
           <div :class="$style.emojiImgWrapper">
-            <MkCustomEmoji :name="emoji.name" :normal="true" style="height: 100%;"></MkCustomEmoji>
+            <MkCustomEmoji :name="emoji.name" :normal="true" :useOriginalSize="true" style="height: 100%;"></MkCustomEmoji>
           </div>
-          <MkKeyValue>
+          <MkKeyValue :copy="`:${emoji.name}:`">
             <template #key>{{ i18n.ts.name }}</template>
             <template #value>{{ emoji.name }}</template>
           </MkKeyValue>
@@ -41,12 +41,12 @@ SPDX-License-Identifier: AGPL-3.0-only
           </MkKeyValue>
           <MkKeyValue>
             <template #key>{{ i18n.ts.license }}</template>
-            <template #value>{{ emoji.license ?? i18n.ts.none }}</template>
+            <template #value><Mfm :text="emoji.license ?? i18n.ts.none" /></template>
           </MkKeyValue>
           <MkKeyValue :copy="emoji.url">
             <template #key>{{ i18n.ts.emojiUrl }}</template>
             <template #value>
-              <a :href="emoji.url" target="_blank">{{ emoji.url }}</a>
+              <MkLink :url="emoji.url" target="_blank">{{ emoji.url }}</MkLink>
             </template>
           </MkKeyValue>
         </div>
@@ -61,6 +61,7 @@ import { defineProps, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkLink from './MkLink.vue';
 const props = defineProps<{
   emoji: Misskey.entities.EmojiDetailed,
 }>();
@@ -94,6 +95,7 @@ const cancel = () => {
 
 .alias {
   display: inline-block;
+  word-break: break-all;
   padding: 3px 10px;
   background-color: var(--X5);
   border: solid 1px var(--divider);
