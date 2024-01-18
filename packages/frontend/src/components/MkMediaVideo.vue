@@ -176,7 +176,7 @@ const rangePercent = computed({
 		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.3);
+const volume = ref(.25);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!videoEl.value) return 0;
@@ -236,7 +236,7 @@ function toggleFullscreen() {
 
 function toggleMute() {
 	if (volume.value === 0) {
-		volume.value = .3;
+		volume.value = .25;
 	} else {
 		volume.value = 0;
 	}
