@@ -18,7 +18,7 @@ import type { MiSignin } from '@/models/Signin.js';
 import type { MiPage } from '@/models/Page.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { MiMeta } from '@/models/Meta.js';
-import { MiAvatarDecoration, MiRole, MiRoleAssignment } from '@/models/_.js';
+import { MiAvatarDecoration, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -159,6 +159,41 @@ export interface AdminEventTypes {
 		comment: string;
 	};
 }
+
+export interface ReversiEventTypes {
+	matched: {
+		game: Packed<'ReversiGame'>;
+	};
+	invited: {
+		game: Packed<'ReversiGame'>;
+	};
+}
+
+export interface ReversiGameEventTypes {
+	accept: boolean;
+	cancelAccept: undefined;
+	updateSettings: {
+		key: string;
+		value: any;
+	};
+	initForm: {
+		userId: MiUser['id'];
+		form: any;
+	};
+	updateForm: {
+		id: string;
+		value: any;
+	};
+	message: {
+		message: string;
+	};
+	set: {
+		pos: number;
+	};
+	check: {
+		crc32: string;
+	};
+}
 //#endregion
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
@@ -249,6 +284,14 @@ export type GlobalEvents = {
 		name: 'notesStream';
 		payload: Serialized<Packed<'Note'>>;
 	};
+	reversi: {
+		name: `reversiStream:${MiUser['id']}`;
+		payload: EventUnionFromDictionary<SerializedAll<ReversiEventTypes>>;
+	};
+	reversiGame: {
+		name: `reversiGameStream:${MiReversiGame['id']}`;
+		payload: EventUnionFromDictionary<SerializedAll<ReversiGameEventTypes>>;
+	};
 };
 
 // API event definitions
@@ -337,5 +380,15 @@ export class GlobalEventService {
 	@bindThis
 	public publishAdminStream<K extends keyof AdminEventTypes>(userId: MiUser['id'], type: K, value?: AdminEventTypes[K]): void {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishReversiStream<K extends keyof ReversiEventTypes>(userId: MiUser['id'], type: K, value?: ReversiEventTypes[K]): void {
+		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishReversiGameStream<K extends keyof ReversiGameEventTypes>(gameId: MiReversiGame['id'], type: K, value?: ReversiGameEventTypes[K]): void {
+		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }
