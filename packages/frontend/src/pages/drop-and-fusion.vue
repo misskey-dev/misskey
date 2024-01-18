@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 								<option value="sweets">SWEETS</option>
+								<option value="prismisskey">PRISMISSKEY</option>
 								<!--<option value="space">SPACE</option>-->
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>

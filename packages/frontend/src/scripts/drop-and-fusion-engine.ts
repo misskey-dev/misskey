@@ -981,8 +981,8 @@ const PRISMISSKEY_BASE_SIZE = 28;
 const PRISMISSKEY_MONOS: Mono[] = [{
 	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
 	level: 10,
-	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	shape: 'custom',
 	vertices: [[
 		{ 'x': 1680, 'y': 270 },
@@ -1005,7 +1005,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 		{ 'x': 1400, 'y': 670 },
 	]],
 	verticesSize: 1800,
-	score: 512,
+	score: 10000,
 	dropCandidate: false,
 }, {
 	id: '7b70f4af-1c01-45fd-af72-61b1f01e03d1',
@@ -1038,13 +1038,13 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 		],
 	],
 	verticesSize: 1300,
-	score: 256,
+	score: 1000,
 	dropCandidate: false,
 }, {
 	id: '41607ef3-b6d6-4829-95b6-3737bf8bb956',
 	level: 8,
-	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
-	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
+	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	shape: 'custom',
 	vertices: [
 		[
@@ -1072,7 +1072,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 		],
 	],
 	verticesSize: 1300,
-	score: 128,
+	score: 800,
 	dropCandidate: false,
 }, {
 	id: '8a8310d2-0374-460f-bb50-ca9cd3ee3416',
@@ -1088,7 +1088,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
 	shape: 'circle',
-	score: 32,
+	score: 500,
 	dropCandidate: false,
 }, {
 	id: '2294734d-7bb8-4781-bb7b-ef3820abf3d0',
@@ -1155,7 +1155,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 	sizeX: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25,
 	sizeY: PRISMISSKEY_BASE_SIZE * 1.25 * 1.25 * 1.25,
 	shape: 'rectangle',
-	score: 8,
+	score: 200,
 	dropCandidate: true,
 }, {
 	id: 'd0c74815-fc1c-4fbe-9953-c92e4b20f919',
@@ -1193,7 +1193,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 		],
 	],
 	verticesSize: 128,
-	score: 4,
+	score: 100,
 	dropCandidate: true,
 }, {
 	id: 'd8fbd70e-611d-402d-87da-1a7fd8cd2c8d',
@@ -1231,7 +1231,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 		],
 	],
 	verticesSize: 1536,
-	score: 2,
+	score: 50,
 	dropCandidate: true,
 }, {
 	id: '35e476ee-44bd-4711-ad42-87be245d3efd',
@@ -1268,7 +1268,7 @@ const PRISMISSKEY_MONOS: Mono[] = [{
 		],
 	],
 	verticesSize: 128,
-	score: 1,
+	score: 10,
 	dropCandidate: true,
 }];
 export class DropAndFusionGame extends EventEmitter<{
