@@ -7,27 +7,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
 	<MkSpacer :contentMax="800">
-		<div ref="rootEl" v-hotkey.global="keymap">
-			<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
-				{{ i18n.ts._timelineDescription[src] }}
-			</MkInfo>
-			<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
-
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-			<div :class="$style.tl">
-				<MkTimeline
-					ref="tlComponent"
-					:key="src + withRenotes + withReplies + onlyFiles"
-					:src="src.split(':')[0]"
-					:list="src.split(':')[1]"
-					:withRenotes="withRenotes"
-					:withReplies="withReplies"
-					:onlyFiles="onlyFiles"
-					:sound="true"
-					@queue="queueUpdated"
-				/>
+		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
+			<div :key="src + withRenotes + withReplies + onlyFiles" ref="rootEl" v-hotkey.global="keymap">
+				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
+					{{ i18n.ts._timelineDescription[src] }}
+				</MkInfo>
+				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+				<div :class="$style.tl">
+					<MkTimeline
+						ref="tlComponent"
+						:key="src + withRenotes + withReplies + onlyFiles"
+						:src="src.split(':')[0]"
+						:list="src.split(':')[1]"
+						:withRenotes="withRenotes"
+						:withReplies="withReplies"
+						:onlyFiles="onlyFiles"
+						:sound="true"
+						@queue="queueUpdated"
+					/>
+				</div>
 			</div>
-		</div>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -38,6 +39,7 @@ import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -69,7 +71,9 @@ const withRenotes = ref(true);
 const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);
 const onlyFiles = ref(false);
 
-watch(src, () => queue.value = 0);
+watch(src, () => {
+	queue.value = 0;
+});
 
 watch(withReplies, (x) => {
 	if ($i) defaultStore.set('tlWithReplies', x);

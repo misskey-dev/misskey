@@ -1211,6 +1211,7 @@ export interface Locale {
     "ranking": string;
     "lastNDays": string;
     "backToTitle": string;
+    "enableHorizontalSwipe": string;
     "abuseReportCategory": string;
     "selectCategory": string;
     "reportComplete": string;
