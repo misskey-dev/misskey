@@ -1,10 +1,10 @@
 import { mkdir, writeFile } from 'fs/promises';
-import { OpenAPIV3 } from 'openapi-types';
+import { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
-import SwaggerParser from '@apidevtools/swagger-parser';
+import OpenAPIParser from '@readme/openapi-parser';
 import openapiTS from 'openapi-typescript';
 
-function generateVersionHeaderComment(openApiDocs: OpenAPIV3.Document): string {
+function generateVersionHeaderComment(openApiDocs: OpenAPIV3_1.Document): string {
 	const contents = {
 		version: openApiDocs.info.version,
 		generatedAt: new Date().toISOString(),
@@ -21,7 +21,7 @@ function generateVersionHeaderComment(openApiDocs: OpenAPIV3.Document): string {
 }
 
 async function generateBaseTypes(
-	openApiDocs: OpenAPIV3.Document,
+	openApiDocs: OpenAPIV3_1.Document,
 	openApiJsonPath: string,
 	typeFileName: string,
 ) {
@@ -47,7 +47,7 @@ async function generateBaseTypes(
 }
 
 async function generateSchemaEntities(
-	openApiDocs: OpenAPIV3.Document,
+	openApiDocs: OpenAPIV3_1.Document,
 	typeFileName: string,
 	outputPath: string,
 ) {
@@ -71,7 +71,7 @@ async function generateSchemaEntities(
 }
 
 async function generateEndpoints(
-	openApiDocs: OpenAPIV3.Document,
+	openApiDocs: OpenAPIV3_1.Document,
 	typeFileName: string,
 	entitiesOutputPath: string,
 	endpointOutputPath: string,
@@ -79,7 +79,7 @@ async function generateEndpoints(
 	const endpoints: Endpoint[] = [];
 
 	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
-	const paths = openApiDocs.paths;
+	const paths = openApiDocs.paths ?? {};
 	const postPathItems = Object.keys(paths)
 		.map(it => paths[it]?.post)
 		.filter(filterUndefined);
@@ -160,7 +160,7 @@ async function generateEndpoints(
 }
 
 async function generateApiClientJSDoc(
-	openApiDocs: OpenAPIV3.Document,
+	openApiDocs: OpenAPIV3_1.Document,
 	apiClientFileName: string,
 	endpointsFileName: string,
 	warningsOutputPath: string,
@@ -168,7 +168,7 @@ async function generateApiClientJSDoc(
 	const endpoints: { operationId: string; description: string; }[] = [];
 
 	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
-	const paths = openApiDocs.paths;
+	const paths = openApiDocs.paths ?? {};
 	const postPathItems = Object.keys(paths)
 		.map(it => paths[it]?.post)
 		.filter(filterUndefined);
@@ -221,21 +221,21 @@ async function generateApiClientJSDoc(
 	await writeFile(warningsOutputPath, endpointOutputLine.join('\n'));
 }
 
-function isRequestBodyObject(value: unknown): value is OpenAPIV3.RequestBodyObject {
+function isRequestBodyObject(value: unknown): value is OpenAPIV3_1.RequestBodyObject {
 	if (!value) {
 		return false;
 	}
 
-	const { content } = value as Record<keyof OpenAPIV3.RequestBodyObject, unknown>;
+	const { content } = value as Record<keyof OpenAPIV3_1.RequestBodyObject, unknown>;
 	return content !== undefined;
 }
 
-function isResponseObject(value: unknown): value is OpenAPIV3.ResponseObject {
+function isResponseObject(value: unknown): value is OpenAPIV3_1.ResponseObject {
 	if (!value) {
 		return false;
 	}
 
-	const { description } = value as Record<keyof OpenAPIV3.ResponseObject, unknown>;
+	const { description } = value as Record<keyof OpenAPIV3_1.ResponseObject, unknown>;
 	return description !== undefined;
 }
 
@@ -330,7 +330,7 @@ async function main() {
 	await mkdir(generatePath, { recursive: true });
 
 	const openApiJsonPath = './api.json';
-	const openApiDocs = await SwaggerParser.validate(openApiJsonPath) as OpenAPIV3.Document;
+	const openApiDocs = await OpenAPIParser.parse(openApiJsonPath) as OpenAPIV3_1.Document;
 
 	const typeFileName = './built/autogen/types.ts';
 	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);

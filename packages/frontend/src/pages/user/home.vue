@@ -110,11 +110,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'following')">
+						<MkA v-if="isFollowingVisibleForMe(user)" :to="userPage(user, 'following')">
 							<b>{{ number(user.followingCount) }}</b>
 							<span>{{ i18n.ts.following }}</span>
 						</MkA>
-						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'followers')">
+						<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
 						</MkA>
@@ -166,14 +166,13 @@ import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import MkNotes from '@/components/MkNotes.vue';
-import { api } from '@/os.js';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -216,7 +215,7 @@ const moderationNote = ref(props.user.moderationNote);
 const editModerationNote = ref(false);
 
 watch(moderationNote, async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
+	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
 
 const style = computed(() => {
@@ -267,7 +266,7 @@ function adjustMemoTextarea() {
 }
 
 async function updateMemo() {
-	await api('users/update-memo', {
+	await misskeyApi('users/update-memo', {
 		memo: memoDraft.value,
 		userId: props.user.id,
 	});

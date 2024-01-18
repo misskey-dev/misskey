@@ -55,25 +55,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, shallowRef, computed } from 'vue';
+import { shallowRef, computed } from 'vue';
 import XNotificationConfig from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const.js';
 
-const nonConfigurableNotificationTypes = ['note'];
+const $i = signinRequired();
+
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'achievementEarned'];
 
 const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
-const userLists = await os.api('users/lists/list');
+const userLists = await misskeyApi('users/lists/list');
 
 async function readAllUnreadNotes() {
 	await os.apiWithDialog('i/read-all-unread-notes');
@@ -86,11 +89,11 @@ async function readAllNotifications() {
 async function updateReceiveConfig(type, value) {
 	await os.apiWithDialog('i/update', {
 		notificationRecieveConfig: {
-			...$i!.notificationRecieveConfig,
+			...$i.notificationRecieveConfig,
 			[type]: value,
 		},
 	}).then(i => {
-		$i!.notificationRecieveConfig = i.notificationRecieveConfig;
+		$i.notificationRecieveConfig = i.notificationRecieveConfig;
 	});
 }
 
@@ -107,7 +110,7 @@ function onChangeSendReadMessage(v: boolean) {
 }
 
 function testNotification(): void {
-	os.api('notifications/test-notification');
+	misskeyApi('notifications/test-notification');
 }
 
 const headerActions = computed(() => []);

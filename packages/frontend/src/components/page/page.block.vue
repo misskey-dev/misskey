@@ -14,7 +14,7 @@ import XText from './page.text.vue';
 import XSection from './page.section.vue';
 import XImage from './page.image.vue';
 import XNote from './page.note.vue';
-import { Block } from './block.type';
+import { Block } from './block.type.js';
 
 function getComponent(type: string) {
 	switch (type) {

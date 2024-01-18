@@ -11,7 +11,7 @@ import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
-import type { MiRole, RolesRepository, RoleAssignmentsRepository, UsersRepository, MiUser } from '@/models/_.js';
+import type { MiRole, MiUser, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { genAidx } from '@/misc/id/aidx.js';
@@ -19,6 +19,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { sleep } from '../utils.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
@@ -32,6 +33,7 @@ describe('RoleService', () => {
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let metaService: jest.Mocked<MetaService>;
+	let notificationService: jest.Mocked<NotificationService>;
 	let clock: lolex.InstalledClock;
 
 	function createUser(data: Partial<MiUser> = {}) {
@@ -71,6 +73,16 @@ describe('RoleService', () => {
 				CacheService,
 				IdService,
 				GlobalEventService,
+				{
+					provide: NotificationService,
+					useFactory: () => ({
+						createNotification: jest.fn(),
+					}),
+				},
+				{
+					provide: NotificationService.name,
+					useExisting: NotificationService,
+				},
 			],
 		})
 			.useMocker((token) => {
@@ -93,6 +105,9 @@ describe('RoleService', () => {
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
 
 		metaService = app.get<MetaService>(MetaService) as jest.Mocked<MetaService>;
+		notificationService = app.get<NotificationService>(NotificationService) as jest.Mocked<NotificationService>;
+
+		await roleService.onModuleInit();
 	});
 
 	afterEach(async () => {
@@ -271,6 +286,59 @@ describe('RoleService', () => {
 
 			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
+		});
+	});
+
+	describe('assign', () => {
+		test('公開ロールの場合は通知される', async () => {
+			const user = await createUser();
+			const role = await createRole({
+				isPublic: true,
+				name: 'a',
+			});
+
+			await roleService.assign(user.id, role.id);
+
+			clock.uninstall();
+			await sleep(100);
+
+			const assignments = await roleAssignmentsRepository.find({
+				where: {
+					userId: user.id,
+					roleId: role.id,
+				},
+			});
+			expect(assignments).toHaveLength(1);
+
+			expect(notificationService.createNotification).toHaveBeenCalled();
+			expect(notificationService.createNotification.mock.lastCall![0]).toBe(user.id);
+			expect(notificationService.createNotification.mock.lastCall![1]).toBe('roleAssigned');
+			expect(notificationService.createNotification.mock.lastCall![2]).toEqual({
+				roleId: role.id,
+			});
+		});
+
+		test('非公開ロールの場合は通知されない', async () => {
+			const user = await createUser();
+			const role = await createRole({
+				isPublic: false,
+				name: 'a',
+			});
+
+			await roleService.assign(user.id, role.id);
+
+			clock.uninstall();
+			await sleep(100);
+
+			const assignments = await roleAssignmentsRepository.find({
+				where: {
+					userId: user.id,
+					roleId: role.id,
+				},
+			});
+			expect(assignments).toHaveLength(1);
+
+			expect(notificationService.createNotification).not.toHaveBeenCalled();
 		});
 	});
 });

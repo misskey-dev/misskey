@@ -13,10 +13,17 @@ import { Chart } from 'chart.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { initChart } from '@/scripts/init-chart.js';
 
+export type InstanceForPie = {
+	name: string,
+	color: string | null,
+	value: number,
+	onClick?: () => void
+};
+
 initChart();
 
 const props = defineProps<{
-	data: { name: string; value: number; color: string; onClick?: () => void }[];
+	data: InstanceForPie[];
 }>();
 
 const chartEl = shallowRef<HTMLCanvasElement>(null);
