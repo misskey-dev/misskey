@@ -168,11 +168,35 @@ export class FileServerService {
 				}
 
 				if (!image) {
-					image = {
-						data: fs.createReadStream(file.path),
-						ext: file.ext,
-						type: file.mime,
-					};
+					if (request.headers.range && file.file.size > 0) {
+						const range = request.headers.range as string;
+						const parts = range.replace(/bytes=/, '').split('-');
+						const start = parseInt(parts[0], 10);
+						let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
+						if (end > file.file.size) {
+							end = file.file.size - 1;
+						}
+						const chunksize = end - start + 1;
+
+						image = {
+							data: fs.createReadStream(file.path, {
+								start,
+								end,
+							}),
+							ext: file.ext,
+							type: file.mime,
+						};
+
+						reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
+						reply.header('Accept-Ranges', 'bytes');
+						reply.header('Content-Length', chunksize);
+					} else {
+						image = {
+							data: fs.createReadStream(file.path),
+							ext: file.ext,
+							type: file.mime,
+						};
+					}
 				}
 
 				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
@@ -203,11 +227,54 @@ export class FileServerService {
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.mime) ? file.mime : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition', contentDisposition('inline', filename));
+
+				if (request.headers.range && file.file.size > 0) {
+					const range = request.headers.range as string;
+					const parts = range.replace(/bytes=/, '').split('-');
+					const start = parseInt(parts[0], 10);
+					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
+					if (end > file.file.size) {
+						end = file.file.size - 1;
+					}
+					const chunksize = end - start + 1;
+					const fileStream = fs.createReadStream(file.path, {
+						start,
+						end,
+					});
+					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
+					reply.header('Accept-Ranges', 'bytes');
+					reply.header('Content-Length', chunksize);
+					reply.code(206);
+					return fileStream;
+				}
+
 				return fs.createReadStream(file.path);
 			} else {
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition', contentDisposition('inline', file.filename));
+
+				if (request.headers.range && file.file.size > 0) {
+					const range = request.headers.range as string;
+					const parts = range.replace(/bytes=/, '').split('-');
+					const start = parseInt(parts[0], 10);
+					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
+					console.log(end);
+					if (end > file.file.size) {
+						end = file.file.size - 1;
+					}
+					const chunksize = end - start + 1;
+					const fileStream = fs.createReadStream(file.path, {
+						start,
+						end,
+					});
+					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
+					reply.header('Accept-Ranges', 'bytes');
+					reply.header('Content-Length', chunksize);
+					reply.code(206);
+					return fileStream;
+				}
+
 				return fs.createReadStream(file.path);
 			}
 		} catch (e) {
@@ -340,11 +407,35 @@ export class FileServerService {
 			}
 
 			if (!image) {
-				image = {
-					data: fs.createReadStream(file.path),
-					ext: file.ext,
-					type: file.mime,
-				};
+				if (request.headers.range && file.file && file.file.size > 0) {
+					const range = request.headers.range as string;
+					const parts = range.replace(/bytes=/, '').split('-');
+					const start = parseInt(parts[0], 10);
+					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
+					if (end > file.file.size) {
+						end = file.file.size - 1;
+					}
+					const chunksize = end - start + 1;
+
+					image = {
+						data: fs.createReadStream(file.path, {
+							start,
+							end,
+						}),
+						ext: file.ext,
+						type: file.mime,
+					};
+
+					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
+					reply.header('Accept-Ranges', 'bytes');
+					reply.header('Content-Length', chunksize);
+				} else {
+					image = {
+						data: fs.createReadStream(file.path),
+						ext: file.ext,
+						type: file.mime,
+					};
+				}
 			}
 
 			if ('cleanup' in file) {

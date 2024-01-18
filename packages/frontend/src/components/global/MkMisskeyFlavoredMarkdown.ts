@@ -13,6 +13,7 @@ import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkCode from '@/components/MkCode.vue';
+import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
@@ -266,7 +267,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						) b_style = 'solid';
 						const width = parseFloat(token.props.args.width ?? '1');
 						const radius = parseFloat(token.props.args.radius ?? '0');
-						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px`;
+						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px;${token.props.args.noclip ? '' : ' overflow: clip;'}`;
 						break;
 					}
 					case 'ruby': {
@@ -373,10 +374,9 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 			}
 
 			case 'inlineCode': {
-				return [h(MkCode, {
+				return [h(MkCodeInline, {
 					key: Math.random(),
 					code: token.props.code,
-					inline: true,
 				})];
 			}
 
