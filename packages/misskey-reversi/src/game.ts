@@ -31,7 +31,7 @@ export type Undo = {
 	turn: Color | null;
 };
 
-export class ReversiGame {
+export class Game {
 	public map: MapCell[];
 	public mapWidth: number;
 	public mapHeight: number;
@@ -79,13 +79,13 @@ export class ReversiGame {
 		return this.board.filter(x => x === WHITE).length;
 	}
 
-	public transformPosToXy(pos: number): number[] {
+	public posToXy(pos: number): number[] {
 		const x = pos % this.mapWidth;
 		const y = Math.floor(pos / this.mapWidth);
 		return [x, y];
 	}
 
-	public transformXyToPos(x: number, y: number): number {
+	public xyToPos(x: number, y: number): number {
 		return x + (y * this.mapWidth);
 	}
 
@@ -136,7 +136,7 @@ export class ReversiGame {
 	}
 
 	public mapDataGet(pos: number): MapCell {
-		const [x, y] = this.transformPosToXy(pos);
+		const [x, y] = this.posToXy(pos);
 		return x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight ? 'null' : this.map[pos];
 	}
 
@@ -164,26 +164,26 @@ export class ReversiGame {
 		const enemyColor = !color;
 
 		const diffVectors: [number, number][] = [
-			[  0,  -1], // 上
-			[ +1,  -1], // 右上
-			[ +1,   0], // 右
-			[ +1,  +1], // 右下
-			[  0,  +1], // 下
-			[ -1,  +1], // 左下
-			[ -1,   0], // 左
-			[ -1,  -1]  // 左上
+			[ 0, -1], // 上
+			[+1, -1], // 右上
+			[+1,  0], // 右
+			[+1, +1], // 右下
+			[ 0, +1], // 下
+			[-1, +1], // 左下
+			[-1,  0], // 左
+			[-1, -1]  // 左上
 		];
 
 		const effectsInLine = ([dx, dy]: [number, number]): number[] => {
 			const nextPos = (x: number, y: number): [number, number] => [x + dx, y + dy];
 
 			const found: number[] = []; // 挟めるかもしれない相手の石を入れておく配列
-			let [x, y] = this.transformPosToXy(initPos);
+			let [x, y] = this.posToXy(initPos);
 			while (true) {
 				[x, y] = nextPos(x, y);
 
 				// 座標が指し示す位置がボード外に出たとき
-				if (this.opts.loopedBoard && this.transformXyToPos(
+				if (this.opts.loopedBoard && this.xyToPos(
 					(x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth),
 					(y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight)) === initPos)
 						// 盤面の境界でループし、自分が石を置く位置に戻ってきたとき、挟めるようにしている (ref: Test4のマップ)
@@ -191,7 +191,7 @@ export class ReversiGame {
 				else if (x === -1 || y === -1 || x === this.mapWidth || y === this.mapHeight)
 					return []; // 挟めないことが確定 (盤面外に到達)
 
-				const pos = this.transformXyToPos(x, y);
+				const pos = this.xyToPos(x, y);
 				if (this.mapDataGet(pos) === 'null') return []; // 挟めないことが確定 (配置不可能なマスに到達)
 				const stone = this.board[pos];
 				if (stone === null) return []; // 挟めないことが確定 (石が置かれていないマスに到達)
