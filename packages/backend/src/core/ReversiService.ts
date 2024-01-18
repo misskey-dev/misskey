@@ -11,6 +11,8 @@ import type {
 	MiReversiGame,
 	MiRole,
 	MiRoleAssignment,
+	ReversiGamesRepository,
+	ReversiMatchingsRepository,
 	RoleAssignmentsRepository,
 	RolesRepository,
 	UsersRepository,
@@ -30,6 +32,7 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { ReversiMatchingEntityService } from '@/core/entities/ReversiMatchingEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 @Injectable()
@@ -51,19 +54,18 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.rolesRepository)
-		private rolesRepository: RolesRepository,
+		@Inject(DI.reversiGamesRepository)
+		private reversiGamesRepository: ReversiGamesRepository,
 
-		@Inject(DI.roleAssignmentsRepository)
-		private roleAssignmentsRepository: RoleAssignmentsRepository,
+		@Inject(DI.reversiMatchingsRepository)
+		private reversiMatchingsRepository: ReversiMatchingsRepository,
 
 		private metaService: MetaService,
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
+		private reversiMatchingsEntityService: ReversiMatchingEntityService,
 		private idService: IdService,
-		private moderationLogService: ModerationLogService,
-		private fanoutTimelineService: FanoutTimelineService,
 	) {
 	}
 
@@ -72,47 +74,63 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async getModerators(includeAdmins = true): Promise<MiUser[]> {
-		const ids = await this.getModeratorIds(includeAdmins);
-		const users = ids.length > 0 ? await this.usersRepository.findBy({
-			id: In(ids),
-		}) : [];
-		return users;
-	}
-
-	@bindThis
-	public async create(values: Partial<MiRole>, moderator?: MiUser): Promise<MiRole> {
-		const date = new Date();
-		const created = await this.rolesRepository.insert({
-			id: this.idService.gen(date.getTime()),
-			updatedAt: date,
-			lastUsedAt: date,
-			name: values.name,
-			description: values.description,
-			color: values.color,
-			iconUrl: values.iconUrl,
-			target: values.target,
-			condFormula: values.condFormula,
-			isPublic: values.isPublic,
-			isAdministrator: values.isAdministrator,
-			isModerator: values.isModerator,
-			isExplorable: values.isExplorable,
-			asBadge: values.asBadge,
-			canEditMembersByModerator: values.canEditMembersByModerator,
-			displayOrder: values.displayOrder,
-			policies: values.policies,
-		}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
-
-		this.globalEventService.publishInternalEvent('roleCreated', created);
-
-		if (moderator) {
-			this.moderationLogService.log(moderator, 'createRole', {
-				roleId: created.id,
-				role: created,
-			});
+	public async match(me: MiUser, targetUser: MiUser): Promise<MiReversiGame | null> {
+		if (targetUser.id === me.id) {
+			throw new Error('You cannot match yourself.');
 		}
 
-		return created;
+		const exist = await this.reversiMatchingsRepository.findOneBy({
+			parentId: targetUser.id,
+			childId: me.id,
+		});
+
+		if (exist) {
+			this.reversiMatchingsRepository.delete(exist.id);
+
+			const game = await this.reversiGamesRepository.insert({
+				id: this.idService.gen(),
+				user1Id: exist.parentId,
+				user2Id: me.id,
+				user1Accepted: false,
+				user2Accepted: false,
+				isStarted: false,
+				isEnded: false,
+				logs: [],
+				map: eighteight.data,
+				bw: 'random',
+				isLlotheo: false,
+			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
+
+			publishReversiStream(exist.parentId, 'matched', await ReversiGames.pack(game, { id: exist.parentId }));
+
+			const other = await this.reversiMatchingsRepository.countBy({
+				childId: me.id,
+			});
+
+			if (other == 0) {
+				publishMainStream(me.id, 'reversiNoInvites');
+			}
+
+			return game;
+		} else {
+			const child = targetUser;
+
+			await this.reversiMatchingsRepository.delete({
+				parentId: me.id,
+			});
+
+			const matching = await this.reversiMatchingsRepository.insert({
+				id: this.idService.gen(),
+				parentId: me.id,
+				childId: child.id,
+			}).then(x => this.reversiMatchingsRepository.findOneByOrFail(x.identifiers[0]));
+
+			const packed = await this.reversiMatchingsEntityService.pack(matching, child);
+			publishReversiStream(child.id, 'invited', packed);
+			publishMainStream(child.id, 'reversiInvited', packed);
+
+			return null;
+		}
 	}
 
 	@bindThis

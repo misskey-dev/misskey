@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { IdService } from '@/core/IdService.js';
-import type { ReversiGamesRepository, ReversiMatchingsRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import { ReversiService } from '@/core/ReversiService.js';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../GetterService.js';
 
@@ -45,75 +44,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.reversiGamesRepository)
-		private reversiGamesRepository: ReversiGamesRepository,
-
-		@Inject(DI.reversiMatchingsRepository)
-		private reversiMatchingsRepository: ReversiMatchingsRepository,
-
 		private getterService: GetterService,
-		private idService: IdService,
+		private reversiService: ReversiService,
+		private reversiGameEntityService: ReversiGameEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.userId === me.id) {
-				throw new ApiError(meta.errors.isYourself);
-			}
+			if (ps.userId === me.id) throw new ApiError(meta.errors.isYourself);
 
-			const exist = await this.reversiMatchingsRepository.findOneBy({
-				parentId: ps.userId,
-				childId: me.id,
+			const child = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
-			if (exist) {
-				this.reversiMatchingsRepository.delete(exist.id);
+			const game = await this.reversiService.match(me, child);
 
-				const game = await this.reversiGamesRepository.insert({
-					id: this.idService.gen(),
-					user1Id: exist.parentId,
-					user2Id: me.id,
-					user1Accepted: false,
-					user2Accepted: false,
-					isStarted: false,
-					isEnded: false,
-					logs: [],
-					map: eighteight.data,
-					bw: 'random',
-					isLlotheo: false,
-				});
+			if (game == null) return;
 
-				publishReversiStream(exist.parentId, 'matched', await ReversiGames.pack(game, { id: exist.parentId }));
-
-				const other = await this.reversiMatchingsRepository.countBy({
-					childId: me.id,
-				});
-
-				if (other == 0) {
-					publishMainStream(me.id, 'reversiNoInvites');
-				}
-
-				return await ReversiGames.pack(game, me);
-			} else {
-				const child = await this.getterService.getUser(ps.userId).catch(err => {
-					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-					throw err;
-				});
-
-				await this.reversiMatchingsRepository.delete({
-					parentId: me.id,
-				});
-
-				const matching = await this.reversiMatchingsRepository.insert({
-					id: this.idService.gen(),
-					parentId: me.id,
-					childId: child.id,
-				});
-
-				const packed = await ReversiMatchings.pack(matching, child);
-				publishReversiStream(child.id, 'invited', packed);
-				publishMainStream(child.id, 'reversiInvited', packed);
-
-				return;
-			}
+			return await this.reversiGameEntityService.pack(game, me);
 		});
 	}
 }
