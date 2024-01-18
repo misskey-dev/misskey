@@ -23,6 +23,8 @@
 - Feat: 音声・映像プレイヤーを追加
 - Feat: 絵文字の詳細ダイアログを追加
 - Feat: 枠線をつけるMFM`$[border.width=1,style=solid,color=fff,radius=0 ...]`を追加
+  - デフォルトで枠線からはみ出る部分が隠されるようにしました。初期と同じ挙動にするには`$[border.noclip`が必要です
+- Enhance: MFM等のコードブロックに全文コピー用のボタンを追加
 - Enhance: ハッシュタグ入力時に、本文の末尾の行に何も書かれていない場合は新たにスペースを追加しないように
 - Enhance: チャンネルノートのピン留めをノートのメニューからできるように
 - Enhance: 管理者の場合はAPI tokenの発行画面で管理機能に関する権限を付与できるように
@@ -48,6 +50,7 @@
 - Fix: `notes/create`で、`text`が空白文字のみで構成されているか`null`であって、かつ`text`だけであるリクエストに対するレスポンスが400になるように変更
 - Fix: `notes/create`で、`text`が空白文字のみで構成されていてかつリノート、ファイルまたは投票を含んでいるリクエストに対するレスポンスの`text`が`""`から`null`になるように変更
 - Fix: ipv4とipv6の両方が利用可能な環境でallowedPrivateNetworksが設定されていた場合プライベートipの検証ができていなかった問題を修正
+- Fix: properly handle cc followers
 
 ## 2023.12.2
 
