@@ -25,6 +25,10 @@ type ParametersOf<T extends ILocale, TKey extends FlattenKeys<T, ParameterizedSt
 			: never
 	: never;
 
+type Ts<T extends ILocale> = {
+	readonly [K in keyof T as T[K] extends ParameterizedString<string> ? never : K]: T[K] extends ILocale ? Ts<T[K]> : string;
+};
+
 export class I18n<T extends ILocale> {
 	constructor(private locale: T) {
 		//#region BIND
@@ -32,7 +36,7 @@ export class I18n<T extends ILocale> {
 		//#endregion
 	}
 
-	public get ts(): T {
+	public get ts(): Ts<T> {
 		if (_DEV_) {
 			class Handler<TTarget extends object> implements ProxyHandler<TTarget> {
 				get(target: TTarget, p: string | symbol): unknown {
