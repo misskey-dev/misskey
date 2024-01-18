@@ -63,10 +63,10 @@ export class I18n<T extends ILocale> {
 				}
 			}
 
-			return new Proxy(this.locale, new Handler());
+			return new Proxy(this.locale, new Handler()) as Ts<T>;
 		}
 
-		return this.locale;
+		return this.locale as Ts<T>;
 	}
 
 	// string にしているのは、ドット区切りでのパス指定を許可するため
