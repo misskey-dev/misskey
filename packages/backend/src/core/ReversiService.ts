@@ -137,7 +137,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				user1Accepted: isAccepted,
 			});
 
-			this.globalEventService.publishReversiGameStream(game.id, 'changeAccepts', {
+			this.globalEventService.publishReversiGameStream(game.id, 'changeAcceptingStates', {
 				user1: isAccepted,
 				user2: game.user2Accepted,
 			});
@@ -148,7 +148,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				user2Accepted: isAccepted,
 			});
 
-			this.globalEventService.publishReversiGameStream(game.id, 'changeAccepts', {
+			this.globalEventService.publishReversiGameStream(game.id, 'changeAcceptingStates', {
 				user1: game.user1Accepted,
 				user2: isAccepted,
 			});
@@ -216,10 +216,30 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				}
 				//#endregion
 
-				this.globalEventService.publishReversiGameStream(game.id, 'started',
-					await this.reversiGameEntityService.pack(game.id, user));
+				this.globalEventService.publishReversiGameStream(game.id, 'started', {
+					game: await this.reversiGameEntityService.pack(game.id, user),
+				});
 			}, 3000);
 		}
+	}
+
+	@bindThis
+	public async updateSettings(game: MiReversiGame, user: MiUser, key: string, value: any) {
+		if (game.isStarted) return;
+		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
+		if ((game.user1Id === user.id) && game.user1Accepted) return;
+		if ((game.user2Id === user.id) && game.user2Accepted) return;
+
+		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard'].includes(key)) return;
+
+		await this.reversiGamesRepository.update(game.id, {
+			[key]: value,
+		});
+
+		this.globalEventService.publishReversiGameStream(game.id, 'updateSettings', {
+			key: key,
+			value: value,
+		});
 	}
 
 	@bindThis

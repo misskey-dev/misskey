@@ -46,8 +46,6 @@ class ReversiGameChannel extends Channel {
 			case 'accept': this.accept(true); break;
 			case 'cancelAccept': this.accept(false); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
-			case 'initForm': this.initForm(body); break;
-			case 'updateForm': this.updateForm(body.id, body.value); break;
 			case 'message': this.message(body); break;
 			case 'putStone': this.putStone(body.pos); break;
 			case 'check': this.check(body.crc32); break;
@@ -58,81 +56,11 @@ class ReversiGameChannel extends Channel {
 	private async updateSettings(key: string, value: any) {
 		if (this.user == null) return;
 
+		// TODO: キャッシュしたい
 		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
 		if (game == null) throw new Error('game not found');
 
-		if (game.isStarted) return;
-		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
-		if ((game.user1Id === this.user.id) && game.user1Accepted) return;
-		if ((game.user2Id === this.user.id) && game.user2Accepted) return;
-
-		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard'].includes(key)) return;
-
-		await this.reversiGamesRepository.update(this.gameId!, {
-			[key]: value,
-		});
-
-		publishReversiGameStream(this.gameId!, 'updateSettings', {
-			key: key,
-			value: value,
-		});
-	}
-
-	@bindThis
-	private async initForm(form: any) {
-		if (this.user == null) return;
-
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		if (game.isStarted) return;
-		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
-
-		const set = game.user1Id === this.user.id ? {
-			form1: form,
-		} : {
-			form2: form,
-		};
-
-		await this.reversiGamesRepository.update(this.gameId!, set);
-
-		publishReversiGameStream(this.gameId!, 'initForm', {
-			userId: this.user.id,
-			form,
-		});
-	}
-
-	@bindThis
-	private async updateForm(id: string, value: any) {
-		if (this.user == null) return;
-
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		if (game.isStarted) return;
-		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
-
-		const form = game.user1Id === this.user.id ? game.form2 : game.form1;
-
-		const item = form.find((i: any) => i.id == id);
-
-		if (item == null) return;
-
-		item.value = value;
-
-		const set = game.user1Id === this.user.id ? {
-			form2: form,
-		} : {
-			form1: form,
-		};
-
-		await this.reversiGamesRepository.update(this.gameId!, set);
-
-		publishReversiGameStream(this.gameId!, 'updateForm', {
-			userId: this.user.id,
-			id,
-			value,
-		});
+		this.reversiService.updateSettings(game, this.user, key, value);
 	}
 
 	@bindThis

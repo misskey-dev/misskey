@@ -172,16 +172,12 @@ export interface ReversiEventTypes {
 export interface ReversiGameEventTypes {
 	accept: boolean;
 	cancelAccept: undefined;
+	changeAcceptingStates: {
+		user1: boolean;
+		user2: boolean;
+	};
 	updateSettings: {
 		key: string;
-		value: any;
-	};
-	initForm: {
-		userId: MiUser['id'];
-		form: any;
-	};
-	updateForm: {
-		id: string;
 		value: any;
 	};
 	message: {
@@ -192,6 +188,13 @@ export interface ReversiGameEventTypes {
 	};
 	check: {
 		crc32: string;
+	};
+	started: {
+		game: Packed<'ReversiGame'>;
+	};
+	ended: {
+		winnerId: MiUser['id'] | null;
+		game: Packed<'ReversiGame'>;
 	};
 }
 //#endregion
