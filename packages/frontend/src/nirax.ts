@@ -355,7 +355,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 				redirectPath = res.route.redirect + (res._parsedRoute.queryString ? '?' + res._parsedRoute.queryString : '') + (res._parsedRoute.hash ? '#' + res._parsedRoute.hash : '');
 			}
 			if (_DEV_) console.log('Redirecting to: ', redirectPath);
-			if (_redirected || this.redirectCount++ > 10) {
+			if (_redirected && this.redirectCount++ > 10) {
 				throw new Error('redirect loop detected');
 			}
 			return this.navigate(redirectPath, null, emitChange, true);
