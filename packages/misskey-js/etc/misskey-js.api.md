@@ -1670,7 +1670,8 @@ declare namespace entities {
         Signin,
         RoleLite,
         Role,
-        ReversiGame,
+        ReversiGameLite,
+        ReversiGameDetailed,
         ReversiMatching
     }
 }
@@ -2612,7 +2613,10 @@ type RetentionResponse = operations['retention']['responses']['200']['content'][
 type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type ReversiGame = components['schemas']['ReversiGame'];
+type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
+
+// @public (undocumented)
+type ReversiGameLite = components['schemas']['ReversiGameLite'];
 
 // @public (undocumented)
 type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];

@@ -39,7 +39,7 @@ import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
 import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
-import { packedReversiGameSchema } from '@/models/json-schema/reversi-game.js';
+import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
 import { packedReversiMatchingSchema } from '@/models/json-schema/reversi-matching.js';
 
 export const refs = {
@@ -80,7 +80,8 @@ export const refs = {
 	Signin: packedSigninSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
-	ReversiGame: packedReversiGameSchema,
+	ReversiGameLite: packedReversiGameLiteSchema,
+	ReversiGameDetailed: packedReversiGameDetailedSchema,
 	ReversiMatching: packedReversiMatchingSchema,
 };
 

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="game == null"><MkLoading/></div>
+<div v-if="game == null || connection == null"><MkLoading/></div>
 <GameSetting v-else-if="!game.isStarted" :initGame="game" :connection="connection"/>
 <GameBoard v-else :initGame="game" :connection="connection"/>
 </template>
@@ -22,7 +22,7 @@ const props = defineProps<{
 	gameId: string;
 }>();
 
-const game = shallowRef<Misskey.entities.ReversiGame | null>(null);
+const game = shallowRef<Misskey.entities.ReversiGameDetailed | null>(null);
 const connection = shallowRef<Misskey.ChannelConnection | null>(null);
 
 watch(() => props.gameId, () => {

@@ -27,14 +27,10 @@ export class ReversiGameEntityService {
 	}
 
 	@bindThis
-	public async pack(
+	public async packDetail(
 		src: MiReversiGame['id'] | MiReversiGame,
 		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			detail?: boolean;
-			skipHide?: boolean;
-		},
-	): Promise<Packed<'ReversiGame'>> {
+	): Promise<Packed<'ReversiGameDetailed'>> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
@@ -59,23 +55,61 @@ export class ReversiGameEntityService {
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
-			...(options?.detail ? {
-				logs: game.logs.map(log => ({
-					at: log.at.toISOString(),
-					color: log.color,
-					pos: log.pos,
-				})),
-				map: game.map,
-			} : {}),
+			logs: game.logs.map(log => ({
+				at: log.at.toISOString(),
+				color: log.color,
+				pos: log.pos,
+			})),
+			map: game.map,
 		});
 	}
 
 	@bindThis
-	public packMany(
+	public packDetailMany(
 		xs: MiReversiGame[],
 		me?: { id: MiUser['id'] } | null | undefined,
 	) {
-		return Promise.all(xs.map(x => this.pack(x, me)));
+		return Promise.all(xs.map(x => this.packDetail(x, me)));
+	}
+
+	@bindThis
+	public async packLite(
+		src: MiReversiGame['id'] | MiReversiGame,
+		me?: { id: MiUser['id'] } | null | undefined,
+	): Promise<Packed<'ReversiGameLite'>> {
+		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
+
+		return await awaitAll({
+			id: game.id,
+			createdAt: this.idService.parse(game.id).date.toISOString(),
+			startedAt: game.startedAt && game.startedAt.toISOString(),
+			isStarted: game.isStarted,
+			isEnded: game.isEnded,
+			form1: game.form1,
+			form2: game.form2,
+			user1Accepted: game.user1Accepted,
+			user2Accepted: game.user2Accepted,
+			user1Id: game.user1Id,
+			user2Id: game.user2Id,
+			user1: this.userEntityService.pack(game.user1Id, me),
+			user2: this.userEntityService.pack(game.user2Id, me),
+			winnerId: game.winnerId,
+			winner: game.winnerId ? this.userEntityService.pack(game.winnerId, me) : null,
+			surrendered: game.surrendered,
+			black: game.black,
+			bw: game.bw,
+			isLlotheo: game.isLlotheo,
+			canPutEverywhere: game.canPutEverywhere,
+			loopedBoard: game.loopedBoard,
+		});
+	}
+
+	@bindThis
+	public packLiteMany(
+		xs: MiReversiGame[],
+		me?: { id: MiUser['id'] } | null | undefined,
+	) {
+		return Promise.all(xs.map(x => this.packLite(x, me)));
 	}
 }
 

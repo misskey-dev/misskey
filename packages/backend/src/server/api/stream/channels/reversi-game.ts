@@ -92,7 +92,7 @@ class ReversiGameChannel extends Channel {
 		if (!game.isStarted) return;
 
 		if (crc32.toString() !== game.crc32) {
-			this.send('rescue', await this.reversiGameEntityService.pack(game, this.user));
+			this.send('rescue', await this.reversiGameEntityService.packDetail(game, this.user));
 		}
 	}
 

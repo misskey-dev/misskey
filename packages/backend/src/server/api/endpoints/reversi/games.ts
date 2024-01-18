@@ -17,7 +17,7 @@ export const meta = {
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
-		items: { ref: 'ReversiGame' },
+		items: { ref: 'ReversiGameLite' },
 	},
 } as const;
 
@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const games = await query.take(ps.limit).getMany();
 
-			return await this.reversiGameEntityService.packMany(games, me);
+			return await this.reversiGameEntityService.packLiteMany(games, me);
 		});
 	}
 }

@@ -162,7 +162,7 @@ export interface AdminEventTypes {
 
 export interface ReversiEventTypes {
 	matched: {
-		game: Packed<'ReversiGame'>;
+		game: Packed<'ReversiGameDetailed'>;
 	};
 	invited: {
 		game: Packed<'ReversiMatching'>;
@@ -180,18 +180,21 @@ export interface ReversiGameEventTypes {
 		key: string;
 		value: any;
 	};
-	putStone: {
-		pos: number;
-	};
+putStone: {
+at: Date;
+color: boolean;
+pos: number;
+next: boolean;
+};
 	syncState: {
 		crc32: string;
 	};
 	started: {
-		game: Packed<'ReversiGame'>;
+		game: Packed<'ReversiGameDetailed'>;
 	};
 	ended: {
 		winnerId: MiUser['id'] | null;
-		game: Packed<'ReversiGame'>;
+		game: Packed<'ReversiGameDetailed'>;
 	};
 }
 //#endregion

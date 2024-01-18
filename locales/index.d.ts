@@ -2625,6 +2625,39 @@ export interface Locale {
             "description": string;
         };
     };
+    "_reversi": {
+        "reversi": string;
+        "gameSettings": string;
+        "chooseBoard": string;
+        "blackOrWhite": string;
+        "blackIs": string;
+        "rules": string;
+        "thisGameIsStartedSoon": string;
+        "waitingForOther": string;
+        "waitingForMe": string;
+        "waitingBoth": string;
+        "ready": string;
+        "cancelReady": string;
+        "opponentTurn": string;
+        "myTurn": string;
+        "turnOf": string;
+        "pastTurnOf": string;
+        "surrender": string;
+        "surrendered": string;
+        "drawn": string;
+        "won": string;
+        "black": string;
+        "white": string;
+        "total": string;
+        "turnCount": string;
+        "myGames": string;
+        "allGames": string;
+        "ended": string;
+        "playing": string;
+        "isLlotheo": string;
+        "loopedMap": string;
+        "canPutEverywhere": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

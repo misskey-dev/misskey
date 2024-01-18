@@ -23,7 +23,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'ReversiGame',
+		ref: 'ReversiGameDetailed',
 	},
 } as const;
 
@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchGame);
 			}
 
-			return await this.reversiGameEntityService.pack(game, me);
+			return await this.reversiGameEntityService.packDetail(game, me);
 		});
 	}
 }

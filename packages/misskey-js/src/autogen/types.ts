@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-18T11:02:35.451Z
+ * generatedAt: 2024-01-18T11:53:06.350Z
  */
 
 /**
@@ -4458,7 +4458,7 @@ export type components = {
       };
       usersCount: number;
     });
-    ReversiGame: {
+    ReversiGameLite: {
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -4487,13 +4487,43 @@ export type components = {
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
-      logs?: {
+    };
+    ReversiGameDetailed: {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      startedAt: string | null;
+      isStarted: boolean;
+      isEnded: boolean;
+      form1: Record<string, never> | null;
+      form2: Record<string, never> | null;
+      user1Accepted: boolean;
+      user2Accepted: boolean;
+      /** Format: id */
+      user1Id: string;
+      /** Format: id */
+      user2Id: string;
+      user1: components['schemas']['User'];
+      user2: components['schemas']['User'];
+      /** Format: id */
+      winnerId: string | null;
+      winner: components['schemas']['User'] | null;
+      /** Format: id */
+      surrendered: string | null;
+      black: number | null;
+      bw: string;
+      isLlotheo: boolean;
+      canPutEverywhere: boolean;
+      loopedBoard: boolean;
+      logs: {
           /** Format: date-time */
           at: string;
           color: boolean;
           pos: number;
         }[];
-      map?: string[];
+      map: string[];
     };
     ReversiMatching: {
       /** Format: id */
@@ -25716,7 +25746,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['ReversiGame'][];
+          'application/json': components['schemas']['ReversiGameLite'][];
         };
       };
       /** @description Client error */
@@ -25878,7 +25908,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['ReversiGame'];
+          'application/json': components['schemas']['ReversiGameDetailed'];
         };
       };
       /** @description Client error */

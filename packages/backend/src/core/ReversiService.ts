@@ -86,7 +86,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				isLlotheo: false,
 			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
 
-			const packed = await this.reversiGameEntityService.pack(game, { id: exist.parentId });
+			const packed = await this.reversiGameEntityService.packDetail(game, { id: exist.parentId });
 			this.globalEventService.publishReversiStream(exist.parentId, 'matched', { game: packed });
 
 			return game;
@@ -202,13 +202,13 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 					this.globalEventService.publishReversiGameStream(game.id, 'ended', {
 						winnerId: winner,
-						game: await this.reversiGameEntityService.pack(game.id, user),
+						game: await this.reversiGameEntityService.packDetail(game.id, user),
 					});
 				}
 				//#endregion
 
 				this.globalEventService.publishReversiGameStream(game.id, 'started', {
-					game: await this.reversiGameEntityService.pack(game.id, user),
+					game: await this.reversiGameEntityService.packDetail(game.id, user),
 				});
 			}, 3000);
 		}
@@ -288,14 +288,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			logs: game.logs,
 		});
 
-		this.globalEventService.publishReversiGameStream(game.id, 'set', Object.assign(log, {
+		this.globalEventService.publishReversiGameStream(game.id, 'putStone', Object.assign(log, {
 			next: o.turn,
 		}));
 
 		if (o.isEnded) {
 			this.globalEventService.publishReversiGameStream(game.id, 'ended', {
 				winnerId: winner,
-				game: await this.reversiGameEntityService.pack(game.id, user),
+				game: await this.reversiGameEntityService.packDetail(game.id, user),
 			});
 		}
 	}
@@ -315,7 +315,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		this.globalEventService.publishReversiGameStream(game.id, 'ended', {
 			winnerId: winnerId,
-			game: await this.reversiGameEntityService.pack(game.id, user),
+			game: await this.reversiGameEntityService.packDetail(game.id, user),
 		});
 	}
 
