@@ -197,9 +197,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				if (o.isEnded) {
 					let winner;
 					if (o.winner === true) {
-						winner = freshGame.black == 1 ? freshGame.user1Id : freshGame.user2Id;
+						winner = freshGame.black === 1 ? freshGame.user1Id : freshGame.user2Id;
 					} else if (o.winner === false) {
-						winner = freshGame.black == 1 ? freshGame.user2Id : freshGame.user1Id;
+						winner = freshGame.black === 1 ? freshGame.user2Id : freshGame.user1Id;
 					} else {
 						winner = null;
 					}
