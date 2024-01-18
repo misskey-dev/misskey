@@ -1194,6 +1194,10 @@ showReplay: "查看重播"
 replay: "重播"
 replaying: "重播中"
 lastNDays: "最近 {n} 天"
+backToTitle: "返回标题"
+enableHorizontalSwipe: "滑动切换标签页"
+_bubbleGame:
+  howToPlay: "游戏说明"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
@@ -1275,13 +1279,13 @@ _initialTutorial:
       useCases: "用于按照服务器指南的要求指定注释，或对剧透内容和敏感文字进行自主规制。"
   _howToMakeAttachmentsSensitive:
     title: "如何将附件标注为敏感内容？"
-    description: "对于服务器指南要求的附件或不应完整保留的附件，请添加“敏感”标志。\n"
-    tryThisFile: "尝试将附加到此表单的图像标注为敏感！"
+    description: "对于服务器方针所要求要求的，又或者不不适合直接展示的附件，请添加「敏感」标记。\n"
+    tryThisFile: "试试看，将附加到此窗口的图像标注为敏感！"
     _exampleNote:
-      note: "我错误地打开了纳豆的盖子......\n"
+      note: "不该打开纳豆的盖子的……"
     method: "要标注附件为敏感内容，请单击该文件以打开菜单，然后单击“设置为敏感”。"
     sensitiveSucceeded: "附加文件时，请务必根据服务器的指南适当设置敏感程度。\n"
-    doItToContinue: "如果您将图像设置为敏感，您将能够继续。\n"
+    doItToContinue: "将图像标记为敏感后才能够继续"
   _done:
     title: "恭喜您，已经完成了教程🎉\n"
     description: "这里介绍的只是其中一小部分的功能。 要了解更多有关如何使用 Misskey 的更多信息，请访问 {link}。"
@@ -1295,13 +1299,13 @@ _serverRules:
 _serverSettings:
   iconUrl: "图标 URL"
   appIconDescription: "指定当 {host} 显示为 app 时的图标。"
-  appIconUsageExample: "例如：作为书签添加到 PWA 或手机主屏幕的时候"
+  appIconUsageExample: "如作为书签添加到 PWA 或手机主屏幕时"
   appIconStyleRecommendation: "因为有可能会被裁切为圆形或者圆角矩形，建议使用边缘带有留白背景的图标。"
   appIconResolutionMustBe: "分辨率必须为 {resolution}。"
   manifestJsonOverride: "覆盖 manifest.json"
   shortName: "简称"
   shortNameDescription: "如果服务器的正式名称很长，可以用简称或者別名来替代。"
-  fanoutTimelineDescription: "当启用时，可显著提高获取各种时间线时的性能，并减轻数据库的负荷。但是相对的 Redis 的内存使用量将会增加。如果服务器的内存不是跟大，又或者运行不稳定的话可以把它关掉。"
+  fanoutTimelineDescription: "当启用时，可显著提高获取各种时间线时的性能，并减轻数据库的负荷。但是相对的 Redis 的内存使用量将会增加。如果服务器的内存不是很大，又或者运行不稳定的话可以把它关掉。"
   fanoutTimelineDbFallback: "回退到数据库"
   fanoutTimelineDbFallbackDescription: "当启用时，若时间线未被缓存，则将额外查询数据库。禁用该功能可通过不执行回退处理进一步减少服务器负载，但会限制可检索的时间线范围。"
 _accountMigration:
@@ -1530,7 +1534,7 @@ _achievements:
       description: "点了这里"
     _justPlainLucky:
       title: "超高校级的幸运"
-      description: "每 10 秒有 0.01 的概率自动获得"
+      description: "每 10 秒有 0.005% 的概率自动获得"
     _setNameToSyuilo:
       title: "像神一样呐"
       description: "将名称设定为 syuilo"
