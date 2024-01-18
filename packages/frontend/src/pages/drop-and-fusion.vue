@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 								<option value="sweets">SWEETS</option>
+								<!--<option value="space">SPACE</option>-->
 							</MkSelect>
 							<div class="_gaps_s">
 								<MkButton primary gradate large rounded inline :disabled="!canPlay" @click="start">{{ i18n.ts.start }}</MkButton>
@@ -115,7 +116,7 @@ import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { hms } from '@/filters/hms.js';
 
-const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets'>('normal');
+const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
 const gameStarted = ref(false);
 const isGameover = ref(false);
 const mute = ref(false);
@@ -147,6 +148,7 @@ function getScoreUnit(gameMode: string) {
 		gameMode === 'square' ? 'pt' :
 		gameMode === 'yen' ? '円' :
 		gameMode === 'sweets' ? 'kcal' :
+		gameMode === 'space' ? 'pt' :
 		'' as never;
 }
 

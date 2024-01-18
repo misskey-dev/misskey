@@ -5,15 +5,18 @@
 
 import { i18n } from '@/i18n.js';
 
-export function hms(ms: number, options: {
+export function hms(ms: number, options?: {
 	textFormat?: 'colon' | 'locale';
 	enableSeconds?: boolean;
 	enableMs?: boolean;
-} = {
-	textFormat: 'colon',
-	enableSeconds: true,
-	enableMs: false,
 }) {
+	const _options = {
+		textFormat: 'colon',
+		enableSeconds: true,
+		enableMs: false,
+		...options,
+	};
+
 	const res: {
 		h?: string;
 		m?: string;
@@ -29,12 +32,12 @@ export function hms(ms: number, options: {
 
 	// 時間を計算
 	const hours = Math.floor(seconds / 3600);
-	if (hours > 0) res.h = format(hours);
+	res.h = format(hours);
 	seconds %= 3600;
 
 	// 分を計算
 	const minutes = Math.floor(seconds / 60);
-	if (minutes > 0) res.m = format(minutes);
+	res.m = format(minutes);
 	seconds %= 60;
 
 	// 残った秒数を取得
@@ -44,19 +47,16 @@ export function hms(ms: number, options: {
 	// ミリ秒を取得
 	res.ms = format(Math.floor(mili / 10));
 
-	// 結果を返す
-	if (options.textFormat === 'locale') {
-		if (res.h) res.h = i18n.t('_hms.h', { h: res.h });
-		if (res.m) res.m = i18n.t('_hms.m', { m: res.m });
-		res.s = i18n.t('_hms.s', { s: res.s });
-		res.ms = i18n.t('_hms.ms', { s: res.ms });
+	if (_options.textFormat === 'locale') {
+		res.h += i18n.ts._time.hour;
+		res.m += i18n.ts._time.minute;
+		res.s += i18n.ts._time.second;
 	}
 	return [
-		res.h ?? undefined,
-		res.m ?? undefined,
-		(options.enableSeconds ? res.s : undefined),
-		(options.enableMs ? res.ms : undefined),
-	].filter(v => v !== undefined).join(options.textFormat === 'colon' ? ':' : ' ');
+		res.h.startsWith('00') ? undefined : res.h,
+		res.m,
+		(_options.enableSeconds ? res.s : undefined),
+	].filter(v => v !== undefined).join(_options.textFormat === 'colon' ? ':' : ' ') + (_options.enableMs ? _options.textFormat === 'colon' ? `.${res.ms}` : ` ${res.ms}` : '');
 }
 
 function format(n: number) {
