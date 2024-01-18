@@ -164,7 +164,7 @@ watch(tabModel, (newTab, oldTab) => {
 		transitionName.value = 'swipeAnimationRight';
 	}
 
-	setTimeout(() => {
+	window.setTimeout(() => {
 		transitionName.value = undefined;
 	}, 400);
 });
