@@ -4,3 +4,4 @@ packages:
  - 'packages/sw'
  - 'packages/misskey-js'
  - 'packages/misskey-js/generator'
+ - 'packages/misskey-reversi'

@@ -39,6 +39,7 @@ import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
 import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
+import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -78,6 +79,8 @@ export const refs = {
 	Signin: packedSigninSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
+	ReversiGameLite: packedReversiGameLiteSchema,
+	ReversiGameDetailed: packedReversiGameDetailedSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;

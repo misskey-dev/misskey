@@ -103,7 +103,7 @@ export function getConfig(): UserConfig {
 
 		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 		optimizeDeps: {
-			include: ['misskey-js'],
+			include: ['misskey-js', 'misskey-reversi'],
 		},
 
 		build: {
@@ -135,7 +135,7 @@ export function getConfig(): UserConfig {
 
 			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 			commonjsOptions: {
-				include: [/misskey-js/, /node_modules/],
+				include: [/misskey-js/, /misskey-reversi/, /node_modules/],
 			},
 		},
 
