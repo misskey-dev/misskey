@@ -1201,6 +1201,7 @@ replaying: "กำลังรีเพลย์"
 ranking: "อันดับ"
 lastNDays: "ล่าสุด {n} วันที่แล้ว"
 backToTitle: "กลับไปหน้าไตเติ้ล"
+enableHorizontalSwipe: "ปัดเพื่อสลับแท็บ"
 _bubbleGame:
   howToPlay: "วิธีเล่น"
   _howToPlay:
