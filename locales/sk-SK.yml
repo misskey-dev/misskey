@@ -1445,3 +1445,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Zmraziť"
   resetPassword: "Resetovať heslo"
+_reversi:
+  total: "Celkom"
