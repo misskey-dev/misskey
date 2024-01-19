@@ -95,9 +95,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSelect>
 					</div>
 					<div class="charts">
-						<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
+						<div class="label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
 						<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
-						<div class="label">{{ i18n.t('recentNDays', { n: 90 }) }}</div>
+						<div class="label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
 						<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
 					</div>
 				</div>
