@@ -2425,3 +2425,5 @@ _dataSaver:
   _code:
     title: "Resaltar código"
     description: "Si se usa resaltado de código en MFM, etc., no se cargará hasta pulsar en ello. El resaltado de sintaxis requiere la descarga de archivos de definición para cada lenguaje de programación. Debido a esto, al deshabilitar la carga automática de estos archivos reducirás el consumo de datos."
+_reversi:
+  total: "Total"
