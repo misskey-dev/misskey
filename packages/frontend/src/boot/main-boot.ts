@@ -205,9 +205,7 @@ export async function mainBoot() {
 			const lastUsedDate = parseInt(lastUsed, 10);
 			// 二時間以上前なら
 			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.t('welcomeBackWithName', {
-					name: $i.name || $i.username,
-				}));
+				toast(i18n.tsx.welcomeBackWithName($i.name || $i.username));
 			}
 		}
 		miLocalStorage.setItem('lastUsed', Date.now().toString());

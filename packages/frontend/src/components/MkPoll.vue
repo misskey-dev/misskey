@@ -11,12 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
 				<Mfm :text="choice.text" :plain="true"/>
-				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.t('_poll.votesCount', { n: choice.votes }) }})</span>
+				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount(choice.votes) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="!readOnly" :class="$style.info">
-		<span>{{ i18n.t('_poll.totalVotes', { n: total }) }}</span>
+		<span>{{ i18n.tsx._poll.totalVotes(total) }}</span>
 		<span> · </span>
 		<a v-if="!closed && !isVoted" style="color: inherit;" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
 		<span v-if="isVoted">{{ i18n.ts._poll.voted }}</span>
@@ -81,7 +81,7 @@ const vote = async (id) => {
 
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.t('voteConfirm', { choice: props.note.poll.choices[id].text }),
+		text: i18n.tsx.voteConfirm(props.note.poll.choices[id].text),
 	});
 	if (canceled) return;
 

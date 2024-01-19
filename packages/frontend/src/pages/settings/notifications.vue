@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 		<div class="_gaps_s">
 			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
-				<template #label>{{ i18n.t('_notification._types.' + type) }}</template>
+				<template #label>{{ i18n.ts._notification._types[type] }}</template>
 				<template #suffix>
 					{{
 						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :

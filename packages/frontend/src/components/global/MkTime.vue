@@ -55,21 +55,21 @@ const relative = computed<string>(() => {
 	if (invalid) return i18n.ts._ago.invalid;
 
 	return (
-		ago.value >= 31536000 ? i18n.t('_ago.yearsAgo', { n: Math.round(ago.value / 31536000).toString() }) :
-		ago.value >= 2592000 ? i18n.t('_ago.monthsAgo', { n: Math.round(ago.value / 2592000).toString() }) :
-		ago.value >= 604800 ? i18n.t('_ago.weeksAgo', { n: Math.round(ago.value / 604800).toString() }) :
-		ago.value >= 86400 ? i18n.t('_ago.daysAgo', { n: Math.round(ago.value / 86400).toString() }) :
-		ago.value >= 3600 ? i18n.t('_ago.hoursAgo', { n: Math.round(ago.value / 3600).toString() }) :
-		ago.value >= 60 ? i18n.t('_ago.minutesAgo', { n: (~~(ago.value / 60)).toString() }) :
-		ago.value >= 10 ? i18n.t('_ago.secondsAgo', { n: (~~(ago.value % 60)).toString() }) :
+		ago.value >= 31536000 ? i18n.tsx._ago.yearsAgo(Math.round(ago.value / 31536000)) :
+		ago.value >= 2592000 ? i18n.tsx._ago.monthsAgo(Math.round(ago.value / 2592000)) :
+		ago.value >= 604800 ? i18n.tsx._ago.weeksAgo(Math.round(ago.value / 604800)) :
+		ago.value >= 86400 ? i18n.tsx._ago.daysAgo(Math.round(ago.value / 86400)) :
+		ago.value >= 3600 ? i18n.tsx._ago.hoursAgo(Math.round(ago.value / 3600)) :
+		ago.value >= 60 ? i18n.tsx._ago.minutesAgo((~~(ago.value / 60))) :
+		ago.value >= 10 ? i18n.tsx._ago.secondsAgo((~~(ago.value % 60))) :
 		ago.value >= -3 ? i18n.ts._ago.justNow :
-		ago.value < -31536000 ? i18n.t('_timeIn.years', { n: Math.round(-ago.value / 31536000).toString() }) :
-		ago.value < -2592000 ? i18n.t('_timeIn.months', { n: Math.round(-ago.value / 2592000).toString() }) :
-		ago.value < -604800 ? i18n.t('_timeIn.weeks', { n: Math.round(-ago.value / 604800).toString() }) :
-		ago.value < -86400 ? i18n.t('_timeIn.days', { n: Math.round(-ago.value / 86400).toString() }) :
-		ago.value < -3600 ? i18n.t('_timeIn.hours', { n: Math.round(-ago.value / 3600).toString() }) :
-		ago.value < -60 ? i18n.t('_timeIn.minutes', { n: (~~(-ago.value / 60)).toString() }) :
-		i18n.t('_timeIn.seconds', { n: (~~(-ago.value % 60)).toString() })
+		ago.value < -31536000 ? i18n.tsx._timeIn.years(Math.round(-ago.value / 31536000)) :
+		ago.value < -2592000 ? i18n.tsx._timeIn.months(Math.round(-ago.value / 2592000)) :
+		ago.value < -604800 ? i18n.tsx._timeIn.weeks(Math.round(-ago.value / 604800)) :
+		ago.value < -86400 ? i18n.tsx._timeIn.days(Math.round(-ago.value / 86400)) :
+		ago.value < -3600 ? i18n.tsx._timeIn.hours(Math.round(-ago.value / 3600)) :
+		ago.value < -60 ? i18n.tsx._timeIn.minutes((~~(-ago.value / 60))) :
+		i18n.tsx._timeIn.seconds((~~(-ago.value % 60)))
 	);
 });
 

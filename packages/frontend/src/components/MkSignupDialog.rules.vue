@@ -96,7 +96,7 @@ const tosPrivacyPolicyLabel = computed(() => {
 	} else if (availablePrivacyPolicy) {
 		return i18n.ts.privacyPolicy;
 	} else {
-		return "";
+		return '';
 	}
 });
 
@@ -105,7 +105,7 @@ async function updateAgreeServerRules(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.serverRules }),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree(i18n.ts.serverRules),
 		});
 		if (confirm.canceled) return;
 		agreeServerRules.value = true;
@@ -119,9 +119,7 @@ async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', {
-				x: tosPrivacyPolicyLabel.value,
-			}),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree(tosPrivacyPolicyLabel.value),
 		});
 		if (confirm.canceled) return;
 		agreeTosAndPrivacyPolicy.value = true;
@@ -135,7 +133,7 @@ async function updateAgreeNote(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.basicNotesBeforeCreateAccount }),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree(i18n.ts.basicNotesBeforeCreateAccount),
 		});
 		if (confirm.canceled) return;
 		agreeNote.value = true;
