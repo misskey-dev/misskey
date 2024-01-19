@@ -14,6 +14,9 @@
 
 ## 202x.x.x (Unreleased)
 
+### Note
+- 外部サイトからプラグインをインストールする場合のパスが`/install-extentions`から`/install-extensions`に変わります。現時点では以前のパスも利用できますが、非推奨です。
+
 ### General
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
 - Fix: リストライムラインの「リノートを表示」が正しく機能しない問題を修正
