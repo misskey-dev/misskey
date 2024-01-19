@@ -180,6 +180,7 @@ watch(tabModel, (newTab, oldTab) => {
 <style lang="scss" module>
 .transitionRoot.enableAnimation {
 	display: grid;
+	grid-template-columns: 100%;
 	overflow: clip;
 
 	.transitionChildren {
