@@ -1088,3 +1088,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "To'xtatish"
   resetPassword: "Parolni tiklash"
+_reversi:
+  total: "Jami"
