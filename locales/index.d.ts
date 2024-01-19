@@ -2633,6 +2633,41 @@ export interface Locale extends ILocale {
             "description": string;
         };
     };
+    "_reversi": {
+        "reversi": string;
+        "gameSettings": string;
+        "chooseBoard": string;
+        "blackOrWhite": string;
+        "blackIs": ParameterizedString<"name">;
+        "rules": string;
+        "thisGameIsStartedSoon": string;
+        "waitingForOther": string;
+        "waitingForMe": string;
+        "waitingBoth": string;
+        "ready": string;
+        "cancelReady": string;
+        "opponentTurn": string;
+        "myTurn": string;
+        "turnOf": ParameterizedString<"name">;
+        "pastTurnOf": ParameterizedString<"name">;
+        "surrender": string;
+        "surrendered": string;
+        "drawn": string;
+        "won": ParameterizedString<"name">;
+        "black": string;
+        "white": string;
+        "total": string;
+        "turnCount": ParameterizedString<"count">;
+        "myGames": string;
+        "allGames": string;
+        "ended": string;
+        "playing": string;
+        "isLlotheo": string;
+        "loopedMap": string;
+        "canPutEverywhere": string;
+        "freeMatch": string;
+        "lookingForPlayer": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

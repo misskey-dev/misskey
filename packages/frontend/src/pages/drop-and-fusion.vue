@@ -123,7 +123,7 @@ function onGameEnd() {
 
 definePageMetadata({
 	title: i18n.ts.bubbleGame,
-	icon: 'ti ti-apple',
+	icon: 'ti ti-device-gamepad',
 });
 </script>
 
