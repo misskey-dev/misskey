@@ -1397,3 +1397,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Zawieś"
   resetPassword: "Zresetuj hasło"
+_reversi:
+  total: "Łącznie"
