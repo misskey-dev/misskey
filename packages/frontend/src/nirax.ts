@@ -410,7 +410,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		const res = this.navigate(path, null);
 		this.emit('push', {
 			beforePath,
-			path,
+			path: res._parsedRoute.fullPath,
 			route: res.route,
 			props: res.props,
 			key: this.currentKey,
