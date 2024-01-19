@@ -1344,3 +1344,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "স্থগিত করা"
   resetPassword: "পাসওয়ার্ড রিসেট করুন"
+_reversi:
+  total: "মোট"
