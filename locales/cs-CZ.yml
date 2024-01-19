@@ -2020,3 +2020,5 @@ _moderationLogTypes:
   suspend: "Zmrazit"
   resetPassword: "Resetovat heslo"
   createInvitation: "Vygenerovat pozvánku"
+_reversi:
+  total: "Celkem"
