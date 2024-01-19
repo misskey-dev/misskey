@@ -185,7 +185,7 @@ async function done() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: name.value }),
+		text: i18n.tsx.removeAreYouSure({ x: name.value }),
 	});
 	if (canceled) return;
 

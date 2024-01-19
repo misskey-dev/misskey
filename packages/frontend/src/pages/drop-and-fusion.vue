@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.frame">
 					<div :class="$style.frameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.t('lastNDays', { n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
+							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
