@@ -1,0 +1,26 @@
+{
+	"name": "misskey-reversi",
+	"version": "0.0.1",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build\"",
+		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@misskey-dev/eslint-plugin": "1.0.0",
+		"@types/node": "20.11.5",
+		"@typescript-eslint/eslint-plugin": "6.19.0",
+		"@typescript-eslint/parser": "6.19.0",
+		"eslint": "8.56.0",
+		"typescript": "5.3.3"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+	}
+}
