@@ -25,8 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 </div>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import { ref, shallowRef, computed, nextTick, watch } from 'vue';
+
+/** 横スワイプ中か？ */
+export const isSwiping = ref(false);
+</script>
+<script lang="ts" setup>
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import { defaultStore } from '@/store.js';
 
@@ -65,7 +70,6 @@ let startScreenY: number | null = null;
 const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === tabModel.value));
 
 const pullDistance = ref(0);
-const isSwiping = ref(false);
 const isSwipingForClass = ref(false);
 let swipeAborted = false;
 
