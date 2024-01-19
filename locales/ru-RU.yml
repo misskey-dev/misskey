@@ -1970,3 +1970,5 @@ _moderationLogTypes:
   updateCustomEmoji: "Изменено эмодзи"
   deleteCustomEmoji: "Удалено эмодзи"
   resetPassword: "Сброс пароля:"
+_reversi:
+  total: "Всего"
