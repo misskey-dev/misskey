@@ -1201,6 +1201,7 @@ replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
 backToTitle: "タイトルへ"
+enableHorizontalSwipe: "スワイプしてタブを切り替える"
 
 _bubbleGame:
   howToPlay: "遊び方"
