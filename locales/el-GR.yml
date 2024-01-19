@@ -396,3 +396,5 @@ _webhookSettings:
   name: "Όνομα"
 _moderationLogTypes:
   suspend: "Αποβολή"
+_reversi:
+  total: "Σύνολο"
