@@ -1565,3 +1565,5 @@ _moderationLogTypes:
   suspend: "علِق"
   resetPassword: "أعد تعيين كلمتك السرية"
   createInvitation: "ولِّد دعوة"
+_reversi:
+  total: "المجموع"
