@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import { ReversiMatchingEntityService } from '@/core/entities/ReversiMatchingEntityService.js';
-import type { ReversiMatchingsRepository } from '@/models/_.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ReversiService } from '@/core/ReversiService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -17,32 +17,23 @@ export const meta = {
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
-		items: { ref: 'ReversiMatching' },
+		items: { ref: 'UserLite' },
 	},
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['userId'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.reversiMatchingsRepository)
-		private reversiMatchingsRepository: ReversiMatchingsRepository,
-
-		private reversiMatchingEntityService: ReversiMatchingEntityService,
+		private userEntityService: UserEntityService,
+		private reversiService: ReversiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const invitations = await this.reversiMatchingsRepository.findBy({
-				childId: me.id,
-			});
+			const invitations = await this.reversiService.getInvitations(me);
 
-			return await this.reversiMatchingEntityService.packMany(invitations, me);
+			return await this.userEntityService.packMany(invitations, me);
 		});
 	}
 }

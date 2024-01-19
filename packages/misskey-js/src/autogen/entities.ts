@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-18T11:53:06.430Z
+ * generatedAt: 2024-01-19T01:59:26.055Z
  */
 
 import { operations } from './types.js';
@@ -546,12 +546,12 @@ export type BubbleGameRegisterRequest = operations['bubble-game/register']['requ
 export type BubbleGameRegisterResponse = operations['bubble-game/register']['responses']['200']['content']['application/json'];
 export type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
 export type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
+export type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
 export type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
 export type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];
 export type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
 export type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];
 export type ReversiMatchResponse = operations['reversi/match']['responses']['200']['content']['application/json'];
-export type ReversiInvitationsRequest = operations['reversi/invitations']['requestBody']['content']['application/json'];
 export type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
 export type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
 export type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];

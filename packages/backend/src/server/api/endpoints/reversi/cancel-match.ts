@@ -22,6 +22,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
 } as const;
@@ -32,7 +33,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private reversiService: ReversiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.reversiService.matchCancel(me);
+			if (ps.userId) {
+				await this.reversiService.matchSpecificUserCancel(me, ps.userId);
+				return;
+			} else {
+				await this.reversiService.matchAnyUserCancel(me);
+			}
 		});
 	}
 }

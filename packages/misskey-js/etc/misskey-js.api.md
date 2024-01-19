@@ -1623,12 +1623,12 @@ declare namespace entities {
         BubbleGameRegisterResponse,
         BubbleGameRankingRequest,
         BubbleGameRankingResponse,
+        ReversiCancelMatchRequest,
         ReversiCancelMatchResponse,
         ReversiGamesRequest,
         ReversiGamesResponse,
         ReversiMatchRequest,
         ReversiMatchResponse,
-        ReversiInvitationsRequest,
         ReversiInvitationsResponse,
         ReversiShowGameRequest,
         ReversiShowGameResponse,
@@ -1671,8 +1671,7 @@ declare namespace entities {
         RoleLite,
         Role,
         ReversiGameLite,
-        ReversiGameDetailed,
-        ReversiMatching
+        ReversiGameDetailed
     }
 }
 export { entities }
@@ -2610,6 +2609,9 @@ type ResetPasswordRequest = operations['reset-password']['requestBody']['content
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -2625,13 +2627,7 @@ type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']
 type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type ReversiInvitationsRequest = operations['reversi/invitations']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
 type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
-type ReversiMatching = components['schemas']['ReversiMatching'];
 
 // @public (undocumented)
 type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];

@@ -8,10 +8,10 @@ import * as Redis from 'ioredis';
 import * as CRC32 from 'crc-32';
 import { ModuleRef } from '@nestjs/core';
 import * as Reversi from 'misskey-reversi';
+import { IsNull } from 'typeorm';
 import type {
 	MiReversiGame,
 	ReversiGamesRepository,
-	ReversiMatchingsRepository,
 	UsersRepository,
 } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
@@ -25,9 +25,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NotificationService } from '@/core/NotificationService.js';
-import { ReversiMatchingEntityService } from '@/core/entities/ReversiMatchingEntityService.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+
+const MATCHING_TIMEOUT_MS = 15 * 1000; // 15sec
 
 @Injectable()
 export class ReversiService implements OnApplicationShutdown, OnModuleInit {
@@ -36,20 +37,16 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.reversiGamesRepository)
 		private reversiGamesRepository: ReversiGamesRepository,
-
-		@Inject(DI.reversiMatchingsRepository)
-		private reversiMatchingsRepository: ReversiMatchingsRepository,
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private reversiGameEntityService: ReversiGameEntityService,
-		private reversiMatchingsEntityService: ReversiMatchingEntityService,
 		private idService: IdService,
 	) {
 	}
@@ -59,22 +56,19 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async match(me: MiUser, targetUser: MiUser): Promise<MiReversiGame | null> {
+	public async matchSpecificUser(me: MiUser, targetUser: MiUser): Promise<MiReversiGame | null> {
 		if (targetUser.id === me.id) {
 			throw new Error('You cannot match yourself.');
 		}
 
-		const exist = await this.reversiMatchingsRepository.findOneBy({
-			parentId: targetUser.id,
-			childId: me.id,
-		});
+		const invitations = await this.redisClient.zrange(`reversi:matchSpecific:${me.id}`, Date.now() - MATCHING_TIMEOUT_MS, '+inf');
 
-		if (exist) {
-			this.reversiMatchingsRepository.delete(exist.id);
+		if (invitations.includes(targetUser.id)) {
+			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
 
 			const game = await this.reversiGamesRepository.insert({
 				id: this.idService.gen(),
-				user1Id: exist.parentId,
+				user1Id: targetUser.id,
 				user2Id: me.id,
 				user1Accepted: false,
 				user2Accepted: false,
@@ -86,35 +80,64 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				isLlotheo: false,
 			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
 
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: exist.parentId });
-			this.globalEventService.publishReversiStream(exist.parentId, 'matched', { game: packed });
+			const packed = await this.reversiGameEntityService.packDetail(game, { id: targetUser.id });
+			this.globalEventService.publishReversiStream(targetUser.id, 'matched', { game: packed });
 
 			return game;
 		} else {
-			const child = targetUser;
+			this.redisClient.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), me.id);
 
-			await this.reversiMatchingsRepository.delete({
-				parentId: me.id,
+			this.globalEventService.publishReversiStream(targetUser.id, 'invited', {
+				user: await this.userEntityService.pack(me, targetUser),
 			});
-
-			const matching = await this.reversiMatchingsRepository.insert({
-				id: this.idService.gen(),
-				parentId: me.id,
-				childId: child.id,
-			}).then(x => this.reversiMatchingsRepository.findOneByOrFail(x.identifiers[0]));
-
-			const packed = await this.reversiMatchingsEntityService.pack(matching, child);
-			this.globalEventService.publishReversiStream(child.id, 'invited', { game: packed });
 
 			return null;
 		}
 	}
 
 	@bindThis
-	public async matchCancel(user: MiUser) {
-		await this.reversiMatchingsRepository.delete({
-			parentId: user.id,
-		});
+	public async matchAnyUser(me: MiUser): Promise<MiReversiGame | null> {
+		const scanRes = await this.redisClient.scan(0, 'MATCH', 'reversi:matchAny:*', 'COUNT', 10);
+		const userIds = scanRes[1].map(key => key.split(':')[2]).filter(id => id !== me.id);
+
+		if (userIds.length > 0) {
+			// pick random
+			const matchedUserId = userIds[Math.floor(Math.random() * userIds.length)];
+
+			await this.redisClient.del(`reversi:matchAny:${matchedUserId}`);
+
+			const game = await this.reversiGamesRepository.insert({
+				id: this.idService.gen(),
+				user1Id: matchedUserId,
+				user2Id: me.id,
+				user1Accepted: false,
+				user2Accepted: false,
+				isStarted: false,
+				isEnded: false,
+				logs: [],
+				map: Reversi.maps.eighteight.data,
+				bw: 'random',
+				isLlotheo: false,
+			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
+
+			const packed = await this.reversiGameEntityService.packDetail(game, { id: matchedUserId });
+			this.globalEventService.publishReversiStream(matchedUserId, 'matched', { game: packed });
+
+			return game;
+		} else {
+			await this.redisClient.setex(`reversi:matchAny:${me.id}`, MATCHING_TIMEOUT_MS / 1000, '');
+			return null;
+		}
+	}
+
+	@bindThis
+	public async matchSpecificUserCancel(user: MiUser, targetUserId: MiUser['id']) {
+		await this.redisClient.zrem(`reversi:matchSpecific:${targetUserId}`, user.id);
+	}
+
+	@bindThis
+	public async matchAnyUserCancel(user: MiUser) {
+		await this.redisClient.del(`reversi:matchAny:${user.id}`);
 	}
 
 	@bindThis
@@ -212,6 +235,12 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				});
 			}, 3000);
 		}
+	}
+
+	@bindThis
+	public async getInvitations(user: MiUser): Promise<MiUser['id'][]> {
+		const invitations = await this.redisClient.zrange(`reversi:matchSpecific:${user.id}`, Date.now() - MATCHING_TIMEOUT_MS, '+inf');
+		return invitations;
 	}
 
 	@bindThis

@@ -36,9 +36,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
-	required: ['userId'],
+	required: [],
 } as const;
 
 @Injectable()
@@ -51,12 +51,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.userId === me.id) throw new ApiError(meta.errors.isYourself);
 
-			const child = await this.getterService.getUser(ps.userId).catch(err => {
+			const target = ps.userId ? await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
-			});
+			}) : null;
 
-			const game = await this.reversiService.match(me, child);
+			const game = target ? await this.reversiService.matchSpecificUser(me, target) : await this.reversiService.matchAnyUser(me);
 
 			if (game == null) return;
 

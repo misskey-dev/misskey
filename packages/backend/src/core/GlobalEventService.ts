@@ -165,7 +165,7 @@ export interface ReversiEventTypes {
 		game: Packed<'ReversiGameDetailed'>;
 	};
 	invited: {
-		game: Packed<'ReversiMatching'>;
+		user: Packed<'User'>;
 	};
 }
 
@@ -180,12 +180,12 @@ export interface ReversiGameEventTypes {
 		key: string;
 		value: any;
 	};
-putStone: {
-at: Date;
-color: boolean;
-pos: number;
-next: boolean;
-};
+	putStone: {
+		at: Date;
+		color: boolean;
+		pos: number;
+		next: boolean;
+	};
 	syncState: {
 		crc32: string;
 	};

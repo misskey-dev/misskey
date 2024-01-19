@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-18T11:53:06.431Z
+ * generatedAt: 2024-01-19T01:59:26.057Z
  */
 
 import type {
@@ -544,12 +544,12 @@ import type {
 	BubbleGameRegisterResponse,
 	BubbleGameRankingRequest,
 	BubbleGameRankingResponse,
+	ReversiCancelMatchRequest,
 	ReversiCancelMatchResponse,
 	ReversiGamesRequest,
 	ReversiGamesResponse,
 	ReversiMatchRequest,
 	ReversiMatchResponse,
-	ReversiInvitationsRequest,
 	ReversiInvitationsResponse,
 	ReversiShowGameRequest,
 	ReversiShowGameResponse,
@@ -917,10 +917,10 @@ export type Endpoints = {
 	'retention': { req: EmptyRequest; res: RetentionResponse };
 	'bubble-game/register': { req: BubbleGameRegisterRequest; res: BubbleGameRegisterResponse };
 	'bubble-game/ranking': { req: BubbleGameRankingRequest; res: BubbleGameRankingResponse };
-	'reversi/cancel-match': { req: EmptyRequest; res: ReversiCancelMatchResponse };
+	'reversi/cancel-match': { req: ReversiCancelMatchRequest; res: ReversiCancelMatchResponse };
 	'reversi/games': { req: ReversiGamesRequest; res: ReversiGamesResponse };
 	'reversi/match': { req: ReversiMatchRequest; res: ReversiMatchResponse };
-	'reversi/invitations': { req: ReversiInvitationsRequest; res: ReversiInvitationsResponse };
+	'reversi/invitations': { req: EmptyRequest; res: ReversiInvitationsResponse };
 	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 }

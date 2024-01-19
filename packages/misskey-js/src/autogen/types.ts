@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-18T11:53:06.350Z
+ * generatedAt: 2024-01-19T01:59:25.971Z
  */
 
 /**
@@ -4524,18 +4524,6 @@ export type components = {
           pos: number;
         }[];
       map: string[];
-    };
-    ReversiMatching: {
-      /** Format: id */
-      id: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: id */
-      parentId: string;
-      parent: components['schemas']['User'] | null;
-      /** Format: id */
-      childId: string;
-      child: components['schemas']['User'];
     };
   };
   responses: never;
@@ -25682,6 +25670,14 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *write:account*
    */
   'reversi/cancel-match': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId?: string | null;
+        };
+      };
+    };
     responses: {
       /** @description OK (with results) */
       200: {
@@ -25792,7 +25788,7 @@ export type operations = {
       content: {
         'application/json': {
           /** Format: misskey:id */
-          userId: string;
+          userId?: string | null;
         };
       };
     };
@@ -25842,19 +25838,11 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *read:account*
    */
   'reversi/invitations': {
-    requestBody: {
-      content: {
-        'application/json': {
-          /** Format: misskey:id */
-          userId: string;
-        };
-      };
-    };
     responses: {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['ReversiMatching'][];
+          'application/json': components['schemas']['UserLite'][];
         };
       };
       /** @description Client error */
