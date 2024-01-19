@@ -333,8 +333,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/registry.vue')),
 }, {
 	path: '/install-extentions',
-	// Note: This path is kept for compatibility. It may be deleted.
-	component: page(() => import('@/pages/install-extensions.vue')),
+	redirect: '/install-extensions',
 	loginRequired: true,
 }, {
 	path: '/install-extensions',
