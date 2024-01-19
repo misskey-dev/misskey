@@ -43,8 +43,7 @@ class ReversiGameChannel extends Channel {
 	@bindThis
 	public onMessage(type: string, body: any) {
 		switch (type) {
-			case 'accept': this.accept(true); break;
-			case 'cancelAccept': this.accept(false); break;
+			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'putStone': this.putStone(body.pos); break;
 			case 'syncState': this.syncState(body.crc32); break;
@@ -63,13 +62,13 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async accept(accept: boolean) {
+	private async ready(ready: boolean) {
 		if (this.user == null) return;
 
 		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
 		if (game == null) throw new Error('game not found');
 
-		this.reversiService.matchAccept(game, this.user, accept);
+		this.reversiService.gameReady(game, this.user, ready);
 	}
 
 	@bindThis

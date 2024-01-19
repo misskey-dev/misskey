@@ -34,12 +34,12 @@ export class MiReversiGame {
 	@Column('boolean', {
 		default: false,
 	})
-	public user1Accepted: boolean;
+	public user1Ready: boolean;
 
 	@Column('boolean', {
 		default: false,
 	})
-	public user2Accepted: boolean;
+	public user2Ready: boolean;
 
 	/**
 	 * どちらのプレイヤーが先行(黒)か
@@ -77,7 +77,7 @@ export class MiReversiGame {
 		default: [],
 	})
 	public logs: {
-		at: Date;
+		at: number;
 		color: boolean;
 		pos: number;
 	}[];

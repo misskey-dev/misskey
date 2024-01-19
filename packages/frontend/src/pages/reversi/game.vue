@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="game == null || connection == null"><MkLoading/></div>
-<GameSetting v-else-if="!game.isStarted" :initGame="game" :connection="connection"/>
-<GameBoard v-else :initGame="game" :connection="connection"/>
+<GameSetting v-else-if="!game.isStarted" :game="game" :connection="connection"/>
+<GameBoard v-else :game="game" :connection="connection"/>
 </template>
 
 <script lang="ts" setup>
@@ -42,8 +42,8 @@ async function fetchGame() {
 	connection.value = useStream().useChannel('reversiGame', {
 		gameId: game.value.id,
 	});
-	connection.value.on('started', g => {
-		game.value = g;
+	connection.value.on('started', x => {
+		game.value = x.game;
 	});
 }
 

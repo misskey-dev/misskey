@@ -37,11 +37,11 @@ export const packedReversiGameLiteSchema = {
 			type: 'any',
 			optional: false, nullable: true,
 		},
-		user1Accepted: {
+		user1Ready: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		user2Accepted: {
+		user2Ready: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
@@ -137,11 +137,11 @@ export const packedReversiGameDetailedSchema = {
 			type: 'any',
 			optional: false, nullable: true,
 		},
-		user1Accepted: {
+		user1Ready: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		user2Accepted: {
+		user2Ready: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
@@ -208,9 +208,8 @@ export const packedReversiGameDetailedSchema = {
 				optional: false, nullable: false,
 				properties: {
 					at: {
-						type: 'string',
+						type: 'number',
 						optional: false, nullable: false,
-						format: 'date-time',
 					},
 					color: {
 						type: 'boolean',

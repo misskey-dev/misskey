@@ -4,14 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="!matching" class="bgvwxkhb">
+<MkSpacer v-if="!matchingAny && !matchingUser" :contentMax="600" class="bgvwxkhb">
 	<h1>Misskey {{ i18n.ts._reversi.reversi }}</h1>
 
-	<div class="play">
-		<MkButton primary round style="margin: var(--margin) auto 0 auto;" @click="match">{{ i18n.ts.invite }}</MkButton>
-	</div>
+	<div class="_gaps">
+		<div class="_buttonsCenter">
+			<MkButton primary rounded @click="matchAny">Match</MkButton>
+			<MkButton primary rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+		</div>
 
-	<div class="_section">
 		<MkFolder v-if="invitations.length > 0">
 			<template #header>{{ i18n.ts.invitations }}</template>
 			<div class="nfcacttm">
@@ -24,165 +25,180 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkFolder>
 
-		<MkFolder v-if="myGames.length > 0">
-			<template #header>{{ i18n.ts._reversi.myGames }}</template>
-			<div class="knextgwz">
-				<MkA v-for="g in myGames" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
-					<div class="players">
-						<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
+		<MkFolder v-if="$i" :defaultOpen="true">
+			<template #label>{{ i18n.ts._reversi.myGames }}</template>
+			<MkPagination :pagination="myGamesPagination">
+				<template #default="{ items }">
+					<div class="knextgwz">
+						<MkA v-for="g in items" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
+							<div class="players">
+								<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
+							</div>
+							<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
+						</MkA>
 					</div>
-					<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
-				</MkA>
-			</div>
+				</template>
+			</MkPagination>
 		</MkFolder>
 
-		<MkFolder v-if="games.length > 0">
-			<template #header>{{ i18n.ts._reversi.allGames }}</template>
-			<div class="knextgwz">
-				<MkA v-for="g in games" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
-					<div class="players">
-						<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
+		<MkFolder :defaultOpen="true">
+			<template #label>{{ i18n.ts._reversi.allGames }}</template>
+			<MkPagination :pagination="gamesPagination">
+				<template #default="{ items }">
+					<div class="knextgwz">
+						<MkA v-for="g in items" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
+							<div class="players">
+								<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
+							</div>
+							<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
+						</MkA>
 					</div>
-					<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
-				</MkA>
-			</div>
+				</template>
+			</MkPagination>
 		</MkFolder>
 	</div>
-</div>
+</MkSpacer>
 <div v-else class="sazhgisb">
-	<h1>
+	<h1 v-if="matchingUser">
 		<I18n :src="i18n.ts.waitingFor" tag="span">
 			<template #x>
-				<b><MkUserName :user="matching"/></b>
+				<b><MkUserName :user="matchingUser"/></b>
 			</template>
 		</I18n>
 		<MkEllipsis/>
 	</h1>
+	<h1 v-else>
+		Matching
+		<MkEllipsis/>
+	</h1>
 	<div class="cancel">
-		<MkButton inline round @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+		<MkButton inline round @click="cancelMatching">{{ i18n.ts.cancel }}</MkButton>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
-import * as os from '@/os';
-import MkButton from '@/components/ui/button.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import * as symbols from '@/symbols';
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useStream } from '@/stream.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import MkPagination from '@/components/MkPagination.vue';
+import { useRouter } from '@/global/router/supplier.js';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
 
-export default defineComponent({
-	components: {
-		MkButton, MkFolder,
+const myGamesPagination = {
+	endpoint: 'reversi/games' as const,
+	limit: 10,
+	params: {
+		my: true,
 	},
+};
 
-	inject: ['navHook'],
+const gamesPagination = {
+	endpoint: 'reversi/games' as const,
+	limit: 10,
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.i18n.ts._reversi.reversi,
-				icon: 'fas fa-gamepad',
-			},
-			games: [],
-			gamesFetching: true,
-			gamesMoreFetching: false,
-			myGames: [],
-			matching: null,
-			invitations: [],
-			connection: null,
-			pingClock: null,
-		};
-	},
+const router = useRouter();
 
-	mounted() {
-		if (this.$i) {
-			this.connection = markRaw(os.stream.useChannel('gamesReversi'));
+if ($i) {
+	const connection = useStream().useChannel('reversi');
 
-			this.connection.on('invited', this.onInvited);
+	connection.on('matched', x => {
+		startGame(x.game);
+	});
 
-			this.connection.on('matched', this.onMatched);
+	connection.on('invited', invite => {
+		invitations.value.unshift(invite);
+	});
 
-			this.pingClock = setInterval(() => {
-				if (this.matching) {
-					this.connection.send('ping', {
-						id: this.matching.id,
-					});
-				}
-			}, 3000);
+	onUnmounted(() => {
+		connection.dispose();
+	});
+}
 
-			os.api('games/reversi/games', {
-				my: true,
-			}).then(games => {
-				this.myGames = games;
-			});
+const invitations = ref<Misskey.entities.UserLite[]>([]);
+const matchingUser = ref<Misskey.entities.UserLite | null>(null);
+const matchingAny = ref<boolean>(false);
 
-			os.api('games/reversi/invitations').then(invitations => {
-				this.invitations = this.invitations.concat(invitations);
-			});
-		}
+function startGame(game: Misskey.entities.ReversiGameDetailed) {
+	matchingUser.value = null;
+	matchingAny.value = false;
+	router.push(`/reversi/g/${game.id}`);
+}
 
-		os.api('games/reversi/games').then(games => {
-			this.games = games;
-			this.gamesFetching = false;
+async function matchHeatbeat() {
+	if (matchingUser.value) {
+		const res = await misskeyApi('reversi/match', {
+			userId: matchingUser.value.id,
 		});
-	},
 
-	beforeUnmount() {
-		if (this.connection) {
-			this.connection.dispose();
-			clearInterval(this.pingClock);
+		if (res != null) {
+			startGame(res);
 		}
-	},
+	} else if (matchingAny.value) {
+		const res = await misskeyApi('reversi/match', {
+			userId: null,
+		});
 
-	methods: {
-		go(game) {
-			const url = '/games/reversi/' + game.id;
-			if (this.navHook) {
-				this.navHook(url);
-			} else {
-				this.$router.push(url);
-			}
-		},
+		if (res != null) {
+			startGame(res);
+		}
+	}
+}
 
-		async match() {
-			const user = await os.selectUser({ local: true });
-			if (user == null) return;
-			os.api('games/reversi/match', {
-				userId: user.id,
-			}).then(res => {
-				if (res == null) {
-					this.matching = user;
-				} else {
-					this.go(res);
-				}
-			});
-		},
+async function matchUser() {
+	const user = await os.selectUser({ local: true });
+	if (user == null) return;
 
-		cancel() {
-			this.matching = null;
-			os.api('games/reversi/match/cancel');
-		},
+	matchingUser.value = user;
 
-		accept(invitation) {
-			os.api('games/reversi/match', {
-				userId: invitation.parent.id,
-			}).then(game => {
-				if (game) {
-					this.go(game);
-				}
-			});
-		},
+	matchHeatbeat();
+}
 
-		onMatched(game) {
-			this.go(game);
-		},
+async function matchAny() {
+	matchingAny.value = true;
 
-		onInvited(invite) {
-			this.invitations.unshift(invite);
-		},
-	},
+	matchHeatbeat();
+}
+
+function cancelMatching() {
+	if (matchingUser.value) {
+		misskeyApi('reversi/cancel-match', { userId: matchingUser.value.id });
+		matchingUser.value = null;
+	} else if (matchingAny.value) {
+		misskeyApi('reversi/cancel-match', { userId: null });
+		matchingAny.value = false;
+	}
+}
+
+async function accept(invitation) {
+	const game = await misskeyApi('reversi/match', {
+		userId: invitation.parent.id,
+	});
+	if (game) {
+		startGame(game);
+	}
+}
+
+useInterval(matchHeatbeat, 1000 * 10, { immediate: false, afterMounted: true });
+
+onMounted(() => {
+	misskeyApi('reversi/invitations').then(_invitations => {
+		invitations.value = _invitations;
+	});
 });
+
+definePageMetadata(computed(() => ({
+	title: 'Reversi',
+	icon: 'ti ti-device-gamepad',
+})));
 </script>
 
 	<style lang="scss" scoped>

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import * as CRC32 from 'crc-32';
+import CRC32 from 'crc-32';
 import { ModuleRef } from '@nestjs/core';
 import * as Reversi from 'misskey-reversi';
 import { IsNull } from 'typeorm';
@@ -28,7 +28,7 @@ import { NotificationService } from '@/core/NotificationService.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
-const MATCHING_TIMEOUT_MS = 15 * 1000; // 15sec
+const MATCHING_TIMEOUT_MS = 1000 * 15; // 15sec
 
 @Injectable()
 export class ReversiService implements OnApplicationShutdown, OnModuleInit {
@@ -61,7 +61,11 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			throw new Error('You cannot match yourself.');
 		}
 
-		const invitations = await this.redisClient.zrange(`reversi:matchSpecific:${me.id}`, Date.now() - MATCHING_TIMEOUT_MS, '+inf');
+		const invitations = await this.redisClient.zrange(
+			`reversi:matchSpecific:${me.id}`,
+			Date.now() - MATCHING_TIMEOUT_MS,
+			'+inf',
+			'BYSCORE');
 
 		if (invitations.includes(targetUser.id)) {
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
@@ -70,8 +74,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				id: this.idService.gen(),
 				user1Id: targetUser.id,
 				user2Id: me.id,
-				user1Accepted: false,
-				user2Accepted: false,
+				user1Ready: false,
+				user2Ready: false,
 				isStarted: false,
 				isEnded: false,
 				logs: [],
@@ -97,21 +101,26 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUser(me: MiUser): Promise<MiReversiGame | null> {
-		const scanRes = await this.redisClient.scan(0, 'MATCH', 'reversi:matchAny:*', 'COUNT', 10);
-		const userIds = scanRes[1].map(key => key.split(':')[2]).filter(id => id !== me.id);
+		const matchings = await this.redisClient.zrange(
+			'reversi:matchAny',
+			Date.now() - MATCHING_TIMEOUT_MS,
+			'+inf',
+			'BYSCORE');
+
+		const userIds = matchings.filter(id => id !== me.id);
 
 		if (userIds.length > 0) {
 			// pick random
 			const matchedUserId = userIds[Math.floor(Math.random() * userIds.length)];
 
-			await this.redisClient.del(`reversi:matchAny:${matchedUserId}`);
+			await this.redisClient.zrem('reversi:matchAny', me.id, matchedUserId);
 
 			const game = await this.reversiGamesRepository.insert({
 				id: this.idService.gen(),
 				user1Id: matchedUserId,
 				user2Id: me.id,
-				user1Accepted: false,
-				user2Accepted: false,
+				user1Ready: false,
+				user2Ready: false,
 				isStarted: false,
 				isEnded: false,
 				logs: [],
@@ -125,7 +134,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 			return game;
 		} else {
-			await this.redisClient.setex(`reversi:matchAny:${me.id}`, MATCHING_TIMEOUT_MS / 1000, '');
+			await this.redisClient.zadd('reversi:matchAny', Date.now(), me.id);
 			return null;
 		}
 	}
@@ -137,47 +146,47 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUserCancel(user: MiUser) {
-		await this.redisClient.del(`reversi:matchAny:${user.id}`);
+		await this.redisClient.zrem('reversi:matchAny', user.id);
 	}
 
 	@bindThis
-	public async matchAccept(game: MiReversiGame, user: MiUser, isAccepted: boolean) {
+	public async gameReady(game: MiReversiGame, user: MiUser, ready: boolean) {
 		if (game.isStarted) return;
 
-		let bothAccepted = false;
+		let isBothReady = false;
 
 		if (game.user1Id === user.id) {
 			await this.reversiGamesRepository.update(game.id, {
-				user1Accepted: isAccepted,
+				user1Ready: ready,
 			});
 
-			this.globalEventService.publishReversiGameStream(game.id, 'changeAcceptingStates', {
-				user1: isAccepted,
-				user2: game.user2Accepted,
+			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
+				user1: ready,
+				user2: game.user2Ready,
 			});
 
-			if (isAccepted && game.user2Accepted) bothAccepted = true;
+			if (ready && game.user2Ready) isBothReady = true;
 		} else if (game.user2Id === user.id) {
 			await this.reversiGamesRepository.update(game.id, {
-				user2Accepted: isAccepted,
+				user2Ready: ready,
 			});
 
-			this.globalEventService.publishReversiGameStream(game.id, 'changeAcceptingStates', {
-				user1: game.user1Accepted,
-				user2: isAccepted,
+			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
+				user1: game.user1Ready,
+				user2: ready,
 			});
 
-			if (isAccepted && game.user1Accepted) bothAccepted = true;
+			if (ready && game.user1Ready) isBothReady = true;
 		} else {
 			return;
 		}
 
-		if (bothAccepted) {
-			// 3秒後、まだacceptされていたらゲーム開始
+		if (isBothReady) {
+			// 3秒後、両者readyならゲーム開始
 			setTimeout(async () => {
 				const freshGame = await this.reversiGamesRepository.findOneBy({ id: game.id });
 				if (freshGame == null || freshGame.isStarted || freshGame.isEnded) return;
-				if (!freshGame.user1Accepted || !freshGame.user2Accepted) return;
+				if (!freshGame.user1Ready || !freshGame.user2Ready) return;
 
 				let bw: number;
 				if (freshGame.bw === 'random') {
@@ -239,7 +248,11 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async getInvitations(user: MiUser): Promise<MiUser['id'][]> {
-		const invitations = await this.redisClient.zrange(`reversi:matchSpecific:${user.id}`, Date.now() - MATCHING_TIMEOUT_MS, '+inf');
+		const invitations = await this.redisClient.zrange(
+			`reversi:matchSpecific:${user.id}`,
+			Date.now() - MATCHING_TIMEOUT_MS,
+			'+inf',
+			'BYSCORE');
 		return invitations;
 	}
 
@@ -247,8 +260,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	public async updateSettings(game: MiReversiGame, user: MiUser, key: string, value: any) {
 		if (game.isStarted) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
-		if ((game.user1Id === user.id) && game.user1Accepted) return;
-		if ((game.user2Id === user.id) && game.user2Accepted) return;
+		if ((game.user1Id === user.id) && game.user1Ready) return;
+		if ((game.user2Id === user.id) && game.user2Ready) return;
 
 		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard'].includes(key)) return;
 
@@ -301,7 +314,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		}
 
 		const log = {
-			at: new Date(),
+			at: Date.now(),
 			color: myColor,
 			pos,
 		};
@@ -317,9 +330,10 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			logs: game.logs,
 		});
 
-		this.globalEventService.publishReversiGameStream(game.id, 'putStone', Object.assign(log, {
+		this.globalEventService.publishReversiGameStream(game.id, 'putStone', {
+			...log,
 			next: o.turn,
-		}));
+		});
 
 		if (o.isEnded) {
 			this.globalEventService.publishReversiGameStream(game.id, 'ended', {

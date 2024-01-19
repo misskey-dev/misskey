@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-19T01:59:25.971Z
+ * generatedAt: 2024-01-19T08:51:50.533Z
  */
 
 /**
@@ -4469,8 +4469,8 @@ export type components = {
       isEnded: boolean;
       form1: Record<string, never> | null;
       form2: Record<string, never> | null;
-      user1Accepted: boolean;
-      user2Accepted: boolean;
+      user1Ready: boolean;
+      user2Ready: boolean;
       /** Format: id */
       user1Id: string;
       /** Format: id */
@@ -4499,8 +4499,8 @@ export type components = {
       isEnded: boolean;
       form1: Record<string, never> | null;
       form2: Record<string, never> | null;
-      user1Accepted: boolean;
-      user2Accepted: boolean;
+      user1Ready: boolean;
+      user2Ready: boolean;
       /** Format: id */
       user1Id: string;
       /** Format: id */

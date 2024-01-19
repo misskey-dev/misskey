@@ -170,9 +170,7 @@ export interface ReversiEventTypes {
 }
 
 export interface ReversiGameEventTypes {
-	accept: boolean;
-	cancelAccept: undefined;
-	changeAcceptingStates: {
+	changeReadyStates: {
 		user1: boolean;
 		user2: boolean;
 	};
@@ -181,7 +179,7 @@ export interface ReversiGameEventTypes {
 		value: any;
 	};
 	putStone: {
-		at: Date;
+		at: number;
 		color: boolean;
 		pos: number;
 		next: boolean;
