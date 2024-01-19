@@ -4,23 +4,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer v-if="!matchingAny && !matchingUser" :contentMax="600" class="bgvwxkhb">
-	<h1>Misskey {{ i18n.ts._reversi.reversi }}</h1>
-
+<MkSpacer v-if="!matchingAny && !matchingUser" :contentMax="600">
 	<div class="_gaps">
-		<div class="_buttonsCenter">
-			<MkButton primary rounded @click="matchAny">Match</MkButton>
-			<MkButton primary rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+		<div>
+			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 		</div>
 
-		<MkFolder v-if="invitations.length > 0">
-			<template #header>{{ i18n.ts.invitations }}</template>
-			<div class="nfcacttm">
-				<button v-for="invitation in invitations" class="invitation _panel _button" tabindex="-1" @click="accept(invitation)">
-					<MkAvatar class="avatar" :user="invitation.parent" :showIndicator="true"/>
-					<span class="name"><b><MkUserName :user="invitation.parent"/></b></span>
-					<span class="username">@{{ invitation.parent.username }}</span>
-					<MkTime :time="invitation.createdAt" class="time"/>
+		<div class="_buttonsCenter">
+			<MkButton primary gradate rounded @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
+			<MkButton primary gradate rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+		</div>
+
+		<MkFolder v-if="invitations.length > 0" :defaultOpen="true">
+			<template #label>{{ i18n.ts.invitations }}</template>
+			<div class="_gaps_s">
+				<button v-for="user in invitations" :key="user.id" v-panel :class="$style.invitation" class="_button" tabindex="-1" @click="accept(user)">
+					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="user" :showIndicator="true"/>
+					<span style="margin-right: 8px;"><b><MkUserName :user="user"/></b></span>
+					<span>@{{ user.username }}</span>
 				</button>
 			</div>
 		</MkFolder>
@@ -29,12 +30,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._reversi.myGames }}</template>
 			<MkPagination :pagination="myGamesPagination">
 				<template #default="{ items }">
-					<div class="knextgwz">
-						<MkA v-for="g in items" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
-							<div class="players">
-								<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
+					<div :class="$style.gamePreviews">
+						<MkA v-for="g in items" :key="g.id" v-panel :class="$style.gamePreview" tabindex="-1" :to="`/reversi/g/${g.id}`">
+							<div :class="$style.gamePreviewPlayers">
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
 							</div>
-							<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
+							<div :class="$style.gamePreviewFooter">
+								<span :style="!g.isEnded ? 'color: var(--accent);' : ''">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span>
+								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
+							</div>
 						</MkA>
 					</div>
 				</template>
@@ -45,12 +49,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._reversi.allGames }}</template>
 			<MkPagination :pagination="gamesPagination">
 				<template #default="{ items }">
-					<div class="knextgwz">
-						<MkA v-for="g in items" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
-							<div class="players">
-								<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
+					<div :class="$style.gamePreviews">
+						<MkA v-for="g in items" :key="g.id" v-panel :class="$style.gamePreview" tabindex="-1" :to="`/reversi/g/${g.id}`">
+							<div :class="$style.gamePreviewPlayers">
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
 							</div>
-							<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
+							<div :class="$style.gamePreviewFooter">
+								<span :style="!g.isEnded ? 'color: var(--accent);' : ''">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span>
+								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
+							</div>
 						</MkA>
 					</div>
 				</template>
@@ -58,23 +65,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 	</div>
 </MkSpacer>
-<div v-else class="sazhgisb">
-	<h1 v-if="matchingUser">
-		<I18n :src="i18n.ts.waitingFor" tag="span">
-			<template #x>
-				<b><MkUserName :user="matchingUser"/></b>
-			</template>
-		</I18n>
-		<MkEllipsis/>
-	</h1>
-	<h1 v-else>
-		Matching
-		<MkEllipsis/>
-	</h1>
-	<div class="cancel">
-		<MkButton inline round @click="cancelMatching">{{ i18n.ts.cancel }}</MkButton>
+<MkSpacer v-else :contentMax="600">
+	<div :class="$style.waitingScreen">
+		<div v-if="matchingUser" :class="$style.waitingScreenTitle">
+			<I18n :src="i18n.ts.waitingFor" tag="span">
+				<template #x>
+					<b><MkUserName :user="matchingUser"/></b>
+				</template>
+			</I18n>
+			<MkEllipsis/>
+		</div>
+		<div v-else :class="$style.waitingScreenTitle">
+			{{ i18n.ts._reversi.lookingForPlayer }}<MkEllipsis/>
+		</div>
+		<div class="cancel">
+			<MkButton inline rounded @click="cancelMatching">{{ i18n.ts.cancel }}</MkButton>
+		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
@@ -114,8 +122,9 @@ if ($i) {
 		startGame(x.game);
 	});
 
-	connection.on('invited', invite => {
-		invitations.value.unshift(invite);
+	connection.on('invited', invitation => {
+		if (invitations.value.some(x => x.id === invitation.user.id)) return;
+		invitations.value.unshift(invitation.user);
 	});
 
 	onUnmounted(() => {
@@ -178,9 +187,9 @@ function cancelMatching() {
 	}
 }
 
-async function accept(invitation) {
+async function accept(user) {
 	const game = await misskeyApi('reversi/match', {
-		userId: invitation.parent.id,
+		userId: user.id,
 	});
 	if (game) {
 		startGame(game);
@@ -201,100 +210,62 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-	<style lang="scss" scoped>
-	.bgvwxkhb {
-		> h1 {
-			margin: 0;
-			padding: 24px;
-			text-align: center;
-			font-size: 1.5em;
-			background: linear-gradient(0deg, #43c583, #438881);
-			color: #fff;
-		}
+<style lang="scss" module>
+.invitation {
+	display: flex;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 16px;
+	line-height: 32px;
+	text-align: left;
+}
 
-		> .play {
-			text-align: center;
-		}
+.gamePreviews {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	grid-gap: var(--margin);
+}
+
+.gamePreview {
+	font-size: 90%;
+	border-radius: 8px;
+	overflow: clip;
+}
+
+.gamePreviewPlayers {
+	text-align: center;
+	padding: 16px;
+	line-height: 32px;
+}
+
+.gamePreviewPlayersAvatar {
+	width: 32px;
+	height: 32px;
+
+	&:first-child {
+		margin-right: 8px;
 	}
 
-	.sazhgisb {
-		text-align: center;
+	&:last-child {
+		margin-left: 8px;
 	}
+}
 
-	.nfcacttm {
-		> .invitation {
-			display: flex;
-			box-sizing: border-box;
-			width: 100%;
-			padding: 16px;
-			line-height: 32px;
-			text-align: left;
+.gamePreviewFooter {
+	display: flex;
+	align-items: baseline;
+	border-top: solid 0.5px var(--divider);
+	padding: 6px 10px;
+	font-size: 0.9em;
+}
 
-			> .avatar {
-				width: 32px;
-				height: 32px;
-				margin-right: 8px;
-			}
+.waitingScreen {
+	text-align: center;
+}
 
-			> .name {
-				margin-right: 8px;
-			}
-
-			> .username {
-				margin-right: 8px;
-				opacity: 0.7;
-			}
-
-			> .time {
-				margin-left: auto;
-				opacity: 0.7;
-			}
-		}
-	}
-
-	.knextgwz {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		grid-gap: var(--margin);
-
-		> .game {
-			> .players {
-				text-align: center;
-				padding: 16px;
-				line-height: 32px;
-
-				> .avatar {
-					width: 32px;
-					height: 32px;
-
-					&:first-child {
-						margin-right: 8px;
-					}
-
-					&:last-child {
-						margin-left: 8px;
-					}
-				}
-			}
-
-			> footer {
-				display: flex;
-				align-items: baseline;
-				border-top: solid 0.5px var(--divider);
-				padding: 6px 8px;
-				font-size: 0.9em;
-
-				> .state {
-					&.playing {
-						color: var(--accent);
-					}
-				}
-
-				> .time {
-					margin-left: auto;
-					opacity: 0.7;
-				}
-			}
-		}
-	}
-	</style>
+.waitingScreenTitle {
+	font-size: 1.5em;
+	margin-bottom: 16px;
+	margin-top: 32px;
+}
+</style>

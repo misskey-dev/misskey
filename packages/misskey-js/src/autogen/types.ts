@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-19T08:51:50.533Z
+ * generatedAt: 2024-01-19T11:00:07.077Z
  */
 
 /**
@@ -4518,8 +4518,7 @@ export type components = {
       canPutEverywhere: boolean;
       loopedBoard: boolean;
       logs: {
-          /** Format: date-time */
-          at: string;
+          at: number;
           color: boolean;
           pos: number;
         }[];

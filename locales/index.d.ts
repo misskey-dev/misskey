@@ -2665,6 +2665,8 @@ export interface Locale extends ILocale {
         "isLlotheo": string;
         "loopedMap": string;
         "canPutEverywhere": string;
+        "freeMatch": string;
+        "lookingForPlayer": string;
     };
 }
 declare const locales: {

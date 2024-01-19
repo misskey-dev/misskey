@@ -175,6 +175,7 @@ export interface ReversiGameEventTypes {
 		user2: boolean;
 	};
 	updateSettings: {
+		userId: MiUser['id'];
 		key: string;
 		value: any;
 	};

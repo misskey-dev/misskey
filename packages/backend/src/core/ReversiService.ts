@@ -101,6 +101,38 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUser(me: MiUser): Promise<MiReversiGame | null> {
+		//#region まず自分宛ての招待を探す
+		const invitations = await this.redisClient.zrange(
+			`reversi:matchSpecific:${me.id}`,
+			Date.now() - MATCHING_TIMEOUT_MS,
+			'+inf',
+			'BYSCORE');
+
+		if (invitations.length > 0) {
+			const invitorId = invitations[Math.floor(Math.random() * invitations.length)];
+			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, invitorId);
+
+			const game = await this.reversiGamesRepository.insert({
+				id: this.idService.gen(),
+				user1Id: invitorId,
+				user2Id: me.id,
+				user1Ready: false,
+				user2Ready: false,
+				isStarted: false,
+				isEnded: false,
+				logs: [],
+				map: Reversi.maps.eighteight.data,
+				bw: 'random',
+				isLlotheo: false,
+			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
+
+			const packed = await this.reversiGameEntityService.packDetail(game, { id: invitorId });
+			this.globalEventService.publishReversiStream(invitorId, 'matched', { game: packed });
+
+			return game;
+		}
+		//#endregion
+
 		const matchings = await this.redisClient.zrange(
 			'reversi:matchAny',
 			Date.now() - MATCHING_TIMEOUT_MS,
@@ -270,6 +302,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		this.globalEventService.publishReversiGameStream(game.id, 'updateSettings', {
+			userId: user.id,
 			key: key,
 			value: value,
 		});

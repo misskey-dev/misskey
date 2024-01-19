@@ -5,26 +5,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="600">
-	<div :class="$style.root">
+	<div :class="$style.root" class="_gaps">
 		<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ i18n.ts._reversi.black }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ i18n.ts._reversi.white }})</header>
 
-		<div style="overflow: hidden; line-height: 28px;">
-			<p v-if="!iAmPlayer && !game.isEnded" class="turn">
-				<Mfm :key="'turn:' + turnUser.name" :text="i18n.t('_reversi.turnOf', { name: turnUser.name })" :plain="true" :customEmojis="turnUser.emojis"/>
+		<div style="overflow: clip; line-height: 28px;">
+			<div v-if="!iAmPlayer && !game.isEnded && turnUser" class="turn">
+				<Mfm :key="'turn:' + turnUser.id" :text="i18n.t('_reversi.turnOf', { name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
-			</p>
-			<p v-if="logPos != logs.length" class="turn">
-				<Mfm :key="'past-turn-of:' + turnUser.name" :text="i18n.t('_reversi.pastTurnOf', { name: turnUser.name })" :plain="true" :customEmojis="turnUser.emojis"/>
-			</p>
-			<p v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/></p>
-			<p v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</p>
-			<p v-if="game.isEnded && logPos == logs.length" class="result">
+			</div>
+			<div v-if="(logPos !== logs.length) && turnUser" class="turn">
+				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.t('_reversi.pastTurnOf', { name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
+			</div>
+			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/></div>
+			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
+			<div v-if="game.isEnded && logPos == logs.length" class="result">
 				<template v-if="game.winner">
-					<Mfm :key="'won'" :text="i18n.t('_reversi.won', { name: game.winner.name })" :plain="true" :customEmojis="game.winner.emojis"/>
+					<Mfm :key="'won'" :text="i18n.t('_reversi.won', { name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
 					<span v-if="game.surrendered != null"> ({{ i18n.ts._reversi.surrendered }})</span>
 				</template>
 				<template v-else>{{ i18n.ts._reversi.drawn }}</template>
-			</p>
+			</div>
 		</div>
 
 		<div :class="$style.board">
@@ -62,28 +62,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<p class="status"><b>{{ i18n.t('_reversi.turnCount', { count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}</p>
+		<div class="status"><b>{{ i18n.t('_reversi.turnCount', { count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}</div>
 
 		<div v-if="!game.isEnded && iAmPlayer" class="_buttonsCenter">
 			<MkButton danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
 		</div>
 
-		<div v-if="game.isEnded" class="player">
-			<span>{{ logPos }} / {{ logs.length }}</span>
-			<div v-if="!autoplaying" class="buttons">
-				<MkButton inline :disabled="logPos == 0" @click="logPos = 0"><i class="fas fa-angle-double-left"></i></MkButton>
-				<MkButton inline :disabled="logPos == 0" @click="logPos--"><i class="fas fa-angle-left"></i></MkButton>
-				<MkButton inline :disabled="logPos == logs.length" @click="logPos++"><i class="fas fa-angle-right"></i></MkButton>
-				<MkButton inline :disabled="logPos == logs.length" @click="logPos = logs.length"><i class="fas fa-angle-double-right"></i></MkButton>
+		<div v-if="game.isEnded" class="_panel _gaps_s" style="padding: 16px;">
+			<div>{{ logPos }} / {{ logs.length }}</div>
+			<div v-if="!autoplaying" class="_buttonsCenter">
+				<MkButton :disabled="logPos === 0" @click="logPos = 0"><i class="ti ti-chevrons-left"></i></MkButton>
+				<MkButton :disabled="logPos === 0" @click="logPos--"><i class="ti ti-chevron-left"></i></MkButton>
+				<MkButton :disabled="logPos === logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
+				<MkButton :disabled="logPos === logs.length" @click="logPos = logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
 			</div>
-			<MkButton :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;" @click="autoplay()"><i class="fas fa-play"></i></MkButton>
+			<MkButton style="margin: auto;" :disabled="autoplaying" @click="autoplay()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
 
-		<div class="info">
+		<div>
 			<p v-if="game.isLlotheo">{{ i18n.ts._reversi.isLlotheo }}</p>
 			<p v-if="game.loopedBoard">{{ i18n.ts._reversi.loopedMap }}</p>
 			<p v-if="game.canPutEverywhere">{{ i18n.ts._reversi.canPutEverywhere }}</p>
 		</div>
+
+		<MkA v-if="game.isEnded" :to="`/reversi`">
+			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; width: 200px; margin: auto;"/>
+		</MkA>
 	</div>
 </MkSpacer>
 </template>
@@ -191,7 +195,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 		props.connection.send('syncState', {
 			crc32: crc32,
 		});
-	}, 3000, { immediate: false, afterMounted: true });
+	}, 5000, { immediate: false, afterMounted: true });
 }
 
 function putStone(pos) {
@@ -422,40 +426,3 @@ $gap: 4px;
 	}
 }
 </style>
-
-	<style lang="scss" scoped>
-
-	@use "sass:math";
-
-	.xqnhankfuuilcwvhgsopeqncafzsquya {
-
-		> .status {
-			margin: 0;
-			padding: 16px 0;
-		}
-
-		> .actions {
-			padding-bottom: 16px;
-		}
-
-		> .player {
-			padding: 0 16px 32px 16px;
-			margin: 0 auto;
-			max-width: 500px;
-
-			> span {
-				display: inline-block;
-				margin: 0 8px;
-				min-width: 70px;
-			}
-
-			> .buttons {
-				display: flex;
-
-				> * {
-					flex: 1;
-				}
-			}
-		}
-	}
-	</style>

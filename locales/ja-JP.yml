@@ -2539,3 +2539,5 @@ _reversi:
   isLlotheo: "石の少ない方が勝ち(ロセオ)"
   loopedMap: "ループマップ"
   canPutEverywhere: "どこでも置けるモード"
+  freeMatch: "フリーマッチ"
+  lookingForPlayer: "対戦相手を探しています"

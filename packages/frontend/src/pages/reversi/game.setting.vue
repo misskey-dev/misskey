@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<MkSpacer :contentMax="600">
-		<header><b><MkUserName :user="game.user1"/></b> vs <b><MkUserName :user="game.user2"/></b></header>
+		<div style="text-align: center;"><b><MkUserName :user="game.user1"/></b> vs <b><MkUserName :user="game.user2"/></b></div>
 
 		<div class="_gaps">
-			<p>{{ i18n.ts._reversi.gameSettings }}</p>
+			<div style="font-size: 1.5em; text-align: center;">{{ i18n.ts._reversi.gameSettings }}</div>
 
 			<div class="_panel">
 				<div style="display: flex; align-items: center; padding: 16px; border-bottom: solid 1px var(--divider);">
@@ -21,35 +21,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="game.map == null"><i class="ti ti-dice"></i></div>
 					<div v-else :class="$style.board" :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
 						<div v-for="(x, i) in game.map.join('')" :class="[$style.boardCell, { [$style.boardCellNone]: x == ' ' }]" @click="onMapCellClick(i, x)">
-							<i v-if="x === 'b' || x === 'w'" style="pointer-events: none; user-select: none; width: 100%; height: 100%;" :class="x === 'b' ? 'ti ti-circle-filled' : 'ti ti-circle'"></i>
+							<i v-if="x === 'b' || x === 'w'" style="pointer-events: none; user-select: none;" :class="x === 'b' ? 'ti ti-circle-filled' : 'ti ti-circle'"></i>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="_panel" style="padding: 16px;">
-				<header>
-					<span>{{ i18n.ts._reversi.blackOrWhite }}</span>
-				</header>
+			<MkFolder :defaultOpen="true">
+				<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
-				<div>
-					<MkRadio v-model="game.bw" value="random" @update:modelValue="updateSettings('bw')">{{ i18n.ts.random }}</MkRadio>
-					<MkRadio v-model="game.bw" :value="'1'" @update:modelValue="updateSettings('bw')">
+				<MkRadios v-model="game.bw">
+					<option value="random">{{ i18n.ts.random }}</option>
+					<option :value="'1'">
 						<I18n :src="i18n.ts._reversi.blackIs" tag="span">
 							<template #name>
 								<b><MkUserName :user="game.user1"/></b>
 							</template>
 						</I18n>
-					</MkRadio>
-					<MkRadio v-model="game.bw" :value="'2'" @update:modelValue="updateSettings('bw')">
+					</option>
+					<option :value="'2'">
 						<I18n :src="i18n.ts._reversi.blackIs" tag="span">
 							<template #name>
 								<b><MkUserName :user="game.user2"/></b>
 							</template>
 						</I18n>
-					</MkRadio>
-				</div>
-			</div>
+					</option>
+				</MkRadios>
+			</MkFolder>
 
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts._reversi.rules }}</template>
@@ -86,14 +84,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkButton from '@/components/MkButton.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkRadio from '@/components/MkRadio.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -126,15 +121,12 @@ const isOpReady = computed(() => {
 	return false;
 });
 
+watch(() => game.value.bw, () => {
+	updateSettings('bw');
+});
+
 function chooseMap(ev: MouseEvent) {
-	const menu: MenuItem[] = [{
-		text: i18n.ts.random,
-		icon: 'ti ti-dice',
-		action: () => {
-			game.value.map = null;
-			updateSettings('map');
-		},
-	}];
+	const menu: MenuItem[] = [];
 
 	for (const c of mapCategories) {
 		const maps = Object.values(Reversi.maps).filter(x => x.category === c);
@@ -183,7 +175,9 @@ function updateSettings(key: keyof Misskey.entities.ReversiGameDetailed) {
 	});
 }
 
-function onUpdateSettings({ key, value }: { key: keyof Misskey.entities.ReversiGameDetailed; value: any; }) {
+function onUpdateSettings({ userId, key, value }: { userId: string; key: keyof Misskey.entities.ReversiGameDetailed; value: any; }) {
+	if (userId === $i.id) return;
+	if (game.value[key] === value) return;
 	game.value[key] = value;
 }
 
@@ -221,6 +215,8 @@ onUnmounted(() => {
 }
 
 .boardCell {
+	display: grid;
+	place-items: center;
 	background: transparent;
 	border: solid 2px var(--divider);
 	border-radius: 6px;
@@ -237,5 +233,4 @@ onUnmounted(() => {
 	background: var(--acrylicBg);
 	border-top: solid 0.5px var(--divider);
 }
-
 </style>
