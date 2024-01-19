@@ -724,3 +724,5 @@ _moderationLogTypes:
   deleteUserAnnouncement: "사용자 공지 걸 뭉캐기"
   resetPassword: "비밀번호 재설정"
   resolveAbuseReport: "신고 해겔하기"
+_reversi:
+  total: "합계"
