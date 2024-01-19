@@ -1498,3 +1498,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspender"
   resetPassword: "Redefinir senha"
+_reversi:
+  total: "Total"
