@@ -46,16 +46,16 @@ const emit = defineEmits<{
 // ▼ しきい値 ▼ //
 
 // スワイプと判定される最小の距離
-const MIN_SWIPE_DISTANCE = 50;
+const MIN_SWIPE_DISTANCE = 20;
 
 // スワイプ時の動作を発火する最小の距離
-const SWIPE_DISTANCE_THRESHOLD = 125;
+const SWIPE_DISTANCE_THRESHOLD = 80;
 
 // スワイプを中断するY方向の移動距離
 const SWIPE_ABORT_Y_THRESHOLD = 75;
 
 // スワイプできる最大の距離
-const MAX_SWIPE_DISTANCE = 150;
+const MAX_SWIPE_DISTANCE = 120;
 
 // ▲ しきい値 ▲ //
 
@@ -178,6 +178,10 @@ watch(tabModel, (newTab, oldTab) => {
 </script>
 
 <style lang="scss" module>
+.transitionRoot {
+	touch-action: pan-y pinch-zoom;
+}
+
 .transitionRoot.enableAnimation {
 	display: grid;
 	grid-template-columns: 100%;
