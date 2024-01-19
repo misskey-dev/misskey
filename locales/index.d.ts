@@ -702,6 +702,7 @@ export interface Locale extends ILocale {
     "forwardReport": string;
     "forwardReportIsAnonymous": string;
     "send": string;
+    "reportedNote": string;
     "abuseMarkAsResolved": string;
     "openInNewTab": string;
     "openInSideView": string;
@@ -889,6 +890,7 @@ export interface Locale extends ILocale {
     "on": string;
     "off": string;
     "emailRequiredForSignup": string;
+    "enableGDPRMode": string;
     "unread": string;
     "filter": string;
     "controlPanel": string;
