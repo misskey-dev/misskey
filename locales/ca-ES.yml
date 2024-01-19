@@ -1274,3 +1274,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspèn"
   resetPassword: "Restableix la contrasenya"
+_reversi:
+  total: "Total"
