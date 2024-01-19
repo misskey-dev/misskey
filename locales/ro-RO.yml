@@ -727,3 +727,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendă"
   resetPassword: "Resetează parola"
+_reversi:
+  total: "Total"
