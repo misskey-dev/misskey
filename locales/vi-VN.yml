@@ -1850,3 +1850,5 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Vô hiệu hóa"
   resetPassword: "Đặt lại mật khẩu"
+_reversi:
+  total: "Tổng cộng"
