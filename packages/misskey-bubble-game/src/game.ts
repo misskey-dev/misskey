@@ -6,7 +6,7 @@
 import { EventEmitter } from 'eventemitter3';
 import * as Matter from 'matter-js';
 import seedrandom from 'seedrandom';
-import { NORAML_MONOS, SQUARE_MONOS, SWEETS_MONOS, YEN_MONOS } from './monos.js';
+import { NORAML_MONOS, PRISMISSKEY_MONOS, SQUARE_MONOS, SWEETS_MONOS, YEN_MONOS } from './monos.js';
 
 export type Mono = {
 	id: string;
@@ -58,7 +58,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	private tickCallbackQueue: { frame: number; callback: () => void; }[] = [];
 	private overflowCollider: Matter.Body;
 	private isGameOver = false;
-	private gameMode: 'normal' | 'yen' | 'square' | 'sweets' | 'space';
+	private gameMode: 'normal' | 'yen' | 'square' | 'sweets' | 'space' | 'prismisskey';
 	private rng: () => number;
 	private logs: Log[] = [];
 
@@ -87,6 +87,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			case 'square': return SQUARE_MONOS;
 			case 'sweets': return SWEETS_MONOS;
 			case 'space': return NORAML_MONOS;
+			case 'prismisskey' : return PRISMISSKEY_MONOS;
 		}
 	}
 

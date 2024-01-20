@@ -60,11 +60,29 @@ export interface Locale extends ILocale {
      * OK
      */
     "ok": string;
+    /**
+     * このプロファイルをデフォルトにしますか？
+     */
     "setDefaultProfileConfirm": string;
+    /**
+     * 絵文字ピッカーのプロファイル
+     */
     "emojiPickerProfile": string;
+    /**
+     * 通知のインジケーターの数字を表示する
+     */
     "notificationIndicator": string;
+    /**
+     * アイコンとバナーを反転させる
+     */
     "hanntenn": string;
+    /**
+     * ダークだったらライトのアイコンに、ライトだったらダークのアイコンに。
+     */
     "hanntennInfo": string;
+    /**
+     * ルビ
+     */
     "ruby": string;
     /**
      * わかった
@@ -83,9 +101,12 @@ export interface Locale extends ILocale {
      */
     "enterUsername": string;
     /**
-     * {user}がリノート
+     * グローバルタイムラインを表示する
      */
     "showGlobalTimeline": string;
+    /**
+     * {user}がリノート
+     */
     "renotedBy": ParameterizedString<"user">;
     /**
      * ノートはありません
@@ -328,12 +349,24 @@ export interface Locale extends ILocale {
      */
     "driveFileDeleteConfirm": ParameterizedString<"name">;
     /**
+     * {name}つのファイルを削除しますか？このファイルを使用した一部のコンテンツも削除されます。
+     */
+    "driveFilesDeleteConfirm": ParameterizedString<"name">;
+    /**
+     * {name}つのファイルをセンシティブにしますか？
+     */
+    "driveFilesSensitiveonConfirm": ParameterizedString<"name">;
+    /**
+     * {name}つのファイルのセンシティブを解除しますか？
+     */
+    "driveFilesSensitiveoffConfirm": ParameterizedString<"name">;
+    /**
+     * フォルダ「{name}」を削除しますか？このフォルダの中に存在するファイルを使用した一部のコンテンツも削除されます。
+     */
+    "driveFolderDeleteConfirm": ParameterizedString<"name">;
+    /**
      * {name}のフォローを解除しますか？
      */
-    "driveFilesDeleteConfirm": string;
-    "driveFilesSensitiveonConfirm": string;
-    "driveFilesSensitiveoffConfirm": string;
-    "driveFolderDeleteConfirm": string;
     "unfollowConfirm": ParameterizedString<"name">;
     /**
      * エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、「ドライブ」に追加されます。
@@ -700,20 +733,32 @@ export interface Locale extends ILocale {
      */
     "flagAsCat": string;
     /**
-     * にゃにゃにゃ？？
+     * ウホウホウホホウホウホウホウホホホ！！！！！！！！！！！
      */
     "flagAsGorilla": string;
+    /**
+     * にゃにゃにゃ？？
+     */
     "flagAsCatDescription": string;
+    /**
+     * ウホウホウホ？？
+     */
+    "flagAsGorillaDescription": string;
     /**
      * タイムラインにノートへの返信を表示する
      */
-    "flagAsGorillaDescription": string;
     "flagShowTimelineReplies": string;
+    /**
+     * メディアタイムラインを表示する
+     */
+    "showMediaTimeline": string;
+    /**
+     * オンにするとメディアタイムラインを上のバーに表示します。 オフにすると表示しなくなります。
+     */
+    "showMediaTimelineInfo": string;
     /**
      * オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します。
      */
-    "showMediaTimeline": string;
-    "showMediaTimelineInfo": string;
     "flagShowTimelineRepliesDescription": string;
     /**
      * フォロー中ユーザーからのフォロリクを自動承認
@@ -1083,10 +1128,10 @@ export interface Locale extends ILocale {
      * 削除しました
      */
     "removed": string;
-    "requestApprovalAreYouSure": string;
-    "removeAreYouSure": string;
-    "deleteAreYouSure": string;
-    "undraftAreYouSure": string;
+    /**
+     * 「{x}」のリクエストを承認しますか？
+     */
+    "requestApprovalAreYouSure": ParameterizedString<"x">;
     /**
      * 「{x}」を削除しますか？
      */
@@ -1095,6 +1140,10 @@ export interface Locale extends ILocale {
      * 「{x}」を削除しますか？
      */
     "deleteAreYouSure": ParameterizedString<"x">;
+    /**
+     * 「{x}」をドラフト解除しますか？
+     */
+    "undraftAreYouSure": ParameterizedString<"x">;
     /**
      * リセットしますか？
      */
@@ -1119,6 +1168,9 @@ export interface Locale extends ILocale {
      * オリジナル画像を保持
      */
     "keepOriginalUploading": string;
+    /**
+     * ホーム投稿で通知する
+     */
     "isNotifyIsHome": string;
     /**
      * 画像をアップロードする時にオリジナル版を保持します。オフにするとアップロード時にブラウザでWeb公開用画像を生成します。
@@ -1240,7 +1292,13 @@ export interface Locale extends ILocale {
      * ダークモードで使うテーマ
      */
     "themeForDarkMode": string;
+    /**
+     * ゲーミングモード
+     */
     "gamingMode": string;
+    /**
+     * ボタンなどの装飾をいい感じのグラデーションにします。 激しい点滅などはございません。
+     */
     "gamingModeInfo": string;
     /**
      * ライト
@@ -1254,6 +1312,9 @@ export interface Locale extends ILocale {
      * 明るいテーマ
      */
     "lightThemes": string;
+    /**
+     * アイコンなどが正常に表示されない場合にここをクリックしてください。
+     */
     "remoteUserInfoUpdate": string;
     /**
      * 暗いテーマ
@@ -1307,6 +1368,9 @@ export interface Locale extends ILocale {
      * フォルダーを削除
      */
     "deleteFolder": string;
+    /**
+     * フォルダー
+     */
     "Folder": string;
     /**
      * フォルダー
@@ -2221,10 +2285,16 @@ export interface Locale extends ILocale {
      */
     "showFixedPostFormInChannel": string;
     /**
-     * フォローする際、デフォルトで返信をTLに含むようにする
+     * ユーザーのページで最新のノートを表示する
      */
     "FeaturedOrNote": string;
+    /**
+     * ユーザーのページに行ったときにハイライトか最新のノートを表示するかを選択することができます。 オフでハイライト オンで最新のノート です
+     */
     "FeaturedOrNoteInfo": string;
+    /**
+     * フォローする際、デフォルトで返信をTLに含むようにする
+     */
     "withRepliesByDefaultForNewlyFollowed": string;
     /**
      * 新しいノートがあります
@@ -2470,6 +2540,9 @@ export interface Locale extends ILocale {
      * アンケート
      */
     "poll": string;
+    /**
+     * 予約投稿
+     */
     "schedulePost": string;
     /**
      * 内容を隠す
@@ -2563,6 +2636,9 @@ export interface Locale extends ILocale {
      * アクセストークンの発行
      */
     "generateAccessToken": string;
+    /**
+     * アクセストークン
+     */
     "accessToken": string;
     /**
      * 権限
@@ -2700,6 +2776,9 @@ export interface Locale extends ILocale {
      * ログ
      */
     "logs": string;
+    /**
+     * mfm 装飾
+     */
     "mfm": string;
     /**
      * 遅延
@@ -2753,7 +2832,13 @@ export interface Locale extends ILocale {
      * スペースで区切って複数設定できます。
      */
     "setMultipleBySeparatingWithSpace": string;
+    /**
+     * 名前には英数字と_が利用できます。
+     */
     "emojiNameValidation": string;
+    /**
+     * センシティブ
+     */
     "isSensitive": string;
     /**
      * ファイルIDまたはURL
@@ -2815,6 +2900,9 @@ export interface Locale extends ILocale {
      * 送信
      */
     "send": string;
+    /**
+     * ファイル付きのみ
+     */
     "fileAttachedOnly": string;
     /**
      * 対応済みにする
@@ -2944,7 +3032,13 @@ export interface Locale extends ILocale {
      * アンケートに投票した数
      */
     "pollVotesCount": string;
+    /**
+     * タイムラインの絞り込みを保存する
+     */
     "onlyAndWithSave": string;
+    /**
+     * ファイルのみ や リプライのみ などが保存されるようになります
+     */
     "onlyAndWithSaveInfo": string;
     /**
      * アンケートに投票された数
@@ -3430,8 +3524,17 @@ export interface Locale extends ILocale {
      * 低
      */
     "low": string;
+    /**
+     * 一覧
+     */
     "list": string;
+    /**
+     * ゲーミングの光るスピードの調整
+     */
     "GamingSpeedChange": string;
+    /**
+     * 左にすれば早くなる、右にすれば遅くなる。それだけ。
+     */
     "GamingSpeedChangeInfo": string;
     /**
      * メールアドレスの設定がされていません。
@@ -3441,8 +3544,17 @@ export interface Locale extends ILocale {
      * 比率
      */
     "ratio": string;
+    /**
+     * ノートの公開範囲を色付けする
+     */
     "showVisibilityColor": string;
+    /**
+     * 新しい絵文字
+     */
     "newEmojis": string;
+    /**
+     * 申請されている絵文字
+     */
     "draftEmojis": string;
     /**
      * 本文をプレビュー
@@ -4053,9 +4165,12 @@ export interface Locale extends ILocale {
      */
     "manageCustomEmojis": string;
     /**
-     * アバターデコレーションの管理
+     * カスタム絵文字のリクエスト
      */
     "requestCustomEmojis": string;
+    /**
+     * アバターデコレーションの管理
+     */
     "manageAvatarDecorations": string;
     /**
      * これ以上作成することはできません。
@@ -4233,10 +4348,25 @@ export interface Locale extends ILocale {
      * ライセンス
      */
     "license": string;
+    /**
+     * 申請中
+     */
     "requestPending": string;
+    /**
+     * 承認
+     */
     "approval": string;
+    /**
+     * リクエストされている絵文字
+     */
     "requestingEmojis": string;
+    /**
+     * ドラフト
+     */
     "draft": string;
+    /**
+     * ドラフト解除
+     */
     "undrafted": string;
     /**
      * お気に入り解除しますか？
@@ -4306,8 +4436,17 @@ export interface Locale extends ILocale {
      * データセーバー
      */
     "dataSaver": string;
+    /**
+     * モバイルデータ通信でデータセーバーをオンにする
+     */
     "cellularWithDataSaver": string;
+    /**
+     * 究極のデータセーバー
+     */
     "UltimateDataSaver": string;
+    /**
+     * モバイルデータ通信で究極のデータセーバーをオンにする
+     */
     "cellularWithUltimateDataSaver": string;
     /**
      * アカウントの移行
@@ -4685,10 +4824,6 @@ export interface Locale extends ILocale {
      * 相互フォロー
      */
     "mutualFollow": string;
-    /**
-     * ファイル付きのみ
-     */
-    "fileAttachedOnly": string;
     /**
      * TLに他の人への返信を含める
      */
@@ -6365,6 +6500,9 @@ export interface Locale extends ILocale {
              * グローバルタイムラインの閲覧
              */
             "gtlAvailable": string;
+            /**
+             * 絵文字ピッカーのプロファイルの上限数(最大5)
+             */
             "emojiPickerProfileLimit": string;
             /**
              * ローカルタイムラインの閲覧
@@ -6375,10 +6513,16 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
-             * サーバー招待コードの発行
+             * ノートの編集
              */
             "canEditNote": string;
+            /**
+             * 予約投稿の許可
+             */
             "canScheduleNote": string;
+            /**
+             * サーバー招待コードの発行
+             */
             "canInvite": string;
             /**
              * 招待コードの作成可能数
@@ -6396,6 +6540,9 @@ export interface Locale extends ILocale {
              * カスタム絵文字の管理
              */
             "canManageCustomEmojis": string;
+            /**
+             * カスタム絵文字のリクエスト
+             */
             "canRequestCustomEmojis": string;
             /**
              * アバターデコレーションの管理
@@ -6838,6 +6985,9 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         "source": string;
+        /**
+         * 当フォークのソースコード
+         */
         "forksource": string;
         /**
          * Misskeyを翻訳
@@ -6983,6 +7133,9 @@ export interface Locale extends ILocale {
          * キーワードをスラッシュで囲むと正規表現になります。
          */
         "muteWordsDescription2": string;
+        /**
+         * ミュートされた単語を含むノートを非表示にする
+         */
         "hideMutedNotes": string;
     };
     "_instanceMute": {
@@ -7426,15 +7579,45 @@ export interface Locale extends ILocale {
         "day": string;
     };
     "_timelineTutorial": {
+        /**
+         * Misskeyの使い方
+         */
         "title": string;
-        "step1_1": string;
-        "step1_2": string;
-        "step1_3": string;
+        /**
+         * この画面は「タイムライン」です。{name}に投稿された「ノート」が時系列で表示されます。
+         */
+        "step1_1": ParameterizedString<"name">;
+        /**
+         * タイムラインにはいくつか種類があり、例えば「ホームタイムライン」にはあなたがフォローしている人のノートが流れ、「ローカルタイムライン」には{name}全体のノートが流れます。
+         */
+        "step1_2": ParameterizedString<"name">;
+        /**
+         * この2つ以外にも、「ソーシャルタイムライン」は ホームTL + ローカルTL のようなもので、 「メディアタイムライン」 には{name}で何かしらのファイル付きで投稿されたノートが流れます。
+         */
+        "step1_3": ParameterizedString<"name">;
+        /**
+         * 試しに、何かノートを投稿してみましょう。画面上にある鉛筆マークのボタンを押すとフォームが開きます。
+         */
         "step2_1": string;
-        "step2_2": string;
+        /**
+         * 初めてのノートの内容は、あなたの自己紹介や「{name}始めました」などがおすすめです。
+         */
+        "step2_2": ParameterizedString<"name">;
+        /**
+         * 投稿できましたか？
+         */
         "step3_1": string;
+        /**
+         * あなたのノートがタイムラインに表示されていれば成功です。
+         */
         "step3_2": string;
+        /**
+         * ノートには、「リアクション」を付けることができます。
+         */
         "step4_1": string;
+        /**
+         * リアクションを付けるには、ノートの「+」マークをクリックして、好きな絵文字を選択します。
+         */
         "step4_2": string;
     };
     "_2fa": {
@@ -8000,7 +8183,13 @@ export interface Locale extends ILocale {
          * 通知
          */
         "notifications": string;
+        /**
+         * ゲーミングモード
+         */
         "gamingMode": string;
+        /**
+         * 反転モード
+         */
         "gyakubariMode": string;
         /**
          * タイムライン
@@ -8497,9 +8686,12 @@ export interface Locale extends ILocale {
          */
         "local": string;
         /**
-         * ソーシャル
+         * メディア
          */
         "media": string;
+        /**
+         * ソーシャル
+         */
         "social": string;
         /**
          * グローバル
@@ -9437,13 +9629,37 @@ export interface Locale extends ILocale {
         };
     };
     "_schedulePost": {
+        /**
+         * 予約投稿一覧
+         */
         "list": string;
+        /**
+         * 日付
+         */
         "postDate": string;
+        /**
+         * 時刻
+         */
         "postTime": string;
+        /**
+         * 端末に設定されているタイムゾーンの時刻で投稿されます。
+         */
         "localTime": string;
+        /**
+         * 予約設定
+         */
         "addSchedule": string;
-        "willBePostedAtX": string;
+        /**
+         * {date}に投稿予約しました。
+         */
+        "willBePostedAtX": ParameterizedString<"date">;
+        /**
+         * 予約投稿を削除しますか？
+         */
         "deleteAreYouSure": string;
+        /**
+         * 予約投稿を削除して編集しますか？
+         */
         "deleteAndEditConfirm": string;
     };
     "_dataSaver": {
