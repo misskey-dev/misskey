@@ -1,5 +1,5 @@
 <!--
-## 2023.x.x (unreleased)
+## 202x.x.x (unreleased)
 
 ### General
 -
@@ -14,9 +14,13 @@
 
 ## 202x.x.x (Unreleased)
 
+### Note
+- 外部サイトからプラグインをインストールする場合のパスが`/install-extentions`から`/install-extensions`に変わります。現時点では以前のパスも利用できますが、非推奨です。
+
 ### General
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
 - Fix: リストライムラインの「リノートを表示」が正しく機能しない問題を修正
+- Feat: Add support for TrueMail
 
 ### Client
 - Feat: 新しいゲームを追加
@@ -34,6 +38,7 @@
 - Enhance: 絵文字ピッカー・オートコンプリートで、完全一致した絵文字を優先的に表示するように
 - Enhance: Playの説明欄にMFMを使えるように
 - Enhance: チャンネルノートの場合は詳細ページからその前後のノートを見れるように
+- Enhance: MFMの属性でオートコンプリートが使用できるように #12735
 - Fix: ネイティブモードの絵文字がモノクロにならないように
 - Fix: v2023.12.0で追加された「モデレーターがユーザーのアイコンもしくはバナー画像を未設定状態にできる機能」が管理画面上で正しく表示されていない問題を修正
 - Fix: AiScriptの`readline`関数が不正な値を返すことがある問題のv2023.12.0時点での修正がPlay以外に適用されていないのを修正

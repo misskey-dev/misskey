@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
               <dl v-if="user.birthday" class="field">
                 <dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
                 <dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{
-                    i18n.t('yearsOld', {age})
+                    i18n.tsx.yearsOld({age})
                   }})
                 </dd>
               </dl>

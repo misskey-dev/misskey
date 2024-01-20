@@ -70,6 +70,8 @@ import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
+import { MiReversiGame } from '@/models/ReversiGame.js';
+
 import { MiScheduledNote } from './ScheduledNote.js';
 import type { Repository } from 'typeorm';
 
@@ -142,6 +144,7 @@ export {
 	MiFlashLike,
 	MiUserMemo,
 	MiBubbleGameRecord,
+	MiReversiGame,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport>;
@@ -212,3 +215,4 @@ export type FlashsRepository = Repository<MiFlash>;
 export type FlashLikesRepository = Repository<MiFlashLike>;
 export type UserMemoRepository = Repository<MiUserMemo>;
 export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord>;
+export type ReversiGamesRepository = Repository<MiReversiGame>;

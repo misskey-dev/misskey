@@ -58,6 +58,7 @@ api-docs.json
 ormconfig.json
 temp
 /packages/frontend/src/**/*.stories.ts
+tsdoc-metadata.json
 
 # blender backups
 *.blend1

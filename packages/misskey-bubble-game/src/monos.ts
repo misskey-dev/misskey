@@ -3,36 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EventEmitter } from 'eventemitter3';
-import * as Matter from 'matter-js';
-import seedrandom from 'seedrandom';
-
-export type Mono = {
-	id: string;
-	level: number;
-	sizeX: number;
-	sizeY: number;
-	shape: 'circle' | 'rectangle' | 'custom';
-	vertices?: Matter.Vector[][];
-	verticesSize?: number;
-	score: number;
-	dropCandidate: boolean;
-};
-
-type Log = {
-	frame: number;
-	operation: 'drop';
-	x: number;
-} | {
-	frame: number;
-	operation: 'hold';
-} | {
-	frame: number;
-	operation: 'surrender';
-};
+import { Mono } from './game.js';
 
 const NORMAL_BASE_SIZE = 32;
-const NORAML_MONOS: Mono[] = [{
+export const NORAML_MONOS: Mono[] = [{
 	id: '9377076d-c980-4d83-bdaf-175bc58275b7',
 	level: 10,
 	sizeX: NORMAL_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
@@ -116,7 +90,7 @@ const NORAML_MONOS: Mono[] = [{
 
 const YEN_BASE_SIZE = 32;
 const YEN_SATSU_BASE_SIZE = 70;
-const YEN_MONOS: Mono[] = [{
+export const YEN_MONOS: Mono[] = [{
 	id: '880f9bd9-802f-4135-a7e1-fd0e0331f726',
 	level: 10,
 	sizeX: (YEN_SATSU_BASE_SIZE * 2) * 1.25 * 1.25 * 1.25,
@@ -199,7 +173,7 @@ const YEN_MONOS: Mono[] = [{
 }];
 
 const SQUARE_BASE_SIZE = 28;
-const SQUARE_MONOS: Mono[] = [{
+export const SQUARE_MONOS: Mono[] = [{
 	id: 'f75fd0ba-d3d4-40a4-9712-b470e45b0525',
 	level: 10,
 	sizeX: SQUARE_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,
@@ -282,7 +256,7 @@ const SQUARE_MONOS: Mono[] = [{
 }];
 
 const SWEETS_BASE_SIZE = 40;
-const SWEETS_MONOS: Mono[] = [{
+export const SWEETS_MONOS: Mono[] = [{
 	id: '77f724c0-88be-4aeb-8e1a-a00ed18e3844',
 	level: 10,
 	sizeX: SWEETS_BASE_SIZE * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25 * 1.25,

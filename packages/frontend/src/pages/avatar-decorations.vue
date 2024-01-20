@@ -49,11 +49,29 @@ function add() {
 		category: '',
 	});
 }
-
 function selectItems(decorationId) {
 	if (selectItemsId.value.includes(decorationId)) {
 		const index = selectItemsId.value.indexOf(decorationId);
 		selectItemsId.value.splice(index, 1);
+	} else {
+		selectItemsId.value.push(decorationId);
+	}
+}
+function del(avatarDecoration) {
+	os.confirm({
+		type: 'warning',
+		text: i18n.tsx.deleteAreYouSure({ x: avatarDecoration.name }),
+	}).then(({ canceled }) => {
+		if (canceled) return;
+		avatarDecorations.value = avatarDecorations.value.filter(x => x !== avatarDecoration);
+		misskeyApi('admin/avatar-decorations/delete', avatarDecoration);
+	});
+}
+
+async function save(avatarDecoration) {
+	if (avatarDecoration.id == null) {
+		await os.apiWithDialog('admin/avatar-decorations/create', avatarDecoration);
+		load();
 	} else {
 		selectItemsId.value.push(decorationId);
 	}

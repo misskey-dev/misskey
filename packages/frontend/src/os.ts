@@ -450,7 +450,7 @@ export async function selectUser(opts: { includeSelf?: boolean, multiple?: boole
 	});
 }
 
-export async function multipleSelectUser(opts: { includeSelf?: boolean } = {}) {
+export async function multipleSelectUser(opts: { includeSelf?: boolean } = {}): Promise<Misskey.entities.UserLite> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
