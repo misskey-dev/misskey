@@ -54,7 +54,7 @@ const emit = defineEmits<{
 const MIN_SWIPE_DISTANCE = 20;
 
 // スワイプ時の動作を発火する最小の距離
-const SWIPE_DISTANCE_THRESHOLD = 80;
+const SWIPE_DISTANCE_THRESHOLD = 70;
 
 // スワイプを中断するY方向の移動距離
 const SWIPE_ABORT_Y_THRESHOLD = 75;
