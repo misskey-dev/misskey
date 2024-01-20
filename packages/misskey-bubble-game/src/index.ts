@@ -3,10 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Game } from './game.js';
+import { DropAndFusionGame, Mono } from './game.js';
 
 export {
-	Game,
+	DropAndFusionGame, Mono,
 };
-
-export * as maps from './maps.js';

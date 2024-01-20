@@ -370,7 +370,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		if (o.isEnded) {
 			this.globalEventService.publishReversiGameStream(game.id, 'ended', {
-				winnerId: winner,
+				winnerId: winner ?? null,
 				game: await this.reversiGameEntityService.packDetail(game.id, user),
 			});
 		}
