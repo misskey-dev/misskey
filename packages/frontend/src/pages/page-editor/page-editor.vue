@@ -175,7 +175,7 @@ function save() {
 function del() {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title.value.trim() }),
+		text: i18n.tsx.removeAreYouSure({ x: title.value.trim() }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		misskeyApi('pages/delete', {
