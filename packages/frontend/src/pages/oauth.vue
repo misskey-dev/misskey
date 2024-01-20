@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<div v-if="$i">
 			<div v-if="permissions.length > 0">
-				<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
+				<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
 				<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 				<ul>
-					<li v-for="p in permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+					<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
 				</ul>
 			</div>
-			<div v-if="name">{{ i18n.t('_auth.shareAccess', { name }) }}</div>
+			<div v-if="name">{{ i18n.tsx._auth.shareAccess({ name }) }}</div>
 			<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 			<form :class="$style.buttons" action="/oauth/decision" accept-charset="utf-8" method="post">
 				<input name="login_token" type="hidden" :value="$i.token"/>

@@ -44,7 +44,7 @@ async function ok() {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.t('_announcement.readConfirmText', { title: props.announcement.title }),
+			text: i18n.tsx._announcement.readConfirmText({ title: props.announcement.title }),
 		});
 		if (confirm.canceled) return;
 	}

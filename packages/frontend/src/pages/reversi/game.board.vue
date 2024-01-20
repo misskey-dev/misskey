@@ -10,17 +10,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div style="overflow: clip; line-height: 28px;">
 			<div v-if="!iAmPlayer && !game.isEnded && turnUser" class="turn">
-				<Mfm :key="'turn:' + turnUser.id" :text="i18n.t('_reversi.turnOf', { name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
+				<Mfm :key="'turn:' + turnUser.id" :text="i18n.tsx._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
 			</div>
 			<div v-if="(logPos !== logs.length) && turnUser" class="turn">
-				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.t('_reversi.pastTurnOf', { name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
+				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
 			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/></div>
 			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
 			<div v-if="game.isEnded && logPos == logs.length" class="result">
 				<template v-if="game.winner">
-					<Mfm :key="'won'" :text="i18n.t('_reversi.won', { name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
+					<Mfm :key="'won'" :text="i18n.tsx._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
 					<span v-if="game.surrendered != null"> ({{ i18n.ts._reversi.surrendered }})</span>
 				</template>
 				<template v-else>{{ i18n.ts._reversi.drawn }}</template>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div class="status"><b>{{ i18n.t('_reversi.turnCount', { count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}</div>
+		<div class="status"><b>{{ i18n.tsx._reversi.turnCount({ count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}</div>
 
 		<div v-if="!game.isEnded && iAmPlayer" class="_buttonsCenter">
 			<MkButton danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>

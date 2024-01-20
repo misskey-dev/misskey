@@ -78,7 +78,7 @@ async function read(announcement) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.t('_announcement.readConfirmText', { title: announcement.title }),
+			text: i18n.tsx._announcement.readConfirmText({ title: announcement.title }),
 		});
 		if (confirm.canceled) return;
 	}

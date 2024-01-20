@@ -155,6 +155,7 @@ export function getConfig(): UserConfig {
 					},
 				},
 			},
+			includeSource: ['src/**/*.ts'],
 		},
 	};
 }
