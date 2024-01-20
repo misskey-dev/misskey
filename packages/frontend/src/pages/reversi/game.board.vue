@@ -44,6 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.boardCells" :style="cellsStyle">
 					<div
 						v-for="(stone, i) in engine.board"
+						:key="i"
 						v-tooltip="`${String.fromCharCode(65 + engine.posToXy(i)[0])}${engine.posToXy(i)[1] + 1}`"
 						:class="[$style.boardCell, {
 							[$style.boardCell_empty]: stone == null,
@@ -55,14 +56,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 						}]"
 						@click="putStone(i)"
 					>
-						<template v-if="useAvatarAsStone">
-							<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
-							<img v-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
-						</template>
-						<template v-else>
-							<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
-							<img v-if="stone === false" :class="$style.boardCellStone" src="/client-assets/reversi/stone_w.png"/>
-						</template>
+						<Transition
+							:enterActiveClass="$style.transition_flip_enterActive"
+							:leaveActiveClass="$style.transition_flip_leaveActive"
+							:enterFromClass="$style.transition_flip_enterFrom"
+							:leaveToClass="$style.transition_flip_leaveTo"
+							mode="default"
+						>
+							<template v-if="useAvatarAsStone">
+								<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
+								<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
+							</template>
+							<template v-else>
+								<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
+								<img v-else-if="stone === false" :class="$style.boardCellStone" src="/client-assets/reversi/stone_w.png"/>
+							</template>
+						</Transition>
 					</div>
 				</div>
 				<div v-if="showBoardLabels" :class="$style.labelsY">
@@ -72,6 +81,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="showBoardLabels" :class="$style.labelsX">
 				<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 			</div>
+		</div>
+
+		<div v-if="game.isEnded" class="_panel _gaps_s" style="padding: 16px;">
+			<div>{{ logPos }} / {{ game.logs.length }}</div>
+			<div v-if="!autoplaying" class="_buttonsCenter">
+				<MkButton :disabled="logPos === 0" @click="logPos = 0"><i class="ti ti-chevrons-left"></i></MkButton>
+				<MkButton :disabled="logPos === 0" @click="logPos--"><i class="ti ti-chevron-left"></i></MkButton>
+				<MkButton :disabled="logPos === game.logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
+				<MkButton :disabled="logPos === game.logs.length" @click="logPos = game.logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
+			</div>
+			<MkButton style="margin: auto;" :disabled="autoplaying" @click="autoplay()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
 
 		<div class="_panel" style="padding: 16px;">
@@ -109,17 +129,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_buttonsCenter">
 			<MkButton v-if="!game.isEnded && iAmPlayer" danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
 			<MkButton @click="share">{{ i18n.ts.share }}</MkButton>
-		</div>
-
-		<div v-if="game.isEnded" class="_panel _gaps_s" style="padding: 16px;">
-			<div>{{ logPos }} / {{ game.logs.length }}</div>
-			<div v-if="!autoplaying" class="_buttonsCenter">
-				<MkButton :disabled="logPos === 0" @click="logPos = 0"><i class="ti ti-chevrons-left"></i></MkButton>
-				<MkButton :disabled="logPos === 0" @click="logPos--"><i class="ti ti-chevron-left"></i></MkButton>
-				<MkButton :disabled="logPos === game.logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
-				<MkButton :disabled="logPos === game.logs.length" @click="logPos = game.logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
-			</div>
-			<MkButton style="margin: auto;" :disabled="autoplaying" @click="autoplay()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
 
 		<MkA v-if="game.isEnded" :to="`/reversi`">
@@ -395,6 +404,20 @@ onUnmounted(() => {
 <style lang="scss" module>
 @use "sass:math";
 
+.transition_flip_enterActive,
+.transition_flip_leaveActive {
+	backface-visibility: hidden;
+	transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.transition_flip_enterFrom {
+	transform: rotateY(-180deg);
+	opacity: 0;
+}
+.transition_flip_leaveTo {
+	transform: rotateY(180deg);
+	opacity: 0;
+}
+
 $label-size: 16px;
 $gap: 4px;
 
@@ -461,8 +484,9 @@ $gap: 4px;
 .boardCell {
 	background: transparent;
 	border-radius: 6px;
-	overflow: clip;
 	aspect-ratio: 1;
+	transform-style: preserve-3d;
+	perspective: 150px;
 
 	&.boardCell_empty {
 		border: solid 2px var(--divider);
@@ -501,10 +525,14 @@ $gap: 4px;
 }
 
 .boardCellStone {
+	position: absolute;
+	top: 0;
+	left: 0;
 	pointer-events: none;
 	user-select: none;
 	display: block;
 	width: 100%;
 	height: 100%;
+	border-radius: 6px;
 }
 </style>
