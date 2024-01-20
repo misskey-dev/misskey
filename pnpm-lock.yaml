@@ -1059,6 +1059,9 @@ importers:
       eslint:
         specifier: 8.56.0
         version: 8.56.0
+      nodemon:
+        specifier: 3.0.2
+        version: 3.0.2
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1180,6 +1183,9 @@ importers:
       eslint:
         specifier: 8.56.0
         version: 8.56.0
+      nodemon:
+        specifier: 3.0.2
+        version: 3.0.2
       typescript:
         specifier: 5.3.3
         version: 5.3.3
