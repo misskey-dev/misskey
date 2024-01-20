@@ -22,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<audio
 			ref="audioEl"
 			preload="metadata"
-			:class="$style.audio"
 		>
 			<source :src="audio.url">
 		</audio>
