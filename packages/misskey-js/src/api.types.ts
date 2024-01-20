@@ -1,6 +1,6 @@
 import { Endpoints as Gen } from './autogen/endpoint';
-import { UserDetailed } from './autogen/models';
-import { UsersShowRequest } from './autogen/entities';
+import { EmojiDetailed, EmojiSimple, UserDetailed } from './autogen/models';
+import { EmojisRequest, UsersShowRequest } from './autogen/entities';
 import {
 	SigninRequest,
 	SigninResponse,
@@ -63,6 +63,24 @@ export type Endpoints = Overwrite<
 					$default: UserDetailed;
 				};
 			};
+		},
+		'emojis': {
+			req: EmojisRequest;
+			res: {
+				$switch: {
+					$cases: [[
+						{
+							detail: true;
+						},
+						{
+							emojis: EmojiDetailed[]
+						}
+					]];
+					$default: {
+						emojis: EmojiSimple[]
+					}
+				};
+			}
 		},
 		// api.jsonには載せないものなのでここで定義
 		'signup': {

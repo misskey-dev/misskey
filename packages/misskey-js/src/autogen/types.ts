@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-13T04:31:38.633Z
+ * generatedAt: 2024-01-20T01:07:44.458Z
  */
 
 /**
@@ -18896,12 +18896,19 @@ export type operations = {
    * **Credential required**: *No*
    */
   emojis: {
+    requestBody: {
+      content: {
+        'application/json': {
+          detail?: boolean | null;
+        };
+      };
+    };
     responses: {
       /** @description OK (with results) */
       200: {
         content: {
           'application/json': {
-            emojis: components['schemas']['EmojiSimple'][];
+            emojis: (components['schemas']['EmojiSimple'] | components['schemas']['EmojiDetailed'])[];
           };
         };
       };

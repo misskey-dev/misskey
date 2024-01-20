@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-13T04:31:38.778Z
+ * generatedAt: 2024-01-20T01:07:44.537Z
  */
 
 import type {
@@ -366,6 +366,7 @@ import type {
 	InviteLimitResponse,
 	MetaRequest,
 	MetaResponse,
+	EmojisRequest,
 	EmojisResponse,
 	EmojiRequest,
 	EmojiResponse,
@@ -793,7 +794,7 @@ export type Endpoints = {
 	'invite/list': { req: InviteListRequest; res: InviteListResponse };
 	'invite/limit': { req: EmptyRequest; res: InviteLimitResponse };
 	'meta': { req: MetaRequest; res: MetaResponse };
-	'emojis': { req: EmptyRequest; res: EmojisResponse };
+	'emojis': { req: EmojisRequest; res: EmojisResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
 	'miauth/gen-token': { req: MiauthGenTokenRequest; res: MiauthGenTokenResponse };
 	'mute/create': { req: MuteCreateRequest; res: EmptyResponse };

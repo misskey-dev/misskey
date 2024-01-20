@@ -371,10 +371,7 @@ onBeforeUnmount(() => {
 	}
 });
 
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
-
+ex;
 definePageMetadata({
 	title: i18n.ts.aboutMisskey,
 	icon: null,

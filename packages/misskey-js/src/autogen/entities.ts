@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-13T04:31:38.775Z
+ * generatedAt: 2024-01-20T01:07:44.535Z
  */
 
 import { operations } from './types.js';
@@ -368,6 +368,7 @@ export type InviteListResponse = operations['invite/list']['responses']['200']['
 export type InviteLimitResponse = operations['invite/limit']['responses']['200']['content']['application/json'];
 export type MetaRequest = operations['meta']['requestBody']['content']['application/json'];
 export type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
+export type EmojisRequest = operations['emojis']['requestBody']['content']['application/json'];
 export type EmojisResponse = operations['emojis']['responses']['200']['content']['application/json'];
 export type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
 export type EmojiResponse = operations['emoji']['responses']['200']['content']['application/json'];
