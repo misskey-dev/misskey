@@ -181,8 +181,8 @@ export interface ReversiGameEventTypes {
 		value: any;
 	};
 	log: Reversi.Serializer.Log & { id: string | null };
-	syncState: {
-		crc32: string;
+	heatbeat: {
+		userId: MiUser['id'];
 	};
 	started: {
 		game: Packed<'ReversiGameDetailed'>;

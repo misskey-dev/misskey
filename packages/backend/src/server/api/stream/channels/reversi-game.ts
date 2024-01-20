@@ -46,7 +46,7 @@ class ReversiGameChannel extends Channel {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'putStone': this.putStone(body.pos, body.id); break;
-			case 'syncState': this.syncState(body.crc32); break;
+			case 'heatbeat': this.heatbeat(body.crc32); break;
 		}
 	}
 
@@ -83,15 +83,21 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async syncState(crc32: string | number) {
+	private async heatbeat(crc32?: string | number | null) {
 		// TODO: キャッシュしたい
 		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
 		if (game == null) throw new Error('game not found');
 
 		if (!game.isStarted) return;
 
-		if (crc32.toString() !== game.crc32) {
-			this.send('rescue', await this.reversiGameEntityService.packDetail(game, this.user));
+		if (crc32 != null) {
+			if (crc32.toString() !== game.crc32) {
+				this.send('rescue', await this.reversiGameEntityService.packDetail(game, this.user));
+			}
+		}
+
+		if (this.user && (game.user1Id === this.user.id || game.user2Id === this.user.id)) {
+			this.reversiService.heatbeat(game, this.user);
 		}
 	}
 

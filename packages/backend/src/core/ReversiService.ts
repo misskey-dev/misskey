@@ -406,6 +406,11 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
+	public async heatbeat(game: MiReversiGame, user: MiUser) {
+		this.globalEventService.publishReversiGameStream(game.id, 'heatbeat', { userId: user.id });
+	}
+
+	@bindThis
 	public dispose(): void {
 	}
 

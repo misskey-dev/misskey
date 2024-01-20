@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="(logPos !== game.logs.length) && turnUser" class="turn">
 				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
-			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/></div>
+			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><soan v-if="opponentNotResponding" style="margin-left: 8px;">({{ i18n.ts.notResponding }})</soan></div>
 			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
 			<div v-if="game.isEnded && logPos == game.logs.length" class="result">
 				<template v-if="game.winner">
@@ -139,7 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
+import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as CRC32 from 'crc-32';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
@@ -239,7 +239,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 		if (game.value.isEnded) return;
 		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
 		if (_DEV_) console.log('crc32', crc32);
-		props.connection.send('syncState', {
+		props.connection.send('heatbeat', {
 			crc32: crc32,
 		});
 	}, 10000, { immediate: false, afterMounted: true });
@@ -339,6 +339,27 @@ function onStreamRescue(_game) {
 	checkEnd();
 }
 
+const opponentLastHeatbeatedAt = ref<number>(Date.now());
+const opponentNotResponding = ref<boolean>(false);
+
+useInterval(() => {
+	if (game.value.isEnded) return;
+	if (!iAmPlayer.value) return;
+
+	if (Date.now() - opponentLastHeatbeatedAt.value > 20000) {
+		opponentNotResponding.value = true;
+	} else {
+		opponentNotResponding.value = false;
+	}
+}, 1000, { immediate: false, afterMounted: true });
+
+function onStreamHeatbeat({ userId }) {
+	if ($i.id === userId) return;
+
+	opponentNotResponding.value = false;
+	opponentLastHeatbeatedAt.value = Date.now();
+}
+
 async function surrender() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
@@ -390,12 +411,28 @@ function share() {
 
 onMounted(() => {
 	props.connection.on('log', onStreamLog);
+	props.connection.on('heatbeat', onStreamHeatbeat);
 	props.connection.on('rescue', onStreamRescue);
 	props.connection.on('ended', onStreamEnded);
 });
 
+onActivated(() => {
+	props.connection.on('log', onStreamLog);
+	props.connection.on('heatbeat', onStreamHeatbeat);
+	props.connection.on('rescue', onStreamRescue);
+	props.connection.on('ended', onStreamEnded);
+});
+
+onDeactivated(() => {
+	props.connection.off('log', onStreamLog);
+	props.connection.off('heatbeat', onStreamHeatbeat);
+	props.connection.off('rescue', onStreamRescue);
+	props.connection.off('ended', onStreamEnded);
+});
+
 onUnmounted(() => {
 	props.connection.off('log', onStreamLog);
+	props.connection.off('heatbeat', onStreamHeatbeat);
 	props.connection.off('rescue', onStreamRescue);
 	props.connection.off('ended', onStreamEnded);
 });
@@ -483,7 +520,7 @@ $gap: 4px;
 
 .boardCell {
 	background: transparent;
-	border-radius: 6px;
+	border-radius: 100%;
 	aspect-ratio: 1;
 	transform-style: preserve-3d;
 	perspective: 150px;
@@ -534,6 +571,6 @@ $gap: 4px;
 	display: block;
 	width: 100%;
 	height: 100%;
-	border-radius: 6px;
+	border-radius: 100%;
 }
 </style>

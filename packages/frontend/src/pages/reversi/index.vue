@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -212,6 +212,14 @@ onMounted(() => {
 	misskeyApi('reversi/invitations').then(_invitations => {
 		invitations.value = _invitations;
 	});
+});
+
+onDeactivated(() => {
+	cancelMatching();
+});
+
+onUnmounted(() => {
+	cancelMatching();
 });
 
 definePageMetadata(computed(() => ({
