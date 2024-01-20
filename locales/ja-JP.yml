@@ -2541,3 +2541,7 @@ _reversi:
   canPutEverywhere: "どこでも置けるモード"
   freeMatch: "フリーマッチ"
   lookingForPlayer: "対戦相手を探しています"
+
+_disconnected:
+  title: "オフライン - サーバーに接続できません"
+  header: "サーバーに接続できません"

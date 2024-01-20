@@ -9542,6 +9542,16 @@ export interface Locale extends ILocale {
          */
         "lookingForPlayer": string;
     };
+    "_disconnected": {
+        /**
+         * オフライン - サーバーに接続できません
+         */
+        "title": string;
+        /**
+         * サーバーに接続できません
+         */
+        "header": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
