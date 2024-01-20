@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-19T11:00:07.077Z
+ * generatedAt: 2024-01-20T01:28:01.695Z
  */
 
 /**
@@ -4517,11 +4517,7 @@ export type components = {
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
-      logs: {
-          at: number;
-          color: boolean;
-          pos: number;
-        }[];
+      logs: unknown[][];
       map: string[];
     };
   };

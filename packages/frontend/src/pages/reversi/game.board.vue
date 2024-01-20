@@ -13,12 +13,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Mfm :key="'turn:' + turnUser.id" :text="i18n.tsx._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
 			</div>
-			<div v-if="(logPos !== logs.length) && turnUser" class="turn">
+			<div v-if="(logPos !== game.logs.length) && turnUser" class="turn">
 				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
 			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/></div>
 			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
-			<div v-if="game.isEnded && logPos == logs.length" class="result">
+			<div v-if="game.isEnded && logPos == game.logs.length" class="result">
 				<template v-if="game.winner">
 					<Mfm :key="'won'" :text="i18n.tsx._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
 					<span v-if="game.surrendered != null"> ({{ i18n.ts._reversi.surrendered }})</span>
@@ -69,12 +69,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-if="game.isEnded" class="_panel _gaps_s" style="padding: 16px;">
-			<div>{{ logPos }} / {{ logs.length }}</div>
+			<div>{{ logPos }} / {{ game.logs.length }}</div>
 			<div v-if="!autoplaying" class="_buttonsCenter">
 				<MkButton :disabled="logPos === 0" @click="logPos = 0"><i class="ti ti-chevrons-left"></i></MkButton>
 				<MkButton :disabled="logPos === 0" @click="logPos--"><i class="ti ti-chevron-left"></i></MkButton>
-				<MkButton :disabled="logPos === logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
-				<MkButton :disabled="logPos === logs.length" @click="logPos = logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
+				<MkButton :disabled="logPos === game.logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
+				<MkButton :disabled="logPos === game.logs.length" @click="logPos = game.logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
 			</div>
 			<MkButton style="margin: auto;" :disabled="autoplaying" @click="autoplay()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
@@ -115,17 +115,14 @@ const props = defineProps<{
 const showBoardLabels = true;
 const autoplaying = ref<boolean>(false);
 const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
-const logs = ref<Misskey.entities.ReversiLog[]>(game.value.logs);
-const logPos = ref<number>(logs.value.length);
-const engine = shallowRef<Reversi.Game>(new Reversi.Game(game.value.map, {
+const logPos = ref<number>(game.value.logs.length);
+const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
+	map: game.value.map,
 	isLlotheo: game.value.isLlotheo,
 	canPutEverywhere: game.value.canPutEverywhere,
 	loopedBoard: game.value.loopedBoard,
+	logs: game.value.logs,
 }));
-
-for (const log of game.value.logs) {
-	engine.value.put(log.color, log.pos);
-}
 
 const iAmPlayer = computed(() => {
 	return game.value.user1Id === $i.id || game.value.user2Id === $i.id;
@@ -177,26 +174,27 @@ const cellsStyle = computed(() => {
 
 watch(logPos, (v) => {
 	if (!game.value.isEnded) return;
-	const _o = new Reversi.Game(game.value.map, {
+	engine.value = Reversi.Serializer.restoreGame({
+		map: game.value.map,
 		isLlotheo: game.value.isLlotheo,
 		canPutEverywhere: game.value.canPutEverywhere,
 		loopedBoard: game.value.loopedBoard,
+		logs: game.value.logs.slice(0, v),
 	});
-	for (const log of logs.value.slice(0, v)) {
-		_o.put(log.color, log.pos);
-	}
-	engine.value = _o;
 });
 
 if (game.value.isStarted && !game.value.isEnded) {
 	useInterval(() => {
 		if (game.value.isEnded) return;
-		const crc32 = CRC32.str(logs.value.map(x => x.pos.toString()).join(''));
+		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
+		if (_DEV_) console.log('crc32', crc32);
 		props.connection.send('syncState', {
 			crc32: crc32,
 		});
-	}, 5000, { immediate: false, afterMounted: true });
+	}, 10000, { immediate: false, afterMounted: true });
 }
+
+const appliedOps: string[] = [];
 
 function putStone(pos) {
 	if (game.value.isEnded) return;
@@ -204,33 +202,48 @@ function putStone(pos) {
 	if (!isMyTurn.value) return;
 	if (!engine.value.canPut(myColor.value!, pos)) return;
 
-	engine.value.put(myColor.value!, pos);
+	engine.value.putStone(pos);
+
 	triggerRef(engine);
 
 	// サウンドを再生する
 	//sound.play(myColor.value ? 'reversiPutBlack' : 'reversiPutWhite');
 
+	const id = Math.random().toString(36).slice(2);
 	props.connection.send('putStone', {
 		pos: pos,
+		id,
 	});
+	appliedOps.push(id);
 
 	checkEnd();
 }
 
-function onPutStone(x) {
-	logs.value.push(x);
-	logPos.value++;
-	engine.value.put(x.color, x.pos);
-	triggerRef(engine);
-	checkEnd();
+function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
+	game.value.logs = Reversi.Serializer.serializeLogs([
+		...Reversi.Serializer.deserializeLogs(game.value.logs),
+		log,
+	]);
 
-	// サウンドを再生する
-	if (x.color !== myColor.value) {
-		//sound.play(x.color ? 'reversiPutBlack' : 'reversiPutWhite');
+	logPos.value++;
+
+	if (log.id == null || !appliedOps.includes(log.id)) {
+		switch (log.operation) {
+			case 'put': {
+				engine.value.putStone(log.pos);
+				triggerRef(engine);
+				checkEnd();
+				//sound.play(x.color ? 'reversiPutBlack' : 'reversiPutWhite');
+				break;
+			}
+
+			default:
+				break;
+		}
 	}
 }
 
-function onEnded(x) {
+function onStreamEnded(x) {
 	game.value = deepClone(x.game);
 }
 
@@ -250,23 +263,20 @@ function checkEnd() {
 	}
 }
 
-function onRescue(_game) {
+function onStreamRescue(_game) {
+	console.log('rescue');
+
 	game.value = deepClone(_game);
 
-	engine.value = new Reversi.Game(game.value.map, {
+	engine.value = Reversi.Serializer.restoreGame({
+		map: game.value.map,
 		isLlotheo: game.value.isLlotheo,
 		canPutEverywhere: game.value.canPutEverywhere,
 		loopedBoard: game.value.loopedBoard,
+		logs: game.value.logs,
 	});
 
-	for (const log of game.value.logs) {
-		engine.value.put(log.color, log.pos);
-	}
-
-	triggerRef(engine);
-
-	logs.value = game.value.logs;
-	logPos.value = logs.value.length;
+	logPos.value = game.value.logs.length;
 
 	checkEnd();
 }
@@ -280,21 +290,22 @@ function surrender() {
 function autoplay() {
 	autoplaying.value = true;
 	logPos.value = 0;
+	const logs = Reversi.Serializer.deserializeLogs(game.value.logs);
 
 	window.setTimeout(() => {
 		logPos.value = 1;
 
 		let i = 1;
-		let previousLog = game.value.logs[0];
+		let previousLog = logs[0];
 		const tick = () => {
-			const log = game.value.logs[i];
-			const time = new Date(log.at).getTime() - new Date(previousLog.at).getTime();
+			const log = logs[i];
+			const time = log.time - previousLog.time;
 			setTimeout(() => {
 				i++;
 				logPos.value++;
 				previousLog = log;
 
-				if (i < game.value.logs.length) {
+				if (i < logs.length) {
 					tick();
 				} else {
 					autoplaying.value = false;
@@ -307,15 +318,15 @@ function autoplay() {
 }
 
 onMounted(() => {
-	props.connection.on('putStone', onPutStone);
-	props.connection.on('rescue', onRescue);
-	props.connection.on('ended', onEnded);
+	props.connection.on('log', onStreamLog);
+	props.connection.on('rescue', onStreamRescue);
+	props.connection.on('ended', onStreamEnded);
 });
 
 onUnmounted(() => {
-	props.connection.off('putStone', onPutStone);
-	props.connection.off('rescue', onRescue);
-	props.connection.off('ended', onEnded);
+	props.connection.off('log', onStreamLog);
+	props.connection.off('rescue', onStreamRescue);
+	props.connection.off('ended', onStreamEnded);
 });
 </script>
 
@@ -389,6 +400,7 @@ $gap: 4px;
 	background: transparent;
 	border-radius: 6px;
 	overflow: clip;
+	aspect-ratio: 1;
 
 	&.boardCell_empty {
 		border: solid 2px var(--divider);

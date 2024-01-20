@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import * as Reversi from 'misskey-reversi';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -179,12 +180,7 @@ export interface ReversiGameEventTypes {
 		key: string;
 		value: any;
 	};
-	putStone: {
-		at: number;
-		color: boolean;
-		pos: number;
-		next: boolean;
-	};
+	log: Reversi.Serializer.Log & { id: string | null };
 	syncState: {
 		crc32: string;
 	};
