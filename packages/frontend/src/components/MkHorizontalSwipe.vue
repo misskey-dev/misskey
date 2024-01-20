@@ -78,6 +78,8 @@ function touchStart(event: TouchEvent) {
 
 	if (event.touches.length !== 1) return;
 
+	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
+
 	startScreenX = event.touches[0].screenX;
 	startScreenY = event.touches[0].screenY;
 }
@@ -90,6 +92,8 @@ function touchMove(event: TouchEvent) {
 	if (startScreenX == null || startScreenY == null) return;
 
 	if (swipeAborted) return;
+
+	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
 	let distanceX = event.touches[0].screenX - startScreenX;
 	let distanceY = event.touches[0].screenY - startScreenY;
@@ -140,6 +144,8 @@ function touchEnd(event: TouchEvent) {
 
 	if (!isSwiping.value) return;
 
+	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
+
 	const distance = event.changedTouches[0].screenX - startScreenX;
 
 	if (Math.abs(distance) > SWIPE_DISTANCE_THRESHOLD) {
@@ -161,6 +167,24 @@ function touchEnd(event: TouchEvent) {
 	setTimeout(() => {
 		isSwipingForClass.value = false;
 	}, 400);
+}
+
+/** 横スワイプに関与する可能性のある要素を調べる */
+function hasSomethingToDoWithXSwipe(el: HTMLElement) {
+	if (['INPUT', 'TEXTAREA'].includes(el.tagName)) return true;
+	if (el.isContentEditable) return true;
+	if (el.scrollWidth > el.clientWidth) return true;
+
+	const style = window.getComputedStyle(el);
+	if (['absolute', 'fixed', 'sticky'].includes(style.position)) return true;
+	if (['scroll', 'auto'].includes(style.overflowX)) return true;
+	if (style.touchAction === 'pan-x') return true;
+
+	if (el.parentElement && el.parentElement !== rootEl.value) {
+		return hasSomethingToDoWithXSwipe(el.parentElement);
+	} else {
+		return false;
+	}
 }
 
 const transitionName = ref<'swipeAnimationLeft' | 'swipeAnimationRight' | undefined>(undefined);

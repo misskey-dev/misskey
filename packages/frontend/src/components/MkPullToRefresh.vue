@@ -149,6 +149,10 @@ function moving(event: TouchEvent | PointerEvent) {
 		if (event.cancelable) event.preventDefault();
 	}
 
+	if (pullDistance.value > SCROLL_STOP) {
+		event.stopPropagation();
+	}
+
 	isPullEnd.value = pullDistance.value >= FIRE_THRESHOLD;
 }
 
