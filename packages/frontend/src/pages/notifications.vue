@@ -51,7 +51,7 @@ const directNotesPagination = {
 
 function setFilter(ev) {
 	const typeItems = notificationTypes.map(t => ({
-		text: i18n.t(`_notification._types.${t}`),
+		text: i18n.ts._notification._types[t],
 		active: includeTypes.value && includeTypes.value.includes(t),
 		action: () => {
 			includeTypes.value = [t];

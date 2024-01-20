@@ -263,7 +263,7 @@ async function onSubmit(): Promise<void> {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
-				text: i18n.t('_signup.emailSent', { email: email.value }),
+				text: i18n.tsx._signup.emailSent({ email: email.value }),
 			});
 			emit('signupEmailPending');
 		} else {

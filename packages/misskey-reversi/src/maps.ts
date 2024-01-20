@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * 組み込みマップ定義
  *
@@ -22,8 +27,8 @@ export const fourfour: Map = {
 		'----',
 		'-wb-',
 		'-bw-',
-		'----'
-	]
+		'----',
+	],
 };
 
 export const sixsix: Map = {
@@ -35,8 +40,8 @@ export const sixsix: Map = {
 		'--wb--',
 		'--bw--',
 		'------',
-		'------'
-	]
+		'------',
+	],
 };
 
 export const roundedSixsix: Map = {
@@ -49,8 +54,8 @@ export const roundedSixsix: Map = {
 		'--wb--',
 		'--bw--',
 		'------',
-		' ---- '
-	]
+		' ---- ',
+	],
 };
 
 export const roundedSixsix2: Map = {
@@ -63,8 +68,8 @@ export const roundedSixsix2: Map = {
 		'--wb--',
 		'--bw--',
 		' ---- ',
-		'  --  '
-	]
+		'  --  ',
+	],
 };
 
 export const eighteight: Map = {
@@ -78,8 +83,8 @@ export const eighteight: Map = {
 		'---bw---',
 		'--------',
 		'--------',
-		'--------'
-	]
+		'--------',
+	],
 };
 
 export const eighteightH28: Map = {
@@ -93,8 +98,8 @@ export const eighteightH28: Map = {
 		'b--bw--b',
 		'b------b',
 		'b------b',
-		'bbbbbbbb'
-	]
+		'bbbbbbbb',
+	],
 };
 
 export const roundedEighteight: Map = {
@@ -109,8 +114,8 @@ export const roundedEighteight: Map = {
 		'---bw---',
 		'--------',
 		'--------',
-		' ------ '
-	]
+		' ------ ',
+	],
 };
 
 export const roundedEighteight2: Map = {
@@ -125,8 +130,8 @@ export const roundedEighteight2: Map = {
 		'---bw---',
 		'--------',
 		' ------ ',
-		'  ----  '
-	]
+		'  ----  ',
+	],
 };
 
 export const roundedEighteight3: Map = {
@@ -141,8 +146,8 @@ export const roundedEighteight3: Map = {
 		'---bw---',
 		' ------ ',
 		'  ----  ',
-		'   --   '
-	]
+		'   --   ',
+	],
 };
 
 export const eighteightWithNotch: Map = {
@@ -157,8 +162,8 @@ export const eighteightWithNotch: Map = {
 		' --bw-- ',
 		'--------',
 		'--------',
-		'---  ---'
-	]
+		'---  ---',
+	],
 };
 
 export const eighteightWithSomeHoles: Map = {
@@ -173,8 +178,8 @@ export const eighteightWithSomeHoles: Map = {
 		'---bw- -',
 		' -------',
 		'--- ----',
-		'--------'
-	]
+		'--------',
+	],
 };
 
 export const circle: Map = {
@@ -189,8 +194,8 @@ export const circle: Map = {
 		'---bw---',
 		' ------ ',
 		' ------ ',
-		'   --   '
-	]
+		'   --   ',
+	],
 };
 
 export const smile: Map = {
@@ -205,8 +210,8 @@ export const smile: Map = {
 		'-- bw --',
 		'---  ---',
 		'--------',
-		' ------ '
-	]
+		' ------ ',
+	],
 };
 
 export const window: Map = {
@@ -221,8 +226,8 @@ export const window: Map = {
 		'---bw---',
 		'-  --  -',
 		'-  --  -',
-		'--------'
-	]
+		'--------',
+	],
 };
 
 export const reserved: Map = {
@@ -237,8 +242,8 @@ export const reserved: Map = {
 		'---bw---',
 		'--------',
 		'--------',
-		'b------w'
-	]
+		'b------w',
+	],
 };
 
 export const x: Map = {
@@ -253,8 +258,8 @@ export const x: Map = {
 		'---bw---',
 		'--b--w--',
 		'-b----w-',
-		'b------w'
-	]
+		'b------w',
+	],
 };
 
 export const parallel: Map = {
@@ -269,8 +274,8 @@ export const parallel: Map = {
 		'---ww---',
 		'--------',
 		'--------',
-		'--------'
-	]
+		'--------',
+	],
 };
 
 export const lackOfBlack: Map = {
@@ -284,8 +289,8 @@ export const lackOfBlack: Map = {
 		'---bw---',
 		'--------',
 		'--------',
-		'--------'
-	]
+		'--------',
+	],
 };
 
 export const squareParty: Map = {
@@ -300,8 +305,8 @@ export const squareParty: Map = {
 		'-bbbwww-',
 		'-b-bw-w-',
 		'-bbbwww-',
-		'--------'
-	]
+		'--------',
+	],
 };
 
 export const minesweeper: Map = {
@@ -316,8 +321,8 @@ export const minesweeper: Map = {
 		'-w-bw-b-',
 		'b-w--b-w',
 		'-b-bw-w-',
-		'w-w--b-b'
-	]
+		'w-w--b-b',
+	],
 };
 
 export const tenthtenth: Map = {
@@ -333,8 +338,8 @@ export const tenthtenth: Map = {
 		'----------',
 		'----------',
 		'----------',
-		'----------'
-	]
+		'----------',
+	],
 };
 
 export const hole: Map = {
@@ -351,8 +356,8 @@ export const hole: Map = {
 		'--wb--wb--',
 		'--bw--bw--',
 		'----------',
-		'----------'
-	]
+		'----------',
+	],
 };
 
 export const grid: Map = {
@@ -369,8 +374,8 @@ export const grid: Map = {
 		'- - -- - -',
 		'----------',
 		'- - -- - -',
-		'----------'
-	]
+		'----------',
+	],
 };
 
 export const cross: Map = {
@@ -387,8 +392,8 @@ export const cross: Map = {
 		'----------',
 		'   ----   ',
 		'   ----   ',
-		'   ----   '
-	]
+		'   ----   ',
+	],
 };
 
 export const charX: Map = {
@@ -405,8 +410,8 @@ export const charX: Map = {
 		' -------- ',
 		'----------',
 		'----  ----',
-		'---    ---'
-	]
+		'---    ---',
+	],
 };
 
 export const charY: Map = {
@@ -423,8 +428,8 @@ export const charY: Map = {
 		'  ------  ',
 		'  ------  ',
 		'  ------  ',
-		'  ------  '
-	]
+		'  ------  ',
+	],
 };
 
 export const walls: Map = {
@@ -441,8 +446,8 @@ export const walls: Map = {
 		'w--------w',
 		'w--------w',
 		'w--------w',
-		' bbbbbbbb '
-	]
+		' bbbbbbbb ',
+	],
 };
 
 export const cpu: Map = {
@@ -459,8 +464,8 @@ export const cpu: Map = {
 		'w--------w',
 		' -------- ',
 		'w--------w',
-		' b b  b b '
-	]
+		' b b  b b ',
+	],
 };
 
 export const checker: Map = {
@@ -477,8 +482,8 @@ export const checker: Map = {
 		'---bwbw---',
 		'----------',
 		'----------',
-		'----------'
-	]
+		'----------',
+	],
 };
 
 export const japaneseCurry: Map = {
@@ -495,8 +500,8 @@ export const japaneseCurry: Map = {
 		'w-w-w-b-b-',
 		'-w-w-w-b-b',
 		'w-w-w-w-b-',
-		'-w-w-w-w-b'
-	]
+		'-w-w-w-w-b',
+	],
 };
 
 export const mosaic: Map = {
@@ -514,7 +519,7 @@ export const mosaic: Map = {
 		' - - - - -',
 		'- - - - - ',
 		' - - - - -',
-	]
+	],
 };
 
 export const arena: Map = {
@@ -531,8 +536,8 @@ export const arena: Map = {
 		' -------- ',
 		'- ------ -',
 		' - -  - - ',
-		'- - -- - -'
-	]
+		'- - -- - -',
+	],
 };
 
 export const reactor: Map = {
@@ -549,8 +554,8 @@ export const reactor: Map = {
 		'---w  b---',
 		'- --bw-- -',
 		'w- -  - -b',
-		'-b------w-'
-	]
+		'-b------w-',
+	],
 };
 
 export const sixeight: Map = {
@@ -564,8 +569,8 @@ export const sixeight: Map = {
 		'--bw--',
 		'------',
 		'------',
-		'------'
-	]
+		'------',
+	],
 };
 
 export const spark: Map = {
@@ -582,8 +587,8 @@ export const spark: Map = {
 		' -------- ',
 		' -------- ',
 		'----------',
-		' -      - '
-	]
+		' -      - ',
+	],
 };
 
 export const islands: Map = {
@@ -600,8 +605,8 @@ export const islands: Map = {
 		'  --------',
 		'  --------',
 		'  --------',
-		'  --------'
-	]
+		'  --------',
+	],
 };
 
 export const galaxy: Map = {
@@ -620,8 +625,8 @@ export const galaxy: Map = {
 		'---w--bbb---',
 		' ---w------ ',
 		'  ---www--  ',
-		'   ------   '
-	]
+		'   ------   ',
+	],
 };
 
 export const triangle: Map = {
@@ -638,8 +643,8 @@ export const triangle: Map = {
 		' -------- ',
 		' -------- ',
 		'----------',
-		'----------'
-	]
+		'----------',
+	],
 };
 
 export const iphonex: Map = {
@@ -658,8 +663,8 @@ export const iphonex: Map = {
 		'--------',
 		'--------',
 		'--------',
-		' ------ '
-	]
+		' ------ ',
+	],
 };
 
 export const dealWithIt: Map = {
@@ -671,31 +676,8 @@ export const dealWithIt: Map = {
 		'--w-b-------',
 		' --b-w------',
 		'  --w-b---- ',
-		'   -------  '
-	]
-};
-
-export const bigBoard: Map = {
-	name: 'Big board',
-	category: 'Special',
-	data: [
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'-------wb-------',
-		'-------bw-------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------',
-		'----------------'
-	]
+		'   -------  ',
+	],
 };
 
 export const twoBoard: Map = {
@@ -710,6 +692,6 @@ export const twoBoard: Map = {
 		'---bw--- ---bw---',
 		'-------- --------',
 		'-------- --------',
-		'-------- --------'
-	]
+		'-------- --------',
+	],
 };

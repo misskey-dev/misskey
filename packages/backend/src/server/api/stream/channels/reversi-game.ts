@@ -45,7 +45,7 @@ class ReversiGameChannel extends Channel {
 		switch (type) {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
-			case 'putStone': this.putStone(body.pos); break;
+			case 'putStone': this.putStone(body.pos, body.id); break;
 			case 'syncState': this.syncState(body.crc32); break;
 		}
 	}
@@ -72,14 +72,14 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async putStone(pos: number) {
+	private async putStone(pos: number, id: string) {
 		if (this.user == null) return;
 
 		// TODO: キャッシュしたい
 		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
 		if (game == null) throw new Error('game not found');
 
-		this.reversiService.putStoneToGame(game, this.user, pos);
+		this.reversiService.putStoneToGame(game, this.user, pos, id);
 	}
 
 	@bindThis

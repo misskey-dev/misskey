@@ -1,7 +1,8 @@
-import { Game } from './game.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export {
-	Game,
-};
-
+export { Game } from './game.js';
+export * as Serializer from './serializer.js';
 export * as maps from './maps.js';

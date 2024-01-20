@@ -10,9 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 		</div>
 
-		<div class="_buttonsCenter">
-			<MkButton primary gradate rounded @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
-			<MkButton primary gradate rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+		<div class="_panel _gaps" style="padding: 16px;">
+			<div class="_buttonsCenter">
+				<MkButton primary gradate rounded @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
+				<MkButton primary gradate rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+			</div>
+			<div style="font-size: 90%; opacity: 0.7; text-align: center;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
 		</div>
 
 		<MkFolder v-if="invitations.length > 0" :defaultOpen="true">
@@ -28,12 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder v-if="$i" :defaultOpen="true">
 			<template #label>{{ i18n.ts._reversi.myGames }}</template>
-			<MkPagination :pagination="myGamesPagination">
+			<MkPagination :pagination="myGamesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
 						<MkA v-for="g in items" :key="g.id" v-panel :class="$style.gamePreview" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
-								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/> vs <MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
 							</div>
 							<div :class="$style.gamePreviewFooter">
 								<span :style="!g.isEnded ? 'color: var(--accent);' : ''">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span>
@@ -47,12 +50,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder :defaultOpen="true">
 			<template #label>{{ i18n.ts._reversi.allGames }}</template>
-			<MkPagination :pagination="gamesPagination">
+			<MkPagination :pagination="gamesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
 						<MkA v-for="g in items" :key="g.id" v-panel :class="$style.gamePreview" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
-								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/> vs <MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
 							</div>
 							<div :class="$style.gamePreviewFooter">
 								<span :style="!g.isEnded ? 'color: var(--accent);' : ''">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span>
@@ -99,6 +102,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/global/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import * as sound from '@/scripts/sound.js';
 
 const myGamesPagination = {
 	endpoint: 'reversi/games' as const,
@@ -139,6 +143,12 @@ const matchingAny = ref<boolean>(false);
 function startGame(game: Misskey.entities.ReversiGameDetailed) {
 	matchingUser.value = null;
 	matchingAny.value = false;
+
+	sound.playUrl('/client-assets/reversi/matched.mp3', {
+		volume: 1,
+		playbackRate: 1,
+	});
+
 	router.push(`/reversi/g/${game.id}`);
 }
 

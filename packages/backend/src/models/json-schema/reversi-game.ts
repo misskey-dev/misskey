@@ -204,22 +204,8 @@ export const packedReversiGameDetailedSchema = {
 			type: 'array',
 			optional: false, nullable: false,
 			items: {
-				type: 'object',
+				type: 'array',
 				optional: false, nullable: false,
-				properties: {
-					at: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-					color: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					pos: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-				},
 			},
 		},
 		map: {
