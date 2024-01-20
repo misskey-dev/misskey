@@ -5,7 +5,7 @@
 
 import { i18n } from '@/i18n.js';
 
-export function hms(ms: number, options: {
+export function hms(ms: number, options?: {
 	textFormat?: 'colon' | 'locale';
 	enableSeconds?: boolean;
 	enableMs?: boolean;

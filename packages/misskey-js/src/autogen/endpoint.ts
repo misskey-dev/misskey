@@ -1,6 +1,6 @@
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-20T01:07:44.537Z
+ * generatedAt: 2024-01-20T04:59:59.766Z
  */
 
 import type {
@@ -366,7 +366,6 @@ import type {
 	InviteLimitResponse,
 	MetaRequest,
 	MetaResponse,
-	EmojisRequest,
 	EmojisResponse,
 	EmojiRequest,
 	EmojiResponse,
@@ -545,6 +544,16 @@ import type {
 	BubbleGameRegisterResponse,
 	BubbleGameRankingRequest,
 	BubbleGameRankingResponse,
+	ReversiCancelMatchRequest,
+	ReversiCancelMatchResponse,
+	ReversiGamesRequest,
+	ReversiGamesResponse,
+	ReversiMatchRequest,
+	ReversiMatchResponse,
+	ReversiInvitationsResponse,
+	ReversiShowGameRequest,
+	ReversiShowGameResponse,
+	ReversiSurrenderRequest,
 } from './entities.js';
 
 export type Endpoints = {
@@ -794,7 +803,7 @@ export type Endpoints = {
 	'invite/list': { req: InviteListRequest; res: InviteListResponse };
 	'invite/limit': { req: EmptyRequest; res: InviteLimitResponse };
 	'meta': { req: MetaRequest; res: MetaResponse };
-	'emojis': { req: EmojisRequest; res: EmojisResponse };
+	'emojis': { req: EmptyRequest; res: EmojisResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
 	'miauth/gen-token': { req: MiauthGenTokenRequest; res: MiauthGenTokenResponse };
 	'mute/create': { req: MuteCreateRequest; res: EmptyResponse };
@@ -908,4 +917,10 @@ export type Endpoints = {
 	'retention': { req: EmptyRequest; res: RetentionResponse };
 	'bubble-game/register': { req: BubbleGameRegisterRequest; res: BubbleGameRegisterResponse };
 	'bubble-game/ranking': { req: BubbleGameRankingRequest; res: BubbleGameRankingResponse };
+	'reversi/cancel-match': { req: ReversiCancelMatchRequest; res: ReversiCancelMatchResponse };
+	'reversi/games': { req: ReversiGamesRequest; res: ReversiGamesResponse };
+	'reversi/match': { req: ReversiMatchRequest; res: ReversiMatchResponse };
+	'reversi/invitations': { req: EmptyRequest; res: ReversiInvitationsResponse };
+	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
+	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 }

@@ -116,7 +116,7 @@ async function saveAntenna() {
 async function deleteAntenna() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: props.antenna.name }),
+		text: i18n.tsx.removeAreYouSure({ x: props.antenna.name }),
 	});
 	if (canceled) return;
 
