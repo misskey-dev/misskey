@@ -67,8 +67,7 @@ export class Game {
 		//#endregion
 
 		// ゲームが始まった時点で片方の色の石しかないか、始まった時点で勝敗が決定するようなマップの場合がある
-		if (!this.canPutSomewhere(BLACK))
-			this.turn = this.canPutSomewhere(WHITE) ? WHITE : null;
+		if (!this.canPutSomewhere(BLACK)) this.turn = this.canPutSomewhere(WHITE) ? WHITE : null;
 	}
 
 	public get blackCount() {
@@ -109,7 +108,7 @@ export class Game {
 			color,
 			pos,
 			effects,
-			turn
+			turn,
 		});
 
 		this.calcTurn();
@@ -151,7 +150,7 @@ export class Game {
 	public canPut(color: Color, pos: number): boolean {
 		return (
 			this.board[pos] !== null ? false : // 既に石が置いてある場所には打てない
-			this.opts.canPutEverywhere ? this.mapDataGet(pos) == 'empty' : // 挟んでなくても置けるモード
+			this.opts.canPutEverywhere ? this.mapDataGet(pos) === 'empty' : // 挟んでなくても置けるモード
 			this.effects(color, pos).length !== 0); // 相手の石を1つでも反転させられるか
 	}
 
@@ -164,14 +163,14 @@ export class Game {
 		const enemyColor = !color;
 
 		const diffVectors: [number, number][] = [
-			[ 0, -1], // 上
+			[0, -1], // 上
 			[+1, -1], // 右上
-			[+1,  0], // 右
+			[+1, 0], // 右
 			[+1, +1], // 右下
-			[ 0, +1], // 下
+			[0, +1], // 下
 			[-1, +1], // 左下
-			[-1,  0], // 左
-			[-1, -1]  // 左上
+			[-1, 0], // 左
+			[-1, -1], // 左上
 		];
 
 		const effectsInLine = ([dx, dy]: [number, number]): number[] => {
@@ -185,11 +184,10 @@ export class Game {
 				// 座標が指し示す位置がボード外に出たとき
 				if (this.opts.loopedBoard && this.xyToPos(
 					(x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth),
-					(y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight)) === initPos)
-						// 盤面の境界でループし、自分が石を置く位置に戻ってきたとき、挟めるようにしている (ref: Test4のマップ)
+					(y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight)) === initPos) {
+					// 盤面の境界でループし、自分が石を置く位置に戻ってきたとき、挟めるようにしている (ref: Test4のマップ)
 					return found;
-				else if (x === -1 || y === -1 || x === this.mapWidth || y === this.mapHeight)
-					return []; // 挟めないことが確定 (盤面外に到達)
+				} else if (x === -1 || y === -1 || x === this.mapWidth || y === this.mapHeight) return []; // 挟めないことが確定 (盤面外に到達)
 
 				const pos = this.xyToPos(x, y);
 				if (this.mapDataGet(pos) === 'null') return []; // 挟めないことが確定 (配置不可能なマスに到達)
@@ -209,7 +207,7 @@ export class Game {
 
 	public get winner(): Color | null {
 		return this.isEnded ?
-			this.blackCount == this.whiteCount ? null :
+			this.blackCount === this.whiteCount ? null :
 			this.opts.isLlotheo === this.blackCount > this.whiteCount ? WHITE : BLACK :
 			undefined as never;
 	}
