@@ -126,6 +126,7 @@ pinnedEmojisForReactionSettingDescription: "Wähle die Emojis aus, um sie an zu 
 reactionSettingDescription2: "Ziehe um Anzuordnen, klicke um zu löschen, drücke „+“ um hinzuzufügen"
 rememberNoteVisibility: "Notizsichtbarkeit merken"
 attachCancel: "Anhang entfernen"
+deleteFile: "Datei gelöscht"
 markAsSensitive: "Als sensibel markieren"
 unmarkAsSensitive: "Als nicht sensibel markieren"
 enterFileName: "Dateinamen eingeben"
