@@ -6,7 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkSpacer :contentMax="600">
 	<div :class="$style.root" class="_gaps">
-		<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ i18n.ts._reversi.black }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ i18n.ts._reversi.white }})</header>
+		<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+			<span>({{ i18n.ts._reversi.black }})</span>
+			<MkAvatar style="width: 32px; height: 32px;" :user="blackUser" :showIndicator="true"/>
+			<span> vs </span>
+			<MkAvatar style="width: 32px; height: 32px;" :user="whiteUser" :showIndicator="true"/>
+			<span>({{ i18n.ts._reversi.white }})</span>
+		</div>
 
 		<div style="overflow: clip; line-height: 28px;">
 			<div v-if="!iAmPlayer && !game.isEnded && turnUser" class="turn">
@@ -49,8 +55,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						}]"
 						@click="putStone(i)"
 					>
-						<img v-if="stone === true" style="pointer-events: none; user-select: none; display: block; width: 100%; height: 100%;" :src="blackUser.avatarUrl">
-						<img v-if="stone === false" style="pointer-events: none; user-select: none; display: block; width: 100%; height: 100%;" :src="whiteUser.avatarUrl">
+						<template v-if="useAvatarAsStone">
+							<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
+							<img v-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
+						</template>
+						<template v-else>
+							<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
+							<img v-if="stone === false" :class="$style.boardCellStone" src="/client-assets/reversi/stone_w.png"/>
+						</template>
 					</div>
 				</div>
 				<div v-if="showBoardLabels" :class="$style.labelsY">
@@ -62,10 +74,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div class="status"><b>{{ i18n.tsx._reversi.turnCount({ count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}</div>
+		<div class="_panel" style="padding: 16px;">
+			<div>
+				<b>{{ i18n.tsx._reversi.turnCount({ count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}
+			</div>
+			<div>
+				<div style="display: flex; align-items: center;">
+					<span style="margin-right: 8px;">({{ i18n.ts._reversi.black }})</span>
+					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="blackUser" :showIndicator="true"/>
+					<MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA>
+				</div>
+				<div> vs </div>
+				<div style="display: flex; align-items: center;">
+					<span style="margin-right: 8px;">({{ i18n.ts._reversi.white }})</span>
+					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="whiteUser" :showIndicator="true"/>
+					<MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA>
+				</div>
+			</div>
+			<div>
+				<p v-if="game.isLlotheo">{{ i18n.ts._reversi.isLlotheo }}</p>
+				<p v-if="game.loopedBoard">{{ i18n.ts._reversi.loopedMap }}</p>
+				<p v-if="game.canPutEverywhere">{{ i18n.ts._reversi.canPutEverywhere }}</p>
+			</div>
+		</div>
 
-		<div v-if="!game.isEnded && iAmPlayer" class="_buttonsCenter">
-			<MkButton danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
+		<MkFolder>
+			<template #label>{{ i18n.ts.options }}</template>
+			<div class="_gaps_s" style="text-align: left;">
+				<MkSwitch v-model="showBoardLabels">Show labels</MkSwitch>
+				<MkSwitch v-model="useAvatarAsStone">useAvatarAsStone</MkSwitch>
+			</div>
+		</MkFolder>
+
+		<div class="_buttonsCenter">
+			<MkButton v-if="!game.isEnded && iAmPlayer" danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
+			<MkButton @click="share">{{ i18n.ts.share }}</MkButton>
 		</div>
 
 		<div v-if="game.isEnded" class="_panel _gaps_s" style="padding: 16px;">
@@ -77,12 +120,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton :disabled="logPos === game.logs.length" @click="logPos = game.logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
 			</div>
 			<MkButton style="margin: auto;" :disabled="autoplaying" @click="autoplay()"><i class="ti ti-player-play"></i></MkButton>
-		</div>
-
-		<div>
-			<p v-if="game.isLlotheo">{{ i18n.ts._reversi.isLlotheo }}</p>
-			<p v-if="game.loopedBoard">{{ i18n.ts._reversi.loopedMap }}</p>
-			<p v-if="game.canPutEverywhere">{{ i18n.ts._reversi.canPutEverywhere }}</p>
 		</div>
 
 		<MkA v-if="game.isEnded" :to="`/reversi`">
@@ -98,12 +135,16 @@ import * as CRC32 from 'crc-32';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/scripts/clone.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
+import * as sound from '@/scripts/sound.js';
+import * as os from '@/os.js';
 
 const $i = signinRequired();
 
@@ -112,7 +153,8 @@ const props = defineProps<{
 	connection: Misskey.ChannelConnection;
 }>();
 
-const showBoardLabels = true;
+const showBoardLabels = ref<boolean>(false);
+const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
 const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
 const logPos = ref<number>(game.value.logs.length);
@@ -206,8 +248,10 @@ function putStone(pos) {
 
 	triggerRef(engine);
 
-	// サウンドを再生する
-	//sound.play(myColor.value ? 'reversiPutBlack' : 'reversiPutWhite');
+	sound.playUrl('/client-assets/reversi/put.mp3', {
+		volume: 1,
+		playbackRate: 1,
+	});
 
 	const id = Math.random().toString(36).slice(2);
 	props.connection.send('putStone', {
@@ -232,8 +276,13 @@ function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 			case 'put': {
 				engine.value.putStone(log.pos);
 				triggerRef(engine);
+
+				sound.playUrl('/client-assets/reversi/put.mp3', {
+					volume: 1,
+					playbackRate: 1,
+				});
+
 				checkEnd();
-				//sound.play(x.color ? 'reversiPutBlack' : 'reversiPutWhite');
 				break;
 			}
 
@@ -281,7 +330,13 @@ function onStreamRescue(_game) {
 	checkEnd();
 }
 
-function surrender() {
+async function surrender() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
 	misskeyApi('reversi/surrender', {
 		gameId: game.value.id,
 	});
@@ -317,6 +372,13 @@ function autoplay() {
 	}, 1000);
 }
 
+function share() {
+	os.post({
+		initialText: `#MisskeyReversi ${location.href}`,
+		instant: true,
+	});
+}
+
 onMounted(() => {
 	props.connection.on('log', onStreamLog);
 	props.connection.on('rescue', onStreamRescue);
@@ -341,7 +403,7 @@ $gap: 4px;
 }
 
 .board {
-	width: calc(100% - 16px);
+	width: 100%;
 	max-width: 500px;
 	margin: 0 auto;
 }
@@ -436,5 +498,13 @@ $gap: 4px;
 	&.boardCell_none {
 		border-color: transparent !important;
 	}
+}
+
+.boardCellStone {
+	pointer-events: none;
+	user-select: none;
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 </style>
