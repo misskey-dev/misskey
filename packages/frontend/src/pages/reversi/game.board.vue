@@ -487,6 +487,7 @@ $gap: 4px;
 	aspect-ratio: 1;
 	transform-style: preserve-3d;
 	perspective: 150px;
+	transition: border 0.25s ease, opacity 0.25s ease;
 
 	&.boardCell_empty {
 		border: solid 2px var(--divider);

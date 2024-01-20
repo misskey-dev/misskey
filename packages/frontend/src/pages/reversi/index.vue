@@ -10,11 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 		</div>
 
-		<div class="_panel" style="padding: 16px;">
+		<div class="_panel _gaps" style="padding: 16px;">
 			<div class="_buttonsCenter">
 				<MkButton primary gradate rounded @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
 				<MkButton primary gradate rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
 			</div>
+			<div style="font-size: 90%; opacity: 0.7; text-align: center;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
 		</div>
 
 		<MkFolder v-if="invitations.length > 0" :defaultOpen="true">
@@ -101,6 +102,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/global/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import * as sound from '@/scripts/sound.js';
 
 const myGamesPagination = {
 	endpoint: 'reversi/games' as const,
@@ -141,6 +143,12 @@ const matchingAny = ref<boolean>(false);
 function startGame(game: Misskey.entities.ReversiGameDetailed) {
 	matchingUser.value = null;
 	matchingAny.value = false;
+
+	sound.playUrl('/client-assets/reversi/matched.mp3', {
+		volume: 1,
+		playbackRate: 1,
+	});
+
 	router.push(`/reversi/g/${game.id}`);
 }
 
