@@ -536,6 +536,7 @@ export interface Locale extends ILocale {
      * 添付取り消し
      */
     "attachCancel": string;
+    "deleteFile": string;
     /**
      * センシティブとして設定
      */
