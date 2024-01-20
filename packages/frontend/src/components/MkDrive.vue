@@ -635,7 +635,7 @@ function getMenu() {
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
 		icon: 'ti ti-forms',
-		action: () => { folder.value && renameFolder(folder.value); },
+		action: () => { if (folder.value) renameFolder(folder.value); },
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,
 		icon: 'ti ti-trash',
