@@ -63,3 +63,15 @@ execa('pnpm', ['--filter', 'misskey-js', 'watch'], {
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
+
+execa('pnpm', ['--filter', 'misskey-reversi', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'misskey-bubble-game', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
