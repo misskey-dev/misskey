@@ -77,9 +77,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkRadios v-model="mediaListWithOneImageAppearance">
 				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
 				<option value="expand">{{ i18n.ts.default }}</option>
-				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
-				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
-				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
+				<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
+				<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
+				<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
@@ -155,6 +155,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
 				<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
+				<MkSwitch v-model="enableHorizontalSwipe">{{ i18n.ts.enableHorizontalSwipe }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -206,9 +207,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.additionalEmojiDictionary }}</template>
-				<div v-for="lang in emojiIndexLangs" class="_buttons">
-					<MkButton @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ lang }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
-					<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				<div class="_buttons">
+					<template v-for="lang in emojiIndexLangs" :key="lang">
+						<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
+						<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+					</template>
 				</div>
 			</MkFolder>
 			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
@@ -294,6 +297,7 @@ const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
+const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -338,15 +342,29 @@ watch([
 	await reloadAsk();
 });
 
-const emojiIndexLangs = ['en-US'];
+const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 
-function downloadEmojiIndex(lang: string) {
+function getEmojiIndexLangName(targetLang: typeof emojiIndexLangs[number]) {
+	if (langs.find(x => x[0] === targetLang)) {
+		return langs.find(x => x[0] === targetLang)![1];
+	} else {
+		// 絵文字辞書限定の言語定義
+		switch (targetLang) {
+			case 'ja-JP_hira': return 'ひらがな';
+			default: return targetLang;
+		}
+	}
+}
+
+function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 	async function main() {
 		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
 
 		function download() {
 			switch (lang) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
+				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JP.json').then(x => x.default);
+				case 'ja-JP_hira': return import('../../unicode-emoji-indexes/ja-JP_hira.json').then(x => x.default);
 				default: throw new Error('unrecognized lang: ' + lang);
 			}
 		}

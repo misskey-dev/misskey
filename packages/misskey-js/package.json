@@ -1,11 +1,23 @@
 {
+	"type": "module",
 	"name": "misskey-js",
 	"version": "0.0.16",
 	"description": "Misskey SDK for JavaScript",
-	"main": "./built/index.js",
-	"types": "./built/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./built/esm/index.js",
+			"types": "./built/dts/index.d.ts"
+		},
+		"./*": {
+			"import": "./built/esm/*",
+			"types": "./built/dts/*"
+		}
+	},
 	"scripts": {
-		"build": "tsc",
+		"build": "npm run ts",
+		"ts": "npm run ts-esm && npm run ts-dts",
+		"ts-esm": "tsc --outDir built/esm",
+		"ts-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
 		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build\"",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",

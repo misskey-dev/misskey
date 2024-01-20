@@ -58,7 +58,7 @@ export class ApAudienceService {
 			};
 		}
 
-		if (toGroups.followers.length > 0) {
+		if (toGroups.followers.length > 0 || ccGroups.followers.length > 0) {
 			return {
 				visibility: 'followers',
 				mentionedUsers,

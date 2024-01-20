@@ -136,6 +136,19 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
 	});
 
+	test('引用renoteで空白文字のみで構成されたtextにするとレスポンスがtext: nullになる', async () => {
+		const bobPost = await post(bob, {
+			text: 'test',
+		});
+		const res = await api('/notes/create', {
+			text: ' ',
+			renoteId: bobPost.id,
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(res.body.createdNote.text, null);
+	});
+
 	test('visibility: followersでrenoteできる', async () => {
 		const createRes = await api('/notes/create', {
 			text: 'test',

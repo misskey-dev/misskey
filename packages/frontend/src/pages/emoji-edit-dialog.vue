@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
 					</template>
 				</MkInput>
-				<MkInput v-model="license">
+				<MkInput v-model="license" :mfmAutocomplete="true">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
 				<MkFolder>
@@ -185,7 +185,7 @@ async function done() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: name.value }),
+		text: i18n.tsx.removeAreYouSure({ x: name.value }),
 	});
 	if (canceled) return;
 

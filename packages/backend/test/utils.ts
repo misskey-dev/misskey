@@ -16,6 +16,7 @@ import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { Packed } from '@/misc/json-schema.js';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -112,6 +113,20 @@ export function randomString(chars = 'abcdefghijklmnopqrstuvwxyz0123456789', len
 		randomString += chars[Math.floor(Math.random() * chars.length)];
 	}
 	return randomString;
+}
+
+/**
+ * @brief プロミスにタイムアウト追加
+ * @param p 待ち対象プロミス
+ * @param timeout 待機ミリ秒
+ */
+function timeoutPromise<T>(p: Promise<T>, timeout: number): Promise<T> {
+	return Promise.race([
+		p,
+		new Promise((reject) =>{
+			setTimeout(() => { reject(new Error('timed out')); }, timeout)
+		}) as never
+	]);
 }
 
 export const signup = async (params?: Partial<misskey.Endpoints['signup']['req']>): Promise<NonNullable<misskey.Endpoints['signup']['res']>> => {
@@ -320,17 +335,16 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	};
 };
 
-export const uploadUrl = async (user: UserToken, url: string) => {
-	let resolve: unknown;
-	const file = new Promise(ok => resolve = ok);
+export const uploadUrl = async (user: UserToken, url: string): Promise<Packed<'DriveFile'>> => {
 	const marker = Math.random().toString();
 
-	const ws = await connectStream(user, 'main', (msg) => {
-		if (msg.type === 'urlUploadFinished' && msg.body.marker === marker) {
-			ws.close();
-			resolve(msg.body.file);
-		}
-	});
+	const catcher = makeStreamCatcher(
+		user,
+		'main',
+		(msg) => msg.type === 'urlUploadFinished' && msg.body.marker === marker,
+		(msg) => msg.body.file as Packed<'DriveFile'>,
+		60 * 1000
+	);
 
 	await api('drive/files/upload-from-url', {
 		url,
@@ -338,7 +352,7 @@ export const uploadUrl = async (user: UserToken, url: string) => {
 		force: true,
 	}, user);
 
-	return file;
+	return catcher;
 };
 
 export function connectStream(user: UserToken, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
@@ -409,6 +423,35 @@ export const waitFire = async (user: UserToken, channel: string, trgr: () => any
 		}
 	});
 };
+
+/**
+ * @brief WebSocketストリームから特定条件の通知を拾うプロミスを生成
+ * @param user ユーザー認証情報
+ * @param channel チャンネル
+ * @param cond 条件
+ * @param extractor 取り出し処理
+ * @param timeout ミリ秒タイムアウト
+ * @returns 時間内に正常に処理できた場合に通知からextractorを通した値を得る
+ */
+export function makeStreamCatcher<T>(
+		user: UserToken,
+		channel: string,
+		cond: (message: Record<string, any>) => boolean,
+		extractor: (message: Record<string, any>) => T,
+		timeout = 60 * 1000): Promise<T> {
+	let ws: WebSocket
+	const p = new Promise<T>(async (resolve) => {
+		ws = await connectStream(user, channel, (msg) => {
+			if (cond(msg)) {
+				resolve(extractor(msg))
+			}
+		});
+	}).finally(() => {
+		ws?.close();
+	});
+
+	return timeoutPromise(p, timeout);
+}
 
 export type SimpleGetResponse = {
 	status: number,
