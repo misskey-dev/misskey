@@ -8173,9 +8173,9 @@ export interface Locale extends ILocale {
          * 指定したユーザーのみに公開
          */
         "specifiedDescription": string;
-        /**
-         * 連合なし
-         */
+        "channel": string;
+        "channelDescription": string;
+        "channelSelected": string;
         "disableFederation": string;
         /**
          * 他サーバーへの配信を行いません
