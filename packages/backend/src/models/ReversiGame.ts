@@ -76,11 +76,7 @@ export class MiReversiGame {
 	@Column('jsonb', {
 		default: [],
 	})
-	public logs: {
-		at: number;
-		color: boolean;
-		pos: number;
-	}[];
+	public logs: number[][];
 
 	@Column('varchar', {
 		array: true, length: 64,
@@ -117,9 +113,6 @@ export class MiReversiGame {
 	})
 	public form2: any | null;
 
-	/**
-	 * ログのposを文字列としてすべて連結したもののCRC32値
-	 */
 	@Column('varchar', {
 		length: 32, nullable: true,
 	})

@@ -55,11 +55,7 @@ export class ReversiGameEntityService {
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
-			logs: game.logs.map(log => ({
-				at: log.at,
-				color: log.color,
-				pos: log.pos,
-			})),
+			logs: game.logs,
 			map: game.map,
 		});
 	}

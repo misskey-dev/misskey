@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Game } from './game.js';
-
-export {
-	Game,
-};
-
+export { Game } from './game.js';
+export * as Serializer from './serializer.js';
 export * as maps from './maps.js';

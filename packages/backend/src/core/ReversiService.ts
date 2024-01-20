@@ -235,11 +235,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 				const map = freshGame.map != null ? freshGame.map : getRandomMap();
 
+				const crc32 = CRC32.str(JSON.stringify(freshGame.logs)).toString();
+
 				await this.reversiGamesRepository.update(game.id, {
 					startedAt: new Date(),
 					isStarted: true,
 					black: bw,
 					map: map,
+					crc32,
 				});
 
 				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
@@ -309,7 +312,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async putStoneToGame(game: MiReversiGame, user: MiUser, pos: number) {
+	public async putStoneToGame(game: MiReversiGame, user: MiUser, pos: number, id?: string | null) {
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
@@ -319,56 +322,58 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				? true
 				: false;
 
-		const o = new Reversi.Game(game.map, {
+		const engine = Reversi.Serializer.restoreGame({
+			map: game.map,
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
+			logs: game.logs,
 		});
 
-		// 盤面の状態を再生
-		for (const log of game.logs) {
-			o.put(log.color, log.pos);
-		}
+		if (engine.turn !== myColor) return;
+		if (!engine.canPut(myColor, pos)) return;
 
-		if (o.turn !== myColor) return;
-
-		if (!o.canPut(myColor, pos)) return;
-		o.put(myColor, pos);
+		engine.putStone(pos);
 
 		let winner;
-		if (o.isEnded) {
-			if (o.winner === true) {
+		if (engine.isEnded) {
+			if (engine.winner === true) {
 				winner = game.black === 1 ? game.user1Id : game.user2Id;
-			} else if (o.winner === false) {
+			} else if (engine.winner === false) {
 				winner = game.black === 1 ? game.user2Id : game.user1Id;
 			} else {
 				winner = null;
 			}
 		}
 
+		const logs = Reversi.Serializer.deserializeLogs(game.logs);
+
 		const log = {
-			at: Date.now(),
-			color: myColor,
+			time: Date.now(),
+			player: myColor,
+			operation: 'put',
 			pos,
-		};
+		} as const;
 
-		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString()).toString();
+		logs.push(log);
 
-		game.logs.push(log);
+		const serializeLogs = Reversi.Serializer.serializeLogs(logs);
+
+		const crc32 = CRC32.str(JSON.stringify(serializeLogs)).toString();
 
 		await this.reversiGamesRepository.update(game.id, {
 			crc32,
-			isEnded: o.isEnded,
+			isEnded: engine.isEnded,
 			winnerId: winner,
-			logs: game.logs,
+			logs: serializeLogs,
 		});
 
-		this.globalEventService.publishReversiGameStream(game.id, 'putStone', {
+		this.globalEventService.publishReversiGameStream(game.id, 'log', {
 			...log,
-			next: o.turn,
+			id: id ?? null,
 		});
 
-		if (o.isEnded) {
+		if (engine.isEnded) {
 			this.globalEventService.publishReversiGameStream(game.id, 'ended', {
 				winnerId: winner ?? null,
 				game: await this.reversiGameEntityService.packDetail(game.id, user),
