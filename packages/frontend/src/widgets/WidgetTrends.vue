@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
-					<p>{{ i18n.t('nUsersMentioned', { n: stat.usersCount }) }}</p>
+					<p>{{ i18n.tsx.nUsersMentioned({ n: stat.usersCount }) }}</p>
 				</div>
 				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>

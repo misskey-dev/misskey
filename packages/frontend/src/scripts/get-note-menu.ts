@@ -47,7 +47,7 @@ export async function getNoteClipMenu(props: {
 					if (err.id === '734806c4-542c-463a-9311-15c512803965') {
 						const confirm = await os.confirm({
 							type: 'warning',
-							text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
+							text: i18n.tsx.confirmToUnclipAlreadyClippedNote({ name: clip.name }),
 						});
 						if (!confirm.canceled) {
 							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
@@ -232,7 +232,7 @@ export function getNoteMenu(props: {
 
 	function share(): void {
 		navigator.share({
-			title: i18n.t('noteOf', { user: appearNote.user.name }),
+			title: i18n.tsx.noteOf({ user: appearNote.user.name }),
 			text: appearNote.text,
 			url: `${url}/notes/${appearNote.id}`,
 		});

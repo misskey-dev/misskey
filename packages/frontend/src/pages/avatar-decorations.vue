@@ -60,7 +60,7 @@ function add() {
 function del(avatarDecoration) {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: avatarDecoration.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: avatarDecoration.name }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		avatarDecorations.value = avatarDecorations.value.filter(x => x !== avatarDecoration);

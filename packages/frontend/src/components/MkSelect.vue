@@ -53,7 +53,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'changeByUser', value: string | null): void;
 	(ev: 'update:modelValue', value: string | null): void;
 }>();
 
@@ -78,7 +78,6 @@ const height =
 const focus = () => inputEl.value?.focus();
 const onInput = (ev) => {
 	changed.value = true;
-	emit('change', ev);
 };
 
 const updated = () => {
@@ -139,6 +138,7 @@ function show() {
 			active: v.value === option.props?.value,
 			action: () => {
 				v.value = option.props?.value;
+				emit('changeByUser', v.value);
 			},
 		});
 	};

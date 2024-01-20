@@ -15,6 +15,7 @@ const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
+
 const routes = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
@@ -529,17 +530,25 @@ const routes = [{
 	component: page(() => import('@/pages/antenna-timeline.vue')),
 	loginRequired: true,
 }, {
-	path: '/games',
-	component: page(() => import('@/pages/games.vue')),
-	loginRequired: true,
-}, {
 	path: '/clicker',
 	component: page(() => import('@/pages/clicker.vue')),
 	loginRequired: true,
 }, {
+	path: '/games',
+	component: page(() => import('@/pages/games.vue')),
+	loginRequired: false,
+}, {
 	path: '/bubble-game',
 	component: page(() => import('@/pages/drop-and-fusion.vue')),
 	loginRequired: true,
+}, {
+	path: '/reversi',
+	component: page(() => import('@/pages/reversi/index.vue')),
+	loginRequired: false,
+}, {
+	path: '/reversi/g/:gameId',
+	component: page(() => import('@/pages/reversi/game.vue')),
+	loginRequired: false,
 }, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),

@@ -85,7 +85,7 @@ const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
 const dialogEl = ref();
 
-const search = () => {
+function search() {
 	if (username.value === '' && host.value === '') {
 		users.value = [];
 		return;
@@ -98,9 +98,9 @@ const search = () => {
 	}).then(_users => {
 		users.value = _users;
 	});
-};
+}
 
-const ok = async () => {
+async function ok() {
 	if (selected.value == null) return;
 
 	const user = await misskeyApi('users/show', {
@@ -115,12 +115,12 @@ const ok = async () => {
 	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
 	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
-};
+}
 
-const cancel = () => {
+function cancel() {
 	emit('cancel');
 	dialogEl.value.close();
-};
+}
 
 onMounted(() => {
 	misskeyApi('users/show', {
