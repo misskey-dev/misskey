@@ -4824,6 +4824,7 @@ export interface Locale extends ILocale {
      * タイトルへ
      */
     "backToTitle": string;
+    "hemisphere": string;
     /**
      * センシティブなファイルを含むノートを表示
      */
@@ -9419,6 +9420,11 @@ export interface Locale extends ILocale {
              */
             "description": string;
         };
+    };
+    "_hemisphere": {
+        "N": string;
+        "S": string;
+        "caption": string;
     };
     "_reversi": {
         /**
