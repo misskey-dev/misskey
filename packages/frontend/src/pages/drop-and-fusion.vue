@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 								<option value="sweets">SWEETS</option>
+								<!--<option value="space">SPACE</option>-->
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
@@ -44,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.frame">
 					<div :class="$style.frameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.t('lastNDays', { n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
+							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
@@ -94,7 +95,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 
-const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets'>('normal');
+const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
 const ranking = ref(null);
@@ -108,6 +109,7 @@ function getScoreUnit(gameMode: string) {
 		gameMode === 'square' ? 'pt' :
 		gameMode === 'yen' ? '円' :
 		gameMode === 'sweets' ? 'kcal' :
+		gameMode === 'space' ? 'pt' :
 		'' as never;
 }
 
@@ -121,7 +123,7 @@ function onGameEnd() {
 
 definePageMetadata({
 	title: i18n.ts.bubbleGame,
-	icon: 'ti ti-apple',
+	icon: 'ti ti-device-gamepad',
 });
 </script>
 
