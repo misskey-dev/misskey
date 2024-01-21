@@ -581,6 +581,10 @@ export interface Locale extends ILocale {
      */
     "attachCancel": string;
     /**
+     * ファイルを削除
+     */
+    "deleteFile": string;
+    /**
      * センシティブとして設定
      */
     "markAsSensitive": string;
@@ -9778,6 +9782,10 @@ export interface Locale extends ILocale {
          */
         "surrendered": string;
         /**
+         * 時間切れ
+         */
+        "timeout": string;
+        /**
          * 引き分け
          */
         "drawn": string;
@@ -9830,6 +9838,10 @@ export interface Locale extends ILocale {
          */
         "canPutEverywhere": string;
         /**
+         * 1ターンの時間制限
+         */
+        "timeLimitForEachTurn": string;
+        /**
          * フリーマッチ
          */
         "freeMatch": string;
@@ -9837,6 +9849,20 @@ export interface Locale extends ILocale {
          * 対戦相手を探しています
          */
         "lookingForPlayer": string;
+        /**
+         * 対局がキャンセルされました
+         */
+        "gameCanceled": string;
+    };
+    "_offlineScreen": {
+        /**
+         * オフライン - サーバーに接続できません
+         */
+        "title": string;
+        /**
+         * サーバーに接続できません
+         */
+        "header": string;
     };
 }
 declare const locales: {
