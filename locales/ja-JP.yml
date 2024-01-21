@@ -1202,6 +1202,8 @@ replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
 backToTitle: "タイトルへ"
+withSensitive: "センシティブなファイルを含むノートを表示"
+userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
 
 _bubbleGame:

@@ -4824,6 +4824,8 @@ export interface Locale extends ILocale {
      * タイトルへ
      */
     "backToTitle": string;
+    "withSensitive": string;
+    "userSaysSomethingSensitive": string;
     /**
      * スワイプしてタブを切り替える
      */
