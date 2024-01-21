@@ -58,6 +58,9 @@
 - Fix: ipv4とipv6の両方が利用可能な環境でallowedPrivateNetworksが設定されていた場合プライベートipの検証ができていなかった問題を修正
 - Fix: properly handle cc followers
 
+### Service Worker
+- Enhance: オフライン表示のデザインを改善・多言語対応
+
 ## 2023.12.2
 
 ### General
