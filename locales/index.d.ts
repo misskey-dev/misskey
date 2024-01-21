@@ -9542,7 +9542,7 @@ export interface Locale extends ILocale {
          */
         "lookingForPlayer": string;
     };
-    "_disconnected": {
+    "_offlineScreen": {
         /**
          * オフライン - サーバーに接続できません
          */

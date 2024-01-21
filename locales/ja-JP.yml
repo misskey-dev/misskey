@@ -2542,6 +2542,6 @@ _reversi:
   freeMatch: "フリーマッチ"
   lookingForPlayer: "対戦相手を探しています"
 
-_disconnected:
+_offlineScreen:
   title: "オフライン - サーバーに接続できません"
   header: "サーバーに接続できません"
