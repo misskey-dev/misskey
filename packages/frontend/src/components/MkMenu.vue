@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
-			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<button v-else :key="i" :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: getValue(item.active) }]" :disabled="getValue(item.active)" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
+import { ComputedRef, computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu.js';
@@ -216,6 +216,14 @@ function focusDown() {
 function switchItem(item: MenuSwitch & { ref: any }) {
 	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
 	item.ref = !item.ref;
+}
+
+function getValue<T>(item?: ComputedRef<T> | T) {
+	if (typeof item === 'object' && item !== null && 'value' in item) {
+		return item.value;
+	} else {
+		return item;
+	}
 }
 
 onMounted(() => {

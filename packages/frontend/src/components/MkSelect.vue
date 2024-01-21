@@ -135,7 +135,7 @@ function show() {
 	const pushOption = (option: VNode) => {
 		menu.push({
 			text: option.children as string,
-			active: v.value === option.props?.value,
+			active: computed(() => v.value === option.props?.value),
 			action: () => {
 				v.value = option.props?.value;
 				emit('changeByUser', v.value);
