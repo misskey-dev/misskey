@@ -4824,6 +4824,9 @@ export interface Locale extends ILocale {
      * タイトルへ
      */
     "backToTitle": string;
+    /**
+     * お住まいの地域
+     */
     "hemisphere": string;
     /**
      * センシティブなファイルを含むノートを表示
@@ -9422,8 +9425,17 @@ export interface Locale extends ILocale {
         };
     };
     "_hemisphere": {
+        /**
+         * 北半球
+         */
         "N": string;
+        /**
+         * 南半球
+         */
         "S": string;
+        /**
+         * 一部のクライアント設定で、季節を判定するために使用します。
+         */
         "caption": string;
     };
     "_reversi": {
