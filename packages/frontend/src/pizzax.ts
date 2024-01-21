@@ -291,5 +291,3 @@ export class Storage<T extends StateDef> {
 		}
 	}
 }
-
-window.__DEFU = defu;
