@@ -13,6 +13,12 @@ export class MiReversiGame {
 	})
 	public startedAt: Date | null;
 
+	@Column('timestamp with time zone', {
+		nullable: true,
+		comment: 'The ended date of the ReversiGame.',
+	})
+	public endedAt: Date | null;
+
 	@Column(id())
 	public user1Id: MiUser['id'];
 
@@ -71,7 +77,19 @@ export class MiReversiGame {
 		...id(),
 		nullable: true,
 	})
-	public surrendered: MiUser['id'] | null;
+	public surrenderedUserId: MiUser['id'] | null;
+
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public timeoutUserId: MiUser['id'] | null;
+
+	// in sec
+	@Column('smallint', {
+		default: 90,
+	})
+	public timeLimitForEachTurn: number;
 
 	@Column('jsonb', {
 		default: [],

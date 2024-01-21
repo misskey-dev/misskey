@@ -181,9 +181,6 @@ export interface ReversiGameEventTypes {
 		value: any;
 	};
 	log: Reversi.Serializer.Log & { id: string | null };
-	heatbeat: {
-		userId: MiUser['id'];
-	};
 	started: {
 		game: Packed<'ReversiGameDetailed'>;
 	};

@@ -537,6 +537,10 @@ export interface Locale extends ILocale {
      */
     "attachCancel": string;
     /**
+     * ファイルを削除
+     */
+    "deleteFile": string;
+    /**
      * センシティブとして設定
      */
     "markAsSensitive": string;
@@ -9482,6 +9486,10 @@ export interface Locale extends ILocale {
          */
         "surrendered": string;
         /**
+         * 時間切れ
+         */
+        "timeout": string;
+        /**
          * 引き分け
          */
         "drawn": string;
@@ -9533,6 +9541,10 @@ export interface Locale extends ILocale {
          * どこでも置けるモード
          */
         "canPutEverywhere": string;
+        /**
+         * 1ターンの時間制限
+         */
+        "timeLimitForEachTurn": string;
         /**
          * フリーマッチ
          */

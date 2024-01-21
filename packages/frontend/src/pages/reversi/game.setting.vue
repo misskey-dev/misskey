@@ -50,6 +50,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder :defaultOpen="true">
+				<template #label>{{ i18n.ts._reversi.timeLimitForEachTurn }}</template>
+				<template #suffix>{{ game.timeLimitForEachTurn }}{{ i18n.ts._time.second }}</template>
+
+				<MkRadios v-model="game.timeLimitForEachTurn">
+					<option :value="5">5{{ i18n.ts._time.second }}</option>
+					<option :value="10">10{{ i18n.ts._time.second }}</option>
+					<option :value="30">30{{ i18n.ts._time.second }}</option>
+					<option :value="60">60{{ i18n.ts._time.second }}</option>
+					<option :value="90">90{{ i18n.ts._time.second }}</option>
+					<option :value="120">120{{ i18n.ts._time.second }}</option>
+					<option :value="180">180{{ i18n.ts._time.second }}</option>
+					<option :value="3600">3600{{ i18n.ts._time.second }}</option>
+				</MkRadios>
+			</MkFolder>
+
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts._reversi.rules }}</template>
 
 				<div class="_gaps_s">
@@ -123,6 +139,10 @@ const isOpReady = computed(() => {
 
 watch(() => game.value.bw, () => {
 	updateSettings('bw');
+});
+
+watch(() => game.value.timeLimitForEachTurn, () => {
+	updateSettings('timeLimitForEachTurn');
 });
 
 function chooseMap(ev: MouseEvent) {
