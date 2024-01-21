@@ -588,3 +588,5 @@ export class ColdDeviceStorage {
 		};
 	}
 }
+
+window.__DS = defaultStore;
