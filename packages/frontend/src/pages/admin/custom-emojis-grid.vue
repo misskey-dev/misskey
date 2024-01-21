@@ -4,50 +4,63 @@
 		<template #header>
 			<MkPageHeader/>
 		</template>
-		<MkSpacer :contentMax="900">
-			<div class="_gaps">
-				<AgGridVue
-					:rowData="gridItems"
-					:columnDefs="colDefs"
-					style="height: 500px"
-					class="ag-theme-quartz"
-				>
-				</AgGridVue>
-			</div>
-		</MkSpacer>
+		<div class="_gaps" :class="$style.root">
+			<AgGridVue
+				:rowData="gridItems"
+				:columnDefs="colDefs"
+				:rowSelection="'multiple'"
+				:rowClassRules="rowClassRules"
+				style="height: 500px"
+				class="ag-theme-quartz-auto-dark"
+				@gridReady="onGridReady"
+			>
+			</AgGridVue>
+		</div>
 	</MkStickyContainer>
 </div>
 </template>
 
 <script lang="ts">
 import { markRaw, onMounted, ref, watch } from 'vue';
-import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
 import * as Misskey from 'misskey-js';
 import { AgGridVue } from 'ag-grid-vue3';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, RowClassRules } from 'ag-grid-community';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
-import CustomEmojiGridItem from '@/pages/admin/custom-emojis-grid-item.vue';
+import CustomEmojisGridEmoji from '@/pages/admin/custom-emojis-grid-emoji.vue';
 
 // eslint-disable-next-line import/no-default-export
 export default {
 	components: {
 		AgGridVue,
 		// eslint-disable-next-line vue/no-unused-components
-		CustomEmojiGridItem,
+		customEmojisGridEmoji: CustomEmojisGridEmoji,
 	},
 	setup() {
 		const colDefs = markRaw<ColDef[]>([
-			{ field: 'img', cellRenderer: CustomEmojiGridItem },
-			{ field: 'name' },
-			{ field: 'category' },
-			{ field: 'aliases' },
-			{ field: 'license' },
-			{ field: 'isSensitive' },
-			{ field: 'localOnly' },
-			{ field: 'roleIdsThatCanBeUsedThisEmojiAsReaction' },
+			{
+				field: 'img',
+				headerName: '',
+				initialWidth: 90,
+				cellRenderer: 'customEmojisGridEmoji',
+				checkboxSelection: true,
+			},
+			{ field: 'name', headerName: 'name', initialWidth: 140, editable: true },
+			{ field: 'category', headerName: 'category', initialWidth: 140, editable: true },
+			{ field: 'aliases', headerName: 'aliases', initialWidth: 140, editable: true },
+			{ field: 'license', headerName: 'license', initialWidth: 140, editable: true },
+			{ field: 'isSensitive', headerName: 'sensitive', initialWidth: 90, editable: true },
+			{ field: 'localOnly', headerName: 'localOnly', initialWidth: 90, editable: true },
+			{ field: 'roleIdsThatCanBeUsedThisEmojiAsReaction', headerName: 'role', initialWidth: 140, editable: true },
 		]);
 
+		const rowClassRules = markRaw<RowClassRules<GridItem>>({
+			'emoji-grid-row-edited': params => params.data?.edited ?? false,
+		});
+
+		const gridApi = ref<GridApi>();
 		const customEmojis = ref<Misskey.entities.EmojiDetailed[]>([]);
 		const gridItems = ref<GridItem[]>([]);
 
@@ -56,17 +69,8 @@ export default {
 		};
 
 		const refreshGridItems = () => {
-			gridItems.value = customEmojis.value.map(it => ({
-				id: it.id,
-				aliases: it.aliases.join(', '),
-				name: it.name,
-				category: it.category ?? '',
-				license: it.license ?? '',
-				isSensitive: it.isSensitive,
-				localOnly: it.localOnly,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
-				url: it.url,
-			}));
+			console.log(customEmojis.value);
+			gridItems.value = customEmojis.value.map(it => GridItem.ofEmojiDetailed(it));
 		};
 
 		watch(customEmojis, refreshGridItems);
@@ -76,15 +80,29 @@ export default {
 			refreshGridItems();
 		});
 
+		function onGridReady(params: GridReadyEvent) {
+			gridApi.value = params.api;
+		}
+
 		return {
 			colDefs,
+			rowClassRules,
 			customEmojis,
 			gridItems,
+			onGridReady,
 		};
 	},
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+.emoji-grid-row-edited {
+	background-color: var(--ag-advanced-filter-column-pill-color);
+}
+</style>
 
+<style module lang="scss">
+.root {
+	padding: 16px
+}
 </style>

@@ -1,6 +1,6 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
-import { UserDetailed } from './autogen/models.js';
-import { UsersShowRequest } from './autogen/entities.js';
+import { EmojiDetailed, EmojiSimple, UserDetailed } from './autogen/models.js';
+import { EmojisRequest, UsersShowRequest } from './autogen/entities.js';
 import {
 	SigninRequest,
 	SigninResponse,

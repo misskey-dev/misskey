@@ -1,6 +1,11 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div :class="$style.root">
-	<img :src="emojiUrl" :alt="emojiName"/>
+<div class="root">
+	<img class="thumbnail" :src="emojiUrl" :alt="emojiName"/>
 </div>
 </template>
 
@@ -17,13 +22,19 @@ const props = defineProps<{
 const emojiUrl = computed(() => props.params.data?.url);
 const emojiName = computed(() => props.params.data?.name);
 
-console.log({ url: emojiUrl.value, name: emojiName.value });
-
 </script>
 
-<style lang="scss" module>
+<style lang="scss">
 .root {
-	display: inline-flex;
-	align-items: stretch;
+	display: flex;
+	align-items: center;
+}
+
+.thumbnail {
+	object-fit: cover;
+	width: 26px;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
 }
 </style>

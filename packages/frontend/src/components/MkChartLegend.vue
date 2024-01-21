@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<button v-for="item in items" class="_button item" :class="{ disabled: item.hidden }" @click="onClick(item)">
-		<span class="box" :style="{ background: chart.config.type === 'line' ? item.strokeStyle?.toString() : item.fillStyle?.toString() }"></span>
+		<span class="root" :style="{ background: chart.config.type === 'line' ? item.strokeStyle?.toString() : item.fillStyle?.toString() }"></span>
 		{{ item.text }}
 	</button>
 </div>
@@ -67,7 +67,7 @@ defineExpose({
 				opacity: 0.5;
 			}
 
-			> .box {
+			> .root {
 				display: inline-block;
 				width: 12px;
 				height: 12px;
