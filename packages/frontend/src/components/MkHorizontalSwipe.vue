@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="rootEl"
-	:class="[$style.transitionRoot, (defaultStore.state.animation && $style.enableAnimation)]"
-	@touchstart="touchStart"
-	@touchmove="touchMove"
-	@touchend="touchEnd"
+	:class="[$style.transitionRoot]"
+	@touchstart.passive="touchStart"
+	@touchmove.passive="touchMove"
+	@touchend.passive="touchEnd"
 >
 	<Transition
 		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
@@ -25,12 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 </div>
 </template>
+
 <script lang="ts">
 import { ref, shallowRef, computed, nextTick, watch } from 'vue';
 
 /** 横スワイプ中か？ */
 export const isSwiping = ref(false);
 </script>
+
 <script lang="ts" setup>
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import { defaultStore } from '@/store.js';
@@ -164,7 +166,7 @@ function touchEnd(event: TouchEvent) {
 
 	pullDistance.value = 0;
 	isSwiping.value = false;
-	setTimeout(() => {
+	window.setTimeout(() => {
 		isSwipingForClass.value = false;
 	}, 400);
 }
@@ -208,31 +210,28 @@ watch(tabModel, (newTab, oldTab) => {
 <style lang="scss" module>
 .transitionRoot {
 	touch-action: pan-y pinch-zoom;
-}
-
-.transitionRoot.enableAnimation {
 	display: grid;
 	grid-template-columns: 100%;
 	overflow: clip;
+}
 
-	.transitionChildren {
-		grid-area: 1 / 1 / 2 / 2;
-		transform: translateX(var(--swipe));
+.transitionChildren {
+	grid-area: 1 / 1 / 2 / 2;
+	transform: translateX(var(--swipe));
 
-		&.swipeAnimation_enterActive,
-		&.swipeAnimation_leaveActive {
-			transition: transform .3s cubic-bezier(0.65, 0.05, 0.36, 1);
-		}
+	&.swipeAnimation_enterActive,
+	&.swipeAnimation_leaveActive {
+		transition: transform .3s cubic-bezier(0.65, 0.05, 0.36, 1);
+	}
 
-		&.swipeAnimationRight_leaveTo,
-		&.swipeAnimationLeft_enterFrom {
-			transform: translateX(calc(100% + 24px));
-		}
+	&.swipeAnimationRight_leaveTo,
+	&.swipeAnimationLeft_enterFrom {
+		transform: translateX(calc(100% + 24px));
+	}
 
-		&.swipeAnimationRight_enterFrom,
-		&.swipeAnimationLeft_leaveTo {
-			transform: translateX(calc(-100% - 24px));
-		}
+	&.swipeAnimationRight_enterFrom,
+	&.swipeAnimationLeft_leaveTo {
+		transform: translateX(calc(-100% - 24px));
 	}
 }
 

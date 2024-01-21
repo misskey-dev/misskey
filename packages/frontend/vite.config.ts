@@ -101,11 +101,6 @@ export function getConfig(): UserConfig {
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
-		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
-		optimizeDeps: {
-			include: ['misskey-js', 'misskey-reversi', 'misskey-bubble-game'],
-		},
-
 		build: {
 			target: [
 				'chrome116',

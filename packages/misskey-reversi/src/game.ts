@@ -46,7 +46,7 @@ export class Game {
 
 	constructor(map: string[], opts: Options) {
 		//#region binds
-		this.put = this.put.bind(this);
+		this.putStone = this.putStone.bind(this);
 		//#endregion
 
 		//#region Options
@@ -88,7 +88,10 @@ export class Game {
 		return x + (y * this.mapWidth);
 	}
 
-	public put(color: Color, pos: number) {
+	public putStone(pos: number) {
+		const color = this.turn;
+		if (color == null) return;
+
 		this.prevPos = pos;
 		this.prevColor = color;
 

@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import * as Reversi from 'misskey-reversi';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -179,21 +180,16 @@ export interface ReversiGameEventTypes {
 		key: string;
 		value: any;
 	};
-	putStone: {
-		at: number;
-		color: boolean;
-		pos: number;
-		next: boolean;
-	};
-	syncState: {
-		crc32: string;
-	};
+	log: Reversi.Serializer.Log & { id: string | null };
 	started: {
 		game: Packed<'ReversiGameDetailed'>;
 	};
 	ended: {
 		winnerId: MiUser['id'] | null;
 		game: Packed<'ReversiGameDetailed'>;
+	};
+	canceled: {
+		userId: MiUser['id'];
 	};
 }
 //#endregion
