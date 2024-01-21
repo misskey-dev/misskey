@@ -4824,8 +4824,14 @@ export interface Locale extends ILocale {
      * タイトルへ
      */
     "backToTitle": string;
+    /**
+     * センシティブなファイルを含むノートを表示
+     */
     "withSensitive": string;
-    "userSaysSomethingSensitive": string;
+    /**
+     * {name}のセンシティブなファイルを含む投稿
+     */
+    "userSaysSomethingSensitive": ParameterizedString<"name">;
     /**
      * スワイプしてタブを切り替える
      */
