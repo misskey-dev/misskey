@@ -90,13 +90,6 @@ export class Storage<T extends StateDef> {
 			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def);
 			return defu(value, def) as T;
 		}
-		if (Array.isArray(value) && Array.isArray(def)) {
-			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def);
-			return [
-				...def,
-				...value,
-			] as T;
-		}
 		return value;
 	}
 
