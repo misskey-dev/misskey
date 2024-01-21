@@ -2544,6 +2544,7 @@ _reversi:
   timeLimitForEachTurn: "1ターンの時間制限"
   freeMatch: "フリーマッチ"
   lookingForPlayer: "対戦相手を探しています"
+  gameCanceled: "対局がキャンセルされました"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"

@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="!isReady && !isOpReady">{{ i18n.ts._reversi.waitingBoth }}<MkEllipsis/></template>
 				</div>
 				<div class="_buttonsCenter">
-					<MkButton rounded danger @click="exit">{{ i18n.ts.cancel }}</MkButton>
+					<MkButton rounded danger @click="cancel">{{ i18n.ts.cancel }}</MkButton>
 					<MkButton v-if="!isReady" rounded primary @click="ready">{{ i18n.ts._reversi.ready }}</MkButton>
 					<MkButton v-if="isReady" rounded @click="unready">{{ i18n.ts._reversi.cancelReady }}</MkButton>
 				</div>
@@ -109,8 +109,11 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { MenuItem } from '@/types/menu.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const $i = signinRequired();
+
+const router = useRouter();
 
 const mapCategories = Array.from(new Set(Object.values(Reversi.maps).map(x => x.category)));
 
@@ -171,8 +174,16 @@ function chooseMap(ev: MouseEvent) {
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
-function exit() {
-	props.connection.send('exit', {});
+async function cancel() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
+	props.connection.send('cancel', {});
+
+	router.push('/reversi');
 }
 
 function ready() {

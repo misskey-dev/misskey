@@ -40,6 +40,7 @@ class ReversiGameChannel extends Channel {
 		switch (type) {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
+			case 'cancel': this.cancelGame(); break;
 			case 'putStone': this.putStone(body.pos, body.id); break;
 			case 'checkState': this.checkState(body.crc32); break;
 			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
@@ -58,6 +59,13 @@ class ReversiGameChannel extends Channel {
 		if (this.user == null) return;
 
 		this.reversiService.gameReady(this.gameId!, this.user, ready);
+	}
+
+	@bindThis
+	private async cancelGame() {
+		if (this.user == null) return;
+
+		this.reversiService.cancelGame(this.gameId!, this.user);
 	}
 
 	@bindThis

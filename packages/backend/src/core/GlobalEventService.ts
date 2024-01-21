@@ -188,6 +188,9 @@ export interface ReversiGameEventTypes {
 		winnerId: MiUser['id'] | null;
 		game: Packed<'ReversiGameDetailed'>;
 	};
+	canceled: {
+		userId: MiUser['id'];
+	};
 }
 //#endregion
 
