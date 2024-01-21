@@ -15,19 +15,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div style="overflow: clip; line-height: 28px;">
-			<div v-if="!iAmPlayer && !game.isEnded && turnUser" class="turn">
+			<div v-if="!iAmPlayer && !game.isEnded && turnUser">
 				<Mfm :key="'turn:' + turnUser.id" :text="i18n.tsx._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
 			</div>
-			<div v-if="(logPos !== game.logs.length) && turnUser" class="turn">
+			<div v-if="(logPos !== game.logs.length) && turnUser">
 				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
-			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><soan v-if="opponentNotResponding" style="margin-left: 8px;">({{ i18n.ts.notResponding }})</soan></div>
-			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
-			<div v-if="game.isEnded && logPos == game.logs.length" class="result">
+			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: opTurnTimerRmain }) }})</span></div>
+			<div v-if="iAmPlayer && !game.isEnded && isMyTurn"><span style="display: inline-block; font-weight: bold; animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</span><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: myTurnTimerRmain }) }})</span></div>
+			<div v-if="game.isEnded && logPos == game.logs.length">
 				<template v-if="game.winner">
 					<Mfm :key="'won'" :text="i18n.tsx._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
-					<span v-if="game.surrendered != null"> ({{ i18n.ts._reversi.surrendered }})</span>
+					<span v-if="game.surrenderedUserId != null"> ({{ i18n.ts._reversi.surrendered }})</span>
+					<span v-if="game.timeoutUserId != null"> ({{ i18n.ts._reversi.timeout }})</span>
 				</template>
 				<template v-else>{{ i18n.ts._reversi.drawn }}</template>
 			</div>
@@ -239,7 +240,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 		if (game.value.isEnded) return;
 		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
 		if (_DEV_) console.log('crc32', crc32);
-		props.connection.send('heatbeat', {
+		props.connection.send('checkState', {
 			crc32: crc32,
 		});
 	}, 10000, { immediate: false, afterMounted: true });
@@ -269,8 +270,30 @@ function putStone(pos) {
 	});
 	appliedOps.push(id);
 
+	myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+	opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+
 	checkEnd();
 }
+
+const myTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
+const opTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
+
+const TIMER_INTERVAL_SEC = 3;
+useInterval(() => {
+	if (myTurnTimerRmain.value > 0) {
+		myTurnTimerRmain.value = Math.max(0, myTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+	}
+	if (opTurnTimerRmain.value > 0) {
+		opTurnTimerRmain.value = Math.max(0, opTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+	}
+
+	if (iAmPlayer.value) {
+		if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
+			props.connection.send('claimTimeIsUp', {});
+		}
+	}
+}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
 
 function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 	game.value.logs = Reversi.Serializer.serializeLogs([
@@ -285,6 +308,9 @@ function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 			case 'put': {
 				engine.value.putStone(log.pos);
 				triggerRef(engine);
+
+				myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+				opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
 
 				sound.playUrl('/client-assets/reversi/put.mp3', {
 					volume: 1,
@@ -339,27 +365,6 @@ function onStreamRescue(_game) {
 	checkEnd();
 }
 
-const opponentLastHeatbeatedAt = ref<number>(Date.now());
-const opponentNotResponding = ref<boolean>(false);
-
-useInterval(() => {
-	if (game.value.isEnded) return;
-	if (!iAmPlayer.value) return;
-
-	if (Date.now() - opponentLastHeatbeatedAt.value > 20000) {
-		opponentNotResponding.value = true;
-	} else {
-		opponentNotResponding.value = false;
-	}
-}, 1000, { immediate: false, afterMounted: true });
-
-function onStreamHeatbeat({ userId }) {
-	if ($i.id === userId) return;
-
-	opponentNotResponding.value = false;
-	opponentLastHeatbeatedAt.value = Date.now();
-}
-
 async function surrender() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
@@ -411,28 +416,24 @@ function share() {
 
 onMounted(() => {
 	props.connection.on('log', onStreamLog);
-	props.connection.on('heatbeat', onStreamHeatbeat);
 	props.connection.on('rescue', onStreamRescue);
 	props.connection.on('ended', onStreamEnded);
 });
 
 onActivated(() => {
 	props.connection.on('log', onStreamLog);
-	props.connection.on('heatbeat', onStreamHeatbeat);
 	props.connection.on('rescue', onStreamRescue);
 	props.connection.on('ended', onStreamEnded);
 });
 
 onDeactivated(() => {
 	props.connection.off('log', onStreamLog);
-	props.connection.off('heatbeat', onStreamHeatbeat);
 	props.connection.off('rescue', onStreamRescue);
 	props.connection.off('ended', onStreamEnded);
 });
 
 onUnmounted(() => {
 	props.connection.off('log', onStreamLog);
-	props.connection.off('heatbeat', onStreamHeatbeat);
 	props.connection.off('rescue', onStreamRescue);
 	props.connection.off('ended', onStreamEnded);
 });
