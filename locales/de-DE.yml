@@ -2244,3 +2244,4 @@ _externalResourceInstaller:
       description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
 _reversi:
   total: "Gesamt"
+
