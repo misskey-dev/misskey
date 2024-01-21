@@ -184,6 +184,12 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: {
 			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
 			userList: null as Misskey.entities.UserList | null,
+			filter: {
+				withReplies: true,
+				withRenotes: true,
+				withSensitive: true,
+				onlyFiles: false,
+			},
 		},
 	},
 	pinnedUserLists: {
@@ -388,10 +394,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: {} as Record<string, Record<string, string[]>>,
 	},
 	keepScreenOn: {
-		where: 'device',
-		default: false,
-	},
-	tlWithReplies: {
 		where: 'device',
 		default: false,
 	},

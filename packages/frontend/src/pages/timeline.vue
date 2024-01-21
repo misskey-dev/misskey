@@ -66,17 +66,51 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value), set: (x) => saveSrc(x) });
-const withRenotes = ref(true);
-const withReplies = ref($i ? defaultStore.state.tlWithReplies : false);
-const onlyFiles = ref(false);
+const src = computed({
+	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
+	set: (x) => saveSrc(x),
+});
+const withRenotes = computed({
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	get: () => (defaultStore.reactiveState.tl.value.filter?.withRenotes ?? saveTlFilter('withRenotes', true)),
+	set: (x) => saveTlFilter('withRenotes', x),
+});
+const withReplies = computed({
+	get: () => {
+		if (!$i) return false;
+		if (['local', 'social'].includes(src.value) && onlyFiles.value) {
+			return false;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			return defaultStore.reactiveState.tl.value.filter?.withReplies ?? saveTlFilter('withReplies', true);
+		}
+	},
+	set: (x) => saveTlFilter('withReplies', x),
+});
+const onlyFiles = computed({
+	get: () => {
+		if (['local', 'social'].includes(src.value) && withReplies.value) {
+			return false;
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			return defaultStore.reactiveState.tl.value.filter?.onlyFiles ?? saveTlFilter('onlyFiles', false);
+		}
+	},
+	set: (x) => saveTlFilter('onlyFiles', x),
+});
+const withSensitive = computed({
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	get: () => (defaultStore.reactiveState.tl.value.filter?.withSensitive ?? saveTlFilter('withSensitive', true)),
+	set: (x) => {
+		saveTlFilter('withSensitive', x);
+
+		// これだけはクライアント側で完結する処理なので手動でリロード
+		tlComponent.value?.reloadTimeline();
+	},
+});
 
 watch(src, () => {
 	queue.value = 0;
-});
-
-watch(withReplies, (x) => {
-	if ($i) defaultStore.set('tlWithReplies', x);
 });
 
 function queueUpdated(q: number): void {
@@ -154,16 +188,36 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 }
 
 function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
-	let userList = null;
+	const out = {
+		...defaultStore.state.tl,
+		src: newSrc,
+	};
+
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
-		userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id);
+		out.userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id) ?? null;
 	}
-	defaultStore.set('tl', {
-		src: newSrc,
-		userList,
-	});
+
+	defaultStore.set('tl', out);
 	srcWhenNotSignin.value = newSrc;
+}
+
+function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
+	if (key !== 'withReplies' || $i) {
+		const out = { ...defaultStore.state.tl };
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (!out.filter) {
+			out.filter = {
+				withRenotes: true,
+				withReplies: true,
+				withSensitive: true,
+				onlyFiles: false,
+			};
+		}
+		out.filter[key] = newValue;
+		defaultStore.set('tl', out);
+	}
+	return newValue;
 }
 
 async function timetravel(): Promise<void> {
@@ -203,6 +257,10 @@ const headerActions = computed(() => {
 					disabled: onlyFiles,
 				} : undefined, {
 					type: 'switch',
+					text: i18n.ts.withSensitive,
+					ref: withSensitive,
+				}, {
+					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
@@ -215,8 +273,7 @@ const headerActions = computed(() => {
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
-				console.log('called');
-				tlComponent.value.reloadTimeline();
+				tlComponent.value?.reloadTimeline();
 			},
 		});
 	}
