@@ -2430,3 +2430,6 @@ _dataSaver:
 _reversi:
   reversi: "黑白棋"
   total: "总计"
+_offlineScreen:
+  title: "离线——无法连接到服务器"
+  header: "无法连接到服务器"
