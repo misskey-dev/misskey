@@ -1,0 +1,44 @@
+{
+	"type": "module",
+	"name": "misskey-bubble-game",
+	"version": "0.0.1",
+	"exports": {
+		".": {
+			"import": "./built/esm/index.js",
+			"types": "./built/dts/index.d.ts"
+		},
+		"./*": {
+			"import": "./built/esm/*",
+			"types": "./built/dts/*"
+		}
+	},
+	"scripts": {
+		"build": "npm run ts",
+		"ts": "npm run ts-esm && npm run ts-dts",
+		"ts-esm": "tsc --outDir built/esm",
+		"ts-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
+		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build\"",
+		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@misskey-dev/eslint-plugin": "1.0.0",
+		"@types/node": "20.11.5",
+		"@typescript-eslint/eslint-plugin": "6.18.1",
+		"@typescript-eslint/parser": "6.18.1",
+		"eslint": "8.56.0",
+		"nodemon": "3.0.2",
+		"typescript": "5.3.3"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"@types/matter-js": "0.19.6",
+		"@types/seedrandom": "3.0.8",
+		"eventemitter3": "5.0.1",
+		"matter-js": "0.19.0",
+		"seedrandom": "3.0.5"
+	}
+}

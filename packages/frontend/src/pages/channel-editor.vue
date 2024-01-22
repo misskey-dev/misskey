@@ -174,7 +174,7 @@ function save() {
 async function archive() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.t('channelArchiveConfirmTitle', { name: name.value }),
+		title: i18n.tsx.channelArchiveConfirmTitle({ name: name.value }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
 
