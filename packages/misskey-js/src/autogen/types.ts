@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-01-20T12:23:08.951Z
+ * generatedAt: 2024-01-21T01:01:12.246Z
  */
 
 /**
@@ -4395,6 +4395,8 @@ export type components = {
       createdAt: string;
       /** Format: date-time */
       startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
       isStarted: boolean;
       isEnded: boolean;
       form1: Record<string, never> | null;
@@ -4411,12 +4413,15 @@ export type components = {
       winnerId: string | null;
       winner: components['schemas']['User'] | null;
       /** Format: id */
-      surrendered: string | null;
+      surrenderedUserId: string | null;
+      /** Format: id */
+      timeoutUserId: string | null;
       black: number | null;
       bw: string;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
+      timeLimitForEachTurn: number;
     };
     ReversiGameDetailed: {
       /** Format: id */
@@ -4425,6 +4430,8 @@ export type components = {
       createdAt: string;
       /** Format: date-time */
       startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
       isStarted: boolean;
       isEnded: boolean;
       form1: Record<string, never> | null;
@@ -4441,12 +4448,15 @@ export type components = {
       winnerId: string | null;
       winner: components['schemas']['User'] | null;
       /** Format: id */
-      surrendered: string | null;
+      surrenderedUserId: string | null;
+      /** Format: id */
+      timeoutUserId: string | null;
       black: number | null;
       bw: string;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
+      timeLimitForEachTurn: number;
       logs: unknown[][];
       map: string[];
     };
