@@ -81,7 +81,6 @@ module.exports = {
 	// ],
 
 	// A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-	// A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
 	moduleNameMapper: {
 		// Do not resolve .wasm.js to .wasm by the rule below
 		'^(.+)\\.wasm\\.js$': '$1.wasm.js',
