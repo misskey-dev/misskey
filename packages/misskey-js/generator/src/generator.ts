@@ -7,7 +7,7 @@ import openapiTS from 'openapi-typescript';
 function generateVersionHeaderComment(openApiDocs: OpenAPIV3_1.Document): string {
 	const contents = {
 		version: openApiDocs.info.version,
-		generatedAt: new Date().toISOString(),
+		// generatedAt: new Date().toISOString(),
 	};
 
 	const lines: string[] = [];

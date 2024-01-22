@@ -664,6 +664,8 @@ export class ActivityPubServerService {
 		});
 
 		fastify.get<{ Params: { user: string; } }>('/users/:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
 			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
@@ -676,6 +678,8 @@ export class ActivityPubServerService {
 		});
 
 		fastify.get<{ Params: { user: string; } }>('/@:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: request.params.user.toLowerCase(),
 				host: IsNull(),

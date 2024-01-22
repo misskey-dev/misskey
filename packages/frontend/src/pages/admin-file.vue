@@ -104,7 +104,7 @@ fetch();
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: file.value.name }),
+		text: i18n.tsx.removeAreYouSure({ x: file.value.name }),
 	});
 	if (canceled) return;
 

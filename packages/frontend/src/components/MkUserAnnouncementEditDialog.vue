@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts._announcement.silence }}
 					<template #caption>{{ i18n.ts._announcement.silenceDescription }}</template>
 				</MkSwitch>
-				<p v-if="reads">{{ i18n.t('nUsersRead', { n: reads }) }}</p>
+				<p v-if="reads">{{ i18n.tsx.nUsersRead({ n: reads }) }}</p>
 				<MkUserCardMini v-if="props.user.id" :user="props.user"></MkUserCardMini>
 				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
@@ -149,7 +149,7 @@ async function done(): Promise<void> {
 async function del(): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title.value }),
+		text: i18n.tsx.removeAreYouSure({ x: title.value }),
 	});
 	if (canceled) return;
 

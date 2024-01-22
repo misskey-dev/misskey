@@ -33,7 +33,7 @@ async function install(code: string): Promise<void> {
 		await installTheme(code);
 		os.alert({
 			type: 'success',
-			text: i18n.t('_theme.installed', { name: theme.name }),
+			text: i18n.tsx._theme.installed({ name: theme.name }),
 		});
 	} catch (err) {
 		switch (err.message.toLowerCase()) {

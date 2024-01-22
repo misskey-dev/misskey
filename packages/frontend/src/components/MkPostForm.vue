@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-	<MkInfo v-if="files.length > 0" warn :class="$style.guidelineInfo" :rounded="false"><Mfm :text="i18n.t('_postForm.guidelineInfo', { tosUrl: instance.tosUrl, nsfwGuideUrl })"/></MkInfo>
+	<MkInfo v-if="files.length > 0" warn :class="$style.guidelineInfo" :rounded="false"><Mfm :text="i18n.tsx._postForm.guidelineInfo({ tosUrl: instance.tosUrl, nsfwGuideUrl })"/></MkInfo>
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
