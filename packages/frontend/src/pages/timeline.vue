@@ -71,9 +71,8 @@ const src = computed({
 	set: (x) => saveSrc(x),
 });
 const withRenotes = computed({
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => (defaultStore.reactiveState.tl.value.filter?.withRenotes ?? saveTlFilter('withRenotes', true)),
-	set: (x) => saveTlFilter('withRenotes', x),
+	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
+	set: (x: boolean) => saveTlFilter('withRenotes', x),
 });
 const withReplies = computed({
 	get: () => {
@@ -81,27 +80,24 @@ const withReplies = computed({
 		if (['local', 'social'].includes(src.value) && onlyFiles.value) {
 			return false;
 		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			return defaultStore.reactiveState.tl.value.filter?.withReplies ?? saveTlFilter('withReplies', true);
+			return defaultStore.reactiveState.tl.value.filter.withReplies;
 		}
 	},
-	set: (x) => saveTlFilter('withReplies', x),
+	set: (x: boolean) => saveTlFilter('withReplies', x),
 });
 const onlyFiles = computed({
 	get: () => {
 		if (['local', 'social'].includes(src.value) && withReplies.value) {
 			return false;
 		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			return defaultStore.reactiveState.tl.value.filter?.onlyFiles ?? saveTlFilter('onlyFiles', false);
+			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
 		}
 	},
-	set: (x) => saveTlFilter('onlyFiles', x),
+	set: (x: boolean) => saveTlFilter('onlyFiles', x),
 });
 const withSensitive = computed({
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	get: () => (defaultStore.reactiveState.tl.value.filter?.withSensitive ?? saveTlFilter('withSensitive', true)),
-	set: (x) => {
+	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
+	set: (x: boolean) => {
 		saveTlFilter('withSensitive', x);
 
 		// これだけはクライアント側で完結する処理なので手動でリロード
