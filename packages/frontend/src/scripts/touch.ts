@@ -19,4 +19,4 @@ if (isTouchSupported && !isTouchUsing) {
 }
 
 /** (MkHorizontalSwipe) 横スワイプ中か？ */
-export const isSwiping = ref(false);
+export const isHorizontalSwipeSwiping = ref(false);
