@@ -5,9 +5,9 @@ export class GridItem {
 	readonly url?: string;
 	readonly blob?: Blob;
 
-	public aliases: string;
 	public name: string;
 	public category: string;
+	public aliases: string;
 	public license: string;
 	public isSensitive: boolean;
 	public localOnly: boolean;
@@ -15,13 +15,13 @@ export class GridItem {
 
 	private readonly origin: string;
 
-	private constructor(
+	constructor(
 		id: string | undefined,
 		url: string | undefined = undefined,
 		blob: Blob | undefined = undefined,
-		aliases: string,
 		name: string,
 		category: string,
+		aliases: string,
 		license: string,
 		isSensitive: boolean,
 		localOnly: boolean,
@@ -43,22 +43,15 @@ export class GridItem {
 	}
 
 	static ofEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem {
-		return new GridItem(
-			it.id,
-			it.url,
-			undefined,
-			it.aliases.join(', '),
-			it.name,
-			it.category ?? '',
-			it.license ?? '',
-			it.isSensitive,
-			it.localOnly,
-			it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
-		);
+		return new GridItem(it.id, it.url, undefined, it.name, it.category ?? '', it.aliases.join(', '), it.license ?? '', it.isSensitive, it.localOnly, it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '));
 	}
 
 	public get edited(): boolean {
 		const { origin, ..._this } = this;
 		return JSON.stringify(_this) !== origin;
+	}
+
+	public asRecord(): Record<string, unknown> {
+		return this as Record<string, unknown>;
 	}
 }
