@@ -112,7 +112,7 @@
 		"@types/ws": "8.5.10",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
-		"@vitest/coverage-v8": "1.2.1",
+		"@vitest/coverage-v8": "0.34.6",
 		"@vue/runtime-core": "3.4.15",
 		"acorn": "8.11.3",
 		"cross-env": "7.0.3",
