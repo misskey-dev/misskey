@@ -133,11 +133,11 @@ export const packedReversiGameDetailedSchema = {
 			optional: false, nullable: false,
 		},
 		form1: {
-			type: 'any',
+			type: 'object',
 			optional: false, nullable: true,
 		},
 		form2: {
-			type: 'any',
+			type: 'object',
 			optional: false, nullable: true,
 		},
 		user1Ready: {
