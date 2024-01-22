@@ -14,7 +14,7 @@
 	},
 	"scripts": {
 		"build": "node ./build.js",
-		"build:tsc": "npm run ts",
+		"build:tsc": "npm run tsc",
 		"tsc": "npm run ts-esm && npm run ts-dts",
 		"tsc-esm": "tsc --outDir built/esm",
 		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
