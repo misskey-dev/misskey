@@ -3,6 +3,7 @@
 	"name": "misskey-js",
 	"version": "0.0.16",
 	"description": "Misskey SDK for JavaScript",
+	"types": "./built/dts/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./built/esm/index.js",
@@ -14,7 +15,7 @@
 		}
 	},
 	"scripts": {
-		"build": "npm run ts",
+		"build": "tsc",
 		"ts": "npm run ts-esm && npm run ts-dts",
 		"ts-esm": "tsc --outDir built/esm",
 		"ts-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
@@ -52,7 +53,9 @@
 		"typescript": "5.3.3"
 	},
 	"files": [
-		"built"
+		"built",
+		"built/esm",
+		"built/dts"
 	],
 	"dependencies": {
 		"@swc/cli": "0.1.63",
