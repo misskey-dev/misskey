@@ -603,7 +603,7 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 
 		const route = mainRouter.getCurrentPath().split('/');
-		if (route[1] === 'channels') props = {
+		if (route[1] === 'channels' && !props.channel) props = {
 			...props,
 			// 本当はチャンネル名や色もほしいけどどっからとってこよう
 			channel: {
