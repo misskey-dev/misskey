@@ -163,7 +163,7 @@ const $i = signinRequired();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection: Misskey.ChannelConnection;
+	connection?: Misskey.ChannelConnection | null;
 }>();
 
 const showBoardLabels = ref<boolean>(false);
@@ -240,10 +240,10 @@ watch(logPos, (v) => {
 
 if (game.value.isStarted && !game.value.isEnded) {
 	useInterval(() => {
-		if (game.value.isEnded) return;
+		if (game.value.isEnded || props.connection == null) return;
 		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
 		if (_DEV_) console.log('crc32', crc32);
-		props.connection.send('checkState', {
+		props.connection.send('resync', {
 			crc32: crc32,
 		});
 	}, 10000, { immediate: false, afterMounted: true });
@@ -267,7 +267,7 @@ function putStone(pos) {
 	});
 
 	const id = Math.random().toString(36).slice(2);
-	props.connection.send('putStone', {
+	props.connection!.send('putStone', {
 		pos: pos,
 		id,
 	});
@@ -283,22 +283,24 @@ const myTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
 const opTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
 
 const TIMER_INTERVAL_SEC = 3;
-useInterval(() => {
-	if (myTurnTimerRmain.value > 0) {
-		myTurnTimerRmain.value = Math.max(0, myTurnTimerRmain.value - TIMER_INTERVAL_SEC);
-	}
-	if (opTurnTimerRmain.value > 0) {
-		opTurnTimerRmain.value = Math.max(0, opTurnTimerRmain.value - TIMER_INTERVAL_SEC);
-	}
-
-	if (iAmPlayer.value) {
-		if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
-			props.connection.send('claimTimeIsUp', {});
+if (!props.game.isEnded) {
+	useInterval(() => {
+		if (myTurnTimerRmain.value > 0) {
+			myTurnTimerRmain.value = Math.max(0, myTurnTimerRmain.value - TIMER_INTERVAL_SEC);
 		}
-	}
-}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
+		if (opTurnTimerRmain.value > 0) {
+			opTurnTimerRmain.value = Math.max(0, opTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+		}
 
-function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
+		if (iAmPlayer.value) {
+			if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
+			props.connection!.send('claimTimeIsUp', {});
+			}
+		}
+	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
+}
+
+async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 	game.value.logs = Reversi.Serializer.serializeLogs([
 		...Reversi.Serializer.deserializeLogs(game.value.logs),
 		log,
@@ -309,16 +311,24 @@ function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 	if (log.id == null || !appliedOps.includes(log.id)) {
 		switch (log.operation) {
 			case 'put': {
+				sound.playUrl('/client-assets/reversi/put.mp3', {
+					volume: 1,
+					playbackRate: 1,
+				});
+
+				if (log.player !== engine.value.turn) { // = desyncが発生している
+					const _game = await misskeyApi('reversi/show-game', {
+						gameId: props.game.id,
+					});
+					restoreGame(_game);
+					return;
+				}
+
 				engine.value.putStone(log.pos);
 				triggerRef(engine);
 
 				myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
 				opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
-
-				sound.playUrl('/client-assets/reversi/put.mp3', {
-					volume: 1,
-					playbackRate: 1,
-				});
 
 				checkEnd();
 				break;
@@ -366,9 +376,7 @@ function checkEnd() {
 	}
 }
 
-function onStreamRescue(_game) {
-	console.log('rescue');
-
+function restoreGame(_game) {
 	game.value = deepClone(_game);
 
 	engine.value = Reversi.Serializer.restoreGame({
@@ -382,6 +390,12 @@ function onStreamRescue(_game) {
 	logPos.value = game.value.logs.length;
 
 	checkEnd();
+}
+
+function onStreamResynced(_game) {
+	console.log('resynced');
+
+	restoreGame(_game);
 }
 
 async function surrender() {
@@ -434,27 +448,35 @@ function share() {
 }
 
 onMounted(() => {
-	props.connection.on('log', onStreamLog);
-	props.connection.on('rescue', onStreamRescue);
-	props.connection.on('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.on('log', onStreamLog);
+		props.connection.on('resynced', onStreamResynced);
+		props.connection.on('ended', onStreamEnded);
+	}
 });
 
 onActivated(() => {
-	props.connection.on('log', onStreamLog);
-	props.connection.on('rescue', onStreamRescue);
-	props.connection.on('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.on('log', onStreamLog);
+		props.connection.on('resynced', onStreamResynced);
+		props.connection.on('ended', onStreamEnded);
+	}
 });
 
 onDeactivated(() => {
-	props.connection.off('log', onStreamLog);
-	props.connection.off('rescue', onStreamRescue);
-	props.connection.off('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.off('log', onStreamLog);
+		props.connection.off('resynced', onStreamResynced);
+		props.connection.off('ended', onStreamEnded);
+	}
 });
 
 onUnmounted(() => {
-	props.connection.off('log', onStreamLog);
-	props.connection.off('rescue', onStreamRescue);
-	props.connection.off('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.off('log', onStreamLog);
+		props.connection.off('resynced', onStreamResynced);
+		props.connection.off('ended', onStreamEnded);
+	}
 });
 </script>
 
