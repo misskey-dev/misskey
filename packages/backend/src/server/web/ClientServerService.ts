@@ -693,7 +693,7 @@ export class ClientServerService {
 		});
 
 		// Reversi game
-		fastify.get<{ Params: { channel: string; } }>('/reversi/g/:game', async (request, reply) => {
+		fastify.get<{ Params: { game: string; } }>('/reversi/g/:game', async (request, reply) => {
 			const game = await this.reversiGamesRepository.findOneBy({
 				id: request.params.game,
 			});
