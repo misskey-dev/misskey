@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchGame);
 			}
 
-			return await this.reversiGameEntityService.packDetail(game, me);
+			return await this.reversiGameEntityService.packDetail(game);
 		});
 	}
 }
