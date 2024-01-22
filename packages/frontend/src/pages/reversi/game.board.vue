@@ -4,85 +4,134 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="600">
+<MkSpacer :contentMax="500">
 	<div :class="$style.root" class="_gaps">
-		<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ i18n.ts._reversi.black }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ i18n.ts._reversi.white }})</header>
+		<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+			<span>({{ i18n.ts._reversi.black }})</span>
+			<MkAvatar style="width: 32px; height: 32px;" :user="blackUser" :showIndicator="true"/>
+			<span> vs </span>
+			<MkAvatar style="width: 32px; height: 32px;" :user="whiteUser" :showIndicator="true"/>
+			<span>({{ i18n.ts._reversi.white }})</span>
+		</div>
 
 		<div style="overflow: clip; line-height: 28px;">
-			<div v-if="!iAmPlayer && !game.isEnded && turnUser" class="turn">
+			<div v-if="!iAmPlayer && !game.isEnded && turnUser">
 				<Mfm :key="'turn:' + turnUser.id" :text="i18n.tsx._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
 			</div>
-			<div v-if="(logPos !== logs.length) && turnUser" class="turn">
+			<div v-if="(logPos !== game.logs.length) && turnUser">
 				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
-			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/></div>
-			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
-			<div v-if="game.isEnded && logPos == logs.length" class="result">
+			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: opTurnTimerRmain }) }})</span></div>
+			<div v-if="iAmPlayer && !game.isEnded && isMyTurn"><span style="display: inline-block; font-weight: bold; animation: global-tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</span><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: myTurnTimerRmain }) }})</span></div>
+			<div v-if="game.isEnded && logPos == game.logs.length">
 				<template v-if="game.winner">
 					<Mfm :key="'won'" :text="i18n.tsx._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
-					<span v-if="game.surrendered != null"> ({{ i18n.ts._reversi.surrendered }})</span>
+					<span v-if="game.surrenderedUserId != null"> ({{ i18n.ts._reversi.surrendered }})</span>
+					<span v-if="game.timeoutUserId != null"> ({{ i18n.ts._reversi.timeout }})</span>
 				</template>
 				<template v-else>{{ i18n.ts._reversi.drawn }}</template>
 			</div>
 		</div>
 
 		<div :class="$style.board">
-			<div v-if="showBoardLabels" :class="$style.labelsX">
-				<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
-			</div>
-			<div style="display: flex;">
-				<div v-if="showBoardLabels" :class="$style.labelsY">
-					<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+			<div :class="$style.boardInner">
+				<div v-if="showBoardLabels" :class="$style.labelsX">
+					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
-				<div :class="$style.boardCells" :style="cellsStyle">
-					<div
-						v-for="(stone, i) in engine.board"
-						v-tooltip="`${String.fromCharCode(65 + engine.posToXy(i)[0])}${engine.posToXy(i)[1] + 1}`"
-						:class="[$style.boardCell, {
-							[$style.boardCell_empty]: stone == null,
-							[$style.boardCell_none]: engine.map[i] === 'null',
-							[$style.boardCell_isEnded]: game.isEnded,
-							[$style.boardCell_myTurn]: !game.isEnded && isMyTurn,
-							[$style.boardCell_can]: turnUser ? engine.canPut(turnUser.id === blackUser.id, i) : null,
-							[$style.boardCell_prev]: engine.prevPos === i
-						}]"
-						@click="putStone(i)"
-					>
-						<img v-if="stone === true" style="pointer-events: none; user-select: none; display: block; width: 100%; height: 100%;" :src="blackUser.avatarUrl">
-						<img v-if="stone === false" style="pointer-events: none; user-select: none; display: block; width: 100%; height: 100%;" :src="whiteUser.avatarUrl">
+				<div style="display: flex;">
+					<div v-if="showBoardLabels" :class="$style.labelsY">
+						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+					</div>
+					<div :class="$style.boardCells" :style="cellsStyle">
+						<div
+							v-for="(stone, i) in engine.board"
+							:key="i"
+							v-tooltip="`${String.fromCharCode(65 + engine.posToXy(i)[0])}${engine.posToXy(i)[1] + 1}`"
+							:class="[$style.boardCell, {
+								[$style.boardCell_empty]: stone == null,
+								[$style.boardCell_none]: engine.map[i] === 'null',
+								[$style.boardCell_isEnded]: game.isEnded,
+								[$style.boardCell_myTurn]: !game.isEnded && isMyTurn,
+								[$style.boardCell_can]: turnUser ? engine.canPut(turnUser.id === blackUser.id, i) : null,
+								[$style.boardCell_prev]: engine.prevPos === i
+							}]"
+							@click="putStone(i)"
+						>
+							<Transition
+								:enterActiveClass="$style.transition_flip_enterActive"
+								:leaveActiveClass="$style.transition_flip_leaveActive"
+								:enterFromClass="$style.transition_flip_enterFrom"
+								:leaveToClass="$style.transition_flip_leaveTo"
+								mode="default"
+							>
+								<template v-if="useAvatarAsStone">
+									<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
+									<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
+								</template>
+								<template v-else>
+									<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
+									<img v-else-if="stone === false" :class="$style.boardCellStone" src="/client-assets/reversi/stone_w.png"/>
+								</template>
+							</Transition>
+						</div>
+					</div>
+					<div v-if="showBoardLabels" :class="$style.labelsY">
+						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
 					</div>
 				</div>
-				<div v-if="showBoardLabels" :class="$style.labelsY">
-					<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+				<div v-if="showBoardLabels" :class="$style.labelsX">
+					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
 			</div>
-			<div v-if="showBoardLabels" :class="$style.labelsX">
-				<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
-			</div>
-		</div>
-
-		<div class="status"><b>{{ i18n.tsx._reversi.turnCount({ count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}</div>
-
-		<div v-if="!game.isEnded && iAmPlayer" class="_buttonsCenter">
-			<MkButton danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
 		</div>
 
 		<div v-if="game.isEnded" class="_panel _gaps_s" style="padding: 16px;">
-			<div>{{ logPos }} / {{ logs.length }}</div>
+			<div>{{ logPos }} / {{ game.logs.length }}</div>
 			<div v-if="!autoplaying" class="_buttonsCenter">
 				<MkButton :disabled="logPos === 0" @click="logPos = 0"><i class="ti ti-chevrons-left"></i></MkButton>
 				<MkButton :disabled="logPos === 0" @click="logPos--"><i class="ti ti-chevron-left"></i></MkButton>
-				<MkButton :disabled="logPos === logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
-				<MkButton :disabled="logPos === logs.length" @click="logPos = logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
+				<MkButton :disabled="logPos === game.logs.length" @click="logPos++"><i class="ti ti-chevron-right"></i></MkButton>
+				<MkButton :disabled="logPos === game.logs.length" @click="logPos = game.logs.length"><i class="ti ti-chevrons-right"></i></MkButton>
 			</div>
 			<MkButton style="margin: auto;" :disabled="autoplaying" @click="autoplay()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
 
-		<div>
-			<p v-if="game.isLlotheo">{{ i18n.ts._reversi.isLlotheo }}</p>
-			<p v-if="game.loopedBoard">{{ i18n.ts._reversi.loopedMap }}</p>
-			<p v-if="game.canPutEverywhere">{{ i18n.ts._reversi.canPutEverywhere }}</p>
+		<div class="_panel" style="padding: 16px;">
+			<div>
+				<b>{{ i18n.tsx._reversi.turnCount({ count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}
+			</div>
+			<div>
+				<div style="display: flex; align-items: center;">
+					<span style="margin-right: 8px;">({{ i18n.ts._reversi.black }})</span>
+					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="blackUser" :showIndicator="true"/>
+					<MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA>
+				</div>
+				<div> vs </div>
+				<div style="display: flex; align-items: center;">
+					<span style="margin-right: 8px;">({{ i18n.ts._reversi.white }})</span>
+					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="whiteUser" :showIndicator="true"/>
+					<MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA>
+				</div>
+			</div>
+			<div>
+				<p v-if="game.isLlotheo">{{ i18n.ts._reversi.isLlotheo }}</p>
+				<p v-if="game.loopedBoard">{{ i18n.ts._reversi.loopedMap }}</p>
+				<p v-if="game.canPutEverywhere">{{ i18n.ts._reversi.canPutEverywhere }}</p>
+			</div>
+		</div>
+
+		<MkFolder>
+			<template #label>{{ i18n.ts.options }}</template>
+			<div class="_gaps_s" style="text-align: left;">
+				<MkSwitch v-model="showBoardLabels">Show labels</MkSwitch>
+				<MkSwitch v-model="useAvatarAsStone">useAvatarAsStone</MkSwitch>
+			</div>
+		</MkFolder>
+
+		<div class="_buttonsCenter">
+			<MkButton v-if="!game.isEnded && iAmPlayer" danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
+			<MkButton @click="share">{{ i18n.ts.share }}</MkButton>
 		</div>
 
 		<MkA v-if="game.isEnded" :to="`/reversi`">
@@ -93,39 +142,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
+import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as CRC32 from 'crc-32';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/scripts/clone.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
+import * as sound from '@/scripts/sound.js';
+import * as os from '@/os.js';
+import { confetti } from '@/scripts/confetti.js';
 
 const $i = signinRequired();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection: Misskey.ChannelConnection;
+	connection?: Misskey.ChannelConnection | null;
 }>();
 
-const showBoardLabels = true;
+const showBoardLabels = ref<boolean>(false);
+const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
 const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
-const logs = ref<Misskey.entities.ReversiLog[]>(game.value.logs);
-const logPos = ref<number>(logs.value.length);
-const engine = shallowRef<Reversi.Game>(new Reversi.Game(game.value.map, {
+const logPos = ref<number>(game.value.logs.length);
+const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
+	map: game.value.map,
 	isLlotheo: game.value.isLlotheo,
 	canPutEverywhere: game.value.canPutEverywhere,
 	loopedBoard: game.value.loopedBoard,
+	logs: game.value.logs,
 }));
-
-for (const log of game.value.logs) {
-	engine.value.put(log.color, log.pos);
-}
 
 const iAmPlayer = computed(() => {
 	return game.value.user1Id === $i.id || game.value.user2Id === $i.id;
@@ -177,26 +229,27 @@ const cellsStyle = computed(() => {
 
 watch(logPos, (v) => {
 	if (!game.value.isEnded) return;
-	const _o = new Reversi.Game(game.value.map, {
+	engine.value = Reversi.Serializer.restoreGame({
+		map: game.value.map,
 		isLlotheo: game.value.isLlotheo,
 		canPutEverywhere: game.value.canPutEverywhere,
 		loopedBoard: game.value.loopedBoard,
+		logs: game.value.logs.slice(0, v),
 	});
-	for (const log of logs.value.slice(0, v)) {
-		_o.put(log.color, log.pos);
-	}
-	engine.value = _o;
 });
 
 if (game.value.isStarted && !game.value.isEnded) {
 	useInterval(() => {
-		if (game.value.isEnded) return;
-		const crc32 = CRC32.str(logs.value.map(x => x.pos.toString()).join(''));
-		props.connection.send('syncState', {
+		if (game.value.isEnded || props.connection == null) return;
+		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
+		if (_DEV_) console.log('crc32', crc32);
+		props.connection.send('resync', {
 			crc32: crc32,
 		});
-	}, 5000, { immediate: false, afterMounted: true });
+	}, 10000, { immediate: false, afterMounted: true });
 }
+
+const appliedOps: string[] = [];
 
 function putStone(pos) {
 	if (game.value.isEnded) return;
@@ -204,34 +257,107 @@ function putStone(pos) {
 	if (!isMyTurn.value) return;
 	if (!engine.value.canPut(myColor.value!, pos)) return;
 
-	engine.value.put(myColor.value!, pos);
+	engine.value.putStone(pos);
+
 	triggerRef(engine);
 
-	// サウンドを再生する
-	//sound.play(myColor.value ? 'reversiPutBlack' : 'reversiPutWhite');
-
-	props.connection.send('putStone', {
-		pos: pos,
+	sound.playUrl('/client-assets/reversi/put.mp3', {
+		volume: 1,
+		playbackRate: 1,
 	});
+
+	const id = Math.random().toString(36).slice(2);
+	props.connection!.send('putStone', {
+		pos: pos,
+		id,
+	});
+	appliedOps.push(id);
+
+	myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+	opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
 
 	checkEnd();
 }
 
-function onPutStone(x) {
-	logs.value.push(x);
-	logPos.value++;
-	engine.value.put(x.color, x.pos);
-	triggerRef(engine);
-	checkEnd();
+const myTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
+const opTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
 
-	// サウンドを再生する
-	if (x.color !== myColor.value) {
-		//sound.play(x.color ? 'reversiPutBlack' : 'reversiPutWhite');
+const TIMER_INTERVAL_SEC = 3;
+if (!props.game.isEnded) {
+	useInterval(() => {
+		if (myTurnTimerRmain.value > 0) {
+			myTurnTimerRmain.value = Math.max(0, myTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+		}
+		if (opTurnTimerRmain.value > 0) {
+			opTurnTimerRmain.value = Math.max(0, opTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+		}
+
+		if (iAmPlayer.value) {
+			if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
+			props.connection!.send('claimTimeIsUp', {});
+			}
+		}
+	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
+}
+
+async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
+	game.value.logs = Reversi.Serializer.serializeLogs([
+		...Reversi.Serializer.deserializeLogs(game.value.logs),
+		log,
+	]);
+
+	logPos.value++;
+
+	if (log.id == null || !appliedOps.includes(log.id)) {
+		switch (log.operation) {
+			case 'put': {
+				sound.playUrl('/client-assets/reversi/put.mp3', {
+					volume: 1,
+					playbackRate: 1,
+				});
+
+				if (log.player !== engine.value.turn) { // = desyncが発生している
+					const _game = await misskeyApi('reversi/show-game', {
+						gameId: props.game.id,
+					});
+					restoreGame(_game);
+					return;
+				}
+
+				engine.value.putStone(log.pos);
+				triggerRef(engine);
+
+				myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+				opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+
+				checkEnd();
+				break;
+			}
+
+			default:
+				break;
+		}
 	}
 }
 
-function onEnded(x) {
+function onStreamEnded(x) {
 	game.value = deepClone(x.game);
+
+	if (game.value.winnerId === $i.id) {
+		confetti({
+			duration: 1000 * 3,
+		});
+
+		sound.playUrl('/client-assets/reversi/win.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
+	} else {
+		sound.playUrl('/client-assets/reversi/lose.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
+	}
 }
 
 function checkEnd() {
@@ -250,28 +376,35 @@ function checkEnd() {
 	}
 }
 
-function onRescue(_game) {
+function restoreGame(_game) {
 	game.value = deepClone(_game);
 
-	engine.value = new Reversi.Game(game.value.map, {
+	engine.value = Reversi.Serializer.restoreGame({
+		map: game.value.map,
 		isLlotheo: game.value.isLlotheo,
 		canPutEverywhere: game.value.canPutEverywhere,
 		loopedBoard: game.value.loopedBoard,
+		logs: game.value.logs,
 	});
 
-	for (const log of game.value.logs) {
-		engine.value.put(log.color, log.pos);
-	}
-
-	triggerRef(engine);
-
-	logs.value = game.value.logs;
-	logPos.value = logs.value.length;
+	logPos.value = game.value.logs.length;
 
 	checkEnd();
 }
 
-function surrender() {
+function onStreamResynced(_game) {
+	console.log('resynced');
+
+	restoreGame(_game);
+}
+
+async function surrender() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
 	misskeyApi('reversi/surrender', {
 		gameId: game.value.id,
 	});
@@ -280,21 +413,22 @@ function surrender() {
 function autoplay() {
 	autoplaying.value = true;
 	logPos.value = 0;
+	const logs = Reversi.Serializer.deserializeLogs(game.value.logs);
 
 	window.setTimeout(() => {
 		logPos.value = 1;
 
 		let i = 1;
-		let previousLog = game.value.logs[0];
+		let previousLog = logs[0];
 		const tick = () => {
-			const log = game.value.logs[i];
-			const time = new Date(log.at).getTime() - new Date(previousLog.at).getTime();
+			const log = logs[i];
+			const time = log.time - previousLog.time;
 			setTimeout(() => {
 				i++;
 				logPos.value++;
 				previousLog = log;
 
-				if (i < game.value.logs.length) {
+				if (i < logs.length) {
 					tick();
 				} else {
 					autoplaying.value = false;
@@ -306,21 +440,62 @@ function autoplay() {
 	}, 1000);
 }
 
+function share() {
+	os.post({
+		initialText: `#MisskeyReversi ${location.href}`,
+		instant: true,
+	});
+}
+
 onMounted(() => {
-	props.connection.on('putStone', onPutStone);
-	props.connection.on('rescue', onRescue);
-	props.connection.on('ended', onEnded);
+	if (props.connection != null) {
+		props.connection.on('log', onStreamLog);
+		props.connection.on('resynced', onStreamResynced);
+		props.connection.on('ended', onStreamEnded);
+	}
+});
+
+onActivated(() => {
+	if (props.connection != null) {
+		props.connection.on('log', onStreamLog);
+		props.connection.on('resynced', onStreamResynced);
+		props.connection.on('ended', onStreamEnded);
+	}
+});
+
+onDeactivated(() => {
+	if (props.connection != null) {
+		props.connection.off('log', onStreamLog);
+		props.connection.off('resynced', onStreamResynced);
+		props.connection.off('ended', onStreamEnded);
+	}
 });
 
 onUnmounted(() => {
-	props.connection.off('putStone', onPutStone);
-	props.connection.off('rescue', onRescue);
-	props.connection.off('ended', onEnded);
+	if (props.connection != null) {
+		props.connection.off('log', onStreamLog);
+		props.connection.off('resynced', onStreamResynced);
+		props.connection.off('ended', onStreamEnded);
+	}
 });
 </script>
 
 <style lang="scss" module>
 @use "sass:math";
+
+.transition_flip_enterActive,
+.transition_flip_leaveActive {
+	backface-visibility: hidden;
+	transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.transition_flip_enterFrom {
+	transform: rotateY(-180deg);
+	opacity: 0;
+}
+.transition_flip_leaveTo {
+	transform: rotateY(180deg);
+	opacity: 0;
+}
 
 $label-size: 16px;
 $gap: 4px;
@@ -330,9 +505,28 @@ $gap: 4px;
 }
 
 .board {
-	width: calc(100% - 16px);
-	max-width: 500px;
+	width: 100%;
+	box-sizing: border-box;
 	margin: 0 auto;
+
+	padding: 7px;
+	background: #8C4F26;
+	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
+	border-radius: 12px;
+}
+
+.boardInner {
+	padding: 32px;
+
+	background: var(--panel);
+	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
+	border-radius: 8px;
+}
+
+@container (max-width: 400px) {
+	.boardInner {
+		padding: 16px;
+	}
 }
 
 .labelsX {
@@ -387,8 +581,11 @@ $gap: 4px;
 
 .boardCell {
 	background: transparent;
-	border-radius: 6px;
-	overflow: clip;
+	border-radius: 100%;
+	aspect-ratio: 1;
+	transform-style: preserve-3d;
+	perspective: 150px;
+	transition: border 0.25s ease, opacity 0.25s ease;
 
 	&.boardCell_empty {
 		border: solid 2px var(--divider);
@@ -424,5 +621,17 @@ $gap: 4px;
 	&.boardCell_none {
 		border-color: transparent !important;
 	}
+}
+
+.boardCellStone {
+	position: absolute;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	user-select: none;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 100%;
 }
 </style>

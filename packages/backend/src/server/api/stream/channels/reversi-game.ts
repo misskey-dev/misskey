@@ -32,11 +32,6 @@ class ReversiGameChannel extends Channel {
 	public async init(params: any) {
 		this.gameId = params.gameId as string;
 
-		const game = await this.reversiGamesRepository.findOneBy({
-			id: this.gameId,
-		});
-		if (game == null) return;
-
 		this.subscriber.on(`reversiGameStream:${this.gameId}`, this.send);
 	}
 
@@ -45,8 +40,10 @@ class ReversiGameChannel extends Channel {
 		switch (type) {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
-			case 'putStone': this.putStone(body.pos); break;
-			case 'syncState': this.syncState(body.crc32); break;
+			case 'cancel': this.cancelGame(); break;
+			case 'putStone': this.putStone(body.pos, body.id); break;
+			case 'resync': this.resync(body.crc32); break;
+			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
 		}
 	}
 
@@ -54,45 +51,43 @@ class ReversiGameChannel extends Channel {
 	private async updateSettings(key: string, value: any) {
 		if (this.user == null) return;
 
-		// TODO: キャッシュしたい
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		this.reversiService.updateSettings(game, this.user, key, value);
+		this.reversiService.updateSettings(this.gameId!, this.user, key, value);
 	}
 
 	@bindThis
 	private async ready(ready: boolean) {
 		if (this.user == null) return;
 
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		this.reversiService.gameReady(game, this.user, ready);
+		this.reversiService.gameReady(this.gameId!, this.user, ready);
 	}
 
 	@bindThis
-	private async putStone(pos: number) {
+	private async cancelGame() {
 		if (this.user == null) return;
 
-		// TODO: キャッシュしたい
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		this.reversiService.putStoneToGame(game, this.user, pos);
+		this.reversiService.cancelGame(this.gameId!, this.user);
 	}
 
 	@bindThis
-	private async syncState(crc32: string | number) {
-		// TODO: キャッシュしたい
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
+	private async putStone(pos: number, id: string) {
+		if (this.user == null) return;
 
-		if (!game.isStarted) return;
+		this.reversiService.putStoneToGame(this.gameId!, this.user, pos, id);
+	}
 
-		if (crc32.toString() !== game.crc32) {
-			this.send('rescue', await this.reversiGameEntityService.packDetail(game, this.user));
+	@bindThis
+	private async resync(crc32: string | number) {
+		const game = await this.reversiService.checkCrc(this.gameId!, crc32);
+		if (game) {
+			this.send('resynced', game);
 		}
+	}
+
+	@bindThis
+	private async claimTimeIsUp() {
+		if (this.user == null) return;
+
+		this.reversiService.checkTimeout(this.gameId!);
 	}
 
 	@bindThis

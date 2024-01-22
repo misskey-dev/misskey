@@ -9,7 +9,6 @@ import type { ReversiGamesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
 import type { MiReversiGame } from '@/models/ReversiGame.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -29,14 +28,19 @@ export class ReversiGameEntityService {
 	@bindThis
 	public async packDetail(
 		src: MiReversiGame['id'] | MiReversiGame,
-		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'ReversiGameDetailed'>> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
+
+		const users = await Promise.all([
+			this.userEntityService.pack(game.user1 ?? game.user1Id),
+			this.userEntityService.pack(game.user2 ?? game.user2Id),
+		]);
 
 		return await awaitAll({
 			id: game.id,
 			createdAt: this.idService.parse(game.id).date.toISOString(),
 			startedAt: game.startedAt && game.startedAt.toISOString(),
+			endedAt: game.endedAt && game.endedAt.toISOString(),
 			isStarted: game.isStarted,
 			isEnded: game.isEnded,
 			form1: game.form1,
@@ -45,21 +49,19 @@ export class ReversiGameEntityService {
 			user2Ready: game.user2Ready,
 			user1Id: game.user1Id,
 			user2Id: game.user2Id,
-			user1: this.userEntityService.pack(game.user1Id, me),
-			user2: this.userEntityService.pack(game.user2Id, me),
+			user1: users[0],
+			user2: users[1],
 			winnerId: game.winnerId,
-			winner: game.winnerId ? this.userEntityService.pack(game.winnerId, me) : null,
-			surrendered: game.surrendered,
+			winner: game.winnerId ? users.find(u => u.id === game.winnerId)! : null,
+			surrenderedUserId: game.surrenderedUserId,
+			timeoutUserId: game.timeoutUserId,
 			black: game.black,
 			bw: game.bw,
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
-			logs: game.logs.map(log => ({
-				at: log.at,
-				color: log.color,
-				pos: log.pos,
-			})),
+			timeLimitForEachTurn: game.timeLimitForEachTurn,
+			logs: game.logs,
 			map: game.map,
 		});
 	}
@@ -67,49 +69,50 @@ export class ReversiGameEntityService {
 	@bindThis
 	public packDetailMany(
 		xs: MiReversiGame[],
-		me?: { id: MiUser['id'] } | null | undefined,
 	) {
-		return Promise.all(xs.map(x => this.packDetail(x, me)));
+		return Promise.all(xs.map(x => this.packDetail(x)));
 	}
 
 	@bindThis
 	public async packLite(
 		src: MiReversiGame['id'] | MiReversiGame,
-		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'ReversiGameLite'>> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
+
+		const users = await Promise.all([
+			this.userEntityService.pack(game.user1 ?? game.user1Id),
+			this.userEntityService.pack(game.user2 ?? game.user2Id),
+		]);
 
 		return await awaitAll({
 			id: game.id,
 			createdAt: this.idService.parse(game.id).date.toISOString(),
 			startedAt: game.startedAt && game.startedAt.toISOString(),
+			endedAt: game.endedAt && game.endedAt.toISOString(),
 			isStarted: game.isStarted,
 			isEnded: game.isEnded,
-			form1: game.form1,
-			form2: game.form2,
-			user1Ready: game.user1Ready,
-			user2Ready: game.user2Ready,
 			user1Id: game.user1Id,
 			user2Id: game.user2Id,
-			user1: this.userEntityService.pack(game.user1Id, me),
-			user2: this.userEntityService.pack(game.user2Id, me),
+			user1: users[0],
+			user2: users[1],
 			winnerId: game.winnerId,
-			winner: game.winnerId ? this.userEntityService.pack(game.winnerId, me) : null,
-			surrendered: game.surrendered,
+			winner: game.winnerId ? users.find(u => u.id === game.winnerId)! : null,
+			surrenderedUserId: game.surrenderedUserId,
+			timeoutUserId: game.timeoutUserId,
 			black: game.black,
 			bw: game.bw,
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
+			timeLimitForEachTurn: game.timeLimitForEachTurn,
 		});
 	}
 
 	@bindThis
 	public packLiteMany(
 		xs: MiReversiGame[],
-		me?: { id: MiUser['id'] } | null | undefined,
 	) {
-		return Promise.all(xs.map(x => this.packLite(x, me)));
+		return Promise.all(xs.map(x => this.packLite(x)));
 	}
 }
 
