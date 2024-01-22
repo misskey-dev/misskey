@@ -104,23 +104,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (invitations.includes(targetUser.id)) {
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
 
-			const game = await this.reversiGamesRepository.insert({
-				id: this.idService.gen(),
-				user1Id: targetUser.id,
-				user2Id: me.id,
-				user1Ready: false,
-				user2Ready: false,
-				isStarted: false,
-				isEnded: false,
-				logs: [],
-				map: Reversi.maps.eighteight.data,
-				bw: 'random',
-				isLlotheo: false,
-			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
-			this.cacheGame(game);
-
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: targetUser.id });
-			this.globalEventService.publishReversiStream(targetUser.id, 'matched', { game: packed });
+			const game = await this.matched(targetUser.id, me.id);
 
 			return game;
 		} else {
@@ -147,23 +131,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			const invitorId = invitations[Math.floor(Math.random() * invitations.length)];
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, invitorId);
 
-			const game = await this.reversiGamesRepository.insert({
-				id: this.idService.gen(),
-				user1Id: invitorId,
-				user2Id: me.id,
-				user1Ready: false,
-				user2Ready: false,
-				isStarted: false,
-				isEnded: false,
-				logs: [],
-				map: Reversi.maps.eighteight.data,
-				bw: 'random',
-				isLlotheo: false,
-			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
-			this.cacheGame(game);
-
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: invitorId });
-			this.globalEventService.publishReversiStream(invitorId, 'matched', { game: packed });
+			const game = await this.matched(invitorId, me.id);
 
 			return game;
 		}
@@ -183,23 +151,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 			await this.redisClient.zrem('reversi:matchAny', me.id, matchedUserId);
 
-			const game = await this.reversiGamesRepository.insert({
-				id: this.idService.gen(),
-				user1Id: matchedUserId,
-				user2Id: me.id,
-				user1Ready: false,
-				user2Ready: false,
-				isStarted: false,
-				isEnded: false,
-				logs: [],
-				map: Reversi.maps.eighteight.data,
-				bw: 'random',
-				isLlotheo: false,
-			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
-			this.cacheGame(game);
-
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: matchedUserId });
-			this.globalEventService.publishReversiStream(matchedUserId, 'matched', { game: packed });
+			const game = await this.matched(matchedUserId, me.id);
 
 			return game;
 		} else {
@@ -266,6 +218,29 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 				this.startGame(freshGame);
 			}, 3000);
 		}
+	}
+
+	@bindThis
+	private async matched(parentId: MiUser['id'], childId: MiUser['id']): Promise<MiReversiGame> {
+		const game = await this.reversiGamesRepository.insert({
+			id: this.idService.gen(),
+			user1Id: parentId,
+			user2Id: childId,
+			user1Ready: false,
+			user2Ready: false,
+			isStarted: false,
+			isEnded: false,
+			logs: [],
+			map: Reversi.maps.eighteight.data,
+			bw: 'random',
+			isLlotheo: false,
+		}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
+		this.cacheGame(game);
+
+		const packed = await this.reversiGameEntityService.packDetail(game, { id: parentId });
+		this.globalEventService.publishReversiStream(parentId, 'matched', { game: packed });
+
+		return game;
 	}
 
 	@bindThis
