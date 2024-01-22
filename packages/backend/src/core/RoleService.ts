@@ -181,6 +181,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 							...body,
 							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
 							user: null, // joinなカラムは通常取ってこないので
+							role: null, // joinなカラムは通常取ってこないので
 						});
 					}
 					break;
