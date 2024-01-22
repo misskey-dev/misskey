@@ -87,6 +87,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			case 'square': return SQUARE_MONOS;
 			case 'sweets': return SWEETS_MONOS;
 			case 'space': return NORAML_MONOS;
+			default: throw new Error('unrecognized game mode');
 		}
 	}
 
@@ -302,7 +303,6 @@ export class DropAndFusionGame extends EventEmitter<{
 					this.gameOver();
 					break;
 				}
-				continue;
 			}
 		}
 	}

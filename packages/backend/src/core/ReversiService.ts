@@ -22,12 +22,12 @@ import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { Serialized } from '@/types.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
-import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common';
 
 const MATCHING_TIMEOUT_MS = 1000 * 15; // 15sec
 
 @Injectable()
-export class ReversiService implements OnApplicationShutdown, OnModuleInit {
+export class ReversiService implements OnModuleInit {
 	private notificationService: NotificationService;
 
 	constructor(
@@ -542,14 +542,5 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		} else {
 			return null;
 		}
-	}
-
-	@bindThis
-	public dispose(): void {
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

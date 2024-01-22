@@ -1,5 +1,5 @@
 import { ModerationLogPayloads } from './consts.js';
-import { Announcement, EmojiDetailed, MeDetailed, MeDetailedOnly, Page, User, UserDetailed } from './autogen/models.js';
+import { Announcement, EmojiDetailed, MeDetailed, Page, User, UserDetailed } from './autogen/models.js';
 
 export * from './autogen/entities.js';
 export * from './autogen/models.js';
