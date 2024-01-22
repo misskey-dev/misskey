@@ -42,6 +42,6 @@ jobs:
     - name: Copy Configure
       run: cp .config/example.yml .config/default.yml
     - name: Build and generate
-      run: pnpm build && pnpm --filter backend generate-api-json
+      run: pnpm --filter backend generate-api-json
     - name: Validation
       run: npx @redocly/cli lint --extends=minimal ./packages/backend/built/api.json
