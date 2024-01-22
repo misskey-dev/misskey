@@ -1,4 +1,4 @@
-name: Publish Node.js Package
+name: On Release Created (Publish misskey-js)
 
 on:
   release:
@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
