@@ -4,8 +4,8 @@
  */
 
 import { App, AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
-import { IRouter, Router } from '@/nirax.js';
 import type { RouteDef } from '@/nirax.js';
+import { IRouter, Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -557,6 +557,11 @@ const routes: RouteDef[] = [{
 	path: '/',
 	component: $i ? page(() => import('@/pages/timeline.vue')) : page(() => import('@/pages/welcome.vue')),
 	globalCacheKey: 'index',
+}, {
+	// テスト用リダイレクト設定。ログイン中ユーザのプロフィールにリダイレクトする
+	path: '/redirect-test',
+	redirect: $i ? `@${$i.username}` : '/',
+	loginRequired: true,
 }, {
 	path: '/:(*)',
 	component: page(() => import('@/pages/not-found.vue')),
