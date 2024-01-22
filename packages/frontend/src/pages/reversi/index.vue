@@ -34,12 +34,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination :pagination="myGamesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
-						<MkA v-for="g in items" :key="g.id" v-panel :class="$style.gamePreview" tabindex="-1" :to="`/reversi/g/${g.id}`">
+						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
-								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/> vs <MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
+								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
+								<span v-if="g.winnerId === g.user2Id" style="margin-right: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/>
+								<span style="margin: 0 1em;">vs</span>
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
+								<span v-if="g.winnerId === g.user1Id" style="margin-left: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
+								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span :style="!g.isEnded ? 'color: var(--accent);' : ''">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span>
+								<span v-if="!g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-else>{{ i18n.ts._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
 							</div>
 						</MkA>
@@ -53,12 +60,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination :pagination="gamesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
-						<MkA v-for="g in items" :key="g.id" v-panel :class="$style.gamePreview" tabindex="-1" :to="`/reversi/g/${g.id}`">
+						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
-								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/> vs <MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
+								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
+								<span v-if="g.winnerId === g.user2Id" style="margin-right: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/>
+								<span style="margin: 0 1em;">vs</span>
+								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
+								<span v-if="g.winnerId === g.user1Id" style="margin-left: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
+								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span :style="!g.isEnded ? 'color: var(--accent);' : ''">{{ g.isEnded ? i18n.ts._reversi.ended : i18n.ts._reversi.playing }}</span>
+								<span v-if="!g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-else>{{ i18n.ts._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
 							</div>
 						</MkA>
@@ -229,6 +243,11 @@ definePageMetadata(computed(() => ({
 </script>
 
 <style lang="scss" module>
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.2; }
+}
+
 .invitation {
 	display: flex;
 	box-sizing: border-box;
@@ -248,6 +267,10 @@ definePageMetadata(computed(() => ({
 	font-size: 90%;
 	border-radius: 8px;
 	overflow: clip;
+}
+
+.gamePreviewActive {
+	box-shadow: inset 0 0 8px 0px var(--accent);
 }
 
 .gamePreviewPlayers {
@@ -275,6 +298,12 @@ definePageMetadata(computed(() => ({
 	border-top: solid 0.5px var(--divider);
 	padding: 6px 10px;
 	font-size: 0.9em;
+}
+
+.gamePreviewStatusActive {
+	color: var(--accent);
+	font-weight: bold;
+	animation: blink 2s infinite;
 }
 
 .waitingScreen {

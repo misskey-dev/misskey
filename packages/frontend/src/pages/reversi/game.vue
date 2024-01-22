@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="game == null || connection == null"><MkLoading/></div>
-<GameSetting v-else-if="!game.isStarted" :game="game" :connection="connection"/>
+<div v-if="game == null || (!game.isEnded && connection == null)"><MkLoading/></div>
+<GameSetting v-else-if="!game.isStarted" :game="game" :connection="connection!"/>
 <GameBoard v-else :game="game" :connection="connection"/>
 </template>
 
@@ -47,23 +47,25 @@ async function fetchGame() {
 	if (connection.value) {
 		connection.value.dispose();
 	}
-	connection.value = useStream().useChannel('reversiGame', {
-		gameId: game.value.id,
-	});
-	connection.value.on('started', x => {
-		game.value = x.game;
-	});
-	connection.value.on('canceled', x => {
-		connection.value?.dispose();
+	if (!game.value.isEnded) {
+		connection.value = useStream().useChannel('reversiGame', {
+			gameId: game.value.id,
+		});
+		connection.value.on('started', x => {
+			game.value = x.game;
+		});
+		connection.value.on('canceled', x => {
+			connection.value?.dispose();
 
-		if (x.userId !== $i.id) {
-			os.alert({
-				type: 'warning',
-				text: i18n.ts._reversi.gameCanceled,
-			});
-			router.push('/reversi');
-		}
-	});
+			if (x.userId !== $i.id) {
+				os.alert({
+					type: 'warning',
+					text: i18n.ts._reversi.gameCanceled,
+				});
+				router.push('/reversi');
+			}
+		});
+	}
 }
 
 onMounted(() => {

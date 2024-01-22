@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.2
- * generatedAt: 2024-01-21T01:01:12.246Z
+ * version: 2024.2.0-beta.2
+ * generatedAt: 2024-01-22T06:08:45.796Z
  */
 
 /**
@@ -4469,10 +4469,6 @@ export type components = {
       endedAt: string | null;
       isStarted: boolean;
       isEnded: boolean;
-      form1: Record<string, never> | null;
-      form2: Record<string, never> | null;
-      user1Ready: boolean;
-      user2Ready: boolean;
       /** Format: id */
       user1Id: string;
       /** Format: id */

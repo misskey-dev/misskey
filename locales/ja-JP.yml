@@ -1202,6 +1202,7 @@ replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
 backToTitle: "タイトルへ"
+hemisphere: "お住まいの地域"
 withSensitive: "センシティブなファイルを含むノートを表示"
 userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
@@ -2510,6 +2511,11 @@ _dataSaver:
     title: "コードハイライト"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
 
+_hemisphere:
+  N: "北半球"
+  S: "南半球"
+  caption: "一部のクライアント設定で、季節を判定するために使用します。"
+
 _reversi:
   reversi: "リバーシ"
   gameSettings: "対局の設定"
@@ -2551,3 +2557,4 @@ _reversi:
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"
   header: "サーバーに接続できません"
+

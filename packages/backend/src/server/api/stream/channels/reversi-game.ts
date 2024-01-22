@@ -42,7 +42,7 @@ class ReversiGameChannel extends Channel {
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'cancel': this.cancelGame(); break;
 			case 'putStone': this.putStone(body.pos, body.id); break;
-			case 'checkState': this.checkState(body.crc32); break;
+			case 'resync': this.resync(body.crc32); break;
 			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
 		}
 	}
@@ -76,12 +76,10 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async checkState(crc32: string | number) {
-		if (crc32 != null) return;
-
+	private async resync(crc32: string | number) {
 		const game = await this.reversiService.checkCrc(this.gameId!, crc32);
 		if (game) {
-			this.send('rescue', game);
+			this.send('resynced', game);
 		}
 	}
 
