@@ -146,7 +146,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
 	</div>
 	<div>
-		<div v-if="tab === 'replies'" :class="$style.tab_replies">
+		<div v-if="tab === 'replies'">
 			<MkPagination :pagination="repliesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
@@ -719,10 +719,6 @@ function loadConversation() {
 
 .tabActive {
 	border-bottom: solid 2px var(--accent);
-}
-
-.tab_replies {
-	padding: 16px;
 }
 
 .tab_renotes {
