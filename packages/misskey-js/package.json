@@ -3,6 +3,7 @@
 	"name": "misskey-js",
 	"version": "0.0.16",
 	"description": "Misskey SDK for JavaScript",
+	"types": "./built/dts/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./built/esm/index.js",
@@ -39,8 +40,8 @@
 		"@swc/jest": "0.2.31",
 		"@types/jest": "29.5.11",
 		"@types/node": "20.11.5",
-		"@typescript-eslint/eslint-plugin": "6.19.0",
-		"@typescript-eslint/parser": "6.19.0",
+		"@typescript-eslint/eslint-plugin": "6.18.1",
+		"@typescript-eslint/parser": "6.18.1",
 		"eslint": "8.56.0",
 		"jest": "29.7.0",
 		"jest-fetch-mock": "3.0.3",
@@ -52,7 +53,9 @@
 		"typescript": "5.3.3"
 	},
 	"files": [
-		"built"
+		"built",
+		"built/esm",
+		"built/dts"
 	],
 	"dependencies": {
 		"@swc/cli": "0.1.63",

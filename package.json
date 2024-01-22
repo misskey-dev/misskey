@@ -56,8 +56,8 @@
 		"typescript": "5.3.3"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.19.0",
-		"@typescript-eslint/parser": "6.19.0",
+		"@typescript-eslint/eslint-plugin": "6.18.1",
+		"@typescript-eslint/parser": "6.18.1",
 		"cross-env": "7.0.3",
 		"cypress": "13.6.3",
 		"eslint": "8.56.0",
