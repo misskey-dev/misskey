@@ -1200,6 +1200,8 @@ replaying: "重播中"
 ranking: "排行榜"
 lastNDays: "最近 {n} 天"
 backToTitle: "返回标题"
+hemisphere: "居住地区"
+withSensitive: "显示包含敏感媒体的帖子"
 enableHorizontalSwipe: "滑动切换标签页"
 _bubbleGame:
   howToPlay: "游戏说明"
@@ -2427,9 +2429,14 @@ _dataSaver:
   _code:
     title: "代码高亮"
     description: "如果使用了代码高亮标记，例如在 MFM 中，则在点击之前不会加载。 代码高亮要求加载每种高亮语言的定义文件，由于这些文件不再自动加载，因此有望减少数据传输量。"
+_hemisphere:
+  N: "北半球"
+  S: "南半球"
+  caption: "在某些客户端设置中用来确定季节"
 _reversi:
   reversi: "黑白棋"
   total: "总计"
 _offlineScreen:
   title: "离线——无法连接到服务器"
   header: "无法连接到服务器"
+

@@ -2356,3 +2356,4 @@ _dataSaver:
     description: "Impedire che il codice sorgente sia automaticamente evidenziato. Evidenziare il codice richiede il caricamento di un file per ogni linguaggio. Puoi evidenziare soltanto il codice che intendi leggere e ridurre il traffico inutilizzato."
 _reversi:
   total: "Totale"
+

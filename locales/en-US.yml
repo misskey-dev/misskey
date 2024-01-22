@@ -2354,3 +2354,4 @@ _dataSaver:
     description: "If code highlighting notations are used in MFM, etc., they will not load until tapped. Syntax highlighting requires downloading the highlight definition files for each programming language. Therefore, disabling the automatic loading of these files is expected to reduce the amount of communication data."
 _reversi:
   total: "Total"
+
