@@ -234,10 +234,13 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			map: Reversi.maps.eighteight.data,
 			bw: 'random',
 			isLlotheo: false,
-		}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
+		}).then(x => this.reversiGamesRepository.findOneOrFail({
+			where: { id: x.identifiers[0].id },
+			relations: ['user1', 'user2'],
+		}));
 		this.cacheGame(game);
 
-		const packed = await this.reversiGameEntityService.packDetail(game, { id: parentId });
+		const packed = await this.reversiGameEntityService.packDetail(game);
 		this.globalEventService.publishReversiStream(parentId, 'matched', { game: packed });
 
 		return game;
@@ -267,6 +270,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			.returning('*')
 			.execute()
 			.then((response) => response.raw[0]);
+		// キャッシュ効率化のためにユーザー情報は再利用
+		updatedGame.user1 = game.user1;
+		updatedGame.user2 = game.user2;
 		this.cacheGame(updatedGame);
 
 		//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
@@ -314,6 +320,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			.returning('*')
 			.execute()
 			.then((response) => response.raw[0]);
+		// キャッシュ効率化のためにユーザー情報は再利用
+		updatedGame.user1 = game.user1;
+		updatedGame.user2 = game.user2;
 		this.cacheGame(updatedGame);
 
 		this.globalEventService.publishReversiGameStream(game.id, 'ended', {
@@ -483,14 +492,36 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	public async get(id: MiReversiGame['id']): Promise<MiReversiGame | null> {
 		const cached = await this.redisClient.get(`reversi:game:cache:${id}`);
 		if (cached != null) {
+			// TODO: この辺りのデシリアライズ処理をどこか別のサービスに切り出したい
 			const parsed = JSON.parse(cached) as Serialized<MiReversiGame>;
 			return {
 				...parsed,
 				startedAt: parsed.startedAt != null ? new Date(parsed.startedAt) : null,
 				endedAt: parsed.endedAt != null ? new Date(parsed.endedAt) : null,
+				user1: parsed.user1 != null ? {
+					...parsed.user1,
+					avatar: null,
+					banner: null,
+					updatedAt: parsed.user1.updatedAt != null ? new Date(parsed.user1.updatedAt) : null,
+					lastActiveDate: parsed.user1.lastActiveDate != null ? new Date(parsed.user1.lastActiveDate) : null,
+					lastFetchedAt: parsed.user1.lastFetchedAt != null ? new Date(parsed.user1.lastFetchedAt) : null,
+					movedAt: parsed.user1.movedAt != null ? new Date(parsed.user1.movedAt) : null,
+				} : null,
+				user2: parsed.user2 != null ? {
+					...parsed.user2,
+					avatar: null,
+					banner: null,
+					updatedAt: parsed.user2.updatedAt != null ? new Date(parsed.user2.updatedAt) : null,
+					lastActiveDate: parsed.user2.lastActiveDate != null ? new Date(parsed.user2.lastActiveDate) : null,
+					lastFetchedAt: parsed.user2.lastFetchedAt != null ? new Date(parsed.user2.lastFetchedAt) : null,
+					movedAt: parsed.user2.movedAt != null ? new Date(parsed.user2.movedAt) : null,
+				} : null,
 			};
 		} else {
-			const game = await this.reversiGamesRepository.findOneBy({ id });
+			const game = await this.reversiGamesRepository.findOne({
+				where: { id },
+				relations: ['user1', 'user2'],
+			});
 			if (game == null) return null;
 
 			this.cacheGame(game);
