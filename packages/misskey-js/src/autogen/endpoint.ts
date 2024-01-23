@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2
- * generatedAt: 2024-01-20T09:06:01.853Z
+ * version: 2024.2.0-beta.3
+ * generatedAt: 2024-01-23T01:22:13.175Z
  */
 
 import type {
@@ -366,7 +366,6 @@ import type {
 	InviteLimitResponse,
 	MetaRequest,
 	MetaResponse,
-	EmojisRequest,
 	EmojisResponse,
 	EmojiRequest,
 	EmojiResponse,
@@ -545,6 +544,18 @@ import type {
 	BubbleGameRegisterResponse,
 	BubbleGameRankingRequest,
 	BubbleGameRankingResponse,
+	ReversiCancelMatchRequest,
+	ReversiCancelMatchResponse,
+	ReversiGamesRequest,
+	ReversiGamesResponse,
+	ReversiMatchRequest,
+	ReversiMatchResponse,
+	ReversiInvitationsResponse,
+	ReversiShowGameRequest,
+	ReversiShowGameResponse,
+	ReversiSurrenderRequest,
+	ReversiVerifyRequest,
+	ReversiVerifyResponse,
 } from './entities.js';
 
 export type Endpoints = {
@@ -794,7 +805,7 @@ export type Endpoints = {
 	'invite/list': { req: InviteListRequest; res: InviteListResponse };
 	'invite/limit': { req: EmptyRequest; res: InviteLimitResponse };
 	'meta': { req: MetaRequest; res: MetaResponse };
-	'emojis': { req: EmojisRequest; res: EmojisResponse };
+	'emojis': { req: EmptyRequest; res: EmojisResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
 	'miauth/gen-token': { req: MiauthGenTokenRequest; res: MiauthGenTokenResponse };
 	'mute/create': { req: MuteCreateRequest; res: EmptyResponse };
@@ -908,4 +919,11 @@ export type Endpoints = {
 	'retention': { req: EmptyRequest; res: RetentionResponse };
 	'bubble-game/register': { req: BubbleGameRegisterRequest; res: BubbleGameRegisterResponse };
 	'bubble-game/ranking': { req: BubbleGameRankingRequest; res: BubbleGameRankingResponse };
+	'reversi/cancel-match': { req: ReversiCancelMatchRequest; res: ReversiCancelMatchResponse };
+	'reversi/games': { req: ReversiGamesRequest; res: ReversiGamesResponse };
+	'reversi/match': { req: ReversiMatchRequest; res: ReversiMatchResponse };
+	'reversi/invitations': { req: EmptyRequest; res: ReversiInvitationsResponse };
+	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
+	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
+	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
 }

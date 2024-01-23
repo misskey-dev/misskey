@@ -5,26 +5,22 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import CRC32 from 'crc-32';
 import { ModuleRef } from '@nestjs/core';
 import * as Reversi from 'misskey-reversi';
 import { IsNull } from 'typeorm';
 import type {
 	MiReversiGame,
 	ReversiGamesRepository,
-	UsersRepository,
 } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
-import type { Packed } from '@/misc/json-schema.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { Serialized } from '@/types.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
@@ -56,6 +52,43 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
+	private async cacheGame(game: MiReversiGame) {
+		await this.redisClient.setex(`reversi:game:cache:${game.id}`, 60 * 60, JSON.stringify(game));
+	}
+
+	@bindThis
+	private async deleteGameCache(gameId: MiReversiGame['id']) {
+		await this.redisClient.del(`reversi:game:cache:${gameId}`);
+	}
+
+	@bindThis
+	private getBakeProps(game: MiReversiGame) {
+		return {
+			startedAt: game.startedAt,
+			endedAt: game.endedAt,
+			// ゲームの途中からユーザーが変わることは無いので
+			//user1Id: game.user1Id,
+			//user2Id: game.user2Id,
+			user1Ready: game.user1Ready,
+			user2Ready: game.user2Ready,
+			black: game.black,
+			isStarted: game.isStarted,
+			isEnded: game.isEnded,
+			winnerId: game.winnerId,
+			surrenderedUserId: game.surrenderedUserId,
+			timeoutUserId: game.timeoutUserId,
+			isLlotheo: game.isLlotheo,
+			canPutEverywhere: game.canPutEverywhere,
+			loopedBoard: game.loopedBoard,
+			timeLimitForEachTurn: game.timeLimitForEachTurn,
+			logs: game.logs,
+			map: game.map,
+			bw: game.bw,
+			crc32: game.crc32,
+		} satisfies Partial<MiReversiGame>;
+	}
+
+	@bindThis
 	public async matchSpecificUser(me: MiUser, targetUser: MiUser): Promise<MiReversiGame | null> {
 		if (targetUser.id === me.id) {
 			throw new Error('You cannot match yourself.');
@@ -70,22 +103,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (invitations.includes(targetUser.id)) {
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
 
-			const game = await this.reversiGamesRepository.insert({
-				id: this.idService.gen(),
-				user1Id: targetUser.id,
-				user2Id: me.id,
-				user1Ready: false,
-				user2Ready: false,
-				isStarted: false,
-				isEnded: false,
-				logs: [],
-				map: Reversi.maps.eighteight.data,
-				bw: 'random',
-				isLlotheo: false,
-			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
-
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: targetUser.id });
-			this.globalEventService.publishReversiStream(targetUser.id, 'matched', { game: packed });
+			const game = await this.matched(targetUser.id, me.id);
 
 			return game;
 		} else {
@@ -112,22 +130,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			const invitorId = invitations[Math.floor(Math.random() * invitations.length)];
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, invitorId);
 
-			const game = await this.reversiGamesRepository.insert({
-				id: this.idService.gen(),
-				user1Id: invitorId,
-				user2Id: me.id,
-				user1Ready: false,
-				user2Ready: false,
-				isStarted: false,
-				isEnded: false,
-				logs: [],
-				map: Reversi.maps.eighteight.data,
-				bw: 'random',
-				isLlotheo: false,
-			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
-
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: invitorId });
-			this.globalEventService.publishReversiStream(invitorId, 'matched', { game: packed });
+			const game = await this.matched(invitorId, me.id);
 
 			return game;
 		}
@@ -147,22 +150,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 			await this.redisClient.zrem('reversi:matchAny', me.id, matchedUserId);
 
-			const game = await this.reversiGamesRepository.insert({
-				id: this.idService.gen(),
-				user1Id: matchedUserId,
-				user2Id: me.id,
-				user1Ready: false,
-				user2Ready: false,
-				isStarted: false,
-				isEnded: false,
-				logs: [],
-				map: Reversi.maps.eighteight.data,
-				bw: 'random',
-				isLlotheo: false,
-			}).then(x => this.reversiGamesRepository.findOneByOrFail(x.identifiers[0]));
-
-			const packed = await this.reversiGameEntityService.packDetail(game, { id: matchedUserId });
-			this.globalEventService.publishReversiStream(matchedUserId, 'matched', { game: packed });
+			const game = await this.matched(matchedUserId, me.id);
 
 			return game;
 		} else {
@@ -182,33 +170,39 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async gameReady(game: MiReversiGame, user: MiUser, ready: boolean) {
+	public async gameReady(gameId: MiReversiGame['id'], user: MiUser, ready: boolean) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
 		if (game.isStarted) return;
 
 		let isBothReady = false;
 
 		if (game.user1Id === user.id) {
-			await this.reversiGamesRepository.update(game.id, {
+			const updatedGame = {
+				...game,
 				user1Ready: ready,
-			});
+			};
+			this.cacheGame(updatedGame);
 
 			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
 				user1: ready,
-				user2: game.user2Ready,
+				user2: updatedGame.user2Ready,
 			});
 
-			if (ready && game.user2Ready) isBothReady = true;
+			if (ready && updatedGame.user2Ready) isBothReady = true;
 		} else if (game.user2Id === user.id) {
-			await this.reversiGamesRepository.update(game.id, {
+			const updatedGame = {
+				...game,
 				user2Ready: ready,
-			});
+			};
+			this.cacheGame(updatedGame);
 
 			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
-				user1: game.user1Ready,
+				user1: updatedGame.user1Ready,
 				user2: ready,
 			});
 
-			if (ready && game.user1Ready) isBothReady = true;
+			if (ready && updatedGame.user1Ready) isBothReady = true;
 		} else {
 			return;
 		}
@@ -216,69 +210,124 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (isBothReady) {
 			// 3秒後、両者readyならゲーム開始
 			setTimeout(async () => {
-				const freshGame = await this.reversiGamesRepository.findOneBy({ id: game.id });
+				const freshGame = await this.get(game.id);
 				if (freshGame == null || freshGame.isStarted || freshGame.isEnded) return;
 				if (!freshGame.user1Ready || !freshGame.user2Ready) return;
 
-				let bw: number;
-				if (freshGame.bw === 'random') {
-					bw = Math.random() > 0.5 ? 1 : 2;
-				} else {
-					bw = parseInt(freshGame.bw, 10);
-				}
-
-				function getRandomMap() {
-					const mapCount = Object.entries(Reversi.maps).length;
-					const rnd = Math.floor(Math.random() * mapCount);
-					return Object.values(Reversi.maps)[rnd].data;
-				}
-
-				const map = freshGame.map != null ? freshGame.map : getRandomMap();
-
-				const crc32 = CRC32.str(JSON.stringify(freshGame.logs)).toString();
-
-				await this.reversiGamesRepository.update(game.id, {
-					startedAt: new Date(),
-					isStarted: true,
-					black: bw,
-					map: map,
-					crc32,
-				});
-
-				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
-				const o = new Reversi.Game(map, {
-					isLlotheo: freshGame.isLlotheo,
-					canPutEverywhere: freshGame.canPutEverywhere,
-					loopedBoard: freshGame.loopedBoard,
-				});
-
-				if (o.isEnded) {
-					let winner;
-					if (o.winner === true) {
-						winner = freshGame.black === 1 ? freshGame.user1Id : freshGame.user2Id;
-					} else if (o.winner === false) {
-						winner = freshGame.black === 1 ? freshGame.user2Id : freshGame.user1Id;
-					} else {
-						winner = null;
-					}
-
-					await this.reversiGamesRepository.update(game.id, {
-						isEnded: true,
-						winnerId: winner,
-					});
-
-					this.globalEventService.publishReversiGameStream(game.id, 'ended', {
-						winnerId: winner,
-						game: await this.reversiGameEntityService.packDetail(game.id, user),
-					});
-				}
-				//#endregion
-
-				this.globalEventService.publishReversiGameStream(game.id, 'started', {
-					game: await this.reversiGameEntityService.packDetail(game.id, user),
-				});
+				this.startGame(freshGame);
 			}, 3000);
 		}
+	}
+
+	@bindThis
+	private async matched(parentId: MiUser['id'], childId: MiUser['id']): Promise<MiReversiGame> {
+		const game = await this.reversiGamesRepository.insert({
+			id: this.idService.gen(),
+			user1Id: parentId,
+			user2Id: childId,
+			user1Ready: false,
+			user2Ready: false,
+			isStarted: false,
+			isEnded: false,
+			logs: [],
+			map: Reversi.maps.eighteight.data,
+			bw: 'random',
+			isLlotheo: false,
+		}).then(x => this.reversiGamesRepository.findOneOrFail({
+			where: { id: x.identifiers[0].id },
+			relations: ['user1', 'user2'],
+		}));
+		this.cacheGame(game);
+
+		const packed = await this.reversiGameEntityService.packDetail(game);
+		this.globalEventService.publishReversiStream(parentId, 'matched', { game: packed });
+
+		return game;
+	}
+
+	@bindThis
+	private async startGame(game: MiReversiGame) {
+		let bw: number;
+		if (game.bw === 'random') {
+			bw = Math.random() > 0.5 ? 1 : 2;
+		} else {
+			bw = parseInt(game.bw, 10);
+		}
+
+		const engine = new Reversi.Game(game.map, {
+			isLlotheo: game.isLlotheo,
+			canPutEverywhere: game.canPutEverywhere,
+			loopedBoard: game.loopedBoard,
+		});
+
+		const crc32 = engine.calcCrc32().toString();
+
+		const updatedGame = await this.reversiGamesRepository.createQueryBuilder().update()
+			.set({
+				...this.getBakeProps(game),
+				startedAt: new Date(),
+				isStarted: true,
+				black: bw,
+				map: game.map,
+				crc32,
+			})
+			.where('id = :id', { id: game.id })
+			.returning('*')
+			.execute()
+			.then((response) => response.raw[0]);
+		// キャッシュ効率化のためにユーザー情報は再利用
+		updatedGame.user1 = game.user1;
+		updatedGame.user2 = game.user2;
+		this.cacheGame(updatedGame);
+
+		//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
+		if (engine.isEnded) {
+			let winnerId;
+			if (engine.winner === true) {
+				winnerId = bw === 1 ? updatedGame.user1Id : updatedGame.user2Id;
+			} else if (engine.winner === false) {
+				winnerId = bw === 1 ? updatedGame.user2Id : updatedGame.user1Id;
+			} else {
+				winnerId = null;
+			}
+
+			await this.endGame(updatedGame, winnerId, null);
+
+			return;
+		}
+		//#endregion
+
+		this.redisClient.setex(`reversi:game:turnTimer:${game.id}:1`, updatedGame.timeLimitForEachTurn, '');
+
+		this.globalEventService.publishReversiGameStream(game.id, 'started', {
+			game: await this.reversiGameEntityService.packDetail(updatedGame),
+		});
+	}
+
+	@bindThis
+	private async endGame(game: MiReversiGame, winnerId: MiUser['id'] | null, reason: 'surrender' | 'timeout' | null) {
+		const updatedGame = await this.reversiGamesRepository.createQueryBuilder().update()
+			.set({
+				...this.getBakeProps(game),
+				isEnded: true,
+				endedAt: new Date(),
+				winnerId: winnerId,
+				surrenderedUserId: reason === 'surrender' ? (winnerId === game.user1Id ? game.user2Id : game.user1Id) : null,
+				timeoutUserId: reason === 'timeout' ? (winnerId === game.user1Id ? game.user2Id : game.user1Id) : null,
+			})
+			.where('id = :id', { id: game.id })
+			.returning('*')
+			.execute()
+			.then((response) => response.raw[0]);
+		// キャッシュ効率化のためにユーザー情報は再利用
+		updatedGame.user1 = game.user1;
+		updatedGame.user2 = game.user2;
+		this.cacheGame(updatedGame);
+
+		this.globalEventService.publishReversiGameStream(game.id, 'ended', {
+			winnerId: winnerId,
+			game: await this.reversiGameEntityService.packDetail(updatedGame),
+		});
 	}
 
 	@bindThis
@@ -292,17 +341,23 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async updateSettings(game: MiReversiGame, user: MiUser, key: string, value: any) {
+	public async updateSettings(gameId: MiReversiGame['id'], user: MiUser, key: string, value: any) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
 		if (game.isStarted) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 		if ((game.user1Id === user.id) && game.user1Ready) return;
 		if ((game.user2Id === user.id) && game.user2Ready) return;
 
-		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard'].includes(key)) return;
+		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard', 'timeLimitForEachTurn'].includes(key)) return;
 
-		await this.reversiGamesRepository.update(game.id, {
+		// TODO: より厳格なバリデーション
+
+		const updatedGame = {
+			...game,
 			[key]: value,
-		});
+		};
+		this.cacheGame(updatedGame);
 
 		this.globalEventService.publishReversiGameStream(game.id, 'updateSettings', {
 			userId: user.id,
@@ -312,7 +367,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async putStoneToGame(game: MiReversiGame, user: MiUser, pos: number, id?: string | null) {
+	public async putStoneToGame(gameId: MiReversiGame['id'], user: MiUser, pos: number, id?: string | null) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
@@ -335,17 +392,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		engine.putStone(pos);
 
-		let winner;
-		if (engine.isEnded) {
-			if (engine.winner === true) {
-				winner = game.black === 1 ? game.user1Id : game.user2Id;
-			} else if (engine.winner === false) {
-				winner = game.black === 1 ? game.user2Id : game.user1Id;
-			} else {
-				winner = null;
-			}
-		}
-
 		const logs = Reversi.Serializer.deserializeLogs(game.logs);
 
 		const log = {
@@ -359,14 +405,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		const serializeLogs = Reversi.Serializer.serializeLogs(logs);
 
-		const crc32 = CRC32.str(JSON.stringify(serializeLogs)).toString();
+		const crc32 = engine.calcCrc32().toString();
 
-		await this.reversiGamesRepository.update(game.id, {
+		const updatedGame = {
+			...game,
 			crc32,
-			isEnded: engine.isEnded,
-			winnerId: winner,
 			logs: serializeLogs,
-		});
+		};
+		this.cacheGame(updatedGame);
 
 		this.globalEventService.publishReversiGameStream(game.id, 'log', {
 			...log,
@@ -374,35 +420,125 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		if (engine.isEnded) {
-			this.globalEventService.publishReversiGameStream(game.id, 'ended', {
-				winnerId: winner ?? null,
-				game: await this.reversiGameEntityService.packDetail(game.id, user),
-			});
+			let winnerId;
+			if (engine.winner === true) {
+				winnerId = game.black === 1 ? game.user1Id : game.user2Id;
+			} else if (engine.winner === false) {
+				winnerId = game.black === 1 ? game.user2Id : game.user1Id;
+			} else {
+				winnerId = null;
+			}
+
+			await this.endGame(updatedGame, winnerId, null);
+		} else {
+			this.redisClient.setex(`reversi:game:turnTimer:${game.id}:${engine.turn ? '1' : '0'}`, updatedGame.timeLimitForEachTurn, '');
 		}
 	}
 
 	@bindThis
-	public async surrender(game: MiReversiGame, user: MiUser) {
+	public async surrender(gameId: MiReversiGame['id'], user: MiUser) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
 		if (game.isEnded) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 
 		const winnerId = game.user1Id === user.id ? game.user2Id : game.user1Id;
 
-		await this.reversiGamesRepository.update(game.id, {
-			surrendered: user.id,
-			isEnded: true,
-			winnerId: winnerId,
+		await this.endGame(game, winnerId, 'surrender');
+	}
+
+	@bindThis
+	public async checkTimeout(gameId: MiReversiGame['id']) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
+		if (game.isEnded) return;
+
+		const engine = Reversi.Serializer.restoreGame({
+			map: game.map,
+			isLlotheo: game.isLlotheo,
+			canPutEverywhere: game.canPutEverywhere,
+			loopedBoard: game.loopedBoard,
+			logs: game.logs,
 		});
 
-		this.globalEventService.publishReversiGameStream(game.id, 'ended', {
-			winnerId: winnerId,
-			game: await this.reversiGameEntityService.packDetail(game.id, user),
+		if (engine.turn == null) return;
+
+		const timer = await this.redisClient.exists(`reversi:game:turnTimer:${game.id}:${engine.turn ? '1' : '0'}`);
+
+		if (timer === 0) {
+			const winnerId = engine.turn ? (game.black === 1 ? game.user2Id : game.user1Id) : (game.black === 1 ? game.user1Id : game.user2Id);
+
+			await this.endGame(game, winnerId, 'timeout');
+		}
+	}
+
+	@bindThis
+	public async cancelGame(gameId: MiReversiGame['id'], user: MiUser) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
+		if (game.isStarted) return;
+		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
+
+		await this.reversiGamesRepository.delete(game.id);
+		this.deleteGameCache(game.id);
+
+		this.globalEventService.publishReversiGameStream(game.id, 'canceled', {
+			userId: user.id,
 		});
 	}
 
 	@bindThis
-	public async get(id: MiReversiGame['id']) {
-		return this.reversiGamesRepository.findOneBy({ id });
+	public async get(id: MiReversiGame['id']): Promise<MiReversiGame | null> {
+		const cached = await this.redisClient.get(`reversi:game:cache:${id}`);
+		if (cached != null) {
+			// TODO: この辺りのデシリアライズ処理をどこか別のサービスに切り出したい
+			const parsed = JSON.parse(cached) as Serialized<MiReversiGame>;
+			return {
+				...parsed,
+				startedAt: parsed.startedAt != null ? new Date(parsed.startedAt) : null,
+				endedAt: parsed.endedAt != null ? new Date(parsed.endedAt) : null,
+				user1: parsed.user1 != null ? {
+					...parsed.user1,
+					avatar: null,
+					banner: null,
+					updatedAt: parsed.user1.updatedAt != null ? new Date(parsed.user1.updatedAt) : null,
+					lastActiveDate: parsed.user1.lastActiveDate != null ? new Date(parsed.user1.lastActiveDate) : null,
+					lastFetchedAt: parsed.user1.lastFetchedAt != null ? new Date(parsed.user1.lastFetchedAt) : null,
+					movedAt: parsed.user1.movedAt != null ? new Date(parsed.user1.movedAt) : null,
+				} : null,
+				user2: parsed.user2 != null ? {
+					...parsed.user2,
+					avatar: null,
+					banner: null,
+					updatedAt: parsed.user2.updatedAt != null ? new Date(parsed.user2.updatedAt) : null,
+					lastActiveDate: parsed.user2.lastActiveDate != null ? new Date(parsed.user2.lastActiveDate) : null,
+					lastFetchedAt: parsed.user2.lastFetchedAt != null ? new Date(parsed.user2.lastFetchedAt) : null,
+					movedAt: parsed.user2.movedAt != null ? new Date(parsed.user2.movedAt) : null,
+				} : null,
+			};
+		} else {
+			const game = await this.reversiGamesRepository.findOne({
+				where: { id },
+				relations: ['user1', 'user2'],
+			});
+			if (game == null) return null;
+
+			this.cacheGame(game);
+
+			return game;
+		}
+	}
+
+	@bindThis
+	public async checkCrc(gameId: MiReversiGame['id'], crc32: string | number) {
+		const game = await this.get(gameId);
+		if (game == null) throw new Error('game not found');
+
+		if (crc32.toString() !== game.crc32) {
+			return game;
+		} else {
+			return null;
+		}
 	}
 
 	@bindThis

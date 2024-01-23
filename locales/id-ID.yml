@@ -125,9 +125,12 @@ emojiPicker: "Emoji Picker"
 pinnedEmojisForReactionSettingDescription: "Atur sematan emoji pada reaksi"
 pinnedEmojisSettingDescription: "Atur sematan emoji pada masukan emoji"
 emojiPickerDisplay: "Tampilan Emoji Picker"
+overwriteFromPinnedEmojisForReaction: "Timpa dari pengaturan reaksi"
+overwriteFromPinnedEmojis: "Timpa dari pengaturan umum"
 reactionSettingDescription2: "Geser untuk memindah urutan emoji, klik untuk menghapus, tekan \"+\" untuk menambahkan"
 rememberNoteVisibility: "Ingat pengaturan visibilitas catatan"
 attachCancel: "Hapus lampiran"
+deleteFile: "Berkas dihapus"
 markAsSensitive: "Tandai sebagai konten sensitif"
 unmarkAsSensitive: "Hapus tanda konten sensitif"
 enterFileName: "Masukkan nama berkas"
@@ -377,6 +380,9 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Nyalakan hCaptcha"
 hcaptchaSiteKey: "Site Key"
 hcaptchaSecretKey: "Secret Key"
+mcaptcha: "mCaptcha"
+mcaptchaSiteKey: "Site key"
+mcaptchaSecretKey: "Secret Key"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Nyalakan reCAPTCHA"
 recaptchaSiteKey: "Site key"
@@ -667,6 +673,7 @@ useGlobalSettingDesc: "Jika dinyalakan, setelan notifikasi akun kamu akan diguna
 other: "Lainnya"
 regenerateLoginToken: "Perbarui token login"
 regenerateLoginTokenDescription: "Perbarui token yang digunakan secara internal saat login. Normalnya aksi ini tidak diperlukan. Jika diperbarui, semua perangkat akan dilogout."
+theKeywordWhenSearchingForCustomEmoji: "Kata kunci ini digunakan untuk mencari emoji kustom yang dicari."
 setMultipleBySeparatingWithSpace: "Kamu dapat menyetel banyak dengan memisahkannya menggunakan spasi."
 fileIdOrUrl: "File-ID atau URL"
 behavior: "Perilaku"
@@ -879,6 +886,8 @@ makeReactionsPublicDescription: "Pengaturan ini akan membuat daftar dari semua r
 classic: "Klasik"
 muteThread: "Bisukan thread"
 unmuteThread: "Suarakan thread"
+followingVisibility: "Visibilitas mengikuti"
+followersVisibility: "Visibilitas pengikut"
 continueThread: "Lihat lanjutan thread"
 deleteAccountConfirm: "Akun akan dihapus. Apakah kamu yakin?"
 incorrectPassword: "Kata sandi salah."
@@ -1174,7 +1183,17 @@ doReaction: "Tambahkan reaksi"
 code: "Kode"
 reloadRequiredToApplySettings: "Muat ulang diperlukan untuk menerapkan pengaturan."
 remainingN: "Sisa : {n}"
+overwriteContentConfirm: "Apakah kamu yakin untuk menimpa konten saat ini?"
+seasonalScreenEffect: "Efek layar musiman"
 decorate: "Dekor"
+addMfmFunction: "Tambahkan dekorasi"
+enableQuickAddMfmFunction: "Tampilkan pemilih MFM tingkat lanjut"
+bubbleGame: "Bubble Game"
+sfx: "Efek Suara"
+lastNDays: "{n} hari terakhir"
+backToTitle: "Ke Judul"
+_bubbleGame:
+  howToPlay: "Cara bermain"
 _announcement:
   forExistingUsers: "Hanya pengguna yang telah ada"
   forExistingUsersDescription: "Pengumuman ini akan dimunculkan ke pengguna yang sudah ada dari titik waktu publikasi jika dinyalakan. Apabila dimatikan, mereka yang baru mendaftar setelah publikasi ini akan juga melihatnya."
@@ -1184,7 +1203,10 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Terlalu banyak pengumuman dapat memperburuk pengalaman pengguna. Mohon pertimbangkan untuk mengarsipkan pengumuman yang sudah usang/tidak relevan."
   readConfirmTitle: "Tandai telah dibaca?"
   readConfirmText: "Aksi ini akan menandai konten dari \"{title}\" telah dibaca."
+  shouldNotBeUsedToPresentPermanentInfo: "Karena dapat berdampak pada pengalaman pengguna untuk pengguna baru, sangat direkomendasikan untuk menggunakan notifikasi secara mengalir daripada tetap."
+  dialogAnnouncementUxWarn: "Memiliki dua atau lebih gaya dialog notifikasi secara bersamaan dapat berdampak signifikan pada pengalaman pengguna, mohon untuk menggunakannya dengan hati-hati."
   silence: "Tiada notifikasi"
+  silenceDescription: "Apabila diaktifkan, notifikasi dari pengumuman ini akan dilewatkan dan pengguna tidak perlu membacanya."
 _initialAccountSetting:
   accountCreated: "Akun kamu telah sukses dibuat!"
   letsStartAccountSetup: "Untuk pemula, ayo atur profilmu dulu."
@@ -1197,6 +1219,7 @@ _initialAccountSetting:
   pushNotificationDescription: "Menyalakan notifikasi dorong akan membuatmu menerima notifikasi dari {name} secara langsung ke perangkatmu."
   initialAccountSettingCompleted: "Pengaturan profil selesai!"
   haveFun: "Selamat menikmati, {name}!"
+  youCanContinueTutorial: "Kamu dapat menjutkan ke tutorial dalam bagaimana menggunakan {name} (Misskey) atau kamu dapat keluar dari pemasangan ini dan langsung menggunakannya segera."
   startTutorial: "Mulai Tutorial"
   skipAreYouSure: "Yakin melewati atur profil?"
   laterAreYouSure: "Yakin banget untuk atur profil nanti?"
@@ -1210,6 +1233,10 @@ _initialTutorial:
     description: "Di sini kamu dapat mempelajari dasar-dasar dari penggunaan Misskey dan fitur-fiturnya."
   _note:
     title: "Apa itu Catatan?"
+    description: "Postingan di Misskey disebut sebagai 'Catatan'. Catatan ditampilkan secara kronologis pada lini masa dan dimutakhirkan secara real-time."
+    reply: "Klik pada tombol ini untuk membalas ke sebuah pesan. Bisa juga untuk membalas ke sebuah balasan dan melanjutkannya seperti percakapan selayaknya utas."
+    renote: "Kamu dapat membagikan catatan ke lini masa milikmu. Kamu juga dapat mengutipnya dengan komentarmu."
+    reaction: "Kamu dapat menambahkan reaksi ke Catatan. Detil lebih lanjut akan dijelaskan di halaman berikutnya."
   _reaction:
     title: "Apa itu Reaksi?"
   _timeline:
@@ -1774,6 +1801,14 @@ _sfx:
   notification: "Notifikasi"
   antenna: "Penerimaan Antenna"
   channel: "Notifikasi Kanal"
+  reaction: "Ketika memilih reaksi"
+_soundSettings:
+  driveFile: "Menggunakan berkas audio dalam Drive"
+  driveFileWarn: "Pilih berkas audio dari Drive"
+  driveFileTypeWarn: "Berkas ini tidak didukung"
+  driveFileTypeWarnDescription: "Pilih berkas audio"
+  driveFileDurationWarn: "Audio ini terlalu panjang"
+  driveFileDurationWarnDescription: "Audio panjang dapat mengganggu penggunaan Misskey. Masih ingin melanjutkan?"
 _ago:
   future: "Masa depan"
   justNow: "Baru saja"
@@ -1785,6 +1820,14 @@ _ago:
   monthsAgo: "{n} bulan lalu"
   yearsAgo: "{n} tahun lalu"
   invalid: "Tidak ada sama sekali disini"
+_timeIn:
+  seconds: "dalam {n} detik"
+  minutes: "dalam {n} menit"
+  hours: "dalam {n} jam"
+  days: "dalam {n} hari"
+  weeks: "dalam {n} minggu"
+  months: "dalam {n} bulan"
+  years: "dalam {n} tahun"
 _time:
   second: "detik"
   minute: "menit"
@@ -1972,9 +2015,11 @@ _profile:
   changeAvatar: "Ubah avatar"
   changeBanner: "Ubah header"
   verifiedLinkDescription: "Dengan memasukkan URL yang mengandung tautan ke profil kamu di sini, ikon verifikasi kepemilikan dapat ditampilkan di sebelah kolom ini."
+  avatarDecorationMax: "Dapat ditambahkan hingga {max} dekorasi."
 _exportOrImport:
   allNotes: "Semua catatan"
   favoritedNotes: "Catatan favorit"
+  clips: "Klip"
   followingList: "Ikuti"
   muteList: "Bisukan"
   blockingList: "Blokir"
@@ -2093,12 +2138,16 @@ _notification:
   pollEnded: "Hasil Kuesioner telah keluar"
   newNote: "Catatan baru"
   unreadAntennaNote: "Antena {name}"
+  roleAssigned: "Peran Diberikan"
   emptyPushNotificationMessage: "Pembaruan notifikasi dorong"
   achievementEarned: "Pencapaian didapatkan"
   testNotification: "Tes notifikasi"
   checkNotificationBehavior: "Cek tampilan notifikasi"
   sendTestNotification: "Kirim tes notifikasi"
   notificationWillBeDisplayedLikeThis: "Notifikasi akan terlihat seperti ini"
+  reactedBySomeUsers: "{n} orang memberikan reaksi"
+  renotedBySomeUsers: "{n} orang telah merenote"
+  followedBySomeUsers: "{n} orang telah mengikuti"
   _types:
     all: "Semua"
     note: "Catatan baru"
@@ -2111,6 +2160,7 @@ _notification:
     pollEnded: "Jajak pendapat berakhir"
     receiveFollowRequest: "Permintaan mengikuti diterima"
     followRequestAccepted: "Permintaan mengikuti disetujui"
+    roleAssigned: "Peran Diberikan"
     achievementEarned: "Pencapaian didapatkan"
     app: "Notifikasi dari aplikasi tertaut"
   _actions:
@@ -2202,6 +2252,11 @@ _moderationLogTypes:
   createAd: "Iklan telah dibuat"
   deleteAd: "Iklan telah dihapus"
   updateAd: "Iklan telah diperbaharui"
+  createAvatarDecoration: "Buat dekorasi avatar"
+  updateAvatarDecoration: "Perbarui dekorasi avatar"
+  deleteAvatarDecoration: "Hapus dekorasi avatar"
+  unsetUserAvatar: "Hapus avatar pengguna"
+  unsetUserBanner: "Hapus banner pengguna"
 _fileViewer:
   title: "Rincian berkas"
   type: "Jenis berkas"
@@ -2210,3 +2265,60 @@ _fileViewer:
   uploadedAt: "Diunggah pada"
   attachedNotes: "Catatan yang dilampirkan"
   thisPageCanBeSeenFromTheAuthor: "Halaman ini hanya dapat dilihat oleh pengguna yang mengunggah bekas ini."
+_externalResourceInstaller:
+  title: "Pasang dari situs eksternal"
+  checkVendorBeforeInstall: "Pastikan sumber dari sumber daya ini terpercaya sebelum melakukan pemasangan."
+  _plugin:
+    title: "Apakah kamu ingin memasang plugin ini?"
+    metaTitle: "Informasi plugin"
+  _theme:
+    title: "Apakah kamu ingin memasang tema ini?"
+    metaTitle: "Informasi tema"
+  _meta:
+    base: "Skema warna dasar"
+  _vendorInfo:
+    title: "Informasi sumber"
+    endpoint: "Referensi Endpoint"
+    hashVerify: "Verifikasi hash"
+  _errors:
+    _invalidParams:
+      title: "Parameter tidak valid"
+      description: "Tidak cukup informasi untuk memuat data dari situs eksternal. Mohon konfirmasi kembali URL yang dimasukkan."
+    _resourceTypeNotSupported:
+      title: "Sumber daya eksternal ini tidak didukung"
+      description: "Tipe sumber daya eksternal ini tidak didukung. Mohon kontak administrator dari situs tersebut."
+    _failedToFetch:
+      title: "Gagal memuat data"
+      fetchErrorDescription: "Kesalahan terjadi ketika menghubungkan dengan situs eksternal. Jika percobaan kembali tidak dapat memperbaiki masalah ini, mohon hubungi administrator dari situs tersebut."
+      parseErrorDescription: "Kesalahan terjadi dalam memproses data yang dimuat dari situs eksternal. Mohon hubungi administrator dari situs tersebut."
+    _hashUnmatched:
+      title: "Verifikasi data gagal"
+      description: "Kesalahan terjadi dalam memverifikasi integritas data yang diambil. Sebagai pencegahan keamanan, pemasangan tidak dapat dilanjutkan. Mohon hubungi administrator dari situs tersebut."
+    _pluginParseFailed:
+      title: "Kesalahan AiScript"
+      description: "Data yang diminta telah diambil dengan sukses, namun kesalahan terjadi ketika AiScript melakukan parsing. Mohon hubungi pembuat plugin. Detil kesalahan dapat dilihat pada konsol Javascript."
+    _pluginInstallFailed:
+      title: "Pemasangan plugin gagal"
+      description: "Kesalahan terjadi ketika pemasangan plugin. Mohon coba lagi. Detil kesalahan dapat dilihat pada konsol Javascript."
+    _themeParseFailed:
+      title: "Parsing tema gagal"
+      description: "Data yang diminta telah diambil dengan sukses, namun kesalahan terjadi ketika tema melakukan parsing. Mohon hubungi pembuat tema. Detil kesalahan dapat dilihat pada konsol Javascript."
+    _themeInstallFailed:
+      title: "Pemasangan tema gagal"
+      description: "Kesalahan terjadi ketika pemasangan tema. Mohon coba lagi. Detil kesalahan dapat dilihat pada konsol Javascript."
+_dataSaver:
+  _media:
+    title: "Memuat media"
+    description: "Mencegah gambar/video dimuat secara otomatis. Menyembunyikan gambar/video dan akan dimuat ketika diketuk."
+  _avatar:
+    title: "Gambar avatar"
+    description: "Hentikan animasi gambar avatar. Gambar animasi dapat berukuran lebih besar dari gambar biasa, berpotensi pada pengurangan lalu lintas data lebih jauh."
+  _urlPreview:
+    title: "Gambar kecil URL pratinjau"
+    description: "Gambar kecil URL pratinjau tidak akan dimuat lagi."
+  _code:
+    title: "Penyorotan kode"
+    description: "Jika notasi penyorotan kode digunakan di MFM, dll. Fungsi tersebut tidak akan dimuat apabila tidak diketuk. Penyorotan sintaks membutuhkan pengunduhan berkas definisi penyorotan untuk setiap bahasa pemrograman. Oleh sebab itu, menonaktifkan pemuatan otomatis dari berkas ini dilakukan untuk mengurangi jumlah komunikasi data."
+_reversi:
+  total: "Jumlah"
+

@@ -62,12 +62,12 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 		if (t == null) return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
-	
+
 	const validColor = (c: string | null | undefined): string | null => {
 		if (c == null) return null;
 		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
 	};
-	
+
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
 
 	/**
@@ -118,7 +118,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'jelly': {

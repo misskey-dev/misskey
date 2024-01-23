@@ -43,7 +43,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.reversiGamesRepository.createQueryBuilder('game'), ps.sinceId, ps.untilId)
-				.andWhere('game.isStarted = TRUE');
+				.andWhere('game.isStarted = TRUE')
+				.innerJoinAndSelect('game.user1', 'user1')
+				.innerJoinAndSelect('game.user2', 'user2');
 
 			if (ps.my && me) {
 				query.andWhere(new Brackets(qb => {
@@ -55,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const games = await query.take(ps.limit).getMany();
 
-			return await this.reversiGameEntityService.packLiteMany(games, me);
+			return await this.reversiGameEntityService.packLiteMany(games);
 		});
 	}
 }
