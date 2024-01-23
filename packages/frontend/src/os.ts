@@ -603,23 +603,37 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 
 		const route = mainRouter.getCurrentPath().split('/');
-		if (route[1] === 'channels' && !props.channel) props = {
-			...props,
-			// 本当はチャンネル名や色もほしいけどどっからとってこよう
-			channel: {
-				id: route[2],
-			},
-		};
+		if (route[1] === 'channels' && !props.channel) {
+			misskeyApi('channels/show', {
+				channelId: route[2],
+			}).then(channel => {
+				props = {
+					...props,
+					channel: { ...channel },
+				};
+				return makePostFormPopup(props);
+			}).catch(err => {
+				console.error(err);
+				alert({
+					type: 'error',
+					text: err.message,
+				});
+			});
+		} else {
+			makePostFormPopup(props);
+		}
+	});
+}
 
-		let dispose;
-		popup(MkPostFormDialog, props, {
-			closed: () => {
-				resolve();
-				dispose();
-			},
-		}).then(res => {
-			dispose = res.dispose;
-		});
+function makePostFormPopup(props) {
+	let dispose;
+	popup(MkPostFormDialog, props, {
+		closed: () => {
+			resolve();
+			dispose();
+		},
+	}).then(res => {
+		dispose = res.dispose;
 	});
 }
 
