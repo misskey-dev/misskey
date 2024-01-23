@@ -122,7 +122,6 @@ async function start() {
 
 async function onGameEnd() {
 	gameStarted.value = false;
-	await refreshRanking();
 }
 
 definePageMetadata({
