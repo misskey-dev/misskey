@@ -368,6 +368,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Ativar hCaptcha"
 hcaptchaSiteKey: "Chave do sítio ‘web’"
 hcaptchaSecretKey: "Chave secreta"
+mcaptchaSiteKey: "Chave do sítio ‘web’"
+mcaptchaSecretKey: "Chave secreta"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Habilitar reCAPTCHA"
 recaptchaSiteKey: "Chave do sítio ‘web’"
@@ -1008,6 +1010,7 @@ replies: "Responder"
 renotes: "Repostar"
 keepScreenOn: "Manter a tela do dispositivo sempre ligada"
 flip: "Inversão"
+lastNDays: "Últimos {n} dias"
 _initialAccountSetting:
   followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _serverSettings:
@@ -1400,6 +1403,7 @@ _profile:
   username: "Nome de usuário"
 _exportOrImport:
   favoritedNotes: "Notas nos favoritos"
+  clips: "Clipe"
   followingList: "Seguindo"
   muteList: "Silenciar"
   blockingList: "Bloquear"
@@ -1494,3 +1498,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspender"
   resetPassword: "Redefinir senha"
+_reversi:
+  total: "Total"
+

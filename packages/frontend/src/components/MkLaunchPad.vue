@@ -138,7 +138,7 @@ function close() {
 				left: 32px;
 				color: var(--indicator);
 				font-size: 8px;
-				animation: blink 1s infinite;
+				animation: global-blink 1s infinite;
 
 				@media (max-width: 500px) {
 					top: 16px;

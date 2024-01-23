@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="600">
+<MkSpacer :contentMax="500">
 	<div :class="$style.root" class="_gaps">
 		<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
 			<span>({{ i18n.ts._reversi.black }})</span>
@@ -15,71 +15,74 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div style="overflow: clip; line-height: 28px;">
-			<div v-if="!iAmPlayer && !game.isEnded && turnUser" class="turn">
+			<div v-if="!iAmPlayer && !game.isEnded && turnUser">
 				<Mfm :key="'turn:' + turnUser.id" :text="i18n.tsx._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
 			</div>
-			<div v-if="(logPos !== game.logs.length) && turnUser" class="turn">
+			<div v-if="(logPos !== game.logs.length) && turnUser">
 				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
-			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn" class="turn1">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><soan v-if="opponentNotResponding" style="margin-left: 8px;">({{ i18n.ts.notResponding }})</soan></div>
-			<div v-if="iAmPlayer && !game.isEnded && isMyTurn" class="turn2" style="animation: tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</div>
-			<div v-if="game.isEnded && logPos == game.logs.length" class="result">
+			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: opTurnTimerRmain }) }})</span></div>
+			<div v-if="iAmPlayer && !game.isEnded && isMyTurn"><span style="display: inline-block; font-weight: bold; animation: global-tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</span><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: myTurnTimerRmain }) }})</span></div>
+			<div v-if="game.isEnded && logPos == game.logs.length">
 				<template v-if="game.winner">
 					<Mfm :key="'won'" :text="i18n.tsx._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
-					<span v-if="game.surrendered != null"> ({{ i18n.ts._reversi.surrendered }})</span>
+					<span v-if="game.surrenderedUserId != null"> ({{ i18n.ts._reversi.surrendered }})</span>
+					<span v-if="game.timeoutUserId != null"> ({{ i18n.ts._reversi.timeout }})</span>
 				</template>
 				<template v-else>{{ i18n.ts._reversi.drawn }}</template>
 			</div>
 		</div>
 
 		<div :class="$style.board">
-			<div v-if="showBoardLabels" :class="$style.labelsX">
-				<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
-			</div>
-			<div style="display: flex;">
-				<div v-if="showBoardLabels" :class="$style.labelsY">
-					<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+			<div :class="$style.boardInner">
+				<div v-if="showBoardLabels" :class="$style.labelsX">
+					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
-				<div :class="$style.boardCells" :style="cellsStyle">
-					<div
-						v-for="(stone, i) in engine.board"
-						:key="i"
-						v-tooltip="`${String.fromCharCode(65 + engine.posToXy(i)[0])}${engine.posToXy(i)[1] + 1}`"
-						:class="[$style.boardCell, {
-							[$style.boardCell_empty]: stone == null,
-							[$style.boardCell_none]: engine.map[i] === 'null',
-							[$style.boardCell_isEnded]: game.isEnded,
-							[$style.boardCell_myTurn]: !game.isEnded && isMyTurn,
-							[$style.boardCell_can]: turnUser ? engine.canPut(turnUser.id === blackUser.id, i) : null,
-							[$style.boardCell_prev]: engine.prevPos === i
-						}]"
-						@click="putStone(i)"
-					>
-						<Transition
-							:enterActiveClass="$style.transition_flip_enterActive"
-							:leaveActiveClass="$style.transition_flip_leaveActive"
-							:enterFromClass="$style.transition_flip_enterFrom"
-							:leaveToClass="$style.transition_flip_leaveTo"
-							mode="default"
+				<div style="display: flex;">
+					<div v-if="showBoardLabels" :class="$style.labelsY">
+						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+					</div>
+					<div :class="$style.boardCells" :style="cellsStyle">
+						<div
+							v-for="(stone, i) in engine.board"
+							:key="i"
+							v-tooltip="`${String.fromCharCode(65 + engine.posToXy(i)[0])}${engine.posToXy(i)[1] + 1}`"
+							:class="[$style.boardCell, {
+								[$style.boardCell_empty]: stone == null,
+								[$style.boardCell_none]: engine.map[i] === 'null',
+								[$style.boardCell_isEnded]: game.isEnded,
+								[$style.boardCell_myTurn]: !game.isEnded && isMyTurn,
+								[$style.boardCell_can]: turnUser ? engine.canPut(turnUser.id === blackUser.id, i) : null,
+								[$style.boardCell_prev]: engine.prevPos === i
+							}]"
+							@click="putStone(i)"
 						>
-							<template v-if="useAvatarAsStone">
-								<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
-								<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
-							</template>
-							<template v-else>
-								<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
-								<img v-else-if="stone === false" :class="$style.boardCellStone" src="/client-assets/reversi/stone_w.png"/>
-							</template>
-						</Transition>
+							<Transition
+								:enterActiveClass="$style.transition_flip_enterActive"
+								:leaveActiveClass="$style.transition_flip_leaveActive"
+								:enterFromClass="$style.transition_flip_enterFrom"
+								:leaveToClass="$style.transition_flip_leaveTo"
+								mode="default"
+							>
+								<template v-if="useAvatarAsStone">
+									<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
+									<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
+								</template>
+								<template v-else>
+									<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
+									<img v-else-if="stone === false" :class="$style.boardCellStone" src="/client-assets/reversi/stone_w.png"/>
+								</template>
+							</Transition>
+						</div>
+					</div>
+					<div v-if="showBoardLabels" :class="$style.labelsY">
+						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
 					</div>
 				</div>
-				<div v-if="showBoardLabels" :class="$style.labelsY">
-					<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+				<div v-if="showBoardLabels" :class="$style.labelsX">
+					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
-			</div>
-			<div v-if="showBoardLabels" :class="$style.labelsX">
-				<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 			</div>
 		</div>
 
@@ -154,12 +157,13 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
 import * as sound from '@/scripts/sound.js';
 import * as os from '@/os.js';
+import { confetti } from '@/scripts/confetti.js';
 
 const $i = signinRequired();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection: Misskey.ChannelConnection;
+	connection?: Misskey.ChannelConnection | null;
 }>();
 
 const showBoardLabels = ref<boolean>(false);
@@ -236,10 +240,10 @@ watch(logPos, (v) => {
 
 if (game.value.isStarted && !game.value.isEnded) {
 	useInterval(() => {
-		if (game.value.isEnded) return;
+		if (game.value.isEnded || props.connection == null) return;
 		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
 		if (_DEV_) console.log('crc32', crc32);
-		props.connection.send('heatbeat', {
+		props.connection.send('resync', {
 			crc32: crc32,
 		});
 	}, 10000, { immediate: false, afterMounted: true });
@@ -263,16 +267,40 @@ function putStone(pos) {
 	});
 
 	const id = Math.random().toString(36).slice(2);
-	props.connection.send('putStone', {
+	props.connection!.send('putStone', {
 		pos: pos,
 		id,
 	});
 	appliedOps.push(id);
 
+	myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+	opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+
 	checkEnd();
 }
 
-function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
+const myTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
+const opTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
+
+const TIMER_INTERVAL_SEC = 3;
+if (!props.game.isEnded) {
+	useInterval(() => {
+		if (myTurnTimerRmain.value > 0) {
+			myTurnTimerRmain.value = Math.max(0, myTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+		}
+		if (opTurnTimerRmain.value > 0) {
+			opTurnTimerRmain.value = Math.max(0, opTurnTimerRmain.value - TIMER_INTERVAL_SEC);
+		}
+
+		if (iAmPlayer.value) {
+			if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
+			props.connection!.send('claimTimeIsUp', {});
+			}
+		}
+	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
+}
+
+async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 	game.value.logs = Reversi.Serializer.serializeLogs([
 		...Reversi.Serializer.deserializeLogs(game.value.logs),
 		log,
@@ -283,13 +311,24 @@ function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 	if (log.id == null || !appliedOps.includes(log.id)) {
 		switch (log.operation) {
 			case 'put': {
-				engine.value.putStone(log.pos);
-				triggerRef(engine);
-
 				sound.playUrl('/client-assets/reversi/put.mp3', {
 					volume: 1,
 					playbackRate: 1,
 				});
+
+				if (log.player !== engine.value.turn) { // = desyncが発生している
+					const _game = await misskeyApi('reversi/show-game', {
+						gameId: props.game.id,
+					});
+					restoreGame(_game);
+					return;
+				}
+
+				engine.value.putStone(log.pos);
+				triggerRef(engine);
+
+				myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+				opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
 
 				checkEnd();
 				break;
@@ -303,6 +342,22 @@ function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 
 function onStreamEnded(x) {
 	game.value = deepClone(x.game);
+
+	if (game.value.winnerId === $i.id) {
+		confetti({
+			duration: 1000 * 3,
+		});
+
+		sound.playUrl('/client-assets/reversi/win.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
+	} else {
+		sound.playUrl('/client-assets/reversi/lose.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
+	}
 }
 
 function checkEnd() {
@@ -321,9 +376,7 @@ function checkEnd() {
 	}
 }
 
-function onStreamRescue(_game) {
-	console.log('rescue');
-
+function restoreGame(_game) {
 	game.value = deepClone(_game);
 
 	engine.value = Reversi.Serializer.restoreGame({
@@ -339,25 +392,10 @@ function onStreamRescue(_game) {
 	checkEnd();
 }
 
-const opponentLastHeatbeatedAt = ref<number>(Date.now());
-const opponentNotResponding = ref<boolean>(false);
+function onStreamResynced(_game) {
+	console.log('resynced');
 
-useInterval(() => {
-	if (game.value.isEnded) return;
-	if (!iAmPlayer.value) return;
-
-	if (Date.now() - opponentLastHeatbeatedAt.value > 20000) {
-		opponentNotResponding.value = true;
-	} else {
-		opponentNotResponding.value = false;
-	}
-}, 1000, { immediate: false, afterMounted: true });
-
-function onStreamHeatbeat({ userId }) {
-	if ($i.id === userId) return;
-
-	opponentNotResponding.value = false;
-	opponentLastHeatbeatedAt.value = Date.now();
+	restoreGame(_game);
 }
 
 async function surrender() {
@@ -410,31 +448,35 @@ function share() {
 }
 
 onMounted(() => {
-	props.connection.on('log', onStreamLog);
-	props.connection.on('heatbeat', onStreamHeatbeat);
-	props.connection.on('rescue', onStreamRescue);
-	props.connection.on('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.on('log', onStreamLog);
+		props.connection.on('resynced', onStreamResynced);
+		props.connection.on('ended', onStreamEnded);
+	}
 });
 
 onActivated(() => {
-	props.connection.on('log', onStreamLog);
-	props.connection.on('heatbeat', onStreamHeatbeat);
-	props.connection.on('rescue', onStreamRescue);
-	props.connection.on('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.on('log', onStreamLog);
+		props.connection.on('resynced', onStreamResynced);
+		props.connection.on('ended', onStreamEnded);
+	}
 });
 
 onDeactivated(() => {
-	props.connection.off('log', onStreamLog);
-	props.connection.off('heatbeat', onStreamHeatbeat);
-	props.connection.off('rescue', onStreamRescue);
-	props.connection.off('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.off('log', onStreamLog);
+		props.connection.off('resynced', onStreamResynced);
+		props.connection.off('ended', onStreamEnded);
+	}
 });
 
 onUnmounted(() => {
-	props.connection.off('log', onStreamLog);
-	props.connection.off('heatbeat', onStreamHeatbeat);
-	props.connection.off('rescue', onStreamRescue);
-	props.connection.off('ended', onStreamEnded);
+	if (props.connection != null) {
+		props.connection.off('log', onStreamLog);
+		props.connection.off('resynced', onStreamResynced);
+		props.connection.off('ended', onStreamEnded);
+	}
 });
 </script>
 
@@ -464,8 +506,27 @@ $gap: 4px;
 
 .board {
 	width: 100%;
-	max-width: 500px;
+	box-sizing: border-box;
 	margin: 0 auto;
+
+	padding: 7px;
+	background: #8C4F26;
+	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
+	border-radius: 12px;
+}
+
+.boardInner {
+	padding: 32px;
+
+	background: var(--panel);
+	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
+	border-radius: 8px;
+}
+
+@container (max-width: 400px) {
+	.boardInner {
+		padding: 16px;
+	}
 }
 
 .labelsX {

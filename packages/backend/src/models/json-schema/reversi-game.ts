@@ -21,27 +21,16 @@ export const packedReversiGameLiteSchema = {
 			optional: false, nullable: true,
 			format: 'date-time',
 		},
+		endedAt: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'date-time',
+		},
 		isStarted: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
 		isEnded: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		form1: {
-			type: 'any',
-			optional: false, nullable: true,
-		},
-		form2: {
-			type: 'any',
-			optional: false, nullable: true,
-		},
-		user1Ready: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		user2Ready: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
@@ -75,7 +64,12 @@ export const packedReversiGameLiteSchema = {
 			optional: false, nullable: true,
 			ref: 'User',
 		},
-		surrendered: {
+		surrenderedUserId: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'id',
+		},
+		timeoutUserId: {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'id',
@@ -98,6 +92,10 @@ export const packedReversiGameLiteSchema = {
 		},
 		loopedBoard: {
 			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		timeLimitForEachTurn: {
+			type: 'number',
 			optional: false, nullable: false,
 		},
 	},
@@ -121,6 +119,11 @@ export const packedReversiGameDetailedSchema = {
 			optional: false, nullable: true,
 			format: 'date-time',
 		},
+		endedAt: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'date-time',
+		},
 		isStarted: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -130,11 +133,11 @@ export const packedReversiGameDetailedSchema = {
 			optional: false, nullable: false,
 		},
 		form1: {
-			type: 'any',
+			type: 'object',
 			optional: false, nullable: true,
 		},
 		form2: {
-			type: 'any',
+			type: 'object',
 			optional: false, nullable: true,
 		},
 		user1Ready: {
@@ -175,7 +178,12 @@ export const packedReversiGameDetailedSchema = {
 			optional: false, nullable: true,
 			ref: 'User',
 		},
-		surrendered: {
+		surrenderedUserId: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'id',
+		},
+		timeoutUserId: {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'id',
@@ -198,6 +206,10 @@ export const packedReversiGameDetailedSchema = {
 		},
 		loopedBoard: {
 			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		timeLimitForEachTurn: {
+			type: 'number',
 			optional: false, nullable: false,
 		},
 		logs: {

@@ -181,15 +181,15 @@ export interface ReversiGameEventTypes {
 		value: any;
 	};
 	log: Reversi.Serializer.Log & { id: string | null };
-	heatbeat: {
-		userId: MiUser['id'];
-	};
 	started: {
 		game: Packed<'ReversiGameDetailed'>;
 	};
 	ended: {
 		winnerId: MiUser['id'] | null;
 		game: Packed<'ReversiGameDetailed'>;
+	};
+	canceled: {
+		userId: MiUser['id'];
 	};
 }
 //#endregion
