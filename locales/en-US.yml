@@ -1620,6 +1620,8 @@ _role:
     canCreateContent: "Can create contents"
     canUpdateContent: "Can edit contents"
     canDeleteContent: "Can delete contents"
+    canUpdateAvatar: "Can change avatar"
+    canUpdateBanner: "Can change banner"
     canInvite: "Can create instance invite codes"
     inviteLimit: "Invite limit"
     inviteLimitCycle: "Invite limit cooldown"

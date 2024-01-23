@@ -6457,6 +6457,14 @@ export interface Locale extends ILocale {
              */
             "canDeleteContent": string;
             /**
+             * アイコンの変更
+             */
+            "canUpdateAvatar": string;
+            /**
+             * バナーの変更
+             */
+            "canUpdateBanner": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;

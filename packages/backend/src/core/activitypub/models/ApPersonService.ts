@@ -20,6 +20,7 @@ import type Logger from '@/logger.js';
 import type { MiNote } from '@/models/Note.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MfmService } from '@/core/MfmService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { toArray } from '@/misc/prelude/array.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -75,6 +76,7 @@ export class ApPersonService implements OnModuleInit {
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
+	private roleService: RoleService;
 	private logger: Logger;
 
 	constructor(
@@ -123,6 +125,7 @@ export class ApPersonService implements OnModuleInit {
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
+		this.roleService = this.moduleRef.get('RoleService');
 		this.logger = this.apLoggerService.logger;
 	}
 
@@ -462,6 +465,8 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('unexpected schema of person url: ' + url);
 		}
 
+		const policy = await this.roleService.getUserPolicies(exist.id);
+
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
@@ -477,7 +482,7 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
-			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
+			...((policy.canUpdateAvatar || policy.canUpdateBanner) ? await this.resolveAvatarAndBanner(exist, policy.canUpdateAvatar ? person.icon : exist.avatarUrl, policy.canUpdateBanner ? person.image : exist.bannerUrl).catch(() => ({})) : {}),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
 		const moving = ((): boolean => {

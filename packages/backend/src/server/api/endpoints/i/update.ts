@@ -233,6 +233,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const updates = {} as Partial<MiUser>;
 			const profileUpdates = {} as Partial<MiUserProfile>;
+			const policy = await this.roleService.getUserPolicies(user.id);
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
@@ -245,7 +246,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.followersVisibility !== undefined) profileUpdates.followersVisibility = ps.followersVisibility;
 			if (ps.mutedWords !== undefined) {
 				const length = ps.mutedWords.length;
-				if (length > (await this.roleService.getUserPolicies(user.id)).wordMuteLimit) {
+				if (length > policy.wordMuteLimit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}
 
@@ -279,13 +280,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 			if (typeof ps.alwaysMarkNsfw === 'boolean') {
-				if ((await roleService.getUserPolicies(user.id)).alwaysMarkNsfw) throw new ApiError(meta.errors.restrictedByRole);
+				if (policy.alwaysMarkNsfw) throw new ApiError(meta.errors.restrictedByRole);
 				profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 			}
 			if (typeof ps.autoSensitive === 'boolean') profileUpdates.autoSensitive = ps.autoSensitive;
 			if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 			if (ps.avatarId) {
+				if (!policy.canUpdateAvatar) throw new ApiError(meta.errors.restrictedByRole);
 				const avatar = await this.driveFilesRepository.findOneBy({ id: ps.avatarId });
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
@@ -301,6 +303,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.bannerId) {
+				if (!policy.canUpdateBanner) throw new ApiError(meta.errors.restrictedByRole);
 				const banner = await this.driveFilesRepository.findOneBy({ id: ps.bannerId });
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
@@ -317,13 +320,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.avatarDecorations) {
 				const decorations = await this.avatarDecorationService.getAll(true);
-				const [myRoles, myPolicies] = await Promise.all([this.roleService.getUserRoles(user.id), this.roleService.getUserPolicies(user.id)]);
+				const myRoles = await this.roleService.getUserRoles(user.id);
 				const allRoles = await this.roleService.getRoles();
 				const decorationIds = decorations
 					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
 					.map(d => d.id);
 
-				if (ps.avatarDecorations.length > myPolicies.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
+				if (ps.avatarDecorations.length > policy.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
 
 				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
 					id: d.id,
