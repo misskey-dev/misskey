@@ -438,7 +438,7 @@ function show() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: flash.value.title }),
+		text: i18n.tsx.deleteAreYouSure({ x: flash.value.title }),
 	});
 	if (canceled) return;
 

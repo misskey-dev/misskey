@@ -165,10 +165,17 @@ export class EmailService {
 			email: emailAddress,
 		});
 
+		if (exist !== 0) {
+			return {
+				available: false,
+				reason: 'used',
+			};
+		}
+
 		let validated: {
 			valid: boolean,
 			reason?: string | null,
-		};
+		} = { valid: true, reason: null };
 
 		if (meta.enableActiveEmailValidation) {
 			if (meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
@@ -185,27 +192,37 @@ export class EmailService {
 					validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
 				});
 			}
-		} else {
-			validated = { valid: true, reason: null };
+		}
+
+		if (!validated.valid) {
+			const formatReason: Record<string, 'format' | 'disposable' | 'mx' | 'smtp' | 'network' | 'blacklist' | undefined> = {
+				regex: 'format',
+				disposable: 'disposable',
+				mx: 'mx',
+				smtp: 'smtp',
+				network: 'network',
+				blacklist: 'blacklist',
+			};
+
+			return {
+				available: false,
+				reason: validated.reason ? formatReason[validated.reason] ?? null : null,
+			};
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
 		const isBanned = this.utilityService.isBlockedHost(meta.bannedEmailDomains, emailDomain);
 
-		const available = exist === 0 && validated.valid && !isBanned;
+		if (isBanned) {
+			return {
+				available: false,
+				reason: 'banned',
+			};
+		}
 
 		return {
-			available,
-			reason: available ? null :
-			exist !== 0 ? 'used' :
-			isBanned ? 'banned' :
-			validated.reason === 'regex' ? 'format' :
-			validated.reason === 'disposable' ? 'disposable' :
-			validated.reason === 'mx' ? 'mx' :
-			validated.reason === 'smtp' ? 'smtp' :
-			validated.reason === 'network' ? 'network' :
-			validated.reason === 'blacklist' ? 'blacklist' :
-			null,
+			available: true,
+			reason: null,
 		};
 	}
 
@@ -222,7 +239,8 @@ export class EmailService {
 			},
 		});
 
-		const json = (await res.json()) as {
+		const json = (await res.json()) as Partial<{
+			message: string;
 			block: boolean;
 			catch_all: boolean;
 			deliverable_email: boolean;
@@ -237,8 +255,15 @@ export class EmailService {
 			mx_priority: { [key: string]: number };
 			privacy: boolean;
 			related_domains: string[];
-		};
+		}>;
 
+		/* api error: when there is only one `message` attribute in the returned result */
+		if (Object.keys(json).length === 1 && Reflect.has(json, 'message')) {
+			return {
+				valid: false,
+				reason: null,
+			};
+		}
 		if (json.email_address === undefined) {
 			return {
 				valid: false,
@@ -281,25 +306,26 @@ export class EmailService {
 				headers: {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
-					Authorization: truemailAuthKey
+					Authorization: truemailAuthKey,
 				},
 			});
-			
+
 			const json = (await res.json()) as {
 				email: string;
 				success: boolean;
-				errors?: { 
+				error?: string;
+				errors?: {
 					list_match?: string;
 					regex?: string;
 					mx?: string;
 					smtp?: string;
 				} | null;
 			};
-			
-			if (json.email === undefined || (json.email !== undefined && json.errors?.regex)) {
+
+			if (json.email === undefined || json.errors?.regex) {
 				return {
-						valid: false,
-						reason: 'format',
+					valid: false,
+					reason: 'format',
 				};
 			}
 			if (json.errors?.smtp) {
@@ -320,7 +346,7 @@ export class EmailService {
 					reason: json.errors?.list_match as T || 'blacklist',
 				};
 			}
-			
+
 			return {
 				valid: true,
 				reason: null,

@@ -366,6 +366,12 @@ import * as ep___fetchExternalResources from './endpoints/fetch-external-resourc
 import * as ep___retention from './endpoints/retention.js';
 import * as ep___bubbleGame_register from './endpoints/bubble-game/register.js';
 import * as ep___bubbleGame_ranking from './endpoints/bubble-game/ranking.js';
+import * as ep___reversi_cancelMatch from './endpoints/reversi/cancel-match.js';
+import * as ep___reversi_games from './endpoints/reversi/games.js';
+import * as ep___reversi_match from './endpoints/reversi/match.js';
+import * as ep___reversi_invitations from './endpoints/reversi/invitations.js';
+import * as ep___reversi_showGame from './endpoints/reversi/show-game.js';
+import * as ep___reversi_surrender from './endpoints/reversi/surrender.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -730,6 +736,12 @@ const $fetchExternalResources: Provider = { provide: 'ep:fetch-external-resource
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 const $bubbleGame_register: Provider = { provide: 'ep:bubble-game/register', useClass: ep___bubbleGame_register.default };
 const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useClass: ep___bubbleGame_ranking.default };
+const $reversi_cancelMatch: Provider = { provide: 'ep:reversi/cancel-match', useClass: ep___reversi_cancelMatch.default };
+const $reversi_games: Provider = { provide: 'ep:reversi/games', useClass: ep___reversi_games.default };
+const $reversi_match: Provider = { provide: 'ep:reversi/match', useClass: ep___reversi_match.default };
+const $reversi_invitations: Provider = { provide: 'ep:reversi/invitations', useClass: ep___reversi_invitations.default };
+const $reversi_showGame: Provider = { provide: 'ep:reversi/show-game', useClass: ep___reversi_showGame.default };
+const $reversi_surrender: Provider = { provide: 'ep:reversi/surrender', useClass: ep___reversi_surrender.default };
 
 @Module({
 	imports: [
@@ -1098,6 +1110,12 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$retention,
 		$bubbleGame_register,
 		$bubbleGame_ranking,
+		$reversi_cancelMatch,
+		$reversi_games,
+		$reversi_match,
+		$reversi_invitations,
+		$reversi_showGame,
+		$reversi_surrender,
 	],
 	exports: [
 		$admin_meta,
@@ -1457,6 +1475,12 @@ const $bubbleGame_ranking: Provider = { provide: 'ep:bubble-game/ranking', useCl
 		$retention,
 		$bubbleGame_register,
 		$bubbleGame_ranking,
+		$reversi_cancelMatch,
+		$reversi_games,
+		$reversi_match,
+		$reversi_invitations,
+		$reversi_showGame,
+		$reversi_surrender,
 	],
 })
 export class EndpointsModule {}

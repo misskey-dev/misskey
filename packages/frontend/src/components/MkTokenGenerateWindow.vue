@@ -33,12 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
 			<div class="_gaps_s">
-				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind]">{{ i18n.t(`_permissions.${kind}`) }}</MkSwitch>
+				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind]">{{ i18n.ts._permissions[kind] }}</MkSwitch>
 			</div>
 			<div v-if="iAmAdmin" :class="$style.adminPermissions">
 				<div :class="$style.adminPermissionsHeader"><b>{{ i18n.ts.adminPermission }}</b></div>
 				<div class="_gaps_s">
-					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind]">{{ i18n.t(`_permissions.${kind}`) }}</MkSwitch>
+					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind]">{{ i18n.ts._permissions[kind] }}</MkSwitch>
 				</div>
 			</div>
 		</div>

@@ -71,27 +71,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div class="_gaps_m">
 						<span>{{ i18n.ts.activeEmailValidationDescription }}</span>
-						<MkSwitch v-model="enableActiveEmailValidation" @update:modelValue="save">
+						<MkSwitch v-model="enableActiveEmailValidation">
 							<template #label>Enable</template>
 						</MkSwitch>
-						<MkSwitch v-model="enableVerifymailApi" @update:modelValue="save">
+						<MkSwitch v-model="enableVerifymailApi">
 							<template #label>Use Verifymail.io API</template>
 						</MkSwitch>
-						<MkInput v-model="verifymailAuthKey" @update:modelValue="save">
+						<MkInput v-model="verifymailAuthKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Verifymail.io API Auth Key</template>
 						</MkInput>
-						<MkSwitch v-model="enableTruemailApi" @update:modelValue="save">
+						<MkSwitch v-model="enableTruemailApi">
 							<template #label>Use TrueMail API</template>
 						</MkSwitch>
-						<MkInput v-model="truemailInstance" @update:modelValue="save">
+						<MkInput v-model="truemailInstance">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>TrueMail API Instance</template>
 						</MkInput>
-						<MkInput v-model="truemailAuthKey" @update:modelValue="save">
+						<MkInput v-model="truemailAuthKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>TrueMail API Auth Key</template>
 						</MkInput>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 
@@ -192,7 +193,10 @@ async function init() {
 	enableActiveEmailValidation.value = meta.enableActiveEmailValidation;
 	enableVerifymailApi.value = meta.enableVerifymailApi;
 	verifymailAuthKey.value = meta.verifymailAuthKey;
-	bannedEmailDomains.value = meta.bannedEmailDomains.join('\n');
+	enableTruemailApi.value = meta.enableTruemailApi;
+	truemailInstance.value = meta.truemailInstance;
+	truemailAuthKey.value = meta.truemailAuthKey;
+	bannedEmailDomains.value = meta.bannedEmailDomains?.join('\n') || "";
 }
 
 function save() {
