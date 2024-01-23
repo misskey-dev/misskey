@@ -2473,7 +2473,7 @@ _reversi:
   turnCount: "{count} 回合"
   myGames: "我的對弈"
   allGames: "所有對弈"
-  ended: ""
+  ended: "已結束"
   playing: "正在對弈"
   isLlotheo: "子較少的一方為勝（顛倒規則）"
   loopedMap: "循環棋盤"
