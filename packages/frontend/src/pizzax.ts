@@ -7,7 +7,7 @@
 
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
-import { defu } from 'defu';
+import defaultsDeep from 'lodash.defaultsdeep';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { get, set } from '@/scripts/idb-proxy.js';
@@ -87,8 +87,9 @@ export class Storage<T extends StateDef> {
 
 	private mergeState<T>(value: T, def: T): T {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def);
-			return defu(value, def) as T;
+			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', defaultsDeep(value, def));
+
+			return defaultsDeep(value, def) as T;
 		}
 		return value;
 	}
