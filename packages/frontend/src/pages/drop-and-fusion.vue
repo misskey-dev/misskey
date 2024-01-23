@@ -17,7 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps">
 				<div :class="$style.frame" style="text-align: center;">
 					<div :class="$style.frameInner">
-						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+						<img
+							src="/client-assets/drop-and-fusion/logo.png"
+							style="display: block; max-width: 100%; max-height: 200px; margin: auto;"
+						/>
 					</div>
 				</div>
 				<div :class="$style.frame" style="text-align: center;">
@@ -94,7 +97,7 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 
 const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
 const gameStarted = ref(false);
@@ -103,8 +106,10 @@ const ranking = ref<Misskey.entities.BubbleGameRankingResponse>();
 
 watch(gameMode, async () => refreshRanking(), { immediate: true });
 
-async function refreshRanking() {
-	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });
+async function refreshRanking(immediate = false) {
+	ranking.value = immediate
+		? await misskeyApi('bubble-game/ranking', { gameMode: gameMode.value })
+		: await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });
 }
 
 function getScoreUnit(gameMode: string) {
@@ -113,7 +118,7 @@ function getScoreUnit(gameMode: string) {
 		gameMode === 'yen' ? '円' :
 		gameMode === 'sweets' ? 'kcal' :
 		gameMode === 'space' ? 'pt' :
-		'' as never;
+						'' as never;
 }
 
 async function start() {
@@ -122,6 +127,7 @@ async function start() {
 
 async function onGameEnd() {
 	gameStarted.value = false;
+	await refreshRanking(true);
 }
 
 definePageMetadata({
@@ -134,8 +140,9 @@ definePageMetadata({
 .transition_zoom_move,
 .transition_zoom_enterActive,
 .transition_zoom_leaveActive {
-	transition: opacity 0.5s cubic-bezier(0,.5,.5,1), transform 0.5s cubic-bezier(0,.5,.5,1) !important;
+	transition: opacity 0.5s cubic-bezier(0, .5, .5, 1), transform 0.5s cubic-bezier(0, .5, .5, 1) !important;
 }
+
 .transition_zoom_enterFrom,
 .transition_zoom_leaveTo {
 	opacity: 0;

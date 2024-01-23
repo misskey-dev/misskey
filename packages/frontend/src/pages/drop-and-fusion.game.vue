@@ -149,6 +149,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
 							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
 						</MkRange>
+						<MkSelect :modelValue="rankingVisibility" @update:modelValue="(v) => updateSettings('rankingVisibility', v as BubbleGameRankingVisibility)">
+							<template #label>ランキング登録</template>
+							<option value="public">常にする</option>
+							<option value="private">常にしない</option>
+							<option value="ask">毎回確認する</option>
+						</MkSelect>
 					</div>
 				</div>
 			</div>
@@ -188,7 +194,7 @@ import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
+import { BubbleGameRankingVisibility, defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
@@ -197,6 +203,7 @@ import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import MkSelect from '@/components/MkSelect.vue';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -573,6 +580,7 @@ const replayPlaybackRate = ref(1);
 const currentFrame = ref(0);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
+const rankingVisibility = ref(defaultStore.state.dropAndFusion.rankingVisibility);
 
 watch(replayPlaybackRate, (newValue) => {
 	game.replayPlaybackRate = newValue;
@@ -1096,12 +1104,23 @@ function attachGameEvents() {
 		dropReady.value = false;
 		isGameOver.value = true;
 
-		const registerScore = await os.confirm({
-			type: 'question',
-			text: i18n.ts._bubbleGame.askRanking,
-			okText: i18n.ts.yes,
-			cancelText: i18n.ts.no,
-		});
+		let isRankigPrivate: boolean;
+		switch (rankingVisibility.value) {
+			case 'public':
+				isRankigPrivate = false;
+				break;
+			case 'private':
+				isRankigPrivate = true;
+				break;
+			default:
+				isRankigPrivate = (await os.confirm({
+					type: 'question',
+					text: i18n.ts._bubbleGame.askRanking,
+					okText: i18n.ts.yes,
+					cancelText: i18n.ts.no,
+				})).canceled;
+				break;
+		}
 
 		await misskeyApi('bubble-game/register', {
 			seed,
@@ -1109,7 +1128,7 @@ function attachGameEvents() {
 			gameMode: props.gameMode,
 			gameVersion: game.GAME_VERSION,
 			logs: DropAndFusionGame.serializeLogs(logs),
-			isPrivate: registerScore.canceled,
+			isPrivate: isRankigPrivate,
 		});
 
 		if (props.gameMode === 'yen') {

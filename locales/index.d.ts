@@ -4859,6 +4859,9 @@ export interface Locale extends ILocale {
              */
             "section3": string;
         };
+        /**
+         * ランキングに名前を載せますか？
+         */
         "askRanking": string;
     };
     "_announcement": {

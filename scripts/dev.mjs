@@ -40,7 +40,7 @@ await execa('pnpm', ['--filter', 'misskey-reversi', 'build'], {
 	stderr: process.stderr,
 });
 
-await execa('pnpm', ['--filter', 'misskey-bubble-game', 'build'], {
+await execa('pnpm', ['--filter', 'misskey-bubble-game', 'build:tsc'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
