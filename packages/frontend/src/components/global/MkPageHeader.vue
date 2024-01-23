@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft"/>
 
 		<template v-if="metadata">
-			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
+			<div v-if="!hideTitle && !hide" :class="$style.titleContainer" @click="top">
 				<div v-if="metadata.avatar" :class="$style.titleAvatarContainer">
 					<MkAvatar :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
 				</div>
@@ -56,6 +56,7 @@ const props = withDefaults(defineProps<{
 	actions?: PageHeaderItem[] | null;
 	thin?: boolean;
 	displayMyAvatar?: boolean;
+    hide?:boolean;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -143,7 +144,7 @@ onUnmounted(() => {
 }
 
 .upper {
-	--height: 50px;
+	--height: 55px;
 	display: flex;
 	gap: var(--margin);
 	height: var(--height);

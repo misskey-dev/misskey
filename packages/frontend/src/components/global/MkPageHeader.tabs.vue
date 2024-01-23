@@ -53,7 +53,7 @@ export type Tab = {
 </script>
 
 <script lang="ts" setup>
-import {onMounted, onUnmounted, watch, nextTick, shallowRef, ref, computed} from 'vue';
+import { onMounted, onUnmounted, watch, nextTick, shallowRef, ref, computed } from 'vue';
 import { defaultStore } from '@/store.js';
 
 const gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
@@ -232,6 +232,7 @@ onUnmounted(() => {
 
 .tabIcon + .tabTitle {
 	padding-left: 4px;
+	font-weight: 900;
 }
 
 .tabTitle {

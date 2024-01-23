@@ -253,10 +253,10 @@ const headerActions = computed(() => {
 						disabled: onlyFiles } : undefined, {
 						type: 'switch',
 						text: i18n.ts.withSensitive,
-					ref: withSensitive,
-				}, {
-					type: 'switch',
-					text: i18n.ts.fileAttachedOnly,
+						ref: withSensitive,
+					}, {
+						type: 'switch',
+						text: i18n.ts.fileAttachedOnly,
 
 						ref: onlyFiles,
 						disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
@@ -280,27 +280,27 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	key: 'list:' + l.id,
 	title: l.name,
 	icon: 'ti ti-star',
-	iconOnly: true,
+	iconOnly: false,
 }))), {
 	key: 'home',
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',
-	iconOnly: true,
+	iconOnly: false,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
-	iconOnly: true,
+	iconOnly: false,
 }, ...(isShowMediaTimeline.value ? [{
 	key: 'media',
 	title: i18n.ts._timelines.media,
 	icon: 'ti ti-photo',
-	iconOnly: true,
+	iconOnly: false,
 }] : []), {
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-universe',
-	iconOnly: true,
+	iconOnly: false,
 }] : []), ...(remoteLocalTimelineEnable1.value ? [{
 	key: 'custom-timeline-1',
 	title: defaultStore.state.remoteLocalTimelineName1,
@@ -330,7 +330,7 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	key: 'global',
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-whirl',
-	iconOnly: true,
+	iconOnly: false,
 }] : []), {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,

@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XNavFolder
 				:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
 				:parentFolder="folder"
-        :selectedFiles="selectedFiles"
+				:selectedFiles="selectedFiles"
 				@move="move"
 				@upload="upload"
 				@removeFile="removeFile"
@@ -35,9 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
 		<button v-if="!multiple" class="_button" :class="$style.navMenu" @click="filesSelect">複数選択モード</button>
-    <span   v-if="multiple && selectedFiles.length > 0"   style="padding-right: 12px; margin-top: auto; margin-bottom: auto;opacity: 0.5;">
-      ({{ number(selectedFiles.length) }})
-    </span>
+		<span v-if="multiple && selectedFiles.length > 0" style="padding-right: 12px; margin-top: auto; margin-bottom: auto;opacity: 0.5;">
+			({{ number(selectedFiles.length) }})
+		</span>
 		<button v-if="multiple" class="_button" :class="$style.navMenu" @click="filesSelect">複数選択モード解除</button>
 		<button v-if="multiple && selectedFiles.length === 0" style="padding-right: 12px;" class="_button" @click="filesAllSelect">
 			全選択
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
-          :selectedFiles="selectedFiles"
+					:selectedFiles="selectedFiles"
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:selectMode="select === 'file'"
 					:SelectFiles="selectedFiles"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
-          @click.shift.left.exact="filesSelect"
+					@click.shift.left.exact="filesSelect"
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
@@ -133,7 +133,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile, uploads } from '@/scripts/upload.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import number from "@/filters/number.js";
+import number from '@/filters/number.js';
 
 const props = withDefaults(defineProps<{
   initialFolder?: Misskey.entities.DriveFolder;
@@ -525,7 +525,7 @@ function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
 	files.value = files.value.filter(f => f.id !== fileId);
-  selectedFiles.value = selectedFiles.value.filter(f => f.id !== fileId);
+	selectedFiles.value = selectedFiles.value.filter(f => f.id !== fileId);
 }
 
 function appendFile(file: Misskey.entities.DriveFile) {
@@ -834,6 +834,7 @@ onBeforeUnmount(() => {
   font-size: 0.9em;
   box-shadow: 0 1px 0 var(--divider);
   user-select: none;
+  height: 55px;
 }
 
 .navPath {
@@ -841,6 +842,7 @@ onBeforeUnmount(() => {
   vertical-align: bottom;
   line-height: 42px;
   white-space: nowrap;
+  margin: auto 0;
 }
 
 .navPathItem {
