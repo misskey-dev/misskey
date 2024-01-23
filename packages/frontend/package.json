@@ -41,7 +41,6 @@
 		"chartjs-plugin-zoom": "2.0.1",
 		"chromatic": "10.3.1",
 		"compare-versions": "6.1.0",
-		"crc-32": "^1.2.2",
 		"cropperjs": "2.0.0-beta.4",
 		"date-fns": "2.30.0",
 		"defu": "^6.1.4",

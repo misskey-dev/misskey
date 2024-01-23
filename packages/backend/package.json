@@ -107,7 +107,6 @@
 		"cli-highlight": "2.1.11",
 		"color-convert": "2.0.1",
 		"content-disposition": "0.5.4",
-		"crc-32": "^1.2.2",
 		"date-fns": "2.30.0",
 		"deep-email-validator": "0.1.21",
 		"fastify": "4.25.2",

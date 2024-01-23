@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import CRC32 from 'crc-32';
 import { ModuleRef } from '@nestjs/core';
 import * as Reversi from 'misskey-reversi';
 import { IsNull } from 'typeorm';
@@ -255,7 +254,13 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			bw = parseInt(game.bw, 10);
 		}
 
-		const crc32 = CRC32.str(JSON.stringify(game.logs)).toString();
+		const engine = new Reversi.Game(game.map, {
+			isLlotheo: game.isLlotheo,
+			canPutEverywhere: game.canPutEverywhere,
+			loopedBoard: game.loopedBoard,
+		});
+
+		const crc32 = engine.calcCrc32().toString();
 
 		const updatedGame = await this.reversiGamesRepository.createQueryBuilder().update()
 			.set({
@@ -276,12 +281,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		this.cacheGame(updatedGame);
 
 		//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
-		const engine = new Reversi.Game(updatedGame.map, {
-			isLlotheo: updatedGame.isLlotheo,
-			canPutEverywhere: updatedGame.canPutEverywhere,
-			loopedBoard: updatedGame.loopedBoard,
-		});
-
 		if (engine.isEnded) {
 			let winnerId;
 			if (engine.winner === true) {
@@ -406,7 +405,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		const serializeLogs = Reversi.Serializer.serializeLogs(logs);
 
-		const crc32 = CRC32.str(JSON.stringify(serializeLogs)).toString();
+		const crc32 = engine.calcCrc32().toString();
 
 		const updatedGame = {
 			...game,
@@ -536,7 +535,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (game == null) throw new Error('game not found');
 
 		if (crc32.toString() !== game.crc32) {
-			return await this.reversiGameEntityService.packDetail(game);
+			return game;
 		} else {
 			return null;
 		}

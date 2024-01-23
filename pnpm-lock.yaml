@@ -185,9 +185,6 @@ importers:
       content-disposition:
         specifier: 0.5.4
         version: 0.5.4
-      crc-32:
-        specifier: ^1.2.2
-        version: 1.2.2
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -742,9 +739,6 @@ importers:
       compare-versions:
         specifier: 6.1.0
         version: 6.1.0
-      crc-32:
-        specifier: ^1.2.2
-        version: 1.2.2
       cropperjs:
         specifier: 2.0.0-beta.4
         version: 2.0.0-beta.4
@@ -1177,11 +1171,14 @@ importers:
 
   packages/misskey-reversi:
     dependencies:
+      crc-32:
+        specifier: 1.2.2
+        version: 1.2.2
       esbuild:
         specifier: 0.19.11
         version: 0.19.11
       glob:
-        specifier: ^10.3.10
+        specifier: 10.3.10
         version: 10.3.10
     devDependencies:
       '@misskey-dev/eslint-plugin':
