@@ -185,9 +185,6 @@ importers:
       content-disposition:
         specifier: 0.5.4
         version: 0.5.4
-      crc-32:
-        specifier: ^1.2.2
-        version: 1.2.2
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -742,9 +739,6 @@ importers:
       compare-versions:
         specifier: 6.1.0
         version: 6.1.0
-      crc-32:
-        specifier: ^1.2.2
-        version: 1.2.2
       cropperjs:
         specifier: 2.0.0-beta.4
         version: 2.0.0-beta.4
@@ -1031,15 +1025,15 @@ importers:
 
   packages/misskey-bubble-game:
     dependencies:
-      '@types/matter-js':
-        specifier: 0.19.6
-        version: 0.19.6
-      '@types/seedrandom':
-        specifier: 3.0.8
-        version: 3.0.8
+      esbuild:
+        specifier: 0.19.11
+        version: 0.19.11
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
+      glob:
+        specifier: ^10.3.10
+        version: 10.3.10
       matter-js:
         specifier: 0.19.0
         version: 0.19.0
@@ -1050,9 +1044,15 @@ importers:
       '@misskey-dev/eslint-plugin':
         specifier: 1.0.0
         version: 1.0.0(@typescript-eslint/eslint-plugin@6.18.1)(@typescript-eslint/parser@6.18.1)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
+      '@types/matter-js':
+        specifier: 0.19.6
+        version: 0.19.6
       '@types/node':
         specifier: 20.11.5
         version: 20.11.5
+      '@types/seedrandom':
+        specifier: 3.0.8
+        version: 3.0.8
       '@typescript-eslint/eslint-plugin':
         specifier: 6.18.1
         version: 6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)
@@ -1170,6 +1170,16 @@ importers:
         version: 5.3.3
 
   packages/misskey-reversi:
+    dependencies:
+      crc-32:
+        specifier: 1.2.2
+        version: 1.2.2
+      esbuild:
+        specifier: 0.19.11
+        version: 0.19.11
+      glob:
+        specifier: 10.3.10
+        version: 10.3.10
     devDependencies:
       '@misskey-dev/eslint-plugin':
         specifier: 1.0.0
@@ -8107,6 +8117,7 @@ packages:
 
   /@types/matter-js@0.19.6:
     resolution: {integrity: sha512-ffk6tqJM5scla+ThXmnox+mdfCo3qYk6yMjQsNcrbo6eQ5DqorVdtnaL+1agCoYzxUjmHeiNB7poBMAmhuLY7w==}
+    dev: true
 
   /@types/mdx@2.0.3:
     resolution: {integrity: sha512-IgHxcT3RC8LzFLhKwP3gbMPeaK7BM9eBH46OdapPA7yvuIUJ8H6zHZV53J8hGZcTSnt95jANt+rTBNUUc22ACQ==}
@@ -8295,7 +8306,7 @@ packages:
 
   /@types/seedrandom@3.0.8:
     resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
-    dev: false
+    dev: true
 
   /@types/semver@7.5.6:
     resolution: {integrity: sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==}
@@ -9967,7 +9978,7 @@ packages:
       clone-response: 1.0.3
       get-stream: 5.2.0
       http-cache-semantics: 4.1.1
-      keyv: 4.5.2
+      keyv: 4.5.4
       lowercase-keys: 2.0.0
       normalize-url: 6.1.0
       responselike: 2.0.1
@@ -14646,12 +14657,6 @@ packages:
     dependencies:
       jwa: 2.0.0
       safe-buffer: 5.2.1
-    dev: false
-
-  /keyv@4.5.2:
-    resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
-    dependencies:
-      json-buffer: 3.0.1
     dev: false
 
   /keyv@4.5.4:

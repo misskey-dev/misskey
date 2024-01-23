@@ -13,11 +13,12 @@
 		}
 	},
 	"scripts": {
-		"build": "npm run ts",
-		"ts": "npm run ts-esm && npm run ts-dts",
-		"ts-esm": "tsc --outDir built/esm",
-		"ts-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
-		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build\"",
+		"build": "node ./build.js",
+		"build:tsc": "npm run tsc",
+		"tsc": "npm run tsc-esm && npm run tsc-dts",
+		"tsc-esm": "tsc --outDir built/esm",
+		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
+		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build:tsc\"",
 		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -35,5 +36,8 @@
 		"built"
 	],
 	"dependencies": {
+		"crc-32": "1.2.2",
+		"esbuild": "0.19.11",
+		"glob": "10.3.10"
 	}
 }
