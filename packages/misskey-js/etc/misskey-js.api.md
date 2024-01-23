@@ -1652,6 +1652,18 @@ declare namespace entities {
         BubbleGameRegisterResponse,
         BubbleGameRankingRequest,
         BubbleGameRankingResponse,
+        ReversiCancelMatchRequest,
+        ReversiCancelMatchResponse,
+        ReversiGamesRequest,
+        ReversiGamesResponse,
+        ReversiMatchRequest,
+        ReversiMatchResponse,
+        ReversiInvitationsResponse,
+        ReversiShowGameRequest,
+        ReversiShowGameResponse,
+        ReversiSurrenderRequest,
+        ReversiVerifyRequest,
+        ReversiVerifyResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -1694,6 +1706,8 @@ declare namespace entities {
         Signin,
         RoleLite,
         Role,
+        ReversiGameLite,
+        ReversiGameDetailed,
         AbuseUserReport
     }
 }
@@ -2642,6 +2656,48 @@ type ResetPasswordRequest = operations['reset-password']['requestBody']['content
 
 // @public (undocumented)
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
+
+// @public (undocumented)
+type ReversiGameLite = components['schemas']['ReversiGameLite'];
+
+// @public (undocumented)
+type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchResponse = operations['reversi/match']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Role = components['schemas']['Role'];

@@ -105,7 +105,7 @@ async function updateAgreeServerRules(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.serverRules }),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.serverRules }),
 		});
 		if (confirm.canceled) return;
 		agreeServerRules.value = true;
@@ -119,7 +119,7 @@ async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', {
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({
 				x: tosPrivacyPolicyLabel.value,
 			}),
 		});
@@ -135,7 +135,7 @@ async function updateAgreeNote(v: boolean) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts.doYouAgree,
-			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.basicNotesBeforeCreateAccount }),
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.basicNotesBeforeCreateAccount }),
 		});
 		if (confirm.canceled) return;
 		agreeNote.value = true;

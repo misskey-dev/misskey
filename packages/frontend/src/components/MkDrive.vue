@@ -82,8 +82,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" :class="$style.empty">
-				<div v-if="draghover">{{ i18n.t('empty-draghover') }}</div>
-				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</div>
+				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
+				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
 		</div>

@@ -145,7 +145,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	handler: async (): Promise<void> => {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.t('deleteAreYouSure', { x: clip.value.name }),
+			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),
 		});
 		if (canceled) return;
 

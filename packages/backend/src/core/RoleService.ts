@@ -185,10 +185,12 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				case 'userRoleAssigned': {
 					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
 					if (cached) {
-						cached.push({
+						cached.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 							...body,
 							createdAt: new Date(body.createdAt),
 							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
+							user: null, // joinなカラムは通常取ってこないので
+							role: null, // joinなカラムは通常取ってこないので
 						});
 					}
 					break;

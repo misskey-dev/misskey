@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-if="!muted"
+	v-if="muted === false"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else>
-								<b>{{ i18n.t('translatedFrom', { x: translation.sourceLang }) }}: </b>
+								<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
 								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
 							</div>
 						</div>
@@ -134,7 +134,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</article>
 </div>
 <div v-else :class="$style.muted" :style="hideMutedNotes ? 'display: none' : undefined" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+	</I18n>
+	<I18n v-else :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
@@ -196,6 +203,7 @@ const emit = defineEmits<{
 	(ev: 'removeReaction', emoji: string): void;
 }>();
 
+const inTimeline = inject<boolean>('inTimeline', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
@@ -250,12 +258,20 @@ const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.vi
 const renoteCollapsed = ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || (appearNote.value.myReaction != null)));
 const hideMutedNotes = defaultStore.state.hideMutedNotes;
 
-function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null): boolean {
+/* Overload FunctionにLintが対応していないのでコメントアウト
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
+*/
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' {
 	if (mutedWords == null) return false;
 
-	if (checkWordMute(note, $i, mutedWords)) return true;
-	if (note.reply && checkWordMute(note.reply, $i, mutedWords)) return true;
-	if (note.renote && checkWordMute(note.renote, $i, mutedWords)) return true;
+	if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
+	if (noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords)) return true;
+	if (noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords)) return true;
+
+	if (checkOnly) return false;
+
+	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
 	return false;
 }
 

@@ -319,7 +319,7 @@ const _sfc_main = defineComponent({
     function getDateText(time) {
       const date = new Date(time).getDate();
       const month = new Date(time).getMonth() + 1;
-      return i18n.t("monthAndDay", {
+      return i18n.tsx.monthAndDay({
         month: month.toString(),
         day: date.toString()
       });
@@ -490,7 +490,7 @@ const _sfc_main = defineComponent({
     function getDateText(time) {
       const date = new Date(time).getDate();
       const month = new Date(time).getMonth() + 1;
-      return i18n.t("monthAndDay", {
+      return i18n.tsx.monthAndDay({
         month: month.toString(),
         day: date.toString()
       });

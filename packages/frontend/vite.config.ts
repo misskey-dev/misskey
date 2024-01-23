@@ -103,11 +103,6 @@ export function getConfig(): UserConfig {
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
-		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
-		optimizeDeps: {
-			include: ['misskey-js'],
-		},
-
 		build: {
 			target: [
 				'chrome116',
@@ -138,7 +133,7 @@ export function getConfig(): UserConfig {
 
 			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 			commonjsOptions: {
-				include: [/misskey-js/, /node_modules/],
+				include: [/misskey-js/, /misskey-reversi/, /misskey-bubble-game/, /node_modules/],
 			},
 		},
 
@@ -158,6 +153,7 @@ export function getConfig(): UserConfig {
 					},
 				},
 			},
+			includeSource: ['src/**/*.ts'],
 		},
 	};
 }

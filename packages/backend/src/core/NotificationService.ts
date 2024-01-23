@@ -188,7 +188,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		sendEmail(userProfile.email, i18n.ts._email._follow.title, `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
 		*/
 	}
 
@@ -200,7 +200,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		sendEmail(userProfile.email, i18n.ts._email._receiveFollowRequest.title, `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
 		*/
 	}
 

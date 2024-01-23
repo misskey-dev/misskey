@@ -118,7 +118,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'jelly': {
