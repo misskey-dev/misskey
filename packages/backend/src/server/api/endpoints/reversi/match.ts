@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (game == null) return;
 
-			return await this.reversiGameEntityService.packDetail(game, me);
+			return await this.reversiGameEntityService.packDetail(game);
 		});
 	}
 }

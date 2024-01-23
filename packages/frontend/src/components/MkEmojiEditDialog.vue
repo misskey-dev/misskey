@@ -4,10 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModalWindow
-	ref="dialog"
-	:width="400"
-	@close="dialog.close()"
+<MkWindow
+	ref="windowEl"
+	:initialWidth="400"
+	:initialHeight="500"
+	:canResize="false"
+	@close="windowEl.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
@@ -81,14 +83,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-</MkModalWindow>
+</MkWindow>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { DriveFile } from 'misskey-js/built/entities.js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkWindow from '@/components/MkWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -106,18 +108,18 @@ const props = defineProps<{
   isRequest: boolean,
 }>();
 
-let dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
-let name = ref(props.emoji ? props.emoji.name : '');
-let category = ref(props.emoji ? props.emoji.category : '');
-let aliases = ref(props.emoji ? props.emoji.aliases.join(' ') : '');
-let license = ref(props.emoji ? (props.emoji.license ?? '') : '');
-let isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
-let localOnly = ref(props.emoji ? props.emoji.localOnly : false);
-let roleIdsThatCanBeUsedThisEmojiAsReaction = ref((props.emoji && props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction) ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
-let rolesThatCanBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
-let file = ref<Misskey.entities.DriveFile>();
+const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
+const name = ref<string>(props.emoji ? props.emoji.name : '');
+const category = ref<string>(props.emoji ? props.emoji.category : '');
+const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
+const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
+const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
+const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
+const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
+const rolesThatCanBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
+const file = ref<Misskey.entities.DriveFile>();
 let isRequest = ref(props.isRequest ?? false);
-watch((roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
+watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 const isNotifyIsHome = ref(props.emoji ? props.emoji.isNotifyIsHome : false);
@@ -190,7 +192,7 @@ async function done() {
 			},
 		});
 
-		dialog.value.close();
+		windowEl.value.close();
 	} else {
 		const created = isRequest.value
 			? await os.apiWithDialog('admin/emoji/add-request', params)
@@ -200,7 +202,7 @@ async function done() {
 			created: created,
 		});
 
-		dialog.value.close();
+		windowEl.value.close();
 	}
 }
 
@@ -217,7 +219,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.value.close();
+		windowEl.value.close();
 	});
 }
 </script>

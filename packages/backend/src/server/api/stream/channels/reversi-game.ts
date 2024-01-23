@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiReversiGame, ReversiGamesRepository } from '@/models/_.js';
+import type { MiReversiGame } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ReversiService } from '@/core/ReversiService.js';
@@ -19,7 +19,6 @@ class ReversiGameChannel extends Channel {
 
 	constructor(
 		private reversiService: ReversiService,
-		private reversiGamesRepository: ReversiGamesRepository,
 		private reversiGameEntityService: ReversiGameEntityService,
 
 		id: string,
@@ -42,7 +41,6 @@ class ReversiGameChannel extends Channel {
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'cancel': this.cancelGame(); break;
 			case 'putStone': this.putStone(body.pos, body.id); break;
-			case 'checkState': this.checkState(body.crc32); break;
 			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
 		}
 	}
@@ -76,16 +74,6 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async checkState(crc32: string | number) {
-		if (crc32 != null) return;
-
-		const game = await this.reversiService.checkCrc(this.gameId!, crc32);
-		if (game) {
-			this.send('rescue', game);
-		}
-	}
-
-	@bindThis
 	private async claimTimeIsUp() {
 		if (this.user == null) return;
 
@@ -106,9 +94,6 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 	public readonly kind = ReversiGameChannel.kind;
 
 	constructor(
-		@Inject(DI.reversiGamesRepository)
-		private reversiGamesRepository: ReversiGamesRepository,
-
 		private reversiService: ReversiService,
 		private reversiGameEntityService: ReversiGameEntityService,
 	) {
@@ -118,7 +103,6 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 	public create(id: string, connection: Channel['connection']): ReversiGameChannel {
 		return new ReversiGameChannel(
 			this.reversiService,
-			this.reversiGamesRepository,
 			this.reversiGameEntityService,
 			id,
 			connection,

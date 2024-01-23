@@ -518,7 +518,7 @@ onBeforeUnmount(() => {
 	right: 18px;
 	color: var(--indicator);
 	font-size: 8px;
-	animation: blink 1s infinite;
+	animation: global-blink 1s infinite;
 }
 
 .divider {
