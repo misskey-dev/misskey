@@ -43,7 +43,18 @@ export class GridItem {
 	}
 
 	static ofEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem {
-		return new GridItem(it.id, it.url, undefined, it.name, it.category ?? '', it.aliases.join(', '), it.license ?? '', it.isSensitive, it.localOnly, it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '));
+		return new GridItem(
+			it.id,
+			it.url,
+			undefined,
+			it.name,
+			it.category ?? '',
+			it.aliases.join(', '),
+			it.license ?? '',
+			it.isSensitive,
+			it.localOnly,
+			it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
+		);
 	}
 
 	public get edited(): boolean {
@@ -51,7 +62,7 @@ export class GridItem {
 		return JSON.stringify(_this) !== origin;
 	}
 
-	public asRecord(): Record<string, unknown> {
-		return this as Record<string, unknown>;
+	public asRecord(): Record<string, never> {
+		return this as Record<string, never>;
 	}
 }

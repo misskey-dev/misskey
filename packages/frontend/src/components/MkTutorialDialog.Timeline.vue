@@ -22,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<a href="https://misskey-hub.net/docs/for-users/features/timeline/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 		</template>
 	</I18n>
-
 </div>
 </template>
 
@@ -42,7 +41,7 @@ import { i18n } from '@/i18n.js';
 	background: var(--divider);
 }
 
-.image {
+.viewImage {
 	max-width: 300px;
 	margin: 0 auto;
 }

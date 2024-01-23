@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.3
- * generatedAt: 2024-01-23T01:22:13.093Z
+ * version: 2024.2.0-beta.4
+ * generatedAt: 2024-01-23T07:38:51.282Z
  */
 
 /**
@@ -19027,12 +19027,19 @@ export type operations = {
    * **Credential required**: *No*
    */
   emojis: {
+    requestBody: {
+      content: {
+        'application/json': {
+          detail?: boolean | null;
+        };
+      };
+    };
     responses: {
       /** @description OK (with results) */
       200: {
         content: {
           'application/json': {
-            emojis: components['schemas']['EmojiSimple'][];
+            emojis: (components['schemas']['EmojiSimple'] | components['schemas']['EmojiDetailed'])[];
           };
         };
       };
