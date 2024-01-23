@@ -746,9 +746,6 @@ importers:
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       escape-regexp:
         specifier: 0.0.1
         version: 0.0.1
@@ -770,6 +767,9 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
+      lodash.defaultsdeep:
+        specifier: 4.6.1
+        version: 4.6.1
       matter-js:
         specifier: 0.19.0
         version: 0.19.0
@@ -912,6 +912,9 @@ importers:
       '@types/estree':
         specifier: 1.0.5
         version: 1.0.5
+      '@types/lodash.defaultsdeep':
+        specifier: 4.6.9
+        version: 4.6.9
       '@types/matter-js':
         specifier: 0.19.6
         version: 0.19.6
@@ -7813,6 +7816,12 @@ packages:
       '@types/node': 20.11.5
     dev: false
 
+  /@types/lodash.defaultsdeep@4.6.9:
+    resolution: {integrity: sha512-pLtCFK0YkHfGtGLYLNMTbFB5/G5+RsmQCIbbHH8GOAXjv+gDkVilY98kILfe8JH2Kev0OCReYxp1AjxEjP8ixA==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
@@ -10589,6 +10598,7 @@ packages:
 
   /defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+    dev: true
 
   /del@6.1.1:
     resolution: {integrity: sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==}
@@ -14153,6 +14163,10 @@ packages:
 
   /lodash.defaults@4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
+    dev: false
+
+  /lodash.defaultsdeep@4.6.1:
+    resolution: {integrity: sha512-3j8wdDzYuWO3lM3Reg03MuQR957t287Rpcxp1njpEa8oDrikb+FwGdW3n+FELh/A6qib6yPit0j/pv9G/yeAqA==}
     dev: false
 
   /lodash.get@4.4.2:
