@@ -204,7 +204,7 @@ function updatePaginationQuery() {
 		query = {
 			withFiles: true,
 			withRenotes: props.withRenotes,
-			withReplies: props.withReplies,
+			withReplies: false,
 		};
 	} else if (props.src === 'mentions') {
 		endpoint = 'notes/mentions';
@@ -232,12 +232,12 @@ function updatePaginationQuery() {
 			roleId: props.role,
 		};
 	} else if (props.src.startsWith('custom-timeline')) {
-        endpoint = "notes/any-local-timeline";
-        query = {
-            host: defaultStore.state[`remoteLocalTimelineDomain${props.src.split("-")[2]}`],
-            remoteToken:defaultStore.state[`remoteLocalTimelineToken${props.src.split("-")[2]}`]
-        };
-    }else {
+		endpoint = 'notes/any-local-timeline';
+		query = {
+			host: defaultStore.state[`remoteLocalTimelineDomain${props.src.split('-')[2]}`],
+			remoteToken: defaultStore.state[`remoteLocalTimelineToken${props.src.split('-')[2]}`],
+		};
+	} else {
 		endpoint = null;
 		query = null;
 	}
