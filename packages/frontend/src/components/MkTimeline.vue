@@ -49,6 +49,7 @@ const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
 }>();
 
+provide('inTimeline', true);
 provide('inChannel', computed(() => props.src === 'channel'));
 
 type TimelineQueryType = {

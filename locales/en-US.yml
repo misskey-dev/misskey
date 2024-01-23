@@ -126,6 +126,7 @@ emojiPickerDisplay: "Emoji picker display"
 reactionSettingDescription2: "Drag to reorder, click to delete, press \"+\" to add."
 rememberNoteVisibility: "Remember note visibility settings"
 attachCancel: "Remove attachment"
+deleteFile: "File deleted"
 markAsSensitive: "Mark as sensitive"
 unmarkAsSensitive: "Unmark as sensitive"
 enterFileName: "Enter filename"
@@ -375,6 +376,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Enable hCaptcha"
 hcaptchaSiteKey: "Site key"
 hcaptchaSecretKey: "Secret key"
+mcaptchaSiteKey: "Site key"
+mcaptchaSecretKey: "Secret key"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Enable reCAPTCHA"
 recaptchaSiteKey: "Site key"
@@ -1173,6 +1176,10 @@ doReaction: "Add reaction"
 code: "Code"
 reloadRequiredToApplySettings: "Reloading is required to apply the settings."
 decorate: "Decorate"
+bubbleGame: "Bubble Game"
+sfx: "Sound Effects"
+replay: "Replay"
+lastNDays: "Last {n} days"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
@@ -1543,6 +1550,10 @@ _achievements:
     _tutorialCompleted:
       title: "Misskey Elementary Course Diploma"
       description: "Tutorial completed"
+    _bubbleGameExplodingHead:
+      title: "🤯"
+    _bubbleGameDoubleExplodingHead:
+      title: "Double🤯"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -2043,6 +2054,7 @@ _profile:
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"
+  clips: "Clip"
   followingList: "Followed users"
   muteList: "Muted users"
   blockingList: "Blocked users"
@@ -2340,3 +2352,6 @@ _dataSaver:
   _code:
     title: "Code highlighting"
     description: "If code highlighting notations are used in MFM, etc., they will not load until tapped. Syntax highlighting requires downloading the highlight definition files for each programming language. Therefore, disabling the automatic loading of these files is expected to reduce the amount of communication data."
+_reversi:
+  total: "Total"
+
