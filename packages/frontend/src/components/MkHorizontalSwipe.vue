@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="rootEl"
-	:class="[$style.transitionRoot]"
+	:class="[$style.transitionRoot, { [$style.enableAnimation]: defaultStore.state.animation }]"
 	@touchstart.passive="touchStart"
 	@touchmove.passive="touchMove"
 	@touchend.passive="touchEnd"
@@ -188,7 +188,9 @@ watch(tabModel, (newTab, oldTab) => {
 .transitionChildren {
 	grid-area: 1 / 1 / 2 / 2;
 	transform: translateX(var(--swipe));
+}
 
+.enableAnimation .transitionChildren {
 	&.swipeAnimation_enterActive,
 	&.swipeAnimation_leaveActive {
 		transition: transform .3s cubic-bezier(0.65, 0.05, 0.36, 1);
