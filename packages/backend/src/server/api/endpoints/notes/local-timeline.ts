@@ -18,6 +18,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ApiError } from '../../error.js';
+import { FanoutTimelineName } from "@/core/FanoutTimelineService.js";
 
 export const meta = {
 	tags: ['notes'],
@@ -37,12 +38,6 @@ export const meta = {
 			message: 'Local timeline has been disabled.',
 			code: 'LTL_DISABLED',
 			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd',
-		},
-
-		bothWithRepliesAndWithFiles: {
-			message: 'Specifying both withReplies and withFiles is not supported',
-			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
-			id: 'dd9c8400-1cb5-4eef-8a31-200c5f933793',
 		},
 	},
 } as const;
@@ -87,8 +82,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.ltlDisabled);
 			}
 
-			if (ps.withReplies && ps.withFiles) throw new ApiError(meta.errors.bothWithRepliesAndWithFiles);
-
 			const serverSettings = await this.metaService.fetch();
 
 			if (!serverSettings.enableFanoutTimeline) {
@@ -109,6 +102,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(timeline, me);
 			}
 
+			let timelineConfig: FanoutTimelineName[];
+			if (ps.withFiles) {
+				timelineConfig = ['localTimelineWithFiles'];
+			} else if (ps.withReplies) {
+				timelineConfig = ['localTimeline', 'localTimelineWithReplies'];
+			} else if (me) {
+				timelineConfig = ['localTimeline', `localTimelineWithReplyTo:${me.id}`];
+			} else {
+				timelineConfig = ['localTimeline'];
+			}
+
 			const timeline = await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
@@ -116,11 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				allowPartial: ps.allowPartial,
 				me,
 				useDbFallback: serverSettings.enableFanoutTimelineDbFallback,
-				redisTimelines:
-					ps.withFiles ? ['localTimelineWithFiles']
-					: ps.withReplies ? ['localTimeline', 'localTimelineWithReplies']
-					: me ? ['localTimeline', `localTimelineWithReplyTo:${me.id}`]
-					: ['localTimeline'],
+				redisTimelines: timelineConfig,
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({

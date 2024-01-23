@@ -19,7 +19,6 @@ class GlobalTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
-	private withReplies: boolean;
 	private withFiles: boolean;
 
 	constructor(
@@ -40,7 +39,6 @@ class GlobalTimelineChannel extends Channel {
 		if (!policies.gtlAvailable) return;
 
 		this.withRenotes = params.withRenotes ?? true;
-		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
 
 		// Subscribe events
@@ -60,7 +58,7 @@ class GlobalTimelineChannel extends Channel {
 		// 関係ない返信は除外
 		if (note.reply) {
 			const reply = note.reply;
-			if ((this.following[note.userId]?.withReplies ?? false) || this.withReplies) {
+			if ((this.following[note.userId]?.withReplies ?? false)) {
 				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
 				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
 				// 自分の見ることができないユーザーの visibility: specified な投稿への返信は弾く
