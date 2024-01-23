@@ -85,11 +85,11 @@ export class Storage<T extends StateDef> {
 		return typeof value === 'object' && value !== null && !Array.isArray(value);
 	}
 
-	private mergeState<T>(value: T, def: T): T {
+	private mergeState<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
 			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', defaultsDeep(value, def));
 
-			return defaultsDeep(value, def) as T;
+			return defaultsDeep(value, def) as X;
 		}
 		return value;
 	}
