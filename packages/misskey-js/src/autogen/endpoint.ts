@@ -561,6 +561,8 @@ import type {
 	ReversiShowGameRequest,
 	ReversiShowGameResponse,
 	ReversiSurrenderRequest,
+	ReversiVerifyRequest,
+	ReversiVerifyResponse,
 } from './entities.js';
 
 export type Endpoints = {
@@ -935,4 +937,5 @@ export type Endpoints = {
 	'reversi/invitations': { req: EmptyRequest; res: ReversiInvitationsResponse };
 	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
+	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
 }

@@ -563,3 +563,5 @@ export type ReversiInvitationsResponse = operations['reversi/invitations']['resp
 export type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
 export type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];
 export type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+export type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+export type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];
