@@ -1214,6 +1214,11 @@ _bubbleGame:
     section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
     section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
   askRanking: "ランキングに名前を載せますか？"
+  visibleRanking: "ランキングに表示"
+  _visibleRankingItem:
+    visible: "常にする"
+    invisible: "常にしない"
+    ask: "毎回確認する"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

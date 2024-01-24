@@ -149,11 +149,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
 							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
 						</MkRange>
-						<MkSelect :modelValue="rankingVisibility" @update:modelValue="(v) => updateSettings('rankingVisibility', v as BubbleGameRankingVisibility)">
-							<template #label>ランキング登録</template>
-							<option value="public">常にする</option>
-							<option value="private">常にしない</option>
-							<option value="ask">毎回確認する</option>
+						<MkSelect :modelValue="rankingVisibility" @update:modelValue="(v) => onRankingVisibleChanged(v as BubbleGameRankingVisibility)">
+							<template #label>{{ i18n.ts._bubbleGame.visibleRanking }}</template>
+							<option value="public">{{ i18n.ts._bubbleGame._visibleRankingItem.visible }}</option>
+							<option value="private">{{ i18n.ts._bubbleGame._visibleRankingItem.invisible }}</option>
+							<option value="ask">{{ i18n.ts._bubbleGame._visibleRankingItem.ask }}</option>
 						</MkSelect>
 					</div>
 				</div>
@@ -720,6 +720,11 @@ async function start() {
 			readyGo.value = null;
 		}, 1000);
 	}, 1500);
+}
+
+function onRankingVisibleChanged(v: BubbleGameRankingVisibility) {
+	rankingVisibility.value = v;
+	updateSettings('rankingVisibility', v);
 }
 
 function onClick(ev: MouseEvent) {
