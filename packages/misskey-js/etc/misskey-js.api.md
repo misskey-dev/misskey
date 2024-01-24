@@ -474,6 +474,18 @@ type BlockingListRequest = operations['blocking/list']['requestBody']['content']
 type BlockingListResponse = operations['blocking/list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRegisterResponse = operations['bubble-game/register']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type Channel = components['schemas']['Channel'];
 
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
@@ -1607,6 +1619,22 @@ declare namespace entities {
         FetchExternalResourcesRequest,
         FetchExternalResourcesResponse,
         RetentionResponse,
+        BubbleGameRegisterRequest,
+        BubbleGameRegisterResponse,
+        BubbleGameRankingRequest,
+        BubbleGameRankingResponse,
+        ReversiCancelMatchRequest,
+        ReversiCancelMatchResponse,
+        ReversiGamesRequest,
+        ReversiGamesResponse,
+        ReversiMatchRequest,
+        ReversiMatchResponse,
+        ReversiInvitationsResponse,
+        ReversiShowGameRequest,
+        ReversiShowGameResponse,
+        ReversiSurrenderRequest,
+        ReversiVerifyRequest,
+        ReversiVerifyResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -1643,7 +1671,9 @@ declare namespace entities {
         Flash,
         Signin,
         RoleLite,
-        Role
+        Role,
+        ReversiGameLite,
+        ReversiGameDetailed
     }
 }
 export { entities }
@@ -2579,6 +2609,48 @@ type ResetPasswordRequest = operations['reset-password']['requestBody']['content
 
 // @public (undocumented)
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
+
+// @public (undocumented)
+type ReversiGameLite = components['schemas']['ReversiGameLite'];
+
+// @public (undocumented)
+type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchResponse = operations['reversi/match']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Role = components['schemas']['Role'];

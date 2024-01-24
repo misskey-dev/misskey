@@ -277,7 +277,11 @@ export type Serialized<T> = {
 				? (string | null)
 				: T[K] extends Record<string, any>
 					? Serialized<T[K]>
-					: T[K];
+					: T[K] extends (Record<string, any> | null)
+					? (Serialized<T[K]> | null)
+						: T[K] extends (Record<string, any> | undefined)
+						? (Serialized<T[K]> | undefined)
+							: T[K];
 };
 
 export type FilterUnionByProperty<
