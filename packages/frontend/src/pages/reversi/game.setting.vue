@@ -81,16 +81,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-				<div style="text-align: center; margin-bottom: 10px;">
-					<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
-					<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
-					<template v-if="!isReady && isOpReady">{{ i18n.ts._reversi.waitingForMe }}</template>
-					<template v-if="!isReady && !isOpReady">{{ i18n.ts._reversi.waitingBoth }}<MkEllipsis/></template>
-				</div>
-				<div class="_buttonsCenter">
-					<MkButton rounded danger @click="cancel">{{ i18n.ts.cancel }}</MkButton>
-					<MkButton v-if="!isReady" rounded primary @click="ready">{{ i18n.ts._reversi.ready }}</MkButton>
-					<MkButton v-if="isReady" rounded @click="unready">{{ i18n.ts._reversi.cancelReady }}</MkButton>
+				<div style="text-align: center;" class="_gaps_s">
+					<div v-if="opponentHasSettingsChanged" style="color: var(--warn);">{{ i18n.ts._reversi.opponentHasSettingsChanged }}</div>
+					<div>
+						<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
+						<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
+						<template v-if="!isReady && isOpReady">{{ i18n.ts._reversi.waitingForMe }}</template>
+						<template v-if="!isReady && !isOpReady">{{ i18n.ts._reversi.waitingBoth }}<MkEllipsis/></template>
+					</div>
+					<div class="_buttonsCenter">
+						<MkButton rounded danger @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+						<MkButton v-if="!isReady" rounded primary @click="ready">{{ i18n.ts._reversi.ready }}</MkButton>
+						<MkButton v-if="isReady" rounded @click="unready">{{ i18n.ts._reversi.cancelReady }}</MkButton>
+					</div>
+					<div>
+						<MkSwitch v-model="shareWhenStart">{{ i18n.ts._reversi.shareToTlTheGameWhenStart }}</MkSwitch>
+					</div>
 				</div>
 			</MkSpacer>
 		</div>
@@ -124,6 +130,8 @@ const props = defineProps<{
 	connection: Misskey.ChannelConnection;
 }>();
 
+const shareWhenStart = defineModel<boolean>('shareWhenStart', { default: false });
+
 const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
 
 const mapName = computed(() => {
@@ -141,6 +149,8 @@ const isOpReady = computed(() => {
 	if (game.value.user2Id !== $i.id && game.value.user2Ready) return true;
 	return false;
 });
+
+const opponentHasSettingsChanged = ref(false);
 
 watch(() => game.value.bw, () => {
 	updateSettings('bw');
@@ -190,6 +200,7 @@ async function cancel() {
 
 function ready() {
 	props.connection.send('ready', true);
+	opponentHasSettingsChanged.value = false;
 }
 
 function unready() {
@@ -212,6 +223,10 @@ function onUpdateSettings({ userId, key, value }: { userId: string; key: keyof M
 	if (userId === $i.id) return;
 	if (game.value[key] === value) return;
 	game.value[key] = value;
+	if (isReady.value) {
+		opponentHasSettingsChanged.value = true;
+		unready();
+	}
 }
 
 function onMapCellClick(pos: number, pixel: string) {
