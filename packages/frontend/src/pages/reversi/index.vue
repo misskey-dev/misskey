@@ -230,6 +230,8 @@ onMounted(() => {
 	misskeyApi('reversi/invitations').then(_invitations => {
 		invitations.value = _invitations;
 	});
+
+	window.addEventListener('beforeunload', cancelMatching);
 });
 
 onDeactivated(() => {

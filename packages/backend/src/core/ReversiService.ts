@@ -24,7 +24,7 @@ import { Serialized } from '@/types.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
-const MATCHING_TIMEOUT_MS = 1000 * 20; // 20sec
+const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
 
 @Injectable()
 export class ReversiService implements OnApplicationShutdown, OnModuleInit {
@@ -112,7 +112,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		//#region 相手から既に招待されてないか確認
 		const invitations = await this.redisClient.zrange(
 			`reversi:matchSpecific:${me.id}`,
-			Date.now() - MATCHING_TIMEOUT_MS,
+			Date.now() - INVITATION_TIMEOUT_MS,
 			'+inf',
 			'BYSCORE');
 
@@ -157,7 +157,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		//#region まず自分宛ての招待を探す
 		const invitations = await this.redisClient.zrange(
 			`reversi:matchSpecific:${me.id}`,
-			Date.now() - MATCHING_TIMEOUT_MS,
+			Date.now() - INVITATION_TIMEOUT_MS,
 			'+inf',
 			'BYSCORE');
 
@@ -173,15 +173,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		const matchings = await this.redisClient.zrange(
 			'reversi:matchAny',
-			Date.now() - MATCHING_TIMEOUT_MS,
-			'+inf',
-			'BYSCORE');
+			0,
+			2, // 自分自身のIDが入っている場合もあるので2つ取得
+			'REV');
 
 		const userIds = matchings.filter(id => id !== me.id);
 
 		if (userIds.length > 0) {
-			// pick random
-			const matchedUserId = userIds[Math.floor(Math.random() * userIds.length)];
+			const matchedUserId = userIds[0];
 
 			await this.redisClient.zrem('reversi:matchAny', me.id, matchedUserId);
 
@@ -191,7 +190,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		} else {
 			const redisPipeline = this.redisClient.pipeline();
 			redisPipeline.zadd('reversi:matchAny', Date.now(), me.id);
-			redisPipeline.expire('reversi:matchAny', 120, 'NX');
+			redisPipeline.expire('reversi:matchAny', 15, 'NX');
 			await redisPipeline.exec();
 			return null;
 		}
@@ -380,7 +379,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	public async getInvitations(user: MiUser): Promise<MiUser['id'][]> {
 		const invitations = await this.redisClient.zrange(
 			`reversi:matchSpecific:${user.id}`,
-			Date.now() - MATCHING_TIMEOUT_MS,
+			Date.now() - INVITATION_TIMEOUT_MS,
 			'+inf',
 			'BYSCORE');
 		return invitations;
