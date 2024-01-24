@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="rootEl"
-	:class="[$style.transitionRoot, { [$style.enableAnimation]: defaultStore.state.animation }]"
+	:class="[$style.transitionRoot, { [$style.enableAnimation]: defaultStore.state.animation || defaultStore.state.enableHorizontalSwipe }]"
 	@touchstart.passive="touchStart"
 	@touchmove.passive="touchMove"
 	@touchend.passive="touchEnd"
