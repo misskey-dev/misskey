@@ -9583,6 +9583,18 @@ export interface Locale extends ILocale {
          * 対局がキャンセルされました
          */
         "gameCanceled": string;
+        /**
+         * 開始時に対局をタイムラインに投稿
+         */
+        "shareToTlTheGameWhenStart": string;
+        /**
+         * 対局を開始しました！ #MisskeyReversi
+         */
+        "iStartedAGame": string;
+        /**
+         * 相手が設定を変更しました
+         */
+        "opponentHasSettingsChanged": string;
     };
     "_offlineScreen": {
         /**

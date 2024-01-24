@@ -143,7 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
-import * as CRC32 from 'crc-32';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import MkButton from '@/components/MkButton.vue';
@@ -240,11 +239,17 @@ watch(logPos, (v) => {
 
 if (game.value.isStarted && !game.value.isEnded) {
 	useInterval(() => {
-		if (game.value.isEnded || props.connection == null) return;
-		const crc32 = CRC32.str(JSON.stringify(game.value.logs)).toString();
+		if (game.value.isEnded) return;
+		const crc32 = engine.value.calcCrc32();
 		if (_DEV_) console.log('crc32', crc32);
-		props.connection.send('resync', {
-			crc32: crc32,
+		misskeyApi('reversi/verify', {
+			gameId: game.value.id,
+			crc32: crc32.toString(),
+		}).then((res) => {
+			if (res.desynced) {
+				console.log('resynced');
+				restoreGame(res.game!);
+			}
 		});
 	}, 10000, { immediate: false, afterMounted: true });
 }
@@ -392,12 +397,6 @@ function restoreGame(_game) {
 	checkEnd();
 }
 
-function onStreamResynced(_game) {
-	console.log('resynced');
-
-	restoreGame(_game);
-}
-
 async function surrender() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
@@ -450,7 +449,6 @@ function share() {
 onMounted(() => {
 	if (props.connection != null) {
 		props.connection.on('log', onStreamLog);
-		props.connection.on('resynced', onStreamResynced);
 		props.connection.on('ended', onStreamEnded);
 	}
 });
@@ -458,7 +456,6 @@ onMounted(() => {
 onActivated(() => {
 	if (props.connection != null) {
 		props.connection.on('log', onStreamLog);
-		props.connection.on('resynced', onStreamResynced);
 		props.connection.on('ended', onStreamEnded);
 	}
 });
@@ -466,7 +463,6 @@ onActivated(() => {
 onDeactivated(() => {
 	if (props.connection != null) {
 		props.connection.off('log', onStreamLog);
-		props.connection.off('resynced', onStreamResynced);
 		props.connection.off('ended', onStreamEnded);
 	}
 });
@@ -474,7 +470,6 @@ onDeactivated(() => {
 onUnmounted(() => {
 	if (props.connection != null) {
 		props.connection.off('log', onStreamLog);
-		props.connection.off('resynced', onStreamResynced);
 		props.connection.off('ended', onStreamEnded);
 	}
 });
