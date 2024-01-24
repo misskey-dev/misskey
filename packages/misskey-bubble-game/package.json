@@ -15,7 +15,7 @@
 	"scripts": {
 		"build": "node ./build.js",
 		"build:tsc": "npm run tsc",
-		"tsc": "npm run ts-esm && npm run ts-dts",
+		"tsc": "npm run tsc-esm && npm run tsc-dts",
 		"tsc-esm": "tsc --outDir built/esm",
 		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
 		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build:tsc\"",
