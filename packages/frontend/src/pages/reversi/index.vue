@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span v-if="g.isStarted" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
 								<span v-else-if="!g.isEnded" :class="$style.gamePreviewStatusWaiting"><MkEllipsis/></span>
 								<span v-else>{{ i18n.ts._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span v-if="g.isStarted" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
 								<span v-else-if="!g.isEnded" :class="$style.gamePreviewStatusWaiting"><MkEllipsis/></span>
 								<span v-else>{{ i18n.ts._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
