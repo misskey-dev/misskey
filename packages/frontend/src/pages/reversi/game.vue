@@ -21,6 +21,7 @@ import { signinRequired } from '@/account.js';
 import { useRouter } from '@/global/router/supplier.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { useInterval } from '@/scripts/use-interval.js';
 
 const $i = signinRequired();
 
@@ -39,6 +40,8 @@ watch(() => props.gameId, () => {
 });
 
 function start(_game: Misskey.entities.ReversiGameDetailed) {
+	if (game.value?.isStarted) return;
+
 	if (shareWhenStart.value) {
 		misskeyApi('notes/create', {
 			text: i18n.ts._reversi.iStartedAGame + '\n' + location.href,
@@ -80,6 +83,25 @@ async function fetchGame() {
 		});
 	}
 }
+
+// 通信を取りこぼした場合の救済
+useInterval(async () => {
+	if (game.value == null) return;
+	if (game.value.isStarted) return;
+
+	const _game = await misskeyApi('reversi/show-game', {
+		gameId: props.gameId,
+	});
+
+	if (_game.isStarted) {
+		start(_game);
+	} else {
+		game.value = _game;
+	}
+}, 1000 * 10, {
+	immediate: false,
+	afterMounted: true,
+});
 
 onMounted(() => {
 	fetchGame();
