@@ -122,6 +122,8 @@ add: "Add"
 reaction: "Reactions"
 reactions: "Reactions"
 emojiPicker: "Emoji picker"
+pinnedEmojisForReactionSettingDescription: "Set the emojis which should be pinned and displayed immediately when reacting."
+pinnedEmojisSettingDescription: "Set the emojis to be pinned and displayed when viewing emoji picker"
 emojiPickerDisplay: "Emoji picker display"
 overwriteFromPinnedEmojisForReaction: "Override from reaction settings"
 overwriteFromPinnedEmojis: "Override from general settings"
@@ -1206,6 +1208,10 @@ userSaysSomethingSensitive: "Post by {name} contains sensitive content"
 enableHorizontalSwipe: "Swipe to switch tabs"
 _bubbleGame:
   howToPlay: "How to play"
+  _howToPlay:
+    section1: "Adjust the position and drop the object into the box."
+    section2: "When two objects of the same type touch each other, they will change into a different object and you score points."
+    section3: "The game is over when objects overflow from the box. Aim for a high score by fusing objects together while you avoid overflowing the box!"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
@@ -1578,8 +1584,11 @@ _achievements:
       description: "Tutorial completed"
     _bubbleGameExplodingHead:
       title: "🤯"
+      description: "The biggest object in the bubble game"
     _bubbleGameDoubleExplodingHead:
       title: "Double🤯"
+      description: "Two of the biggest objects in the bubble game at the same time"
+      flavor: "You can fill a lunch box like this 🤯 🤯 a bit."
 _role:
   new: "New role"
   edit: "Edit role"
