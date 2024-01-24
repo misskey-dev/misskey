@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="rootEl"
-	:class="[$style.transitionRoot]"
+	:class="[$style.transitionRoot, { [$style.enableAnimation]: shouldAnimate }]"
 	@touchstart.passive="touchStart"
 	@touchmove.passive="touchMove"
 	@touchend.passive="touchEnd"
@@ -43,6 +43,8 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'swiped', newKey: string, direction: 'left' | 'right'): void;
 }>();
+
+const shouldAnimate = computed(() => defaultStore.reactiveState.enableHorizontalSwipe.value || defaultStore.reactiveState.animation.value);
 
 // ▼ しきい値 ▼ //
 
@@ -188,7 +190,9 @@ watch(tabModel, (newTab, oldTab) => {
 .transitionChildren {
 	grid-area: 1 / 1 / 2 / 2;
 	transform: translateX(var(--swipe));
+}
 
+.enableAnimation .transitionChildren {
 	&.swipeAnimation_enterActive,
 	&.swipeAnimation_leaveActive {
 		transition: transform .3s cubic-bezier(0.65, 0.05, 0.36, 1);
