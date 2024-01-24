@@ -125,7 +125,10 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		}
 		//#endregion
 
-		this.redisClient.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), me.id);
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.zadd(`reversi:matchSpecific:${targetUser.id}`, Date.now(), me.id);
+		redisPipeline.expire(`reversi:matchSpecific:${targetUser.id}`, 120, 'NX');
+		redisPipeline.exec();
 
 		this.globalEventService.publishReversiStream(targetUser.id, 'invited', {
 			user: await this.userEntityService.pack(me, targetUser),
@@ -186,7 +189,10 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 			return game;
 		} else {
-			await this.redisClient.zadd('reversi:matchAny', Date.now(), me.id);
+			const redisPipeline = this.redisClient.pipeline();
+			redisPipeline.zadd('reversi:matchAny', Date.now(), me.id);
+			redisPipeline.expire('reversi:matchAny', 120, 'NX');
+			await redisPipeline.exec();
 			return null;
 		}
 	}
