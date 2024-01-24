@@ -43,7 +43,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.reversiGamesRepository.createQueryBuilder('game'), ps.sinceId, ps.untilId)
-				.andWhere('game.isStarted = TRUE')
 				.innerJoinAndSelect('game.user1', 'user1')
 				.innerJoinAndSelect('game.user2', 'user2');
 
@@ -53,6 +52,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.where('game.user1Id = :userId', { userId: me.id })
 						.orWhere('game.user2Id = :userId', { userId: me.id });
 				}));
+			} else {
+				query.andWhere('game.isStarted = TRUE');
 			}
 
 			const games = await query.take(ps.limit).getMany();
