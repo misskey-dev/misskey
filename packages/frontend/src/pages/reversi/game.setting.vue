@@ -12,69 +12,74 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps" :class="{ [$style.disallowInner]: isReady }">
 				<div style="font-size: 1.5em; text-align: center;">{{ i18n.ts._reversi.gameSettings }}</div>
 
-				<div class="_panel">
-					<div style="display: flex; align-items: center; padding: 16px; border-bottom: solid 1px var(--divider);">
-						<div>{{ mapName }}</div>
-						<MkButton style="margin-left: auto;" @click="chooseMap">{{ i18n.ts._reversi.chooseBoard }}</MkButton>
-					</div>
+				<template v-if="game.noIrregularRules">
+					<div>{{ i18n.ts._reversi.disallowIrregularRules }}</div>
+				</template>
+				<template v-else>
+					<div class="_panel">
+						<div style="display: flex; align-items: center; padding: 16px; border-bottom: solid 1px var(--divider);">
+							<div>{{ mapName }}</div>
+							<MkButton style="margin-left: auto;" @click="chooseMap">{{ i18n.ts._reversi.chooseBoard }}</MkButton>
+						</div>
 
-					<div style="padding: 16px;">
-						<div v-if="game.map == null"><i class="ti ti-dice"></i></div>
-						<div v-else :class="$style.board" :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
-							<div v-for="(x, i) in game.map.join('')" :class="[$style.boardCell, { [$style.boardCellNone]: x == ' ' }]" @click="onMapCellClick(i, x)">
-								<i v-if="x === 'b' || x === 'w'" style="pointer-events: none; user-select: none;" :class="x === 'b' ? 'ti ti-circle-filled' : 'ti ti-circle'"></i>
+						<div style="padding: 16px;">
+							<div v-if="game.map == null"><i class="ti ti-dice"></i></div>
+							<div v-else :class="$style.board" :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
+								<div v-for="(x, i) in game.map.join('')" :class="[$style.boardCell, { [$style.boardCellNone]: x == ' ' }]" @click="onMapCellClick(i, x)">
+									<i v-if="x === 'b' || x === 'w'" style="pointer-events: none; user-select: none;" :class="x === 'b' ? 'ti ti-circle-filled' : 'ti ti-circle'"></i>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<MkFolder :defaultOpen="true">
-					<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
-					<MkRadios v-model="game.bw">
-						<option value="random">{{ i18n.ts.random }}</option>
-						<option :value="'1'">
-							<I18n :src="i18n.ts._reversi.blackIs" tag="span">
-								<template #name>
-									<b><MkUserName :user="game.user1"/></b>
-								</template>
-							</I18n>
-						</option>
-						<option :value="'2'">
-							<I18n :src="i18n.ts._reversi.blackIs" tag="span">
-								<template #name>
-									<b><MkUserName :user="game.user2"/></b>
-								</template>
-							</I18n>
-						</option>
-					</MkRadios>
-				</MkFolder>
+						<MkRadios v-model="game.bw">
+							<option value="random">{{ i18n.ts.random }}</option>
+							<option :value="'1'">
+								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
+									<template #name>
+										<b><MkUserName :user="game.user1"/></b>
+									</template>
+								</I18n>
+							</option>
+							<option :value="'2'">
+								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
+									<template #name>
+										<b><MkUserName :user="game.user2"/></b>
+									</template>
+								</I18n>
+							</option>
+						</MkRadios>
+					</MkFolder>
 
-				<MkFolder :defaultOpen="true">
-					<template #label>{{ i18n.ts._reversi.timeLimitForEachTurn }}</template>
-					<template #suffix>{{ game.timeLimitForEachTurn }}{{ i18n.ts._time.second }}</template>
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._reversi.timeLimitForEachTurn }}</template>
+						<template #suffix>{{ game.timeLimitForEachTurn }}{{ i18n.ts._time.second }}</template>
 
-					<MkRadios v-model="game.timeLimitForEachTurn">
-						<option :value="5">5{{ i18n.ts._time.second }}</option>
-						<option :value="10">10{{ i18n.ts._time.second }}</option>
-						<option :value="30">30{{ i18n.ts._time.second }}</option>
-						<option :value="60">60{{ i18n.ts._time.second }}</option>
-						<option :value="90">90{{ i18n.ts._time.second }}</option>
-						<option :value="120">120{{ i18n.ts._time.second }}</option>
-						<option :value="180">180{{ i18n.ts._time.second }}</option>
-						<option :value="3600">3600{{ i18n.ts._time.second }}</option>
-					</MkRadios>
-				</MkFolder>
+						<MkRadios v-model="game.timeLimitForEachTurn">
+							<option :value="5">5{{ i18n.ts._time.second }}</option>
+							<option :value="10">10{{ i18n.ts._time.second }}</option>
+							<option :value="30">30{{ i18n.ts._time.second }}</option>
+							<option :value="60">60{{ i18n.ts._time.second }}</option>
+							<option :value="90">90{{ i18n.ts._time.second }}</option>
+							<option :value="120">120{{ i18n.ts._time.second }}</option>
+							<option :value="180">180{{ i18n.ts._time.second }}</option>
+							<option :value="3600">3600{{ i18n.ts._time.second }}</option>
+						</MkRadios>
+					</MkFolder>
 
-				<MkFolder :defaultOpen="true">
-					<template #label>{{ i18n.ts._reversi.rules }}</template>
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._reversi.rules }}</template>
 
-					<div class="_gaps_s">
-						<MkSwitch v-model="game.isLlotheo" @update:modelValue="updateSettings('isLlotheo')">{{ i18n.ts._reversi.isLlotheo }}</MkSwitch>
-						<MkSwitch v-model="game.loopedBoard" @update:modelValue="updateSettings('loopedBoard')">{{ i18n.ts._reversi.loopedMap }}</MkSwitch>
-						<MkSwitch v-model="game.canPutEverywhere" @update:modelValue="updateSettings('canPutEverywhere')">{{ i18n.ts._reversi.canPutEverywhere }}</MkSwitch>
-					</div>
-				</MkFolder>
+						<div class="_gaps_s">
+							<MkSwitch v-model="game.isLlotheo" @update:modelValue="updateSettings('isLlotheo')">{{ i18n.ts._reversi.isLlotheo }}</MkSwitch>
+							<MkSwitch v-model="game.loopedBoard" @update:modelValue="updateSettings('loopedBoard')">{{ i18n.ts._reversi.loopedMap }}</MkSwitch>
+							<MkSwitch v-model="game.canPutEverywhere" @update:modelValue="updateSettings('canPutEverywhere')">{{ i18n.ts._reversi.canPutEverywhere }}</MkSwitch>
+						</div>
+					</MkFolder>
+				</template>
 			</div>
 		</div>
 	</MkSpacer>
