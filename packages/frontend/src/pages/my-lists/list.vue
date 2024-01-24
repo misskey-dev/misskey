@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
-				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
+				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -155,7 +155,7 @@ async function deleteList() {
 	if (!list.value) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: list.value.name }),
+		text: i18n.tsx.removeAreYouSure({ x: list.value.name }),
 	});
 	if (canceled) return;
 
