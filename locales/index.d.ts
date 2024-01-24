@@ -1537,6 +1537,14 @@ export interface Locale extends ILocale {
      */
     "pinnedNotes": string;
     /**
+     * Misskey Gamesのピン留めチャンネル
+     */
+    "featuredGameChannels": string;
+    /**
+     * Misskey Gamesにピン留めしたいチャンネルを改行で区切って記述します。
+     */
+    "featuredGameChannelsDescription": string;
+    /**
      * hCaptcha
      */
     "hcaptcha": string;

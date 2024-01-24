@@ -723,6 +723,9 @@ type ChannelsCreateResponse = operations['channels/create']['responses']['200'][
 type ChannelsFavoriteRequest = operations['channels/favorite']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsFeaturedGamesResponse = operations['channels/featured-games']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type ChannelsFeaturedResponse = operations['channels/featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -1246,6 +1249,7 @@ declare namespace entities {
         ChannelsCreateRequest,
         ChannelsCreateResponse,
         ChannelsFeaturedResponse,
+        ChannelsFeaturedGamesResponse,
         ChannelsFollowRequest,
         ChannelsFollowedRequest,
         ChannelsFollowedResponse,

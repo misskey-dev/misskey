@@ -69,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.limit(ps.limit)
 				.getMany();
 
-			return await Promise.all(channels.map(x => this.channelEntityService.pack(x, me)));
+			return await this.channelEntityService.packMany(channels, me);
 		});
 	}
 }

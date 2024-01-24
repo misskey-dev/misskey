@@ -45,6 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
 					</MkTextarea>
 
+					<MkTextarea v-model="featuredGameChannels">
+						<template #label>{{ i18n.ts.featuredGameChannels }}</template>
+						<template #caption>{{ i18n.ts.featuredGameChannelsDescription }}</template>
+					</MkTextarea>
+
 					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
 
@@ -171,6 +176,7 @@ const maintainerName = ref<string | null>(null);
 const maintainerEmail = ref<string | null>(null);
 const impressumUrl = ref<string | null>(null);
 const pinnedUsers = ref<string>('');
+const featuredGameChannels = ref<string>('');
 const cacheRemoteFiles = ref<boolean>(false);
 const cacheRemoteSensitiveFiles = ref<boolean>(false);
 const enableServiceWorker = ref<boolean>(false);
@@ -193,6 +199,7 @@ async function init(): Promise<void> {
 	maintainerEmail.value = meta.maintainerEmail;
 	impressumUrl.value = meta.impressumUrl;
 	pinnedUsers.value = meta.pinnedUsers.join('\n');
+	featuredGameChannels.value = meta.featuredGameChannels.join('\n');
 	cacheRemoteFiles.value = meta.cacheRemoteFiles;
 	cacheRemoteSensitiveFiles.value = meta.cacheRemoteSensitiveFiles;
 	enableServiceWorker.value = meta.enableServiceWorker;
@@ -216,6 +223,7 @@ async function save(): void {
 		maintainerEmail: maintainerEmail.value,
 		impressumUrl: impressumUrl.value,
 		pinnedUsers: pinnedUsers.value.split('\n'),
+		featuredGameChannels: featuredGameChannels.value.split('\n'),
 		cacheRemoteFiles: cacheRemoteFiles.value,
 		cacheRemoteSensitiveFiles: cacheRemoteSensitiveFiles.value,
 		enableServiceWorker: enableServiceWorker.value,

@@ -145,6 +145,7 @@ import type {
 	ChannelsCreateRequest,
 	ChannelsCreateResponse,
 	ChannelsFeaturedResponse,
+	ChannelsFeaturedGamesResponse,
 	ChannelsFollowRequest,
 	ChannelsFollowedRequest,
 	ChannelsFollowedResponse,
@@ -666,6 +667,7 @@ export type Endpoints = {
 	'blocking/list': { req: BlockingListRequest; res: BlockingListResponse };
 	'channels/create': { req: ChannelsCreateRequest; res: ChannelsCreateResponse };
 	'channels/featured': { req: EmptyRequest; res: ChannelsFeaturedResponse };
+	'channels/featured-games': { req: EmptyRequest; res: ChannelsFeaturedGamesResponse };
 	'channels/follow': { req: ChannelsFollowRequest; res: EmptyResponse };
 	'channels/followed': { req: ChannelsFollowedRequest; res: ChannelsFollowedResponse };
 	'channels/owned': { req: ChannelsOwnedRequest; res: ChannelsOwnedResponse };

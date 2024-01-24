@@ -3,19 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelsRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
-import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { ChannelsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 
 export const meta = {
-	tags: ['channels', 'account'],
+	tags: ['channels'],
 
-	requireCredential: true,
-
-	kind: 'read:channels',
+	requireCredential: false,
 
 	res: {
 		type: 'array',
@@ -30,11 +29,7 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
-	},
+	properties: {},
 	required: [],
 } as const;
 
@@ -44,17 +39,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
+		private metaService: MetaService,
 		private channelEntityService: ChannelEntityService,
-		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder('channel'), ps.sinceId, ps.untilId)
-				.andWhere('channel.isArchived = FALSE')
-				.andWhere({ userId: me.id });
+			const meta = await this.metaService.fetch();
 
-			const channels = await query
-				.limit(ps.limit)
-				.getMany();
+			if (meta.featuredGameChannels.length === 0) return [];
+
+			const channels = await this.channelsRepository.findBy({
+				id: In(meta.featuredGameChannels)
+			});
 
 			return await this.channelEntityService.packMany(channels, me);
 		});

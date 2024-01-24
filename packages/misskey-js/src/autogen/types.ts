@@ -918,6 +918,15 @@ export type paths = {
      */
     post: operations['channels/featured'];
   };
+  '/channels/featured-games': {
+    /**
+     * channels/featured-games
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['channels/featured-games'];
+  };
   '/channels/follow': {
     /**
      * channels/follow
@@ -4789,6 +4798,7 @@ export type operations = {
             perUserListTimelineCacheMax: number;
             notesPerOneAd: number;
             urlPreviewDenyList?: string[];
+            featuredGameChannels: string[];
             backgroundImageUrl: string | null;
             deeplAuthKey: string | null;
             deeplIsPro: boolean;
@@ -8862,6 +8872,7 @@ export type operations = {
           silencedHosts?: string[] | null;
           sensitiveMediaHosts?: string[] | null;
           urlPreviewDenyList?: string[] | null;
+          featuredGameChannels?: string[] | null;
         };
       };
     };
@@ -10638,6 +10649,52 @@ export type operations = {
    * **Credential required**: *No*
    */
   'channels/featured': {
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['Channel'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * channels/featured-games
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'channels/featured-games': {
     responses: {
       /** @description OK (with results) */
       200: {

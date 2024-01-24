@@ -97,5 +97,14 @@ export class ChannelEntityService {
 			} : {}),
 		};
 	}
-}
 
+	public async packMany(
+		channels: (MiChannel['id'] | MiChannel)[],
+		me: { id: MiUser['id'] } | null | undefined,
+		detailed?: boolean,
+	): Promise<Packed<'Channel'>[]> {
+		return (await Promise.allSettled(channels.map(x => this.pack(x, me, detailed))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'Channel'>>).value);
+	}
+}

@@ -45,12 +45,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.channelFavoritesRepository.createQueryBuilder('favorite')
 				.andWhere('favorite.userId = :meId', { meId: me.id })
-				.leftJoinAndSelect('favorite.channel', 'channel');
+				.innerJoinAndSelect('favorite.channel', 'channel');
 
 			const favorites = await query
 				.getMany();
 
-			return await Promise.all(favorites.map(x => this.channelEntityService.pack(x.channel!, me)));
+			return await this.channelEntityService.packMany(favorites.map(x => x.channel!), me);
 		});
 	}
 }

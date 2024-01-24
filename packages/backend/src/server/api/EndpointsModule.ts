@@ -106,6 +106,7 @@ import * as ep___blocking_delete from './endpoints/blocking/delete.js';
 import * as ep___blocking_list from './endpoints/blocking/list.js';
 import * as ep___channels_create from './endpoints/channels/create.js';
 import * as ep___channels_featured from './endpoints/channels/featured.js';
+import * as ep___channels_featured_games from './endpoints/channels/featured-games.js';
 import * as ep___channels_follow from './endpoints/channels/follow.js';
 import * as ep___channels_followed from './endpoints/channels/followed.js';
 import * as ep___channels_owned from './endpoints/channels/owned.js';
@@ -482,6 +483,7 @@ const $blocking_delete: Provider = { provide: 'ep:blocking/delete', useClass: ep
 const $blocking_list: Provider = { provide: 'ep:blocking/list', useClass: ep___blocking_list.default };
 const $channels_create: Provider = { provide: 'ep:channels/create', useClass: ep___channels_create.default };
 const $channels_featured: Provider = { provide: 'ep:channels/featured', useClass: ep___channels_featured.default };
+const $channels_featured_games: Provider = { provide: 'ep:channels/featured-games', useClass: ep___channels_featured_games.default };
 const $channels_follow: Provider = { provide: 'ep:channels/follow', useClass: ep___channels_follow.default };
 const $channels_followed: Provider = { provide: 'ep:channels/followed', useClass: ep___channels_followed.default };
 const $channels_owned: Provider = { provide: 'ep:channels/owned', useClass: ep___channels_owned.default };
@@ -862,6 +864,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$blocking_list,
 		$channels_create,
 		$channels_featured,
+		$channels_featured_games,
 		$channels_follow,
 		$channels_followed,
 		$channels_owned,
@@ -1236,6 +1239,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$blocking_list,
 		$channels_create,
 		$channels_featured,
+		$channels_featured_games,
 		$channels_follow,
 		$channels_followed,
 		$channels_owned,

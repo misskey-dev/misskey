@@ -382,6 +382,13 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			featuredGameChannels: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
 			backgroundImageUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -589,6 +596,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				notesPerOneAd: instance.notesPerOneAd,
 				urlPreviewDenyList: instance.urlPreviewDenyList,
+				featuredGameChannels: instance.featuredGameChannels,
 			};
 		});
 	}

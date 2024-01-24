@@ -591,4 +591,9 @@ export class MiMeta {
 		length: 3072, array: true, default: '{}',
 	})
 	public urlPreviewDenyList: string[];
+
+	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
+	public featuredGameChannels: string[];
 }

@@ -150,9 +150,16 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
-		urlPreviewDenyList: { type: 'array', nullable: true, items: {
-			type: 'string',
-		} },
+		urlPreviewDenyList: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
+		featuredGameChannels: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 	},
 	required: [],
 } as const;
@@ -206,6 +213,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.urlPreviewDenyList)) {
 				set.urlPreviewDenyList = ps.urlPreviewDenyList.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.featuredGameChannels)) {
+				set.featuredGameChannels = ps.featuredGameChannels.filter(Boolean);
 			}
 
 			if (ps.themeColor !== undefined) {

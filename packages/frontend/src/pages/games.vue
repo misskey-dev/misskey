@@ -19,16 +19,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkA>
 			</div>
 		</div>
+		<MkPagination v-slot="{items}" :pagination="featuredPagination">
+			<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+		</MkPagination>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkPagination from '@/components/MkPagination.vue';
+import MkChannelPreview from '@/components/MkChannelPreview.vue';
 
 definePageMetadata({
 	title: 'Misskey Games',
 	icon: 'ti ti-device-gamepad',
 });
+
+const featuredPagination = {
+	endpoint: 'channels/featured-games' as const,
+	noPaging: true,
+};
 </script>
