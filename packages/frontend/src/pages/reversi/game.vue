@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="game == null || (!game.isEnded && connection == null)"><MkLoading/></div>
-<GameSetting v-else-if="!game.isStarted" :game="game" :connection="connection!"/>
+<GameSetting v-else-if="!game.isStarted" v-model:shareWhenStart="shareWhenStart" :game="game" :connection="connection!"/>
 <GameBoard v-else :game="game" :connection="connection"/>
 </template>
 
@@ -32,10 +32,22 @@ const props = defineProps<{
 
 const game = shallowRef<Misskey.entities.ReversiGameDetailed | null>(null);
 const connection = shallowRef<Misskey.ChannelConnection | null>(null);
+const shareWhenStart = ref(false);
 
 watch(() => props.gameId, () => {
 	fetchGame();
 });
+
+function start(_game: Misskey.entities.ReversiGameDetailed) {
+	if (shareWhenStart.value) {
+		misskeyApi('notes/create', {
+			text: i18n.ts._reversi.iStartedAGame + '\n' + location.href,
+			visibility: 'home',
+		});
+	}
+
+	game.value = _game;
+}
 
 async function fetchGame() {
 	const _game = await misskeyApi('reversi/show-game', {
@@ -43,6 +55,7 @@ async function fetchGame() {
 	});
 
 	game.value = _game;
+	shareWhenStart.value = false;
 
 	if (connection.value) {
 		connection.value.dispose();
@@ -52,7 +65,7 @@ async function fetchGame() {
 			gameId: game.value.id,
 		});
 		connection.value.on('started', x => {
-			game.value = x.game;
+			start(x.game);
 		});
 		connection.value.on('canceled', x => {
 			connection.value?.dispose();
@@ -77,10 +90,6 @@ onUnmounted(() => {
 		connection.value.dispose();
 	}
 });
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: 'Reversi',

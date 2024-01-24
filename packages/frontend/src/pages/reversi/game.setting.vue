@@ -81,16 +81,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-				<div style="text-align: center; margin-bottom: 10px;">
-					<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
-					<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
-					<template v-if="!isReady && isOpReady">{{ i18n.ts._reversi.waitingForMe }}</template>
-					<template v-if="!isReady && !isOpReady">{{ i18n.ts._reversi.waitingBoth }}<MkEllipsis/></template>
-				</div>
-				<div class="_buttonsCenter">
-					<MkButton rounded danger @click="cancel">{{ i18n.ts.cancel }}</MkButton>
-					<MkButton v-if="!isReady" rounded primary @click="ready">{{ i18n.ts._reversi.ready }}</MkButton>
-					<MkButton v-if="isReady" rounded @click="unready">{{ i18n.ts._reversi.cancelReady }}</MkButton>
+				<div style="text-align: center;" class="_gaps_s">
+					<div>
+						<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
+						<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
+						<template v-if="!isReady && isOpReady">{{ i18n.ts._reversi.waitingForMe }}</template>
+						<template v-if="!isReady && !isOpReady">{{ i18n.ts._reversi.waitingBoth }}<MkEllipsis/></template>
+					</div>
+					<div class="_buttonsCenter">
+						<MkButton rounded danger @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+						<MkButton v-if="!isReady" rounded primary @click="ready">{{ i18n.ts._reversi.ready }}</MkButton>
+						<MkButton v-if="isReady" rounded @click="unready">{{ i18n.ts._reversi.cancelReady }}</MkButton>
+					</div>
+					<div>
+						<MkSwitch v-model="shareWhenStart">{{ i18n.ts._reversi.shareToTlTheGameWhenStart }}</MkSwitch>
+					</div>
 				</div>
 			</MkSpacer>
 		</div>
@@ -123,6 +128,8 @@ const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
 	connection: Misskey.ChannelConnection;
 }>();
+
+const shareWhenStart = defineModel<boolean>('shareWhenStart', { default: false });
 
 const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
 

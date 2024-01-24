@@ -2553,6 +2553,8 @@ _reversi:
   freeMatch: "フリーマッチ"
   lookingForPlayer: "対戦相手を探しています"
   gameCanceled: "対局がキャンセルされました"
+  shareToTlTheGameWhenStart: "開始時に対局をタイムラインに投稿"
+  iStartedAGame: "対局を開始しました！ #MisskeyReversi"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"
