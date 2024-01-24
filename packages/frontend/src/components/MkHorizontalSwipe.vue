@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="rootEl"
-	:class="[$style.transitionRoot, { [$style.enableAnimation]: enableHorizontalSwipe }]"
+	:class="[$style.transitionRoot, { [$style.enableAnimation]: shouldAnimate }]"
 	@touchstart.passive="touchStart"
 	@touchmove.passive="touchMove"
 	@touchend.passive="touchEnd"
@@ -44,7 +44,7 @@ const emit = defineEmits<{
 	(ev: 'swiped', newKey: string, direction: 'left' | 'right'): void;
 }>();
 
-const enableHorizontalSwipe = computed(() => defaultStore.reactiveState.enableHorizontalSwipe.value);
+const shouldAnimate = computed(() => defaultStore.reactiveState.enableHorizontalSwipe.value || defaultStore.reactiveState.animation.value);
 
 // ▼ しきい値 ▼ //
 
