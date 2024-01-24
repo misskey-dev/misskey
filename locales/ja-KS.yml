@@ -2485,6 +2485,8 @@ _reversi:
   shareToTlTheGameWhenStart: "初めの時に対局をタイムラインに投稿するで"
   iStartedAGame: "対局し始めたで！ #MisskeyReversi"
   opponentHasSettingsChanged: "相手が設定変えたで"
+  allowIrregularRules: "変則許可 (完全フリー)"
+  disallowIrregularRules: "変則なし"
 _offlineScreen:
   title: "オフライン - サーバーに接続できひんで"
   header: "サーバーに接続できへんわ"
