@@ -1181,6 +1181,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Zu viele aktive Ankündigungen können die Benutzerfreundlichkeit verschlechtern. Es wird empfohlen, veraltete Ankündigungen zu archivieren."
   readConfirmTitle: "Als gelesen markieren?"
   readConfirmText: "Dies markiert den Inhalt von \"{title}\" als gelesen."
+  shouldNotBeUsedToPresentPermanentInfo: "Es wird empfohlen, Ankündigungen für aktuelle und zeitlich begrenzte Neuigkeiten zu nutzen, statt für Informationen, die langfristig relevant sind."
   dialogAnnouncementUxWarn: "Bei der Verwendung von mehr als zwei Meldungen im Dialog-Format wird um Vorsicht geboten, da dies negative Auswirkungen auf die UX haben kann."
   silence: "Keine Benachrichtigung"
   silenceDescription: "Wenn aktiviert, gibt diese Meldung keine Nachricht aus und muss nicht als \"gelesen\" markiert werden."
