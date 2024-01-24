@@ -24,7 +24,7 @@ import { Serialized } from '@/types.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
-const MATCHING_TIMEOUT_MS = 1000 * 10; // 10sec
+const MATCHING_TIMEOUT_MS = 1000 * 20; // 20sec
 
 @Injectable()
 export class ReversiService implements OnApplicationShutdown, OnModuleInit {
