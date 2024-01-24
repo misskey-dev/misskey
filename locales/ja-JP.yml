@@ -2555,6 +2555,7 @@ _reversi:
   gameCanceled: "対局がキャンセルされました"
   shareToTlTheGameWhenStart: "開始時に対局をタイムラインに投稿"
   iStartedAGame: "対局を開始しました！ #MisskeyReversi"
+  opponentHasSettingsChanged: "相手が設定を変更しました"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"

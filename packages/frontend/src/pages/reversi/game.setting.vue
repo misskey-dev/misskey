@@ -82,6 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
 				<div style="text-align: center;" class="_gaps_s">
+					<div v-if="opponentHasSettingsChanged" style="color: var(--warn);">{{ i18n.ts._reversi.opponentHasSettingsChanged }}</div>
 					<div>
 						<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
 						<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
@@ -149,6 +150,8 @@ const isOpReady = computed(() => {
 	return false;
 });
 
+const opponentHasSettingsChanged = ref(false);
+
 watch(() => game.value.bw, () => {
 	updateSettings('bw');
 });
@@ -197,6 +200,7 @@ async function cancel() {
 
 function ready() {
 	props.connection.send('ready', true);
+	opponentHasSettingsChanged.value = false;
 }
 
 function unready() {
@@ -219,6 +223,10 @@ function onUpdateSettings({ userId, key, value }: { userId: string; key: keyof M
 	if (userId === $i.id) return;
 	if (game.value[key] === value) return;
 	game.value[key] = value;
+	if (isReady.value) {
+		opponentHasSettingsChanged.value = true;
+		unready();
+	}
 }
 
 function onMapCellClick(pos: number, pixel: string) {
