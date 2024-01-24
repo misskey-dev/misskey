@@ -139,7 +139,9 @@ if ($i) {
 	const connection = useStream().useChannel('reversi');
 
 	connection.on('matched', x => {
-		startGame(x.game);
+		if (matchingUser.value != null || matchingAny.value) {
+			startGame(x.game);
+		}
 	});
 
 	connection.on('invited', invitation => {
@@ -222,7 +224,7 @@ async function accept(user) {
 	}
 }
 
-useInterval(matchHeatbeat, 1000 * 10, { immediate: false, afterMounted: true });
+useInterval(matchHeatbeat, 1000 * 5, { immediate: false, afterMounted: true });
 
 onMounted(() => {
 	misskeyApi('reversi/invitations').then(_invitations => {
