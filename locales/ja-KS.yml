@@ -2033,9 +2033,9 @@ _auth:
 _antennaSources:
   all: "みんなのノート"
   homeTimeline: "フォローしとるユーザーのノート"
-  users: "選らんだ一人か複数のユーザーのノート"
+  users: "選んだ一人か複数のユーザーのノート"
   userList: "選んだリストのユーザーのノート"
-  userBlacklist: "選んだ１人か複数のユーザーのノート"
+  userBlacklist: "選んだ一人か複数のユーザーを除いた全てのノート"
 _weekday:
   sunday: "日曜日"
   monday: "月曜日"
