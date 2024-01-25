@@ -120,7 +120,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (invitations.includes(targetUser.id)) {
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
 
-			const game = await this.matched(targetUser.id, me.id);
+			const game = await this.matched(targetUser.id, me.id, {
+				noIrregularRules: false,
+			});
 
 			return game;
 		}
@@ -166,7 +168,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			const invitorId = invitations[Math.floor(Math.random() * invitations.length)];
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, invitorId);
 
-			const game = await this.matched(invitorId, me.id);
+			const game = await this.matched(invitorId, me.id, {
+				noIrregularRules: false,
+			});
 
 			return game;
 		}
@@ -214,10 +218,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUserCancel(user: MiUser) {
-		const redisPipeline = this.redisClient.pipeline();
-		redisPipeline.zrem('reversi:matchAny', user.id);
-		redisPipeline.zrem('reversi:matchAny', user.id + ':noIrregularRules');
-		await redisPipeline.exec();
+		await this.redisClient.zrem('reversi:matchAny', user.id, user.id + ':noIrregularRules');
 	}
 
 	@bindThis
