@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import CRC32 from 'crc-32';
+
 /**
  * true ... 黒
  * false ... 白
@@ -202,6 +204,13 @@ export class Game {
 		};
 
 		return ([] as number[]).concat(...diffVectors.map(effectsInLine));
+	}
+
+	public calcCrc32(): number {
+		return CRC32.str(JSON.stringify({
+			board: this.board,
+			turn: this.turn,
+		}));
 	}
 
 	public get isEnded(): boolean {

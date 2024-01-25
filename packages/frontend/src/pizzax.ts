@@ -7,7 +7,6 @@
 
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
-import { defu } from 'defu';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { get, set } from '@/scripts/idb-proxy.js';
@@ -81,14 +80,37 @@ export class Storage<T extends StateDef> {
 		this.loaded = this.ready.then(() => this.load());
 	}
 
-	private isPureObject(value: unknown): value is Record<string, unknown> {
+	private isPureObject(value: unknown): value is Record<string | number | symbol, unknown> {
 		return typeof value === 'object' && value !== null && !Array.isArray(value);
 	}
 
-	private mergeState<T>(value: T, def: T): T {
+	/**
+	 * valueにないキーをdefからもらう（再帰的）\
+	 * nullはそのまま、undefinedはdefの値
+	 **/
+	private mergeObject<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def);
-			return defu(value, def) as T;
+			const result = structuredClone(value) as X;
+			for (const [k, v] of Object.entries(def) as [keyof X, X[keyof X]][]) {
+				if (!Object.prototype.hasOwnProperty.call(value, k) || value[k] === undefined) {
+					result[k] = v;
+				} else if (this.isPureObject(v) && this.isPureObject(result[k])) {
+					const child = structuredClone(result[k]) as X[keyof X] & Record<string | number | symbol, unknown>;
+					result[k] = this.mergeObject<typeof v>(child, v);
+				}
+			}
+			return result;
+		}
+		return value;
+	}
+
+	private mergeState<X>(value: X, def: X): X {
+		if (this.isPureObject(value) && this.isPureObject(def)) {
+			const merged = this.mergeObject(value, def);
+
+			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
+
+			return merged as X;
 		}
 		return value;
 	}

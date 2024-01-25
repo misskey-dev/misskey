@@ -82,6 +82,10 @@ export const packedReversiGameLiteSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		noIrregularRules: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		isLlotheo: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -194,6 +198,10 @@ export const packedReversiGameDetailedSchema = {
 		},
 		bw: {
 			type: 'string',
+			optional: false, nullable: false,
+		},
+		noIrregularRules: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 		isLlotheo: {

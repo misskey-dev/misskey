@@ -61,6 +61,7 @@ export class ReversiGameEntityService {
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
 			timeLimitForEachTurn: game.timeLimitForEachTurn,
+			noIrregularRules: game.noIrregularRules,
 			logs: game.logs,
 			map: game.map,
 		});
@@ -105,6 +106,7 @@ export class ReversiGameEntityService {
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
 			timeLimitForEachTurn: game.timeLimitForEachTurn,
+			noIrregularRules: game.noIrregularRules,
 		});
 	}
 

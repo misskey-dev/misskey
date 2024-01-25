@@ -36,7 +36,8 @@
 		"built"
 	],
 	"dependencies": {
+		"crc-32": "1.2.2",
 		"esbuild": "0.19.11",
-		"glob": "^10.3.10"
+		"glob": "10.3.10"
 	}
 }
