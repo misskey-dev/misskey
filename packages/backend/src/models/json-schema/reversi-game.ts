@@ -34,22 +34,6 @@ export const packedReversiGameLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		form1: {
-			type: 'any',
-			optional: false, nullable: true,
-		},
-		form2: {
-			type: 'any',
-			optional: false, nullable: true,
-		},
-		user1Ready: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		user2Ready: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
 		user1Id: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -96,6 +80,10 @@ export const packedReversiGameLiteSchema = {
 		},
 		bw: {
 			type: 'string',
+			optional: false, nullable: false,
+		},
+		noIrregularRules: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 		isLlotheo: {
@@ -149,11 +137,11 @@ export const packedReversiGameDetailedSchema = {
 			optional: false, nullable: false,
 		},
 		form1: {
-			type: 'any',
+			type: 'object',
 			optional: false, nullable: true,
 		},
 		form2: {
-			type: 'any',
+			type: 'object',
 			optional: false, nullable: true,
 		},
 		user1Ready: {
@@ -210,6 +198,10 @@ export const packedReversiGameDetailedSchema = {
 		},
 		bw: {
 			type: 'string',
+			optional: false, nullable: false,
+		},
+		noIrregularRules: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 		isLlotheo: {

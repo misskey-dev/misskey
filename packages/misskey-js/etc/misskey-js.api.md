@@ -1634,6 +1634,8 @@ declare namespace entities {
         ReversiShowGameRequest,
         ReversiShowGameResponse,
         ReversiSurrenderRequest,
+        ReversiVerifyRequest,
+        ReversiVerifyResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -2649,6 +2651,12 @@ type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200
 
 // @public (undocumented)
 type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Role = components['schemas']['Role'];

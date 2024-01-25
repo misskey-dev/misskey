@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination :pagination="myGamesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
-						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
+						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isStarted && !g.isEnded && $style.gamePreviewWaiting, g.isStarted && !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
 								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 								<span v-if="g.winnerId === g.user2Id" style="margin-right: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
@@ -45,7 +45,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span v-if="!g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-else-if="!g.isEnded" :class="$style.gamePreviewStatusWaiting"><MkEllipsis/></span>
 								<span v-else>{{ i18n.ts._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
 							</div>
@@ -60,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination :pagination="gamesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
-						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
+						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isStarted && !g.isEnded && $style.gamePreviewWaiting, g.isStarted && !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
 								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 								<span v-if="g.winnerId === g.user2Id" style="margin-right: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
@@ -71,7 +72,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span v-if="!g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-else-if="!g.isEnded" :class="$style.gamePreviewStatusWaiting"><MkEllipsis/></span>
 								<span v-else>{{ i18n.ts._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
 							</div>
@@ -137,7 +139,9 @@ if ($i) {
 	const connection = useStream().useChannel('reversi');
 
 	connection.on('matched', x => {
-		startGame(x.game);
+		if (matchingUser.value != null || matchingAny.value) {
+			startGame(x.game);
+		}
 	});
 
 	connection.on('invited', invitation => {
@@ -153,6 +157,7 @@ if ($i) {
 const invitations = ref<Misskey.entities.UserLite[]>([]);
 const matchingUser = ref<Misskey.entities.UserLite | null>(null);
 const matchingAny = ref<boolean>(false);
+const noIrregularRules = ref<boolean>(false);
 
 function startGame(game: Misskey.entities.ReversiGameDetailed) {
 	matchingUser.value = null;
@@ -178,6 +183,7 @@ async function matchHeatbeat() {
 	} else if (matchingAny.value) {
 		const res = await misskeyApi('reversi/match', {
 			userId: null,
+			noIrregularRules: noIrregularRules.value,
 		});
 
 		if (res != null) {
@@ -195,10 +201,22 @@ async function matchUser() {
 	matchHeatbeat();
 }
 
-async function matchAny() {
-	matchingAny.value = true;
-
-	matchHeatbeat();
+function matchAny(ev: MouseEvent) {
+	os.popupMenu([{
+		text: i18n.ts._reversi.allowIrregularRules,
+		action: () => {
+			noIrregularRules.value = false;
+			matchingAny.value = true;
+			matchHeatbeat();
+		},
+	}, {
+		text: i18n.ts._reversi.disallowIrregularRules,
+		action: () => {
+			noIrregularRules.value = true;
+			matchingAny.value = true;
+			matchHeatbeat();
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 function cancelMatching() {
@@ -220,12 +238,14 @@ async function accept(user) {
 	}
 }
 
-useInterval(matchHeatbeat, 1000 * 10, { immediate: false, afterMounted: true });
+useInterval(matchHeatbeat, 1000 * 5, { immediate: false, afterMounted: true });
 
 onMounted(() => {
 	misskeyApi('reversi/invitations').then(_invitations => {
 		invitations.value = _invitations;
 	});
+
+	window.addEventListener('beforeunload', cancelMatching);
 });
 
 onDeactivated(() => {
@@ -273,6 +293,10 @@ definePageMetadata(computed(() => ({
 	box-shadow: inset 0 0 8px 0px var(--accent);
 }
 
+.gamePreviewWaiting {
+	box-shadow: inset 0 0 8px 0px var(--warn);
+}
+
 .gamePreviewPlayers {
 	text-align: center;
 	padding: 16px;
@@ -302,6 +326,12 @@ definePageMetadata(computed(() => ({
 
 .gamePreviewStatusActive {
 	color: var(--accent);
+	font-weight: bold;
+	animation: blink 2s infinite;
+}
+
+.gamePreviewStatusWaiting {
+	color: var(--warn);
 	font-weight: bold;
 	animation: blink 2s infinite;
 }
