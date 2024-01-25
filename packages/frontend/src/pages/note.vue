@@ -147,7 +147,7 @@ definePageMetadata(computed(() => note.value ? {
 	avatar: note.value.user,
 	path: `/notes/${note.value.id}`,
 	share: {
-		title: i18n.t('noteOf', { user: note.value.user.name }),
+		title: i18n.tsx.noteOf({ user: note.value.user.name }),
 		text: note.value.text,
 	},
 } : null));

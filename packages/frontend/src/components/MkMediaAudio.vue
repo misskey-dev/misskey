@@ -22,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<audio
 			ref="audioEl"
 			preload="metadata"
-			:class="$style.audio"
 		>
 			<source :src="audio.url">
 		</audio>
@@ -138,7 +137,7 @@ const rangePercent = computed({
 		audioEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.5);
+const volume = ref(.25);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!audioEl.value) return 0;
@@ -161,7 +160,7 @@ function togglePlayPause() {
 
 function toggleMute() {
 	if (volume.value === 0) {
-		volume.value = .5;
+		volume.value = .25;
 	} else {
 		volume.value = 0;
 	}
@@ -207,7 +206,7 @@ function init() {
 				isActuallyPlaying.value = false;
 				isPlaying.value = false;
 			});
-			
+
 			durationMs.value = audioEl.value.duration * 1000;
 			audioEl.value.addEventListener('durationchange', () => {
 				if (audioEl.value) {

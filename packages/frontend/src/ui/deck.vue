@@ -189,7 +189,7 @@ const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
 		items: columns.map(column => ({
-			value: column, text: i18n.t('_deck._columns.' + column),
+			value: column, text: i18n.ts._deck._columns[column],
 		})),
 	});
 	if (canceled) return;
@@ -197,7 +197,7 @@ const addColumn = async (ev) => {
 	addColumnToStore({
 		type: column,
 		id: uuid(),
-		name: i18n.t('_deck._columns.' + column),
+		name: i18n.ts._deck._columns[column],
 		width: 330,
 	});
 };
@@ -256,7 +256,7 @@ function changeProfile(ev: MouseEvent) {
 async function deleteProfile() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: deckStore.state.profile }),
+		text: i18n.tsx.deleteAreYouSure({ x: deckStore.state.profile }),
 	});
 	if (canceled) return;
 
@@ -488,7 +488,7 @@ body {
 	left: 0;
 	color: var(--indicator);
 	font-size: 16px;
-	animation: blink 1s infinite;
+	animation: global-blink 1s infinite;
 
 	&:has(.itemIndicateValueIcon) {
 		animation: none;
