@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.userMInfoMetaSub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 				<span :class="$style.userMInfoMetaState">
 					<span v-if="suspended" :class="$style.suspended">Suspended</span>
+					<span v-if="limited" :class="$style.limited">Limited</span>
 					<span v-if="silenced" :class="$style.silenced">Silenced</span>
 					<span v-if="moderator" :class="$style.moderator">Moderator</span>
 				</span>
@@ -53,6 +54,7 @@ const props = defineProps<{
 
 const moderator = computed(() => props.user.isModerator ?? false);
 const silenced = computed(() => props.user.isSilenced ?? false);
+const limited = computed(() => props.user.isLimited ?? false);
 const suspended = computed(() => props.user.isSuspended ?? false);
 </script>
 
@@ -103,6 +105,7 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 	}
 
 	> .suspended,
+	> .limited,
 	> .silenced,
 	> .moderator {
 		display: inline-block;
@@ -113,6 +116,11 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 	}
 
 	> .suspended {
+		color: var(--error);
+		border-color: var(--error);
+	}
+
+	> .limited {
 		color: var(--error);
 		border-color: var(--error);
 	}

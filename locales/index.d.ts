@@ -2389,6 +2389,10 @@ export interface Locale extends ILocale {
      */
     "userSuspended": string;
     /**
+     * このユーザーは制限されています。
+     */
+    "userLimited": string;
+    /**
      * このユーザーはサイレンスされています。
      */
     "userSilenced": string;

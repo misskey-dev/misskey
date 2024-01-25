@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkSpacer :contentMax="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main _gaps">
-			<!-- TODO -->
-			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
-			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
+			<div v-if="user.isSuspended" class="punished"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div>
+			<div v-if="user.isLimited" class="punished"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userLimited }}</div>
+			<div v-if="user.isSilenced" class="punished"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div>
 
 			<div class="profile _gaps">
 				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
@@ -312,6 +312,10 @@ onUnmounted(() => {
 		> .punished {
 			font-size: 0.8em;
 			padding: 16px;
+			background: var(--infoWarnBg);
+			color: var(--infoWarnFg);
+			border-radius: var(--radius);
+			overflow: clip;
 		}
 
 		> .profile {

@@ -343,9 +343,9 @@ export class UserEntityService implements OnModuleInit {
 			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
 		const policies = opts.detail ? await this.roleService.getUserPolicies(user.id) : null;
+		const isModerator = (isMe || iAmModerator) && opts.detail ? this.roleService.isModerator(user) : null;
+		const isAdmin = (isMe || iAmModerator) && opts.detail ? this.roleService.isAdministrator(user) : null;
 		const unreadAnnouncements = isMe && opts.detail ? await this.announcementService.getUnreadAnnouncements(user) : null;
 
 		const notificationsInfo = isMe && opts.detail ? await this.getNotificationsInfo(user.id) : null;
@@ -426,16 +426,20 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
-				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
-					id: role.id,
-					name: role.name,
-					color: role.color,
-					iconUrl: role.iconUrl,
-					description: role.description,
-					isModerator: role.isModerator,
-					isAdministrator: role.isAdministrator,
-					displayOrder: role.displayOrder,
-				}))),
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles
+					.filter(role => role.isPublic || iAmModerator)
+					.sort((a, b) => b.displayOrder - a.displayOrder)
+					.map(role => ({
+						id: role.id,
+						name: role.name,
+						color: role.color,
+						iconUrl: role.iconUrl,
+						description: role.description,
+						isModerator: role.isModerator,
+						isAdministrator: role.isAdministrator,
+						displayOrder: role.displayOrder,
+					}))
+				),
 				memo: meId == null ? null : await this.userMemosRepository.findOneBy({
 					userId: meId,
 					targetUserId: user.id,
@@ -443,7 +447,7 @@ export class UserEntityService implements OnModuleInit {
 				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
 			} : {}),
 
-			...(opts.detail && isMe ? {
+			...(opts.detail && (isMe || iAmModerator) ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				isModerator: isModerator,
@@ -468,7 +472,7 @@ export class UserEntityService implements OnModuleInit {
 					where: { userId: user.id, isMentioned: true },
 					take: 1,
 				}).then(count => count > 0),
-				hasUnreadAnnouncement: unreadAnnouncements!.length > 0,
+				hasUnreadAnnouncement: (unreadAnnouncements?.length ?? 0) > 0,
 				unreadAnnouncements,
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
 				hasUnreadChannel: false, // 後方互換性のため
