@@ -1232,6 +1232,10 @@ _initialTutorial:
       localOnly: "Publicar amb aquesta opció activada farà que la nota no federi amb altres servidors. Els usuaris d'altres servidors no podran veure la nota directament, sense importar les opcions de visualització."
     _cw:
       title: "Avís de Contingut (CW)"
+      description: "En comptes del cos de la nota es mostrarà el que s'escrigui al camp de 'comentaris'. Fent clic a 'Llegir més' es mostrarà el cos."
+      _exampleNote:
+        cw: "Això et farà venir gana!"
+        note: "Acabo de menjar-me un donut de xocolata 🍩😋"
 _role:
   assignTarget: "Assignar "
   priority: "Prioritat"
