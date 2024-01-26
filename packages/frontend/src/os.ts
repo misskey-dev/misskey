@@ -23,6 +23,7 @@ import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 
 export const openingWindowsCount = ref(0);
@@ -592,6 +593,15 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 }
 
 export function post(props: Record<string, any> = {}): Promise<void> {
+	pleaseLogin(undefined, (props.initialText || props.initialNote ? {
+		type: 'share',
+		params: {
+			text: props.initialText ?? props.initialNote.text,
+			visibility: props.initialVisibility ?? props.initialNote?.visibility,
+			localOnly: (props.initialLocalOnly || props.initialNote?.localOnly) ? '1' : '0',
+		},
+	} : undefined));
+
 	showMovedDialog();
 
 	return new Promise((resolve, reject) => {

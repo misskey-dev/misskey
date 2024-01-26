@@ -725,6 +725,10 @@ export interface Locale extends ILocale {
      */
     "showOnRemote": string;
     /**
+     * リモートで続行
+     */
+    "continueOnRemote": string;
+    /**
      * 全般
      */
     "general": string;
@@ -1897,9 +1901,13 @@ export interface Locale extends ILocale {
      */
     "onlyOneFileCanBeAttached": string;
     /**
-     * 続行する前に、サインアップまたはサインインが必要です
+     * 続行する前に、登録またはログインが必要です
      */
     "signinRequired": string;
+    /**
+     * 続行するには、お使いのサーバーに移動するか、このサーバーに登録・ログインする必要があります
+     */
+    "signinOrContinueOnRemote": string;
     /**
      * 招待
      */

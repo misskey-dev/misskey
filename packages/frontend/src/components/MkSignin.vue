@@ -6,10 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <form :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="_gaps_m">
-		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : undefined, marginBottom: message ? '1.5em' : undefined }"></div>
+		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${user.avatarUrl}')` : undefined, marginBottom: message ? '1.5em' : undefined }"></div>
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
+		<div v-if="misskeyHub" class="_gaps_m">
+			<MkButton type="button" rounded primary style="margin: 0 auto;" @click="openMisskeyHub(misskeyHub)">
+				{{ i18n.ts.continueOnRemote }} <i class="ti ti-external-link"></i>
+			</MkButton>
+			<div :class="$style.orHr">
+				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+			</div>
+		</div>
 		<div v-if="!totpLogin" class="normal-signin _gaps_m">
 			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
@@ -28,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts.retry }}
 				</MkButton>
 			</div>
-			<div v-if="user && user.securityKeys" class="or-hr">
-				<p class="or-msg">{{ i18n.ts.or }}</p>
+			<div v-if="user && user.securityKeys" :class="$style.orHr">
+				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 			</div>
 			<div class="twofa-group totp-group">
 				<p style="margin-bottom:0;">{{ i18n.ts['2fa'] }}</p>
@@ -53,6 +61,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import type { MisskeyHubOptions } from '@/scripts/please-login.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -77,22 +86,16 @@ const emit = defineEmits<{
 	(ev: 'login', v: any): void;
 }>();
 
-const props = defineProps({
-	withAvatar: {
-		type: Boolean,
-		required: false,
-		default: true,
-	},
-	autoSet: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-	message: {
-		type: String,
-		required: false,
-		default: '',
-	},
+const props = withDefaults(defineProps<{
+	withAvatar?: boolean;
+	autoSet?: boolean;
+	message?: string,
+	misskeyHub?: MisskeyHubOptions,
+}>(), {
+	withAvatar: true,
+	autoSet: false,
+	message: '',
+	misskeyHub: undefined,
 });
 
 function onUsernameChange(): void {
@@ -219,6 +222,28 @@ function resetPassword(): void {
 	os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
 	}, 'closed');
 }
+
+function openMisskeyHub(hubOptions: MisskeyHubOptions): void {
+	switch (hubOptions.type) {
+		case 'web': {
+			window.open(`https://misskey-hub.net/mi-web/?path=${encodeURIComponent(hubOptions.path)}`, '_blank', 'noopener');
+			break;
+		}
+		case 'share': {
+			const rawParams = { ...hubOptions.params };
+			// undefinedの値をすべて除去
+			Object.keys(rawParams).forEach(key => {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				if (rawParams[key] === undefined) {
+					delete rawParams[key];
+				}
+			});
+			const params = new URLSearchParams(rawParams);
+			window.open(`https://misskey-hub.net/share/?${params.toString()}`, '_blank', 'noopener');
+			break;
+		}
+	}
+}
 </script>
 
 <style lang="scss" module>
@@ -230,5 +255,26 @@ function resetPassword(): void {
 	background-position: center;
 	background-size: cover;
 	border-radius: 100%;
+}
+
+.orHr {
+	position: relative;
+	margin: .4em auto;
+	width: 100%;
+	height: 1px;
+	background: var(--divider);
+}
+
+.orMsg {
+	position: absolute;
+	top: -.6em;
+	display: inline-block;
+	padding: 0 1em;
+	background: var(--panel);
+	font-size: 0.8em;
+	color: var(--fgOnPanel);
+	margin: 0;
+	left: 50%;
+	transform: translateX(-50%);
 }
 </style>

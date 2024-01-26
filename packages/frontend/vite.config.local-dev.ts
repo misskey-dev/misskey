@@ -41,6 +41,7 @@ const devConfig = {
 			},
 			'/url': 'http://localhost:3000',
 			'/proxy': 'http://localhost:3000',
+			'/authorize_interaction': 'http://localhost:3000',
 		},
 	},
 	build: {

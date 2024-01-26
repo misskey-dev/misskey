@@ -177,7 +177,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
-	}, {
+	}, ...($i ? [{
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
@@ -250,7 +250,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 				},
 			}));
 		},
-	}] as any;
+	}] : [])] as any;
 
 	if ($i && meId !== user.id) {
 		if (iAmModerator) {
