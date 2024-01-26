@@ -2559,6 +2559,14 @@ _reversi:
   allowIrregularRules: "変則許可 (完全フリー)"
   disallowIrregularRules: "変則なし"
 
+_mahjong:
+  mahjong: "麻雀"
+  joinRoom: "ルームに参加"
+  createRoom: "ルームを作成"
+  ready: "準備完了"
+  cancelReady: "準備を再開"
+  leave: "退室"
+
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"
   header: "サーバーに接続できません"

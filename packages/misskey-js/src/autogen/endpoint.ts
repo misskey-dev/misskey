@@ -1,6 +1,6 @@
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.453Z
+ * version: 2024.2.0-beta.7
+ * generatedAt: 2024-01-26T05:23:04.909Z
  */
 
 import type {
@@ -556,6 +556,11 @@ import type {
 	ReversiSurrenderRequest,
 	ReversiVerifyRequest,
 	ReversiVerifyResponse,
+	MahjongCreateRoomResponse,
+	MahjongJoinRoomRequest,
+	MahjongJoinRoomResponse,
+	MahjongShowRoomRequest,
+	MahjongShowRoomResponse,
 } from './entities.js';
 
 export type Endpoints = {
@@ -926,4 +931,7 @@ export type Endpoints = {
 	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
+	'mahjong/create-room': { req: EmptyRequest; res: MahjongCreateRoomResponse };
+	'mahjong/join-room': { req: MahjongJoinRoomRequest; res: MahjongJoinRoomResponse };
+	'mahjong/show-room': { req: MahjongShowRoomRequest; res: MahjongShowRoomResponse };
 }

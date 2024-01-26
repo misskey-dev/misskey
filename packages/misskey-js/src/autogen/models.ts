@@ -1,6 +1,6 @@
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.450Z
+ * version: 2024.2.0-beta.7
+ * generatedAt: 2024-01-26T05:23:04.907Z
  */
 
 import { components } from './types.js';
@@ -43,3 +43,4 @@ export type RoleLite = components['schemas']['RoleLite'];
 export type Role = components['schemas']['Role'];
 export type ReversiGameLite = components['schemas']['ReversiGameLite'];
 export type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
+export type MahjongRoomDetailed = components['schemas']['MahjongRoomDetailed'];

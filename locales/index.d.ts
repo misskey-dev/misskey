@@ -9604,6 +9604,32 @@ export interface Locale extends ILocale {
          */
         "disallowIrregularRules": string;
     };
+    "_mahjong": {
+        /**
+         * 麻雀
+         */
+        "mahjong": string;
+        /**
+         * ルームに参加
+         */
+        "joinRoom": string;
+        /**
+         * ルームを作成
+         */
+        "createRoom": string;
+        /**
+         * 準備完了
+         */
+        "ready": string;
+        /**
+         * 準備を再開
+         */
+        "cancelReady": string;
+        /**
+         * 退室
+         */
+        "leave": string;
+    };
     "_offlineScreen": {
         /**
          * オフライン - サーバーに接続できません

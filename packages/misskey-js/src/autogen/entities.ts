@@ -1,6 +1,6 @@
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.452Z
+ * version: 2024.2.0-beta.7
+ * generatedAt: 2024-01-26T05:23:04.908Z
  */
 
 import { operations } from './types.js';
@@ -558,3 +558,8 @@ export type ReversiShowGameResponse = operations['reversi/show-game']['responses
 export type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
 export type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
 export type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];
+export type MahjongCreateRoomResponse = operations['mahjong/create-room']['responses']['200']['content']['application/json'];
+export type MahjongJoinRoomRequest = operations['mahjong/join-room']['requestBody']['content']['application/json'];
+export type MahjongJoinRoomResponse = operations['mahjong/join-room']['responses']['200']['content']['application/json'];
+export type MahjongShowRoomRequest = operations['mahjong/show-room']['requestBody']['content']['application/json'];
+export type MahjongShowRoomResponse = operations['mahjong/show-room']['responses']['200']['content']['application/json'];
