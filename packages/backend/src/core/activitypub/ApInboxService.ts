@@ -87,13 +87,13 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: MiRemoteUser, activity: IObject, additionalTo?: MiLocalUser['id']): Promise<void> {
+	public async performActivity(actor: MiRemoteUser, activity: IObject, additionalCc?: MiLocalUser['id']): Promise<void> {
 		if (isCollectionOrOrderedCollection(activity)) {
 			const resolver = this.apResolverService.createResolver();
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
 				const act = await resolver.resolve(item);
 				try {
-					await this.performOneActivity(actor, act, additionalTo);
+					await this.performOneActivity(actor, act, additionalCc);
 				} catch (err) {
 					if (err instanceof Error || typeof err === 'string') {
 						this.logger.error(err);
@@ -103,7 +103,7 @@ export class ApInboxService {
 				}
 			}
 		} else {
-			await this.performOneActivity(actor, activity, additionalTo);
+			await this.performOneActivity(actor, activity, additionalCc);
 		}
 
 		// ついでにリモートユーザーの情報が古かったら更新しておく
@@ -117,15 +117,15 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performOneActivity(actor: MiRemoteUser, activity: IObject, additionalTo?: MiLocalUser['id']): Promise<void> {
+	public async performOneActivity(actor: MiRemoteUser, activity: IObject, additionalCc?: MiLocalUser['id']): Promise<void> {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
-			await this.create(actor, activity, additionalTo);
+			await this.create(actor, activity, additionalCc);
 		} else if (isDelete(activity)) {
 			await this.delete(actor, activity);
 		} else if (isUpdate(activity)) {
-			await this.update(actor, activity, additionalTo);
+			await this.update(actor, activity, additionalCc);
 		} else if (isFollow(activity)) {
 			await this.follow(actor, activity);
 		} else if (isAccept(activity)) {
@@ -346,7 +346,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async create(actor: MiRemoteUser, activity: ICreate, additionalTo?: MiLocalUser['id']): Promise<void> {
+	private async create(actor: MiRemoteUser, activity: ICreate, additionalCc?: MiLocalUser['id']): Promise<void> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Create: ${uri}`);
@@ -375,14 +375,14 @@ export class ApInboxService {
 		});
 
 		if (isPost(object)) {
-			await this.createNote(resolver, actor, object, false, activity, additionalTo);
+			await this.createNote(resolver, actor, object, false, activity, additionalCc);
 		} else {
 			this.logger.warn(`Unknown type: ${getApType(object)}`);
 		}
 	}
 
 	@bindThis
-	private async createNote(resolver: Resolver, actor: MiRemoteUser, note: IObject, silent = false, activity?: ICreate, additionalTo?: MiLocalUser['id']): Promise<string> {
+	private async createNote(resolver: Resolver, actor: MiRemoteUser, note: IObject, silent = false, activity?: ICreate, additionalCc?: MiLocalUser['id']): Promise<string> {
 		const uri = getApId(note);
 
 		if (typeof note === 'object') {
@@ -401,14 +401,20 @@ export class ApInboxService {
 
 		try {
 			const exist = await this.apNoteService.fetchNote(note);
-			if (additionalTo && exist && !await this.noteEntityService.isVisibleForMe(exist, additionalTo)) {
-				await this.noteCreateService.appendNoteVisibleUser(actor, exist, additionalTo);
-				return 'ok: note visible user appended';
-			} else if (exist) {
+			if (exist) {
+				if (additionalCc && !await this.noteEntityService.isVisibleForMe(exist, additionalCc)) {
+					await this.noteCreateService.appendNoteVisibleUser(actor, exist, additionalCc);
+					return 'ok: note visible user appended';
+				}
 				return 'skip: note exists';
 			}
 
-			await this.apNoteService.createNote(note, resolver, silent, additionalTo);
+			const createdNote = await this.apNoteService.createNote(note, resolver, silent);
+			if (createdNote && additionalCc && !await this.noteEntityService.isVisibleForMe(createdNote, additionalCc)) {
+				await this.noteCreateService.appendNoteVisibleUser(actor, createdNote, additionalCc);
+				return 'ok: note visible user appended';
+			}
+
 			return 'ok';
 		} catch (err) {
 			if (err instanceof StatusError && !err.isRetryable) {
@@ -736,7 +742,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async update(actor: MiRemoteUser, activity: IUpdate, additionalTo?: MiLocalUser['id']): Promise<string> {
+	private async update(actor: MiRemoteUser, activity: IUpdate, additionalCc?: MiLocalUser['id']): Promise<string> {
 		if (actor.uri !== activity.actor) {
 			return 'skip: invalid actor';
 		}
@@ -756,14 +762,14 @@ export class ApInboxService {
 		} else if (getApType(object) === 'Question') {
 			await this.apQuestionService.updateQuestion(object, resolver).catch(err => this.logger.error(`err: failed to update question: ${err}`, { error: err }));
 			return 'ok: Question updated';
-		} else if (additionalTo && isPost(object)) {
+		} else if (additionalCc && isPost(object)) {
 			const uri = getApId(object);
 			const unlock = await this.appLockService.getApLock(uri);
 
 			try {
 				const exist = await this.apNoteService.fetchNote(object);
-				if (exist && !await this.noteEntityService.isVisibleForMe(exist, additionalTo)) {
-					await this.noteCreateService.appendNoteVisibleUser(actor, exist, additionalTo);
+				if (exist && !await this.noteEntityService.isVisibleForMe(exist, additionalCc)) {
+					await this.noteCreateService.appendNoteVisibleUser(actor, exist, additionalCc);
 					return 'ok: note visible user appended';
 				} else {
 					return 'skip: nothing to do';
