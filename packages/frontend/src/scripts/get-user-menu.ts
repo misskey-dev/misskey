@@ -170,11 +170,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		action: () => {
 			copyToClipboard(`${user.host ?? host}/@${user.username}.atom`);
 		},
-	}, ...(user.host !== null && user.url !== null ? [{
+	}, ...(user.host != null && user.url != null ? [{
 		icon: 'ti ti-external-link',
 		text: i18n.ts.showOnRemote,
 		action: () => {
-			if (user.url === null) return;
+			if (user.url == null) return;
 			window.open(user.url, '_blank', 'noopener');
 		},
 	}] : []), {
