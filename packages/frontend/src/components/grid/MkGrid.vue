@@ -62,6 +62,10 @@ const { columnSettings, data } = toRefs(props);
 const columns = ref<GridColumn[]>([]);
 const rows = ref<GridRow[]>([]);
 const cells = ref<GridCell[][]>([]);
+const selectedCell = computed(() => {
+	const selected = cells.value.flat().filter(it => it.selected);
+	return selected.length > 0 ? selected[0] : undefined;
+});
 const rangedCells = computed(() => cells.value.flat().filter(it => it.ranged));
 const previousCellAddress = ref<CellAddress>(CELL_ADDRESS_NONE);
 const editingCellAddress = ref<CellAddress>(CELL_ADDRESS_NONE);
@@ -71,35 +75,6 @@ const bus = new GridEventEmitter();
 
 watch(columnSettings, refreshColumnsSetting);
 watch(data, refreshData);
-watch(rangedCells, () => {
-	if (rangedCells.value.length <= 1) {
-		// 範囲セルが1以下の場合、以下の計算が無駄になるのでやらないようにする
-		return;
-	}
-
-	const min = rangedCells.value.reduce(
-		(acc, value) => {
-			return {
-				col: Math.min(acc.col, value.address.col),
-				row: Math.min(acc.row, value.address.row),
-			};
-		},
-		rangedCells.value[0].address,
-	);
-
-	const max = rangedCells.value.reduce(
-		(acc, value) => {
-			return {
-				col: Math.max(acc.col, value.address.col),
-				row: Math.max(acc.row, value.address.row),
-			};
-		},
-		rangedCells.value[0].address,
-	);
-
-	expandRange(min, max);
-});
-
 if (_DEV_) {
 	watch(state, (value) => {
 		console.log(`state: ${value}`);
@@ -138,16 +113,32 @@ function onMouseUp() {
 function onMouseMove(ev: MouseEvent) {
 	switch (state.value) {
 		case 'cellSelecting': {
-			if (isCellElement(ev.target)) {
-				const address = getCellAddress(ev.target);
-				if (!equalCellAddress(previousCellAddress.value, address)) {
-					if (isCellElement(ev.target)) {
-						selectionRange(getCellAddress(ev.target));
-					}
+			const selectedCellAddress = selectedCell.value?.address;
+			const targetCellAddress = getCellAddress(ev.target as HTMLElement);
+			if (equalCellAddress(previousCellAddress.value, targetCellAddress) || !availableCellAddress(targetCellAddress) || !selectedCellAddress) {
+				return;
+			}
 
-					previousCellAddress.value = address;
+			const leftTop = {
+				col: Math.min(targetCellAddress.col, selectedCellAddress.col),
+				row: Math.min(targetCellAddress.row, selectedCellAddress.row),
+			};
+
+			const rightBottom = {
+				col: Math.max(targetCellAddress.col, selectedCellAddress.col),
+				row: Math.max(targetCellAddress.row, selectedCellAddress.row),
+			};
+
+			for (const cell of rangedCells.value) {
+				const outOfRangeCol = cell.address.col < leftTop.col || cell.address.col > rightBottom.col;
+				const outOfRangeRow = cell.address.row < leftTop.row || cell.address.row > rightBottom.row;
+				if (outOfRangeCol || outOfRangeRow) {
+					cell.ranged = false;
 				}
 			}
+
+			expandRange(leftTop, rightBottom);
+			previousCellAddress.value = targetCellAddress;
 
 			break;
 		}
@@ -240,15 +231,9 @@ function onSelectionRow(sender: GridRow) {
 }
 
 function selectionCell(target: CellAddress) {
+	unSelectionRange();
+
 	const _cells = cells.value;
-
-	for (const row of cells.value) {
-		for (const cell of row) {
-			cell.selected = false;
-			cell.ranged = false;
-		}
-	}
-
 	_cells[target.row][target.col].selected = true;
 	_cells[target.row][target.col].ranged = true;
 }
@@ -261,19 +246,17 @@ function selectionRange(...targets: CellAddress[]) {
 }
 
 function unSelectionRange() {
-	const _cells = cells.value;
-	for (const row of _cells) {
-		for (const cell of row) {
-			cell.selected = false;
-			cell.ranged = false;
-		}
+	const _cells = rangedCells.value;
+	for (const cell of _cells) {
+		cell.selected = false;
+		cell.ranged = false;
 	}
 }
 
-function expandRange(min: CellAddress, max: CellAddress) {
-	const targetRows = cells.value.slice(min.row, max.row + 1);
+function expandRange(leftTop: CellAddress, rightBottom: CellAddress) {
+	const targetRows = cells.value.slice(leftTop.row, rightBottom.row + 1);
 	for (const row of targetRows) {
-		for (const cell of row.slice(min.col, max.col + 1)) {
+		for (const cell of row.slice(leftTop.col, rightBottom.col + 1)) {
 			cell.ranged = true;
 		}
 	}

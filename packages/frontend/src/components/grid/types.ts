@@ -90,7 +90,7 @@ export function getCellAddress(elem: HTMLElement, parentNodeCount = 5): CellAddr
 		node = node.parentElement;
 	}
 
-	throw new Error('Cannot get cell address');
+	return CELL_ADDRESS_NONE;
 }
 
 export function equalCellAddress(a: CellAddress, b: CellAddress): boolean {
