@@ -1236,6 +1236,24 @@ _initialTutorial:
       _exampleNote:
         cw: "Això et farà venir gana!"
         note: "Acabo de menjar-me un donut de xocolata 🍩😋"
+      useCases: "Això es fa servir per seguir normes del servidor sobre certes notes o per ocultar contingut sensible O revelador."
+  _howToMakeAttachmentsSensitive:
+    title: "Com marcar adjunts com a contingut sensible?"
+    description: "Per adjunts que sigui requerit per les normes del servidor o que puguin contenir material sensible, s'ha d'afegir l'opció 'sensible'."
+    tryThisFile: "Prova de marcar la imatge adjunta en aquest formulari com a sensible!"
+    _exampleNote:
+      note: "Oops! L'he fet bona en obrir la tapa de Nocilla..."
+    method: "Per marcar un adjunt com a sensible, fes clic a la miniatura de l'adjunt, obre el menú i fes clic a 'Marcar com a sensible'."
+    sensitiveSucceeded: "Quan adjuntis fitxers si us plau marca la sensibilitat seguint les normes del servidor."
+    doItToContinue: "Marca el fitxer adjunt com a sensible per poder continuar."
+  _done:
+    title: "Has completat el tutorial 🎉"
+    description: "Les funcions explicades aquí és una petita mostra. Per una explicació més detallada de com fer servir MissKey consulta {link}."
+_timelineDescription:
+  home: "A la línia de temps d'Inici pots veure les notes dels usuaris que segueixes."
+  local: "A la línia de temps Local pots veure les notes de tots els usuaris d'aquest servidor."
+  social: "La línia de temps Social mostren les notes de les línies de temps d'Inici i Local."
+  global: "A la línia de temps Global pots veure les notes de tots els servidors connectats."
 _role:
   assignTarget: "Assignar "
   priority: "Prioritat"
