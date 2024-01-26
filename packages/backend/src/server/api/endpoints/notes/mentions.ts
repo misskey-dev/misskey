@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -60,13 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('following.followerId = :followerId', { followerId: me.id });
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-				.andWhere(new Brackets(qb => {
-					qb // このmeIdAsListパラメータはqueryServiceのgenerateVisibilityQueryでセットされる
-						.where(':meIdAsList <@ note.mentions')
-						.orWhere(':meIdAsList <@ note.visibleUserIds');
-				}))
-				// Avoid scanning primary key index
-				.orderBy('CONCAT(note.id)', 'DESC')
+				.andWhere(':meIdAsList <@ note.mentions') // このmeIdAsListパラメータはqueryServiceのgenerateVisibilityQueryでセットされる
+				.orderBy('CONCAT(note.id)', 'DESC') // Avoid scanning primary key index
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
