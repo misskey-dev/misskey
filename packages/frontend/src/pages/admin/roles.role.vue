@@ -104,7 +104,7 @@ function edit() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: role.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: role.name }),
 	});
 	if (canceled) return;
 

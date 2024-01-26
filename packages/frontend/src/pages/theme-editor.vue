@@ -208,7 +208,7 @@ async function saveAs() {
 	changed.value = false;
 	os.alert({
 		type: 'success',
-		text: i18n.t('_theme.installed', { name: theme.value.name }),
+		text: i18n.tsx._theme.installed({ name: theme.value.name }),
 	});
 }
 
