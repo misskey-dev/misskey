@@ -1226,6 +1226,19 @@ _initialTutorial:
   _reaction:
     title: "Was sind Reaktionen?"
     reactToContinue: "Füge eine Reaktion hinzu, um fortzufahren."
+    reactNotification: "Du erhältst Echtzeit-Benachrichtigungen, wenn jemand auf deine Notiz reagiert."
+  _postNote:
+    _visibility:
+      description: "Du kannst einschränken, wer deine Notiz sehen kann."
+      public: "Deine Notiz wird für alle Nutzer sichtbar sein."
+      doNotSendConfidencialOnDirect1: "Sei vorsichtig, wenn du sensible Informationen verschickst!"
+    _cw:
+      title: "Inhaltswarnung"
+  _done:
+    title: "Du hast das Tutorial abgeschlossen! 🎉"
+_timelineDescription:
+  local: "In der lokalen Chronik siehst du Notizen von allen Benutzern auf diesem Server."
+  global: "In der globalen Chronik siehst du Notizen von allen föderierten Servern."
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
 _serverSettings:
@@ -1497,6 +1510,8 @@ _achievements:
     _smashTestNotificationButton:
       title: "Testüberfluss"
       description: "Betätige den Benachrichtigungstest mehrfach innerhalb einer extrem kurzen Zeitspanne"
+    _tutorialCompleted:
+      description: "Tutorial abgeschlossen"
 _role:
   new: "Rolle erstellen"
   edit: "Rolle bearbeiten"
@@ -2266,5 +2281,9 @@ _externalResourceInstaller:
       title: "Das Farbschema konnte nicht installiert werden"
       description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
 _reversi:
+  blackOrWhite: "Schwarz/Weiß"
+  rules: "Regeln"
+  black: "Schwarz"
+  white: "Weiß"
   total: "Gesamt"
 
