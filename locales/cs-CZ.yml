@@ -366,6 +366,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Aktivovat hCaptchu"
 hcaptchaSiteKey: "Klíč stránky"
 hcaptchaSecretKey: "Tajný Klíč (Secret Key)"
+mcaptchaSiteKey: "Klíč stránky"
+mcaptchaSecretKey: "Tajný Klíč (Secret Key)"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Zapnout ReCAPTCHu"
 recaptchaSiteKey: "Klíč stránky"
@@ -1093,6 +1095,7 @@ icon: "Avatar"
 replies: "Odpovědět"
 renotes: "Přeposlat"
 flip: "Otočit"
+lastNDays: "Posledních {n} dnů"
 _initialAccountSetting:
   accountCreated: "Váš účet byl úspěšně vytvořen!"
   letsStartAccountSetup: "Pro začátek si nastavte svůj profil."
@@ -1825,6 +1828,7 @@ _profile:
 _exportOrImport:
   allNotes: "Všechny poznámky"
   favoritedNotes: "Oblíbené poznámky"
+  clips: "Oříznout"
   followingList: "Sledovaní"
   muteList: "Ztlumit"
   blockingList: "Zablokovat"
@@ -2016,3 +2020,6 @@ _moderationLogTypes:
   suspend: "Zmrazit"
   resetPassword: "Resetovat heslo"
   createInvitation: "Vygenerovat pozvánku"
+_reversi:
+  total: "Celkem"
+

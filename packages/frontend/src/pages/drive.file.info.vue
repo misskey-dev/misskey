@@ -180,7 +180,7 @@ async function deleteFile() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: file.value.name }),
+		text: i18n.tsx.driveFileDeleteConfirm({ name: file.value.name }),
 	});
 
 	if (canceled) return;

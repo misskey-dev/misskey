@@ -1,8 +1,8 @@
 import { ModerationLogPayloads } from './consts.js';
-import { Announcement, EmojiDetailed, MeDetailed, MeDetailedOnly, Page, User, UserDetailed } from './autogen/models';
+import { Announcement, EmojiDetailed, MeDetailed, MeDetailedOnly, Page, User, UserDetailed } from './autogen/models.js';
 
-export * from './autogen/entities';
-export * from './autogen/models';
+export * from './autogen/entities.js';
+export * from './autogen/models.js';
 
 export type ID = string;
 export type DateString = string;

@@ -13,6 +13,7 @@ import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkCode from '@/components/MkCode.vue';
+import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
@@ -61,12 +62,12 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 		if (t == null) return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
-	
+
 	const validColor = (c: string | null | undefined): string | null => {
 		if (c == null) return null;
 		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
 	};
-	
+
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
 
 	/**
@@ -117,7 +118,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
 						break;
 					}
 					case 'jelly': {
@@ -266,7 +267,7 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 						) b_style = 'solid';
 						const width = parseFloat(token.props.args.width ?? '1');
 						const radius = parseFloat(token.props.args.radius ?? '0');
-						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px`;
+						style = `border: ${width}px ${b_style} ${color}; border-radius: ${radius}px;${token.props.args.noclip ? '' : ' overflow: clip;'}`;
 						break;
 					}
 					case 'ruby': {
@@ -373,10 +374,9 @@ export default function(props: MfmProps, context: SetupContext<MfmEvents>) {
 			}
 
 			case 'inlineCode': {
-				return [h(MkCode, {
+				return [h(MkCodeInline, {
 					key: Math.random(),
 					code: token.props.code,
-					inline: true,
 				})];
 			}
 
