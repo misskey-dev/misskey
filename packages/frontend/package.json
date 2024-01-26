@@ -98,7 +98,6 @@
 		"@storybook/vue3": "7.6.10",
 		"@storybook/vue3-vite": "7.6.10",
 		"@testing-library/vue": "8.0.1",
-		"@types/blueimp-load-image": "^5.16.6",
 		"@types/escape-regexp": "0.0.3",
 		"@types/estree": "1.0.5",
 		"@types/matter-js": "0.19.6",

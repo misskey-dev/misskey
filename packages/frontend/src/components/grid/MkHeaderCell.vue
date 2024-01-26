@@ -6,7 +6,7 @@
 >
 	<div :class="$style.root">
 		<div :class="$style.left"/>
-		<div :class="$style.wrapper" @mouseup="onContentMouseUp">
+		<div :class="$style.wrapper">
 			<div ref="contentEl" :class="$style.contentArea">
 				{{ text }}
 			</div>
@@ -22,15 +22,14 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, toRefs, watch } from 'vue';
-import { GridColumn, GridEventEmitter } from '@/components/grid/types.js';
+import { GridColumn, GridEventEmitter, Size } from '@/components/grid/types.js';
 
 const emit = defineEmits<{
-	// ヘッダのサイズ変更系イベントはセル全体の横幅設定に影響するので上位コンポーネントにリレーする必要あり
-	(ev: 'width:begin-change', sender: GridColumn): void;
-	(ev: 'width:end-change', sender: GridColumn): void;
-	(ev: 'width:changing', sender: GridColumn, width: string): void;
-	(ev: 'width:largest', sender: GridColumn): void;
-	(ev: 'selection:column', sender: GridColumn): void;
+	(ev: 'operation:beginWidthChange', sender: GridColumn): void;
+	(ev: 'operation:endWidthChange', sender: GridColumn): void;
+	(ev: 'operation:widthLargest', sender: GridColumn): void;
+	(ev: 'change:width', sender: GridColumn, width: string): void;
+	(ev: 'change:contentSize', sender: GridColumn, newSize: Size): void;
 }>();
 const props = defineProps<{
 	column: GridColumn,
@@ -54,19 +53,10 @@ watch(column, () => {
 	nextTick(updateContentSize);
 });
 
-function onContentMouseUp(ev: MouseEvent) {
-	switch (ev.type) {
-		case 'mouseup': {
-			emit('selection:column', column.value);
-			break;
-		}
-	}
-}
-
 function onHandleDoubleClick(ev: MouseEvent) {
 	switch (ev.type) {
 		case 'dblclick': {
-			emit('width:largest', column.value);
+			emit('operation:widthLargest', column.value);
 			break;
 		}
 	}
@@ -79,7 +69,7 @@ function onHandleMouseDown(ev: MouseEvent) {
 				registerHandleMouseUp();
 				registerHandleMouseMove();
 				resizing.value = true;
-				emit('width:begin-change', column.value);
+				emit('operation:beginWidthChange', column.value);
 			}
 			break;
 		}
@@ -99,7 +89,7 @@ function onHandleMouseMove(ev: MouseEvent) {
 				const clientWidth = rootEl.value.clientWidth;
 				const clientRight = bounds.left + clientWidth;
 				const nextWidth = clientWidth + (ev.clientX - clientRight);
-				emit('width:changing', column.value, `${nextWidth}px`);
+				emit('change:width', column.value, `${nextWidth}px`);
 			}
 			break;
 		}
@@ -113,7 +103,7 @@ function onHandleMouseUp(ev: MouseEvent) {
 				unregisterHandleMouseUp();
 				unregisterHandleMouseMove();
 				resizing.value = false;
-				emit('width:end-change', column.value);
+				emit('operation:endWidthChange', column.value);
 			}
 			break;
 		}
@@ -141,17 +131,17 @@ function unregisterHandleMouseUp() {
 function updateContentSize() {
 	const clientWidth = contentEl.value?.clientWidth ?? 0;
 	const clientHeight = contentEl.value?.clientHeight ?? 0;
-	column.value.contentSize = {
+	emit('change:contentSize', column.value, {
 		// バーの横幅も考慮したいので、+3px
 		width: clientWidth + 3 + 3,
 		height: clientHeight,
-	};
+	});
 }
 
 </script>
 
 <style module lang="scss">
-$handleWidth: 3px;
+$handleWidth: 5px;
 
 .cell {
 	border-left: solid 0.5px var(--divider);
@@ -180,6 +170,8 @@ $handleWidth: 3px;
 	}
 
 	.left {
+		// rightのぶんだけズレるのでそれを相殺するためのネガティブマージン
+		margin-left: -$handleWidth;
 		margin-right: auto;
 		width: $handleWidth;
 		min-width: $handleWidth;
@@ -187,9 +179,12 @@ $handleWidth: 3px;
 
 	.right {
 		margin-left: auto;
+		// 判定を罫線の上に重ねたいのでネガティブマージンを使う
+		margin-right: -$handleWidth;
 		width: $handleWidth;
 		min-width: $handleWidth;
 		cursor: w-resize;
+		z-index: 1;
 	}
 }
 </style>

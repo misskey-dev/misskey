@@ -905,9 +905,6 @@ importers:
       '@testing-library/vue':
         specifier: 8.0.1
         version: 8.0.1(@vue/compiler-sfc@3.4.3)(vue@3.4.15)
-      '@types/blueimp-load-image':
-        specifier: ^5.16.6
-        version: 5.16.6
       '@types/escape-regexp':
         specifier: 0.0.3
         version: 0.0.3
@@ -7874,10 +7871,6 @@ packages:
 
   /@types/bcryptjs@2.4.6:
     resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
-    dev: true
-
-  /@types/blueimp-load-image@5.16.6:
-    resolution: {integrity: sha512-e7s6CdDCUoBQdCe62Q6OS+DF68M8+ABxCEMh2Isjt4Fl3xuddljCHMN8mak48AMSVGGwUUtNRaZbkzgL5PEWew==}
     dev: true
 
   /@types/body-parser@1.19.5:

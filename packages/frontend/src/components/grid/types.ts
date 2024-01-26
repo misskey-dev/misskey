@@ -4,7 +4,7 @@ export type CellValue = string | boolean | number | undefined | null
 
 export type DataSource = Record<string, CellValue>;
 
-export type GridState = 'normal' | 'cellSelecting' | 'cellEditing' | 'colResizing'
+export type GridState = 'normal' | 'cellSelecting' | 'cellEditing' | 'colResizing' | 'colSelecting' | 'rowSelecting'
 
 export type RowState = 'normal' | 'added' | 'deleted'
 

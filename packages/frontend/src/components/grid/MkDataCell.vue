@@ -54,13 +54,15 @@ import {
 	equalCellAddress,
 	getCellAddress,
 	GridCell,
-	GridEventEmitter,
+	GridEventEmitter, Size,
 } from '@/components/grid/types.js';
 
 const emit = defineEmits<{
-	(ev: 'edit:begin', sender: GridCell): void;
-	(ev: 'edit:end', sender: GridCell): void;
-	(ev: 'selection:move', sender: GridCell, next: CellAddress): void;
+	(ev: 'operation:beginEdit', sender: GridCell): void;
+	(ev: 'operation:endEdit', sender: GridCell): void;
+	(ev: 'operation:selectionMove', sender: GridCell, next: CellAddress): void;
+	(ev: 'change:value', sender: GridCell, newValue: CellValue): void;
+	(ev: 'change:contentSize', sender: GridCell, newSize: Size): void;
 }>();
 const props = defineProps<{
 	cell: GridCell,
@@ -87,10 +89,9 @@ const needsContentCentering = computed(() => {
 	}
 });
 
-watch(cellWidth, updateContentSize);
 watch(() => [cell, cell.value.value], () => {
 	// 中身がセットされた直後はサイズが分からないので、次のタイミングで更新する
-	nextTick(updateContentSize);
+	nextTick(emitContentSizeChanged);
 });
 watch(() => cell.value.selected, () => {
 	if (cell.value.selected) {
@@ -116,42 +117,11 @@ function onOutsideMouseDown(ev: MouseEvent) {
 
 function onCellKeyDown(ev: KeyboardEvent) {
 	if (!editing.value) {
+		ev.preventDefault();
 		switch (ev.code) {
 			case 'Enter':
 			case 'F2': {
 				beginEditing();
-				break;
-			}
-			case 'ArrowRight': {
-				const next = {
-					col: cell.value.address.col + 1,
-					row: cell.value.address.row,
-				};
-				emit('selection:move', cell.value, next);
-				break;
-			}
-			case 'ArrowLeft': {
-				const next = {
-					col: cell.value.address.col - 1,
-					row: cell.value.address.row,
-				};
-				emit('selection:move', cell.value, next);
-				break;
-			}
-			case 'ArrowUp': {
-				const next = {
-					col: cell.value.address.col,
-					row: cell.value.address.row - 1,
-				};
-				emit('selection:move', cell.value, next);
-				break;
-			}
-			case 'ArrowDown': {
-				const next = {
-					col: cell.value.address.col,
-					row: cell.value.address.row + 1,
-				};
-				emit('selection:move', cell.value, next);
 				break;
 			}
 		}
@@ -193,9 +163,10 @@ function beginEditing() {
 			editingValue.value = cell.value.value;
 			editing.value = true;
 			registerOutsideMouseDown();
-			emit('edit:begin', cell.value);
+			emit('operation:beginEdit', cell.value);
 
 			nextTick(() => {
+				// inputの展開後にフォーカスを当てたい
 				if (inputAreaEl.value) {
 					(inputAreaEl.value.querySelector('*') as HTMLElement).focus();
 				}
@@ -204,7 +175,7 @@ function beginEditing() {
 		}
 		case 'boolean': {
 			// とくに特殊なUIは設けず、トグルするだけ
-			cell.value.value = !cell.value.value;
+			emitValueChange(!cell.value.value);
 			break;
 		}
 	}
@@ -215,22 +186,28 @@ function endEditing(applyValue: boolean) {
 		return;
 	}
 
-	emit('edit:end', cell.value);
+	emit('operation:endEdit', cell.value);
 	unregisterOutsideMouseDown();
 
 	if (applyValue) {
-		cell.value.value = editingValue.value;
+		emitValueChange(editingValue.value);
 	}
+
+	editingValue.value = undefined;
 	editing.value = false;
 
 	rootEl.value?.focus();
 }
 
-function updateContentSize() {
-	cell.value.contentSize = {
+function emitValueChange(newValue: CellValue) {
+	emit('change:value', cell.value, newValue);
+}
+
+function emitContentSizeChanged() {
+	emit('change:contentSize', cell.value, {
 		width: contentAreaEl.value?.clientWidth ?? 0,
 		height: contentAreaEl.value?.clientHeight ?? 0,
-	};
+	});
 }
 
 </script>
