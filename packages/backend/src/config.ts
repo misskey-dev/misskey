@@ -56,6 +56,9 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
+	tagging: {
+		defaultTag: string;
+	};
 
 	proxy?: string;
 	proxySmtp?: string;
@@ -124,6 +127,9 @@ export type Config = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	} | undefined;
+	tagging: {
+		defaultTag: string;
+	};
 	proxy: string | undefined;
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
@@ -261,6 +267,7 @@ export function loadConfig(): Config {
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
+		tagging: config.tagging,
 	};
 }
 
