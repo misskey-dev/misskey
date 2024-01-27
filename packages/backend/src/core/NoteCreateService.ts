@@ -59,6 +59,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { loadConfig } from '@/config.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
@@ -916,11 +917,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			// デフォルトハッシュタグ
 			const config = loadConfig();
-			if (note.visibility === 'public' && note.tags.includes(String(config.tagging.defaultTag))) {
-				this.fanoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
-				this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
-				if (note.fileIds.length > 0) {
-					this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+			let defaultTag:string | null = config.tagging.defaultTag;
+			if (defaultTag != null) {
+				if (note.visibility === 'public' && note.tags.includes(normalizeForSearch(defaultTag))) {
+					this.fanoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
+					this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
+					if (note.fileIds.length > 0) {
+						this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+					}
 				}
 			}
 
