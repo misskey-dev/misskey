@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.389Z
+ * version: 2023.12.2-nade1.4.6
+ * generatedAt: 2024-01-27T05:12:20.041Z
  */
 
 /**
@@ -40,7 +40,6 @@ export type paths = {
      * admin/accounts/create
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     post: operations['admin/accounts/create'];
@@ -2464,6 +2463,33 @@ export type paths = {
      */
     post: operations['renote-mute/list'];
   };
+  '/note-notification/create': {
+    /**
+     * note-notification/create
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['note-notification/create'];
+  };
+  '/note-notification/delete': {
+    /**
+     * note-notification/delete
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['note-notification/delete'];
+  };
+  '/note-notification/list': {
+    /**
+     * note-notification/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes*
+     */
+    post: operations['note-notification/list'];
+  };
   '/my/apps': {
     /**
      * my/apps
@@ -3829,6 +3855,18 @@ export type components = {
       /** Format: id */
       noteId: string;
     };
+    NoteNotification: {
+      /**
+       * Format: id
+       * @example xxxxxxxxxx
+       */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: id */
+      userId: string;
+      user: components['schemas']['UserDetailed'];
+    };
     Notification: {
       /** Format: id */
       id: string;
@@ -4620,7 +4658,6 @@ export type operations = {
    * admin/accounts/create
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *No*
    */
   'admin/accounts/create': {
@@ -19287,6 +19324,180 @@ export type operations = {
     };
   };
   /**
+   * note-notification/create
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'note-notification/create': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * note-notification/delete
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'note-notification/delete': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * note-notification/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes*
+   */
+  'note-notification/list': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 30 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['NoteNotification'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * my/apps
    * @description No description provided.
    *
@@ -20053,6 +20264,8 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
+          /** @default false */
+          withBelowPublic?: boolean;
           /** @default 10 */
           limit?: number;
           /** Format: misskey:id */

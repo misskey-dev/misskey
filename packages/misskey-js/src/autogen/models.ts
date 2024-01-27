@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.485Z
+ * version: 2023.12.2-nade1.4.6
+ * generatedAt: 2024-01-27T05:12:20.107Z
  */
 
 import { components } from './types.js';
@@ -19,6 +19,7 @@ export type App = components['schemas']['App'];
 export type Note = components['schemas']['Note'];
 export type NoteReaction = components['schemas']['NoteReaction'];
 export type NoteFavorite = components['schemas']['NoteFavorite'];
+export type NoteNotification = components['schemas']['NoteNotification'];
 export type Notification = components['schemas']['Notification'];
 export type DriveFile = components['schemas']['DriveFile'];
 export type DriveFolder = components['schemas']['DriveFolder'];

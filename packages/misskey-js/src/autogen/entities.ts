@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.489Z
+ * version: 2023.12.2-nade1.4.6
+ * generatedAt: 2024-01-27T05:12:20.107Z
  */
 
 import { operations } from './types.js';
@@ -381,6 +381,10 @@ export type RenoteMuteCreateRequest = operations['renote-mute/create']['requestB
 export type RenoteMuteDeleteRequest = operations['renote-mute/delete']['requestBody']['content']['application/json'];
 export type RenoteMuteListRequest = operations['renote-mute/list']['requestBody']['content']['application/json'];
 export type RenoteMuteListResponse = operations['renote-mute/list']['responses']['200']['content']['application/json'];
+export type NoteNotificationCreateRequest = operations['note-notification/create']['requestBody']['content']['application/json'];
+export type NoteNotificationDeleteRequest = operations['note-notification/delete']['requestBody']['content']['application/json'];
+export type NoteNotificationListRequest = operations['note-notification/list']['requestBody']['content']['application/json'];
+export type NoteNotificationListResponse = operations['note-notification/list']['responses']['200']['content']['application/json'];
 export type MyAppsRequest = operations['my/apps']['requestBody']['content']['application/json'];
 export type MyAppsResponse = operations['my/apps']['responses']['200']['content']['application/json'];
 export type NotesRequest = operations['notes']['requestBody']['content']['application/json'];
