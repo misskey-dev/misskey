@@ -1344,6 +1344,8 @@ _achievements:
     _open3windows:
       title: "Multi finestres"
       description: "I va obrir més de tres finestres"
+    _driveFolderCircularReference:
+      title: "Consulteu la secció de bucle"
 _role:
   assignTarget: "Assignar "
   priority: "Prioritat"
