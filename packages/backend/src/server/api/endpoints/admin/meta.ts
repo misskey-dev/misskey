@@ -444,6 +444,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			enableGDPRMode: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			DiscordWebhookUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -576,7 +580,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notesPerOneAd: instance.notesPerOneAd,
 				DiscordWebhookUrl: instance.DiscordWebhookUrl,
 				EmojiBotToken: instance.EmojiBotToken,
-				ApiBase: instance.ApiBase
+				ApiBase: instance.ApiBase,
+				enableGDPRMode: instance.enableGDPRMode,
 			};
 		});
 	}

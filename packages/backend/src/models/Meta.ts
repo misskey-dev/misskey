@@ -601,4 +601,9 @@ export class MiMeta {
 		default: false,
 	})
 	public requestEmojiAllOk: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableGDPRMode: boolean;
 }

@@ -3,14 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setImmediate } from 'node:timers/promises';
 import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
-import type { AbuseUserReportsRepository } from '@/models/_.js';
+import { In } from 'typeorm';
+import type { AbuseUserReportsRepository, NotesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { EmailService } from '@/core/EmailService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -50,6 +53,7 @@ export const paramDef = {
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
 		comment: { type: 'string', minLength: 1, maxLength: 2048 },
+		noteIds: { type: 'array', items: { type: 'string', format: 'misskey:id', maxLength: 16 } },
 	},
 	required: ['userId', 'comment'],
 } as const;
@@ -60,11 +64,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private idService: IdService,
 		private metaService: MetaService,
 		private emailService: EmailService,
 		private getterService: GetterService,
 		private roleService: RoleService,
+		private noteEntityService: NoteEntityService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -82,6 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
+			const notes = ps.noteIds ? await this.notesRepository.find({
+				where: { id: In(ps.noteIds), userId: user.id },
+			}) : [];
+
 			const report = await this.abuseUserReportsRepository.insert({
 				id: this.idService.gen(),
 				targetUserId: user.id,
@@ -89,6 +101,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
+				notes: (ps.noteIds && !((await this.metaService.fetch()).enableGDPRMode)) ? await this.noteEntityService.packMany(notes) : [],
+				noteIds: (ps.noteIds && (await this.metaService.fetch()).enableGDPRMode) ? ps.noteIds : [],
 			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
 
 			// Publish event to moderators
@@ -101,9 +115,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						targetUserId: report.targetUserId,
 						reporterId: report.reporterId,
 						comment: report.comment,
+						notes: report.notes,
+						noteIds: report.noteIds ?? [],
 					});
 				}
-
 				const meta = await this.metaService.fetch();
 				if (meta.email) {
 					this.emailService.sendEmail(meta.email, 'New abuse report',

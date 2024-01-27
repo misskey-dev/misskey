@@ -60,6 +60,16 @@ export class MiAbuseUserReport {
 	})
 	public comment: string;
 
+	@Column('jsonb', {
+		default: [],
+	})
+	public notes: any[];
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public noteIds: string[] | null;
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {

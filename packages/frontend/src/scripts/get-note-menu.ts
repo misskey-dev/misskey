@@ -103,7 +103,7 @@ export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): Men
 			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
 			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 				user: note.user,
-				initialComment: `Note: ${u}\n-----\n`,
+				initialNoteId: note.id,
 			}, {}, 'closed');
 		},
 	};

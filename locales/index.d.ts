@@ -2916,6 +2916,7 @@ export interface Locale extends ILocale {
      * 送信
      */
     "send": string;
+    "reportedNote": string;
     /**
      * ファイル付きのみ
      */
@@ -3703,6 +3704,7 @@ export interface Locale extends ILocale {
     /**
      * 未読
      */
+    "enableGDPRMode": string;
     "unread": string;
     /**
      * フィルタ
