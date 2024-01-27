@@ -273,7 +273,7 @@ onDeactivated(() => {
 
 .hidden {
 	width: 100%;
-	background: none;
+	background: #000;
 	border: none;
 	outline: none;
 	font: inherit;

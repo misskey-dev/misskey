@@ -2033,9 +2033,9 @@ _auth:
 _antennaSources:
   all: "みんなのノート"
   homeTimeline: "フォローしとるユーザーのノート"
-  users: "選らんだ一人か複数のユーザーのノート"
+  users: "選んだ一人か複数のユーザーのノート"
   userList: "選んだリストのユーザーのノート"
-  userBlacklist: "選んだ１人か複数のユーザーのノート"
+  userBlacklist: "選んだ一人か複数のユーザーを除いた全てのノート"
 _weekday:
   sunday: "日曜日"
   monday: "月曜日"
@@ -2485,6 +2485,8 @@ _reversi:
   shareToTlTheGameWhenStart: "初めの時に対局をタイムラインに投稿するで"
   iStartedAGame: "対局し始めたで！ #MisskeyReversi"
   opponentHasSettingsChanged: "相手が設定変えたで"
+  allowIrregularRules: "変則許可 (完全フリー)"
+  disallowIrregularRules: "変則なし"
 _offlineScreen:
   title: "オフライン - サーバーに接続できひんで"
   header: "サーバーに接続できへんわ"
