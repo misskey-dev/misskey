@@ -919,7 +919,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			const config = loadConfig();
 			let defaultTag:string | null = config.tagging.defaultTag;
 			if (defaultTag != null) {
-				if (note.visibility === 'public' && note.tags.includes(normalizeForSearch(defaultTag))) {
+				const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
+				if (note.visibility === 'public' && noteTags.includes(normalizeForSearch(defaultTag))) {
 					this.fanoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 					this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
