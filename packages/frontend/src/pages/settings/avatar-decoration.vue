@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div v-if="!loading" class="_gaps">
-		<MkInfo>{{ i18n.t('_profile.avatarDecorationMax', { max: $i.policies.avatarDecorationLimit }) }} ({{ i18n.t('remainingN', { n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
+		<MkInfo>{{ i18n.tsx._profile.avatarDecorationMax({ max: $i.policies.avatarDecorationLimit }) }} ({{ i18n.tsx.remainingN({ n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
 
 		<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration/>
 
@@ -50,15 +50,18 @@ import * as Misskey from 'misskey-js';
 import XDecoration from './avatar-decoration.decoration.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+
+const $i = signinRequired();
 
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
 
-os.api('get-avatar-decorations').then(_avatarDecorations => {
+misskeyApi('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;
 	loading.value = false;
 });

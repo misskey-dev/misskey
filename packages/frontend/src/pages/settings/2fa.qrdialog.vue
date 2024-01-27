@@ -110,7 +110,9 @@ import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { confetti } from '@/scripts/confetti.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 defineProps<{
 	twoFactorData: {
@@ -151,7 +153,7 @@ function downloadBackupCodes() {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
 		const dummya = document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i?.username}-2fa-backup-codes.txt`;
+		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
 		dummya.click();
 	}
 }

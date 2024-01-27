@@ -1,0 +1,48 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 100
+
+# Add only the root, not each workspace item
+# https://github.com/dependabot/dependabot-core/issues/4993#issuecomment-1289133027
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  # List dependencies required to be updated together, sharing the same version numbers.
+  # Those who simply have the common owner (e.g. @fastify) don't need to be listed.
+  groups:
+    aws-sdk:
+      patterns:
+        - "@aws-sdk/*"
+    bull-board:
+      patterns:
+        - "@bull-board/*"
+    nestjs:
+      patterns:
+        - "@nestjs/*"
+    slacc:
+      patterns:
+        - "slacc-*"
+    storybook:
+      patterns:
+        - "storybook*"
+        - "@storybook/*"
+    swc-core:
+      patterns:
+        - "@swc/core*"
+    typescript-eslint:
+      patterns:
+        - "@typescript-eslint/*"
+    tensorflow:
+      patterns:
+        - "@tensorflow/*"

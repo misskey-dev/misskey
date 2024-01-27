@@ -62,7 +62,7 @@ import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
@@ -85,12 +85,12 @@ const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserDetailed | null>(null);
 const dialogEl = ref();
 
-const search = () => {
+function search() {
 	if (username.value === '' && host.value === '') {
 		users.value = [];
 		return;
 	}
-	os.api('users/search-by-username-and-host', {
+	misskeyApi('users/search-by-username-and-host', {
 		username: username.value,
 		host: host.value,
 		limit: 10,
@@ -98,9 +98,9 @@ const search = () => {
 	}).then(_users => {
 		users.value = _users;
 	});
-};
+}
 
-const ok = () => {
+function ok() {
 	if (selected.value == null) return;
 	emit('ok', selected.value);
 	dialogEl.value.close();
@@ -110,15 +110,15 @@ const ok = () => {
 	recents = recents.filter(x => x !== selected.value.id);
 	recents.unshift(selected.value.id);
 	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
-};
+}
 
-const cancel = () => {
+function cancel() {
 	emit('cancel');
 	dialogEl.value.close();
-};
+}
 
 onMounted(() => {
-	os.api('users/show', {
+	misskeyApi('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(users => {
 		if (props.includeSelf && users.find(x => $i ? x.id === $i.id : true) == null) {

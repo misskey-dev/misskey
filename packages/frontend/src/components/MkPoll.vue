@@ -11,12 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
 				<Mfm :text="choice.text" :plain="true"/>
-				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.t('_poll.votesCount', { n: choice.votes }) }})</span>
+				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="!readOnly" :class="$style.info">
-		<span>{{ i18n.t('_poll.totalVotes', { n: total }) }}</span>
+		<span>{{ i18n.tsx._poll.totalVotes({ n: total }) }}</span>
 		<span> · </span>
 		<a v-if="!closed && !isVoted" style="color: inherit;" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
 		<span v-if="isVoted">{{ i18n.ts._poll.voted }}</span>
@@ -32,11 +32,13 @@ import * as Misskey from 'misskey-js';
 import { sum } from '@/scripts/array.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import { WithNonNullable } from '@/type.js';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: WithNonNullable<Misskey.entities.Note, 'poll'>;
 	readOnly?: boolean;
 }>();
 
@@ -45,10 +47,11 @@ const remaining = ref(-1);
 const total = computed(() => sum(props.note.poll.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
 const isVoted = computed(() => !props.note.poll.multiple && props.note.poll.choices.some(c => c.isVoted));
-const timer = computed(() => i18n.t(
-	remaining.value >= 86400 ? '_poll.remainingDays' :
-	remaining.value >= 3600 ? '_poll.remainingHours' :
-	remaining.value >= 60 ? '_poll.remainingMinutes' : '_poll.remainingSeconds', {
+const timer = computed(() => i18n.tsx._poll[
+		remaining.value >= 86400 ? 'remainingDays' :
+		remaining.value >= 3600 ? 'remainingHours' :
+		remaining.value >= 60 ? 'remainingMinutes' : 'remainingSeconds'
+	]({
 		s: Math.floor(remaining.value % 60),
 		m: Math.floor(remaining.value / 60) % 60,
 		h: Math.floor(remaining.value / 3600) % 24,
@@ -79,11 +82,11 @@ const vote = async (id) => {
 
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.t('voteConfirm', { choice: props.note.poll.choices[id].text }),
+		text: i18n.tsx.voteConfirm({ choice: props.note.poll.choices[id].text }),
 	});
 	if (canceled) return;
 
-	await os.api('notes/polls/vote', {
+	await misskeyApi('notes/polls/vote', {
 		noteId: props.note.id,
 		choice: id,
 	});

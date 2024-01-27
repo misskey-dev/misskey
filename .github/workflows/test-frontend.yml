@@ -6,6 +6,12 @@ on:
       - nyaone
       - nyadev
   pull_request:
+    paths:
+      - packages/frontend/**
+      # for permissions
+      - packages/misskey-js/**
+      # for e2e
+      - packages/backend/**
 
 jobs:
   vitest:

@@ -313,7 +313,7 @@ function more(ev: MouseEvent) {
 		left: 20px;
 		color: var(--navIndicator);
 		font-size: 8px;
-		animation: blink 1s infinite;
+		animation: global-blink 1s infinite;
 
 		&:has(.itemIndicateValueIcon) {
 			animation: none;
@@ -483,7 +483,7 @@ function more(ev: MouseEvent) {
 		left: 24px;
 		color: var(--navIndicator);
 		font-size: 8px;
-		animation: blink 1s infinite;
+		animation: global-blink 1s infinite;
 
 		&:has(.itemIndicateValueIcon) {
 			animation: none;

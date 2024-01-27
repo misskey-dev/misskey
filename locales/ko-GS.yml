@@ -373,6 +373,8 @@ hcaptcha: "에이치캡차"
 enableHcaptcha: "에이치캡차 키기"
 hcaptchaSiteKey: "사이트키"
 hcaptchaSecretKey: "시크릿키"
+mcaptchaSiteKey: "사이트키"
+mcaptchaSecretKey: "시크릿키"
 recaptcha: "리캡차"
 enableRecaptcha: "리캡차 키기"
 recaptchaSiteKey: "사이트키"
@@ -680,6 +682,7 @@ _profile:
   name: "이럼"
   username: "사용자 이럼"
 _exportOrImport:
+  clips: "클립 맨걸기"
   followingList: "팔로잉"
   muteList: "수ᇚ후기"
   blockingList: "차단하기"
@@ -721,3 +724,6 @@ _moderationLogTypes:
   deleteUserAnnouncement: "사용자 공지 걸 뭉캐기"
   resetPassword: "비밀번호 재설정"
   resolveAbuseReport: "신고 해겔하기"
+_reversi:
+  total: "합계"
+
