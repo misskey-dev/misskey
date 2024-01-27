@@ -38,7 +38,9 @@ class MahjongRoomChannel extends Channel {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'addAi': this.addAi(); break;
-			case 'putStone': this.putStone(body.pos, body.id); break;
+			case 'dahai': this.dahai(body.tile, body.id); break;
+			case 'pon': this.pon(); break;
+			case 'nop': this.nop(); break;
 			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
 		}
 	}
@@ -65,10 +67,24 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-	private async putStone(pos: number, id: string) {
+	private async dahai(tile: string, id: string) {
 		if (this.user == null) return;
 
-		this.mahjongService.putStoneToRoom(this.roomId!, this.user, pos, id);
+		this.mahjongService.op_dahai(this.roomId!, this.user, tile, id);
+	}
+
+	@bindThis
+	private async pon() {
+		if (this.user == null) return;
+
+		this.mahjongService.op_pon(this.roomId!, this.user);
+	}
+
+	@bindThis
+	private async nop() {
+		if (this.user == null) return;
+
+		this.mahjongService.op_nop(this.roomId!, this.user);
 	}
 
 	@bindThis

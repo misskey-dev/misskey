@@ -2566,6 +2566,7 @@ _mahjong:
   ready: "準備完了"
   cancelReady: "準備を再開"
   leave: "退室"
+  addCpu: "CPUを追加"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"

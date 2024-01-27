@@ -28,6 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="room.user4Ready">OK</div>
 			</div>
 		</div>
+		<div>
+			<MkButton rounded primary @click="addCpu">{{ i18n.ts._mahjong.addCpu }}</MkButton>
+		</div>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
@@ -99,6 +102,10 @@ function unready() {
 	props.connection.send('ready', false);
 }
 
+function addCpu() {
+	props.connection.send('addAi', {});
+}
+
 function onChangeReadyStates(states) {
 	room.value.user1Ready = states.user1;
 	room.value.user2Ready = states.user2;
@@ -106,10 +113,40 @@ function onChangeReadyStates(states) {
 	room.value.user4Ready = states.user4;
 }
 
+function onJoined(x) {
+	switch (x.index) {
+		case 1:
+			room.value.user1 = x.user;
+			room.value.user1Ai = x.user == null;
+			room.value.user1Ready = room.value.user1Ai;
+			break;
+		case 2:
+			room.value.user2 = x.user;
+			room.value.user2Ai = x.user == null;
+			room.value.user2Ready = room.value.user2Ai;
+			break;
+		case 3:
+			room.value.user3 = x.user;
+			room.value.user3Ai = x.user == null;
+			room.value.user3Ready = room.value.user3Ai;
+			break;
+		case 4:
+			room.value.user4 = x.user;
+			room.value.user4Ai = x.user == null;
+			room.value.user4Ready = room.value.user4Ai;
+			break;
+
+		default:
+			break;
+	}
+}
+
 props.connection.on('changeReadyStates', onChangeReadyStates);
+props.connection.on('joined', onJoined);
 
 onUnmounted(() => {
 	props.connection.off('changeReadyStates', onChangeReadyStates);
+	props.connection.off('joined', onJoined);
 });
 </script>
 

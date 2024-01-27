@@ -106,5 +106,9 @@ export const packedMahjongRoomDetailedSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		timeLimitForEachTurn: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
 	},
 } as const;

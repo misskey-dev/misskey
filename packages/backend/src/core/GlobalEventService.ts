@@ -201,18 +201,21 @@ export interface MahjongRoomEventTypes {
 		user3: boolean;
 		user4: boolean;
 	};
+	started: {
+		room: Packed<'MahjongRoomDetailed'>;
+	};
 	tsumo: {
 		house: Mahjong.Engine.House;
-		tile: Mahjong.Engine.Tile;
+		tile: Mahjong.Common.Tile;
 	};
 	dahai: {
 		house: Mahjong.Engine.House;
-		tile: Mahjong.Engine.Tile;
+		tile: Mahjong.Common.Tile;
 	};
 	dahaiAndTsumo: {
 		house: Mahjong.Engine.House;
-		dahaiTile: Mahjong.Engine.Tile;
-		tsumoTile: Mahjong.Engine.Tile;
+		dahaiTile: Mahjong.Common.Tile;
+		tsumoTile: Mahjong.Common.Tile;
 	};
 }
 //#endregion

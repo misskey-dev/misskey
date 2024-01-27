@@ -26,7 +26,7 @@ import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
-const PON_TIMEOUT_MS = 1000 * 10; // 10sec
+const CALL_AND_RON_ASKING_TIMEOUT_MS = 1000 * 5; // 5sec
 const DAHAI_TIMEOUT_MS = 1000 * 30; // 30sec
 
 type Room = {
@@ -52,8 +52,21 @@ type Room = {
 	user3Offline?: boolean;
 	user4Offline?: boolean;
 	isStarted?: boolean;
+	timeLimitForEachTurn: number;
 
 	gameState?: Mahjong.Engine.MasterState;
+};
+
+type CallAndRonAnswers = {
+	pon: null | boolean;
+	cii: null | boolean;
+	kan: null | boolean;
+	ron: {
+		e: null | boolean;
+		s: null | boolean;
+		w: null | boolean;
+		n: null | boolean;
+	};
 };
 
 @Injectable()
@@ -98,6 +111,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			user2Ready: false,
 			user3Ready: false,
 			user4Ready: false,
+			timeLimitForEachTurn: 30,
 		};
 		await this.saveRoom(room);
 		return room;
@@ -152,21 +166,21 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (!room) return null;
 		if (room.user1Id !== user.id) throw new Error('access denied');
 
-		if (room.user2Id == null) {
+		if (room.user2Id == null && !room.user2Ai) {
 			room.user2Ai = true;
 			room.user2Ready = true;
 			await this.saveRoom(room);
 			this.globalEventService.publishMahjongRoomStream(room.id, 'joined', { index: 2, user: null });
 			return room;
 		}
-		if (room.user3Id == null) {
+		if (room.user3Id == null && !room.user3Ai) {
 			room.user3Ai = true;
 			room.user3Ready = true;
 			await this.saveRoom(room);
 			this.globalEventService.publishMahjongRoomStream(room.id, 'joined', { index: 3, user: null });
 			return room;
 		}
-		if (room.user4Id == null) {
+		if (room.user4Id == null && !room.user4Ai) {
 			room.user4Ai = true;
 			room.user4Ready = true;
 			await this.saveRoom(room);
@@ -267,43 +281,129 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async dahai(room: Room, engine: Mahjong.Engine.MasterGameEngine, user: MiUser, tile: Mahjong.Engine.Tile) {
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
-		const res = engine.op_dahai(myHouse, tile);
-		if (res.canPonHouse) {
-			// TODO: 家がCPUだった場合の処理
-			this.redisClient.set(`mahjong:gamePonAsking:${room.id}`, '');
-			const waitingStartedAt = Date.now();
-			const interval = setInterval(async () => {
-				const waiting = await this.redisClient.get(`mahjong:gamePonAsking:${room.id}`);
-				if (waiting == null) {
-					clearInterval(interval);
-					return;
-				}
-				if (Date.now() - waitingStartedAt > PON_TIMEOUT_MS) {
-					await this.redisClient.del(`mahjong:gamePonAsking:${room.id}`);
-					clearInterval(interval);
-					const res = engine.op_noOnePon();
-					this.globalEventService.publishMahjongRoomStream(room.id, 'tsumo', { house: res.house, tile: res.tile });
-					return;
-				}
-			}, 2000);
-			this.globalEventService.publishMahjongRoomStream(room.id, 'dahai', { house: myHouse, tile });
-		} else {
-			this.globalEventService.publishMahjongRoomStream(room.id, 'dahaiAndTsumo', { house: myHouse, dahaiTile: tile, tsumoTile: res.tsumoTile });
+	private async answer(room: Room, engine: Mahjong.Engine.MasterGameEngine, answers: CallAndRonAnswers) {
+		const res = engine.op_resolveCallAndRonInterruption({
+			pon: answers.pon ?? false,
+			cii: answers.cii ?? false,
+			kan: answers.kan ?? false,
+			ron: [...(answers.ron.e ? ['e'] : []), ...(answers.ron.s ? ['s'] : []), ...(answers.ron.w ? ['w'] : []), ...(answers.ron.n ? ['n'] : [])],
+		});
+		room.gameState = engine.state;
+		await this.saveRoom(room);
+
+		if (res.type === 'tsumo') {
+			this.globalEventService.publishMahjongRoomStream(room.id, 'log', { operation: 'tsumo', house: res.house, tile: res.tile });
+			this.next(room, engine);
+		} else if (res.type === 'ponned') {
+			this.globalEventService.publishMahjongRoomStream(room.id, 'log', { operation: 'ponned', house: res.house, tile: res.tile });
+			const userId = engine.state.user1House === engine.state.turn ? room.user1Id : engine.state.user2House === engine.state.turn ? room.user2Id : engine.state.user3House === engine.state.turn ? room.user3Id : room.user4Id;
+			this.waitForDahai(room, userId, engine);
+		} else if (res.type === 'kanned') {
+			// TODO
+		} else if (res.type === 'ronned') {
+			// TODO
 		}
 	}
 
 	@bindThis
-	public async op_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: string) {
+	private async next(room: Room, engine: Mahjong.Engine.MasterGameEngine) {
+		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
+
+		if (aiHouses.includes(engine.state.turn)) {
+			setTimeout(() => {
+				const house = engine.state.turn;
+				const handTiles = house === 'e' ? engine.state.eHandTiles : house === 's' ? engine.state.sHandTiles : house === 'w' ? engine.state.wHandTiles : engine.state.nHandTiles;
+				this.dahai(room, engine, engine.state.turn, handTiles.at(-1));
+			}, 1000);
+			return;
+		} else {
+			const userId = engine.state.user1House === engine.state.turn ? room.user1Id : engine.state.user2House === engine.state.turn ? room.user2Id : engine.state.user3House === engine.state.turn ? room.user3Id : room.user4Id;
+			this.waitForDahai(room, userId, engine);
+		}
+	}
+
+	@bindThis
+	private async dahai(room: Room, engine: Mahjong.Engine.MasterGameEngine, house: Mahjong.Common.House, tile: Mahjong.Common.Tile, operationId?: string) {
+		const res = engine.op_dahai(house, tile);
+		room.gameState = engine.state;
+		await this.saveRoom(room);
+
+		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
+
+		if (res.asking) {
+			console.log('asking', res);
+
+			const answers: CallAndRonAnswers = {
+				pon: null,
+				cii: null,
+				kan: null,
+				ron: {
+					e: null,
+					s: null,
+					w: null,
+					n: null,
+				},
+			};
+
+			if (aiHouses.includes(res.canPonHouse)) {
+				// TODO
+			}
+			if (aiHouses.includes(res.canChiHouse)) {
+				// TODO
+			}
+			if (aiHouses.includes(res.canKanHouse)) {
+				// TODO
+			}
+			for (const h of res.canRonHouses) {
+				if (aiHouses.includes(h)) {
+				// TODO
+				}
+			}
+
+			this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(answers));
+			const waitingStartedAt = Date.now();
+			const interval = setInterval(async () => {
+				const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+				if (current == null) throw new Error('arienai (gameCallAndRonAsking)');
+				const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+				const allAnswered = !(
+					(res.canPonHouse != null && currentAnswers.pon == null) ||
+					(res.canCiiHouse != null && currentAnswers.cii == null) ||
+					(res.canKanHouse != null && currentAnswers.kan == null) ||
+					(res.canRonHouses.includes('e') && currentAnswers.ron.e == null) ||
+					(res.canRonHouses.includes('s') && currentAnswers.ron.s == null) ||
+					(res.canRonHouses.includes('w') && currentAnswers.ron.w == null) ||
+					(res.canRonHouses.includes('n') && currentAnswers.ron.n == null)
+				);
+				if (allAnswered || (Date.now() - waitingStartedAt > CALL_AND_RON_ASKING_TIMEOUT_MS)) {
+					console.log('answerd');
+					await this.redisClient.del(`mahjong:gamePonAsking:${room.id}`);
+					clearInterval(interval);
+					this.answer(room, engine, currentAnswers);
+					return;
+				}
+			}, 2000);
+
+			this.globalEventService.publishMahjongRoomStream(room.id, 'log', { operation: 'dahai', house: house, tile, id: operationId });
+		} else {
+			this.globalEventService.publishMahjongRoomStream(room.id, 'log', { operation: 'dahaiAndTsumo', house: house, dahaiTile: tile, tsumoTile: res.tsumoTile, id: operationId });
+
+			this.next(room, engine);
+		}
+	}
+
+	@bindThis
+	public async op_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: string, operationId: string) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
+		if (!Mahjong.Utils.isTile(tile)) return;
 
 		await this.redisClient.del(`mahjong:gameDahaiWaiting:${room.id}`);
 
 		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
-		await this.dahai(room, engine, user, tile);
+		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+		await this.dahai(room, engine, myHouse, tile, operationId);
 	}
 
 	@bindThis
@@ -314,26 +414,56 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
 		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
-		const res = engine.op_pon(myHouse);
-		this.waitForDahai(room, user, engine);
+
+		// TODO: 自分にポン回答する権利がある状態かバリデーション
+
+		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
+		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+		if (current == null) throw new Error('no asking found');
+		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+		currentAnswers.pon = true;
+		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 
 	@bindThis
-	private async waitForDahai(game: Room, user: MiUser, engine: Mahjong.Engine.MasterGameEngine) {
-		this.redisClient.set(`mahjong:gameDahaiWaiting:${game.id}`, '');
+	public async op_nop(roomId: MiMahjongGame['id'], user: MiUser) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
+		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+
+		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
+		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+		if (current == null) throw new Error('no asking found');
+		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+		if (engine.state.ponAsking?.target === myHouse) currentAnswers.pon = false;
+		if (engine.state.ciiAsking?.target === myHouse) currentAnswers.cii = false;
+		if (engine.state.kanAsking?.target === myHouse) currentAnswers.kan = false;
+		if (engine.state.ronAsking != null && engine.state.ronAsking.targets.includes(myHouse)) currentAnswers.ron[myHouse] = false;
+		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
+	}
+
+	@bindThis
+	private async waitForDahai(room: Room, userId: MiUser['id'], engine: Mahjong.Engine.MasterGameEngine) {
+		const id = Math.random().toString(36).slice(2);
+		console.log('waitForDahai', userId, id);
+		this.redisClient.sadd(`mahjong:gameDahaiWaiting:${room.id}`, id);
 		const waitingStartedAt = Date.now();
 		const interval = setInterval(async () => {
-			const waiting = await this.redisClient.get(`mahjong:gameDahaiWaiting:${game.id}`);
-			if (waiting == null) {
+			const waiting = await this.redisClient.sismember(`mahjong:gameDahaiWaiting:${room.id}`, id);
+			if (waiting === 0) {
 				clearInterval(interval);
 				return;
 			}
 			if (Date.now() - waitingStartedAt > DAHAI_TIMEOUT_MS) {
-				await this.redisClient.del(`mahjong:gameDahaiWaiting:${game.id}`);
+				await this.redisClient.srem(`mahjong:gameDahaiWaiting:${room.id}`, id);
+				console.log('dahai timeout', userId, id);
 				clearInterval(interval);
-				const house = game.user1Id === user.id ? engine.state.user1House : game.user2Id === user.id ? engine.state.user2House : game.user3Id === user.id ? engine.state.user3House : engine.state.user4House;
+				const house = room.user1Id === userId ? engine.state.user1House : room.user2Id === userId ? engine.state.user2House : room.user3Id === userId ? engine.state.user3House : engine.state.user4House;
 				const handTiles = house === 'e' ? engine.state.eHandTiles : house === 's' ? engine.state.sHandTiles : house === 'w' ? engine.state.wHandTiles : engine.state.nHandTiles;
-				await this.dahai(game, engine, user, handTiles.at(-1));
+				await this.dahai(room, engine, house, handTiles.at(-1));
 				return;
 			}
 		}, 2000);

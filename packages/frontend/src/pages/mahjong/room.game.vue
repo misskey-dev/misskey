@@ -5,6 +5,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="500">
+	<div class="_gaps">
+		<div>
+			{{ engine.myHouse }} {{ engine.state.turn }}
+		</div>
+		<div class="_panel">
+			<div>{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))) }} ho</div>
+			<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))))" style="display: inline-block;">
+				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+			</div>
+		</div>
+		<div class="_panel">
+			<div>{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) }} ho</div>
+			<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" style="display: inline-block;">
+				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+			</div>
+		</div>
+		<div class="_panel">
+			<div>{{ Mahjong.Utils.prevHouse(engine.myHouse) }} ho</div>
+			<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" style="display: inline-block;">
+				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+			</div>
+		</div>
+		<div class="_panel">
+			<div>{{ engine.myHouse }} ho</div>
+			<div v-for="tile in engine.myHoTiles" style="display: inline-block;">
+				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+			</div>
+		</div>
+
+		<div class="_panel">
+			<div>My hand</div>
+			<div v-for="tile in Mahjong.Utils.sortTiles(engine.myHandTiles)" style="display: inline-block;" @click="dahai(tile, $event)">
+				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+			</div>
+			<MkButton v-if="engine.state.canPon" @click="pon">Pon</MkButton>
+			<MkButton v-if="engine.state.canPon" @click="skip">Skip pon</MkButton>
+			<MkButton v-if="isMyTurn && canHora">Hora</MkButton>
+		</div>
+	</div>
 </MkSpacer>
 </template>
 
@@ -28,16 +67,20 @@ import { confetti } from '@/scripts/confetti.js';
 const $i = signinRequired();
 
 const props = defineProps<{
-	room: Misskey.entities.ReversiRoomDetailed;
+	room: Misskey.entities.MahjongRoomDetailed;
 	connection?: Misskey.ChannelConnection | null;
 }>();
 
-const room = ref<Misskey.entities.ReversiRoomDetailed>(deepClone(props.room));
+const room = ref<Misskey.entities.MahjongRoomDetailed>(deepClone(props.room));
 const myUserNumber = computed(() => room.value.user1Id === $i.id ? 1 : room.value.user2Id === $i.id ? 2 : room.value.user3Id === $i.id ? 3 : 4);
-const engine = shallowRef(new Mahjong.Engine.PlayerGameEngine(myUserNumber, room.value.gameState));
+const engine = shallowRef(new Mahjong.Engine.PlayerGameEngine(myUserNumber.value, room.value.gameState));
 
 const isMyTurn = computed(() => {
 	return engine.value.state.turn === engine.value.myHouse;
+});
+
+const canHora = computed(() => {
+	return Mahjong.Utils.getHoraSets(engine.value.myHandTiles).length > 0;
 });
 
 /*
@@ -84,25 +127,83 @@ if (!props.room.isEnded) {
 }
 */
 
+function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
+	if (!isMyTurn.value) return;
+
+	engine.value.op_dahai(engine.value.myHouse, tile);
+
+	const id = Math.random().toString(36).slice(2);
+	appliedOps.push(id);
+	props.connection!.send('dahai', {
+		tile: tile,
+		id,
+	});
+}
+
+function pon() {
+	engine.value.op_pon(engine.value.canPonTo, engine.value.myHouse);
+
+	const id = Math.random().toString(36).slice(2);
+	appliedOps.push(id);
+	props.connection!.send('pon', {
+		id,
+	});
+}
+
+function skip() {
+	engine.value.op_nop(engine.value.myHouse);
+
+	const id = Math.random().toString(36).slice(2);
+	appliedOps.push(id);
+	props.connection!.send('nop', {});
+}
+
 async function onStreamLog(log) {
 	if (log.id == null || !appliedOps.includes(log.id)) {
 		switch (log.operation) {
-			case 'put': {
+			case 'dahai': {
 				sound.playUrl('/client-assets/mahjong/dahai.mp3', {
 					volume: 1,
 					playbackRate: 1,
 				});
 
-				if (log.house !== engine.value.turn) { // = desyncが発生している
-					const _room = await misskeyApi('reversi/show-room', {
-						roomId: props.room.id,
-					});
-					restoreRoom(_room);
-					return;
-				}
+				//if (log.house !== engine.value.state.turn) { // = desyncが発生している
+				//	const _room = await misskeyApi('mahjong/show-room', {
+				//		roomId: props.room.id,
+				//	});
+				//	restoreRoom(_room);
+				//	return;
+				//}
 
 				engine.value.op_dahai(log.house, log.tile);
 				triggerRef(engine);
+
+				myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+				opTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+				break;
+			}
+
+			case 'dahaiAndTsumo': {
+				sound.playUrl('/client-assets/mahjong/dahai.mp3', {
+					volume: 1,
+					playbackRate: 1,
+				});
+
+				//if (log.house !== engine.value.state.turn) { // = desyncが発生している
+				//	const _room = await misskeyApi('mahjong/show-room', {
+				//		roomId: props.room.id,
+				//	});
+				//	restoreRoom(_room);
+				//	return;
+				//}
+
+				engine.value.op_dahai(log.house, log.dahaiTile);
+				triggerRef(engine);
+
+				window.setTimeout(() => {
+					engine.value.op_tsumo(Mahjong.Utils.nextHouse(log.house), log.tsumoTile);
+					triggerRef(engine);
+				}, 1000);
 
 				myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
 				opTurnTimerRmain.value = room.value.timeLimitForEachTurn;
@@ -124,184 +225,27 @@ function restoreRoom(_room) {
 onMounted(() => {
 	if (props.connection != null) {
 		props.connection.on('log', onStreamLog);
-		props.connection.on('ended', onStreamEnded);
 	}
 });
 
 onActivated(() => {
 	if (props.connection != null) {
 		props.connection.on('log', onStreamLog);
-		props.connection.on('ended', onStreamEnded);
 	}
 });
 
 onDeactivated(() => {
 	if (props.connection != null) {
 		props.connection.off('log', onStreamLog);
-		props.connection.off('ended', onStreamEnded);
 	}
 });
 
 onUnmounted(() => {
 	if (props.connection != null) {
 		props.connection.off('log', onStreamLog);
-		props.connection.off('ended', onStreamEnded);
 	}
 });
 </script>
 
 <style lang="scss" module>
-@use "sass:math";
-
-.transition_flip_enterActive,
-.transition_flip_leaveActive {
-	backface-visibility: hidden;
-	transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.transition_flip_enterFrom {
-	transform: rotateY(-180deg);
-	opacity: 0;
-}
-.transition_flip_leaveTo {
-	transform: rotateY(180deg);
-	opacity: 0;
-}
-
-$label-size: 16px;
-$gap: 4px;
-
-.root {
-	text-align: center;
-}
-
-.board {
-	width: 100%;
-	box-sizing: border-box;
-	margin: 0 auto;
-
-	padding: 7px;
-	background: #8C4F26;
-	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
-	border-radius: 12px;
-}
-
-.boardInner {
-	padding: 32px;
-
-	background: var(--panel);
-	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
-	border-radius: 8px;
-}
-
-@container (max-width: 400px) {
-	.boardInner {
-		padding: 16px;
-	}
-}
-
-.labelsX {
-	height: $label-size;
-	padding: 0 $label-size;
-	display: flex;
-}
-
-.labelsXLabel {
-	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 0.8em;
-
-	&:first-child {
-		margin-left: -(math.div($gap, 2));
-	}
-
-	&:last-child {
-		margin-right: -(math.div($gap, 2));
-	}
-}
-
-.labelsY {
-	width: $label-size;
-	display: flex;
-	flex-direction: column;
-}
-
-.labelsYLabel {
-	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 12px;
-
-	&:first-child {
-		margin-top: -(math.div($gap, 2));
-	}
-
-	&:last-child {
-		margin-bottom: -(math.div($gap, 2));
-	}
-}
-
-.boardCells {
-	flex: 1;
-	display: grid;
-	grid-gap: $gap;
-}
-
-.boardCell {
-	background: transparent;
-	border-radius: 100%;
-	aspect-ratio: 1;
-	transform-style: preserve-3d;
-	perspective: 150px;
-	transition: border 0.25s ease, opacity 0.25s ease;
-
-	&.boardCell_empty {
-		border: solid 2px var(--divider);
-	}
-
-	&.boardCell_empty.boardCell_can {
-		border-color: var(--accent);
-		opacity: 0.5;
-	}
-
-	&.boardCell_empty.boardCell_myTurn {
-		border-color: var(--divider);
-		opacity: 1;
-
-		&.boardCell_can {
-			border-color: var(--accent);
-			cursor: pointer;
-
-			&:hover {
-				background: var(--accent);
-			}
-		}
-	}
-
-	&.boardCell_prev {
-		box-shadow: 0 0 0 4px var(--accent);
-	}
-
-	&.boardCell_isEnded {
-		border-color: var(--divider);
-	}
-
-	&.boardCell_none {
-		border-color: transparent !important;
-	}
-}
-
-.boardCellStone {
-	position: absolute;
-	top: 0;
-	left: 0;
-	pointer-events: none;
-	user-select: none;
-	display: block;
-	width: 100%;
-	height: 100%;
-	border-radius: 100%;
-}
 </style>

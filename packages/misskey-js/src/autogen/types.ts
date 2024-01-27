@@ -3,7 +3,7 @@
 
 /*
  * version: 2024.2.0-beta.7
- * generatedAt: 2024-01-26T05:23:04.825Z
+ * generatedAt: 2024-01-26T07:53:15.837Z
  */
 
 /**
@@ -4595,6 +4595,7 @@ export type components = {
       user2Ready: boolean;
       user3Ready: boolean;
       user4Ready: boolean;
+      timeLimitForEachTurn: number;
     };
   };
   responses: never;
