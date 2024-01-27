@@ -6,6 +6,7 @@
 import { Module } from '@nestjs/common';
 
 import { CoreModule } from '@/core/CoreModule.js';
+import * as ep___users_lists_list_favorite from '@/server/api/endpoints/users/lists/list-favorite.js';
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
@@ -733,6 +734,7 @@ const $users_featuredNotes: Provider = { provide: 'ep:users/featured-notes', use
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
 const $users_lists_delete: Provider = { provide: 'ep:users/lists/delete', useClass: ep___users_lists_delete.default };
 const $users_lists_list: Provider = { provide: 'ep:users/lists/list', useClass: ep___users_lists_list.default };
+const $users_lists_list_favorite: Provider = { provide: 'ep:users/lists/list-favorite', useClass: ep___users_lists_list_favorite.default };
 const $users_lists_pull: Provider = { provide: 'ep:users/lists/pull', useClass: ep___users_lists_pull.default };
 const $users_lists_push: Provider = { provide: 'ep:users/lists/push', useClass: ep___users_lists_push.default };
 const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: ep___users_lists_show.default };
@@ -1119,6 +1121,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
+		$users_lists_list_favorite,
 		$users_lists_pull,
 		$users_lists_push,
 		$users_lists_show,
@@ -1496,6 +1499,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
+		$users_lists_list_favorite,
 		$users_lists_pull,
 		$users_lists_push,
 		$users_lists_show,

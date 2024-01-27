@@ -38,9 +38,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
-				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
-				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
-				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				<div class="_margin" v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value">
+					{{ pinnedLists.name }}
+                    <MkButton danger @click="removePinnedList(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				</div>
+				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedUserLists.value.length " @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+                <MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{i18n.ts.all}}{{ i18n.ts.remove }}</MkButton>
+
 			</MkFolder>
 			<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline }}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
 			<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
@@ -166,7 +170,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 	<MkFoldableSection :defaultOpen="false" class="item">
-        <template #header>{{ i18n.ts.behavior }}</template>
+		<template #header>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -223,98 +227,97 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkFoldableSection>
-    <MkFoldableSection  :defaultOpen="false">
+	<MkFoldableSection :defaultOpen="false">
+		<template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
+		<div class="_gaps_m">
+			<MkFoldableSection :defaultOpen="false">
+				<template #header>{{ i18n.ts.accessToken }} の発行の仕方</template>
+				<img width="400" src="https://files.prismisskey.space/misskey/676e4b79-7897-4ea9-b074-a98139312f76.gif">
+			</MkFoldableSection>
+			<div v-if="maxLocalTimeline >= 1">
+				<MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain1" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken1" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable1">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
+			<div v-if="maxLocalTimeline >= 2">
+				<MkInput v-model="remoteLocalTimelineName2" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain2" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken2" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable2">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
 
-        <template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
-        <div class="_gaps_m">
-            <MkFoldableSection  :defaultOpen="false">
-                <template #header>{{ i18n.ts.accessToken }} の発行の仕方</template>
-            <img width="400" src="https://files.prismisskey.space/misskey/676e4b79-7897-4ea9-b074-a98139312f76.gif">
-            </MkFoldableSection>
-            <div v-if="maxLocalTimeline >= 1" >
-                <MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
-                    <template #label>{{ i18n.ts.name }}</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineDomain1" placeholder="prismisskey.space">
-                    <template #label>サーバーURL</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineToken1" placeholder="">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>{{ i18n.ts.accessToken }}</template>
-                </MkInput>
-                <MkSwitch v-model="remoteLocalTimelineEnable1">
-                    {{ i18n.ts.enable }}
-                </MkSwitch>
-            </div>
-            <div v-if="maxLocalTimeline >= 2" >
-                <MkInput v-model="remoteLocalTimelineName2" placeholder="prismisskey">
-                    <template #label>{{ i18n.ts.name }}</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineDomain2" placeholder="prismisskey.space">
-                    <template #label>サーバーURL</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineToken2" placeholder="">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>{{ i18n.ts.accessToken }}</template>
-                </MkInput>
-                <MkSwitch v-model="remoteLocalTimelineEnable2">
-                    {{ i18n.ts.enable }}
-                </MkSwitch>
-            </div>
+			<div v-if="maxLocalTimeline >= 3">
+				<MkInput v-model="remoteLocalTimelineName3" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain3" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken3" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable3">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
 
-            <div v-if="maxLocalTimeline >= 3" >
-                <MkInput v-model="remoteLocalTimelineName3" placeholder="prismisskey">
-                    <template #label>{{ i18n.ts.name }}</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineDomain3" placeholder="prismisskey.space">
-                    <template #label>サーバーURL</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineToken3" placeholder="">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>{{ i18n.ts.accessToken }}</template>
-                </MkInput>
-                <MkSwitch v-model="remoteLocalTimelineEnable3">
-                    {{ i18n.ts.enable }}
-                </MkSwitch>
-            </div>
+			<div v-if="maxLocalTimeline >= 4">
+				<MkInput v-model="remoteLocalTimelineName4" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain4" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken4" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable4">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
 
-            <div v-if="maxLocalTimeline >= 4" >
-                <MkInput v-model="remoteLocalTimelineName4" placeholder="prismisskey">
-                    <template #label>{{ i18n.ts.name }}</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineDomain4" placeholder="prismisskey.space">
-                    <template #label>サーバーURL</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineToken4" placeholder="">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>{{ i18n.ts.accessToken }}</template>
-                </MkInput>
-                <MkSwitch v-model="remoteLocalTimelineEnable4">
-                    {{ i18n.ts.enable }}
-                </MkSwitch>
-            </div>
+			<div v-if="maxLocalTimeline >= 5">
+				<MkInput v-model="remoteLocalTimelineName5" placeholder="prismisskey">
+					<template #label>{{ i18n.ts.name }}</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineDomain5" placeholder="prismisskey.space">
+					<template #label>サーバーURL</template>
+				</MkInput>
+				<MkInput v-model="remoteLocalTimelineToken5" placeholder="">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>{{ i18n.ts.accessToken }}</template>
+				</MkInput>
+				<MkSwitch v-model="remoteLocalTimelineEnable5">
+					{{ i18n.ts.enable }}
+				</MkSwitch>
+			</div>
 
-            <div v-if="maxLocalTimeline >= 5"  >
-                <MkInput v-model="remoteLocalTimelineName5" placeholder="prismisskey">
-                    <template #label>{{ i18n.ts.name }}</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineDomain5" placeholder="prismisskey.space">
-                    <template #label>サーバーURL</template>
-                </MkInput>
-                <MkInput v-model="remoteLocalTimelineToken5" placeholder="">
-                    <template #prefix><i class="ti ti-key"></i></template>
-                    <template #label>{{ i18n.ts.accessToken }}</template>
-                </MkInput>
-                <MkSwitch v-model="remoteLocalTimelineEnable5">
-                    {{ i18n.ts.enable }}
-                </MkSwitch>
-            </div>
-
-            <MkButton @click="remoteLocaltimelineSave">
-                {{ i18n.ts.save }}
-            </MkButton>
-        </div>
-    </MkFoldableSection>
+			<MkButton @click="remoteLocaltimelineSave">
+				{{ i18n.ts.save }}
+			</MkButton>
+		</div>
+	</MkFoldableSection>
 	<FormSection>
 		<template #label>{{ i18n.ts.other }}</template>
 
@@ -351,7 +354,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import {signinRequired} from '@/account.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -361,6 +364,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
+import { userFavoriteListsCache, userListsCache } from '@/cache.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -397,7 +401,6 @@ const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
-const enableCellularWithDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithDataSaver'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
@@ -428,7 +431,6 @@ const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disable
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
 const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
-const maxLocalTimeline = 3;
 const remoteLocalTimelineDomain1 = ref(defaultStore.state['remoteLocalTimelineDomain1']);
 const remoteLocalTimelineToken1 = ref(defaultStore.state['remoteLocalTimelineToken1']);
 const remoteLocalTimelineDomain2 = ref(defaultStore.state['remoteLocalTimelineDomain2']);
@@ -450,7 +452,9 @@ const remoteLocalTimelineEnable2 = computed(defaultStore.makeGetterSetter('remot
 const remoteLocalTimelineEnable3 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable3'));
 const remoteLocalTimelineEnable4 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable4'));
 const remoteLocalTimelineEnable5 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable5'));
-
+const $i = signinRequired();
+const pinnedMax = $i.policies?.listPinnedLimit;
+const maxLocalTimeline = $i.policies?.localTimelineAnyLimit;
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
@@ -592,7 +596,9 @@ function removeEmojiIndex(lang: string) {
 }
 
 async function setPinnedList() {
-	const lists = await misskeyApi('users/lists/list');
+	const myLists = await userListsCache.fetch();
+	const favoriteLists = await userFavoriteListsCache.fetch();
+	let lists = [...new Set([...myLists, ...favoriteLists])];
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
@@ -600,12 +606,35 @@ async function setPinnedList() {
 		})),
 	});
 	if (canceled) return;
+	let pinnedLists = defaultStore.state.pinnedUserLists;
 
-	defaultStore.set('pinnedUserLists', [list]);
+	// Check if the id is already present in pinnedLists
+	if (!pinnedLists.some(pinnedList => pinnedList.id === list.id)) {
+		pinnedLists.push(list);
+		defaultStore.set('pinnedUserLists', pinnedLists);
+	}
 }
 
-function removePinnedList() {
-	defaultStore.set('pinnedUserLists', []);
+async function removePinnedList(id,name) {
+
+    if (!id) return;
+    const {canceled} = await os.confirm({
+        type: 'warning',
+        text: i18n.tsx.removeAreYouSure({x: name ?? id }),
+    });
+    if (canceled) return;
+
+    if (id === 'all') {
+
+        if (canceled) return;
+
+        defaultStore.set('pinnedUserLists', []);
+        return;
+    }
+
+    const pinnedLists = defaultStore.state.pinnedUserLists;
+    const newPinnedLists = pinnedLists.filter(pinnedList => pinnedList.id !== id);
+    defaultStore.set('pinnedUserLists', newPinnedLists);
 }
 
 let smashCount = 0;

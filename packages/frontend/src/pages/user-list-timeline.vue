@@ -47,6 +47,7 @@ const rootEl = shallowRef<HTMLElement>();
 watch(() => props.listId, async () => {
 	list.value = await misskeyApi('users/lists/show', {
 		listId: props.listId,
+		forPublic: true,
 	});
 }, { immediate: true });
 

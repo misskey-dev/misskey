@@ -4,12 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository, UsersRepository } from '@/models/_.js';
+import { In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 import { DI } from '@/di-symbols.js';
-
+import type { UserListsRepository, UserListFavoritesRepository } from '@/models/_.js';
+import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 export const meta = {
 	tags: ['lists', 'account'],
 
@@ -50,8 +51,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		publicAll: { type: 'boolean', nullable: false },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
 	},
 	required: [],
 } as const;
@@ -59,38 +61,25 @@ export const paramDef = {
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
+		@Inject(DI.userListFavoritesRepository)
+		private userListFavoritesRepository: UserListFavoritesRepository,
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
-
 		private userListEntityService: UserListEntityService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (!ps.publicAll ) {
-				if (typeof ps.userId !== 'undefined') {
-					const user = await this.usersRepository.findOneBy({ id: ps.userId });
-					if (user === null) throw new ApiError(meta.errors.noSuchUser);
-					if (user.host !== null) throw new ApiError(meta.errors.remoteUser);
-				} else if (me === null) {
-					throw new ApiError(meta.errors.invalidParam);
-				}
-
-				const userLists = await this.userListsRepository.findBy(typeof ps.userId === 'undefined' && me !== null ? {
-					userId: me.id,
-				} : {
-					userId: ps.userId,
-					isPublic: true,
-				});
-
-				return await Promise.all(userLists.map(x => this.userListEntityService.pack(x)));
-			} else {
-				const userLists = await this.userListsRepository.findBy({
-					isPublic: true,
-				});
-				return await Promise.all(userLists.map(x => this.userListEntityService.pack(x)));
+			if (!me) {
+				throw new ApiError(meta.errors.noSuchUser);
 			}
+			const favorites = await this.userListFavoritesRepository.findBy({ userId: me.id });
+
+			if (favorites == null) {
+				return [];
+			}
+			const listIds = favorites.map(favorite => favorite.userListId);
+			const lists = await this.userListsRepository.findBy({ id: In(listIds) });
+			return await Promise.all(lists.map(async list => await this.userListEntityService.pack(list)));
 		});
 	}
 }

@@ -93,6 +93,10 @@ export interface Locale extends ILocale {
      */
     "cancel": string;
     /**
+     * 自分の作成したリスト
+     */
+    "myLists": string;
+    /**
      * やめておく
      */
     "noThankYou": string;
@@ -128,6 +132,14 @@ export interface Locale extends ILocale {
      * 通知の設定
      */
     "notificationSettings": string;
+    /**
+     * このサーバーの公開のリスト
+     */
+    "localListList": string;
+    /**
+     * お気に入りのリスト
+     */
+    "favoriteLists": string;
     /**
      * 基本設定
      */
@@ -6628,6 +6640,14 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
+            /**
+             * ピン留めリストの最大数
+             */
+            "listPinnedLimit": string;
+            /**
+             * 他鯖のローカルTL除けるやつ(最大値5)
+             */
+            "localTimelineAnyLimit": string;
         };
         "_condition": {
             /**

@@ -48,7 +48,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache, userListsCache } from '@/cache.js';
+import { antennasCache, userFavoriteListsCache, userListsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -123,7 +123,9 @@ function top(): void {
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await userListsCache.fetch();
+	const myLists = await userListsCache.fetch();
+	const favoriteLists = await userFavoriteListsCache.fetch();
+	let lists = [...new Set([...myLists, ...favoriteLists])];
 	const items : MenuItem[] = [
 		... lists.map(list => ({
 			type: 'link' as const,

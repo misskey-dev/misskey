@@ -6,7 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MKSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
+
+	<MkSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
 		<div :class="$style.root">
 			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
 			<p :class="$style.text">
@@ -14,10 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.nothing }}
 			</p>
 		</div>
-	</MKSpacer>
+	</MkSpacer>
 	<MkSpacer v-else-if="list" :contentMax="700" :class="$style.main">
-		<div v-if="list" class="members _margin">
-			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
+		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
+		<MkFolder v-if="list" class="members _margin">
+			<template #label>{{ i18n.ts.members }}</template>
+			<div :class="$style.member_text"></div>
 			<div class="_gaps_s">
 				<div v-for="user in users" :key="user.id" :class="$style.userItem">
 					<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
@@ -25,10 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkA>
 				</div>
 			</div>
-		</div>
-		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
-		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
-		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
+		</MkFolder>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -44,6 +46,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { serverErrorImageUrl } from '@/instance.js';
+import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
 	listId: string;

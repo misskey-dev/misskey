@@ -92,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const list = await this.userListsRepository.findOneBy({
 				id: ps.listId,
-				userId: me.id,
+				isPublic: true,
 			});
 
 			if (list == null) {

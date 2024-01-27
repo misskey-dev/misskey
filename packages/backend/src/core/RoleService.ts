@@ -60,6 +60,8 @@ export type RolePolicies = {
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
 	emojiPickerProfileLimit: number;
+	listPinnedLimit: number;
+	localTimelineAnyLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -91,6 +93,8 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
 	emojiPickerProfileLimit: 2,
+	listPinnedLimit: 2,
+	localTimelineAnyLimit: 3,
 };
 
 @Injectable()
@@ -359,6 +363,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
 			emojiPickerProfileLimit: calc('emojiPickerProfileLimit', vs => Math.max(...vs)),
+			listPinnedLimit: calc('listPinnedLimit', vs => Math.max(...vs)),
+			localTimelineAnyLimit: calc('localTimelineAnyLimit', vs => Math.max(...vs)),
 		};
 	}
 

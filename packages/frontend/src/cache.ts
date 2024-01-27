@@ -11,3 +11,4 @@ export const clipsCache = new Cache<Misskey.entities.Clip[]>(1000 * 60 * 30, () 
 export const rolesCache = new Cache(1000 * 60 * 30, () => misskeyApi('admin/roles/list'));
 export const userListsCache = new Cache<Misskey.entities.UserList[]>(1000 * 60 * 30, () => misskeyApi('users/lists/list'));
 export const antennasCache = new Cache<Misskey.entities.Antenna[]>(1000 * 60 * 30, () => misskeyApi('antennas/list'));
+export const userFavoriteListsCache = new Cache(1000 * 60 * 30, () => misskeyApi('users/lists/list-favorite'));
