@@ -18,6 +18,8 @@ export const meta = {
 	},
 
 	requireCredential: true,
+	requireAdmin: false,
+	kind: 'write:account',
 
 	errors: {
 		noSuchUser: {

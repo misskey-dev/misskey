@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'write:account',
 
 	res: {
 		type: 'array',

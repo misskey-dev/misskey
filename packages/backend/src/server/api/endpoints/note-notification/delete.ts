@@ -16,6 +16,7 @@ export const meta = {
 	},
 
 	requireCredential: true,
+	kind: 'write:account',
 
 	errors: {
 		noSuchUser: {
