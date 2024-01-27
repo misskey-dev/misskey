@@ -59,7 +59,6 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
-import { loadConfig } from '@/config.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -319,6 +318,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// ローカルのみにリプライしたらローカルのみにする
 		if (data.reply && data.reply.localOnly && data.channel == null) {
 			data.localOnly = true;
+		}
+
+		// デフォルトハッシュタグ処理
+		if (['public', 'home'].includes(data.visibility)) {
+			if (this.config.tagging.defaultTag != null) {
+				const tag = `#${this.config.tagging.defaultTag}`;
+				if (String(data.text).match(tag)) {
+					data.text = `${data.text}\n\n${tag}`;
+				}
+			}
 		}
 
 		if (data.text) {
@@ -915,11 +924,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// デフォルトハッシュタグ
-			const config = loadConfig();
-			let defaultTag:string | null = config.tagging.defaultTag;
-			if (defaultTag != null) {
+			if (this.config.tagging.defaultTag != null) {
 				const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
-				if (note.visibility === 'public' && noteTags.includes(normalizeForSearch(defaultTag))) {
+				if (note.visibility === 'public' && noteTags.includes(normalizeForSearch(this.config.tagging.defaultTag))) {
 					this.fanoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 					this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {

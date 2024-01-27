@@ -22,7 +22,7 @@ class LocalTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
-	private defaultTag: string;
+	private defaultTag: string | null;
 
 	constructor(
 		private metaService: MetaService,
@@ -45,7 +45,7 @@ class LocalTimelineChannel extends Channel {
 		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
 		const config = loadConfig();
-		this.defaultTag =  config.tagging.defaultTag;
+		this.defaultTag = config.tagging.defaultTag;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
