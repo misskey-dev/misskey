@@ -2482,6 +2482,11 @@ _reversi:
   freeMatch: "自由對戰"
   lookingForPlayer: "正在搜尋對手"
   gameCanceled: "對弈已被取消"
+  shareToTlTheGameWhenStart: "在遊戲開始時將對弈資訊發布到時間軸"
+  iStartedAGame: "對弈開始了！ #MisskeyReversi"
+  opponentHasSettingsChanged: "對手更改了設定"
+  allowIrregularRules: "允許異常規則（完全自由）"
+  disallowIrregularRules: "不允許異常規則"
 _offlineScreen:
   title: "離線－無法連接伺服器"
   header: "無法連接伺服器"
