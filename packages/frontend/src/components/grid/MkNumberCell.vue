@@ -7,12 +7,9 @@
 <script setup lang="ts">
 import { GridRow } from '@/components/grid/types.js';
 
-const emit = defineEmits<{}>();
-
 defineProps<{
 	content: string,
 	row?: GridRow,
-	selectable: boolean,
 	top?: boolean,
 }>();
 

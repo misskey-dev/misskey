@@ -21,42 +21,9 @@ export const meta = {
 
 	res: {
 		type: 'array',
-		optional: false, nullable: false,
 		items: {
 			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				aliases: {
-					type: 'array',
-					optional: false, nullable: false,
-					items: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-				},
-				name: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				category: {
-					type: 'string',
-					optional: false, nullable: true,
-				},
-				host: {
-					type: 'string',
-					optional: false, nullable: true,
-					description: 'The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files.',
-				},
-				url: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-			},
+			ref: 'EmojiDetailed',
 		},
 	},
 } as const;
@@ -88,15 +55,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let emojis: MiEmoji[];
 
 			if (ps.query) {
-				//q.andWhere('emoji.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
-				//const emojis = await q.limit(ps.limit).getMany();
-
 				emojis = await q.getMany();
-				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
-
-				if (queryarry) {
+				const queries = ps.query.match(/:([a-z0-9_]*):/g);
+				if (queries) {
 					emojis = emojis.filter(emoji =>
-						queryarry.includes(`:${emoji.name}:`),
+						queries.includes(`:${emoji.name}:`),
 					);
 				} else {
 					emojis = emojis.filter(emoji =>

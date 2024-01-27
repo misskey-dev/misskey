@@ -2,38 +2,17 @@
 <div>
 	<MkStickyContainer>
 		<template #header>
-			<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
+			<MkPageHeader v-model:tab="headerTab" :actions="headerActions" :tabs="headerTabs"/>
 		</template>
 		<div class="_gaps" :class="$style.root">
-			<MkInput v-model="query" :debounce="true" type="search" autocapitalize="off">
-				<template #prefix><i class="ti ti-search"></i></template>
-				<template #label>{{ i18n.ts.search }}</template>
-			</MkInput>
+			<MkTab v-model="modeTab" style="margin-bottom: var(--margin);">
+				<option value="list">登録済み絵文字一覧</option>
+				<option value="register">新規登録</option>
+			</MkTab>
 
-			<div :class="$style.controller">
-				<MkSelect v-model="limit">
-					<option value="100">100件</option>
-				</MkSelect>
-			</div>
-
-			<div style="overflow-y: scroll; padding-top: 8px; padding-bottom: 8px;">
-				<MkGrid :data="convertedGridItems" :columnSettings="columnSettings"/>
-			</div>
-
-			<div :class="$style.pages">
-				<button>&lt;&lt;</button>
-				<button>&lt;</button>
-
-				<button>1</button>
-				<button>2</button>
-				<button>3</button>
-				<button>4</button>
-				<button>5</button>
-				<span>...</span>
-				<button>10</button>
-
-				<button>&gt;</button>
-				<button>&gt;&gt;</button>
+			<div>
+				<XListComponent v-if="modeTab === 'list'" :customEmojis="customEmojis"/>
+				<XRegisterComponent v-else @operation:registered="onOperationRegistered"/>
 			</div>
 		</div>
 	</MkStickyContainer>
@@ -41,49 +20,31 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
-import MkGrid from '@/components/grid/MkGrid.vue';
-import { ColumnSetting } from '@/components/grid/types.js';
 import { i18n } from '@/i18n.js';
-import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkTab from '@/components/MkTab.vue';
+import XListComponent from '@/pages/admin/custom-emojis-grid.list.vue';
+import XRegisterComponent from '@/pages/admin/custom-emojis-grid.register.vue';
 
-const columnSettings: ColumnSetting[] = [
-	{ bindTo: 'url', title: '🎨', type: 'image', editable: false, width: 50 },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
-	{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
-	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
-	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140 },
-];
+type PageMode = 'list' | 'register';
 
 const customEmojis = ref<Misskey.entities.EmojiDetailed[]>([]);
-const gridItems = ref<GridItem[]>([]);
-const query = ref('');
-const limit = ref(100);
-const tab = ref('local');
+const headerTab = ref('local');
+const modeTab = ref<PageMode>('list');
 
-const convertedGridItems = computed(() => gridItems.value.map(it => it.asRecord()));
+async function refreshCustomEmojis() {
+	customEmojis.value = await misskeyApi('admin/emoji/list', { limit: 100 });
+}
 
-const refreshCustomEmojis = async () => {
-	customEmojis.value = await misskeyApi('emojis', { detail: true }).then(it => it.emojis);
-};
-
-const refreshGridItems = () => {
-	gridItems.value = customEmojis.value.map(it => GridItem.ofEmojiDetailed(it));
-};
-
-watch(customEmojis, refreshGridItems);
+async function onOperationRegistered() {
+	await refreshCustomEmojis();
+}
 
 onMounted(async () => {
 	await refreshCustomEmojis();
-	refreshGridItems();
 });
 
 const headerTabs = computed(() => [{
@@ -98,10 +59,13 @@ const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
-	handler: () => {},
+	handler: () => {
+	},
 }, {
 	icon: 'ti ti-dots',
-	handler: () => {},
+	text: '',
+	handler: () => {
+	},
 }]);
 
 definePageMetadata(computed(() => ({

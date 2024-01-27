@@ -21,7 +21,7 @@
 					{{ cell.value }}
 				</div>
 				<div v-else-if="cellType === 'boolean'">
-					<span v-if="cell.value" class="ti ti-check"/>
+					<span v-if="cell.value === true" class="ti ti-check"/>
 					<span v-else class="ti ti-x"/>
 				</div>
 				<div v-else-if="cellType === 'image'">
@@ -49,18 +49,17 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import {
-	CellAddress,
 	CellValue,
 	equalCellAddress,
 	getCellAddress,
 	GridCell,
-	GridEventEmitter, Size,
+	GridEventEmitter,
+	Size,
 } from '@/components/grid/types.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
 	(ev: 'operation:endEdit', sender: GridCell): void;
-	(ev: 'operation:selectionMove', sender: GridCell, next: CellAddress): void;
 	(ev: 'change:value', sender: GridCell, newValue: CellValue): void;
 	(ev: 'change:contentSize', sender: GridCell, newSize: Size): void;
 }>();

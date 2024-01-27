@@ -25,18 +25,9 @@ export const meta = {
 				type: 'array',
 				optional: false, nullable: false,
 				items: {
-					anyOf: [
-						{
-							type: 'object',
-							optional: false, nullable: false,
-							ref: 'EmojiSimple',
-						},
-						{
-							type: 'object',
-							optional: false, nullable: false,
-							ref: 'EmojiDetailed',
-						},
-					],
+					type: 'object',
+					optional: false, nullable: false,
+					ref: 'EmojiSimple',
 				},
 			},
 		},
@@ -46,10 +37,6 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		detail: {
-			type: 'boolean',
-			nullable: true,
-		},
 	},
 	required: [],
 } as const;
@@ -74,9 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			return {
-				emojis: ps.detail
-					? await this.emojiEntityService.packDetailedMany(emojis)
-					: await this.emojiEntityService.packSimpleMany(emojis),
+				emojis: await this.emojiEntityService.packSimpleMany(emojis),
 			};
 		});
 	}

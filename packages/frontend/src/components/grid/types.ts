@@ -56,6 +56,12 @@ export type GridRow = {
 	index: number;
 }
 
+export type CellValueChangedEvent = {
+	column: GridColumn;
+	row: GridRow;
+	value: CellValue;
+}
+
 export class GridEventEmitter extends EventEmitter<{}> {
 }
 
@@ -71,7 +77,7 @@ export function isRowElement(elem: any): elem is HTMLTableRowElement {
 	return elem instanceof HTMLTableRowElement;
 }
 
-export function getCellAddress(elem: HTMLElement, parentNodeCount = 5): CellAddress {
+export function getCellAddress(elem: HTMLElement, parentNodeCount = 10): CellAddress {
 	let node = elem;
 	for (let i = 0; i < parentNodeCount; i++) {
 		if (isCellElement(node) && isRowElement(node.parentElement)) {

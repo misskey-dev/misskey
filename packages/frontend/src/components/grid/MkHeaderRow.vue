@@ -2,7 +2,6 @@
 <tr :class="$style.header">
 	<MkNumberCell
 		content="#"
-		:selectable="false"
 		:top="true"
 	/>
 	<MkHeaderCell

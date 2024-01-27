@@ -1006,9 +1006,6 @@ type EmojiResponse = operations['emoji']['responses']['200']['content']['applica
 type EmojiSimple = components['schemas']['EmojiSimple'];
 
 // @public (undocumented)
-type EmojisRequest = operations['emojis']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
 type EmojisResponse = operations['emojis']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -1046,26 +1043,6 @@ export type Endpoints = Overwrite<Endpoints_2, {
                 ]
                 ];
                 $default: UserDetailed;
-            };
-        };
-    };
-    'emojis': {
-        req: EmojisRequest;
-        res: {
-            $switch: {
-                $cases: [
-                [
-                    {
-                    detail: true;
-                },
-                    {
-                    emojis: EmojiDetailed[];
-                }
-                ]
-                ];
-                $default: {
-                    emojis: EmojiSimple[];
-                };
             };
         };
     };
@@ -1468,7 +1445,6 @@ declare namespace entities {
         InviteLimitResponse,
         MetaRequest,
         MetaResponse,
-        EmojisRequest,
         EmojisResponse,
         EmojiRequest,
         EmojiResponse,

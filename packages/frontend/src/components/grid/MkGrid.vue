@@ -1,5 +1,7 @@
 <template>
 <table
+	ref="rootEl"
+	tabindex="-1"
 	:class="$style.grid"
 	@mousedown="onMouseDown"
 	@keydown="onKeyDown"
@@ -11,7 +13,6 @@
 			@operation:beginWidthChange="onHeaderCellWidthBeginChange"
 			@operation:endWidthChange="onHeaderCellWidthEndChange"
 			@operation:widthLargest="onHeaderCellWidthLargest"
-			@operation:selectionColumn="onSelectionColumn"
 			@change:width="onHeaderCellChangeWidth"
 			@change:contentSize="onHeaderCellChangeContentSize"
 		/>
@@ -25,8 +26,6 @@
 			:bus="bus"
 			@operation:beginEdit="onCellEditBegin"
 			@operation:endEdit="onCellEditEnd"
-			@operation:selectionMove="onSelectionMove"
-			@operation:selectionRow="onSelectionRow"
 			@change:value="onChangeCellValue"
 			@change:contentSize="onChangeCellContentSize"
 		/>
@@ -40,7 +39,7 @@ import {
 	calcCellWidth,
 	CELL_ADDRESS_NONE,
 	CellAddress,
-	CellValue,
+	CellValue, CellValueChangedEvent,
 	ColumnSetting,
 	DataSource,
 	equalCellAddress,
@@ -54,16 +53,22 @@ import {
 } from '@/components/grid/types.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	columnSettings: ColumnSetting[],
 	data: DataSource[]
 }>();
 
+const emit = defineEmits<{
+	(ev: 'change:cellValue', event: CellValueChangedEvent): void;
+}>();
+
 const bus = new GridEventEmitter();
 
 const { columnSettings, data } = toRefs(props);
 
+const rootEl = ref<InstanceType<typeof HTMLTableElement>>();
 const columns = ref<GridColumn[]>([]);
 const rows = ref<GridRow[]>([]);
 const cells = ref<GridCell[][]>([]);
@@ -78,9 +83,36 @@ const selectedCell = computed(() => {
 	return selected.length > 0 ? selected[0] : undefined;
 });
 const rangedCells = computed(() => cells.value.flat().filter(it => it.ranged));
+const rangedBounds = computed(() => {
+	const _cells = rangedCells.value;
+	const leftTop = {
+		col: Math.min(..._cells.map(it => it.address.col)),
+		row: Math.min(..._cells.map(it => it.address.row)),
+	};
+	const rightBottom = {
+		col: Math.max(..._cells.map(it => it.address.col)),
+		row: Math.max(..._cells.map(it => it.address.row)),
+	};
+	return {
+		leftTop,
+		rightBottom,
+	};
+});
+const availableBounds = computed(() => {
+	const leftTop = {
+		col: 0,
+		row: 0,
+	};
+	const rightBottom = {
+		col: Math.max(...columns.value.map(it => it.index)),
+		row: Math.max(...rows.value.map(it => it.index)),
+	};
+	return { leftTop, rightBottom };
+});
 
 watch(columnSettings, refreshColumnsSetting);
 watch(data, refreshData);
+
 if (_DEV_) {
 	watch(state, (value) => {
 		console.log(`state: ${value}`);
@@ -88,37 +120,189 @@ if (_DEV_) {
 }
 
 function onKeyDown(ev: KeyboardEvent) {
+	if (_DEV_) {
+		console.log('[Grid]', `ctrl: ${ev.ctrlKey}, shift: ${ev.shiftKey}, code: ${ev.code}`);
+	}
+
 	switch (state.value) {
 		case 'normal': {
-			const selectedCellAddress = selectedCell.value?.address;
-			if (!selectedCellAddress) {
-				return;
-			}
+			// normalの時は自前で制御したい
+			ev.preventDefault();
 
-			let next: CellAddress;
-			switch (ev.code) {
-				case 'ArrowRight': {
-					next = { col: selectedCellAddress.col + 1, row: selectedCellAddress.row };
-					break;
+			if (ev.ctrlKey) {
+				if (ev.shiftKey) {
+					// ctrl + shiftキーが押されている場合は選択セルの範囲拡大（最大範囲）
+					const selectedCellAddress = requireSelectionCell();
+					const max = availableBounds.value;
+					const bounds = rangedBounds.value;
+
+					let newBounds: { leftTop: CellAddress, rightBottom: CellAddress };
+					switch (ev.code) {
+						case 'ArrowRight': {
+							newBounds = {
+								leftTop: { col: selectedCellAddress.col, row: bounds.leftTop.row },
+								rightBottom: { col: max.rightBottom.col, row: bounds.rightBottom.row },
+							};
+							break;
+						}
+						case 'ArrowLeft': {
+							newBounds = {
+								leftTop: { col: max.leftTop.col, row: bounds.leftTop.row },
+								rightBottom: { col: selectedCellAddress.col, row: bounds.rightBottom.row },
+							};
+							break;
+						}
+						case 'ArrowUp': {
+							newBounds = {
+								leftTop: { col: bounds.leftTop.col, row: max.leftTop.row },
+								rightBottom: { col: bounds.rightBottom.col, row: selectedCellAddress.row },
+							};
+							break;
+						}
+						case 'ArrowDown': {
+							newBounds = {
+								leftTop: { col: bounds.leftTop.col, row: selectedCellAddress.row },
+								rightBottom: { col: bounds.rightBottom.col, row: max.rightBottom.row },
+							};
+							break;
+						}
+						default: {
+							return;
+						}
+					}
+
+					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
+					expandRange(newBounds.leftTop, newBounds.rightBottom);
+				} else {
+					switch (ev.code) {
+						case 'KeyC': {
+							rangeCopyToClipboard();
+							break;
+						}
+						case 'KeyV': {
+							pasteFromClipboard();
+							break;
+						}
+					}
 				}
-				case 'ArrowLeft': {
-					next = { col: selectedCellAddress.col - 1, row: selectedCellAddress.row };
-					break;
-				}
-				case 'ArrowUp': {
-					next = { col: selectedCellAddress.col, row: selectedCellAddress.row - 1 };
-					break;
-				}
-				case 'ArrowDown': {
-					next = { col: selectedCellAddress.col, row: selectedCellAddress.row + 1 };
-					break;
-				}
-				default: {
-					return;
+			} else {
+				if (ev.shiftKey) {
+					// shiftキーが押されている場合は選択セルの範囲拡大（隣のセルまで）
+					const selectedCellAddress = requireSelectionCell();
+					const bounds = rangedBounds.value;
+					let newBounds: { leftTop: CellAddress, rightBottom: CellAddress };
+					switch (ev.code) {
+						case 'ArrowRight': {
+							newBounds = {
+								leftTop: {
+									col: bounds.leftTop.col < selectedCellAddress.col
+										? bounds.leftTop.col + 1
+										: selectedCellAddress.col,
+									row: bounds.leftTop.row,
+								},
+								rightBottom: {
+									col: (bounds.rightBottom.col > selectedCellAddress.col || bounds.leftTop.col === selectedCellAddress.col)
+										? bounds.rightBottom.col + 1
+										: selectedCellAddress.col,
+									row: bounds.rightBottom.row,
+								},
+							};
+							break;
+						}
+						case 'ArrowLeft': {
+							newBounds = {
+								leftTop: {
+									col: (bounds.leftTop.col < selectedCellAddress.col || bounds.rightBottom.col === selectedCellAddress.col)
+										? bounds.leftTop.col - 1
+										: selectedCellAddress.col,
+									row: bounds.leftTop.row,
+								},
+								rightBottom: {
+									col: bounds.rightBottom.col > selectedCellAddress.col
+										? bounds.rightBottom.col - 1
+										: selectedCellAddress.col,
+									row: bounds.rightBottom.row,
+								},
+							};
+							break;
+						}
+						case 'ArrowUp': {
+							newBounds = {
+								leftTop: {
+									col: bounds.leftTop.col,
+									row: (bounds.leftTop.row < selectedCellAddress.row || bounds.rightBottom.row === selectedCellAddress.row)
+										? bounds.leftTop.row - 1
+										: selectedCellAddress.row,
+								},
+								rightBottom: {
+									col: bounds.rightBottom.col,
+									row: bounds.rightBottom.row > selectedCellAddress.row
+										? bounds.rightBottom.row - 1
+										: selectedCellAddress.row,
+								},
+							};
+							break;
+						}
+						case 'ArrowDown': {
+							newBounds = {
+								leftTop: {
+									col: bounds.leftTop.col,
+									row: bounds.leftTop.row < selectedCellAddress.row
+										? bounds.leftTop.row + 1
+										: selectedCellAddress.row,
+								},
+								rightBottom: {
+									col: bounds.rightBottom.col,
+									row: (bounds.rightBottom.row > selectedCellAddress.row || bounds.leftTop.row === selectedCellAddress.row)
+										? bounds.rightBottom.row + 1
+										: selectedCellAddress.row,
+								},
+							};
+							break;
+						}
+						default: {
+							return;
+						}
+					}
+
+					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
+					expandRange(newBounds.leftTop, newBounds.rightBottom);
+				} else {
+					// shiftキーもctrlキーが押されていない場合
+					switch (ev.code) {
+						case 'ArrowRight': {
+							const selectedCellAddress = requireSelectionCell();
+							selectionCell({ col: selectedCellAddress.col + 1, row: selectedCellAddress.row });
+							break;
+						}
+						case 'ArrowLeft': {
+							const selectedCellAddress = requireSelectionCell();
+							selectionCell({ col: selectedCellAddress.col - 1, row: selectedCellAddress.row });
+							break;
+						}
+						case 'ArrowUp': {
+							const selectedCellAddress = requireSelectionCell();
+							selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row - 1 });
+							break;
+						}
+						case 'ArrowDown': {
+							const selectedCellAddress = requireSelectionCell();
+							selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row + 1 });
+							break;
+						}
+						case 'Delete': {
+							const ranges = rangedCells.value;
+							for (const range of ranges) {
+								range.value = undefined;
+							}
+							break;
+						}
+						default: {
+							return;
+						}
+					}
 				}
 			}
-
-			selectionCell(next);
 			break;
 		}
 	}
@@ -134,7 +318,6 @@ function onMouseDown(ev: MouseEvent) {
 			break;
 		}
 		case 'normal': {
-			const cellAddress = getCellAddress(ev.target as HTMLElement);
 			if (availableCellAddress(cellAddress)) {
 				selectionCell(cellAddress);
 
@@ -151,6 +334,8 @@ function onMouseDown(ev: MouseEvent) {
 				registerMouseMove();
 				firstSelectionColumnIdx.value = cellAddress.col;
 				state.value = 'colSelecting';
+
+				rootEl.value?.focus();
 			} else if (isRowNumberCellAddress(cellAddress)) {
 				unSelectionRange();
 
@@ -161,6 +346,8 @@ function onMouseDown(ev: MouseEvent) {
 				registerMouseMove();
 				firstSelectionRowIdx.value = cellAddress.row;
 				state.value = 'rowSelecting';
+
+				rootEl.value?.focus();
 			}
 			break;
 		}
@@ -168,6 +355,7 @@ function onMouseDown(ev: MouseEvent) {
 }
 
 function onMouseMove(ev: MouseEvent) {
+	ev.preventDefault();
 	switch (state.value) {
 		case 'cellSelecting': {
 			const selectedCellAddress = selectedCell.value?.address;
@@ -240,6 +428,7 @@ function onMouseMove(ev: MouseEvent) {
 }
 
 function onMouseUp(ev: MouseEvent) {
+	ev.preventDefault();
 	switch (state.value) {
 		case 'rowSelecting':
 		case 'colSelecting':
@@ -270,20 +459,14 @@ function onCellEditEnd() {
 }
 
 function onChangeCellValue(sender: GridCell, newValue: CellValue) {
-	cells.value[sender.address.row][sender.address.col].value = newValue;
+	setCellValue(sender, newValue);
 }
 
 function onChangeCellContentSize(sender: GridCell, contentSize: Size) {
 	cells.value[sender.address.row][sender.address.col].contentSize = contentSize;
 }
 
-function onSelectionMove(_: GridCell, next: CellAddress) {
-	if (availableCellAddress(next)) {
-		selectionCell(next);
-	}
-}
-
-function onHeaderCellWidthBeginChange(_: GridColumn) {
+function onHeaderCellWidthBeginChange() {
 	switch (state.value) {
 		case 'normal': {
 			state.value = 'colResizing';
@@ -292,7 +475,7 @@ function onHeaderCellWidthBeginChange(_: GridColumn) {
 	}
 }
 
-function onHeaderCellWidthEndChange(_: GridColumn) {
+function onHeaderCellWidthEndChange() {
 	switch (state.value) {
 		case 'colResizing': {
 			state.value = 'normal';
@@ -341,18 +524,14 @@ function onHeaderCellWidthLargest(sender: GridColumn) {
 	}
 }
 
-function onSelectionColumn(sender: GridColumn) {
-	unSelectionRange();
-
-	const targets = cells.value.map(row => row[sender.index].address);
-	selectionRange(...targets);
-}
-
-function onSelectionRow(sender: GridRow) {
-	unSelectionRange();
-
-	const targets = cells.value[sender.index].map(cell => cell.address);
-	selectionRange(...targets);
+function setCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
+	const cellAddress = 'address' in sender ? sender.address : sender;
+	cells.value[cellAddress.row][cellAddress.col].value = newValue;
+	emit('change:cellValue', {
+		column: columns.value[cellAddress.col],
+		row: rows.value[cellAddress.row],
+		value: newValue,
+	});
 }
 
 function selectionCell(target: CellAddress) {
@@ -365,6 +544,15 @@ function selectionCell(target: CellAddress) {
 	const _cells = cells.value;
 	_cells[target.row][target.col].selected = true;
 	_cells[target.row][target.col].ranged = true;
+}
+
+function requireSelectionCell(): CellAddress {
+	const selected = selectedCell.value;
+	if (!selected) {
+		throw new Error('No selected cell');
+	}
+
+	return selected.address;
 }
 
 function selectionRange(...targets: CellAddress[]) {
@@ -414,6 +602,75 @@ function isRowNumberCellAddress(cellAddress: CellAddress): boolean {
 	return cellAddress.row >= 0 && cellAddress.col === -1;
 }
 
+function rangeCopyToClipboard() {
+	const lines = Array.of<string>();
+	const bounds = rangedBounds.value;
+	for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
+		const items = Array.of<string>();
+		for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
+			const cell = cells.value[row][col];
+			items.push(cell.value?.toString() ?? '');
+		}
+		lines.push(items.join('\t'));
+	}
+
+	const text = lines.join('\n');
+	copyToClipboard(text);
+}
+
+async function pasteFromClipboard() {
+	function parseValue(value: string, type: ColumnSetting['type']): CellValue {
+		switch (type) {
+			case 'number': {
+				return Number(value);
+			}
+			case 'boolean': {
+				return value === 'true';
+			}
+			default: {
+				return value;
+			}
+		}
+	}
+
+	const clipBoardText = await navigator.clipboard.readText();
+
+	const bounds = rangedBounds.value;
+	const lines = clipBoardText.replace(/\r/g, '')
+		.split('\n')
+		.map(it => it.split('\t'));
+
+	if (lines.length === 1 && lines[0].length === 1) {
+		// 単独文字列の場合は選択範囲全体に同じテキストを貼り付ける
+		const ranges = rangedCells.value;
+		for (const cell of ranges) {
+			setCellValue(cell, parseValue(lines[0][0], cell.column.setting.type));
+		}
+	} else {
+		// 表形式文字列の場合は表形式にパースし、選択範囲に合うように貼り付ける
+		const offsetRow = bounds.leftTop.row;
+		const offsetCol = bounds.leftTop.col;
+		for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
+			const rowIdx = row - offsetRow;
+			if (lines.length <= rowIdx) {
+				// クリップボードから読んだ二次元配列よりも選択範囲の方が大きい場合、貼り付け操作を打ち切る
+				break;
+			}
+
+			const items = lines[rowIdx];
+			for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
+				const colIdx = col - offsetCol;
+				if (items.length <= colIdx) {
+					// クリップボードから読んだ二次元配列よりも選択範囲の方が大きい場合、貼り付け操作を打ち切る
+					break;
+				}
+
+				setCellValue(cells.value[row][col], parseValue(items[colIdx], cells.value[row][col].column.setting.type));
+			}
+		}
+	}
+}
+
 function refreshColumnsSetting() {
 	const bindToList = columnSettings.value.map(it => it.bindTo);
 	if (new Set(bindToList).size !== columnSettings.value.length) {
@@ -427,6 +684,7 @@ function refreshData() {
 	const _data: DataSource[] = data.value;
 	const _rows: GridRow[] = _data.map((_, index) => ({
 		index,
+
 	}));
 	const _columns: GridColumn[] = columnSettings.value.map((setting, index) => ({
 		index,

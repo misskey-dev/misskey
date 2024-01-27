@@ -3,7 +3,7 @@
 
 /*
  * version: 2024.2.0-beta.4
- * generatedAt: 2024-01-23T07:38:51.282Z
+ * generatedAt: 2024-01-27T12:44:54.008Z
  */
 
 /**
@@ -6539,16 +6539,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': ({
-              /** Format: id */
-              id: string;
-              aliases: string[];
-              name: string;
-              category: string | null;
-              /** @description The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files. */
-              host: string | null;
-              url: string;
-            })[];
+          'application/json': components['schemas']['EmojiDetailed'][];
         };
       };
       /** @description Client error */
@@ -19027,19 +19018,12 @@ export type operations = {
    * **Credential required**: *No*
    */
   emojis: {
-    requestBody: {
-      content: {
-        'application/json': {
-          detail?: boolean | null;
-        };
-      };
-    };
     responses: {
       /** @description OK (with results) */
       200: {
         content: {
           'application/json': {
-            emojis: (components['schemas']['EmojiSimple'] | components['schemas']['EmojiDetailed'])[];
+            emojis: components['schemas']['EmojiSimple'][];
           };
         };
       };

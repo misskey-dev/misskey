@@ -1,9 +1,23 @@
 import * as Misskey from 'misskey-js';
 
-export class GridItem {
+export interface IGridItem {
 	readonly id?: string;
-	readonly url?: string;
-	readonly blob?: Blob;
+	readonly fileId?: string;
+	readonly url: string;
+
+	name: string;
+	category: string;
+	aliases: string;
+	license: string;
+	isSensitive: boolean;
+	localOnly: boolean;
+	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
+}
+
+export class GridItem implements IGridItem {
+	readonly id?: string;
+	readonly fileId?: string;
+	readonly url: string;
 
 	public name: string;
 	public category: string;
@@ -17,8 +31,8 @@ export class GridItem {
 
 	constructor(
 		id: string | undefined,
-		url: string | undefined = undefined,
-		blob: Blob | undefined = undefined,
+		fileId: string | undefined,
+		url: string,
 		name: string,
 		category: string,
 		aliases: string,
@@ -28,8 +42,8 @@ export class GridItem {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: string,
 	) {
 		this.id = id;
+		this.fileId = fileId;
 		this.url = url;
-		this.blob = blob;
 
 		this.aliases = aliases;
 		this.name = name;
@@ -42,11 +56,11 @@ export class GridItem {
 		this.origin = JSON.stringify(this);
 	}
 
-	static ofEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem {
+	static fromEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem {
 		return new GridItem(
 			it.id,
-			it.url,
 			undefined,
+			it.url,
 			it.name,
 			it.category ?? '',
 			it.aliases.join(', '),
@@ -54,6 +68,21 @@ export class GridItem {
 			it.isSensitive,
 			it.localOnly,
 			it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
+		);
+	}
+
+	static fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
+		return new GridItem(
+			undefined,
+			it.id,
+			it.url,
+			it.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+			'',
+			'',
+			'',
+			it.isSensitive,
+			false,
+			'',
 		);
 	}
 

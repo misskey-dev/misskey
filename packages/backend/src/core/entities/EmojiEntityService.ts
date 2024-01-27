@@ -67,7 +67,7 @@ export class EmojiEntityService {
 	@bindThis
 	public packDetailedMany(
 		emojis: any[],
-	) {
+	): Promise<Packed<'EmojiDetailed'>[]> {
 		return Promise.all(emojis.map(x => this.packDetailed(x)));
 	}
 }
