@@ -1254,6 +1254,96 @@ _timelineDescription:
   local: "A la línia de temps Local pots veure les notes de tots els usuaris d'aquest servidor."
   social: "La línia de temps Social mostren les notes de les línies de temps d'Inici i Local."
   global: "A la línia de temps Global pots veure les notes de tots els servidors connectats."
+_serverRules:
+  description: "Un conjunt de regles que seran mostrades abans de registrar-se. Es recomanable configurar un resum dels termes d'ús."
+_serverSettings:
+  iconUrl: "URL de la icona"
+  appIconDescription: "Especifica la icona que es mostrarà quan el {host} es mostri en una aplicació."
+  appIconUsageExample: "Per exemple com a PWA, o quan es mostri com un favorit a la pàgina d'inici del telèfon mòbil"
+  appIconStyleRecommendation: "Com la icona pot ser retallada com un cercle o un quadrat, es recomana fer servir una icona amb un marge acolorit que l'envolti."
+  appIconResolutionMustBe: "La resolució mínima és {resolution}."
+  manifestJsonOverride: "Sobreescriure manifest.json"
+  shortName: "Nom curt"
+  shortNameDescription: "Una abreviatura del nom de la instància que es poguí mostrar en cas que el nom oficial sigui massa llarg"
+  fanoutTimelineDescription: "Quan es troba activat millora bastant el rendiment quan es recuperen les línies de temps i redueix la carrega de la base de dades. Com a contrapunt, l'ús de memòria de Redis es veurà incrementada. Considera d'estabilitat aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes de inestabilitat."
+_achievements:
+  _types:
+    _notes100000:
+      flavor: "Segur que tens moltes coses a dir?"
+    _login3:
+      title: "Principiant I"
+      description: "Vas iniciar sessió fa tres dies"
+      flavor: "Des d'avui diguem Misskist"
+    _login7:
+      title: "Principiant II"
+      description: "Vas iniciar sessió fa set dies"
+      flavor: "Ja saps com va funcionant tot?"
+    _login15:
+      title: "Principiant III"
+      description: "Vas iniciar sessió fa quinze dies"
+    _login30:
+      title: "Misskist I"
+      description: "Vas iniciar sessió fa trenta dies"
+    _login60:
+      title: "Misskist II"
+      description: "Vas iniciar sessió fa seixanta dies"
+    _login100:
+      title: "Misskist III"
+      description: "Vas iniciar sessió fa cent dies"
+      flavor: "Misskist violent"
+    _login200:
+      title: "Regular I"
+      description: "Vas iniciar sessió fa dos-cents dies"
+    _login300:
+      title: "Regular II"
+      description: "Vas iniciar sessió fa tres-cents dies"
+    _login400:
+      title: "Regular III"
+      description: "Vas iniciar sessió fa quatre-cents dies"
+    _login500:
+      title: "Expert I"
+      description: "Vas iniciar sessió fa cinc-cents dies"
+      flavor: "Amics, he dit massa vegades que soc un amant de les notes"
+    _login600:
+      title: "Expert II"
+      description: "Vas iniciar sessió fa sis-cents dies"
+    _login700:
+      title: "Expert III"
+      description: "Vas iniciar sessió fa set-cents dies"
+    _login800:
+      title: "Mestre de les Notes I"
+      description: "Vas iniciar sessió fa vuit-cents dies "
+    _login900:
+      title: "Mestre de les Notes II"
+      description: "Vas iniciar sessió fa nou-cents dies"
+    _login1000:
+      title: "Mestre de les Notes III"
+      description: "Vas iniciar sessió fa mil dies"
+      flavor: "Gràcies per fer servir MissKey!"
+    _noteClipped1:
+      title: "He de retallar-te!"
+      description: "Retalla la teva primera nota"
+    _noteFavorited1:
+      title: "Quan miro les estrelles"
+      description: "La primera vegada que vaig registrar el meu favorit"
+    _myNoteFavorited1:
+      title: "Vull una estrella"
+      description: "La meva nota va ser registrada com favorita per una de les altres persones"
+    _profileFilled:
+      title: "Estic a punt"
+      description: "Vaig fer la configuració de perfil"
+    _markedAsCat:
+      title: "Soc un gat"
+      description: "He establert el meu compte com si fos un Gat"
+      flavor: "Encara no tinc nom"
+    _following1:
+      title: "És el meu primer seguiment"
+      description: "És la primera vegada que et segueixo"
+    _following10:
+      title: "Segueix-me... Segueix-me..."
+    _open3windows:
+      title: "Multi finestres"
+      description: "I va obrir més de tres finestres"
 _role:
   assignTarget: "Assignar "
   priority: "Prioritat"
