@@ -150,7 +150,6 @@ type Option = {
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
-	funoutTimelineService: any;
 
 	constructor(
 		@Inject(DI.config)
