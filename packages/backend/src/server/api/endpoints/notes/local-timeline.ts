@@ -163,8 +163,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					} else {
 						qb.andWhere(`':t' = any(note.tags)`, { t: normalizeForSearch(defaultTag) });
 					}
-				}
-			))
+				}))
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')

@@ -205,7 +205,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (defaultTag == null) {
 					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
 				} else {
-					qb.orWhere(`(note.visibility = 'public') AND ('${normalizeForSearch(defaultTag)}' = any(note.tags)`);
+					qb.orWhere(`(note.visibility = 'public') AND (':t' = any(note.tags)`, { t: normalizeForSearch(defaultTag)} );
 				}
 			}))
 			.innerJoinAndSelect('note.user', 'user')
