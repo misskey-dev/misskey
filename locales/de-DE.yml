@@ -181,7 +181,7 @@ searchWith: "Suchen: {q}"
 youHaveNoLists: "Du hast keine Listen"
 followConfirm: "Möchtest du {name} wirklich folgen?"
 proxyAccount: "Proxy-Benutzerkonto"
-proxyAccountDescription: "Ein Proxy-Benutzerkonto ist ein Benutzerkonto, das sich für Nutzer unter bestimmten Konditionen wie ein Follower aus einer fremden Instanz verhält. Zum Beispiel wird die Aktivität eines Nutzers aus einer fremden Instanz nicht an diese Instanz übermittelt, falls es keinen Benutzer dieser Instanz gibt, der diesem Nutzer aus fremder Instanz folgt. In diesem Fall folgt stattdessen das Proxy-Benutzerkonto."
+proxyAccountDescription: "Ein Proxy-Konto ist ein Benutzerkonto, das unter bestimmten Bedingungen als Follower für Benutzer fremder Instanzen fungiert. Wenn zum Beispiel ein Benutzer einen Benutzer einer fremden Instanz zu einer Liste hinzufügt, werden die Aktivitäten des entfernten Benutzers nicht an die Instanz übermittelt, wenn kein lokaler Benutzer diesem Benutzer folgt; stattdessen folgt das Proxy-Konto."
 host: "Hostname"
 selectUser: "Benutzer auswählen"
 recipient: "Empfänger"
@@ -1181,6 +1181,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "Zu viele aktive Ankündigungen können die Benutzerfreundlichkeit verschlechtern. Es wird empfohlen, veraltete Ankündigungen zu archivieren."
   readConfirmTitle: "Als gelesen markieren?"
   readConfirmText: "Dies markiert den Inhalt von \"{title}\" als gelesen."
+  shouldNotBeUsedToPresentPermanentInfo: "Es wird empfohlen, Ankündigungen für aktuelle und zeitlich begrenzte Neuigkeiten zu nutzen, statt für Informationen, die langfristig relevant sind."
   dialogAnnouncementUxWarn: "Bei der Verwendung von mehr als zwei Meldungen im Dialog-Format wird um Vorsicht geboten, da dies negative Auswirkungen auf die UX haben kann."
   silence: "Keine Benachrichtigung"
   silenceDescription: "Wenn aktiviert, gibt diese Meldung keine Nachricht aus und muss nicht als \"gelesen\" markiert werden."
@@ -1222,6 +1223,7 @@ _serverSettings:
   shortName: "Abkürzung"
   shortNameDescription: "Ein Kürzel für den Namen der Instanz, der angezeigt werden kann, falls der volle Instanzname lang ist."
   fanoutTimelineDescription: "Ist diese Option aktiviert, kann eine erhebliche Verbesserung im Abrufen von Chroniken und eine Reduzierung der Datenbankbelastung erzielt werden, im Gegenzug zu einer Steigerung in der Speichernutzung von Redis. Bei geringem Serverspeicher oder Serverinstabilität kann diese Option deaktiviert werden."
+  fanoutTimelineDbFallback: "Auf die Datenbank zurückfallen"
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"
@@ -1489,7 +1491,9 @@ _role:
   assignTarget: "Zuweisungsart"
   descriptionOfAssignTarget: "<b>Manuell</b> bedeutet, dass die Liste der Benutzer einer Rolle manuell verwaltet wird.\n<b>Konditional</b> bedeutet, dass die Liste der Benutzer einer Rolle durch eine Bedingung automatisch verwaltet wird."
   manual: "Manuell"
+  manualRoles: "Manuelle Rollen"
   conditional: "Konditional"
+  conditionalRoles: "Bedingte Rolle"
   condition: "Bedingung"
   isConditionalRole: "Dies ist eine konditionale Rolle."
   isPublic: "Öffentliche Rolle"
@@ -1538,6 +1542,7 @@ _role:
     canHideAds: "Kann Werbung ausblenden"
     canSearchNotes: "Nutzung der Notizsuchfunktion"
     canUseTranslator: "Verwendung des Übersetzers"
+    avatarDecorationLimit: "Maximale Anzahl an Profilbilddekorationen, die angebracht werden können"
   _condition:
     isLocal: "Lokaler Benutzer"
     isRemote: "Benutzer fremder Instanz"
@@ -1566,6 +1571,7 @@ _emailUnavailable:
   disposable: "Wegwerf-Email-Adressen können nicht verwendet werden"
   mx: "Dieser Email-Server ist ungültig"
   smtp: "Dieser Email-Server antwortet nicht"
+  banned: "Du kannst dich mit dieser E-Mail-Adresse nicht registrieren"
 _ffVisibility:
   public: "Öffentlich"
   followers: "Nur für Follower sichtbar"
@@ -1894,6 +1900,7 @@ _widgets:
   _userList:
     chooseList: "Liste auswählen"
   clicker: "Klickzähler"
+  birthdayFollowings: "Nutzer, die heute Geburtstag haben"
 _cw:
   hide: "Inhalt verbergen"
   show: "Inhalt anzeigen"
