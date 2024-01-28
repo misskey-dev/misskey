@@ -155,15 +155,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		const defaultTag: string | null = config.tagging?.defaultTag;
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
-				.andWhere(new Brackets(qb => {
-					qb.andWhere('note.visibility = \'public\'');
-					qb.andWhere('note.channelId IS NULL');
-					if (defaultTag == null) {
-						qb.andWhere('note.userHost IS NULL');
-					} else {
-						qb.andWhere(`':t' = any(note.tags)`, { t: normalizeForSearch(defaultTag) });
-					}
-				}))
+			.andWhere(new Brackets(qb => {
+				qb.andWhere('note.visibility = \'public\'');
+				qb.andWhere('note.channelId IS NULL');
+				if (defaultTag == null) {
+					qb.andWhere('note.userHost IS NULL');
+				} else {
+					qb.andWhere(`':t' = any(note.tags)`, { t: normalizeForSearch(defaultTag) });
+				}
+			}))
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
