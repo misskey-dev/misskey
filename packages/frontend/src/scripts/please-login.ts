@@ -8,7 +8,7 @@ import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { popup } from '@/os.js';
 
-export type MisskeyHubOptions = {
+export type OpenOnRemoteOptions = {
 	type: 'web';
 	path: string;
 } | {
@@ -16,13 +16,13 @@ export type MisskeyHubOptions = {
 	params: Record<string, string>;
 };
 
-export function pleaseLogin(path?: string, misskeyHub?: MisskeyHubOptions) {
+export function pleaseLogin(path?: string, openOnRemote?: OpenOnRemoteOptions) {
 	if ($i) return;
 
 	popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
 		autoSet: true,
-		message: misskeyHub ? i18n.ts.signinOrContinueOnRemote : i18n.ts.signinRequired,
-		misskeyHub,
+		message: openOnRemote ? i18n.ts.signinOrContinueOnRemote : i18n.ts.signinRequired,
+		openOnRemote,
 	}, {
 		cancelled: () => {
 			if (path) {

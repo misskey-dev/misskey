@@ -10,10 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
-		<div v-if="misskeyHub" class="_gaps_m">
-			<MkButton type="button" rounded primary style="margin: 0 auto;" @click="openMisskeyHub(misskeyHub)">
-				{{ i18n.ts.continueOnRemote }} <i class="ti ti-external-link"></i>
-			</MkButton>
+		<div v-if="openOnRemote" class="_gaps_m">
+			<div class="_gaps_s">
+				<MkButton type="button" rounded primary style="margin: 0 auto;" @click="openRemote(openOnRemote)">
+					{{ i18n.ts.continueOnRemote }} <i class="ti ti-external-link"></i>
+				</MkButton>
+				<button type="button" class="_button" :class="$style.instanceManualSelectButton" @click="specifyHostAndOpenRemote(openOnRemote)">
+					{{ i18n.ts.specifyServerHost }}
+				</button>
+			</div>
 			<div :class="$style.orHr">
 				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 			</div>
@@ -61,7 +66,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-import type { MisskeyHubOptions } from '@/scripts/please-login.js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -90,12 +95,12 @@ const props = withDefaults(defineProps<{
 	withAvatar?: boolean;
 	autoSet?: boolean;
 	message?: string,
-	misskeyHub?: MisskeyHubOptions,
+	openOnRemote?: OpenOnRemoteOptions,
 }>(), {
 	withAvatar: true,
 	autoSet: false,
 	message: '',
-	misskeyHub: undefined,
+	openOnRemote: undefined,
 });
 
 function onUsernameChange(): void {
@@ -223,14 +228,18 @@ function resetPassword(): void {
 	}, 'closed');
 }
 
-function openMisskeyHub(hubOptions: MisskeyHubOptions): void {
-	switch (hubOptions.type) {
+function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
+	switch (options.type) {
 		case 'web': {
-			window.open(`https://misskey-hub.net/mi-web/?path=${encodeURIComponent(hubOptions.path)}`, '_blank', 'noopener');
+			if (targetHost) {
+				window.open(`https://${targetHost}${options.path}`, '_blank', 'noopener');
+			} else {
+				window.open(`https://misskey-hub.net/mi-web/?path=${encodeURIComponent(options.path)}`, '_blank', 'noopener');
+			}
 			break;
 		}
 		case 'share': {
-			const rawParams = { ...hubOptions.params };
+			const rawParams = { ...options.params };
 			// undefinedの値をすべて除去
 			Object.keys(rawParams).forEach(key => {
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -239,10 +248,36 @@ function openMisskeyHub(hubOptions: MisskeyHubOptions): void {
 				}
 			});
 			const params = new URLSearchParams(rawParams);
-			window.open(`https://misskey-hub.net/share/?${params.toString()}`, '_blank', 'noopener');
+			if (targetHost) {
+				window.open(`https://${targetHost}/share?${params.toString()}`, '_blank', 'noopener');
+			} else {
+				window.open(`https://misskey-hub.net/share/?${params.toString()}`, '_blank', 'noopener');
+			}
 			break;
 		}
 	}
+}
+
+async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<void> {
+	const { canceled, result: hostTemp } = await os.inputText({
+		title: i18n.ts.inputHostName,
+		placeholder: 'misskey.io',
+	});
+
+	if (canceled) return;
+
+	let targetHost = hostTemp;
+
+	// ドメイン部分だけを取り出す
+	if (targetHost.startsWith('https://')) {
+		targetHost = targetHost.slice(8);
+	} else if (targetHost.startsWith('http://')) {
+		targetHost = targetHost.slice(7);
+	}
+	if (targetHost.includes('/')) {
+		targetHost = targetHost.slice(0, targetHost.indexOf('/'));
+	}
+	openRemote(options, targetHost);
 }
 </script>
 
@@ -255,6 +290,17 @@ function openMisskeyHub(hubOptions: MisskeyHubOptions): void {
 	background-position: center;
 	background-size: cover;
 	border-radius: 100%;
+}
+
+.instanceManualSelectButton {
+	display: block;
+	text-align: center;
+	opacity: .7;
+	font-size: .8em;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .orHr {

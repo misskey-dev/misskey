@@ -729,6 +729,18 @@ export interface Locale extends ILocale {
      */
     "continueOnRemote": string;
     /**
+     * Misskey Hubからサーバーを選択
+     */
+    "chooseServerOnMisskeyHub": string;
+    /**
+     * サーバーのドメインを直接指定
+     */
+    "specifyServerHost": string;
+    /**
+     * ドメインを入力してください
+     */
+    "inputHostName": string;
+    /**
      * 全般
      */
     "general": string;
