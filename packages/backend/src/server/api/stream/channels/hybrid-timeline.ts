@@ -47,7 +47,7 @@ class HybridTimelineChannel extends Channel {
 		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
 		const config = loadConfig();
-		this.defaultTag = config.tagging.defaultTag;
+		this.defaultTag = config.tagging?.defaultTag;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
