@@ -45,7 +45,7 @@ class LocalTimelineChannel extends Channel {
 		this.withReplies = params.withReplies ?? false;
 		this.withFiles = params.withFiles ?? false;
 		const config = loadConfig();
-		this.defaultTag = config.tagging?.defaultTag;
+		this.defaultTag = config.defaultTag?.tag;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
