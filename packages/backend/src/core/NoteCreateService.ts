@@ -322,8 +322,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// デフォルトハッシュタグ処理
 		if (['public', 'home'].includes(data.visibility)) {
-			if (this.config.tagging.defaultTag != null) {
-				const tag = `#${this.config.tagging.defaultTag}`;
+			if (this.config.tagging?.defaultTag != null) {
+				const tag = `#${this.config.tagging?.defaultTag}`;
 				if (String(data.text).match(tag)) {
 					data.text = `${data.text}\n\n${tag}`;
 				}
@@ -924,9 +924,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// デフォルトハッシュタグ
-			if (this.config.tagging.defaultTag != null) {
+			if (this.config.tagging?.defaultTag != null) {
 				const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
-				if (note.visibility === 'public' && noteTags.includes(normalizeForSearch(this.config.tagging.defaultTag))) {
+				if (note.visibility === 'public' && noteTags.includes(normalizeForSearch(this.config.tagging?.defaultTag))) {
 					this.fanoutTimelineService.push('localTimelineWithReplies', note.id, 300, r);
 					this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
