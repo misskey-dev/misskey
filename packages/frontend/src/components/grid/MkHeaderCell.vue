@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, toRefs, watch } from 'vue';
-import { GridColumn, GridEventEmitter, Size } from '@/components/grid/types.js';
+import { GridColumn, GridEventEmitter, Size } from '@/components/grid/grid.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginWidthChange', sender: GridColumn): void;

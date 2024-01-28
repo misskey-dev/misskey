@@ -35,6 +35,7 @@
 		<MkGrid
 			:data="convertedGridItems"
 			:columnSettings="columnSettings"
+			@operation:cellValidation="onCellValidation"
 			@change:cellValue="onChangeCellValue"
 		/>
 	</div>
@@ -43,7 +44,7 @@
 		v-if="gridItems.length > 0"
 		:class="$style.buttons"
 	>
-		<MkButton primary @click="onRegistryClicked">{{ i18n.ts.registration }}</MkButton>
+		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">{{ i18n.ts.registration }}</MkButton>
 		<MkButton @click="onClearClicked">{{ i18n.ts.clear }}</MkButton>
 	</div>
 </div>
@@ -56,7 +57,7 @@ import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { GridItem, IGridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { CellValueChangedEvent, ColumnSetting } from '@/components/grid/types.js';
+import { CellValueChangedEvent, ColumnSetting } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { uploadFile } from '@/scripts/upload.js';
@@ -65,6 +66,7 @@ import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
+import { required, ValidateViolation } from '@/components/grid/cell-validators.js';
 
 type FolderItem = {
 	id?: string;
@@ -78,8 +80,8 @@ const emit = defineEmits<{
 }>();
 
 const columnSettings: ColumnSetting[] = [
-	{ bindTo: 'url', title: '🎨', type: 'image', editable: false, width: 50 },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140 },
+	{ bindTo: 'url', title: '🎨', type: 'image', editable: false, width: 50, validators: [required] },
+	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
@@ -92,6 +94,8 @@ const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<IGridItem[]>([]);
 const selectedFolderId = ref(defaultStore.state.uploadFolder);
 const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
+const registerButtonDisabled = ref<boolean>(false);
+
 const convertedGridItems = computed(() => gridItems.value.map(it => it as Record<string, any>));
 
 async function onRegistryClicked() {
@@ -178,6 +182,11 @@ async function onDrop(ev: DragEvent) {
 		const item = GridItem.fromDriveFile(uploadedFile);
 		gridItems.value.push(item);
 	}
+}
+
+function onCellValidation(violation: ValidateViolation) {
+	console.log(violation);
+	registerButtonDisabled.value = !violation.valid;
 }
 
 function onChangeCellValue(event: CellValueChangedEvent) {

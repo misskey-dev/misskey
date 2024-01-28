@@ -10,9 +10,10 @@
 	<div
 		:class="[
 			$style.root,
+			[(cell.validation.valid || cell.selected) ? {} : $style.error],
 			[cell.selected ? $style.selected : {}],
 			[cell.ranged ? $style.ranged : {}],
-			[needsContentCentering ? $style.center : {}]
+			[needsContentCentering ? $style.center : {}],
 		]"
 	>
 		<div v-if="!editing" ref="contentAreaEl">
@@ -47,15 +48,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, toRefs, watch } from 'vue';
-import {
-	CellValue,
-	equalCellAddress,
-	getCellAddress,
-	GridCell,
-	GridEventEmitter,
-	Size,
-} from '@/components/grid/types.js';
+import { computed, defineAsyncComponent, nextTick, ref, shallowRef, toRefs, watch } from 'vue';
+import { GridEventEmitter, Size } from '@/components/grid/grid.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import * as os from '@/os.js';
+import { CellValue, GridCell } from '@/components/grid/cell.js';
+import { equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -70,9 +68,9 @@ const props = defineProps<{
 
 const { cell, bus } = toRefs(props);
 
-const rootEl = ref<InstanceType<typeof HTMLTableCellElement>>();
-const contentAreaEl = ref<InstanceType<typeof HTMLDivElement>>();
-const inputAreaEl = ref<InstanceType<typeof HTMLDivElement>>();
+const rootEl = shallowRef<InstanceType<typeof HTMLTableCellElement>>();
+const contentAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
+const inputAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
 
 const editing = ref<boolean>(false);
 const editingValue = ref<CellValue>(undefined);
@@ -209,6 +207,19 @@ function emitContentSizeChanged() {
 	});
 }
 
+useTooltip(rootEl, (showing) => {
+	if (cell.value.validation.valid) {
+		return;
+	}
+
+	const content = cell.value.validation.violations.map(it => it.result.message).join('\n');
+	os.popup(defineAsyncComponent(() => import('@/components/grid/MkCellTooltip.vue')), {
+		showing,
+		content,
+		targetElement: rootEl.value,
+	}, {}, 'closed');
+});
+
 </script>
 
 <style module lang="scss">
@@ -249,6 +260,10 @@ $cellHeight: 28px;
 
 	&.center {
 		justify-content: center;
+	}
+
+	&.error {
+		border: solid 0.5px var(--error);
 	}
 }
 

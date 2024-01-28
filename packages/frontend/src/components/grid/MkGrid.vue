@@ -36,24 +36,21 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 import {
-	calcCellWidth,
-	CELL_ADDRESS_NONE,
-	CellAddress,
-	CellValue, CellValueChangedEvent,
+	CellValueChangedEvent,
 	ColumnSetting,
 	DataSource,
-	equalCellAddress,
-	getCellAddress,
-	GridCell,
 	GridColumn,
 	GridEventEmitter,
 	GridRow,
 	GridState,
 	Size,
-} from '@/components/grid/types.js';
+} from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { cellValidation, ValidateViolation } from '@/components/grid/cell-validators.js';
+import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
+import { calcCellWidth, equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
 
 const props = defineProps<{
 	columnSettings: ColumnSetting[],
@@ -61,6 +58,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+	(ev: 'operation:cellValidation', violation: ValidateViolation): void;
 	(ev: 'change:cellValue', event: CellValueChangedEvent): void;
 }>();
 
@@ -526,10 +524,20 @@ function onHeaderCellWidthLargest(sender: GridColumn) {
 
 function setCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
-	cells.value[cellAddress.row][cellAddress.col].value = newValue;
+	const cell = cells.value[cellAddress.row][cellAddress.col];
+
+	const violation = cellValidation(cell, newValue);
+	emit('operation:cellValidation', violation);
+
+	cell.validation = {
+		valid: violation.valid,
+		violations: violation.violations.filter(it => !it.valid),
+	};
+	cell.value = newValue;
+
 	emit('change:cellValue', {
-		column: columns.value[cellAddress.col],
-		row: rows.value[cellAddress.row],
+		column: cell.column,
+		row: cell.row,
 		value: newValue,
 	});
 }
@@ -709,6 +717,10 @@ function refreshData() {
 				selected: false,
 				ranged: false,
 				contentSize: { width: 0, height: 0 },
+				validation: {
+					valid: true,
+					violations: [],
+				},
 			};
 
 			rowCells.push(cell);

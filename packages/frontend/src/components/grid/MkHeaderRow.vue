@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { GridColumn, GridEventEmitter, Size } from '@/components/grid/types.js';
+import { GridColumn, GridEventEmitter, Size } from '@/components/grid/grid.js';
 import MkHeaderCell from '@/components/grid/MkHeaderCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
 
