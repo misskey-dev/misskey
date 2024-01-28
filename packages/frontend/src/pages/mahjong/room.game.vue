@@ -4,47 +4,82 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="500">
-	<div class="_gaps">
-		<div>
-			{{ engine.myHouse }} {{ engine.state.turn }}
-		</div>
-		<div class="_panel">
-			<div>{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))) }} ho</div>
-			<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))))" style="display: inline-block;">
-				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
-			</div>
-		</div>
-		<div class="_panel">
-			<div>{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) }} ho</div>
-			<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" style="display: inline-block;">
-				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
-			</div>
-		</div>
-		<div class="_panel">
-			<div>{{ Mahjong.Utils.prevHouse(engine.myHouse) }} ho</div>
-			<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" style="display: inline-block;">
-				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
-			</div>
-		</div>
-		<div class="_panel">
-			<div>{{ engine.myHouse }} ho</div>
-			<div v-for="tile in engine.myHoTiles" style="display: inline-block;">
-				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+<div :class="$style.root">
+	<div :class="$style.taku">
+		<div :class="$style.handTilesOfToimen">
+			<div v-for="tile in engine.getHandTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" style="display: inline-block;">
+				<img :src="`/client-assets/mahjong/tile-back.png`" style="display: inline-block; width: 32px;"/>
 			</div>
 		</div>
 
-		<div class="_panel">
-			<div>My hand</div>
-			<div v-for="tile in Mahjong.Utils.sortTiles(engine.myHandTiles)" style="display: inline-block;" @click="dahai(tile, $event)">
-				<img :src="`/client-assets/mahjong/tiles/${tile}.gif`"/>
+		<div :class="$style.handTilesOfKamitya">
+			<div v-for="tile in engine.getHandTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" :class="$style.sideTile">
+				<img :src="`/client-assets/mahjong/tile-side.png`" style="display: inline-block; width: 32px;"/>
 			</div>
-			<MkButton v-if="engine.state.canPon" @click="pon">Pon</MkButton>
-			<MkButton v-if="engine.state.canPon" @click="skip">Skip pon</MkButton>
-			<MkButton v-if="isMyTurn && canHora">Hora</MkButton>
+		</div>
+
+		<div :class="$style.handTilesOfSimotya">
+			<div v-for="tile in engine.getHandTilesOf(Mahjong.Utils.nextHouse(engine.myHouse))" :class="$style.sideTile">
+				<img :src="`/client-assets/mahjong/tile-side.png`" style="display: inline-block; width: 32px; scale: -1 1;"/>
+			</div>
+		</div>
+
+		<div :class="$style.hoTilesContainer">
+			<div :class="$style.hoTilesContainerOfToimen">
+				<div :class="$style.hoTilesOfToimen">
+					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" :class="$style.hoTile">
+						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+					</div>
+				</div>
+			</div>
+			<div :class="$style.hoTilesContainerOfKamitya">
+				<div :class="$style.hoTilesOfKamitya">
+					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" :class="$style.hoTile">
+						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+					</div>
+				</div>
+			</div>
+			<div :class="$style.hoTilesContainerOfSimotya">
+				<div :class="$style.hoTilesOfSimotya">
+					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.nextHouse(engine.myHouse))" :class="$style.hoTile">
+						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+					</div>
+				</div>
+			</div>
+			<div :class="$style.hoTilesContainerOfMe">
+				<div :class="$style.hoTilesOfMe">
+					<div v-for="tile in engine.myHoTiles" :class="$style.hoTile">
+						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div :class="$style.handTilesOfMe">
+			<div v-for="tile in Mahjong.Utils.sortTiles((isMyTurn && iTsumoed) ? engine.myHandTiles.slice(0, engine.myHandTiles.length - 1) : engine.myHandTiles)" :class="$style.myTile" @click="dahai(tile, $event)">
+				<img :src="`/client-assets/mahjong/tile-front.png`" :class="$style.myTileBg"/>
+				<img :src="`/client-assets/mahjong/tiles/${tile}.png`" :class="$style.myTileFg"/>
+			</div>
+			<div v-if="isMyTurn && iTsumoed" style="display: inline-block; margin-left: 5px;" :class="$style.myTile" @click="dahai(engine.myHandTiles.at(-1), $event)">
+				<img :src="`/client-assets/mahjong/tile-front.png`" :class="$style.myTileBg"/>
+				<img :src="`/client-assets/mahjong/tiles/${engine.myHandTiles.at(-1)}.png`" :class="$style.myTileFg"/>
+			</div>
+		</div>
+
+		<div :class="$style.huroTilesOfMe">
+			<div v-for="huro in engine.getHurosOf(engine.myHouse)" style="display: inline-block;">
+				<div v-if="huro.type === 'pon'">
+					<img :src="`/client-assets/mahjong/tiles/${huro.tile}.png`"/>
+					<img :src="`/client-assets/mahjong/tiles/${huro.tile}.png`"/>
+					<img :src="`/client-assets/mahjong/tiles/${huro.tile}.png`"/>
+				</div>
+			</div>
 		</div>
 	</div>
-</MkSpacer>
+	<MkButton v-if="engine.state.canPonSource != null" @click="pon">Pon</MkButton>
+	<MkButton v-if="engine.state.canPonSource != null" @click="skip">Skip pon</MkButton>
+	<MkButton v-if="isMyTurn && canHora">Hora</MkButton>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -84,6 +119,25 @@ const canHora = computed(() => {
 });
 
 /*
+console.log(Mahjong.Utils.getHoraSets([
+	'm3',
+	'm3',
+	'm4',
+	'm4',
+	'm5',
+	'm5',
+	'p4',
+	'p4',
+	'p7',
+	'p8',
+	'p9',
+	's4',
+	's5',
+	's6',
+]));
+*/
+
+/*
 if (room.value.isStarted && !room.value.isEnded) {
 	useInterval(() => {
 		if (room.value.isEnded) return;
@@ -102,10 +156,7 @@ if (room.value.isStarted && !room.value.isEnded) {
 }
 */
 
-const appliedOps: string[] = [];
-
 const myTurnTimerRmain = ref<number>(room.value.timeLimitForEachTurn);
-const opTurnTimerRmain = ref<number>(room.value.timeLimitForEachTurn);
 
 /*
 const TIMER_INTERVAL_SEC = 3;
@@ -131,89 +182,121 @@ function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
 	engine.value.op_dahai(engine.value.myHouse, tile);
+	iTsumoed.value = false;
+	triggerRef(engine);
 
-	const id = Math.random().toString(36).slice(2);
-	appliedOps.push(id);
 	props.connection!.send('dahai', {
 		tile: tile,
-		id,
 	});
 }
 
 function pon() {
-	engine.value.op_pon(engine.value.canPonTo, engine.value.myHouse);
+	engine.value.op_pon(engine.value.state.canPonSource, engine.value.myHouse);
+	triggerRef(engine);
 
-	const id = Math.random().toString(36).slice(2);
-	appliedOps.push(id);
 	props.connection!.send('pon', {
-		id,
 	});
 }
 
 function skip() {
 	engine.value.op_nop(engine.value.myHouse);
+	triggerRef(engine);
 
-	const id = Math.random().toString(36).slice(2);
-	appliedOps.push(id);
 	props.connection!.send('nop', {});
 }
 
-async function onStreamLog(log) {
-	if (log.id == null || !appliedOps.includes(log.id)) {
-		switch (log.operation) {
-			case 'dahai': {
-				sound.playUrl('/client-assets/mahjong/dahai.mp3', {
-					volume: 1,
-					playbackRate: 1,
-				});
+const iTsumoed = ref(false);
 
-				//if (log.house !== engine.value.state.turn) { // = desyncが発生している
-				//	const _room = await misskeyApi('mahjong/show-room', {
-				//		roomId: props.room.id,
-				//	});
-				//	restoreRoom(_room);
-				//	return;
-				//}
+function onStreamDahai(log) {
+	console.log('onStreamDahai', log);
 
-				engine.value.op_dahai(log.house, log.tile);
-				triggerRef(engine);
+	if (log.house === engine.value.myHouse) return;
 
-				myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
-				opTurnTimerRmain.value = room.value.timeLimitForEachTurn;
-				break;
-			}
+	sound.playUrl('/client-assets/mahjong/dahai.mp3', {
+		volume: 1,
+		playbackRate: 1,
+	});
 
-			case 'dahaiAndTsumo': {
-				sound.playUrl('/client-assets/mahjong/dahai.mp3', {
-					volume: 1,
-					playbackRate: 1,
-				});
+	//if (log.house !== engine.value.state.turn) { // = desyncが発生している
+	//	const _room = await misskeyApi('mahjong/show-room', {
+	//		roomId: props.room.id,
+	//	});
+	//	restoreRoom(_room);
+	//	return;
+	//}
 
-				//if (log.house !== engine.value.state.turn) { // = desyncが発生している
-				//	const _room = await misskeyApi('mahjong/show-room', {
-				//		roomId: props.room.id,
-				//	});
-				//	restoreRoom(_room);
-				//	return;
-				//}
+	engine.value.op_dahai(log.house, log.tile);
+	triggerRef(engine);
 
-				engine.value.op_dahai(log.house, log.dahaiTile);
-				triggerRef(engine);
+	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+}
 
-				window.setTimeout(() => {
-					engine.value.op_tsumo(Mahjong.Utils.nextHouse(log.house), log.tsumoTile);
-					triggerRef(engine);
-				}, 1000);
+function onStreamTsumo(log) {
+	console.log('onStreamTsumo', log);
 
-				myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
-				opTurnTimerRmain.value = room.value.timeLimitForEachTurn;
-				break;
-			}
+	//if (log.house !== engine.value.state.turn) { // = desyncが発生している
+	//	const _room = await misskeyApi('mahjong/show-room', {
+	//		roomId: props.room.id,
+	//	});
+	//	restoreRoom(_room);
+	//	return;
+	//}
 
-			default:
-				break;
-		}
+	engine.value.op_tsumo(log.house, log.tile);
+	triggerRef(engine);
+
+	if (log.house === engine.value.myHouse) {
+		iTsumoed.value = true;
 	}
+
+	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+}
+
+function onStreamDahaiAndTsumo(log) {
+	console.log('onStreamDahaiAndTsumo', log);
+
+	//if (log.house !== engine.value.state.turn) { // = desyncが発生している
+	//	const _room = await misskeyApi('mahjong/show-room', {
+	//		roomId: props.room.id,
+	//	});
+	//	restoreRoom(_room);
+	//	return;
+	//}
+
+	if (log.dahaiHouse !== engine.value.myHouse) {
+		engine.value.op_dahai(log.dahaiHouse, log.dahaiTile);
+		triggerRef(engine);
+	}
+
+	window.setTimeout(() => {
+		engine.value.op_tsumo(Mahjong.Utils.nextHouse(log.dahaiHouse), log.tsumoTile);
+		triggerRef(engine);
+
+		if (Mahjong.Utils.nextHouse(log.dahaiHouse) === engine.value.myHouse) {
+			iTsumoed.value = true;
+		}
+	}, 100);
+
+	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+}
+
+function onStreamPonned(log) {
+	console.log('onStreamPonned', log);
+
+	//if (log.house !== engine.value.state.turn) { // = desyncが発生している
+	//	const _room = await misskeyApi('mahjong/show-room', {
+	//		roomId: props.room.id,
+	//	});
+	//	restoreRoom(_room);
+	//	return;
+	//}
+
+	if (log.target === engine.value.myHouse) return;
+
+	engine.value.op_pon(log.source, log.target);
+	triggerRef(engine);
+
+	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
 }
 
 function restoreRoom(_room) {
@@ -224,28 +307,187 @@ function restoreRoom(_room) {
 
 onMounted(() => {
 	if (props.connection != null) {
-		props.connection.on('log', onStreamLog);
+		props.connection.on('dahai', onStreamDahai);
+		props.connection.on('tsumo', onStreamTsumo);
+		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
+		props.connection.on('ponned', onStreamPonned);
 	}
 });
 
 onActivated(() => {
 	if (props.connection != null) {
-		props.connection.on('log', onStreamLog);
+		props.connection.on('dahai', onStreamDahai);
+		props.connection.on('tsumo', onStreamTsumo);
+		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
+		props.connection.on('ponned', onStreamPonned);
 	}
 });
 
 onDeactivated(() => {
 	if (props.connection != null) {
-		props.connection.off('log', onStreamLog);
+		props.connection.off('dahai', onStreamDahai);
+		props.connection.off('tsumo', onStreamTsumo);
+		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
+		props.connection.off('ponned', onStreamPonned);
 	}
 });
 
 onUnmounted(() => {
 	if (props.connection != null) {
-		props.connection.off('log', onStreamLog);
+		props.connection.off('dahai', onStreamDahai);
+		props.connection.off('tsumo', onStreamTsumo);
+		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
+		props.connection.off('ponned', onStreamPonned);
 	}
 });
 </script>
 
 <style lang="scss" module>
+.root {
+	background: #3C7A43;
+	padding: 30px;
+}
+
+.taku {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	max-width: 800px;
+	min-height: 600px;
+	margin: auto;
+	box-sizing: border-box;
+}
+
+.handTilesOfToimen {
+	position: absolute;
+	top: 0;
+	left: 80px;
+}
+
+.handTilesOfKamitya {
+	position: absolute;
+	top: 80px;
+	left: 0;
+}
+
+.handTilesOfSimotya {
+	position: absolute;
+	top: 80px;
+	right: 0;
+}
+
+.handTilesOfMe {
+	position: absolute;
+	bottom: 0;
+	left: 80px;
+}
+
+.huroTilesOfMe {
+	position: absolute;
+	bottom: 0;
+	right: 80px;
+}
+
+.hoTilesContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transform-origin: center;
+	scale: 0.8;
+}
+
+.hoTilesContainerOfToimen {
+	position: absolute;
+	bottom: calc(50% + 100px);
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: min-content;
+}
+.hoTilesOfToimen {
+	rotate: 180deg;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.hoTilesContainerOfKamitya {
+	position: absolute;
+	right: calc(50% + 100px);
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	height: min-content;
+}
+.hoTilesOfKamitya {
+	rotate: 90deg;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+	aspect-ratio: 1;
+}
+
+.hoTilesContainerOfSimotya {
+	position: absolute;
+	left: calc(50% + 100px);
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	height: min-content;
+}
+.hoTilesOfSimotya {
+	rotate: -90deg;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+	aspect-ratio: 1;
+}
+
+.hoTilesContainerOfMe {
+	position: absolute;
+	top: calc(50% + 100px);
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: min-content;
+}
+.hoTilesOfMe {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.sideTile {
+	margin-bottom: -26px;
+}
+
+.hoTile {
+	position: relative;
+	display: inline-block;
+	width: 32px;
+	aspect-ratio: 0.7;
+	background: #fff;
+	margin-bottom: -8px;
+}
+
+.myTile {
+	display: inline-block;
+	position: relative;
+	width: 35px;
+	aspect-ratio: 0.7;
+}
+.myTileBg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+.myTileFg {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 70%;
+	object-fit: contain;
+}
 </style>

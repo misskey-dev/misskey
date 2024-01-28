@@ -24,6 +24,7 @@ export function nextHouse(house: House): House {
 		case 's': return 'w';
 		case 'w': return 'n';
 		case 'n': return 'e';
+		default: throw new Error(`unrecognized house: ${house}`);
 	}
 }
 
@@ -33,6 +34,7 @@ export function prevHouse(house: House): House {
 		case 's': return 'e';
 		case 'w': return 's';
 		case 'n': return 'w';
+		default: throw new Error(`unrecognized house: ${house}`);
 	}
 }
 
@@ -179,38 +181,36 @@ export function getHoraSets(handTiles: Tile[]): HoraSet[] {
 				tempHandTilesWithoutKotsu.splice(tempHandTilesWithoutKotsu.indexOf(kotsuTile), 1);
 			}
 
-			// 連番に並ぶようにソート
 			tempHandTilesWithoutKotsu.sort((a, b) => {
 				const aIndex = TILE_TYPES.indexOf(a);
 				const bIndex = TILE_TYPES.indexOf(b);
 				return aIndex - bIndex;
 			});
 
-			const tempTempHandTilesWithoutKotsuAndShuntsu: (Tile | null)[] = [...tempHandTilesWithoutKotsu];
+			const tempHandTilesWithoutKotsuAndShuntsu: (Tile | null)[] = [...tempHandTilesWithoutKotsu];
 
 			const shuntsus: [Tile, Tile, Tile][] = [];
-			let i = 0;
-			while (i < tempHandTilesWithoutKotsu.length) {
-				const headThree = tempHandTilesWithoutKotsu.slice(i, i + 3);
-				if (headThree.length !== 3) break;
-
+			while (tempHandTilesWithoutKotsuAndShuntsu.length > 0) {
+				let isShuntu = false;
 				for (const shuntuPattern of SHUNTU_PATTERNS) {
-					if (headThree[0] === shuntuPattern[0] && headThree[1] === shuntuPattern[1] && headThree[2] === shuntuPattern[2]) {
+					if (
+						tempHandTilesWithoutKotsuAndShuntsu[0] === shuntuPattern[0] &&
+						tempHandTilesWithoutKotsuAndShuntsu.includes(shuntuPattern[1]) &&
+						tempHandTilesWithoutKotsuAndShuntsu.includes(shuntuPattern[2])
+					) {
 						shuntsus.push(shuntuPattern);
-						tempTempHandTilesWithoutKotsuAndShuntsu[i] = null;
-						tempTempHandTilesWithoutKotsuAndShuntsu[i + 1] = null;
-						tempTempHandTilesWithoutKotsuAndShuntsu[i + 2] = null;
-						i += 3;
+						tempHandTilesWithoutKotsuAndShuntsu.splice(0, 1);
+						tempHandTilesWithoutKotsuAndShuntsu.splice(tempHandTilesWithoutKotsuAndShuntsu.indexOf(shuntuPattern[1]), 1);
+						tempHandTilesWithoutKotsuAndShuntsu.splice(tempHandTilesWithoutKotsuAndShuntsu.indexOf(shuntuPattern[2]), 1);
+						isShuntu = true;
 						break;
 					}
 				}
 
-				i++;
+				if (!isShuntu) tempHandTilesWithoutKotsuAndShuntsu.splice(0, 1);
 			}
 
-			const tempHandTilesWithoutKotsuAndShuntsu = tempTempHandTilesWithoutKotsuAndShuntsu.filter(t => t != null) as Tile[];
-
-			if (tempHandTilesWithoutKotsuAndShuntsu.length === 0) { // アガリ形
+			if (shuntsus.length * 3 === tempHandTilesWithoutKotsu.length) { // アガリ形
 				horaSets.push({
 					head,
 					mentsus: [...kotsuPattern.map(t => [t, t, t] as [Tile, Tile, Tile]), ...shuntsus],

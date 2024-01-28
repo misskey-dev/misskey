@@ -7,6 +7,28 @@ import CRC32 from 'crc-32';
 import { Tile, House, TILE_TYPES } from './common.js';
 import * as Utils from './utils.js';
 
+type Huro = {
+	type: 'pon';
+	tile: Tile;
+	from: House;
+} | {
+	type: 'cii';
+	tiles: [Tile, Tile, Tile];
+	from: House;
+} | {
+	type: 'kan';
+	tile: Tile;
+	from: House;
+} | {
+	type: 'kakan';
+	tile: Tile;
+	from: House;
+} | {
+	type: 'ankan';
+	tile: Tile;
+	from: House;
+};
+
 export type MasterState = {
 	user1House: House;
 	user2House: House;
@@ -21,14 +43,10 @@ export type MasterState = {
 	sHoTiles: Tile[];
 	wHoTiles: Tile[];
 	nHoTiles: Tile[];
-	ePonnedTiles: { tile: Tile; from: House; }[];
-	sPonnedTiles: { tile: Tile; from: House; }[];
-	wPonnedTiles: { tile: Tile; from: House; }[];
-	nPonnedTiles: { tile: Tile; from: House; }[];
-	eCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
-	sCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
-	wCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
-	nCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
+	eHuros: Huro[];
+	sHuros: Huro[];
+	wHuros: Huro[];
+	nHuros: Huro[];
 	eRiichi: boolean;
 	sRiichi: boolean;
 	wRiichi: boolean;
@@ -38,6 +56,7 @@ export type MasterState = {
 	wPoints: number;
 	nPoints: number;
 	turn: House | null;
+	nextTurnAfterAsking: House | null;
 
 	ronAsking: {
 		/**
@@ -118,14 +137,10 @@ export class MasterGameEngine {
 			sHoTiles: [],
 			wHoTiles: [],
 			nHoTiles: [],
-			ePonnedTiles: [],
-			sPonnedTiles: [],
-			wPonnedTiles: [],
-			nPonnedTiles: [],
-			eCiiedTiles: [],
-			sCiiedTiles: [],
-			wCiiedTiles: [],
-			nCiiedTiles: [],
+			eHuros: [],
+			sHuros: [],
+			wHuros: [],
+			nHuros: [],
 			eRiichi: false,
 			sRiichi: false,
 			wRiichi: false,
@@ -135,14 +150,18 @@ export class MasterGameEngine {
 			wPoints: 25000,
 			nPoints: 25000,
 			turn: 'e',
+			nextTurnAfterAsking: null,
 			ponAsking: null,
 			ciiAsking: null,
+			kanAsking: null,
+			ronAsking: null,
 		};
 	}
 
 	private tsumo(): Tile {
 		const tile = this.state.tiles.pop();
 		if (tile == null) throw new Error('No tiles left');
+		if (this.state.turn == null) throw new Error('Not your turn');
 		this.getHandTilesOf(this.state.turn).push(tile);
 		return tile;
 	}
@@ -235,6 +254,8 @@ export class MasterGameEngine {
 					target: canCiiHouse,
 				};
 			}
+			this.state.turn = null;
+			this.state.nextTurnAfterAsking = Utils.nextHouse(house);
 			return {
 				asking: true,
 				canRonHouses: canRonHouses,
@@ -278,8 +299,8 @@ export class MasterGameEngine {
 			const source = this.state.kanAsking.source;
 			const target = this.state.kanAsking.target;
 
-			const tile = this.getHoTilesOf(source).pop();
-			this.getKannedTilesOf(target).push({ tile, from: source });
+			const tile = this.getHoTilesOf(source).pop()!;
+			this.getHurosOf(target).push({ type: 'kan', tile, from: source });
 
 			clearAsking();
 			this.state.turn = target;
@@ -291,14 +312,17 @@ export class MasterGameEngine {
 			const source = this.state.ponAsking.source;
 			const target = this.state.ponAsking.target;
 
-			const tile = this.getHoTilesOf(source).pop();
-			this.getPonnedTilesOf(target).push({ tile, from: source });
+			const tile = this.getHoTilesOf(source).pop()!;
+			this.getHandTilesOf(target).splice(this.getHandTilesOf(target).indexOf(tile), 1);
+			this.getHandTilesOf(target).splice(this.getHandTilesOf(target).indexOf(tile), 1);
+			this.getHurosOf(target).push({ type: 'pon', tile, from: source });
 
 			clearAsking();
 			this.state.turn = target;
 			return {
 				type: 'ponned',
-				house: this.state.turn,
+				source,
+				target,
 				tile,
 			};
 		}
@@ -307,20 +331,22 @@ export class MasterGameEngine {
 			const source = this.state.ciiAsking.source;
 			const target = this.state.ciiAsking.target;
 
-			const tile = this.getHoTilesOf(source).pop();
+			const tile = this.getHoTilesOf(source).pop()!;
 			this.getCiiedTilesOf(target).push({ tile, from: source });
 
 			clearAsking();
 			this.state.turn = target;
 			return {
 				type: 'ciied',
-				house: this.state.turn,
+				source,
+				target,
 				tile,
 			};
 		}
 
 		clearAsking();
-		this.state.turn = Utils.nextHouse(this.state.turn);
+		this.state.turn = this.state.nextTurnAfterAsking;
+		this.state.nextTurnAfterAsking = null;
 
 		const tile = this.tsumo();
 
@@ -364,6 +390,7 @@ export class MasterGameEngine {
 			case 's': return this.state.sHandTiles;
 			case 'w': return this.state.wHandTiles;
 			case 'n': return this.state.nHandTiles;
+			default: throw new Error(`unrecognized house: ${house}`);
 		}
 	}
 
@@ -373,33 +400,17 @@ export class MasterGameEngine {
 			case 's': return this.state.sHoTiles;
 			case 'w': return this.state.wHoTiles;
 			case 'n': return this.state.nHoTiles;
+			default: throw new Error(`unrecognized house: ${house}`);
 		}
 	}
 
-	public getPonnedTilesOf(house: House): { tile: Tile; from: House; }[] {
+	public getHurosOf(house: House): Huro[] {
 		switch (house) {
-			case 'e': return this.state.ePonnedTiles;
-			case 's': return this.state.sPonnedTiles;
-			case 'w': return this.state.wPonnedTiles;
-			case 'n': return this.state.nPonnedTiles;
-		}
-	}
-
-	public getCiiedTilesOf(house: House): { tiles: [Tile, Tile, Tile]; from: House; }[] {
-		switch (house) {
-			case 'e': return this.state.eCiiedTiles;
-			case 's': return this.state.sCiiedTiles;
-			case 'w': return this.state.wCiiedTiles;
-			case 'n': return this.state.nCiiedTiles;
-		}
-	}
-
-	public getKannedTilesOf(house: House): { tile: Tile; from: House; }[] {
-		switch (house) {
-			case 'e': return this.state.ePonnedTiles;
-			case 's': return this.state.sPonnedTiles;
-			case 'w': return this.state.wPonnedTiles;
-			case 'n': return this.state.nPonnedTiles;
+			case 'e': return this.state.eHuros;
+			case 's': return this.state.sHuros;
+			case 'w': return this.state.wHuros;
+			case 'n': return this.state.nHuros;
+			default: throw new Error(`unrecognized house: ${house}`);
 		}
 	}
 
@@ -420,14 +431,10 @@ export class MasterGameEngine {
 			sHoTiles: this.state.sHoTiles,
 			wHoTiles: this.state.wHoTiles,
 			nHoTiles: this.state.nHoTiles,
-			ePonnedTiles: this.state.ePonnedTiles,
-			sPonnedTiles: this.state.sPonnedTiles,
-			wPonnedTiles: this.state.wPonnedTiles,
-			nPonnedTiles: this.state.nPonnedTiles,
-			eCiiedTiles: this.state.eCiiedTiles,
-			sCiiedTiles: this.state.sCiiedTiles,
-			wCiiedTiles: this.state.wCiiedTiles,
-			nCiiedTiles: this.state.nCiiedTiles,
+			eHuros: this.state.eHuros,
+			sHuros: this.state.sHuros,
+			wHuros: this.state.wHuros,
+			nHuros: this.state.nHuros,
 			eRiichi: this.state.eRiichi,
 			sRiichi: this.state.sRiichi,
 			wRiichi: this.state.wRiichi,
@@ -472,14 +479,10 @@ export type PlayerState = {
 	sHoTiles: Tile[];
 	wHoTiles: Tile[];
 	nHoTiles: Tile[];
-	ePonnedTiles: { tile: Tile; from: House; }[];
-	sPonnedTiles: { tile: Tile; from: House; }[];
-	wPonnedTiles: { tile: Tile; from: House; }[];
-	nPonnedTiles: { tile: Tile; from: House; }[];
-	eCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
-	sCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
-	wCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
-	nCiiedTiles: { tiles: [Tile, Tile, Tile]; from: House; }[];
+	eHuros: Huro[];
+	sHuros: Huro[];
+	wHuros: Huro[];
+	nHuros: Huro[];
 	eRiichi: boolean;
 	sRiichi: boolean;
 	wRiichi: boolean;
@@ -490,7 +493,7 @@ export type PlayerState = {
 	nPoints: number;
 	latestDahaiedTile: Tile | null;
 	turn: House | null;
-	canPonTo: House | null;
+	canPonSource: House | null;
 	canCiiTo: House | null;
 	canKanTo: House | null;
 	canRonTo: House | null;
@@ -543,6 +546,7 @@ export class PlayerGameEngine {
 			case 's': return this.state.sHandTiles;
 			case 'w': return this.state.wHandTiles;
 			case 'n': return this.state.nHandTiles;
+			default: throw new Error(`unrecognized house: ${house}`);
 		}
 	}
 
@@ -552,37 +556,23 @@ export class PlayerGameEngine {
 			case 's': return this.state.sHoTiles;
 			case 'w': return this.state.wHoTiles;
 			case 'n': return this.state.nHoTiles;
+			default: throw new Error(`unrecognized house: ${house}`);
 		}
 	}
 
-	public getPonnedTilesOf(house: House): { tile: Tile; from: House; }[] {
+	public getHurosOf(house: House): Huro[] {
 		switch (house) {
-			case 'e': return this.state.ePonnedTiles;
-			case 's': return this.state.sPonnedTiles;
-			case 'w': return this.state.wPonnedTiles;
-			case 'n': return this.state.nPonnedTiles;
-		}
-	}
-
-	public getCiiedTilesOf(house: House): { tiles: [Tile, Tile, Tile]; from: House; }[] {
-		switch (house) {
-			case 'e': return this.state.eCiiedTiles;
-			case 's': return this.state.sCiiedTiles;
-			case 'w': return this.state.wCiiedTiles;
-			case 'n': return this.state.nCiiedTiles;
-		}
-	}
-
-	public getKannedTilesOf(house: House): { tile: Tile; from: House; }[] {
-		switch (house) {
-			case 'e': return this.state.ePonnedTiles;
-			case 's': return this.state.sPonnedTiles;
-			case 'w': return this.state.wPonnedTiles;
-			case 'n': return this.state.nPonnedTiles;
+			case 'e': return this.state.eHuros;
+			case 's': return this.state.sHuros;
+			case 'w': return this.state.wHuros;
+			case 'n': return this.state.nHuros;
+			default: throw new Error(`unrecognized house: ${house}`);
 		}
 	}
 
 	public op_tsumo(house: House, tile: Tile) {
+		console.log('op_tsumo', this.state.turn, house, tile);
+		this.state.turn = house;
 		if (house === this.myHouse) {
 			this.myHandTiles.push(tile);
 		} else {
@@ -591,8 +581,7 @@ export class PlayerGameEngine {
 	}
 
 	public op_dahai(house: House, tile: Tile) {
-		console.log(this.state.turn, house, tile);
-
+		console.log('op_dahai', this.state.turn, house, tile);
 		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
 
 		if (house === this.myHouse) {
@@ -603,7 +592,7 @@ export class PlayerGameEngine {
 			this.getHoTilesOf(house).push(tile);
 		}
 
-		this.state.turn = Utils.nextHouse(this.state.turn);
+		this.state.turn = null;
 
 		if (house === this.myHouse) {
 		} else {
@@ -611,22 +600,34 @@ export class PlayerGameEngine {
 
 			// TODO: canCii
 
-			if (canPon) this.state.canPonTo = house;
+			if (canPon) this.state.canPonSource = house;
 		}
 	}
 
+	/**
+	 * ポンします
+	 * @param source 牌を捨てた人
+	 * @param target ポンした人
+	 */
 	public op_pon(source: House, target: House) {
-		this.state.canPonTo = null;
+		this.state.canPonSource = null;
 
 		const lastTile = this.getHoTilesOf(source).pop();
 		if (lastTile == null) throw new PlayerGameEngine.InvalidOperationError();
-		this.getPonnedTilesOf(target).push({ tile: lastTile, from: source });
+		if (target === this.myHouse) {
+			this.myHandTiles.splice(this.myHandTiles.indexOf(lastTile), 1);
+			this.myHandTiles.splice(this.myHandTiles.indexOf(lastTile), 1);
+		} else {
+			this.getHandTilesOf(target).unshift();
+			this.getHandTilesOf(target).unshift();
+		}
+		this.getHurosOf(target).push({ type: 'pon', tile: lastTile, from: source });
 
 		this.state.turn = target;
 	}
 
 	public op_nop() {
-		this.state.canPonTo = null;
+		this.state.canPonSource = null;
 	}
 }
 
