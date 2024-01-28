@@ -365,8 +365,9 @@ export class MasterGameEngine {
 		const horaSets = Utils.getHoraSets(this.getHandTilesOf(house).concat(tile));
 		if (horaSets.length === 0) return false; // 完成形じゃない
 
-		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
-		if (yakus.length === 0) return false; // 役がない
+		// TODO
+		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
+		//if (yakus.length === 0) return false; // 役がない
 
 		return true;
 	}
@@ -494,6 +495,9 @@ export type PlayerState = {
 	latestDahaiedTile: Tile | null;
 	turn: House | null;
 	canPonSource: House | null;
+	canCiiSource: House | null;
+	canKanSource: House | null;
+	canRonSource: House | null;
 	canCiiTo: House | null;
 	canKanTo: House | null;
 	canRonTo: House | null;
@@ -596,12 +600,32 @@ export class PlayerGameEngine {
 
 		if (house === this.myHouse) {
 		} else {
+			const canRon = Utils.getHoraSets(this.myHandTiles.concat(tile)).length > 0;
 			const canPon = this.myHandTiles.filter(t => t === tile).length === 2;
 
 			// TODO: canCii
 
+			if (canRon) this.state.canRonSource = house;
 			if (canPon) this.state.canPonSource = house;
 		}
+	}
+
+	/**
+	 * ロンします
+	 * @param source 牌を捨てた人
+	 * @param target ロンした人
+	 */
+	public op_ron(source: House, target: House) {
+		this.state.canRonSource = null;
+
+		const lastTile = this.getHoTilesOf(source).pop();
+		if (lastTile == null) throw new PlayerGameEngine.InvalidOperationError();
+		if (target === this.myHouse) {
+			this.myHandTiles.push(lastTile);
+		} else {
+			this.getHandTilesOf(target).push(null);
+		}
+		this.state.turn = null;
 	}
 
 	/**
@@ -627,6 +651,7 @@ export class PlayerGameEngine {
 	}
 
 	public op_nop() {
+		this.state.canRonSource = null;
 		this.state.canPonSource = null;
 	}
 }

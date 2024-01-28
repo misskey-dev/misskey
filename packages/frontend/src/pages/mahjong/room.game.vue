@@ -28,28 +28,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.hoTilesContainerOfToimen">
 				<div :class="$style.hoTilesOfToimen">
 					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" :class="$style.hoTile">
-						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfKamitya">
 				<div :class="$style.hoTilesOfKamitya">
 					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" :class="$style.hoTile">
-						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfSimotya">
 				<div :class="$style.hoTilesOfSimotya">
 					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.nextHouse(engine.myHouse))" :class="$style.hoTile">
-						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfMe">
 				<div :class="$style.hoTilesOfMe">
 					<div v-for="tile in engine.myHoTiles" :class="$style.hoTile">
-						<img :src="`/client-assets/mahjong/tiles/${tile}.png`" style="position: absolute; width: 100%;"/>
+						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
@@ -69,16 +69,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.huroTilesOfMe">
 			<div v-for="huro in engine.getHurosOf(engine.myHouse)" style="display: inline-block;">
 				<div v-if="huro.type === 'pon'">
-					<img :src="`/client-assets/mahjong/tiles/${huro.tile}.png`"/>
-					<img :src="`/client-assets/mahjong/tiles/${huro.tile}.png`"/>
-					<img :src="`/client-assets/mahjong/tiles/${huro.tile}.png`"/>
+					<XTile :tile="huro.tile" direction="v"/>
+					<XTile :tile="huro.tile" direction="v"/>
+					<XTile :tile="huro.tile" direction="v"/>
 				</div>
 			</div>
 		</div>
 	</div>
-	<MkButton v-if="engine.state.canPonSource != null" @click="pon">Pon</MkButton>
-	<MkButton v-if="engine.state.canPonSource != null" @click="skip">Skip pon</MkButton>
-	<MkButton v-if="isMyTurn && canHora">Hora</MkButton>
+	<MkButton v-if="engine.state.canRonSource != null" primary gradate @click="ron">Ron</MkButton>
+	<MkButton v-if="engine.state.canPonSource != null" primary @click="pon">Pon</MkButton>
+	<MkButton v-if="engine.state.canRonSource != null || engine.state.canPonSource != null" @click="skip">Skip</MkButton>
+	<MkButton v-if="isMyTurn && canHora">Tsumo</MkButton>
 </div>
 </template>
 
@@ -86,6 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Mahjong from 'misskey-mahjong';
+import XTile from './tile.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -187,6 +189,14 @@ function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 
 	props.connection!.send('dahai', {
 		tile: tile,
+	});
+}
+
+function ron() {
+	engine.value.op_ron(engine.value.state.canRonSource, engine.value.myHouse);
+	triggerRef(engine);
+
+	props.connection!.send('ron', {
 	});
 }
 
@@ -464,9 +474,6 @@ onUnmounted(() => {
 .hoTile {
 	position: relative;
 	display: inline-block;
-	width: 32px;
-	aspect-ratio: 0.7;
-	background: #fff;
 	margin-bottom: -8px;
 }
 

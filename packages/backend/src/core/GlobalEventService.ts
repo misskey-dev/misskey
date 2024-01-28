@@ -205,17 +205,22 @@ export interface MahjongRoomEventTypes {
 		room: Packed<'MahjongRoomDetailed'>;
 	};
 	tsumo: {
-		house: Mahjong.Engine.House;
+		house: Mahjong.Common.House;
 		tile: Mahjong.Common.Tile;
 	};
 	dahai: {
-		house: Mahjong.Engine.House;
+		house: Mahjong.Common.House;
 		tile: Mahjong.Common.Tile;
 	};
 	dahaiAndTsumo: {
-		house: Mahjong.Engine.House;
+		dahaiHouse: Mahjong.Common.House;
 		dahaiTile: Mahjong.Common.Tile;
 		tsumoTile: Mahjong.Common.Tile;
+	};
+	ponned: {
+		source: Mahjong.Common.House;
+		target: Mahjong.Common.House;
+		tile: Mahjong.Common.Tile;
 	};
 }
 //#endregion

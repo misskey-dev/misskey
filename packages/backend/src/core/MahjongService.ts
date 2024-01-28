@@ -413,6 +413,25 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
+	public async op_ron(roomId: MiMahjongGame['id'], user: MiUser) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
+		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+
+		// TODO: 自分にロン回答する権利がある状態かバリデーション
+
+		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
+		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+		if (current == null) throw new Error('no asking found');
+		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+		currentAnswers.ron[myHouse] = true;
+		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
+	}
+
+	@bindThis
 	public async op_pon(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
