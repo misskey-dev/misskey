@@ -418,9 +418,9 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	}
 
 	public replace(path: string, key?: string | null) {
-		this.navigate(path, key);
+		const res = this.navigate(path, key);
 		this.emit('replace', {
-			path,
+			path: res._parsedRoute.fullPath,
 			key: this.currentKey,
 		});
 	}
