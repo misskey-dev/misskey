@@ -2916,11 +2916,14 @@ export interface Locale extends ILocale {
      * 送信
      */
     "send": string;
-    "reportedNote": string;
     /**
      * ファイル付きのみ
      */
     "fileAttachedOnly": string;
+    /**
+     * 通報されたノート
+     */
+    "reportedNote": string;
     /**
      * 対応済みにする
      */
@@ -3702,9 +3705,12 @@ export interface Locale extends ILocale {
      */
     "emailRequiredForSignup": string;
     /**
-     * 未読
+     * GDPRモードを有効にする
      */
     "enableGDPRMode": string;
+    /**
+     * 未読
+     */
     "unread": string;
     /**
      * フィルタ
