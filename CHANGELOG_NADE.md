@@ -8,6 +8,13 @@
 
 ### Server
 -->
+## nade 1.4.7
+### General
+- 2023.12.2の適用に伴いフォークに関するコードも微修正しました
+
+### Client
+### Server
+
 ## nade 1.4.6
 ### General
 
