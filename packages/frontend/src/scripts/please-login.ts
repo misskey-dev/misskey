@@ -12,6 +12,9 @@ export type OpenOnRemoteOptions = {
 	type: 'web';
 	path: string;
 } | {
+	type: 'lookup';
+	path: string;	
+} | {
 	type: 'share';
 	params: Record<string, string>;
 };

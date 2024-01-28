@@ -217,6 +217,7 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import { host } from '@/config.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -283,6 +284,11 @@ const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i.id);
 
+const pleaseLoginContext = {
+	type: 'lookup',
+	path: `https://${host}/notes/${appearNote.value.id}`,
+} as const;
+
 const keymap = {
 	'r': () => reply(true),
 	'e|a|plus': () => react(true),
@@ -345,7 +351,7 @@ useTooltip(renoteButton, async (showing) => {
 });
 
 function renote(viaKeyboard = false) {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note.value, renoteButton });
@@ -355,7 +361,7 @@ function renote(viaKeyboard = false) {
 }
 
 function reply(viaKeyboard = false): void {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	showMovedDialog();
 	os.post({
 		reply: appearNote.value,
@@ -367,7 +373,7 @@ function reply(viaKeyboard = false): void {
 }
 
 function react(viaKeyboard = false): void {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -441,7 +447,7 @@ async function clip() {
 
 function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext);
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',

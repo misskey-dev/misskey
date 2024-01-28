@@ -74,6 +74,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { host as configHost } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { query } from '@/scripts/url.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
@@ -230,28 +231,29 @@ function resetPassword(): void {
 
 function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 	switch (options.type) {
-		case 'web': {
+		case 'web':
+		case 'lookup': {
+			let _path = options.path;
+
+			if (options.type === 'lookup') {
+				// TODO: v2024.2.0以降が浸透してきたら正式なURLに変更する▼
+				// _path = `/lookup?uri=${encodeURIComponent(_path)}`;
+				_path = `/authorize-follow?acct=${encodeURIComponent(_path)}`;
+			}
+
 			if (targetHost) {
-				window.open(`https://${targetHost}${options.path}`, '_blank', 'noopener');
+				window.open(`https://${targetHost}${_path}`, '_blank', 'noopener');
 			} else {
-				window.open(`https://misskey-hub.net/mi-web/?path=${encodeURIComponent(options.path)}`, '_blank', 'noopener');
+				window.open(`https://misskey-hub.net/mi-web/?path=${encodeURIComponent(_path)}`, '_blank', 'noopener');
 			}
 			break;
 		}
 		case 'share': {
-			const rawParams = { ...options.params };
-			// undefinedの値をすべて除去
-			Object.keys(rawParams).forEach(key => {
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				if (rawParams[key] === undefined) {
-					delete rawParams[key];
-				}
-			});
-			const params = new URLSearchParams(rawParams);
+			const params = query(options.params);			
 			if (targetHost) {
-				window.open(`https://${targetHost}/share?${params.toString()}`, '_blank', 'noopener');
+				window.open(`https://${targetHost}/share?${params}`, '_blank', 'noopener');
 			} else {
-				window.open(`https://misskey-hub.net/share/?${params.toString()}`, '_blank', 'noopener');
+				window.open(`https://misskey-hub.net/share/?${params}`, '_blank', 'noopener');
 			}
 			break;
 		}
@@ -261,7 +263,7 @@ function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<void> {
 	const { canceled, result: hostTemp } = await os.inputText({
 		title: i18n.ts.inputHostName,
-		placeholder: 'misskey.io',
+		placeholder: 'misskey.example.com',
 	});
 
 	if (canceled) return;
