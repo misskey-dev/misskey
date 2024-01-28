@@ -1,6 +1,12 @@
 <template>
-<th :class="[$style.num, [top ? {} : $style.border]]">
-	{{ content }}
+<th :class="[$style.cell, [top ? {} : $style.border]]">
+	<div
+		:class="[
+			$style.root,
+		]"
+	>
+		{{ content }}
+	</div>
 </th>
 </template>
 
@@ -16,10 +22,33 @@ defineProps<{
 </script>
 
 <style module lang="scss">
-.num {
+$cellHeight: 28px;
+$cellWidth: 34px;
+
+.cell {
+	overflow: hidden;
+	white-space: nowrap;
+	height: $cellHeight;
+	max-height: $cellHeight;
+	min-height: $cellHeight;
+	min-width: $cellWidth;
+	width: $cellWidth;
+	cursor: pointer;
+}
+
+.root {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
 	padding: 0 8px;
-	min-width: 30px;
-	width: 30px;
+	height: 100%;
+	border: solid 0.5px transparent;
+
+	&.selected {
+		background-color: var(--accentedBg);
+	}
 }
 
 .border {

@@ -1,5 +1,5 @@
 <template>
-<tr :class="$style.row">
+<tr :class="[$style.row]">
 	<MkNumberCell
 		:content="(row.index + 1).toString()"
 		:row="row"

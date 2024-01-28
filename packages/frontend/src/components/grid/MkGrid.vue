@@ -124,7 +124,6 @@ function onKeyDown(ev: KeyboardEvent) {
 
 	switch (state.value) {
 		case 'normal': {
-			// normalの時は自前で制御したい
 			ev.preventDefault();
 
 			if (ev.ctrlKey) {
@@ -418,6 +417,7 @@ function onMouseMove(ev: MouseEvent) {
 
 			unSelectionOutOfRange(leftTop, rightBottom);
 			expandRange(leftTop, rightBottom);
+
 			previousCellAddress.value = targetCellAddress;
 
 			break;
@@ -692,7 +692,6 @@ function refreshData() {
 	const _data: DataSource[] = data.value;
 	const _rows: GridRow[] = _data.map((_, index) => ({
 		index,
-
 	}));
 	const _columns: GridColumn[] = columnSettings.value.map((setting, index) => ({
 		index,
