@@ -23,7 +23,6 @@ import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
-import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -32,11 +31,6 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
-import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import { UtilityService } from '@/core/UtilityService.js';
 import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
@@ -106,11 +100,6 @@ export class ClientServerService {
 		private feedService: FeedService,
 		private roleService: RoleService,
 		private clientLoggerService: ClientLoggerService,
-		private apResolverService: ApResolverService,
-		private apDbResolverService: ApDbResolverService,
-		private apPersonService: ApPersonService,
-		private apNoteService: ApNoteService,
-		private utilityService: UtilityService,
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
@@ -754,63 +743,6 @@ export class ClientServerService {
 
 		fastify.get('/flush', async (request, reply) => {
 			return await reply.view('flush');
-		});
-
-		// マストドン互換・照会してリダイレクトするエンドポイント
-		fastify.get('/authorize_interaction', async (request, reply) => {
-			const { uri } = request.query as { uri?: string; };
-
-			if (!uri) {
-				reply.redirect(302, '/');
-				return;
-			}
-
-			// ブロックしてたら中断
-			const fetchedMeta = await this.metaService.fetch();
-			if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) {
-				reply.redirect(302, '/');
-				return;
-			}
-
-			const [localUser, localNote] = await Promise.all([
-				this.apDbResolverService.getUserFromApId(uri),
-				this.apDbResolverService.getNoteFromApId(uri),
-			]);
-
-			if (localUser != null) {
-				reply.redirect(302, `/@${localUser.username}${localUser.host == null ? '' : '@' + localUser.host}`);
-				return;
-			}
-
-			if (localNote != null) {
-				reply.redirect(302, `/notes/${localNote.id}`);
-				return;
-			}
-
-			// リモートから一旦オブジェクトフェッチ
-			const resolver = this.apResolverService.createResolver();
-			const object = await resolver.resolve(uri) as any;
-
-			// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
-			// これはDBに存在する可能性があるため再度DB検索
-			if (uri !== object.id) {
-				const [remoteUser, remoteNote] = await Promise.all([
-					this.apDbResolverService.getUserFromApId(object.id),
-					this.apDbResolverService.getNoteFromApId(object.id),
-				]);
-
-				if (remoteUser != null) {
-					reply.redirect(302, `/@${remoteUser.username}${remoteUser.host == null ? '' : '@' + remoteUser.host}`);
-					return;
-				}
-
-				if (remoteNote != null) {
-					reply.redirect(302, `/notes/${remoteNote.id}`);
-					return;
-				}
-			}
-
-			reply.redirect(302, '/');
 		});
 
 		// streamingに非WebSocketリクエストが来た場合にbase htmlをキャシュ付きで返すと、Proxy等でそのパスがキャッシュされておかしくなる
