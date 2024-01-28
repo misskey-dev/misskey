@@ -79,7 +79,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="engine.state.canRonSource != null" primary gradate @click="ron">Ron</MkButton>
 	<MkButton v-if="engine.state.canPonSource != null" primary @click="pon">Pon</MkButton>
 	<MkButton v-if="engine.state.canRonSource != null || engine.state.canPonSource != null" @click="skip">Skip</MkButton>
-	<MkButton v-if="isMyTurn && canHora">Tsumo</MkButton>
+	<MkButton v-if="isMyTurn && canHora" primary gradate>Tsumo</MkButton>
+	<MkButton v-if="isMyTurn && canRiichi" primary @click="riichi">Riichi</MkButton>
 </div>
 </template>
 
@@ -114,6 +115,10 @@ const engine = shallowRef(new Mahjong.Engine.PlayerGameEngine(myUserNumber.value
 
 const isMyTurn = computed(() => {
 	return engine.value.state.turn === engine.value.myHouse;
+});
+
+const canRiichi = computed(() => {
+	return Mahjong.Utils.getHoraTiles(engine.value.myHandTiles).length > 0;
 });
 
 const canHora = computed(() => {
@@ -189,6 +194,19 @@ function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 
 	props.connection!.send('dahai', {
 		tile: tile,
+	});
+}
+
+function riichi() {
+	if (!isMyTurn.value) return;
+
+	engine.value.op_dahai(engine.value.myHouse, tile, true);
+	iTsumoed.value = false;
+	triggerRef(engine);
+
+	props.connection!.send('dahai', {
+		tile: tile,
+		riichi: true,
 	});
 }
 

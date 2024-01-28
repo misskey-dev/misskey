@@ -38,7 +38,7 @@ class MahjongRoomChannel extends Channel {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'addAi': this.addAi(); break;
-			case 'dahai': this.dahai(body.tile); break;
+			case 'dahai': this.dahai(body.tile, body.riichi); break;
 			case 'ron': this.ron(); break;
 			case 'pon': this.pon(); break;
 			case 'nop': this.nop(); break;
@@ -68,10 +68,10 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-	private async dahai(tile: string) {
+	private async dahai(tile: string, riichi = false) {
 		if (this.user == null) return;
 
-		this.mahjongService.op_dahai(this.roomId!, this.user, tile);
+		this.mahjongService.op_dahai(this.roomId!, this.user, tile, riichi);
 	}
 
 	@bindThis

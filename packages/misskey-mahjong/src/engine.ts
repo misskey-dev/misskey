@@ -166,13 +166,110 @@ export class MasterGameEngine {
 		return tile;
 	}
 
-	public op_dahai(house: House, tile: Tile) {
+	private canRon(house: House, tile: Tile): boolean {
+		// フリテン
+		// TODO: ポンされるなどして自分の河にない場合の考慮
+		if (this.getHoTilesOf(house).includes(tile)) return false;
+
+		const horaSets = Utils.getHoraSets(this.getHandTilesOf(house).concat(tile));
+		if (horaSets.length === 0) return false; // 完成形じゃない
+
+		// TODO
+		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
+		//if (yakus.length === 0) return false; // 役がない
+
+		return true;
+	}
+
+	private canPon(house: House, tile: Tile): boolean {
+		return this.getHandTilesOf(house).filter(t => t === tile).length === 2;
+	}
+
+	public getHouse(index: 1 | 2 | 3 | 4): House {
+		switch (index) {
+			case 1: return this.state.user1House;
+			case 2: return this.state.user2House;
+			case 3: return this.state.user3House;
+			case 4: return this.state.user4House;
+		}
+	}
+
+	public getHandTilesOf(house: House): Tile[] {
+		switch (house) {
+			case 'e': return this.state.eHandTiles;
+			case 's': return this.state.sHandTiles;
+			case 'w': return this.state.wHandTiles;
+			case 'n': return this.state.nHandTiles;
+			default: throw new Error(`unrecognized house: ${house}`);
+		}
+	}
+
+	public getHoTilesOf(house: House): Tile[] {
+		switch (house) {
+			case 'e': return this.state.eHoTiles;
+			case 's': return this.state.sHoTiles;
+			case 'w': return this.state.wHoTiles;
+			case 'n': return this.state.nHoTiles;
+			default: throw new Error(`unrecognized house: ${house}`);
+		}
+	}
+
+	public getHurosOf(house: House): Huro[] {
+		switch (house) {
+			case 'e': return this.state.eHuros;
+			case 's': return this.state.sHuros;
+			case 'w': return this.state.wHuros;
+			case 'n': return this.state.nHuros;
+			default: throw new Error(`unrecognized house: ${house}`);
+		}
+	}
+
+	public getPointsOf(house: House): number {
+		switch (house) {
+			case 'e': return this.state.ePoints;
+			case 's': return this.state.sPoints;
+			case 'w': return this.state.wPoints;
+			case 'n': return this.state.nPoints;
+			default: throw new Error(`unrecognized house: ${house}`);
+		}
+	}
+
+	public setPointsOf(house: House, points: number) {
+		switch (house) {
+			case 'e': this.state.ePoints = points; break;
+			case 's': this.state.sPoints = points; break;
+			case 'w': this.state.wPoints = points; break;
+			case 'n': this.state.nPoints = points; break;
+			default: throw new Error(`unrecognized house: ${house}`);
+		}
+	}
+
+	public isRiichiHouse(house: House): boolean {
+		switch (house) {
+			case 'e': return this.state.eRiichi;
+			case 's': return this.state.sRiichi;
+			case 'w': return this.state.wRiichi;
+			case 'n': return this.state.nRiichi;
+			default: throw new Error(`unrecognized house: ${house}`);
+		}
+	}
+
+	public op_dahai(house: House, tile: Tile, riichi = false) {
 		if (this.state.turn !== house) throw new Error('Not your turn');
 
 		const handTiles = this.getHandTilesOf(house);
 		if (!handTiles.includes(tile)) throw new Error('No such tile in your hand');
 		handTiles.splice(handTiles.indexOf(tile), 1);
 		this.getHoTilesOf(house).push(tile);
+
+		if (riichi) {
+			switch (house) {
+				case 'e': this.state.eRiichi = true; break;
+				case 's': this.state.sRiichi = true; break;
+				case 'w': this.state.wRiichi = true; break;
+				case 'n': this.state.nRiichi = true; break;
+			}
+		}
 
 		const canRonHouses: House[] = [];
 		switch (house) {
@@ -332,7 +429,7 @@ export class MasterGameEngine {
 			const target = this.state.ciiAsking.target;
 
 			const tile = this.getHoTilesOf(source).pop()!;
-			this.getCiiedTilesOf(target).push({ tile, from: source });
+			this.getHurosOf(target).push({ type: 'cii', tile, from: source });
 
 			clearAsking();
 			this.state.turn = target;
@@ -355,64 +452,6 @@ export class MasterGameEngine {
 			house: this.state.turn,
 			tile,
 		};
-	}
-
-	private canRon(house: House, tile: Tile): boolean {
-		// フリテン
-		// TODO: ポンされるなどして自分の河にない場合の考慮
-		if (this.getHoTilesOf(house).includes(tile)) return false;
-
-		const horaSets = Utils.getHoraSets(this.getHandTilesOf(house).concat(tile));
-		if (horaSets.length === 0) return false; // 完成形じゃない
-
-		// TODO
-		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
-		//if (yakus.length === 0) return false; // 役がない
-
-		return true;
-	}
-
-	private canPon(house: House, tile: Tile): boolean {
-		return this.getHandTilesOf(house).filter(t => t === tile).length === 2;
-	}
-
-	public getHouse(index: 1 | 2 | 3 | 4): House {
-		switch (index) {
-			case 1: return this.state.user1House;
-			case 2: return this.state.user2House;
-			case 3: return this.state.user3House;
-			case 4: return this.state.user4House;
-		}
-	}
-
-	public getHandTilesOf(house: House): Tile[] {
-		switch (house) {
-			case 'e': return this.state.eHandTiles;
-			case 's': return this.state.sHandTiles;
-			case 'w': return this.state.wHandTiles;
-			case 'n': return this.state.nHandTiles;
-			default: throw new Error(`unrecognized house: ${house}`);
-		}
-	}
-
-	public getHoTilesOf(house: House): Tile[] {
-		switch (house) {
-			case 'e': return this.state.eHoTiles;
-			case 's': return this.state.sHoTiles;
-			case 'w': return this.state.wHoTiles;
-			case 'n': return this.state.nHoTiles;
-			default: throw new Error(`unrecognized house: ${house}`);
-		}
-	}
-
-	public getHurosOf(house: House): Huro[] {
-		switch (house) {
-			case 'e': return this.state.eHuros;
-			case 's': return this.state.sHuros;
-			case 'w': return this.state.wHuros;
-			case 'n': return this.state.nHuros;
-			default: throw new Error(`unrecognized house: ${house}`);
-		}
 	}
 
 	public createPlayerState(index: 1 | 2 | 3 | 4): PlayerState {
@@ -544,6 +583,15 @@ export class PlayerGameEngine {
 		}
 	}
 
+	public get isMeRiichi(): boolean {
+		switch (this.myHouse) {
+			case 'e': return this.state.eRiichi;
+			case 's': return this.state.sRiichi;
+			case 'w': return this.state.wRiichi;
+			case 'n': return this.state.nRiichi;
+		}
+	}
+
 	public getHandTilesOf(house: House) {
 		switch (house) {
 			case 'e': return this.state.eHandTiles;
@@ -584,9 +632,18 @@ export class PlayerGameEngine {
 		}
 	}
 
-	public op_dahai(house: House, tile: Tile) {
-		console.log('op_dahai', this.state.turn, house, tile);
+	public op_dahai(house: House, tile: Tile, riichi = false) {
+		console.log('op_dahai', this.state.turn, house, tile, riichi);
 		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
+
+		if (riichi) {
+			switch (house) {
+				case 'e': this.state.eRiichi = true; break;
+				case 's': this.state.sRiichi = true; break;
+				case 'w': this.state.wRiichi = true; break;
+				case 'n': this.state.nRiichi = true; break;
+			}
+		}
 
 		if (house === this.myHouse) {
 			this.myHandTiles.splice(this.myHandTiles.indexOf(tile), 1);
