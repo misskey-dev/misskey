@@ -74,7 +74,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { host as configHost } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { query } from '@/scripts/url.js';
+import { query, extractDomain } from '@/scripts/url.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
@@ -268,16 +268,17 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 
 	if (canceled) return;
 
-	let targetHost = hostTemp;
+	let targetHost: string | null = hostTemp;
 
 	// ドメイン部分だけを取り出す
-	if (targetHost.startsWith('https://')) {
-		targetHost = targetHost.slice(8);
-	} else if (targetHost.startsWith('http://')) {
-		targetHost = targetHost.slice(7);
-	}
-	if (targetHost.includes('/')) {
-		targetHost = targetHost.slice(0, targetHost.indexOf('/'));
+	targetHost = extractDomain(targetHost);
+	if (targetHost == null) {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.invalidValue,
+			text: i18n.ts.tryAgain,
+		});
+		return;
 	}
 	openRemote(options, targetHost);
 }

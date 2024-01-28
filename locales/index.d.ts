@@ -4860,6 +4860,10 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     "enableHorizontalSwipe": string;
+    /**
+     * もう一度お試しください。
+     */
+    "tryAgain": string;
     "_bubbleGame": {
         /**
          * 遊び方
