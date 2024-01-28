@@ -359,13 +359,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			};
 
 			// リーチ中はポン、チー、カンできない
-			if (engine.isRiichiHouse(res.canPonHouse)) {
+			if (res.canPonHouse != null && engine.isRiichiHouse(res.canPonHouse)) {
 				answers.pon = false;
 			}
-			if (engine.isRiichiHouse(res.canCiiHouse)) {
+			if (res.canCiiHouse != null && engine.isRiichiHouse(res.canCiiHouse)) {
 				answers.cii = false;
 			}
-			if (engine.isRiichiHouse(res.canKanHouse)) {
+			if (res.canKanHouse != null && engine.isRiichiHouse(res.canKanHouse)) {
 				answers.kan = false;
 			}
 

@@ -233,3 +233,12 @@ export function getHoraTiles(handTiles: Tile[]): Tile[] {
 		return horaSets.length > 0;
 	});
 }
+
+export function getTilesForRiichi(handTiles: Tile[]): Tile[] {
+	return handTiles.filter(tile => {
+		const tempHandTiles = [...handTiles];
+		tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
+		const horaTiles = getHoraTiles(tempHandTiles);
+		return horaTiles.length > 0;
+	});
+}

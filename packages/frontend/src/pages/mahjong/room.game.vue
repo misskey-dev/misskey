@@ -118,13 +118,30 @@ const isMyTurn = computed(() => {
 });
 
 const canRiichi = computed(() => {
-	return Mahjong.Utils.getHoraTiles(engine.value.myHandTiles).length > 0;
+	return Mahjong.Utils.getTilesForRiichi(engine.value.myHandTiles).length > 0;
 });
 
 const canHora = computed(() => {
 	return Mahjong.Utils.getHoraSets(engine.value.myHandTiles).length > 0;
 });
-
+/*
+console.log(Mahjong.Utils.getTilesForRiichi([
+	'm1',
+	'm2',
+	'm2',
+	'm3',
+	'm3',
+	'm5',
+	'm6',
+	'p4',
+	'p5',
+	'p6',
+	's6',
+	's7',
+	's8',
+	'm7',
+]));
+*/
 /*
 console.log(Mahjong.Utils.getHoraSets([
 	'm3',
