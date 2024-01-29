@@ -202,12 +202,12 @@ function onDblClick() {
 	}
 }
 
-function getPosition(event: MouseEvent | TouchEvent, axis: 'x' | 'y') {
-	if (axis === 'x') {
-		return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientX : 'clientX' in event ? event.clientX : 0;
-	} else {
-		return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
-	}
+function getPositionX(event: MouseEvent | TouchEvent) {
+	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientX : 'clientX' in event ? event.clientX : 0;
+}
+
+function getPositionY(event: MouseEvent | TouchEvent) {
+	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
 }
 
 function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
@@ -237,8 +237,8 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 
 	const position = main.getBoundingClientRect();
 
-	const clickX = getPosition(evt, 'x');
-	const clickY = getPosition(evt, 'y');
+	const clickX = getPositionX(evt);
+	const clickY = getPositionY(evt);
 	const moveBaseX = beforeMaximized ? parseInt(unResizedWidth, 10) / 2 : clickX - position.left; // TODO: parseIntやめる
 	const moveBaseY = beforeMaximized ? 20 : clickY - position.top;
 	const browserWidth = window.innerWidth;
@@ -274,8 +274,8 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 
 	// 動かした時
 	dragListen(me => {
-		const x = getPosition(me, 'x');
-		const y = getPosition(me, 'y');
+		const x = getPositionX(me);
+		const y = getPositionY(me);
 
 		move(x, y);
 	});
@@ -287,13 +287,13 @@ function onTopHandleMousedown(evt: MouseEvent | TouchEvent) {
 	// どういうわけかnullになることがある
 	if (main == null) return;
 
-	const base = getPosition(evt, 'y');
+	const base = getPositionY(evt);
 	const height = parseInt(getComputedStyle(main, '').height, 10);
 	const top = parseInt(getComputedStyle(main, '').top, 10);
 
 	// 動かした時
 	dragListen(me => {
-		const move = getPosition(me, 'y') - base;
+		const move = getPositionY(me) - base;
 		if (top + move > 0) {
 			if (height + -move > minHeight) {
 				applyTransformHeight(height + -move);
@@ -314,14 +314,14 @@ function onRightHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = getPosition(evt, 'x');
+	const base = getPositionX(evt);
 	const width = parseInt(getComputedStyle(main, '').width, 10);
 	const left = parseInt(getComputedStyle(main, '').left, 10);
 	const browserWidth = window.innerWidth;
 
 	// 動かした時
 	dragListen(me => {
-		const move = getPosition(me, 'x') - base;
+		const move = getPositionX(me) - base;
 		if (left + width + move < browserWidth) {
 			if (width + move > minWidth) {
 				applyTransformWidth(width + move);
@@ -339,14 +339,14 @@ function onBottomHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = getPosition(evt, 'y');
+	const base = getPositionY(evt);
 	const height = parseInt(getComputedStyle(main, '').height, 10);
 	const top = parseInt(getComputedStyle(main, '').top, 10);
 	const browserHeight = window.innerHeight;
 
 	// 動かした時
 	dragListen(me => {
-		const move = getPosition(me, 'y') - base;
+		const move = getPositionY(me) - base;
 		if (top + height + move < browserHeight) {
 			if (height + move > minHeight) {
 				applyTransformHeight(height + move);
@@ -364,13 +364,13 @@ function onLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = getPosition(evt, 'x');
+	const base = getPositionX(evt);
 	const width = parseInt(getComputedStyle(main, '').width, 10);
 	const left = parseInt(getComputedStyle(main, '').left, 10);
 
 	// 動かした時
 	dragListen(me => {
-		const move = getPosition(me, 'x') - base;
+		const move = getPositionX(me) - base;
 		if (left + move > 0) {
 			if (width + -move > minWidth) {
 				applyTransformWidth(width + -move);
