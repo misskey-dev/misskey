@@ -20,6 +20,26 @@
 		</div>
 	</MkFolder>
 
+	<MkFolder>
+		<template #icon><i class="ti ti-notes"></i></template>
+		<template #label>登録ログ</template>
+		<template #caption>
+			絵文字登録時のログが表示されます。登録操作を行ったり、ページをリロードすると消えます。
+		</template>
+
+		<div>
+			<div v-if="registerLogs.length > 0" style="overflow-y: scroll;">
+				<MkGrid
+					:data="convertedRegisterLogs"
+					:columnSettings="registerLogColumnSettings"
+				/>
+			</div>
+			<div v-else>
+				ログはありません。
+			</div>
+		</div>
+	</MkFolder>
+
 	<div
 		:class="$style.uploadBox"
 		@dragover.prevent
@@ -44,7 +64,9 @@
 		v-if="gridItems.length > 0"
 		:class="$style.buttons"
 	>
-		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">{{ i18n.ts.registration }}</MkButton>
+		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
+			{{ i18n.ts.registration }}
+		</MkButton>
 		<MkButton @click="onClearClicked">{{ i18n.ts.clear }}</MkButton>
 	</div>
 </div>
@@ -73,10 +95,22 @@ type FolderItem = {
 	name: string;
 };
 
-type UploadResult = { key: string, item: IGridItem, success: boolean, err: any };
+type UploadResult = {
+	key: string,
+	item: IGridItem,
+	success: boolean,
+	err?: Error
+};
+
+type RegisterLogItem = {
+	failed: boolean;
+	url: string;
+	name: string;
+	error?: string;
+};
 
 const columnSettings: ColumnSetting[] = [
-	{ bindTo: 'url', title: '🎨', type: 'image', editable: false, width: 50, validators: [required] },
+	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 50, validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
@@ -84,6 +118,13 @@ const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
 	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
+];
+
+const registerLogColumnSettings: ColumnSetting[] = [
+	{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
+	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 50 },
+	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },
+	{ bindTo: 'error', title: 'log', type: 'text', editable: false, width: 'auto' },
 ];
 
 const emit = defineEmits<{
@@ -95,8 +136,10 @@ const gridItems = ref<IGridItem[]>([]);
 const selectedFolderId = ref(defaultStore.state.uploadFolder);
 const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
 const registerButtonDisabled = ref<boolean>(false);
+const registerLogs = ref<RegisterLogItem[]>([]);
 
 const convertedGridItems = computed(() => gridItems.value.map(it => it as Record<string, any>));
+const convertedRegisterLogs = computed(() => registerLogs.value.map(it => it as Record<string, any>));
 
 async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
@@ -135,6 +178,20 @@ async function onRegistryClicked() {
 	const result = await os.promiseDialog(upload());
 	const failedItems = result.filter(it => !it.success);
 
+	if (failedItems.length > 0) {
+		await os.alert({
+			type: 'error',
+			title: 'エラー',
+			text: '絵文字の登録に失敗しました。詳細は登録ログをご確認ください。',
+		});
+	}
+
+	registerLogs.value = result.map(it => ({
+		failed: !it.success,
+		url: it.item.url,
+		name: it.item.name,
+		error: it.err ? JSON.stringify(it.err) : undefined,
+	}));
 	gridItems.value = failedItems.map(it => it.item);
 
 	emit('operation:registered');
