@@ -537,7 +537,6 @@ function pushVisibleUser(user: Misskey.entities.UserDetailed) {
 
 function addVisibleUser() {
 	os.selectUser().then(user => {
-		if (user == null) return;
 		pushVisibleUser(user);
 
 		if (!text.value.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
@@ -862,7 +861,6 @@ function cancel() {
 
 function insertMention() {
 	os.selectUser().then(user => {
-		if (user == null) return;
 		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
 	});
 }

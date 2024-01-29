@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef, ref } from 'vue';
-
+import * as Misskey from 'misskey-js';
 import XSignup from '@/components/MkSignupDialog.form.vue';
 import XServerRules from '@/components/MkSignupDialog.rules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done'): void;
+	(ev: 'done', res: Misskey.entities.SigninResponse): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -55,8 +55,8 @@ const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const isAcceptedServerRule = ref(false);
 
-function onSignup() {
-	emit('done');
+function onSignup(res: Misskey.entities.SigninResponse) {
+	emit('done', res);
 	dialog.value?.close();
 }
 
