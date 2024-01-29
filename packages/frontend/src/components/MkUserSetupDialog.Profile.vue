@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSlot>
 		<template #label>{{ i18n.ts.avatar }}</template>
 		<div v-adaptive-bg :class="$style.avatarSection" class="_panel">
-			<MkAvatar v-if="$i" :class="$style.avatar" :user="$i" @click="setAvatar"/>
+			<MkAvatar :class="$style.avatar" :user="$i" @click="setAvatar"/>
 			<div style="margin-top: 16px;">
 				<MkButton primary rounded inline @click="setAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 			</div>
@@ -39,10 +39,12 @@ import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { chooseFileFromPc } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 
-const name = ref($i?.name ?? '');
-const description = ref($i?.description ?? '');
+const $i = signinRequired();
+
+const name = ref($i.name ?? '');
+const description = ref($i.description ?? '');
 
 watch(name, () => {
 	os.apiWithDialog('i/update', {
@@ -82,11 +84,8 @@ function setAvatar(ev) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: originalOrCropped.id,
 		});
-
-		if ($i) {
-			$i.avatarId = i.avatarId;
-			$i.avatarUrl = i.avatarUrl;
-		}
+		$i.avatarId = i.avatarId;
+		$i.avatarUrl = i.avatarUrl;
 	});
 }
 </script>
