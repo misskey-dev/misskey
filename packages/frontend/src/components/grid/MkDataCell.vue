@@ -23,7 +23,7 @@
 				</div>
 				<div v-else-if="cellType === 'boolean'">
 					<span v-if="cell.value === true" class="ti ti-check"/>
-					<span v-else class="ti ti-x"/>
+					<span v-else class="ti"/>
 				</div>
 				<div v-else-if="cellType === 'image'">
 					<img

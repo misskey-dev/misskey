@@ -11,8 +11,15 @@
 			</MkTab>
 
 			<div>
-				<XListComponent v-if="modeTab === 'list'" :customEmojis="customEmojis"/>
-				<XRegisterComponent v-else @operation:registered="onOperationRegistered"/>
+				<XListComponent
+					v-if="modeTab === 'list'"
+					:customEmojis="customEmojis"
+					@operation:search="onOperationSearch"
+				/>
+				<XRegisterComponent
+					v-else
+					@operation:registered="onOperationRegistered"
+				/>
 			</div>
 		</div>
 	</MkStickyContainer>
@@ -34,13 +41,24 @@ type PageMode = 'list' | 'register';
 const customEmojis = ref<Misskey.entities.EmojiDetailed[]>([]);
 const headerTab = ref('local');
 const modeTab = ref<PageMode>('list');
+const query = ref<string>();
 
-async function refreshCustomEmojis() {
-	customEmojis.value = await misskeyApi('admin/emoji/list', { limit: 100 });
+async function refreshCustomEmojis(query?: string, sinceId?: string, untilId?: string) {
+	customEmojis.value = await misskeyApi('admin/emoji/list', {
+		limit: 100,
+		query,
+		sinceId,
+		untilId,
+	});
+}
+
+async function onOperationSearch(q: string, sinceId?: string, untilId?: string) {
+	query.value = q;
+	await refreshCustomEmojis(q, sinceId, untilId);
 }
 
 async function onOperationRegistered() {
-	await refreshCustomEmojis();
+	await refreshCustomEmojis(query.value);
 }
 
 onMounted(async () => {

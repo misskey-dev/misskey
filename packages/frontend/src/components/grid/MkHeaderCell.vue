@@ -8,7 +8,8 @@
 		<div :class="$style.left"/>
 		<div :class="$style.wrapper">
 			<div ref="contentEl" :class="$style.contentArea">
-				{{ text }}
+				<span v-if="column.setting.icon" class="ti" :class="column.setting.icon"/>
+				<span v-else>{{ text }}</span>
 			</div>
 		</div>
 		<div

@@ -19,6 +19,7 @@ export class GridItem implements IGridItem {
 	readonly fileId?: string;
 	readonly url: string;
 
+	public checked: boolean;
 	public name: string;
 	public category: string;
 	public aliases: string;
@@ -45,6 +46,7 @@ export class GridItem implements IGridItem {
 		this.fileId = fileId;
 		this.url = url;
 
+		this.checked = true;
 		this.aliases = aliases;
 		this.name = name;
 		this.category = category;

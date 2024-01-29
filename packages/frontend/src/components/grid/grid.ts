@@ -18,6 +18,7 @@ export type ColumnType = 'text' | 'number' | 'date' | 'boolean' | 'image';
 export type ColumnSetting = {
 	bindTo: string;
 	title?: string;
+	icon?: string;
 	type: ColumnType;
 	width: SizeStyle;
 	editable?: boolean;

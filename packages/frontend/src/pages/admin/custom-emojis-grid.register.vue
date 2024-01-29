@@ -75,10 +75,6 @@ type FolderItem = {
 
 type UploadResult = { key: string, item: IGridItem, success: boolean, err: any };
 
-const emit = defineEmits<{
-	(ev: 'operation:registered'): void;
-}>();
-
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'url', title: '🎨', type: 'image', editable: false, width: 50, validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
@@ -89,6 +85,10 @@ const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
 ];
+
+const emit = defineEmits<{
+	(ev: 'operation:registered'): void;
+}>();
 
 const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<IGridItem[]>([]);
