@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.370Z
+ * version: 2024.2.0-beta.7
+ * generatedAt: 2024-01-29T07:28:30.181Z
  */
 
 /**
