@@ -2,7 +2,7 @@
 <th
 	ref="rootEl"
 	:class="$style.cell"
-	:style="[{ width: column.width }]"
+	:style="[{ maxWidth: column.width, minWidth: column.width, width: column.width }]"
 >
 	<div :class="$style.root">
 		<div :class="$style.left"/>
@@ -52,7 +52,7 @@ const text = computed(() => {
 watch(column, () => {
 	// 中身がセットされた直後はサイズが分からないので、次のタイミングで更新する
 	nextTick(updateContentSize);
-});
+}, { immediate: true });
 
 function onHandleDoubleClick(ev: MouseEvent) {
 	switch (ev.type) {

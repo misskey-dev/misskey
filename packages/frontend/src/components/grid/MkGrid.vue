@@ -462,6 +462,9 @@ function onChangeCellValue(sender: GridCell, newValue: CellValue) {
 
 function onChangeCellContentSize(sender: GridCell, contentSize: Size) {
 	cells.value[sender.address.row][sender.address.col].contentSize = contentSize;
+	if (sender.column.setting.width === 'auto') {
+		largestCellWidth(sender.column);
+	}
 }
 
 function onHeaderCellWidthBeginChange() {
@@ -496,6 +499,9 @@ function onHeaderCellChangeContentSize(sender: GridColumn, newSize: Size) {
 	switch (state.value) {
 		case 'normal': {
 			columns.value[sender.index].contentSize = newSize;
+			if (sender.setting.width === 'auto') {
+				largestCellWidth(sender);
+			}
 			break;
 		}
 	}
@@ -504,22 +510,28 @@ function onHeaderCellChangeContentSize(sender: GridColumn, newSize: Size) {
 function onHeaderCellWidthLargest(sender: GridColumn) {
 	switch (state.value) {
 		case 'normal': {
-			const column = columns.value[sender.index];
-			const _cells = cells.value;
-			const largestColumnWidth = columns.value.reduce(
-				(acc, value) => Math.max(acc, value.contentSize.width),
-				columns.value[sender.index].contentSize.width,
-			);
-			const largestCellWidth = _cells
-				.map(row => row[column.index])
-				.reduce(
-					(acc, value) => Math.max(acc, value.contentSize.width),
-					_cells[0][column.index].contentSize.width,
-				);
-			column.width = `${Math.max(largestColumnWidth, largestCellWidth)}px`;
+			largestCellWidth(sender);
 			break;
 		}
 	}
+}
+
+function largestCellWidth(column: GridColumn) {
+	const _cells = cells.value;
+	const largestColumnWidth = columns.value[column.index].contentSize.width;
+
+	const largestCellWidth = (_cells.length > 0)
+	  ? _cells
+			.map(row => row[column.index])
+			.reduce(
+				(acc, value) => Math.max(acc, value.contentSize.width),
+				0,
+			)
+		: 0;
+
+	console.log(`largestCellWidth: ${largestColumnWidth}, ${largestCellWidth}`);
+
+	column.width = `${Math.max(largestColumnWidth, largestCellWidth)}px`;
 }
 
 function setCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
