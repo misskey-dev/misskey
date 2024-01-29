@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<div :class="$style.head">
 		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
-		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type) && $i" :class="$style.icon" :user="$i" link preview/>
+		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
 		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
@@ -151,8 +151,10 @@ import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { infoImageUrl } from '@/instance.js';
+
+const $i = signinRequired();
 
 const props = withDefaults(defineProps<{
 	notification: Misskey.entities.Notification;
