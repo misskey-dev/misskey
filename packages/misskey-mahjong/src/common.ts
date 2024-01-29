@@ -218,6 +218,19 @@ const YAKU_DEFINITIONS = [{
 		);
 	},
 }, {
+	name: 'seat-wind',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return (
+			(state.handTiles.filter(t => t === state.house).length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === state.house :
+				huro.type === 'ankan' ? huro.tile === state.house :
+				huro.type === 'minkan' ? huro.tile === state.house :
+				false).length >= 3)
+		);
+	},
+}, {
 	name: 'tanyao',
 	fan: 1,
 	calc: (state: EnvForCalcYaku) => {
