@@ -300,7 +300,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			this.waitForTurn(room, userId, engine);
 		} else if (res.type === 'kanned') {
 			// TODO
-		} else if (res.type === 'ronned') {
+		} else if (res.type === 'endKyoku') {
 			// TODO
 		}
 	}
@@ -415,7 +415,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 					this.answer(room, engine, currentAnswers);
 					return;
 				}
-			}, 2000);
+			}, 1000);
 
 			this.globalEventService.publishMahjongRoomStream(room.id, 'dahai', { house: house, tile });
 		} else {
@@ -443,6 +443,38 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		await this.clearTurnWaitingTimer(room.id);
 
 		await this.dahai(room, engine, myHouse, tile);
+	}
+
+	@bindThis
+	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
+		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+
+		await this.clearTurnWaitingTimer(room.id);
+
+		const res = engine.commit_kakan(myHouse);
+
+		this.globalEventService.publishMahjongRoomStream(room.id, 'kakanned', { });
+	}
+
+	@bindThis
+	public async commit_hora(roomId: MiMahjongGame['id'], user: MiUser) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
+		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+
+		await this.clearTurnWaitingTimer(room.id);
+
+		const res = engine.commit_hora(myHouse);
+
+		this.globalEventService.publishMahjongRoomStream(room.id, 'horad', { });
 	}
 
 	@bindThis
@@ -504,7 +536,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	/**
-	 * プレイヤーの行動を待つ(打牌もしくはツモ和了)
+	 * プレイヤーの行動(打牌、加槓、ツモ和了)を待つ
 	 * 制限時間が過ぎたらツモ切り
 	 * NOTE: 時間切れチェックが行われたときにタイミングによっては次のwaitingが始まっている場合があることを考慮し、Setに一意のIDを格納する構造としている
 	 * @param room
@@ -536,7 +568,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	/**
-	 * プレイヤーが打牌またはツモ和了したら呼ぶ
+	 * プレイヤーが行動(打牌、加槓、ツモ和了)したら呼ぶ
 	 * @param roomId
 	 */
 	@bindThis

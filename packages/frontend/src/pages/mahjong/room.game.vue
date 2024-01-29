@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="engine.state.canRonSource != null" primary gradate @click="ron">Ron</MkButton>
 	<MkButton v-if="engine.state.canPonSource != null" primary @click="pon">Pon</MkButton>
 	<MkButton v-if="engine.state.canRonSource != null || engine.state.canPonSource != null" @click="skip">Skip</MkButton>
-	<MkButton v-if="isMyTurn && canHora" primary gradate>Tsumo</MkButton>
+	<MkButton v-if="isMyTurn && canHora" primary gradate @click="hora">Tsumo</MkButton>
 	<MkButton v-if="isMyTurn && canRiichi" primary @click="riichi">Riichi</MkButton>
 </div>
 </template>
@@ -227,6 +227,26 @@ function riichi() {
 	});
 }
 
+function kakan() {
+	if (!isMyTurn.value) return;
+
+	engine.value.commit_kakan(engine.value.myHouse);
+	triggerRef(engine);
+
+	props.connection!.send('kakan', {
+	});
+}
+
+function hora() {
+	if (!isMyTurn.value) return;
+
+	engine.value.commit_hora(engine.value.myHouse);
+	triggerRef(engine);
+
+	props.connection!.send('hora', {
+	});
+}
+
 function ron() {
 	engine.value.commit_ron(engine.value.state.canRonSource, engine.value.myHouse);
 	triggerRef(engine);
@@ -236,9 +256,6 @@ function ron() {
 }
 
 function pon() {
-	engine.value.commit_pon(engine.value.state.canPonSource, engine.value.myHouse);
-	triggerRef(engine);
-
 	props.connection!.send('pon', {
 	});
 }
@@ -335,8 +352,6 @@ function onStreamPonned(log) {
 	//	restoreRoom(_room);
 	//	return;
 	//}
-
-	if (log.target === engine.value.myHouse) return;
 
 	engine.value.commit_pon(log.source, log.target);
 	triggerRef(engine);

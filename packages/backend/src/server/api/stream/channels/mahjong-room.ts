@@ -39,6 +39,7 @@ class MahjongRoomChannel extends Channel {
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'addAi': this.addAi(); break;
 			case 'dahai': this.dahai(body.tile, body.riichi); break;
+			case 'hora': this.hora(); break;
 			case 'ron': this.ron(); break;
 			case 'pon': this.pon(); break;
 			case 'nop': this.nop(); break;
@@ -72,6 +73,13 @@ class MahjongRoomChannel extends Channel {
 		if (this.user == null) return;
 
 		this.mahjongService.commit_dahai(this.roomId!, this.user, tile, riichi);
+	}
+
+	@bindThis
+	private async hora() {
+		if (this.user == null) return;
+
+		this.mahjongService.commit_hora(this.roomId!, this.user);
 	}
 
 	@bindThis

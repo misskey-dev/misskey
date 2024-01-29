@@ -12,6 +12,10 @@ export type PlayerState = {
 	user2House: House;
 	user3House: House;
 	user4House: House;
+
+	round: 'e' | 's' | 'w' | 'n';
+	kyoku: number;
+
 	tilesCount: number;
 
 	/**
@@ -128,6 +132,16 @@ export class PlayerGameEngine {
 			if (canRon) this.state.canRonSource = house;
 			if (canPon) this.state.canPonSource = house;
 		}
+	}
+
+	public commit_kakan(house: House, tile: Tile) {
+		console.log('commit_kakan', this.state.turn, house, tile);
+		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
+	}
+
+	public commit_hora(house: House) {
+		console.log('commit_hora', this.state.turn, house);
+		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
 	}
 
 	/**

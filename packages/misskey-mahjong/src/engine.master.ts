@@ -13,6 +13,10 @@ export type MasterState = {
 	user2House: House;
 	user3House: House;
 	user4House: House;
+
+	round: 'e' | 's' | 'w' | 'n';
+	kyoku: number;
+
 	tiles: Tile[];
 
 	/**
@@ -122,6 +126,8 @@ export class MasterGameEngine {
 			user2House: 's',
 			user3House: 'w',
 			user4House: 'n',
+			round: 'e',
+			kyoku: 1,
 			tiles,
 			handTiles: {
 				e: eHandTiles,
@@ -196,6 +202,12 @@ export class MasterGameEngine {
 			case 3: return this.state.user3House;
 			case 4: return this.state.user4House;
 		}
+	}
+
+	private endKyoku() {
+		const newState = MasterGameEngine.createInitialState();
+		newState.kyoku = this.state.kyoku + 1;
+		newState.points = this.state.points;
 	}
 
 	public commit_dahai(house: House, tile: Tile, riichi = false) {
@@ -311,6 +323,21 @@ export class MasterGameEngine {
 		};
 	}
 
+	public commit_kakan(house: House) {
+	}
+
+	/**
+	 * ツモ和了
+	 * @param house
+	 */
+	public commit_hora(house: House) {
+		if (this.state.turn !== house) throw new Error('Not your turn');
+
+		const yakus = Utils.getYakus(this.state.handTiles[house], null);
+
+		this.endKyoku();
+	}
+
 	public commit_resolveCallAndRonInterruption(answers: {
 		pon: boolean;
 		cii: boolean;
@@ -328,7 +355,10 @@ export class MasterGameEngine {
 
 		if (this.state.ronAsking != null && answers.ron.length > 0) {
 			// TODO
-			return;
+			this.endKyoku();
+			return {
+				type: 'endKyoku',
+			};
 		}
 
 		if (this.state.kanAsking != null && answers.kan) {
@@ -401,6 +431,8 @@ export class MasterGameEngine {
 			user2House: this.state.user2House,
 			user3House: this.state.user3House,
 			user4House: this.state.user4House,
+			round: this.state.round,
+			kyoku: this.state.kyoku,
 			tilesCount: this.state.tiles.length,
 			handTiles: {
 				e: house === 'e' ? this.state.handTiles.e : this.state.handTiles.e.map(() => null),
