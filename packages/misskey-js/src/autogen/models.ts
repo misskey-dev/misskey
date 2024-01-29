@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.485Z
+ * version: 2024.2.0-beta.6
+ * generatedAt: 2024-01-24T07:32:10.450Z
  */
 
 import { components } from './types.js';
@@ -41,3 +41,5 @@ export type Flash = components['schemas']['Flash'];
 export type Signin = components['schemas']['Signin'];
 export type RoleLite = components['schemas']['RoleLite'];
 export type Role = components['schemas']['Role'];
+export type ReversiGameLite = components['schemas']['ReversiGameLite'];
+export type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];

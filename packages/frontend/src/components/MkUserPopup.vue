@@ -60,6 +60,7 @@ import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
@@ -97,7 +98,7 @@ onMounted(() => {
 			Misskey.acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
-		os.api('users/show', query).then(res => {
+		misskeyApi('users/show', query).then(res => {
 			if (!props.showing) return;
 			user.value = res;
 		});

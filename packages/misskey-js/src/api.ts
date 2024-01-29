@@ -1,11 +1,11 @@
-import './autogen/apiClientJSDoc';
+import './autogen/apiClientJSDoc.js';
 
-import { SwitchCaseResponseType } from './api.types';
-import type { Endpoints } from './api.types';
+import { SwitchCaseResponseType } from './api.types.js';
+import type { Endpoints } from './api.types.js';
 
 export {
 	SwitchCaseResponseType,
-} from './api.types';
+} from './api.types.js';
 
 const MK_API_ERROR = Symbol();
 
