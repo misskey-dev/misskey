@@ -30,6 +30,7 @@
 						:src="cell.value as string"
 						:alt="cell.value as string"
 						:class="$style.viewImage"
+						@load="emitContentSizeChanged"
 					/>
 				</div>
 			</div>
@@ -90,6 +91,7 @@ watch(() => [cell, cell.value.value], () => {
 	// 中身がセットされた直後はサイズが分からないので、次のタイミングで更新する
 	nextTick(emitContentSizeChanged);
 }, { immediate: true });
+
 watch(() => cell.value.selected, () => {
 	if (cell.value.selected) {
 		rootEl.value?.focus();

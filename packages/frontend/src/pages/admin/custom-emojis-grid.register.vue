@@ -110,7 +110,7 @@ type RegisterLogItem = {
 };
 
 const columnSettings: ColumnSetting[] = [
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 50, validators: [required] },
+	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
@@ -122,7 +122,7 @@ const columnSettings: ColumnSetting[] = [
 
 const registerLogColumnSettings: ColumnSetting[] = [
 	{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 50 },
+	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },
 	{ bindTo: 'error', title: 'log', type: 'text', editable: false, width: 'auto' },
 ];

@@ -42,7 +42,7 @@ import MkButton from '@/components/MkButton.vue';
 
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'selected', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 50, validators: [required] },
+	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
