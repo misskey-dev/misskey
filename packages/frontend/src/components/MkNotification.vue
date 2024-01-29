@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<span v-else-if="notification.type === 'test'" :class="$style.text">{{ i18n.ts._notification.notificationWillBeDisplayedLikeThis }}</span>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
-				<Mfm v-if="notification.body" :text="notification.body" :nowrap="false"/>
+				<Mfm :text="notification.body" :nowrap="false"/>
 			</span>
 
 			<div v-if="notification.type === 'reaction:grouped'">
