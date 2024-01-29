@@ -46,3 +46,190 @@ export const TILE_TYPES = [
 export type Tile = typeof TILE_TYPES[number];
 
 export type House = 'e' | 's' | 'w' | 'n';
+
+export type Huro = {
+	type: 'pon';
+	tile: Tile;
+	from: House;
+} | {
+	type: 'cii';
+	tiles: [Tile, Tile, Tile];
+	from: House;
+} | {
+	type: 'minkan';
+	tile: Tile;
+	from: House;
+} | {
+	type: 'ankan';
+	tile: Tile;
+	from: House;
+};
+
+export const yakuNames = [
+	'riichi',
+	'ippatsu',
+	'tsumo',
+	'tanyao',
+	'pinfu',
+	'iipeko',
+	'field-wind',
+	'seat-wind',
+	'white',
+	'green',
+	'red',
+	'rinshan',
+	'chankan',
+	'haitei',
+	'hotei',
+	'sanshoku-dojun',
+	'sanshoku-doko',
+	'ittsu',
+	'chanta',
+	'chitoitsu',
+	'toitoi',
+	'sananko',
+	'honroto',
+	'sankantsu',
+	'shosangen',
+	'double-riichi',
+	'honitsu',
+	'junchan',
+	'ryampeko',
+	'chinitsu',
+	'dora',
+	'red-dora',
+] as const;
+
+export const yakumanNames = [
+	'kokushi',
+	'kokushi-13',
+	'suanko',
+	'suanko-tanki',
+	'daisangen',
+	'tsuiso',
+	'shosushi',
+	'daisushi',
+	'ryuiso',
+	'chinroto',
+	'sukantsu',
+	'churen',
+	'pure-churen',
+	'tenho',
+	'chiho',
+] as const;
+
+type EnvForCalcYaku = {
+	house: House;
+
+	/**
+	 * 和了る人の手牌(副露した牌は含まない)
+	 */
+	handTiles: Tile[];
+
+	/**
+	 * 河
+	 */
+	hoTiles: Tile[];
+
+	/**
+	 * 副露
+	 */
+	huros: Huro[];
+
+	/**
+	 * ツモ牌
+	 */
+	tsumoTile: Tile | null;
+
+	/**
+	 * ロン牌
+	 */
+	ronTile: Tile | null;
+
+	/**
+	 * ドラ表示牌
+	 */
+	doraTiles: Tile[];
+
+	/**
+	 * 赤ドラ表示牌
+	 */
+	redDoraTiles: Tile[];
+
+	/**
+	 * 場風
+	 */
+	fieldWind: House;
+
+	/**
+	 * 自風
+	 */
+	seatWind: House;
+
+	/**
+	 * リーチしたかどうか
+	 */
+	riichi: boolean;
+};
+
+const YAKU_DEFINITIONS = [{
+	name: 'riichi',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.riichi;
+	},
+}, {
+	name: 'red',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return (
+			(state.handTiles.filter(t => t === 'chun').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 'chun' :
+				huro.type === 'ankan' ? huro.tile === 'chun' :
+				huro.type === 'minkan' ? huro.tile === 'chun' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'white',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return (
+			(state.handTiles.filter(t => t === 'haku').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 'haku' :
+				huro.type === 'ankan' ? huro.tile === 'haku' :
+				huro.type === 'minkan' ? huro.tile === 'haku' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'green',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return (
+			(state.handTiles.filter(t => t === 'hatsu').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 'hatsu' :
+				huro.type === 'ankan' ? huro.tile === 'hatsu' :
+				huro.type === 'minkan' ? huro.tile === 'hatsu' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'tanyao',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		const yaochuTiles: Tile[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
+		return (
+			(state.handTiles.filter(t => yaochuTiles.includes(t)).length === 0) &&
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? yaochuTiles.includes(huro.tile) :
+				huro.type === 'ankan' ? yaochuTiles.includes(huro.tile) :
+				huro.type === 'minkan' ? yaochuTiles.includes(huro.tile) :
+				huro.type === 'cii' ? huro.tiles.some(t2 => yaochuTiles.includes(t2)) :
+				false).length === 0)
+		);
+	},
+}];

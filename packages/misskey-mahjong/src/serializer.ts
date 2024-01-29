@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Tile } from './engine.js';
+import { Tile } from './engine.player.js';
 
 export type Log = {
 	time: number;

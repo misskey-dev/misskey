@@ -71,28 +71,28 @@ class MahjongRoomChannel extends Channel {
 	private async dahai(tile: string, riichi = false) {
 		if (this.user == null) return;
 
-		this.mahjongService.op_dahai(this.roomId!, this.user, tile, riichi);
+		this.mahjongService.commit_dahai(this.roomId!, this.user, tile, riichi);
 	}
 
 	@bindThis
 	private async ron() {
 		if (this.user == null) return;
 
-		this.mahjongService.op_ron(this.roomId!, this.user);
+		this.mahjongService.commit_ron(this.roomId!, this.user);
 	}
 
 	@bindThis
 	private async pon() {
 		if (this.user == null) return;
 
-		this.mahjongService.op_pon(this.roomId!, this.user);
+		this.mahjongService.commit_pon(this.roomId!, this.user);
 	}
 
 	@bindThis
 	private async nop() {
 		if (this.user == null) return;
 
-		this.mahjongService.op_nop(this.roomId!, this.user);
+		this.mahjongService.commit_nop(this.roomId!, this.user);
 	}
 
 	@bindThis

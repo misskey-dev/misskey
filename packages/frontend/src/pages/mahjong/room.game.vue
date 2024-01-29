@@ -7,19 +7,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<div :class="$style.taku">
 		<div :class="$style.handTilesOfToimen">
-			<div v-for="tile in engine.getHandTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" style="display: inline-block;">
+			<div v-for="tile in engine.state.handTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))]" style="display: inline-block;">
 				<img :src="`/client-assets/mahjong/tile-back.png`" style="display: inline-block; width: 32px;"/>
 			</div>
 		</div>
 
 		<div :class="$style.handTilesOfKamitya">
-			<div v-for="tile in engine.getHandTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" :class="$style.sideTile">
+			<div v-for="tile in engine.state.handTiles[Mahjong.Utils.prevHouse(engine.myHouse)]" :class="$style.sideTile">
 				<img :src="`/client-assets/mahjong/tile-side.png`" style="display: inline-block; width: 32px;"/>
 			</div>
 		</div>
 
 		<div :class="$style.handTilesOfSimotya">
-			<div v-for="tile in engine.getHandTilesOf(Mahjong.Utils.nextHouse(engine.myHouse))" :class="$style.sideTile">
+			<div v-for="tile in engine.state.handTiles[Mahjong.Utils.nextHouse(engine.myHouse)]" :class="$style.sideTile">
 				<img :src="`/client-assets/mahjong/tile-side.png`" style="display: inline-block; width: 32px; scale: -1 1;"/>
 			</div>
 		</div>
@@ -27,28 +27,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.hoTilesContainer">
 			<div :class="$style.hoTilesContainerOfToimen">
 				<div :class="$style.hoTilesOfToimen">
-					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)))" :class="$style.hoTile">
+					<div v-for="tile in engine.state.hoTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))]" :class="$style.hoTile">
 						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfKamitya">
 				<div :class="$style.hoTilesOfKamitya">
-					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.prevHouse(engine.myHouse))" :class="$style.hoTile">
+					<div v-for="tile in engine.state.hoTiles[Mahjong.Utils.prevHouse(engine.myHouse)]" :class="$style.hoTile">
 						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfSimotya">
 				<div :class="$style.hoTilesOfSimotya">
-					<div v-for="tile in engine.getHoTilesOf(Mahjong.Utils.nextHouse(engine.myHouse))" :class="$style.hoTile">
+					<div v-for="tile in engine.state.hoTiles[Mahjong.Utils.nextHouse(engine.myHouse)]" :class="$style.hoTile">
 						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfMe">
 				<div :class="$style.hoTilesOfMe">
-					<div v-for="tile in engine.myHoTiles" :class="$style.hoTile">
+					<div v-for="tile in engine.state.hoTiles[engine.myHouse]" :class="$style.hoTile">
 						<XTile :tile="tile" direction="v"/>
 					</div>
 				</div>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div :class="$style.huroTilesOfMe">
-			<div v-for="huro in engine.getHurosOf(engine.myHouse)" style="display: inline-block;">
+			<div v-for="huro in engine.state.huros[engine.myHouse]" style="display: inline-block;">
 				<div v-if="huro.type === 'pon'">
 					<XTile :tile="huro.tile" direction="v"/>
 					<XTile :tile="huro.tile" direction="v"/>
@@ -111,7 +111,7 @@ const props = defineProps<{
 
 const room = ref<Misskey.entities.MahjongRoomDetailed>(deepClone(props.room));
 const myUserNumber = computed(() => room.value.user1Id === $i.id ? 1 : room.value.user2Id === $i.id ? 2 : room.value.user3Id === $i.id ? 3 : 4);
-const engine = shallowRef(new Mahjong.Engine.PlayerGameEngine(myUserNumber.value, room.value.gameState));
+const engine = shallowRef(new Mahjong.PlayerGameEngine(myUserNumber.value, room.value.gameState));
 
 const isMyTurn = computed(() => {
 	return engine.value.state.turn === engine.value.myHouse;
@@ -205,7 +205,7 @@ if (!props.room.isEnded) {
 function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
-	engine.value.op_dahai(engine.value.myHouse, tile);
+	engine.value.commit_dahai(engine.value.myHouse, tile);
 	iTsumoed.value = false;
 	triggerRef(engine);
 
@@ -217,7 +217,7 @@ function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 function riichi() {
 	if (!isMyTurn.value) return;
 
-	engine.value.op_dahai(engine.value.myHouse, tile, true);
+	engine.value.commit_dahai(engine.value.myHouse, tile, true);
 	iTsumoed.value = false;
 	triggerRef(engine);
 
@@ -228,7 +228,7 @@ function riichi() {
 }
 
 function ron() {
-	engine.value.op_ron(engine.value.state.canRonSource, engine.value.myHouse);
+	engine.value.commit_ron(engine.value.state.canRonSource, engine.value.myHouse);
 	triggerRef(engine);
 
 	props.connection!.send('ron', {
@@ -236,7 +236,7 @@ function ron() {
 }
 
 function pon() {
-	engine.value.op_pon(engine.value.state.canPonSource, engine.value.myHouse);
+	engine.value.commit_pon(engine.value.state.canPonSource, engine.value.myHouse);
 	triggerRef(engine);
 
 	props.connection!.send('pon', {
@@ -244,7 +244,7 @@ function pon() {
 }
 
 function skip() {
-	engine.value.op_nop(engine.value.myHouse);
+	engine.value.commit_nop(engine.value.myHouse);
 	triggerRef(engine);
 
 	props.connection!.send('nop', {});
@@ -270,7 +270,7 @@ function onStreamDahai(log) {
 	//	return;
 	//}
 
-	engine.value.op_dahai(log.house, log.tile);
+	engine.value.commit_dahai(log.house, log.tile);
 	triggerRef(engine);
 
 	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
@@ -287,7 +287,7 @@ function onStreamTsumo(log) {
 	//	return;
 	//}
 
-	engine.value.op_tsumo(log.house, log.tile);
+	engine.value.commit_tsumo(log.house, log.tile);
 	triggerRef(engine);
 
 	if (log.house === engine.value.myHouse) {
@@ -309,12 +309,12 @@ function onStreamDahaiAndTsumo(log) {
 	//}
 
 	if (log.dahaiHouse !== engine.value.myHouse) {
-		engine.value.op_dahai(log.dahaiHouse, log.dahaiTile);
+		engine.value.commit_dahai(log.dahaiHouse, log.dahaiTile);
 		triggerRef(engine);
 	}
 
 	window.setTimeout(() => {
-		engine.value.op_tsumo(Mahjong.Utils.nextHouse(log.dahaiHouse), log.tsumoTile);
+		engine.value.commit_tsumo(Mahjong.Utils.nextHouse(log.dahaiHouse), log.tsumoTile);
 		triggerRef(engine);
 
 		if (Mahjong.Utils.nextHouse(log.dahaiHouse) === engine.value.myHouse) {
@@ -338,7 +338,7 @@ function onStreamPonned(log) {
 
 	if (log.target === engine.value.myHouse) return;
 
-	engine.value.op_pon(log.source, log.target);
+	engine.value.commit_pon(log.source, log.target);
 	triggerRef(engine);
 
 	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
@@ -347,7 +347,7 @@ function onStreamPonned(log) {
 function restoreRoom(_room) {
 	room.value = deepClone(_room);
 
-	engine.value = new Mahjong.Engine.PlayerGameEngine(myUserNumber, room.value.gameState);
+	engine.value = new Mahjong.PlayerGameEngine(myUserNumber, room.value.gameState);
 }
 
 onMounted(() => {

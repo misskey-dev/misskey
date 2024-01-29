@@ -54,7 +54,7 @@ type Room = {
 	isStarted?: boolean;
 	timeLimitForEachTurn: number;
 
-	gameState?: Mahjong.Engine.MasterState;
+	gameState?: Mahjong.MasterState;
 };
 
 type CallAndRonAnswers = {
@@ -262,7 +262,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			throw new Error('Not ready');
 		}
 
-		room.gameState = Mahjong.Engine.MasterGameEngine.createInitialState();
+		room.gameState = Mahjong.MasterGameEngine.createInitialState();
 		room.isStarted = true;
 
 		await this.saveRoom(room);
@@ -281,8 +281,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async answer(room: Room, engine: Mahjong.Engine.MasterGameEngine, answers: CallAndRonAnswers) {
-		const res = engine.op_resolveCallAndRonInterruption({
+	private async answer(room: Room, engine: Mahjong.MasterGameEngine, answers: CallAndRonAnswers) {
+		const res = engine.commit_resolveCallAndRonInterruption({
 			pon: answers.pon ?? false,
 			cii: answers.cii ?? false,
 			kan: answers.kan ?? false,
@@ -306,7 +306,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async next(room: Room, engine: Mahjong.Engine.MasterGameEngine) {
+	private async next(room: Room, engine: Mahjong.MasterGameEngine) {
 		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
 		const userId = engine.state.user1House === engine.state.turn ? room.user1Id : engine.state.user2House === engine.state.turn ? room.user2Id : engine.state.user3House === engine.state.turn ? room.user3Id : room.user4Id;
 
@@ -314,13 +314,12 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			// TODO: ちゃんと思考するようにする
 			setTimeout(() => {
 				const house = engine.state.turn;
-				const handTiles = house === 'e' ? engine.state.eHandTiles : house === 's' ? engine.state.sHandTiles : house === 'w' ? engine.state.wHandTiles : engine.state.nHandTiles;
-				this.dahai(room, engine, engine.state.turn, handTiles.at(-1));
+				this.dahai(room, engine, engine.state.turn, engine.state.handTiles[house].at(-1));
 			}, 500);
 		} else {
-			if (engine.isRiichiHouse(engine.state.turn)) {
+			if (engine.state.riichis[engine.state.turn]) {
 				// リーチ時はアガリ牌でない限りツモ切り
-				const handTiles = engine.getHandTilesOf(engine.state.turn);
+				const handTiles = engine.state.handTiles[engine.state.turn];
 				const horaSets = Mahjong.Utils.getHoraSets(handTiles);
 				if (horaSets.length === 0) {
 					setTimeout(() => {
@@ -336,8 +335,12 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async dahai(room: Room, engine: Mahjong.Engine.MasterGameEngine, house: Mahjong.Common.House, tile: Mahjong.Common.Tile, riichi = false) {
-		const res = engine.op_dahai(house, tile, riichi);
+	private async endKyoku(room: Room, engine: Mahjong.MasterGameEngine) {
+	}
+
+	@bindThis
+	private async dahai(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.Common.House, tile: Mahjong.Common.Tile, riichi = false) {
+		const res = engine.commit_dahai(house, tile, riichi);
 		room.gameState = engine.state;
 		await this.saveRoom(room);
 
@@ -359,13 +362,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			};
 
 			// リーチ中はポン、チー、カンできない
-			if (res.canPonHouse != null && engine.isRiichiHouse(res.canPonHouse)) {
+			if (res.canPonHouse != null && engine.state.riichis[res.canPonHouse]) {
 				answers.pon = false;
 			}
-			if (res.canCiiHouse != null && engine.isRiichiHouse(res.canCiiHouse)) {
+			if (res.canCiiHouse != null && engine.state.riichis[res.canCiiHouse]) {
 				answers.cii = false;
 			}
-			if (res.canKanHouse != null && engine.isRiichiHouse(res.canKanHouse)) {
+			if (res.canKanHouse != null && engine.state.riichis[res.canKanHouse]) {
 				answers.kan = false;
 			}
 
@@ -423,18 +426,18 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async op_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: string, riichi = false) {
+	public async commit_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: string, riichi = false) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 		if (!Mahjong.Utils.isTile(tile)) return;
 
-		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
 
 		if (riichi) {
-			if (Mahjong.Utils.getHoraTiles(engine.getHandTilesOf(myHouse)).length === 0) return;
-			if (engine.getPointsOf(myHouse) < 1000) return;
+			if (Mahjong.Utils.getHoraTiles(engine.state.handTiles[myHouse]).length === 0) return;
+			if (engine.state.points[myHouse] < 1000) return;
 		}
 
 		await this.clearTurnWaitingTimer(room.id);
@@ -443,12 +446,12 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async op_ron(roomId: MiMahjongGame['id'], user: MiUser) {
+	public async commit_ron(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
 
 		// TODO: 自分にロン回答する権利がある状態かバリデーション
@@ -462,12 +465,12 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async op_pon(roomId: MiMahjongGame['id'], user: MiUser) {
+	public async commit_pon(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
 
 		// TODO: 自分にポン回答する権利がある状態かバリデーション
@@ -481,12 +484,12 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async op_nop(roomId: MiMahjongGame['id'], user: MiUser) {
+	public async commit_nop(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.Engine.MasterGameEngine(room.gameState);
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
 
 		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
@@ -509,7 +512,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	 * @param engine
 	 */
 	@bindThis
-	private async waitForTurn(room: Room, userId: MiUser['id'], engine: Mahjong.Engine.MasterGameEngine) {
+	private async waitForTurn(room: Room, userId: MiUser['id'], engine: Mahjong.MasterGameEngine) {
 		const id = Math.random().toString(36).slice(2);
 		console.log('waitForTurn', userId, id);
 		this.redisClient.sadd(`mahjong:gameTurnWaiting:${room.id}`, id);
@@ -525,7 +528,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				console.log('turn timeout', userId, id);
 				clearInterval(interval);
 				const house = room.user1Id === userId ? engine.state.user1House : room.user2Id === userId ? engine.state.user2House : room.user3Id === userId ? engine.state.user3House : engine.state.user4House;
-				const handTiles = engine.getHandTilesOf(house);
+				const handTiles = engine.state.handTiles[house];
 				await this.dahai(room, engine, house, handTiles.at(-1));
 				return;
 			}
