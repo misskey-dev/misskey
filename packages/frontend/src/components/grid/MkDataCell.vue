@@ -234,8 +234,6 @@ $cellHeight: 28px;
 	height: $cellHeight;
 	max-height: $cellHeight;
 	min-height: $cellHeight;
-	border-left: solid 0.5px var(--divider);
-	border-top: solid 0.5px var(--divider);
 	cursor: cell;
 
 	&:focus {

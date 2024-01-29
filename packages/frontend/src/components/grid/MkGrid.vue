@@ -2,13 +2,14 @@
 <table
 	ref="rootEl"
 	tabindex="-1"
-	:class="$style.grid"
+	:class="[$style.grid, $style.border]"
 	@mousedown="onMouseDown"
 	@keydown="onKeyDown"
 >
 	<thead>
 		<MkHeaderRow
 			:columns="columns"
+			:gridSetting="gridSetting"
 			:bus="bus"
 			@operation:beginWidthChange="onHeaderCellWidthBeginChange"
 			@operation:endWidthChange="onHeaderCellWidthEndChange"
@@ -23,6 +24,7 @@
 			:key="row.index"
 			:row="row"
 			:cells="cells[row.index]"
+			:gridSetting="gridSetting"
 			:bus="bus"
 			@operation:beginEdit="onCellEditBegin"
 			@operation:endEdit="onCellEditEnd"
@@ -42,6 +44,7 @@ import {
 	GridColumn,
 	GridEventEmitter,
 	GridRow,
+	GridSetting,
 	GridState,
 	Size,
 } from '@/components/grid/grid.js';
@@ -52,10 +55,15 @@ import { cellValidation, ValidateViolation } from '@/components/grid/cell-valida
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import { calcCellWidth, equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+	gridSetting?: GridSetting,
 	columnSettings: ColumnSetting[],
 	data: DataSource[]
-}>();
+}>(), {
+	gridSetting: () => ({
+		rowNumberVisible: true,
+	}),
+});
 
 const emit = defineEmits<{
 	(ev: 'operation:cellValidation', violation: ValidateViolation): void;
@@ -65,7 +73,7 @@ const emit = defineEmits<{
 
 const bus = new GridEventEmitter();
 
-const { columnSettings, data } = toRefs(props);
+const { gridSetting, columnSettings, data } = toRefs(props);
 
 const rootEl = ref<InstanceType<typeof HTMLTableElement>>();
 const columns = ref<GridColumn[]>([]);
@@ -798,14 +806,68 @@ refreshData();
 </script>
 
 <style module lang="scss">
+$borderSetting: solid 0.5px var(--divider);
+$borderRadius: var(--radius);
+
 .grid {
 	overflow: scroll;
 	table-layout: fixed;
 	width: fit-content;
 	user-select: none;
+}
 
-	border: solid 0.5px var(--divider);
+.border {
 	border-spacing: 0;
-	border-radius: var(--radius);
+
+	thead {
+		tr {
+			th {
+				border-left: $borderSetting;
+				border-top: $borderSetting;
+
+				&:first-child {
+					// 左上セル
+					border-top-left-radius: $borderRadius;
+				}
+
+				&:last-child {
+					// 右上セル
+					border-top-right-radius: $borderRadius;
+					border-right: $borderSetting;
+				}
+			}
+		}
+	}
+
+	tbody {
+		tr {
+			td, th {
+				border-left: $borderSetting;
+				border-top: $borderSetting;
+
+				&:last-child {
+					// 一番右端の列
+					border-right: $borderSetting;
+				}
+			}
+
+			&:last-child {
+				td, th {
+					// 一番下の行
+					border-bottom: $borderSetting;
+
+					&:first-child {
+						// 左下セル
+						border-bottom-left-radius: $borderRadius;
+					}
+
+					&:last-child {
+						// 右下セル
+						border-bottom-right-radius: $borderRadius;
+					}
+				}
+			}
+		}
+	}
 }
 </style>

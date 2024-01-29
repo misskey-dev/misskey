@@ -2,6 +2,10 @@ import { EventEmitter } from 'eventemitter3';
 import { CellValidator } from '@/components/grid/cell-validators.js';
 import { CellValue } from '@/components/grid/cell.js';
 
+export type GridSetting = {
+	rowNumberVisible: boolean;
+}
+
 export type DataSource = Record<string, CellValue>;
 
 export type GridState = 'normal' | 'cellSelecting' | 'cellEditing' | 'colResizing' | 'colSelecting' | 'rowSelecting'

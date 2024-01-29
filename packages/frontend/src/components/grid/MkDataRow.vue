@@ -1,6 +1,7 @@
 <template>
 <tr :class="[$style.row, [row.ranged ? $style.ranged : {}]]">
 	<MkNumberCell
+		v-if="gridSetting.rowNumberVisible"
 		:content="(row.index + 1).toString()"
 		:row="row"
 	/>
@@ -19,7 +20,7 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { GridEventEmitter, GridRow, Size } from '@/components/grid/grid.js';
+import { GridEventEmitter, GridRow, GridSetting, Size } from '@/components/grid/grid.js';
 import MkDataCell from '@/components/grid/MkDataCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
@@ -33,6 +34,7 @@ const emit = defineEmits<{
 const props = defineProps<{
 	row: GridRow,
 	cells: GridCell[],
+	gridSetting: GridSetting,
 	bus: GridEventEmitter,
 }>();
 

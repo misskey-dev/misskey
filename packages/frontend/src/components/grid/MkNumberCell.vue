@@ -1,5 +1,5 @@
 <template>
-<th :class="[$style.cell, [top ? {} : $style.border]]">
+<th :class="[$style.cell]">
 	<div
 		:class="[
 			$style.root,
@@ -16,7 +16,6 @@ import { GridRow } from '@/components/grid/grid.js';
 defineProps<{
 	content: string,
 	row?: GridRow,
-	top?: boolean,
 }>();
 
 </script>
@@ -49,9 +48,5 @@ $cellWidth: 34px;
 	&.selected {
 		background-color: var(--accentedBg);
 	}
-}
-
-.border {
-	border-top: solid 0.5px var(--divider);
 }
 </style>

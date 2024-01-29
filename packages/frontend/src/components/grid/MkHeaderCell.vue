@@ -145,7 +145,6 @@ function updateContentSize() {
 $handleWidth: 5px;
 
 .cell {
-	border-left: solid 0.5px var(--divider);
 	cursor: pointer;
 }
 

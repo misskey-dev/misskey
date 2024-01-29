@@ -30,6 +30,7 @@
 		<div>
 			<div v-if="registerLogs.length > 0" style="overflow-y: scroll;">
 				<MkGrid
+					:gridSetting="{ rowNumberVisible: false }"
 					:data="convertedRegisterLogs"
 					:columnSettings="registerLogColumnSettings"
 				/>

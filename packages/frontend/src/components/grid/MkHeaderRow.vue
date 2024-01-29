@@ -1,6 +1,7 @@
 <template>
 <tr :class="$style.header">
 	<MkNumberCell
+		v-if="gridSetting.rowNumberVisible"
 		content="#"
 		:top="true"
 	/>
@@ -19,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { GridColumn, GridEventEmitter, Size } from '@/components/grid/grid.js';
+import { GridColumn, GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
 import MkHeaderCell from '@/components/grid/MkHeaderCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
 
@@ -33,6 +34,7 @@ const emit = defineEmits<{
 }>();
 defineProps<{
 	columns: GridColumn[],
+	gridSetting: GridSetting,
 	bus: GridEventEmitter,
 }>();
 
