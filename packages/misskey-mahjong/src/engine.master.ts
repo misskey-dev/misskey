@@ -233,8 +233,6 @@ export class MasterGameEngine {
 		}
 
 		this.endKyoku();
-
-		// TODO: 役情報を返す
 	}
 
 	public commit_dahai(house: House, tile: Tile, riichi = false) {
@@ -381,12 +379,18 @@ export class MasterGameEngine {
 		};
 
 		if (this.state.ronAsking != null && answers.ron.length > 0) {
+			const callers = this.state.ronAsking.callers;
+			const callee = this.state.ronAsking.callee;
+
 			this.ron(answers.ron, this.state.ronAsking.callee);
 			return {
 				type: 'ronned',
+				callers,
+				callee,
 			};
 		}
 
+		// 大明槓
 		if (this.state.kanAsking != null && answers.kan) {
 			const caller = this.state.kanAsking.caller;
 			const callee = this.state.kanAsking.callee;
@@ -394,10 +398,17 @@ export class MasterGameEngine {
 			const tile = this.state.hoTiles[callee].pop()!;
 			this.state.huros[caller].push({ type: 'minkan', tile, from: callee });
 
+			const rinsyan = this.tsumo();
+
 			clearAsking();
 			this.state.turn = caller;
-			// TODO
-			return;
+			return {
+				type: 'kanned',
+				caller,
+				callee,
+				tile,
+				rinsyan,
+			};
 		}
 
 		if (this.state.ponAsking != null && answers.pon) {

@@ -56,13 +56,12 @@ export type Huro = {
 	tiles: [Tile, Tile, Tile];
 	from: House;
 } | {
-	type: 'minkan';
-	tile: Tile;
-	from: House;
-} | {
 	type: 'ankan';
 	tile: Tile;
-	from: House;
+} | {
+	type: 'minkan';
+	tile: Tile;
+	from: House | null; // null で加槓
 };
 
 export const yakuNames = [

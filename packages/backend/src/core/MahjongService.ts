@@ -315,9 +315,20 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			const userId = engine.state.user1House === engine.state.turn ? room.user1Id : engine.state.user2House === engine.state.turn ? room.user2Id : engine.state.user3House === engine.state.turn ? room.user3Id : room.user4Id;
 			this.waitForTurn(room, userId, engine);
 		} else if (res.type === 'kanned') {
-			// TODO
+			this.globalEventService.publishMahjongRoomStream(room.id, 'kanned', { caller: res.caller, callee: res.callee, tile: res.tile, rinsyan: res.rinsyan });
+			const userId = engine.state.user1House === engine.state.turn ? room.user1Id : engine.state.user2House === engine.state.turn ? room.user2Id : engine.state.user3House === engine.state.turn ? room.user3Id : room.user4Id;
+			this.waitForTurn(room, userId, engine);
 		} else if (res.type === 'ronned') {
-			this.globalEventService.publishMahjongRoomStream(room.id, 'ronned', { });
+			this.globalEventService.publishMahjongRoomStream(room.id, 'ronned', {
+				callers: res.callers,
+				callee: res.callee,
+				handTiles: {
+					e: engine.state.handTiles.e,
+					s: engine.state.handTiles.s,
+					w: engine.state.handTiles.w,
+					n: engine.state.handTiles.n,
+				},
+			});
 			this.endKyoku(room, engine);
 		}
 	}
