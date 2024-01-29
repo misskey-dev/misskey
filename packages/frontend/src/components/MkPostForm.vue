@@ -688,6 +688,15 @@ function saveDraft() {
 function deleteDraft() {
 	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
+	if (postChannel.value) {
+		// draftKey.valueからchannel:${postChannel.value.id}部分を削除したのがpartialDraftKey
+		// 通常の投稿からチャンネルに切り替えて投稿した際に、通常の投稿の下書きが残ってしまい不自然な挙動になるのを防ぐ
+		const partialDraftKey = draftKey.value.replace(`channel:${postChannel.value.id}`, '');
+		if (draftData[partialDraftKey]) {
+			delete draftData[partialDraftKey];
+		}
+	}
+
 	delete draftData[draftKey.value];
 
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
