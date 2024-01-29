@@ -7,5 +7,7 @@ export * as Serializer from './serializer.js';
 export * as Common from './common.js';
 export * as Utils from './utils.js';
 
-export { MasterGameEngine, MasterState } from './engine.master.js';
-export { PlayerGameEngine, PlayerState } from './engine.player.js';
+export { MasterGameEngine } from './engine.master.js';
+export type { MasterState } from './engine.master.js';
+export { PlayerGameEngine } from './engine.player.js';
+export type { PlayerState } from './engine.player.js';
