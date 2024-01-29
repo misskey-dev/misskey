@@ -347,7 +347,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	public async populateEmojis(emojiNames: string[], noteUserHost: string | null): Promise<Record<string, string>> {
 		const emojis = await Promise.all(emojiNames.map(x => this.populateEmoji(x, noteUserHost)));
 		const res = {} as any;
-		for (let i = 0; i < emojiNames.length; i++) {
+		for (let i = 0, len = emojiNames.length; i < len; i++) {
 			if (emojis[i] != null) {
 				res[emojiNames[i]] = emojis[i];
 			}

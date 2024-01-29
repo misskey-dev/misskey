@@ -64,7 +64,7 @@ export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 
 	// side bitmap (filled by false)
 	const side: boolean[][] = new Array(sideN);
-	for (let i = 0; i < side.length; i++) {
+	for (let i = 0, len = side.length; i < len; i++) {
 		side[i] = new Array(n).fill(false);
 	}
 
@@ -72,13 +72,13 @@ export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	const center: boolean[] = new Array(n).fill(false);
 
 	// eslint:disable-next-line:prefer-for-of
-	for (let x = 0; x < side.length; x++) {
-		for (let y = 0; y < side[x].length; y++) {
+	for (let x = 0, len = side.length; x < len; x++) {
+		for (let y = 0, len = side[x].length; y < len; y++) {
 			side[x][y] = rand(3) === 0;
 		}
 	}
 
-	for (let i = 0; i < center.length; i++) {
+	for (let i = 0, len = center.length; i < len; i++) {
 		center[i] = rand(3) === 0;
 	}
 

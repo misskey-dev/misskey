@@ -119,7 +119,7 @@ export function groupByX<T>(collections: T[], keySelector: (x: T) => string) {
  * Compare two arrays by lexicographical order
  */
 export function lessThan(xs: number[], ys: number[]): boolean {
-	for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+	for (let i = 0, len = Math.min(xs.length, ys.length); i < len; i++) {
 		if (xs[i] < ys[i]) return true;
 		if (xs[i] > ys[i]) return false;
 	}

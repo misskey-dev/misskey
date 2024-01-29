@@ -58,12 +58,12 @@ export class FeaturedService {
 		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => (r[1] ?? []) as string[]) : [[], []]);
 
 		const ranking = new Map<string, number>();
-		for (let i = 0; i < currentRankingResult.length; i += 2) {
+		for (let i = 0, len = currentRankingResult.length; i < len; i += 2) {
 			const noteId = currentRankingResult[i];
 			const score = parseInt(currentRankingResult[i + 1], 10);
 			ranking.set(noteId, score);
 		}
-		for (let i = 0; i < previousRankingResult.length; i += 2) {
+		for (let i = 0, len = previousRankingResult.length; i < len; i += 2) {
 			const noteId = previousRankingResult[i];
 			const score = parseInt(previousRankingResult[i + 1], 10);
 			const exist = ranking.get(noteId);

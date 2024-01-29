@@ -660,7 +660,7 @@ function tick() {
 
 function tickReplay() {
 	let hasNextTick;
-	for (let i = 0; i < replayPlaybackRate.value; i++) {
+	for (let i = 0, len = replayPlaybackRate.value; i < len; i++) {
 		const log = logs!.find(x => x.frame === game.frame);
 		if (log) {
 			switch (log.operation) {

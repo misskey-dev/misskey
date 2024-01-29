@@ -48,7 +48,7 @@ export function checkNewTopic(base: Release[], head: Release[]): Result {
 	}
 
 	const headLatest = head[0];
-	for (let relIdx = 0; relIdx < base.length; relIdx++) {
+	for (let relIdx = 0, len = base.length; relIdx < len; relIdx++) {
 		const baseItem = base[relIdx];
 		const headItem = head[relIdx];
 		if (baseItem.releaseName !== headItem.releaseName) {
@@ -64,7 +64,7 @@ export function checkNewTopic(base: Release[], head: Release[]): Result {
 			}
 		} else {
 			// カテゴリ数の変動はないのでリスト項目の数をチェック
-			for (let catIdx = 0; catIdx < baseItem.categories.length; catIdx++) {
+			for (let catIdx = 0, len = baseItem.categories.length; catIdx < len; catIdx++) {
 				const baseCategory = baseItem.categories[catIdx];
 				const headCategory = headItem.categories[catIdx];
 

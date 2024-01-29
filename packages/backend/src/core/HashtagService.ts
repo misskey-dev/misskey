@@ -241,7 +241,7 @@ export class HashtagService {
 		}
 
 		for (let i = 0; i < range; i++) {
-			for (let j = 0; j < hashtags.length; j++) {
+			for (let j = 0, len = hashtags.length; j < len; j++) {
 				charts[hashtags[j]].push(result[(i * hashtags.length) + j][1] as number);
 			}
 		}

@@ -36,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			switch (ps.type) {
 				case 'deliver':
 					delayedQueues = await this.queueService.deliverQueue.getDelayed();
-					for (let queueIndex = 0; queueIndex < delayedQueues.length; queueIndex++) {
+					for (let queueIndex = 0, len = delayedQueues.length; queueIndex < len; queueIndex++) {
 						const queue = delayedQueues[queueIndex];
 						try {
 							await queue.promote();
@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				case 'inbox':
 					delayedQueues = await this.queueService.inboxQueue.getDelayed();
-					for (let queueIndex = 0; queueIndex < delayedQueues.length; queueIndex++) {
+					for (let queueIndex = 0, len = delayedQueues.length; queueIndex < len; queueIndex++) {
 						const queue = delayedQueues[queueIndex];
 						try {
 							await queue.promote();
