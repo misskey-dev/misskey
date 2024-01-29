@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { MahjongService } from '@/core/MahjongService.js';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class MahjongRoomChannel extends Channel {
@@ -29,7 +30,19 @@ class MahjongRoomChannel extends Channel {
 	public async init(params: any) {
 		this.roomId = params.roomId as string;
 
-		this.subscriber.on(`mahjongRoomStream:${this.roomId}`, this.send);
+		this.subscriber.on(`mahjongRoomStream:${this.roomId}`, this.onMahjongRoomStreamMessage);
+	}
+
+	@bindThis
+	private async onMahjongRoomStreamMessage(message: GlobalEvents['mahjongRoom']['payload']) {
+		if (message.type === 'started') {
+			const packed = await this.mahjongService.packRoom(message.body.room, this.user!);
+			this.send('started', {
+				room: packed,
+			});
+		} else {
+			this.send(message.type, message.body);
+		}
 	}
 
 	@bindThis
@@ -38,6 +51,7 @@ class MahjongRoomChannel extends Channel {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'addAi': this.addAi(); break;
+			case 'confirmNextKyoku': this.confirmNextKyoku(); break;
 			case 'dahai': this.dahai(body.tile, body.riichi); break;
 			case 'hora': this.hora(); break;
 			case 'ron': this.ron(); break;
@@ -59,6 +73,13 @@ class MahjongRoomChannel extends Channel {
 		if (this.user == null) return;
 
 		this.mahjongService.changeReadyState(this.roomId!, this.user, ready);
+	}
+
+	@bindThis
+	private async confirmNextKyoku() {
+		if (this.user == null) return;
+
+		this.mahjongService.confirmNextKyoku(this.roomId!, this.user);
 	}
 
 	@bindThis
@@ -113,7 +134,7 @@ class MahjongRoomChannel extends Channel {
 	@bindThis
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off(`mahjongRoomStream:${this.roomId}`, this.send);
+		this.subscriber.off(`mahjongRoomStream:${this.roomId}`, this.onMahjongRoomStreamMessage);
 	}
 }
 

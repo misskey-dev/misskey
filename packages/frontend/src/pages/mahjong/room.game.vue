@@ -6,6 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.taku">
+		<div :class="$style.centerPanel">
+			<div style="text-align: center;">
+				<div>{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) }} {{ engine.state.points[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))] }}</div>
+				<div>{{ Mahjong.Utils.prevHouse(engine.myHouse) }} {{ engine.state.points[Mahjong.Utils.prevHouse(engine.myHouse)] }} | {{ engine.state.tilesCount }} | {{ Mahjong.Utils.nextHouse(engine.myHouse) }} {{ engine.state.points[Mahjong.Utils.nextHouse(engine.myHouse)] }}</div>
+				<div>{{ engine.myHouse }} {{ engine.state.points[engine.myHouse] }}</div>
+			</div>
+		</div>
+
 		<div :class="$style.handTilesOfToimen">
 			<div v-for="tile in engine.state.handTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))]" style="display: inline-block;">
 				<img :src="`/client-assets/mahjong/tile-back.png`" style="display: inline-block; width: 32px;"/>
@@ -80,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="engine.state.canPonSource != null" primary @click="pon">Pon</MkButton>
 	<MkButton v-if="engine.state.canRonSource != null || engine.state.canPonSource != null" @click="skip">Skip</MkButton>
 	<MkButton v-if="isMyTurn && canHora" primary gradate @click="hora">Tsumo</MkButton>
-	<MkButton v-if="isMyTurn && canRiichi" primary @click="riichi">Riichi</MkButton>
+	<MkButton v-if="isMyTurn && engine.canRiichi()" primary @click="riichi">Riichi</MkButton>
 </div>
 </template>
 
@@ -115,10 +123,6 @@ const engine = shallowRef(new Mahjong.PlayerGameEngine(myUserNumber.value, room.
 
 const isMyTurn = computed(() => {
 	return engine.value.state.turn === engine.value.myHouse;
-});
-
-const canRiichi = computed(() => {
-	return Mahjong.Utils.getTilesForRiichi(engine.value.myHandTiles).length > 0;
 });
 
 const canHora = computed(() => {
@@ -248,9 +252,6 @@ function hora() {
 }
 
 function ron() {
-	engine.value.commit_ron(engine.value.state.canRonSource, engine.value.myHouse);
-	triggerRef(engine);
-
 	props.connection!.send('ron', {
 	});
 }
@@ -353,10 +354,25 @@ function onStreamPonned(log) {
 	//	return;
 	//}
 
-	engine.value.commit_pon(log.source, log.target);
+	engine.value.commit_pon(log.caller, log.callee);
 	triggerRef(engine);
 
 	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+}
+
+function onStreamRonned(log) {
+	console.log('onStreamRonned', log);
+
+	engine.value.commit_ron(log.callers, log.callee);
+	triggerRef(engine);
+
+	alert('end kyoku');
+}
+
+function onStreamHora(log) {
+	console.log('onStreamHora', log);
+
+	window.alert('end kyoku');
 }
 
 function restoreRoom(_room) {
@@ -371,6 +387,8 @@ onMounted(() => {
 		props.connection.on('tsumo', onStreamTsumo);
 		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.on('ponned', onStreamPonned);
+		props.connection.on('ronned', onStreamRonned);
+		props.connection.on('hora', onStreamHora);
 	}
 });
 
@@ -380,6 +398,8 @@ onActivated(() => {
 		props.connection.on('tsumo', onStreamTsumo);
 		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.on('ponned', onStreamPonned);
+		props.connection.on('ronned', onStreamRonned);
+		props.connection.on('hora', onStreamHora);
 	}
 });
 
@@ -389,6 +409,8 @@ onDeactivated(() => {
 		props.connection.off('tsumo', onStreamTsumo);
 		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.off('ponned', onStreamPonned);
+		props.connection.off('ronned', onStreamRonned);
+		props.connection.off('hora', onStreamHora);
 	}
 });
 
@@ -398,6 +420,8 @@ onUnmounted(() => {
 		props.connection.off('tsumo', onStreamTsumo);
 		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.off('ponned', onStreamPonned);
+		props.connection.off('ronned', onStreamRonned);
+		props.connection.off('hora', onStreamHora);
 	}
 });
 </script>
@@ -416,6 +440,15 @@ onUnmounted(() => {
 	min-height: 600px;
 	margin: auto;
 	box-sizing: border-box;
+}
+
+.centerPanel {
+	position: absolute;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	scale: 0.8;
 }
 
 .handTilesOfToimen {

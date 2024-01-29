@@ -28,6 +28,7 @@ import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
 const CALL_AND_RON_ASKING_TIMEOUT_MS = 1000 * 5; // 5sec
 const TURN_TIMEOUT_MS = 1000 * 30; // 30sec
+const NEXT_KYOKU_CONFIRMATION_TIMEOUT_MS = 1000 * 15; // 15sec
 
 type Room = {
 	id: string;
@@ -67,6 +68,13 @@ type CallAndRonAnswers = {
 		w: null | boolean;
 		n: null | boolean;
 	};
+};
+
+type NextKyokuConfirmation = {
+	user1: boolean;
+	user2: boolean;
+	user3: boolean;
+	user4: boolean;
 };
 
 @Injectable()
@@ -267,17 +275,25 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		await this.saveRoom(room);
 
-		const packed = await this.packRoom(room);
-		this.globalEventService.publishMahjongRoomStream(room.id, 'started', { room: packed });
+		this.globalEventService.publishMahjongRoomStream(room.id, 'started', { room: room });
 
 		return room;
 	}
 
 	@bindThis
 	public async packRoom(room: Room, me: MiUser) {
-		return {
-			...room,
-		};
+		if (room.gameState) {
+			const engine = new Mahjong.MasterGameEngine(room.gameState);
+			const myIndex = room.user1Id === me.id ? 1 : room.user2Id === me.id ? 2 : room.user3Id === me.id ? 3 : 4;
+			return {
+				...room,
+				gameState: engine.createPlayerState(myIndex),
+			};
+		} else {
+			return {
+				...room,
+			};
+		}
 	}
 
 	@bindThis
@@ -295,13 +311,14 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			this.globalEventService.publishMahjongRoomStream(room.id, 'tsumo', { house: res.house, tile: res.tile });
 			this.next(room, engine);
 		} else if (res.type === 'ponned') {
-			this.globalEventService.publishMahjongRoomStream(room.id, 'ponned', { source: res.source, target: res.target, tile: res.tile });
+			this.globalEventService.publishMahjongRoomStream(room.id, 'ponned', { caller: res.caller, callee: res.callee, tile: res.tile });
 			const userId = engine.state.user1House === engine.state.turn ? room.user1Id : engine.state.user2House === engine.state.turn ? room.user2Id : engine.state.user3House === engine.state.turn ? room.user3Id : room.user4Id;
 			this.waitForTurn(room, userId, engine);
 		} else if (res.type === 'kanned') {
 			// TODO
-		} else if (res.type === 'endKyoku') {
-			// TODO
+		} else if (res.type === 'ronned') {
+			this.globalEventService.publishMahjongRoomStream(room.id, 'ronned', { });
+			this.endKyoku(room, engine);
 		}
 	}
 
@@ -336,6 +353,28 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	private async endKyoku(room: Room, engine: Mahjong.MasterGameEngine) {
+		const confirmation: NextKyokuConfirmation = {
+			user1: false,
+			user2: false,
+			user3: false,
+			user4: false,
+		};
+		this.redisClient.set(`mahjong:gameNextKyokuConfirmation:${room.id}`, JSON.stringify(confirmation));
+		const waitingStartedAt = Date.now();
+		const interval = setInterval(async () => {
+			const confirmationRaw = await this.redisClient.get(`mahjong:gameNextKyokuConfirmation:${room.id}`);
+			if (confirmationRaw == null) {
+				clearInterval(interval);
+				return;
+			}
+			const confirmation = JSON.parse(confirmationRaw) as NextKyokuConfirmation;
+			const allConfirmed = confirmation.user1 && confirmation.user2 && confirmation.user3 && confirmation.user4;
+			if (allConfirmed || (Date.now() - waitingStartedAt > NEXT_KYOKU_CONFIRMATION_TIMEOUT_MS)) {
+				await this.redisClient.del(`mahjong:gameNextKyokuConfirmation:${room.id}`);
+				clearInterval(interval);
+				this.nextKyoku(room, engine);
+			}
+		}, 2000);
 	}
 
 	@bindThis
@@ -423,6 +462,23 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 			this.next(room, engine);
 		}
+	}
+
+	@bindThis
+	public async confirmNextKyoku(roomId: Room['id'], user: MiUser) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
+		const confirmationRaw = await this.redisClient.get(`mahjong:gameNextKyokuConfirmation:${room.id}`);
+		if (confirmationRaw == null) return;
+		const confirmation = JSON.parse(confirmationRaw) as NextKyokuConfirmation;
+		if (user.id === room.user1Id) confirmation.user1 = true;
+		if (user.id === room.user2Id) confirmation.user2 = true;
+		if (user.id === room.user3Id) confirmation.user3 = true;
+		if (user.id === room.user4Id) confirmation.user4 = true;
+		await this.redisClient.set(`mahjong:gameNextKyokuConfirmation:${room.id}`, JSON.stringify(confirmation));
 	}
 
 	@bindThis
@@ -528,10 +584,10 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
 		if (current == null) throw new Error('no asking found');
 		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
-		if (engine.state.ponAsking?.target === myHouse) currentAnswers.pon = false;
-		if (engine.state.ciiAsking?.target === myHouse) currentAnswers.cii = false;
-		if (engine.state.kanAsking?.target === myHouse) currentAnswers.kan = false;
-		if (engine.state.ronAsking != null && engine.state.ronAsking.targets.includes(myHouse)) currentAnswers.ron[myHouse] = false;
+		if (engine.state.ponAsking?.caller === myHouse) currentAnswers.pon = false;
+		if (engine.state.ciiAsking?.caller === myHouse) currentAnswers.cii = false;
+		if (engine.state.kanAsking?.caller === myHouse) currentAnswers.kan = false;
+		if (engine.state.ronAsking != null && engine.state.ronAsking.callers.includes(myHouse)) currentAnswers.ron[myHouse] = false;
 		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 

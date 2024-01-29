@@ -222,11 +222,13 @@ export interface MahjongRoomEventTypes {
 		tsumoTile: Mahjong.Common.Tile;
 	};
 	ponned: {
-		source: Mahjong.Common.House;
-		target: Mahjong.Common.House;
+		caller: Mahjong.Common.House;
+		callee: Mahjong.Common.House;
 		tile: Mahjong.Common.Tile;
 	};
-	endKyoku: {
+	ronned: {
+	};
+	hora: {
 	};
 }
 //#endregion

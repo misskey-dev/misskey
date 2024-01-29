@@ -172,7 +172,7 @@ type EnvForCalcYaku = {
 	riichi: boolean;
 };
 
-const YAKU_DEFINITIONS = [{
+export const YAKU_DEFINITIONS = [{
 	name: 'riichi',
 	fan: 1,
 	calc: (state: EnvForCalcYaku) => {

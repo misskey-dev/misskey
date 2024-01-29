@@ -4,7 +4,7 @@
  */
 
 import CRC32 from 'crc-32';
-import { Tile, House, Huro, TILE_TYPES } from './common.js';
+import { Tile, House, Huro, TILE_TYPES, YAKU_DEFINITIONS } from './common.js';
 import * as Utils from './utils.js';
 
 export type PlayerState = {
@@ -96,6 +96,7 @@ export class PlayerGameEngine {
 
 	public commit_tsumo(house: House, tile: Tile) {
 		console.log('commit_tsumo', this.state.turn, house, tile);
+		this.state.tilesCount--;
 		this.state.turn = house;
 		if (house === this.myHouse) {
 			this.myHandTiles.push(tile);
@@ -141,51 +142,73 @@ export class PlayerGameEngine {
 
 	public commit_hora(house: House) {
 		console.log('commit_hora', this.state.turn, house);
-		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
+
+	// TODO: ツモした人の手牌情報を貰う必要がある
 	}
 
 	/**
 	 * ロンします
-	 * @param source 牌を捨てた人
-	 * @param target ロンした人
+	 * @param callers ロンした人
+	 * @param callee 牌を捨てた人
 	 */
-	public commit_ron(source: House, target: House) {
+	public commit_ron(callers: House[], callee: House) {
+		console.log('commit_ron', this.state.turn, callers, callee);
+
 		this.state.canRonSource = null;
 
-		const lastTile = this.state.hoTiles[source].pop();
-		if (lastTile == null) throw new PlayerGameEngine.InvalidOperationError();
-		if (target === this.myHouse) {
-			this.myHandTiles.push(lastTile);
-		} else {
-			this.state.handTiles[target].push(null);
+		// TODO: ロンした人の手牌情報を貰う必要がある
+
+		for (const house of callers) {
+			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
+				house: house,
+				handTiles: this.state.handTiles[house],
+				huros: this.state.huros[house],
+				tsumoTile: null,
+				ronTile: this.state.hoTiles[callee].at(-1)!,
+				riichi: this.state.riichis[house],
+			}));
+			console.log('yakus', yakus);
 		}
-		this.state.turn = null;
 	}
 
 	/**
 	 * ポンします
-	 * @param source 牌を捨てた人
-	 * @param target ポンした人
+	 * @param caller ポンした人
+	 * @param callee 牌を捨てた人
 	 */
-	public commit_pon(source: House, target: House) {
+	public commit_pon(caller: House, callee: House) {
 		this.state.canPonSource = null;
 
-		const lastTile = this.state.hoTiles[source].pop();
+		const lastTile = this.state.hoTiles[callee].pop();
 		if (lastTile == null) throw new PlayerGameEngine.InvalidOperationError();
-		if (target === this.myHouse) {
+		if (caller === this.myHouse) {
 			this.myHandTiles.splice(this.myHandTiles.indexOf(lastTile), 1);
 			this.myHandTiles.splice(this.myHandTiles.indexOf(lastTile), 1);
 		} else {
-			this.state.handTiles[target].unshift();
-			this.state.handTiles[target].unshift();
+			this.state.handTiles[caller].unshift();
+			this.state.handTiles[caller].unshift();
 		}
-		this.state.huros[target].push({ type: 'pon', tile: lastTile, from: source });
+		this.state.huros[caller].push({ type: 'pon', tile: lastTile, from: callee });
 
-		this.state.turn = target;
+		this.state.turn = caller;
 	}
 
 	public commit_nop() {
 		this.state.canRonSource = null;
 		this.state.canPonSource = null;
+	}
+
+	public get isMenzen(): boolean {
+		const calls = ['pon', 'cii', 'minkan'];
+		return this.state.huros[this.myHouse].filter(h => calls.includes(h.type)).length === 0;
+	}
+
+	public canRiichi(): boolean {
+		if (this.state.turn !== this.myHouse) return false;
+		if (this.state.riichis[this.myHouse]) return false;
+		if (this.state.points[this.myHouse] < 1000) return false;
+		if (!this.isMenzen) return false;
+		if (Utils.getTilesForRiichi(this.myHandTiles).length === 0) return false;
+		return true;
 	}
 }
