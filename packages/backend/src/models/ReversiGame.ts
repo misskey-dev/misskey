@@ -109,6 +109,11 @@ export class MiReversiGame {
 	@Column('boolean', {
 		default: false,
 	})
+	public noIrregularRules: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public isLlotheo: boolean;
 
 	@Column('boolean', {
