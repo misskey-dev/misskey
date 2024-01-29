@@ -34,7 +34,7 @@ export type GridColumn = {
 
 export type GridRow = {
 	index: number;
-	selected: boolean;
+	ranged: boolean;
 }
 
 export type CellValueChangedEvent = {

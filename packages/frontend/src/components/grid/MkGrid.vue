@@ -107,6 +107,7 @@ const availableBounds = computed(() => {
 	};
 	return { leftTop, rightBottom };
 });
+const rangedRows = computed(() => rows.value.filter(it => it.ranged));
 
 watch(columnSettings, refreshColumnsSetting);
 watch(data, refreshData);
@@ -169,7 +170,7 @@ function onKeyDown(ev: KeyboardEvent) {
 					}
 
 					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
-					expandRange(newBounds.leftTop, newBounds.rightBottom);
+					expandCellRange(newBounds.leftTop, newBounds.rightBottom);
 				} else {
 					switch (ev.code) {
 						case 'KeyC': {
@@ -263,7 +264,7 @@ function onKeyDown(ev: KeyboardEvent) {
 					}
 
 					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
-					expandRange(newBounds.leftTop, newBounds.rightBottom);
+					expandCellRange(newBounds.leftTop, newBounds.rightBottom);
 				} else {
 					// shiftキーもctrlキーが押されていない場合
 					switch (ev.code) {
@@ -372,7 +373,7 @@ function onMouseMove(ev: MouseEvent) {
 			};
 
 			unSelectionOutOfRange(leftTop, rightBottom);
-			expandRange(leftTop, rightBottom);
+			expandCellRange(leftTop, rightBottom);
 			previousCellAddress.value = targetCellAddress;
 
 			break;
@@ -394,7 +395,7 @@ function onMouseMove(ev: MouseEvent) {
 			};
 
 			unSelectionOutOfRange(leftTop, rightBottom);
-			expandRange(leftTop, rightBottom);
+			expandCellRange(leftTop, rightBottom);
 			previousCellAddress.value = targetCellAddress;
 
 			break;
@@ -416,7 +417,12 @@ function onMouseMove(ev: MouseEvent) {
 			};
 
 			unSelectionOutOfRange(leftTop, rightBottom);
-			expandRange(leftTop, rightBottom);
+			expandCellRange(leftTop, rightBottom);
+
+			rows.value[targetCellAddress.row].ranged = true;
+
+			const rangedRowIndexes = rangedRows.value.map(it => it.index);
+			expandRowRange(Math.min(...rangedRowIndexes), Math.max(...rangedRowIndexes));
 
 			previousCellAddress.value = targetCellAddress;
 
@@ -521,7 +527,7 @@ function largestCellWidth(column: GridColumn) {
 	const largestColumnWidth = columns.value[column.index].contentSize.width;
 
 	const largestCellWidth = (_cells.length > 0)
-	  ? _cells
+		? _cells
 			.map(row => row[column.index])
 			.reduce(
 				(acc, value) => Math.max(acc, value.contentSize.width),
@@ -588,6 +594,11 @@ function unSelectionRange() {
 		cell.selected = false;
 		cell.ranged = false;
 	}
+
+	const _rows = rows.value;
+	for (const row of _rows) {
+		row.ranged = false;
+	}
 }
 
 function unSelectionOutOfRange(leftTop: CellAddress, rightBottom: CellAddress) {
@@ -599,14 +610,26 @@ function unSelectionOutOfRange(leftTop: CellAddress, rightBottom: CellAddress) {
 			cell.ranged = false;
 		}
 	}
+
+	const outOfRangeRows = rows.value.filter((_, index) => index < leftTop.row || index > rightBottom.row);
+	for (const row of outOfRangeRows) {
+		row.ranged = false;
+	}
 }
 
-function expandRange(leftTop: CellAddress, rightBottom: CellAddress) {
+function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
 	const targetRows = cells.value.slice(leftTop.row, rightBottom.row + 1);
 	for (const row of targetRows) {
 		for (const cell of row.slice(leftTop.col, rightBottom.col + 1)) {
 			cell.ranged = true;
 		}
+	}
+}
+
+function expandRowRange(top: number, bottom: number) {
+	const targetRows = rows.value.slice(top, bottom + 1);
+	for (const row of targetRows) {
+		row.ranged = true;
 	}
 }
 

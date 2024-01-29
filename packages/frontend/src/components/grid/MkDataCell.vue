@@ -12,7 +12,8 @@
 			$style.root,
 			[(cell.validation.valid || cell.selected) ? {} : $style.error],
 			[cell.selected ? $style.selected : {}],
-			[cell.ranged ? $style.ranged : {}],
+			// 行が選択されているときは範囲選択色の適用を行側に任せる
+			[(cell.ranged && !cell.row.ranged) ? $style.ranged : {}],
 			[needsContentCentering ? $style.center : {}],
 		]"
 	>

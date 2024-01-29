@@ -1,5 +1,5 @@
 <template>
-<tr :class="[$style.row]">
+<tr :class="[$style.row, [row.ranged ? $style.ranged : {}]]">
 	<MkNumberCell
 		:content="(row.index + 1).toString()"
 		:row="row"
@@ -42,6 +42,8 @@ const { cells } = toRefs(props);
 
 <style module lang="scss">
 .row {
-
+	&.ranged {
+		background-color: var(--accentedBg);
+	}
 }
 </style>
