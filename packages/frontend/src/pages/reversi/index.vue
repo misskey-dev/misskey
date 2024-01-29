@@ -118,6 +118,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/global/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
 
 const myGamesPagination = {
@@ -191,7 +192,9 @@ async function matchHeatbeat() {
 }
 
 async function matchUser() {
-	const user = await os.selectUser({ local: true });
+	pleaseLogin();
+
+	const user = await os.selectUser({ localOnly: true });
 	if (user == null) return;
 
 	matchingUser.value = user;
@@ -200,6 +203,8 @@ async function matchUser() {
 }
 
 async function matchAny() {
+	pleaseLogin();
+
 	matchingAny.value = true;
 
 	matchHeatbeat();
