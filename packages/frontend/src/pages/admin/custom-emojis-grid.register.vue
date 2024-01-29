@@ -55,6 +55,7 @@
 		<MkGrid
 			:data="convertedGridItems"
 			:columnSettings="columnSettings"
+			@operation:rowDeleting="onRowDeleting"
 			@operation:cellValidation="onCellValidation"
 			@change:cellValue="onChangeCellValue"
 		/>
@@ -79,7 +80,7 @@ import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { GridItem, IGridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { CellValueChangedEvent, ColumnSetting } from '@/components/grid/grid.js';
+import { CellValueChangedEvent, ColumnSetting, GridRow } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { uploadFile } from '@/scripts/upload.js';
@@ -241,13 +242,16 @@ async function onDrop(ev: DragEvent) {
 	}
 }
 
+function onRowDeleting(rows: GridRow[]) {
+	const deletedIndexes = rows.map(it => it.index);
+	gridItems.value = gridItems.value.filter((_, index) => !deletedIndexes.includes(index));
+}
+
 function onCellValidation(violation: ValidateViolation) {
-	console.log(violation);
 	registerButtonDisabled.value = !violation.valid;
 }
 
 function onChangeCellValue(event: CellValueChangedEvent) {
-	console.log(event);
 	const item = gridItems.value[event.row.index];
 	item[event.column.setting.bindTo] = event.value;
 }

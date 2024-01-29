@@ -59,6 +59,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'operation:cellValidation', violation: ValidateViolation): void;
+	(ev: 'operation:rowDeleting', rows: GridRow[]): void;
 	(ev: 'change:cellValue', event: CellValueChangedEvent): void;
 }>();
 
@@ -289,9 +290,13 @@ function onKeyDown(ev: KeyboardEvent) {
 							break;
 						}
 						case 'Delete': {
-							const ranges = rangedCells.value;
-							for (const range of ranges) {
-								range.value = undefined;
+							if (rangedRows.value.length > 0) {
+								emit('operation:rowDeleting', [...rangedRows.value]);
+							} else {
+								const ranges = rangedCells.value;
+								for (const range of ranges) {
+									range.value = undefined;
+								}
 							}
 							break;
 						}
@@ -727,6 +732,7 @@ function refreshData() {
 	const _data: DataSource[] = data.value;
 	const _rows: GridRow[] = _data.map((_, index) => ({
 		index,
+		ranged: false,
 	}));
 	const _columns: GridColumn[] = columnSettings.value.map((setting, index) => ({
 		index,
