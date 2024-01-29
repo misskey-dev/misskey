@@ -93,6 +93,13 @@ windowRouter.addListener('push', ctx => {
 	history.value.push({ path: ctx.path, key: ctx.key });
 });
 
+windowRouter.addListener('replace', ctx => {
+	history.value.pop();
+	history.value.push({ path: ctx.path, key: ctx.key });
+});
+
+windowRouter.init();
+
 provide('router', windowRouter);
 provideMetadataReceiver((info) => {
 	pageMetadata.value = info;
