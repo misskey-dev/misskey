@@ -2567,6 +2567,10 @@ _mahjong:
   cancelReady: "準備を再開"
   leave: "退室"
   addCpu: "CPUを追加"
+  east: "東"
+  south: "南"
+  west: "西"
+  north: "北"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"

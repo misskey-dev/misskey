@@ -8,15 +8,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.taku">
 		<div :class="$style.centerPanel">
 			<div style="text-align: center;">
-				<div>{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) }} {{ engine.state.points[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))] }}</div>
-				<div>{{ Mahjong.Utils.prevHouse(engine.myHouse) }} {{ engine.state.points[Mahjong.Utils.prevHouse(engine.myHouse)] }} | {{ engine.state.tilesCount }} | {{ Mahjong.Utils.nextHouse(engine.myHouse) }} {{ engine.state.points[Mahjong.Utils.nextHouse(engine.myHouse)] }}</div>
-				<div>{{ engine.myHouse }} {{ engine.state.points[engine.myHouse] }}</div>
+				<div :class="$style.centerPanelTickerToi">
+					<span :class="$style.centerPanelHouse">{{ Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) === 'e' ? i18n.ts._mahjong.east : Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) === 's' ? i18n.ts._mahjong.south : Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse)) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+					<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))] }}</span>
+				</div>
+				<div :class="$style.centerPanelTickerKami">
+					<span :class="$style.centerPanelHouse">{{ Mahjong.Utils.prevHouse(engine.myHouse) === 'e' ? i18n.ts._mahjong.east : Mahjong.Utils.prevHouse(engine.myHouse) === 's' ? i18n.ts._mahjong.south : Mahjong.Utils.prevHouse(engine.myHouse) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+					<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.Utils.prevHouse(engine.myHouse)] }}</span>
+				</div>
+				<div :class="$style.centerPanelTickerSimo">
+					<span :class="$style.centerPanelHouse">{{ Mahjong.Utils.nextHouse(engine.myHouse) === 'e' ? i18n.ts._mahjong.east : Mahjong.Utils.nextHouse(engine.myHouse) === 's' ? i18n.ts._mahjong.south : Mahjong.Utils.nextHouse(engine.myHouse) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+					<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.Utils.nextHouse(engine.myHouse)] }}</span>
+				</div>
+				<div :class="$style.centerPanelTickerMe">
+					<span :class="$style.centerPanelHouse">{{ engine.myHouse === 'e' ? i18n.ts._mahjong.east : engine.myHouse === 's' ? i18n.ts._mahjong.south : engine.myHouse === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+					<span :class="$style.centerPanelPoint">{{ engine.state.points[engine.myHouse] }}</span>
+				</div>
 			</div>
 		</div>
 
 		<div :class="$style.handTilesOfToimen">
 			<div v-for="tile in engine.state.handTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))]" style="display: inline-block;">
-				<img :src="`/client-assets/mahjong/tile-back.png`" style="display: inline-block; width: 32px;"/>
+				<img :src="`/client-assets/mahjong/tile-back.png`" :class="$style.handTileImgOfToimen"/>
 			</div>
 		</div>
 
@@ -35,40 +48,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.hoTilesContainer">
 			<div :class="$style.hoTilesContainerOfToimen">
 				<div :class="$style.hoTilesOfToimen">
-					<div v-for="tile in engine.state.hoTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))]" :class="$style.hoTile">
-						<XTile :tile="tile" direction="v"/>
+					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.Utils.prevHouse(Mahjong.Utils.prevHouse(engine.myHouse))].length - i }">
+						<XTile :tile="tile" variation="2"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfKamitya">
 				<div :class="$style.hoTilesOfKamitya">
 					<div v-for="tile in engine.state.hoTiles[Mahjong.Utils.prevHouse(engine.myHouse)]" :class="$style.hoTile">
-						<XTile :tile="tile" direction="v"/>
+						<XTile :tile="tile" variation="4"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfSimotya">
 				<div :class="$style.hoTilesOfSimotya">
-					<div v-for="tile in engine.state.hoTiles[Mahjong.Utils.nextHouse(engine.myHouse)]" :class="$style.hoTile">
-						<XTile :tile="tile" direction="v"/>
+					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.Utils.nextHouse(engine.myHouse)]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.Utils.nextHouse(engine.myHouse)].length - i }">
+						<XTile :tile="tile" variation="5"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfMe">
 				<div :class="$style.hoTilesOfMe">
 					<div v-for="tile in engine.state.hoTiles[engine.myHouse]" :class="$style.hoTile">
-						<XTile :tile="tile" direction="v"/>
+						<XTile :tile="tile" variation="1"/>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div :class="$style.handTilesOfMe">
-			<div v-for="tile in Mahjong.Utils.sortTiles((isMyTurn && iTsumoed) ? engine.myHandTiles.slice(0, engine.myHandTiles.length - 1) : engine.myHandTiles)" :class="$style.myTile" @click="dahai(tile, $event)">
+			<div
+				v-for="tile in Mahjong.Utils.sortTiles((isMyTurn && iTsumoed) ? engine.myHandTiles.slice(0, engine.myHandTiles.length - 1) : engine.myHandTiles)"
+				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(tile) }]"
+				@click="chooseTile(tile, $event)"
+			>
 				<img :src="`/client-assets/mahjong/tile-front.png`" :class="$style.myTileBg"/>
 				<img :src="`/client-assets/mahjong/tiles/${tile}.png`" :class="$style.myTileFg"/>
 			</div>
-			<div v-if="isMyTurn && iTsumoed" style="display: inline-block; margin-left: 5px;" :class="$style.myTile" @click="dahai(engine.myHandTiles.at(-1), $event)">
+			<div
+				v-if="isMyTurn && iTsumoed"
+				style="display: inline-block; margin-left: 5px;"
+				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(tile) }]"
+				@click="chooseTile(engine.myHandTiles.at(-1), $event)"
+			>
 				<img :src="`/client-assets/mahjong/tile-front.png`" :class="$style.myTileBg"/>
 				<img :src="`/client-assets/mahjong/tiles/${engine.myHandTiles.at(-1)}.png`" :class="$style.myTileFg"/>
 			</div>
@@ -77,9 +99,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.huroTilesOfMe">
 			<div v-for="huro in engine.state.huros[engine.myHouse]" style="display: inline-block;">
 				<div v-if="huro.type === 'pon'">
-					<XTile :tile="huro.tile" direction="v"/>
-					<XTile :tile="huro.tile" direction="v"/>
-					<XTile :tile="huro.tile" direction="v"/>
+					<XTile :tile="huro.tile" variation="1"/>
+					<XTile :tile="huro.tile" variation="1"/>
+					<XTile :tile="huro.tile" variation="1"/>
 				</div>
 			</div>
 		</div>
@@ -128,6 +150,9 @@ const isMyTurn = computed(() => {
 const canHora = computed(() => {
 	return Mahjong.Utils.getHoraSets(engine.value.myHandTiles).length > 0;
 });
+
+const selectableTiles = ref<Mahjong.Common.Tile[] | null>(null);
+
 /*
 console.log(Mahjong.Utils.getTilesForRiichi([
 	'm1',
@@ -206,36 +231,36 @@ if (!props.room.isEnded) {
 }
 */
 
-function dahai(tile: Mahjong.Common.Tile, ev: MouseEvent) {
+let riichiSelect = false;
+
+function chooseTile(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
-	engine.value.commit_dahai(engine.value.myHouse, tile);
+	sound.playUrl('/client-assets/mahjong/dahai.mp3', {
+		volume: 1,
+		playbackRate: 1,
+	});
+
 	iTsumoed.value = false;
-	triggerRef(engine);
 
 	props.connection!.send('dahai', {
 		tile: tile,
+		riichi: riichiSelect,
 	});
+
+	riichiSelect = false;
+	selectableTiles.value = null;
 }
 
 function riichi() {
 	if (!isMyTurn.value) return;
 
-	engine.value.commit_dahai(engine.value.myHouse, tile, true);
-	iTsumoed.value = false;
-	triggerRef(engine);
-
-	props.connection!.send('dahai', {
-		tile: tile,
-		riichi: true,
-	});
+	riichiSelect = true;
+	selectableTiles.value = Mahjong.Utils.getTilesForRiichi(engine.value.myHandTiles);
 }
 
 function kakan() {
 	if (!isMyTurn.value) return;
-
-	engine.value.commit_kakan(engine.value.myHouse);
-	triggerRef(engine);
 
 	props.connection!.send('kakan', {
 	});
@@ -243,9 +268,6 @@ function kakan() {
 
 function hora() {
 	if (!isMyTurn.value) return;
-
-	engine.value.commit_hora(engine.value.myHouse);
-	triggerRef(engine);
 
 	props.connection!.send('hora', {
 	});
@@ -326,10 +348,13 @@ function onStreamDahaiAndTsumo(log) {
 	//	return;
 	//}
 
-	if (log.dahaiHouse !== engine.value.myHouse) {
-		engine.value.commit_dahai(log.dahaiHouse, log.dahaiTile);
-		triggerRef(engine);
-	}
+	sound.playUrl('/client-assets/mahjong/dahai.mp3', {
+		volume: 1,
+		playbackRate: 1,
+	});
+
+	engine.value.commit_dahai(log.dahaiHouse, log.dahaiTile);
+	triggerRef(engine);
 
 	window.setTimeout(() => {
 		engine.value.commit_tsumo(Mahjong.Utils.nextHouse(log.dahaiHouse), log.tsumoTile);
@@ -429,6 +454,10 @@ onUnmounted(() => {
 <style lang="scss" module>
 .root {
 	background: #3C7A43;
+	background-image: url('/client-assets/mahjong/bg.jpg');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 	padding: 30px;
 }
 
@@ -444,17 +473,61 @@ onUnmounted(() => {
 
 .centerPanel {
 	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	display: grid;
 	place-items: center;
-	width: 100%;
-	height: 100%;
-	scale: 0.8;
+	width: 150px;
+	height: 150px;
+	margin: auto;
+	scale: 0.9;
+	background: #333;
+	border: solid 1px #888;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px #000a;
+}
+.centerPanelTickerToi {
+	position: absolute;
+	top: 0;
+	right: 0;
+	rotate: 180deg;
+}
+.centerPanelTickerKami {
+	position: absolute;
+	top: 0;
+	left: 0;
+	rotate: 90deg;
+}
+.centerPanelTickerSimo {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	rotate: -90deg;
+}
+.centerPanelTickerMe {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+.centerPanelHouse {
+	font-weight: bold;
+}
+.centerPanelPoint {
+	margin-left: 10px;
 }
 
 .handTilesOfToimen {
 	position: absolute;
 	top: 0;
 	left: 80px;
+}
+.handTileImgOfToimen {
+	display: inline-block;
+	vertical-align: bottom;
+	width: 32px;
+	box-shadow: 0px 8px 2px 0px #0003;
 }
 
 .handTilesOfKamitya {
@@ -493,7 +566,7 @@ onUnmounted(() => {
 
 .hoTilesContainerOfToimen {
 	position: absolute;
-	bottom: calc(50% + 100px);
+	bottom: calc(50% + 125px);
 	left: 0;
 	right: 0;
 	margin: auto;
@@ -507,7 +580,7 @@ onUnmounted(() => {
 
 .hoTilesContainerOfKamitya {
 	position: absolute;
-	right: calc(50% + 100px);
+	right: calc(50% + 125px);
 	top: 0;
 	bottom: 0;
 	margin: auto;
@@ -523,7 +596,7 @@ onUnmounted(() => {
 
 .hoTilesContainerOfSimotya {
 	position: absolute;
-	left: calc(50% + 100px);
+	left: calc(50% + 125px);
 	top: 0;
 	bottom: 0;
 	margin: auto;
@@ -539,7 +612,7 @@ onUnmounted(() => {
 
 .hoTilesContainerOfMe {
 	position: absolute;
-	top: calc(50% + 100px);
+	top: calc(50% + 125px);
 	left: 0;
 	right: 0;
 	margin: auto;
@@ -565,6 +638,16 @@ onUnmounted(() => {
 	position: relative;
 	width: 35px;
 	aspect-ratio: 0.7;
+	transition: translate 0.1s ease;
+	cursor: pointer;
+}
+.myTile:hover {
+	translate: 0 -10px;
+}
+.myTileNonSelectable {
+	filter: grayscale(1);
+	opacity: 0.7;
+	pointer-events: none;
 }
 .myTileBg {
 	position: absolute;

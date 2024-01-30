@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
-	<img v-if="direction === 'v'" :src="`/client-assets/mahjong/tile-top-v.png`" :class="$style.bg"/>
-	<img v-if="direction === 'h'" :src="`/client-assets/mahjong/tile-top-h.png`" :class="$style.bg"/>
+<div :class="[$style.root, { [$style.h]: ['3', '4', '5'].includes(variation), [$style.v]: ['1', '2'].includes(variation) }]">
+	<img :src="`/client-assets/mahjong/putted-tile-${variation}.png`" :class="$style.bg"/>
 	<img :src="`/client-assets/mahjong/tiles/${tile}.png`" :class="$style.fg"/>
 </div>
 </template>
@@ -17,7 +16,7 @@ import * as Mahjong from 'misskey-mahjong';
 
 const props = defineProps<{
 	tile: Mahjong.Common.Tile;
-	direction: 'v' | 'h';
+	variation: string;
 }>();
 </script>
 
@@ -25,8 +24,15 @@ const props = defineProps<{
 .root {
 	display: inline-block;
 	position: relative;
-	width: 35px;
-	aspect-ratio: 0.7;
+	width: 72px;
+	height: 72px;
+	margin: -17px;
+}
+.h {
+	margin: -14px -20px -10px -20px;
+}
+.v {
+	margin: -14px -20px -10px -20px;
 }
 .bg {
 	position: absolute;
@@ -38,8 +44,11 @@ const props = defineProps<{
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 80%;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 53%;
+	height: 53%;
 	object-fit: contain;
 }
 </style>

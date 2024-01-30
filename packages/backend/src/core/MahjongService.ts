@@ -362,20 +362,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				this.dahai(room, engine, turn, engine.state.handTiles[turn].at(-1));
 			}, 500);
 		} else {
-			if (engine.state.riichis[turn]) {
-				// リーチ時はアガリ牌でない限りツモ切り
-				const handTiles = engine.state.handTiles[turn];
-				const horaSets = Mahjong.Utils.getHoraSets(handTiles);
-				if (horaSets.length === 0) {
-					setTimeout(() => {
-						this.dahai(room, engine, turn, handTiles.at(-1));
-					}, 500);
-				} else {
-					this.waitForTurn(room, turn, engine);
-				}
-			} else {
-				this.waitForTurn(room, turn, engine);
-			}
+			this.waitForTurn(room, turn, engine);
 		}
 	}
 
@@ -621,6 +608,18 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	 */
 	@bindThis
 	private async waitForTurn(room: Room, house: Mahjong.Common.House, engine: Mahjong.MasterGameEngine) {
+		if (engine.state.riichis[house]) {
+			// リーチ時はアガリ牌でない限りツモ切り
+			const handTiles = engine.state.handTiles[house];
+			const horaSets = Mahjong.Utils.getHoraSets(handTiles);
+			if (horaSets.length === 0) {
+				setTimeout(() => {
+					this.dahai(room, engine, house, handTiles.at(-1));
+				}, 500);
+				return;
+			}
+		}
+
 		const id = Math.random().toString(36).slice(2);
 		console.log('waitForTurn', house, id);
 		this.redisClient.sadd(`mahjong:gameTurnWaiting:${room.id}`, id);

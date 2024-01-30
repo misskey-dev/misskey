@@ -239,7 +239,9 @@ export class MasterGameEngine {
 		if (this.state.turn !== house) throw new Error('Not your turn');
 
 		if (riichi) {
-			if (Utils.getHoraTiles(this.state.handTiles[house]).length === 0) throw new Error('Not tenpai');
+			const tempHandTiles = [...this.state.handTiles[house]];
+			tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
+			if (Utils.getHoraTiles(tempHandTiles).length === 0) throw new Error('Not tenpai');
 			if (this.state.points[house] < 1000) throw new Error('Not enough points');
 		}
 

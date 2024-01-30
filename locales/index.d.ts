@@ -9633,6 +9633,22 @@ export interface Locale extends ILocale {
          * CPUを追加
          */
         "addCpu": string;
+        /**
+         * 東
+         */
+        "east": string;
+        /**
+         * 南
+         */
+        "south": string;
+        /**
+         * 西
+         */
+        "west": string;
+        /**
+         * 北
+         */
+        "north": string;
     };
     "_offlineScreen": {
         /**
