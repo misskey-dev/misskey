@@ -17,6 +17,11 @@
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
 			</MkSwitch>
+
+			<MkSwitch v-model="directoryToCategory">
+				<template #label>ディレクトリ名を"category"に入力する</template>
+				<template #caption>ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。</template>
+			</MkSwitch>
 		</div>
 	</MkFolder>
 
@@ -50,7 +55,7 @@
 			いずれかの方法で登録する絵文字を選択してください。
 		</div>
 		<ul>
-			<li>この枠にディレクトリまたは画像ファイルをドラッグ＆ドロップ</li>
+			<li>この枠に画像ファイルまたはディレクトリ（対応ブラウザのみ）をドラッグ＆ドロップ</li>
 			<li><a @click="onFileSelectClicked">このリンクをクリックしてPCから選択する</a></li>
 			<li><a @click="onDriveSelectClicked">このリンクをクリックしてドライブから選択する</a></li>
 		</ul>
@@ -84,14 +89,12 @@
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { computed, onMounted, ref } from 'vue';
-import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { GridItem, IGridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { CellValueChangedEvent, ColumnSetting, GridRow } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
-import { uploadFile } from '@/scripts/upload.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -99,6 +102,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { required, ValidateViolation } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
+import { uploadFile } from '@/scripts/upload.js';
 
 type FolderItem = {
 	id?: string;
@@ -118,6 +122,20 @@ type RegisterLogItem = {
 	name: string;
 	error?: string;
 };
+
+type DroppedItem = DroppedFile | DroppedDirectory;
+
+type DroppedFile = {
+	isFile: true;
+	path: string;
+	file: File;
+};
+
+type DroppedDirectory = {
+	isFile: false;
+	path: string;
+	children: DroppedItem[];
+}
 
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required] },
@@ -145,6 +163,8 @@ const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<IGridItem[]>([]);
 const selectedFolderId = ref(defaultStore.state.uploadFolder);
 const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
+const directoryToCategory = ref<boolean>(true);
+
 const registerButtonDisabled = ref<boolean>(false);
 const registerLogs = ref<RegisterLogItem[]>([]);
 
@@ -223,30 +243,56 @@ async function onDrop(ev: DragEvent) {
 	ev.preventDefault();
 	ev.stopPropagation();
 
-	const dropFiles = ev.dataTransfer?.files;
-	if (!dropFiles) {
+	const dropItems = ev.dataTransfer?.items;
+	if (!dropItems || dropItems.length === 0) {
 		return;
 	}
 
-	const uploadingPromises = Array.of<Promise<Misskey.entities.DriveFile>>();
-	for (let i = 0; i < dropFiles.length; i++) {
-		const file = dropFiles.item(i);
-		if (file) {
-			const name = file.name.replace(/\.[a-zA-Z0-9]+$/, '');
-			uploadingPromises.push(
-				uploadFile(
+	const droppedFiles = Array.of<DroppedFile>();
+	const apiTestItem = dropItems[0];
+	if ('webkitGetAsEntry' in apiTestItem) {
+		const droppedItems = await eachDroppedItems(dropItems);
+		droppedFiles.push(...flattenDroppedItems(droppedItems).filter(it => it.isFile));
+	} else {
+		// webkitGetAsEntryに対応していない場合はfilesから取得する（ディレクトリのサポートは出来ない）
+		const dropFiles = ev.dataTransfer.files;
+		if (!dropFiles || dropFiles.length === 0) {
+			return;
+		}
+
+		for (let i = 0; i < dropFiles.length; i++) {
+			const file = dropFiles.item(i);
+			if (file) {
+				droppedFiles.push({
+					isFile: true,
+					path: file.name,
 					file,
-					selectedFolderId.value,
-					name,
-					keepOriginalUploading.value,
-				),
-			);
+				});
+			}
 		}
 	}
 
-	const uploadedFiles = await Promise.all(uploadingPromises);
-	for (const uploadedFile of uploadedFiles) {
-		const item = GridItem.fromDriveFile(uploadedFile);
+	const uploadedItems = await Promise.all(
+		droppedFiles.map(async (it) => ({
+			droppedFile: it,
+			driveFile: await uploadFile(
+				it.file,
+				selectedFolderId.value,
+				it.file.name.replace(/\.[^.]+$/, ''),
+				keepOriginalUploading.value,
+			),
+		}),
+		),
+	);
+
+	for (const { droppedFile, driveFile } of uploadedItems) {
+		const item = GridItem.fromDriveFile(driveFile);
+		if (directoryToCategory.value) {
+			item.category = droppedFile.path
+				.replace(/^\//, '')
+				.replace(/\/[^/]+$/, '')
+				.replace(droppedFile.file.name, '');
+		}
 		gridItems.value.push(item);
 	}
 }
@@ -283,6 +329,64 @@ function onCellValidation(violation: ValidateViolation) {
 function onChangeCellValue(event: CellValueChangedEvent) {
 	const item = gridItems.value[event.row.index];
 	item[event.column.setting.bindTo] = event.value;
+}
+
+async function eachDroppedItems(itemList: DataTransferItemList): Promise<DroppedItem[]> {
+	async function readEntry(entry: FileSystemEntry): Promise<DroppedItem> {
+		if (entry.isFile) {
+			return {
+				isFile: true,
+				path: entry.fullPath,
+				file: await readFile(entry as FileSystemFileEntry),
+			};
+		} else {
+			return {
+				isFile: false,
+				path: entry.fullPath,
+				children: await readDirectory(entry as FileSystemDirectoryEntry),
+			};
+		}
+	}
+
+	function readFile(fileSystemFileEntry: FileSystemFileEntry): Promise<File> {
+		return new Promise((resolve, reject) => {
+			fileSystemFileEntry.file(resolve, reject);
+		});
+	}
+
+	function readDirectory(fileSystemDirectoryEntry: FileSystemDirectoryEntry): Promise<DroppedItem[]> {
+		return new Promise((resolve, reject) => {
+			fileSystemDirectoryEntry.createReader().readEntries(
+				async (entries) => resolve(await Promise.all(entries.map(readEntry))),
+				reject,
+			);
+		});
+	}
+
+	// 扱いにくいので配列に変換
+	const items = Array.of<DataTransferItem>();
+	for (let i = 0; i < itemList.length; i++) {
+		items.push(itemList[i]);
+	}
+
+	return Promise.all(
+		items
+			.map(it => it.webkitGetAsEntry())
+			.filter(it => it)
+			.map(it => readEntry(it!)),
+	);
+}
+
+function flattenDroppedItems(items: DroppedItem[]): DroppedFile[] {
+	const result = Array.of<DroppedFile>();
+	for (const item of items) {
+		if (item.isFile) {
+			result.push(item);
+		} else {
+			result.push(...flattenDroppedItems(item.children));
+		}
+	}
+	return result;
 }
 
 async function refreshUploadFolders() {
