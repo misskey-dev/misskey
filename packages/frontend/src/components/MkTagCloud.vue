@@ -52,7 +52,7 @@ watch(available, () => {
 });
 
 onMounted(() => {
-	width.value = rootEl.value.offsetWidth;
+	if (rootEl.value) width.value = rootEl.value.offsetWidth;
 
 	if (loaded) {
 		available.value = true;

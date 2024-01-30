@@ -55,7 +55,7 @@ defineEmits<{
 const routerFactory = useRouterFactory();
 const windowRouter = routerFactory(props.initialPath);
 
-const contents = shallowRef<HTMLElement>();
+const contents = shallowRef<HTMLElement | null>(null);
 const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
 const history = ref<{ path: string; key: any; }[]>([{
@@ -63,7 +63,7 @@ const history = ref<{ path: string; key: any; }[]>([{
 	key: windowRouter.getCurrentKey(),
 }]);
 const buttonsLeft = computed(() => {
-	const buttons = [];
+	const buttons: Record<string, unknown>[] = [];
 
 	if (history.value.length > 1) {
 		buttons.push({
@@ -121,7 +121,7 @@ const contextmenu = computed(() => ([{
 	text: i18n.ts.openInNewTab,
 	action: () => {
 		window.open(url + windowRouter.getCurrentPath(), '_blank', 'noopener');
-		windowEl.value.close();
+		windowEl.value?.close();
 	},
 }, {
 	icon: 'ti ti-link',
@@ -141,17 +141,17 @@ function reload() {
 }
 
 function close() {
-	windowEl.value.close();
+	windowEl.value?.close();
 }
 
 function expand() {
 	mainRouter.push(windowRouter.getCurrentPath(), 'forcePage');
-	windowEl.value.close();
+	windowEl.value?.close();
 }
 
 function popout() {
-	_popout(windowRouter.getCurrentPath(), windowEl.value.$el);
-	windowEl.value.close();
+	_popout(windowRouter.getCurrentPath(), windowEl.value?.$el);
+	windowEl.value?.close();
 }
 
 useScrollPositionManager(() => getScrollContainer(contents.value), windowRouter);

@@ -63,7 +63,7 @@ import { defaultStore } from '@/store.js';
 const minHeight = 50;
 const minWidth = 250;
 
-function dragListen(fn: (ev: MouseEvent) => void) {
+function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.addEventListener('mousemove', fn);
 	window.addEventListener('touchmove', fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
@@ -138,7 +138,7 @@ function onContextmenu(ev: MouseEvent) {
 // 最前面へ移動
 function top() {
 	if (rootEl.value) {
-		rootEl.value.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low');
+		rootEl.value.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low').toString();
 	}
 }
 
@@ -202,9 +202,17 @@ function onDblClick() {
 	}
 }
 
-function onHeaderMousedown(evt: MouseEvent) {
+function getPositionX(event: MouseEvent | TouchEvent) {
+	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientX : 'clientX' in event ? event.clientX : 0;
+}
+
+function getPositionY(event: MouseEvent | TouchEvent) {
+	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
+}
+
+function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 	// 右クリックはコンテキストメニューを開こうとした可能性が高いため無視
-	if (evt.button === 2) return;
+	if ('button' in evt && evt.button === 2) return;
 
 	let beforeMaximized = false;
 
@@ -229,8 +237,8 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 	const position = main.getBoundingClientRect();
 
-	const clickX = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientX : evt.clientX;
-	const clickY = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientY : evt.clientY;
+	const clickX = getPositionX(evt);
+	const clickY = getPositionY(evt);
 	const moveBaseX = beforeMaximized ? parseInt(unResizedWidth, 10) / 2 : clickX - position.left; // TODO: parseIntやめる
 	const moveBaseY = beforeMaximized ? 20 : clickY - position.top;
 	const browserWidth = window.innerWidth;
@@ -254,8 +262,10 @@ function onHeaderMousedown(evt: MouseEvent) {
 		// 右はみ出し
 		if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
 
-		rootEl.value.style.left = moveLeft + 'px';
-		rootEl.value.style.top = moveTop + 'px';
+		if (rootEl.value) {
+			rootEl.value.style.left = moveLeft + 'px';
+			rootEl.value.style.top = moveTop + 'px';
+		}
 	}
 
 	if (beforeMaximized) {
@@ -264,26 +274,26 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 	// 動かした時
 	dragListen(me => {
-		const x = me.touches && me.touches.length > 0 ? me.touches[0].clientX : me.clientX;
-		const y = me.touches && me.touches.length > 0 ? me.touches[0].clientY : me.clientY;
+		const x = getPositionX(me);
+		const y = getPositionY(me);
 
 		move(x, y);
 	});
 }
 
 // 上ハンドル掴み時
-function onTopHandleMousedown(evt) {
+function onTopHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	// どういうわけかnullになることがある
 	if (main == null) return;
 
-	const base = evt.clientY;
+	const base = getPositionY(evt);
 	const height = parseInt(getComputedStyle(main, '').height, 10);
 	const top = parseInt(getComputedStyle(main, '').top, 10);
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientY - base;
+		const move = getPositionY(me) - base;
 		if (top + move > 0) {
 			if (height + -move > minHeight) {
 				applyTransformHeight(height + -move);
@@ -300,18 +310,18 @@ function onTopHandleMousedown(evt) {
 }
 
 // 右ハンドル掴み時
-function onRightHandleMousedown(evt) {
+function onRightHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = evt.clientX;
+	const base = getPositionX(evt);
 	const width = parseInt(getComputedStyle(main, '').width, 10);
 	const left = parseInt(getComputedStyle(main, '').left, 10);
 	const browserWidth = window.innerWidth;
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientX - base;
+		const move = getPositionX(me) - base;
 		if (left + width + move < browserWidth) {
 			if (width + move > minWidth) {
 				applyTransformWidth(width + move);
@@ -325,18 +335,18 @@ function onRightHandleMousedown(evt) {
 }
 
 // 下ハンドル掴み時
-function onBottomHandleMousedown(evt) {
+function onBottomHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = evt.clientY;
+	const base = getPositionY(evt);
 	const height = parseInt(getComputedStyle(main, '').height, 10);
 	const top = parseInt(getComputedStyle(main, '').top, 10);
 	const browserHeight = window.innerHeight;
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientY - base;
+		const move = getPositionY(me) - base;
 		if (top + height + move < browserHeight) {
 			if (height + move > minHeight) {
 				applyTransformHeight(height + move);
@@ -350,17 +360,17 @@ function onBottomHandleMousedown(evt) {
 }
 
 // 左ハンドル掴み時
-function onLeftHandleMousedown(evt) {
+function onLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = evt.clientX;
+	const base = getPositionX(evt);
 	const width = parseInt(getComputedStyle(main, '').width, 10);
 	const left = parseInt(getComputedStyle(main, '').left, 10);
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientX - base;
+		const move = getPositionX(me) - base;
 		if (left + move > 0) {
 			if (width + -move > minWidth) {
 				applyTransformWidth(width + -move);
@@ -377,25 +387,25 @@ function onLeftHandleMousedown(evt) {
 }
 
 // 左上ハンドル掴み時
-function onTopLeftHandleMousedown(evt) {
+function onTopLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 	onTopHandleMousedown(evt);
 	onLeftHandleMousedown(evt);
 }
 
 // 右上ハンドル掴み時
-function onTopRightHandleMousedown(evt) {
+function onTopRightHandleMousedown(evt: MouseEvent | TouchEvent) {
 	onTopHandleMousedown(evt);
 	onRightHandleMousedown(evt);
 }
 
 // 右下ハンドル掴み時
-function onBottomRightHandleMousedown(evt) {
+function onBottomRightHandleMousedown(evt: MouseEvent | TouchEvent) {
 	onBottomHandleMousedown(evt);
 	onRightHandleMousedown(evt);
 }
 
 // 左下ハンドル掴み時
-function onBottomLeftHandleMousedown(evt) {
+function onBottomLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 	onBottomHandleMousedown(evt);
 	onLeftHandleMousedown(evt);
 }
@@ -403,23 +413,23 @@ function onBottomLeftHandleMousedown(evt) {
 // 高さを適用
 function applyTransformHeight(height) {
 	if (height > window.innerHeight) height = window.innerHeight;
-	rootEl.value.style.height = height + 'px';
+	if (rootEl.value) rootEl.value.style.height = height + 'px';
 }
 
 // 幅を適用
 function applyTransformWidth(width) {
 	if (width > window.innerWidth) width = window.innerWidth;
-	rootEl.value.style.width = width + 'px';
+	if (rootEl.value) rootEl.value.style.width = width + 'px';
 }
 
 // Y座標を適用
 function applyTransformTop(top) {
-	rootEl.value.style.top = top + 'px';
+	if (rootEl.value) rootEl.value.style.top = top + 'px';
 }
 
 // X座標を適用
 function applyTransformLeft(left) {
-	rootEl.value.style.left = left + 'px';
+	if (rootEl.value) rootEl.value.style.left = left + 'px';
 }
 
 function onBrowserResize() {
@@ -441,8 +451,10 @@ onMounted(() => {
 	applyTransformWidth(props.initialWidth);
 	if (props.initialHeight) applyTransformHeight(props.initialHeight);
 
-	applyTransformTop((window.innerHeight / 2) - (rootEl.value.offsetHeight / 2));
-	applyTransformLeft((window.innerWidth / 2) - (rootEl.value.offsetWidth / 2));
+	if (rootEl.value) {
+		applyTransformTop((window.innerHeight / 2) - (rootEl.value.offsetHeight / 2));
+		applyTransformLeft((window.innerWidth / 2) - (rootEl.value.offsetWidth / 2));
+	}
 
 	// 他のウィンドウ内のボタンなどを押してこのウィンドウが開かれた場合、親が最前面になろうとするのでそれに隠されないようにする
 	top();

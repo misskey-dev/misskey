@@ -80,9 +80,9 @@ const props = defineProps<{
 
 const username = ref('');
 const host = ref('');
-const users = ref<Misskey.entities.UserDetailed[]>([]);
+const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
-const selected = ref<Misskey.entities.UserDetailed | null>(null);
+const selected = ref<Misskey.entities.UserLite | null>(null);
 const dialogEl = ref();
 
 function search() {
@@ -100,14 +100,19 @@ function search() {
 	});
 }
 
-function ok() {
+async function ok() {
 	if (selected.value == null) return;
-	emit('ok', selected.value);
+
+	const user = await misskeyApi('users/show', {
+		userId: selected.value.id,
+	});
+	emit('ok', user);
+
 	dialogEl.value.close();
 
 	// 最近使ったユーザー更新
 	let recents = defaultStore.state.recentlyUsedUsers;
-	recents = recents.filter(x => x !== selected.value.id);
+	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
 	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
 }
@@ -122,7 +127,7 @@ onMounted(() => {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(users => {
 		if (props.includeSelf && users.find(x => $i ? x.id === $i.id : true) == null) {
-			recentUsers.value = [$i, ...users];
+			recentUsers.value = [$i!, ...users];
 		} else {
 			recentUsers.value = users;
 		}
