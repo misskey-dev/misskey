@@ -41,8 +41,8 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.j
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
-import { useRouterFactory } from '@/global/router/supplier.js';
-import { mainRouter } from '@/global/router/main.js';
+import { useRouterFactory } from '@/router/supplier.js';
+import { mainRouter } from '@/router/main.js';
 
 const props = defineProps<{
 	initialPath: string;

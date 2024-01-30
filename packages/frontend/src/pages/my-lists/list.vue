@@ -69,7 +69,7 @@ import { userListsCache } from '@/cache.js';
 import { signinRequired } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 const $i = signinRequired();
 

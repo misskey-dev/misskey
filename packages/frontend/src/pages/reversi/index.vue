@@ -115,7 +115,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
