@@ -31,6 +31,7 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+import { MicropubServerService } from './micropub/MicropubServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -65,6 +66,7 @@ export class ServerService implements OnApplicationShutdown {
 		private clientServerService: ClientServerService,
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
+		private micropubServerService: MicropubServerService,
 		private oauth2ProviderService: OAuth2ProviderService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
@@ -107,6 +109,7 @@ export class ServerService implements OnApplicationShutdown {
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
+		fastify.register(this.micropubServerService.createServer, { prefix: '/micropub' });
 		fastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
 		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
 
