@@ -8,7 +8,7 @@ export type GridSetting = {
 
 export type DataSource = Record<string, CellValue>;
 
-export type GridState = 'normal' | 'cellSelecting' | 'cellEditing' | 'colResizing' | 'colSelecting' | 'rowSelecting'
+export type GridState = 'normal' | 'cellSelecting' | 'cellEditing' | 'colResizing' | 'colSelecting' | 'rowSelecting' | 'hidden'
 
 export type Size = {
 	width: number;
@@ -47,5 +47,7 @@ export type CellValueChangedEvent = {
 	value: CellValue;
 }
 
-export class GridEventEmitter extends EventEmitter<{}> {
+export class GridEventEmitter extends EventEmitter<{
+	'forceRefreshContentSize': void;
+}> {
 }

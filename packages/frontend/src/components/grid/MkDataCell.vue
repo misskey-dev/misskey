@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, ref, shallowRef, toRefs, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
 import { GridEventEmitter, Size } from '@/components/grid/grid.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
@@ -144,6 +144,10 @@ function onInputText(ev: Event) {
 	editingValue.value = (ev.target as HTMLInputElement).value;
 }
 
+function onForceRefreshContentSize() {
+	emitContentSizeChanged();
+}
+
 function registerOutsideMouseDown() {
 	unregisterOutsideMouseDown();
 	addEventListener('mousedown', onOutsideMouseDown);
@@ -221,6 +225,14 @@ useTooltip(rootEl, (showing) => {
 		content,
 		targetElement: rootEl.value,
 	}, {}, 'closed');
+});
+
+onMounted(() => {
+	bus.value.on('forceRefreshContentSize', onForceRefreshContentSize);
+});
+
+onUnmounted(() => {
+	bus.value.off('forceRefreshContentSize', onForceRefreshContentSize);
 });
 
 </script>

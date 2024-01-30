@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, toRefs, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { GridColumn, GridEventEmitter, Size } from '@/components/grid/grid.js';
 
 const emit = defineEmits<{
@@ -51,7 +51,7 @@ const text = computed(() => {
 
 watch(column, () => {
 	// 中身がセットされた直後はサイズが分からないので、次のタイミングで更新する
-	nextTick(updateContentSize);
+	nextTick(emitContentSizeChanged);
 }, { immediate: true });
 
 function onHandleDoubleClick(ev: MouseEvent) {
@@ -111,6 +111,10 @@ function onHandleMouseUp(ev: MouseEvent) {
 	}
 }
 
+function onForceRefreshContentSize() {
+	emitContentSizeChanged();
+}
+
 function registerHandleMouseMove() {
 	unregisterHandleMouseMove();
 	addEventListener('mousemove', onHandleMouseMove);
@@ -129,7 +133,7 @@ function unregisterHandleMouseUp() {
 	removeEventListener('mouseup', onHandleMouseUp);
 }
 
-function updateContentSize() {
+function emitContentSizeChanged() {
 	const clientWidth = contentEl.value?.clientWidth ?? 0;
 	const clientHeight = contentEl.value?.clientHeight ?? 0;
 	emit('change:contentSize', column.value, {
@@ -138,6 +142,14 @@ function updateContentSize() {
 		height: clientHeight,
 	});
 }
+
+onMounted(() => {
+	bus.value.on('forceRefreshContentSize', onForceRefreshContentSize);
+});
+
+onUnmounted(() => {
+	bus.value.off('forceRefreshContentSize', onForceRefreshContentSize);
+});
 
 </script>
 

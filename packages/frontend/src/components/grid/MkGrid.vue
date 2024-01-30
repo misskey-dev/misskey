@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, toRefs, watch } from 'vue';
 import {
 	CellValueChangedEvent,
 	ColumnSetting,
@@ -71,7 +71,21 @@ const emit = defineEmits<{
 	(ev: 'change:cellValue', event: CellValueChangedEvent): void;
 }>();
 
+/**
+ * grid -> 各子コンポーネントのイベント経路を担う{@link GridEventEmitter}。
+ * 子コンポーネント -> gridのイベントでは原則使用せず、{@link emit}を使用する。
+ */
 const bus = new GridEventEmitter();
+/**
+ * テーブルコンポーネントのリサイズイベントを監視するための{@link ResizeObserver}。
+ * 表示切替を検知し、サイズの再計算要求を発行するために使用する（マウント時にコンテンツが表示されていない場合、初手のサイズの自動計算が正常に働かないため）
+ *
+ * {@link setTimeout}を経由している理由は、{@link onResize}の中でサイズ再計算要求→サイズ変更が発生するとループとみなされ、
+ * 「ResizeObserver loop completed with undelivered notifications.」という警告が発生するため（状態管理してるので実際にはループしない）
+ *
+ * @see {@link onResize}
+ */
+const resizeObserver = new ResizeObserver((entries) => setTimeout(() => onResize(entries)));
 
 const { gridSetting, columnSettings, data } = toRefs(props);
 
@@ -122,14 +136,44 @@ watch(columnSettings, refreshColumnsSetting);
 watch(data, refreshData);
 
 if (_DEV_) {
-	watch(state, (value) => {
-		console.log(`state: ${value}`);
+	watch(state, (value, oldValue) => {
+		console.log(`[grid][state] ${oldValue} -> ${value}`);
 	});
+}
+
+function onResize(entries: ResizeObserverEntry[]) {
+	if (entries.length !== 1 || entries[0].target !== rootEl.value) {
+		return;
+	}
+
+	const contentRect = entries[0].contentRect;
+	if (_DEV_) {
+		console.log(`[grid][resize] contentRect: ${contentRect.width}x${contentRect.height}`);
+	}
+
+	switch (state.value) {
+		case 'hidden': {
+			if (contentRect.width > 0 && contentRect.height > 0) {
+				state.value = 'normal';
+
+				// 選択状態が狂うかもしれないので解除しておく
+				unSelectionRange();
+				bus.emit('forceRefreshContentSize');
+			}
+			break;
+		}
+		default: {
+			if (contentRect.width === 0 || contentRect.height === 0) {
+				state.value = 'hidden';
+			}
+			break;
+		}
+	}
 }
 
 function onKeyDown(ev: KeyboardEvent) {
 	if (_DEV_) {
-		console.log('[Grid]', `ctrl: ${ev.ctrlKey}, shift: ${ev.shiftKey}, code: ${ev.code}`);
+		console.log(`[grid][key] ctrl: ${ev.ctrlKey}, shift: ${ev.shiftKey}, code: ${ev.code}`);
 	}
 
 	switch (state.value) {
@@ -482,7 +526,7 @@ function onChangeCellValue(sender: GridCell, newValue: CellValue) {
 function onChangeCellContentSize(sender: GridCell, contentSize: Size) {
 	cells.value[sender.address.row][sender.address.col].contentSize = contentSize;
 	if (sender.column.setting.width === 'auto') {
-		largestCellWidth(sender.column);
+		calcLargestCellWidth(sender.column);
 	}
 }
 
@@ -519,7 +563,7 @@ function onHeaderCellChangeContentSize(sender: GridColumn, newSize: Size) {
 		case 'normal': {
 			columns.value[sender.index].contentSize = newSize;
 			if (sender.setting.width === 'auto') {
-				largestCellWidth(sender);
+				calcLargestCellWidth(sender);
 			}
 			break;
 		}
@@ -529,13 +573,13 @@ function onHeaderCellChangeContentSize(sender: GridColumn, newSize: Size) {
 function onHeaderCellWidthLargest(sender: GridColumn) {
 	switch (state.value) {
 		case 'normal': {
-			largestCellWidth(sender);
+			calcLargestCellWidth(sender);
 			break;
 		}
 	}
 }
 
-function largestCellWidth(column: GridColumn) {
+function calcLargestCellWidth(column: GridColumn) {
 	const _cells = cells.value;
 	const largestColumnWidth = columns.value[column.index].contentSize.width;
 
@@ -548,7 +592,9 @@ function largestCellWidth(column: GridColumn) {
 			)
 		: 0;
 
-	console.log(`largestCellWidth: ${largestColumnWidth}, ${largestCellWidth}`);
+	if (_DEV_) {
+		console.log(`[grid][calc-largest] idx:${column.setting.bindTo}, col:${largestColumnWidth}, cell:${largestCellWidth}`);
+	}
 
 	column.width = `${Math.max(largestColumnWidth, largestCellWidth)}px`;
 }
@@ -800,9 +846,21 @@ function unregisterMouseUp() {
 	removeEventListener('mouseup', onMouseUp);
 }
 
-refreshColumnsSetting();
-refreshData();
+onMounted(() => {
+	refreshColumnsSetting();
+	refreshData();
 
+	if (rootEl.value) {
+		resizeObserver.observe(rootEl.value);
+
+		// 初期表示時にコンテンツが表示されていない場合はhidden状態にしておく。
+		// コンテンツ表示時にresizeイベントが発生するが、そのときにhidden状態にしておかないとサイズの再計算が走らないので
+		const bounds = rootEl.value.getBoundingClientRect();
+		if (bounds.width === 0 || bounds.height === 0) {
+			state.value = 'hidden';
+		}
+	}
+});
 </script>
 
 <style module lang="scss">
@@ -812,7 +870,6 @@ $borderRadius: var(--radius);
 .grid {
 	overflow: scroll;
 	table-layout: fixed;
-	width: fit-content;
 	user-select: none;
 }
 
