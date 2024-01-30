@@ -81,7 +81,7 @@ const bus = new GridEventEmitter();
  * 表示切替を検知し、サイズの再計算要求を発行するために使用する（マウント時にコンテンツが表示されていない場合、初手のサイズの自動計算が正常に働かないため）
  *
  * {@link setTimeout}を経由している理由は、{@link onResize}の中でサイズ再計算要求→サイズ変更が発生するとループとみなされ、
- * 「ResizeObserver loop completed with undelivered notifications.」という警告が発生するため（状態管理してるので実際にはループしない）
+ * 「ResizeObserver loop completed with undelivered notifications.」という警告が発生するため（再計算が完全に終われば通知は発生しなくなるので実際にはループしない）
  *
  * @see {@link onResize}
  */
@@ -154,6 +154,7 @@ function onResize(entries: ResizeObserverEntry[]) {
 	switch (state.value) {
 		case 'hidden': {
 			if (contentRect.width > 0 && contentRect.height > 0) {
+				// 先に状態を変更しておき、再計算要求が複数回走らないようにする
 				state.value = 'normal';
 
 				// 選択状態が狂うかもしれないので解除しておく
