@@ -519,14 +519,9 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = getHouseOfUserId(room, engine, user.id);
 
-		if (riichi) {
-			if (Mahjong.Utils.getHoraTiles(engine.state.handTiles[myHouse]).length === 0) return;
-			if (engine.state.points[myHouse] < 1000) return;
-		}
-
 		await this.clearTurnWaitingTimer(room.id);
 
-		await this.dahai(room, engine, myHouse, tile);
+		await this.dahai(room, engine, myHouse, tile, riichi);
 	}
 
 	@bindThis

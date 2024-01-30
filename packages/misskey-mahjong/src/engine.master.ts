@@ -238,6 +238,11 @@ export class MasterGameEngine {
 	public commit_dahai(house: House, tile: Tile, riichi = false) {
 		if (this.state.turn !== house) throw new Error('Not your turn');
 
+		if (riichi) {
+			if (Utils.getHoraTiles(this.state.handTiles[house]).length === 0) throw new Error('Not tenpai');
+			if (this.state.points[house] < 1000) throw new Error('Not enough points');
+		}
+
 		const handTiles = this.state.handTiles[house];
 		if (!handTiles.includes(tile)) throw new Error('No such tile in your hand');
 		handTiles.splice(handTiles.indexOf(tile), 1);
