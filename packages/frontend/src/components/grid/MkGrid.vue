@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import {
 	CellValueChangedEvent,
 	ColumnSetting,
@@ -159,6 +159,8 @@ function onResize(entries: ResizeObserverEntry[]) {
 
 				// 選択状態が狂うかもしれないので解除しておく
 				unSelectionRange();
+
+				// 再計算要求を発行。各セル側で最低限必要な横幅を算出し、emitで返してくるようになっている
 				bus.emit('forceRefreshContentSize');
 			}
 			break;
