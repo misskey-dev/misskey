@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="{ [$style.done]: closed || isVoted }">
 	<ul :class="$style.choices">
-		<li v-for="(choice, i) in note.poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
+		<li v-for="(choice, i) in poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
 			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
@@ -35,35 +35,35 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
-import { WithNonNullable } from '@/type.js';
 
 const props = defineProps<{
-	note: WithNonNullable<Misskey.entities.Note, 'poll'>;
+	noteId: string;
+	poll: NonNullable<Misskey.entities.Note['poll']>;
 	readOnly?: boolean;
 }>();
 
 const remaining = ref(-1);
 
-const total = computed(() => sum(props.note.poll.choices.map(x => x.votes)));
+const total = computed(() => sum(props.poll.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
-const isVoted = computed(() => !props.note.poll.multiple && props.note.poll.choices.some(c => c.isVoted));
+const isVoted = computed(() => !props.poll.multiple && props.poll.choices.some(c => c.isVoted));
 const timer = computed(() => i18n.tsx._poll[
-		remaining.value >= 86400 ? 'remainingDays' :
-		remaining.value >= 3600 ? 'remainingHours' :
-		remaining.value >= 60 ? 'remainingMinutes' : 'remainingSeconds'
-	]({
-		s: Math.floor(remaining.value % 60),
-		m: Math.floor(remaining.value / 60) % 60,
-		h: Math.floor(remaining.value / 3600) % 24,
-		d: Math.floor(remaining.value / 86400),
-	}));
+	remaining.value >= 86400 ? 'remainingDays' :
+	remaining.value >= 3600 ? 'remainingHours' :
+	remaining.value >= 60 ? 'remainingMinutes' : 'remainingSeconds'
+]({
+	s: Math.floor(remaining.value % 60),
+	m: Math.floor(remaining.value / 60) % 60,
+	h: Math.floor(remaining.value / 3600) % 24,
+	d: Math.floor(remaining.value / 86400),
+}));
 
 const showResult = ref(props.readOnly || isVoted.value);
 
 // 期限付きアンケート
-if (props.note.poll.expiresAt) {
+if (props.poll.expiresAt) {
 	const tick = () => {
-		remaining.value = Math.floor(Math.max(new Date(props.note.poll.expiresAt).getTime() - Date.now(), 0) / 1000);
+		remaining.value = Math.floor(Math.max(new Date(props.poll.expiresAt!).getTime() - Date.now(), 0) / 1000);
 		if (remaining.value === 0) {
 			showResult.value = true;
 		}
@@ -82,15 +82,15 @@ const vote = async (id) => {
 
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.tsx.voteConfirm({ choice: props.note.poll.choices[id].text }),
+		text: i18n.tsx.voteConfirm({ choice: props.poll.choices[id].text }),
 	});
 	if (canceled) return;
 
 	await misskeyApi('notes/polls/vote', {
-		noteId: props.note.id,
+		noteId: props.noteId,
 		choice: id,
 	});
-	if (!showResult.value) showResult.value = !props.note.poll.multiple;
+	if (!showResult.value) showResult.value = !props.poll.multiple;
 };
 </script>
 

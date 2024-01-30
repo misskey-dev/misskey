@@ -55,7 +55,7 @@ async function gotIt(): Promise<void> {
 		if (confirm.canceled) return;
 	}
 
-	modal.value.close();
+	modal.value?.close();
 	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
@@ -63,7 +63,7 @@ async function gotIt(): Promise<void> {
 }
 
 function onBgClick() {
-	rootEl.value.animate([{
+	rootEl.value?.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {

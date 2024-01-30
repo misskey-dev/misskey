@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:height="600"
 	:withOkButton="false"
 	:okButtonDisabled="false"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
@@ -81,7 +81,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User,
-	announcement?: any,
+	announcement?: Misskey.entities.Announcement,
 }>();
 
 const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
@@ -123,18 +123,18 @@ async function done(): Promise<void> {
 
 	if (props.announcement) {
 		await os.apiWithDialog('admin/announcements/update', {
-			id: props.announcement.id,
 			...params,
+			id: props.announcement.id,
 		});
 
 		emit('done', {
 			updated: {
-				id: props.announcement.id,
 				...params,
+				id: props.announcement.id,
 			},
 		});
 
-		dialog.value.close();
+		dialog.value?.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -142,7 +142,7 @@ async function done(): Promise<void> {
 			created: created,
 		});
 
-		dialog.value.close();
+		dialog.value?.close();
 	}
 }
 
@@ -153,14 +153,16 @@ async function del(): Promise<void> {
 	});
 	if (canceled) return;
 
-	misskeyApi('admin/announcements/delete', {
-		id: props.announcement.id,
-	}).then(() => {
-		emit('done', {
-			deleted: true,
+	if (props.announcement) {
+		await misskeyApi('admin/announcements/delete', {
+			id: props.announcement.id,
 		});
-		dialog.value.close();
+	}
+
+	emit('done', {
+		deleted: true,
 	});
+	dialog.value?.close();
 }
 </script>
 

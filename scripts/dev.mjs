@@ -28,7 +28,7 @@ await execa('pnpm', ['build-assets'], {
 	stderr: process.stderr,
 });
 
-await execa('pnpm', ['--filter', 'misskey-js', 'ts'], {
+await execa('pnpm', ['--filter', 'misskey-js', 'build'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

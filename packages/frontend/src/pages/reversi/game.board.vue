@@ -37,11 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.board">
 			<div :class="$style.boardInner">
 				<div v-if="showBoardLabels" :class="$style.labelsX">
-					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
+					<span v-for="i in game.map[0].length" :key="i" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
 				<div style="display: flex;">
 					<div v-if="showBoardLabels" :class="$style.labelsY">
-						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+						<div v-for="i in game.map.length" :key="i" :class="$style.labelsYLabel">{{ i }}</div>
 					</div>
 					<div :class="$style.boardCells" :style="cellsStyle">
 						<div
@@ -66,8 +66,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								mode="default"
 							>
 								<template v-if="useAvatarAsStone">
-									<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl"/>
-									<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl"/>
+									<img v-if="stone === true" :class="$style.boardCellStone" :src="blackUser.avatarUrl ?? undefined"/>
+									<img v-else-if="stone === false" :class="$style.boardCellStone" :src="whiteUser.avatarUrl ?? undefined"/>
 								</template>
 								<template v-else>
 									<img v-if="stone === true" :class="$style.boardCellStone" src="/client-assets/reversi/stone_b.png"/>
@@ -77,11 +77,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="showBoardLabels" :class="$style.labelsY">
-						<div v-for="i in game.map.length" :class="$style.labelsYLabel">{{ i }}</div>
+						<div v-for="i in game.map.length" :key="i" :class="$style.labelsYLabel">{{ i }}</div>
 					</div>
 				</div>
 				<div v-if="showBoardLabels" :class="$style.labelsX">
-					<span v-for="i in game.map[0].length" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
+					<span v-for="i in game.map[0].length" :key="i" :class="$style.labelsXLabel">{{ String.fromCharCode(64 + i) }}</span>
 				</div>
 			</div>
 		</div>
@@ -162,13 +162,14 @@ const $i = signinRequired();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection?: Misskey.ChannelConnection | null;
+	connection?: Misskey.ChannelConnection<Misskey.Channels['reversiGame']> | null;
 }>();
 
 const showBoardLabels = ref<boolean>(false);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
-const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
+// eslint-disable-next-line vue/no-setup-props-destructure
+const game = ref<Misskey.entities.ReversiGameDetailed & { logs: Reversi.Serializer.SerializedLog[] }>(deepClone(props.game));
 const logPos = ref<number>(game.value.logs.length);
 const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
 	map: game.value.map,
@@ -256,7 +257,7 @@ if (game.value.isStarted && !game.value.isEnded) {
 
 const appliedOps: string[] = [];
 
-function putStone(pos) {
+function putStone(pos: number) {
 	if (game.value.isEnded) return;
 	if (!iAmPlayer.value) return;
 	if (!isMyTurn.value) return;
@@ -305,7 +306,7 @@ if (!props.game.isEnded) {
 	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
 }
 
-async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
+async function onStreamLog(log) {
 	game.value.logs = Reversi.Serializer.serializeLogs([
 		...Reversi.Serializer.deserializeLogs(game.value.logs),
 		log,

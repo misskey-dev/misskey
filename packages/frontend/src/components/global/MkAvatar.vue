@@ -81,9 +81,11 @@ const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar)
-	? getStaticImageUrl(props.user.avatarUrl)
-	: props.user.avatarUrl);
+const url = computed(() => {
+	if (props.user.avatarUrl == null) return null;
+	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
+	return props.user.avatarUrl;
+});
 
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
@@ -109,6 +111,7 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
+	if (props.user.avatarBlurhash == null) return;
 	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
