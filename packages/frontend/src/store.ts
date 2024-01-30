@@ -53,6 +53,8 @@ export type SoundStore = {
 	volume: number;
 }
 
+export type BubbleGameRankingVisibility = 'public' | 'private' | 'ask';
+
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
@@ -428,12 +430,13 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: {
 			bgmVolume: 0.25,
 			sfxVolume: 1,
+			rankingVisibility: 'public' as BubbleGameRankingVisibility,
 		},
 	},
-  hemisphere: {
+	hemisphere: {
 		where: 'device',
 		default: hemisphere as 'N' | 'S',
-  },
+	},
 	enableHorizontalSwipe: {
 		where: 'device',
 		default: true,

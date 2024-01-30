@@ -54,4 +54,9 @@ export class MiBubbleGameRecord {
 		default: false,
 	})
 	public isVerified: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isPrivate: boolean;
 }

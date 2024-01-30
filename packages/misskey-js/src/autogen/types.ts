@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.370Z
+ * version: 2024.2.0-beta.4
+ * generatedAt: 2024-01-29T12:34:44.329Z
  */
 
 /**
@@ -25569,6 +25569,7 @@ export type operations = {
           logs: unknown[];
           gameMode: string;
           gameVersion: number;
+          isPrivate?: boolean;
         };
       };
     };

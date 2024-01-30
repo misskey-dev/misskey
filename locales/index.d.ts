@@ -4859,6 +4859,28 @@ export interface Locale extends ILocale {
              */
             "section3": string;
         };
+        /**
+         * ランキングに名前を載せますか？
+         */
+        "askRanking": string;
+        /**
+         * ランキングに表示
+         */
+        "visibleRanking": string;
+        "_visibleRankingItem": {
+            /**
+             * 常にする
+             */
+            "visible": string;
+            /**
+             * 常にしない
+             */
+            "invisible": string;
+            /**
+             * 毎回確認する
+             */
+            "ask": string;
+        };
     };
     "_announcement": {
         /**

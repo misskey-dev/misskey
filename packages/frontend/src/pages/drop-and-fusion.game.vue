@@ -149,6 +149,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
 							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
 						</MkRange>
+						<MkSelect :modelValue="rankingVisibility" @update:modelValue="(v) => onRankingVisibleChanged(v as BubbleGameRankingVisibility)">
+							<template #label>{{ i18n.ts._bubbleGame.visibleRanking }}</template>
+							<option value="public">{{ i18n.ts._bubbleGame._visibleRankingItem.visible }}</option>
+							<option value="private">{{ i18n.ts._bubbleGame._visibleRankingItem.invisible }}</option>
+							<option value="ask">{{ i18n.ts._bubbleGame._visibleRankingItem.ask }}</option>
+						</MkSelect>
 					</div>
 				</div>
 			</div>
@@ -188,7 +194,7 @@ import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
+import { BubbleGameRankingVisibility, defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
@@ -197,6 +203,7 @@ import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import MkSelect from '@/components/MkSelect.vue';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -573,6 +580,7 @@ const replayPlaybackRate = ref(1);
 const currentFrame = ref(0);
 const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
 const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
+const rankingVisibility = ref(defaultStore.state.dropAndFusion.rankingVisibility);
 
 watch(replayPlaybackRate, (newValue) => {
 	game.replayPlaybackRate = newValue;
@@ -712,6 +720,11 @@ async function start() {
 			readyGo.value = null;
 		}, 1000);
 	}, 1500);
+}
+
+function onRankingVisibleChanged(v: BubbleGameRankingVisibility) {
+	rankingVisibility.value = v;
+	updateSettings('rankingVisibility', v);
 }
 
 function onClick(ev: MouseEvent) {
@@ -1072,7 +1085,7 @@ function attachGameEvents() {
 		}
 	});
 
-	game.addListener('gameOver', () => {
+	game.addListener('gameOver', async () => {
 		if (!props.mute) {
 			if (props.gameMode === 'yen') {
 				sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
@@ -1096,17 +1109,36 @@ function attachGameEvents() {
 		dropReady.value = false;
 		isGameOver.value = true;
 
-		misskeyApi('bubble-game/register', {
+		let isRankigPrivate: boolean;
+		switch (rankingVisibility.value) {
+			case 'public':
+				isRankigPrivate = false;
+				break;
+			case 'private':
+				isRankigPrivate = true;
+				break;
+			default:
+				isRankigPrivate = (await os.confirm({
+					type: 'question',
+					text: i18n.ts._bubbleGame.askRanking,
+					okText: i18n.ts.yes,
+					cancelText: i18n.ts.no,
+				})).canceled;
+				break;
+		}
+
+		await misskeyApi('bubble-game/register', {
 			seed,
 			score: score.value,
 			gameMode: props.gameMode,
 			gameVersion: game.GAME_VERSION,
 			logs: DropAndFusionGame.serializeLogs(logs),
+			isPrivate: isRankigPrivate,
 		});
 
 		if (props.gameMode === 'yen') {
 			yenTotal.value = (yenTotal.value ?? 0) + score.value;
-			misskeyApi('i/registry/set', {
+			await misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
 				key: 'yenTotal',
 				value: yenTotal.value,
@@ -1115,8 +1147,7 @@ function attachGameEvents() {
 
 		if (score.value > (highScore.value ?? 0)) {
 			highScore.value = score.value;
-
-			misskeyApi('i/registry/set', {
+			await misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
 				key: 'highScore:' + props.gameMode,
 				value: highScore.value,
