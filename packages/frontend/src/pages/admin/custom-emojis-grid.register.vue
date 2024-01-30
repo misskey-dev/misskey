@@ -55,7 +55,7 @@
 			いずれかの方法で登録する絵文字を選択してください。
 		</div>
 		<ul>
-			<li>この枠に画像ファイルまたはディレクトリ（対応ブラウザのみ）をドラッグ＆ドロップ</li>
+			<li>この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ</li>
 			<li><a @click="onFileSelectClicked">このリンクをクリックしてPCから選択する</a></li>
 			<li><a @click="onDriveSelectClicked">このリンクをクリックしてドライブから選択する</a></li>
 		</ul>
@@ -256,7 +256,7 @@ async function onDrop(ev: DragEvent) {
 	} else {
 		// webkitGetAsEntryに対応していない場合はfilesから取得する（ディレクトリのサポートは出来ない）
 		const dropFiles = ev.dataTransfer.files;
-		if (!dropFiles || dropFiles.length === 0) {
+		if (dropFiles.length === 0) {
 			return;
 		}
 
