@@ -81,6 +81,10 @@ function getUserIdOfHouse(room: Room, engine: Mahjong.MasterGameEngine, house: M
 	return engine.state.user1House === house ? room.user1Id : engine.state.user2House === house ? room.user2Id : engine.state.user3House === house ? room.user3Id : room.user4Id;
 }
 
+function getHouseOfUserId(room: Room, engine: Mahjong.MasterGameEngine, userId: MiUser['id']): Mahjong.Common.House {
+	return userId === room.user1Id ? engine.state.user1House : userId === room.user2Id ? engine.state.user2House : userId === room.user3Id ? engine.state.user3House : engine.state.user4House;
+}
+
 @Injectable()
 export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	private notificationService: NotificationService;
@@ -513,7 +517,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (!Mahjong.Utils.isTile(tile)) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+		const myHouse = getHouseOfUserId(room, engine, user.id);
 
 		if (riichi) {
 			if (Mahjong.Utils.getHoraTiles(engine.state.handTiles[myHouse]).length === 0) return;
@@ -532,7 +536,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room.gameState == null) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+		const myHouse = getHouseOfUserId(room, engine, user.id);
 
 		await this.clearTurnWaitingTimer(room.id);
 
@@ -548,7 +552,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room.gameState == null) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+		const myHouse = getHouseOfUserId(room, engine, user.id);
 
 		await this.clearTurnWaitingTimer(room.id);
 
@@ -564,7 +568,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room.gameState == null) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+		const myHouse = getHouseOfUserId(room, engine, user.id);
 
 		// TODO: 自分にロン回答する権利がある状態かバリデーション
 
@@ -581,9 +585,6 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
-
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
 
 		// TODO: 自分にポン回答する権利がある状態かバリデーション
 
@@ -602,7 +603,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room.gameState == null) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = user.id === room.user1Id ? engine.state.user1House : user.id === room.user2Id ? engine.state.user2House : user.id === room.user3Id ? engine.state.user3House : engine.state.user4House;
+		const myHouse = getHouseOfUserId(room, engine, user.id);
 
 		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
 		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
