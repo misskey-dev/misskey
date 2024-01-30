@@ -46,7 +46,14 @@
 		@dragover.prevent
 		@drop.prevent.stop="onDrop"
 	>
-		ここに絵文字の画像ファイルをドラッグ＆ドロップするとドライブにアップロードされます。
+		<div style="margin-top: 1em">
+			いずれかの方法で登録する絵文字を選択してください。
+		</div>
+		<ul>
+			<li>この枠にディレクトリまたは画像ファイルをドラッグ＆ドロップ</li>
+			<li><a @click="onFileSelectClicked">このリンクをクリックしてPCから選択する</a></li>
+			<li><a @click="onDriveSelectClicked">このリンクをクリックしてドライブから選択する</a></li>
+		</ul>
 	</div>
 
 	<div
@@ -91,6 +98,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { required, ValidateViolation } from '@/components/grid/cell-validators.js';
+import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
 
 type FolderItem = {
 	id?: string;
@@ -243,6 +251,26 @@ async function onDrop(ev: DragEvent) {
 	}
 }
 
+async function onFileSelectClicked(ev: MouseEvent) {
+	ev.preventDefault();
+	const driveFiles = await chooseFileFromPc(
+		true,
+		{
+			uploadFolder: selectedFolderId.value,
+			keepOriginal: keepOriginalUploading.value,
+			// 拡張子は消す
+			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+		},
+	);
+	gridItems.value.push(...driveFiles.map(GridItem.fromDriveFile));
+}
+
+async function onDriveSelectClicked(ev: MouseEvent) {
+	ev.preventDefault();
+	const driveFiles = await chooseFileFromDrive(true);
+	gridItems.value.push(...driveFiles.map(GridItem.fromDriveFile));
+}
+
 function onRowDeleting(rows: GridRow[]) {
 	const deletedIndexes = rows.map(it => it.index);
 	gridItems.value = gridItems.value.filter((_, index) => !deletedIndexes.includes(index));
@@ -270,13 +298,15 @@ onMounted(async () => {
 <style module lang="scss">
 .uploadBox {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: 120px;
+	height: auto;
 	border: 0.5px dotted var(--accentedBg);
 	border-radius: var(--border-radius);
 	background-color: var(--accentedBg);
+	box-sizing: border-box;
 }
 
 .buttons {
