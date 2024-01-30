@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		stroke-width="2"
 	/>
 	<circle
-		:cx="headX"
-		:cy="headY"
+		:cx="headX ?? undefined"
+		:cy="headY ?? undefined"
 		r="3"
 		:fill="color"
 	/>

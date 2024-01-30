@@ -138,7 +138,8 @@ function createDoughnut(chartEl, tooltip, data) {
 				},
 			},
 			onClick: (ev) => {
-				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
+				if (ev.native == null) return;
+				const hit = chartInstance.getElementsAtEventForMode(ev.native, 'nearest', { intersect: true }, false)[0];
 				if (hit && data[hit.index].onClick) {
 					data[hit.index].onClick();
 				}
@@ -164,23 +165,46 @@ function createDoughnut(chartEl, tooltip, data) {
 
 onMounted(() => {
 	misskeyApiGet('federation/stats', { limit: 30 }).then(fedStats => {
-		createDoughnut(subDoughnutEl.value, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
+		type ChartData = {
+			name: string,
+			color: string | null,
+			value: number,
+			onClick?: () => void,
+		}[];
+
+		const subs: ChartData = fedStats.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followersCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
 			},
-		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
+		}));
 
-		createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, fedStats.topPubInstances.map(x => ({
+		subs.push({
+			name: '(other)',
+			color: '#80808080',
+			value: fedStats.otherFollowersCount,
+		});
+
+		createDoughnut(subDoughnutEl.value, externalTooltipHandler1, subs);
+
+		const pubs: ChartData = fedStats.topPubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followingCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
 			},
-		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]));
+		}));
+
+		pubs.push({
+			name: '(other)',
+			color: '#80808080',
+			value: fedStats.otherFollowingCount,
+		});
+
+		createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, pubs);
 	});
 });
 </script>
