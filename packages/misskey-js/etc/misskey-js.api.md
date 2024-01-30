@@ -691,6 +691,46 @@ export type Channels = {
         };
         receives: null;
     };
+    reversiGame: {
+        params: {
+            gameId: string;
+        };
+        events: {
+            started: (payload: {
+                game: ReversiGameDetailed;
+            }) => void;
+            ended: (payload: {
+                winnerId: User['id'] | null;
+                game: ReversiGameDetailed;
+            }) => void;
+            canceled: (payload: {
+                userId: User['id'];
+            }) => void;
+            changeReadyStates: (payload: {
+                user1: boolean;
+                user2: boolean;
+            }) => void;
+            updateSettings: (payload: {
+                userId: User['id'];
+                key: string;
+                value: any;
+            }) => void;
+            log: (payload: Record<string, any>) => void;
+        };
+        receives: {
+            putStone: {
+                pos: number;
+                id: string;
+            };
+            ready: boolean;
+            cancel: null | Record<string, never>;
+            updateSettings: {
+                key: string;
+                value: any;
+            };
+            claimTimeIsUp: null | Record<string, never>;
+        };
+    };
 };
 
 // @public (undocumented)
