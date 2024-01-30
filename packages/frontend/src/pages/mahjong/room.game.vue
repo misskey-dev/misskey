@@ -236,11 +236,6 @@ let riichiSelect = false;
 function chooseTile(tile: Mahjong.Common.Tile, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
-	sound.playUrl('/client-assets/mahjong/dahai.mp3', {
-		volume: 1,
-		playbackRate: 1,
-	});
-
 	iTsumoed.value = false;
 
 	props.connection!.send('dahai', {

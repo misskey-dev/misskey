@@ -29,10 +29,10 @@ const props = defineProps<{
 	margin: -17px;
 }
 .h {
-	margin: -14px -20px -10px -20px;
+	margin: -14px -21px -5px;
 }
 .v {
-	margin: -14px -20px -10px -20px;
+	margin: -14px -18px -11px;
 }
 .bg {
 	position: absolute;
