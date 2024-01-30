@@ -62,12 +62,12 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;
 		if (typeof t === 'boolean') return null;
-		return t.match(/^[0-9.]+s$/) ? t : null;
+		return RegExp(/^[0-9.]+s$/).exec(t) ? t : null;
 	};
 
 	const validColor = (c: unknown): string | null => {
 		if (typeof c !== 'string') return null;
-		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
+		return RegExp(/^[0-9a-f]{3,6}$/i).exec(c) ? c : null;
 	};
 
 	const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
@@ -356,7 +356,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'mention': {
 				return [h(MkMention, {
 					key: Math.random(),
-					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? host,
+					host: (token.props.host == null && props.author?.host ? props.author.host : token.props.host) ?? host,
 					username: token.props.username,
 				})];
 			}

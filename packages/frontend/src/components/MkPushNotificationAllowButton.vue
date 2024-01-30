@@ -156,7 +156,7 @@ if (navigator.serviceWorker == null) {
 
 		pushSubscription.value = await registration.value.pushManager.getSubscription();
 
-		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
+		if (instance.swPublickey && ('PushManager' in window) && $i?.token) {
 			supported.value = true;
 
 			if (pushSubscription.value) {

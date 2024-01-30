@@ -12,9 +12,9 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class AntennaChannel extends Channel {
 	public readonly chName = 'antenna';
-	public static shouldShare = false;
-	public static requireCredential = true as const;
-	public static kind = 'read:account';
+	public static readonly shouldShare = false;
+	public static readonly requireCredential = true as const;
+	public static readonly kind = 'read:account';
 	private antennaId: string;
 
 	constructor(

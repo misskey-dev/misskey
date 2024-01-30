@@ -16,8 +16,8 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {
 	public readonly chName = 'globalTimeline';
-	public static shouldShare = false;
-	public static requireCredential = false as const;
+	public static readonly shouldShare = false;
+	public static readonly requireCredential = false as const;
 	private withRenotes: boolean;
 	private withFiles: boolean;
 

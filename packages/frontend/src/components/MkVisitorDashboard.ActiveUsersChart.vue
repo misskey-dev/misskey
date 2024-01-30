@@ -15,7 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, shallowRef, ref, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import gradient from 'chartjs-plugin-gradient';
 import tinycolor from 'tinycolor2';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';

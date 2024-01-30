@@ -15,8 +15,8 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class UserListChannel extends Channel {
 	public readonly chName = 'userList';
-	public static shouldShare = false;
-	public static requireCredential = false as const;
+	public static readonly shouldShare = false;
+	public static readonly requireCredential = false as const;
 	private listId: string;
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersClock: NodeJS.Timeout;

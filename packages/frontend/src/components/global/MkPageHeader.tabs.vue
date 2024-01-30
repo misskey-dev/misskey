@@ -97,7 +97,7 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 
 function renderTab() {
 	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
+	if (tabEl && tabHighlightEl.value?.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
 		const parentRect = tabHighlightEl.value.parentElement.getBoundingClientRect();

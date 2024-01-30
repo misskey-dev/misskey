@@ -16,9 +16,9 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
-	public static shouldShare = false;
-	public static requireCredential = true as const;
-	public static kind = 'read:account';
+	public static readonly shouldShare = false;
+	public static readonly requireCredential = true as const;
+	public static readonly kind = 'read:account';
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;

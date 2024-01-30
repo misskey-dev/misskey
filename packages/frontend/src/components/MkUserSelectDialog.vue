@@ -70,7 +70,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { host as currentHost, hostname } from '@/config.js';
+import { hostname } from '@/config.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
@@ -138,8 +138,8 @@ onMounted(() => {
 				return true;
 			}
 		});
-		if (props.includeSelf && _users.find(x => $i ? x.id === $i.id : true) == null) {
-			recentUsers.value = [$i!, ..._users];
+		if (props.includeSelf && $i && !_users.find(x => $i ? x.id === $i.id : true)) {
+			recentUsers.value = [$i, ..._users];
 		} else {
 			recentUsers.value = _users;
 		}

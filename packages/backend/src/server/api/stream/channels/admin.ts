@@ -9,9 +9,9 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class AdminChannel extends Channel {
 	public readonly chName = 'admin';
-	public static shouldShare = true;
-	public static requireCredential = true as const;
-	public static kind = 'read:admin:stream';
+	public static readonly shouldShare = true;
+	public static readonly requireCredential = true as const;
+	public static readonly kind = 'read:admin:stream';
 
 	@bindThis
 	public async init(params: any) {

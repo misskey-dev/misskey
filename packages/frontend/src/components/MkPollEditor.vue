@@ -72,9 +72,7 @@ export type PollEditorModelValue = {
 const props = defineProps<{
 	modelValue: PollEditorModelValue;
 }>();
-const emit = defineEmits<{
-	(ev: 'update:modelValue', v: PollEditorModelValue): void;
-}>();
+const emit = defineEmits<(ev: 'update:modelValue', v: PollEditorModelValue) => void>();
 
 const choices = ref(props.modelValue.choices);
 const multiple = ref(props.modelValue.multiple);

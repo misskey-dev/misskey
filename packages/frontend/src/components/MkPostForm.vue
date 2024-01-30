@@ -352,7 +352,7 @@ if (props.specified) {
 }
 
 // keep cw when reply
-if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
+if (defaultStore.state.keepCw && props.reply?.cw) {
 	useCw.value = true;
 	cw.value = props.reply.cw;
 }
@@ -603,7 +603,7 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
+			quoteId.value = RegExp(/^\/notes\/(.+?)\/?$/).exec(paste.substring(url.length))?.[1] ?? null;
 		});
 	}
 }
