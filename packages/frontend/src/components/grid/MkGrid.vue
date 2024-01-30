@@ -5,6 +5,7 @@
 	:class="[$style.grid, $style.border]"
 	@mousedown="onMouseDown"
 	@keydown="onKeyDown"
+	@contextmenu="onContextMenu"
 >
 	<thead>
 		<MkHeaderRow
@@ -54,6 +55,8 @@ import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { cellValidation, ValidateViolation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import { calcCellWidth, equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
+import { MenuItem } from '@/types/menu.js';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	gridSetting?: GridSetting,
@@ -68,6 +71,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'operation:cellValidation', violation: ValidateViolation): void;
 	(ev: 'operation:rowDeleting', rows: GridRow[]): void;
+	(ev: 'operation:cellContextMenu', cells: GridCell[], menuItems: MenuItem[]): void;
 	(ev: 'change:cellValue', event: CellValueChangedEvent): void;
 }>();
 
@@ -367,7 +371,26 @@ function onKeyDown(ev: KeyboardEvent) {
 }
 
 function onMouseDown(ev: MouseEvent) {
+	switch (ev.button) {
+		case 0: {
+			onLeftMouseDown(ev);
+			break;
+		}
+		case 2: {
+			onRightMouseDown(ev);
+			break;
+		}
+	}
+}
+
+function onLeftMouseDown(ev: MouseEvent) {
 	const cellAddress = getCellAddress(ev.target as HTMLElement);
+	if (_DEV_) {
+		console.log(`[grid][mouse-left] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
+	}
+
+	ev.preventDefault();
+
 	switch (state.value) {
 		case 'cellEditing': {
 			if (availableCellAddress(cellAddress) && !equalCellAddress(editingCellAddress.value, cellAddress)) {
@@ -407,6 +430,31 @@ function onMouseDown(ev: MouseEvent) {
 
 				rootEl.value?.focus();
 			}
+			break;
+		}
+	}
+}
+
+function onRightMouseDown(ev: MouseEvent) {
+	const cellAddress = getCellAddress(ev.target as HTMLElement);
+	if (_DEV_) {
+		console.log(`[grid][mouse-right] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
+	}
+
+	ev.preventDefault();
+
+	switch (state.value) {
+		case 'normal': {
+			if (!availableCellAddress(cellAddress)) {
+				return;
+			}
+
+			const _rangedCells = [...rangedCells.value];
+			if (!_rangedCells.some(it => equalCellAddress(it.address, cellAddress))) {
+				// 範囲選択外を右クリックした場合は、範囲選択を解除（範囲選択内であれば範囲選択を維持する）
+				selectionCell(cellAddress);
+			}
+
 			break;
 		}
 	}
@@ -503,6 +551,35 @@ function onMouseUp(ev: MouseEvent) {
 			previousCellAddress.value = CELL_ADDRESS_NONE;
 			break;
 		}
+	}
+}
+
+function onContextMenu(ev: MouseEvent) {
+	const cellAddress = getCellAddress(ev.target as HTMLElement);
+	if (_DEV_) {
+		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
+	}
+
+	if (!availableCellAddress(cellAddress)) {
+		return;
+	}
+
+	ev.preventDefault();
+
+	const _rangedCells = [...rangedCells.value];
+	const menuItems: MenuItem[] = [
+		{
+			text: 'コピー',
+			icon: 'ti ti-files',
+			action: () => rangeCopyToClipboard(),
+		},
+	];
+
+	// 外からメニューを挿せるようにイベントを投げる
+	emit('operation:cellContextMenu', _rangedCells, menuItems);
+
+	if (menuItems.length > 0) {
+		os.contextMenu(menuItems, ev);
 	}
 }
 

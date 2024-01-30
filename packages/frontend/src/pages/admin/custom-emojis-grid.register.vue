@@ -70,6 +70,7 @@
 			:columnSettings="columnSettings"
 			@operation:rowDeleting="onRowDeleting"
 			@operation:cellValidation="onCellValidation"
+			@operation:cellContextMenu="onCellContextMenu"
 			@change:cellValue="onChangeCellValue"
 		/>
 	</div>
@@ -103,6 +104,8 @@ import * as os from '@/os.js';
 import { required, ValidateViolation } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
 import { uploadFile } from '@/scripts/upload.js';
+import { GridCell } from '@/components/grid/cell.js';
+import { MenuItem } from '@/types/menu.js';
 
 type FolderItem = {
 	id?: string;
@@ -324,6 +327,17 @@ function onRowDeleting(rows: GridRow[]) {
 
 function onCellValidation(violation: ValidateViolation) {
 	registerButtonDisabled.value = !violation.valid;
+}
+
+function onCellContextMenu(cells: GridCell[], menuItems: MenuItem[]) {
+	menuItems.push(
+		{
+			type: 'button',
+			text: '行を削除',
+			icon: 'ti ti-trash',
+			action: (ev: MouseEvent) => onRowDeleting(cells.map(it => it.row)),
+		},
+	);
 }
 
 function onChangeCellValue(event: CellValueChangedEvent) {
