@@ -54,9 +54,9 @@ export interface MainEventTypes {
 	reply: Packed<'Note'>;
 	renote: Packed<'Note'>;
 	follow: Packed<'UserDetailedNotMe'>;
-	followed: Packed<'User'>;
-	unfollow: Packed<'User'>;
-	meUpdated: Packed<'User'>;
+	followed: Packed<'UserDetailed' | 'UserLite'>;
+	unfollow: Packed<'UserDetailed'>;
+	meUpdated: Packed<'UserDetailed'>;
 	pageEvent: {
 		pageId: MiPage['id'];
 		event: string;

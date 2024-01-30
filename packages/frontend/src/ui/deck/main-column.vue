@@ -27,7 +27,7 @@ import { i18n } from '@/i18n.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 defineProps<{
 	column: Column;
