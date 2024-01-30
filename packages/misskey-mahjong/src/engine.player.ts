@@ -151,7 +151,12 @@ export class PlayerGameEngine {
 	 * @param callers ロンした人
 	 * @param callee 牌を捨てた人
 	 */
-	public commit_ron(callers: House[], callee: House) {
+	public commit_ron(callers: House[], callee: House, handTiles: {
+		e: Tile[];
+		s: Tile[];
+		w: Tile[];
+		n: Tile[];
+	}) {
 		console.log('commit_ron', this.state.turn, callers, callee);
 
 		this.state.canRonSource = null;
@@ -161,13 +166,13 @@ export class PlayerGameEngine {
 		for (const house of callers) {
 			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
 				house: house,
-				handTiles: this.state.handTiles[house],
+				handTiles: handTiles[house],
 				huros: this.state.huros[house],
 				tsumoTile: null,
 				ronTile: this.state.hoTiles[callee].at(-1)!,
 				riichi: this.state.riichis[house],
 			}));
-			console.log('yakus', yakus);
+			console.log('yakus', house, yakus);
 		}
 	}
 

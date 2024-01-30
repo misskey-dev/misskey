@@ -229,7 +229,7 @@ export class MasterGameEngine {
 				ronTile: this.state.hoTiles[callee].at(-1)!,
 				riichi: this.state.riichis[house],
 			}));
-			console.log('yakus', yakus);
+			console.log('yakus', house, yakus);
 		}
 
 		this.endKyoku();
@@ -330,7 +330,7 @@ export class MasterGameEngine {
 			this.state.turn = null;
 			this.state.nextTurnAfterAsking = Utils.nextHouse(house);
 			return {
-				asking: true,
+				asking: true as const,
 				canRonHouses: canRonHouses,
 				canKanHouse: canKanHouse,
 				canPonHouse: canPonHouse,
@@ -343,7 +343,7 @@ export class MasterGameEngine {
 		const tsumoTile = this.tsumo();
 
 		return {
-			asking: false,
+			asking: false as const,
 			tsumoTile: tsumoTile,
 		};
 	}
@@ -371,93 +371,91 @@ export class MasterGameEngine {
 	}) {
 		if (this.state.ponAsking == null && this.state.ciiAsking == null && this.state.kanAsking == null && this.state.ronAsking == null) throw new Error();
 
-		const clearAsking = () => {
-			this.state.ponAsking = null;
-			this.state.ciiAsking = null;
-			this.state.kanAsking = null;
-			this.state.ronAsking = null;
-		};
+		const pon = this.state.ponAsking;
+		const cii = this.state.ciiAsking;
+		const kan = this.state.kanAsking;
+		const ron = this.state.ronAsking;
 
-		if (this.state.ronAsking != null && answers.ron.length > 0) {
-			const callers = this.state.ronAsking.callers;
-			const callee = this.state.ronAsking.callee;
+		this.state.ponAsking = null;
+		this.state.ciiAsking = null;
+		this.state.kanAsking = null;
+		this.state.ronAsking = null;
 
-			this.ron(answers.ron, this.state.ronAsking.callee);
+		if (ron != null && answers.ron.length > 0) {
+			this.ron(answers.ron, ron.callee);
 			return {
-				type: 'ronned',
-				callers,
-				callee,
+				type: 'ronned' as const,
+				callers: ron.callers,
+				callee: ron.callee,
+				turn: null,
 			};
-		}
+		} else if (kan != null && answers.kan) {
+			// 大明槓
 
-		// 大明槓
-		if (this.state.kanAsking != null && answers.kan) {
-			const caller = this.state.kanAsking.caller;
-			const callee = this.state.kanAsking.callee;
-
-			const tile = this.state.hoTiles[callee].pop()!;
-			this.state.huros[caller].push({ type: 'minkan', tile, from: callee });
+			const tile = this.state.hoTiles[kan.callee].pop()!;
+			this.state.huros[kan.caller].push({ type: 'minkan', tile, from: kan.callee });
 
 			const rinsyan = this.tsumo();
 
-			clearAsking();
-			this.state.turn = caller;
+			this.state.turn = kan.caller;
 			return {
-				type: 'kanned',
-				caller,
-				callee,
+				type: 'kanned' as const,
+				caller: kan.caller,
+				callee: kan.callee,
 				tile,
 				rinsyan,
+				turn: this.state.turn,
 			};
-		}
+		} else if (pon != null && answers.pon) {
+			const tile = this.state.hoTiles[pon.callee].pop()!;
+			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(tile), 1);
+			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(tile), 1);
+			this.state.huros[pon.caller].push({ type: 'pon', tile, from: pon.callee });
 
-		if (this.state.ponAsking != null && answers.pon) {
-			const caller = this.state.ponAsking.caller;
-			const callee = this.state.ponAsking.callee;
-
-			const tile = this.state.hoTiles[callee].pop()!;
-			this.state.handTiles[caller].splice(this.state.handTiles[caller].indexOf(tile), 1);
-			this.state.handTiles[caller].splice(this.state.handTiles[caller].indexOf(tile), 1);
-			this.state.huros[caller].push({ type: 'pon', tile, from: callee });
-
-			clearAsking();
-			this.state.turn = caller;
+			this.state.turn = pon.caller;
 			return {
-				type: 'ponned',
-				caller,
-				callee,
+				type: 'ponned' as const,
+				caller: pon.caller,
+				callee: pon.callee,
 				tile,
+				turn: this.state.turn,
 			};
-		}
+		} else if (cii != null && answers.cii) {
+			const tile = this.state.hoTiles[cii.callee].pop()!;
+			this.state.huros[cii.caller].push({ type: 'cii', tile, from: cii.callee });
 
-		if (this.state.ciiAsking != null && answers.cii) {
-			const caller = this.state.ciiAsking.caller;
-			const callee = this.state.ciiAsking.callee;
-
-			const tile = this.state.hoTiles[callee].pop()!;
-			this.state.huros[caller].push({ type: 'cii', tile, from: callee });
-
-			clearAsking();
-			this.state.turn = caller;
+			this.state.turn = cii.caller;
 			return {
-				type: 'ciied',
-				caller,
-				callee,
+				type: 'ciied' as const,
+				caller: cii.caller,
+				callee: cii.callee,
 				tile,
+				turn: this.state.turn,
+			};
+		} else if (this.state.tiles.length === 0) {
+			// 流局
+
+			this.state.turn = null;
+			this.state.nextTurnAfterAsking = null;
+
+			this.endKyoku();
+
+			return {
+				type: 'ryukyoku' as const,
+			};
+		} else {
+			this.state.turn = this.state.nextTurnAfterAsking!;
+			this.state.nextTurnAfterAsking = null;
+
+			const tile = this.tsumo();
+
+			return {
+				type: 'tsumo' as const,
+				house: this.state.turn,
+				tile,
+				turn: this.state.turn,
 			};
 		}
-
-		clearAsking();
-		this.state.turn = this.state.nextTurnAfterAsking;
-		this.state.nextTurnAfterAsking = null;
-
-		const tile = this.tsumo();
-
-		return {
-			type: 'tsumo',
-			house: this.state.turn,
-			tile,
-		};
 	}
 
 	public createPlayerState(index: 1 | 2 | 3 | 4): PlayerState {
