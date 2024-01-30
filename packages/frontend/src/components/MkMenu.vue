@@ -121,7 +121,7 @@ let preferClick = isTouchUsing || props.asDrawer;
 watch(() => props.items, () => {
 	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
 
-	for (let i = 0; i < items.length; i++) {
+	for (let i = 0, len = items.length; i < len; i++) {
 		const item = items[i];
 
 		if (item && 'then' in item) { // if item is Promise

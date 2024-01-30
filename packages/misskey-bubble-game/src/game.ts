@@ -322,7 +322,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	}
 
 	public start() {
-		for (let i = 0; i < this.STOCK_MAX; i++) {
+		for (let i = 0, len = this.STOCK_MAX; i < len; i++) {
 			this.stock.push({
 				id: this.rng().toString(),
 				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(this.rng() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
@@ -431,7 +431,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	public static serializeLogs(logs: Log[]) {
 		const _logs: number[][] = [];
 
-		for (let i = 0; i < logs.length; i++) {
+		for (let i = 0, len = logs.length; i < len; i++) {
 			const log = logs[i];
 			const frameDelta = i === 0 ? log.frame : log.frame - logs[i - 1].frame;
 

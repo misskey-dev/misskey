@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// grouping
 			let groupedNotifications = [notifications[0]] as MiGroupedNotification[];
-			for (let i = 1; i < notifications.length; i++) {
+			for (let i = 1, len = notifications.length; i < len; i++) {
 				const notification = notifications[i];
 				const prev = notifications[i - 1];
 				let prevGroupedNotification = groupedNotifications.at(-1)!;

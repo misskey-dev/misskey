@@ -196,7 +196,7 @@ async function generateApiClientJSDoc(
 
 	endpointOutputLine.push(`declare module '${toImportPath(apiClientFileName)}' {`);
 	endpointOutputLine.push('  export interface APIClient {');
-	for (let i = 0; i < endpoints.length; i++) {
+	for (let i = 0, len = endpoints.length; i < len; i++) {
 		const endpoint = endpoints[i];
 
 		endpointOutputLine.push(

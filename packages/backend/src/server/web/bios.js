@@ -60,7 +60,7 @@ window.onload = async () => {
 		adder.appendChild(addButton);
 		lsEditor.appendChild(adder);
 
-		for (let i = 0; i < localStorage.length; i++) {
+		for (let i = 0, len = localStorage.length; i < len; i++) {
 			const k = localStorage.key(i);
 			const record = document.createElement('div');
 			record.classList.add('record');

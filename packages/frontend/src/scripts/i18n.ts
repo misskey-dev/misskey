@@ -116,7 +116,7 @@ export class I18n<T extends ILocale> {
 						return (arg) => {
 							let str = quasis[0];
 
-							for (let i = 0; i < expressions.length; i++) {
+							for (let i = 0, len = expressions.length; i < len; i++) {
 								if (!Object.hasOwn(arg, expressions[i])) {
 									console.error(`Missing locale parameters: ${expressions[i]} at ${String(p)}`);
 								}
@@ -183,7 +183,7 @@ export class I18n<T extends ILocale> {
 					result[k] = (arg) => {
 						let str = quasis[0];
 
-						for (let i = 0; i < expressions.length; i++) {
+						for (let i = 0, len = expressions.length; i < len; i++) {
 							str += arg[expressions[i]] + quasis[i + 1];
 						}
 

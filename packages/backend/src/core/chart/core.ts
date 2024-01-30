@@ -460,7 +460,7 @@ export default abstract class Chart<T extends Schema> {
 					const firstValues = finalDiffs[firstKey] as string[] | undefined;
 					const currentValuesForHour = new Set([...(firstValues ?? []), ...(logHour[firstTempColumnName] as unknown as string[])]);
 					const currentValuesForDay = new Set([...(firstValues ?? []), ...(logDay[firstTempColumnName] as unknown as string[])]);
-					for (let i = 1; i < intersection.length; i++) {
+					for (let i = 1, len = intersection.length; i < len; i++) {
 						const targetKey = intersection[i];
 						const targetTempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + targetKey.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
 						const targetValues = finalDiffs[targetKey] as string[] | undefined;

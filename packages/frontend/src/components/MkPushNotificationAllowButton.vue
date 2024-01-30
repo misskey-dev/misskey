@@ -142,7 +142,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const rawData = window.atob(base64);
 	const outputArray = new Uint8Array(rawData.length);
 
-	for (let i = 0; i < rawData.length; ++i) {
+	for (let i = 0, len = rawData.length; i < len; ++i) {
 		outputArray[i] = rawData.charCodeAt(i);
 	}
 	return outputArray;

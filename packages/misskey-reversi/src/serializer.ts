@@ -17,7 +17,7 @@ export type SerializedLog = number[];
 export function serializeLogs(logs: Log[]) {
 	const _logs: number[][] = [];
 
-	for (let i = 0; i < logs.length; i++) {
+	for (let i = 0, len = logs.length; i < len; i++) {
 		const log = logs[i];
 		const timeDelta = i === 0 ? log.time : log.time - logs[i - 1].time;
 

@@ -209,7 +209,7 @@ async function init(): Promise<void> {
 		limit: props.pagination.limit ?? 10,
 		allowPartial: true,
 	}).then(res => {
-		for (let i = 0; i < res.length; i++) {
+		for (let i = 0, len = res.length; i < len; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
@@ -249,7 +249,7 @@ const fetchMore = async (): Promise<void> => {
 			untilId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
-		for (let i = 0; i < res.length; i++) {
+		for (let i = 0, len = res.length; i < len; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
 		}

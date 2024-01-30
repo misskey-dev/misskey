@@ -22,7 +22,7 @@ export const emojilist: UnicodeEmojiDef[] = _emojilist.map(x => ({
 
 const _indexByChar = new Map<string, number>();
 const _charGroupByCategory = new Map<string, string[]>();
-for (let i = 0; i < emojilist.length; i++) {
+for (let i = 0, len = emojilist.length; i < len; i++) {
 	const emo = emojilist[i];
 	_indexByChar.set(emo.char, i);
 

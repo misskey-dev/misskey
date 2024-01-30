@@ -51,7 +51,7 @@ async function save() {
 		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
 
 		// check each line if it is a RegExp or not
-		for (let i = 0; i < lines.length; i++) {
+		for (let i = 0, len = lines.length; i < len; i++) {
 			const line = lines[i];
 			const regexp = line.match(/^\/(.+)\/(.*)$/);
 			if (regexp) {

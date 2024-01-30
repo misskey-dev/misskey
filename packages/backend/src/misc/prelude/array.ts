@@ -107,7 +107,7 @@ export function groupByX<T>(collections: T[], keySelector: (x: T) => string) {
  * Compare two arrays by lexicographical order
  */
 export function lessThan(xs: number[], ys: number[]): boolean {
-	for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+	for (let i = 0, len = Math.min(xs.length, ys.length); i < len; i++) {
 		if (xs[i] < ys[i]) return true;
 		if (xs[i] > ys[i]) return false;
 	}
@@ -131,7 +131,7 @@ export function takeWhile<T>(f: Predicate<T>, xs: T[]): T[] {
 
 export function cumulativeSum(xs: number[]): number[] {
 	const ys = Array.from(xs); // deep copy
-	for (let i = 1; i < ys.length; i++) ys[i] += ys[i - 1];
+	for (let i = 1, len = ys.length; i < len; i++) ys[i] += ys[i - 1];
 	return ys;
 }
 
