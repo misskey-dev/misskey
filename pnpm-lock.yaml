@@ -677,8 +677,8 @@ importers:
         specifier: 0.1.0-alpha-3
         version: 0.1.0-alpha-3
       '@misskey-dev/browser-image-resizer':
-        specifier: 2.2.1-misskey.10
-        version: 2.2.1-misskey.10
+        specifier: 2024.1.0
+        version: 2024.1.0
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.9.6)
@@ -4852,8 +4852,8 @@ packages:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
 
-  /@misskey-dev/browser-image-resizer@2.2.1-misskey.10:
-    resolution: {integrity: sha512-Spjiwa8brffhz4FiYrZ8VoPRyPPRzcdaIzLVb8oMnD9YGU3uzcX/CcZ08okFhrUR/N6IlQM86r5dNH/yY5Uyjg==}
+  /@misskey-dev/browser-image-resizer@2024.1.0:
+    resolution: {integrity: sha512-4EnO0zLW5NDtng3Gaz5MuT761uiuoOuplwX18wBqgj8w56LTU5BjLn/vbHwDIIe0j2gwqDYhMb7bDjmr1/Fomg==}
     dev: false
 
   /@misskey-dev/eslint-plugin@1.0.0(@typescript-eslint/eslint-plugin@6.11.0)(@typescript-eslint/parser@6.11.0)(eslint-plugin-import@2.29.1)(eslint@8.53.0):

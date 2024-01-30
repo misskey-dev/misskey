@@ -1223,7 +1223,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "アクティブなお知らせが多いため、UXが低下する可能性があります。終了したお知らせはアーカイブすることを検討してください。"
   readConfirmTitle: "既読にしますか？"
   readConfirmText: "「{title}」の内容を読み、既読にします。"
-  shouldNotBeUsedToPresentPermanentInfo: "特に新規ユーザーのUXを損ねる可能性が高いため、ストック情報ではなくフロー情報の掲示にお知らせを使用することを推奨します。"
+  shouldNotBeUsedToPresentPermanentInfo: "特に新規ユーザーのUXを損ねる可能性が高いため、常時掲示するための情報ではなく、即時性が求められる情報の掲示のためにお知らせを使用することを推奨します。"
   dialogAnnouncementUxWarn: "ダイアログ形式のお知らせが同時に2つ以上ある場合、UXに悪影響を及ぼす可能性が非常に高いため、使用は慎重に行うことを推奨します。"
   silence: "非通知"
   silenceDescription: "オンにすると、このお知らせは通知されず、既読にする必要もなくなります。"
