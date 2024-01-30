@@ -6,25 +6,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <button
 	class="_button"
-	:class="[$style.root, { [$style.wait]: wait || targetUser == null, [$style.active]: targetUser?.isFollowing || targetUser?.hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
-	:disabled="wait || targetUser == null"
+	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
+	:disabled="wait"
 	@click="onClick"
 >
-	<template v-if="!wait && targetUser">
-		<template v-if="targetUser.hasPendingFollowRequestFromYou && targetUser.isLocked">
+	<template v-if="!wait">
+		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
 			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
-		<template v-else-if="targetUser.hasPendingFollowRequestFromYou && !targetUser.isLocked">
+		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->
 			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
-		<template v-else-if="targetUser.isFollowing">
+		<template v-else-if="isFollowing">
 			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
-		<template v-else-if="!targetUser.isFollowing && targetUser.isLocked">
+		<template v-else-if="!isFollowing && user.isLocked">
 			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
 		</template>
-		<template v-else-if="!targetUser.isFollowing && !targetUser.isLocked">
+		<template v-else-if="!isFollowing && !user.isLocked">
 			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
@@ -46,7 +46,7 @@ import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.User,
+	user: Misskey.entities.UserDetailed,
 	full?: boolean,
 	large?: boolean,
 }>(), {
@@ -58,24 +58,33 @@ const emit = defineEmits<{
 	(_: 'update:user', value: Misskey.entities.UserDetailed): void
 }>();
 
-const targetUser = ref<Misskey.entities.UserDetailed | null>(null);
+const isFollowing = ref(props.user.isFollowing);
+const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFromYou);
 const wait = ref(false);
 const connection = useStream().useChannel('main');
 
+if (props.user.isFollowing == null) {
+	misskeyApi('users/show', {
+		userId: props.user.id,
+	})
+		.then(onFollowChange);
+}
+
 function onFollowChange(user: Misskey.entities.UserDetailed) {
-	if (user.id !== props.user.id) return;
-	targetUser.value = user;
+	if (user.id === props.user.id) {
+		isFollowing.value = user.isFollowing;
+		hasPendingFollowRequestFromYou.value = user.hasPendingFollowRequestFromYou;
+	}
 }
 
 async function onClick() {
-	if (targetUser.value == null) return;
 	wait.value = true;
 
 	try {
-		if (targetUser.value.isFollowing) {
+		if (isFollowing.value) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.tsx.unfollowConfirm({ name: props.user.name ?? props.user.username }),
+				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
 			});
 
 			if (canceled) return;
@@ -84,37 +93,35 @@ async function onClick() {
 				userId: props.user.id,
 			});
 		} else {
-			if (targetUser.value.hasPendingFollowRequestFromYou) {
+			if (hasPendingFollowRequestFromYou.value) {
 				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
 				});
-				targetUser.value.hasPendingFollowRequestFromYou = false;
+				hasPendingFollowRequestFromYou.value = false;
 			} else {
 				await misskeyApi('following/create', {
 					userId: props.user.id,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});
 				emit('update:user', {
-					...targetUser.value,
+					...props.user,
 					withReplies: defaultStore.state.defaultWithReplies,
 				});
-				targetUser.value.hasPendingFollowRequestFromYou = true;
+				hasPendingFollowRequestFromYou.value = true;
 
 				claimAchievement('following1');
 
-				if ($i) {
-					if ($i.followingCount >= 10) {
-						claimAchievement('following10');
-					}
-					if ($i.followingCount >= 50) {
-						claimAchievement('following50');
-					}
-					if ($i.followingCount >= 100) {
-						claimAchievement('following100');
-					}
-					if ($i.followingCount >= 300) {
-						claimAchievement('following300');
-					}
+				if ($i.followingCount >= 10) {
+					claimAchievement('following10');
+				}
+				if ($i.followingCount >= 50) {
+					claimAchievement('following50');
+				}
+				if ($i.followingCount >= 100) {
+					claimAchievement('following100');
+				}
+				if ($i.followingCount >= 300) {
+					claimAchievement('following300');
 				}
 			}
 		}
@@ -128,14 +135,6 @@ async function onClick() {
 onMounted(() => {
 	connection.on('follow', onFollowChange);
 	connection.on('unfollow', onFollowChange);
-
-	if (!('isFollowing' in props.user)) {
-		misskeyApi('users/show', {
-			userId: props.user.id,
-		}).then(onFollowChange);
-	} else {
-		targetUser.value = props.user;
-	}
 });
 
 onBeforeUnmount(() => {
