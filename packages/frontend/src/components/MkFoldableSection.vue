@@ -100,15 +100,20 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.folder-toggle-enter-active, .folder-toggle-leave-active {
+.folder-toggle-enter-active {
   overflow-y: clip;
   transition: opacity 0.5s, height 0.5s !important;
 }
-
-.folder-toggle-enter-from, .folder-toggle-leave-to {
+.folder-toggle-leave-active {
+	overflow-y: clip;
+	transition: opacity 0.5s, height 0.5s !important;
+}
+.folder-toggle-enter-from {
   opacity: 0;
 }
-
+.folder-toggle-leave-to {
+	opacity: 0;
+}
 .root {
   position: relative;
 }
