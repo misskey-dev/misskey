@@ -8,7 +8,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i, login } from '@/account.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deepClone } from '@/scripts/clone.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 export function swInject() {
 	navigator.serviceWorker.addEventListener('message', async ev => {

@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-else :class="$style.ready">
 						<div class="_panel main">
 							<div class="title">{{ flash.title }}</div>
-							<div class="summary">{{ flash.summary }}</div>
+							<div class="summary"><Mfm :text="flash.summary"/></div>
 							<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
 							<div class="info">
 								<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
-					<MkCode :code="flash.script" lang="is" :inline="false" class="_monospace"/>
+					<MkCode :code="flash.script" lang="is" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>

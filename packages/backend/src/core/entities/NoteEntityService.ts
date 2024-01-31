@@ -164,7 +164,7 @@ export class NoteEntityService implements OnModuleInit {
 
 		return {
 			multiple: poll.multiple,
-			expiresAt: poll.expiresAt,
+			expiresAt: poll.expiresAt?.toISOString() ?? null,
 			choices,
 		};
 	}

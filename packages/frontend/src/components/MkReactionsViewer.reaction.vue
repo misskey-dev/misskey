@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	class="_button"
 	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
+	@contextmenu.prevent.stop="menu"
 >
 	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
@@ -19,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os.js';
@@ -62,7 +64,7 @@ async function toggleReaction() {
 		if (confirm.canceled) return;
 
 		if (oldReaction !== props.reaction) {
-			sound.play('reaction');
+			sound.playMisskeySfx('reaction');
 		}
 
 		if (mock) {
@@ -81,7 +83,7 @@ async function toggleReaction() {
 			}
 		});
 	} else {
-		sound.play('reaction');
+		sound.playMisskeySfx('reaction');
 
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
@@ -98,9 +100,24 @@ async function toggleReaction() {
 	}
 }
 
+async function menu(ev) {
+	if (!canToggle.value) return;
+	if (!props.reaction.includes(':')) return;
+	os.popupMenu([{
+		text: i18n.ts.info,
+		icon: 'ti ti-info-circle',
+		action: async () => {
+			os.popup(MkCustomEmojiDetailedDialog, {
+				emoji: await misskeyApiGet('emoji', {
+					name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
+				}),
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
 function anime() {
-	if (document.hidden) return;
-	if (!defaultStore.state.animation) return;
+	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
