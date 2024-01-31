@@ -324,3 +324,39 @@ export function calcOwnedDoraCount(handTiles: Tile[], huros: Huro[], doras: Tile
 	}
 	return count;
 }
+
+export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<House, number> {
+	const isParent = house === 'e';
+
+	const deltas: Record<House, number> = {
+		e: 0,
+		s: 0,
+		w: 0,
+		n: 0,
+	};
+
+	const point = fanToPoint(fans, isParent);
+	deltas[house] = point;
+	if (isParent) {
+		const childPoint = Math.ceil(point / 3);
+		deltas.s = -childPoint;
+		deltas.w = -childPoint;
+		deltas.n = -childPoint;
+	} else {
+		const parentPoint = Math.ceil(point / 2);
+		deltas.e = -parentPoint;
+		const otherPoint = Math.ceil(point / 4);
+		if (house === 's') {
+			deltas.w = -otherPoint;
+			deltas.n = -otherPoint;
+		} else if (house === 'w') {
+			deltas.s = -otherPoint;
+			deltas.n = -otherPoint;
+		} else if (house === 'n') {
+			deltas.s = -otherPoint;
+			deltas.w = -otherPoint;
+		}
+	}
+
+	return deltas;
+}

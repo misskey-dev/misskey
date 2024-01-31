@@ -528,7 +528,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_hora(roomId: MiMahjongGame['id'], user: MiUser) {
+	public async commit_tsumoHora(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
@@ -538,13 +538,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		await this.clearTurnWaitingTimer(room.id);
 
-		const res = engine.commit_hora(myHouse);
+		const res = engine.commit_tsumoHora(myHouse);
 
-		this.globalEventService.publishMahjongRoomStream(room.id, 'horad', { });
+		this.globalEventService.publishMahjongRoomStream(room.id, 'tsumoHora', { });
 	}
 
 	@bindThis
-	public async commit_ron(roomId: MiMahjongGame['id'], user: MiUser) {
+	public async commit_ronHora(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;

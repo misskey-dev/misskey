@@ -230,11 +230,11 @@ export class MasterGameEngine {
 	}
 
 	/**
-	 * ロン
+	 * ロン和了
 	 * @param callers ロンする人
 	 * @param callee ロンされる人
 	 */
-	private ron(callers: House[], callee: House) {
+	private ronHora(callers: House[], callee: House) {
 		for (const house of callers) {
 			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
 				house: house,
@@ -383,10 +383,8 @@ export class MasterGameEngine {
 	 * ツモ和了
 	 * @param house
 	 */
-	public commit_hora(house: House) {
+	public commit_tsumoHora(house: House) {
 		if (this.state.turn !== house) throw new Error('Not your turn');
-
-		const isParent = house === 'e';
 
 		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
 			house: house,
@@ -398,29 +396,11 @@ export class MasterGameEngine {
 		}));
 		const doraCount = Common.calcOwnedDoraCount(this.state.handTiles[house], this.state.huros[house], this.doras);
 		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
-		const point = Common.fanToPoint(fans, isParent);
-		this.state.points[house] += point;
-		if (isParent) {
-			const childPoint = Math.ceil(point / 3);
-			this.state.points.s -= childPoint;
-			this.state.points.w -= childPoint;
-			this.state.points.n -= childPoint;
-		} else {
-			const parentPoint = Math.ceil(point / 2);
-			this.state.points.e -= parentPoint;
-			const otherPoint = Math.ceil(point / 4);
-			if (house === 's') {
-				this.state.points.w -= otherPoint;
-				this.state.points.n -= otherPoint;
-			} else if (house === 'w') {
-				this.state.points.s -= otherPoint;
-				this.state.points.n -= otherPoint;
-			} else if (house === 'n') {
-				this.state.points.s -= otherPoint;
-				this.state.points.w -= otherPoint;
-			}
-		}
-		console.log('fans point', fans, point);
+		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
+		this.state.points.e += pointDeltas.e;
+		this.state.points.s += pointDeltas.s;
+		this.state.points.w += pointDeltas.w;
+		this.state.points.n += pointDeltas.n;
 		console.log('yakus', house, yakus);
 
 		this.endKyoku();
@@ -445,7 +425,7 @@ export class MasterGameEngine {
 		this.state.ronAsking = null;
 
 		if (ron != null && answers.ron.length > 0) {
-			this.ron(answers.ron, ron.callee);
+			this.ronHora(answers.ron, ron.callee);
 			return {
 				type: 'ronned' as const,
 				callers: ron.callers,

@@ -53,8 +53,8 @@ class MahjongRoomChannel extends Channel {
 			case 'addAi': this.addAi(); break;
 			case 'confirmNextKyoku': this.confirmNextKyoku(); break;
 			case 'dahai': this.dahai(body.tile, body.riichi); break;
-			case 'hora': this.hora(); break;
-			case 'ron': this.ron(); break;
+			case 'tsumoHora': this.tsumoHora(); break;
+			case 'ronHora': this.ronHora(); break;
 			case 'pon': this.pon(); break;
 			case 'nop': this.nop(); break;
 			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
@@ -97,17 +97,17 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-	private async hora() {
+	private async tsumoHora() {
 		if (this.user == null) return;
 
-		this.mahjongService.commit_hora(this.roomId!, this.user);
+		this.mahjongService.commit_tsumoHora(this.roomId!, this.user);
 	}
 
 	@bindThis
-	private async ron() {
+	private async ronHora() {
 		if (this.user == null) return;
 
-		this.mahjongService.commit_ron(this.roomId!, this.user);
+		this.mahjongService.commit_ronHora(this.roomId!, this.user);
 	}
 
 	@bindThis

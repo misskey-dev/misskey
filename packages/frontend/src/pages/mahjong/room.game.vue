@@ -149,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="engine.state.canRonSource != null" primary gradate @click="ron">Ron</MkButton>
 			<MkButton v-if="engine.state.canPonSource != null" primary @click="pon">Pon</MkButton>
 			<MkButton v-if="engine.state.canRonSource != null || engine.state.canPonSource != null" @click="skip">Skip</MkButton>
-			<MkButton v-if="isMyTurn && canHora" primary gradate @click="hora">Tsumo</MkButton>
+			<MkButton v-if="isMyTurn && canHora" primary gradate @click="tsumoHora">Tsumo</MkButton>
 			<MkButton v-if="isMyTurn && engine.canRiichi()" primary @click="riichi">Riichi</MkButton>
 		</div>
 	</div>
@@ -309,15 +309,15 @@ function kakan() {
 	});
 }
 
-function hora() {
+function tsumoHora() {
 	if (!isMyTurn.value) return;
 
-	props.connection!.send('hora', {
+	props.connection!.send('tsumoHora', {
 	});
 }
 
 function ron() {
-	props.connection!.send('ron', {
+	props.connection!.send('ronHora', {
 	});
 }
 
@@ -439,7 +439,7 @@ function onStreamPonned(log) {
 function onStreamRonned(log) {
 	console.log('onStreamRonned', log);
 
-	engine.value.commit_ron(log.callers, log.callee, log.handTiles);
+	engine.value.commit_ronHora(log.callers, log.callee, log.handTiles);
 	triggerRef(engine);
 
 	for (const caller of log.callers) {
@@ -447,10 +447,13 @@ function onStreamRonned(log) {
 	}
 }
 
-function onStreamHora(log) {
-	console.log('onStreamHora', log);
+function onStreamTsumoHora(log) {
+	console.log('onStreamTsumoHora', log);
 
 	tsumoSerifHouses[log.house] = true;
+
+	engine.value.commit_tsumoHora();
+	triggerRef(engine);
 }
 
 function restoreRoom(_room) {
@@ -466,7 +469,7 @@ onMounted(() => {
 		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.on('ponned', onStreamPonned);
 		props.connection.on('ronned', onStreamRonned);
-		props.connection.on('hora', onStreamHora);
+		props.connection.on('tsumoHora', onStreamTsumoHora);
 	}
 });
 
@@ -477,7 +480,7 @@ onActivated(() => {
 		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.on('ponned', onStreamPonned);
 		props.connection.on('ronned', onStreamRonned);
-		props.connection.on('hora', onStreamHora);
+		props.connection.on('tsumoHora', onStreamTsumoHora);
 	}
 });
 
@@ -488,7 +491,7 @@ onDeactivated(() => {
 		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.off('ponned', onStreamPonned);
 		props.connection.off('ronned', onStreamRonned);
-		props.connection.off('hora', onStreamHora);
+		props.connection.off('tsumoHora', onStreamTsumoHora);
 	}
 });
 
@@ -499,7 +502,7 @@ onUnmounted(() => {
 		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.off('ponned', onStreamPonned);
 		props.connection.off('ronned', onStreamRonned);
-		props.connection.off('hora', onStreamHora);
+		props.connection.off('tsumoHora', onStreamTsumoHora);
 	}
 });
 </script>

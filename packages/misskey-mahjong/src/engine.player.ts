@@ -146,8 +146,8 @@ export class PlayerGameEngine {
 		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
 	}
 
-	public commit_hora(house: House) {
-		console.log('commit_hora', this.state.turn, house);
+	public commit_tsumoHora(house: House) {
+		console.log('commit_tsumoHora', this.state.turn, house);
 
 	// TODO: ツモした人の手牌情報を貰う必要がある
 	}
@@ -157,13 +157,13 @@ export class PlayerGameEngine {
 	 * @param callers ロンした人
 	 * @param callee 牌を捨てた人
 	 */
-	public commit_ron(callers: House[], callee: House, handTiles: {
+	public commit_ronHora(callers: House[], callee: House, handTiles: {
 		e: Tile[];
 		s: Tile[];
 		w: Tile[];
 		n: Tile[];
 	}) {
-		console.log('commit_ron', this.state.turn, callers, callee);
+		console.log('commit_ronHora', this.state.turn, callers, callee);
 
 		this.state.canRonSource = null;
 
