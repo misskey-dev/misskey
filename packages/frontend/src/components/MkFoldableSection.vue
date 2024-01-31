@@ -4,54 +4,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root" role="group" :aria-expanded="opened">
-	<header :class="[$style.header, { [$style.opened]: opened }]" class="_button" role="button" data-cy-folder-header @click="toggle">
+<div ref="rootEl" :class="$style.root">
+	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
 		<button class="_button" :class="$style.button">
-			<template v-if="opened"><i class="ti ti-chevron-up"></i></template>
+			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
 	</header>
-	<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null, overflow: maxHeight ? `auto` : null }" :aria-hidden="!opened">
-		<Transition
-			:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-			:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-			:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-			:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
-			@enter="enter"
-			@afterEnter="afterEnter"
-			@leave="leave"
-			@afterLeave="afterLeave"
-		>
-			<div v-show="opened">
-				<slot></slot>
-			</div>
-		</Transition>
-	</div>
+	<Transition
+		:enterActiveClass="defaultStore.state.animation ? $style['folder-toggle-enter-active'] : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style['folder-toggle-leave-active'] : ''"
+		:enterFromClass="defaultStore.state.animation ? $style['folder-toggle-enter-from'] : ''"
+		:leaveToClass="defaultStore.state.animation ? $style['folder-toggle-leave-to'] : ''"
+		@enter="enter"
+		@afterEnter="afterEnter"
+		@leave="leave"
+		@afterLeave="afterLeave"
+	>
+		<div v-show="showBody">
+			<slot></slot>
+		</div>
+	</Transition>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, shallowRef, ref, watch } from 'vue';
+import { onMounted, ref, shallowRef, watch } from 'vue';
+import tinycolor from 'tinycolor2';
+import { miLocalStorage } from '@/local-storage.js';
 import { defaultStore } from '@/store.js';
+
 const miLocalStoragePrefix = 'ui:folder:' as const;
 
 const props = withDefaults(defineProps<{
+    expanded?: boolean;
+    persistKey?: string;
     defaultOpen?: boolean;
-    maxHeight?: number | null;
 }>(), {
-	defaultOpen: true,
-	maxHeight: null,
+	expanded: true,
 });
-const getBgColor = (el: HTMLElement) => {
-    const style = window.getComputedStyle(el);
-    if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
-        return style.backgroundColor;
-    } else {
-        return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
-    }
-};
+
 const rootEl = shallowRef<HTMLDivElement>();
 const bg = ref<string>();
 const showBody = ref((props.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`) === 't') : props.expanded);
@@ -62,17 +56,12 @@ watch(showBody, () => {
 	}
 });
 
-const rootEl = shallowRef<HTMLElement>();
-const bgSame = ref(false);
-const opened = ref(props.defaultOpen);
-const openedAtLeastOnce = ref(props.defaultOpen);
-
 function enter(element: Element) {
 	const el = element as HTMLElement;
 	const elementHeight = el.getBoundingClientRect().height;
 	el.style.height = '0';
 	el.offsetHeight; // reflow
-	el.style.height = Math.min(elementHeight, props.maxHeight ?? Infinity) + 'px';
+	el.style.height = elementHeight + 'px';
 }
 
 function afterEnter(element: Element) {
@@ -93,16 +82,6 @@ function afterLeave(element: Element) {
 	el.style.height = 'unset';
 }
 
-function toggle() {
-	if (!opened.value) {
-		openedAtLeastOnce.value = true;
-	}
-
-	nextTick(() => {
-		opened.value = !opened.value;
-	});
-}
-
 onMounted(() => {
 	function getParentBg(el?: HTMLElement | null): string {
 		if (el == null || el.tagName === 'BODY') return 'var(--bg)';
@@ -113,10 +92,7 @@ onMounted(() => {
 			return getParentBg(el.parentElement);
 		}
 	}
-    const computedStyle = getComputedStyle(document.documentElement);
-    const parentBg = getBgColor(rootEl.value.parentElement);
-    const myBg = computedStyle.getPropertyValue('--panel');
-    bgSame.value = parentBg === myBg;
+
 	const rawBg = getParentBg(rootEl.value);
 	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	_bg.setAlpha(0.85);
@@ -125,18 +101,17 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.transition_toggle_enterActive,
-.transition_toggle_leaveActive {
+.folder-toggle-enter-active, .folder-toggle-leave-active {
   overflow-y: clip;
-  transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
+  transition: opacity 0.5s, height 0.5s !important;
 }
-.transition_toggle_enterFrom,
-.transition_toggle_leaveTo {
+
+.folder-toggle-enter-from, .folder-toggle-leave-to {
   opacity: 0;
 }
 
 .root {
-  display: block;
+  position: relative;
 }
 
 .header {
@@ -147,63 +122,13 @@ onMounted(() => {
   top: var(--stickyTop, 0px);
   -webkit-backdrop-filter: var(--blur, blur(8px));
   backdrop-filter: var(--blur, blur(20px));
-
-  &.opened {
-    border-radius: 6px 6px 0 0;
-  }
 }
 
-.headerUpper {
-  display: flex;
-  align-items: center;
-}
-
-.headerLower {
-  color: var(--fgTransparentWeak);
-  font-size: .85em;
-  padding-left: 4px;
-}
-
-.headerIcon {
-  margin-right: 0.75em;
-  flex-shrink: 0;
-  text-align: center;
-  opacity: 0.8;
-
-  &:empty {
-    display: none;
-
-    & + .headerText {
-      padding-left: 4px;
-    }
-  }
-}
 .title {
   display: grid;
   place-content: center;
   margin: 0;
   padding: 12px 16px 12px 0;
-}
-.headerText {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  padding-right: 12px;
-}
-
-.headerTextSub {
-  color: var(--fgTransparentWeak);
-  font-size: .85em;
-}
-
-.headerRight {
-  margin-left: auto;
-  color: var(--fgTransparentWeak);
-  white-space: nowrap;
-}
-
-.headerRightText:not(:empty) {
-  margin-right: 0.75em;
 }
 
 .divider {
@@ -211,5 +136,15 @@ onMounted(() => {
   margin: auto;
   height: 1px;
   background: var(--divider);
+}
+
+.button {
+  padding: 12px 0 12px 16px;
+}
+
+@container (max-width: 500px) {
+  .title {
+    padding: 8px 10px 8px 0;
+  }
 }
 </style>

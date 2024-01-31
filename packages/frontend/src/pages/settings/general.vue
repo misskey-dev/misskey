@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
 		</div>
 	</FormSection>
-	<MkFoldableSection :defaultOpen="false" class="item">
+	<MkFoldableSection :expanded="false" class="item">
 		<template #header>{{ i18n.ts.displayOfNote }}</template>
 
 		<div class="_gaps_m">
@@ -108,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 		</div>
 	</MkFoldableSection>
-	<MkFoldableSection :defaultOpen="false" class="item">
+	<MkFoldableSection :expanded="false" class="item">
 		<template #header>{{ i18n.ts.notificationDisplay }}</template>
 
 		<div class="_gaps_m">
@@ -131,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 		</div>
 	</MkFoldableSection>
-	<MkFoldableSection :defaultOpen="false" class="item">
+	<MkFoldableSection :expanded="false" class="item">
 		<template #header>{{ i18n.ts.appearance }}</template>
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -169,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 		</div>
 	</MkFoldableSection>
-	<MkFoldableSection :defaultOpen="false" class="item">
+	<MkFoldableSection :expanded="false" class="item">
 		<template #header>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
@@ -227,13 +227,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkFoldableSection>
-	<MkFoldableSection :defaultOpen="false">
+	<MkFoldableSection :expanded="false">
 		<template #header>他のサーバーのローカルタイムラインを覗けるようにする</template>
 		<div class="_gaps_m">
-			<MkFoldableSection :defaultOpen="false">
-				<template #header>{{ i18n.ts.accessToken }} の発行の仕方</template>
-				<img width="400" src="https://files.prismisskey.space/misskey/676e4b79-7897-4ea9-b074-a98139312f76.gif">
-			</MkFoldableSection>
 			<div v-if="maxLocalTimeline >= 1">
 				<MkInput v-model="remoteLocalTimelineName1" placeholder="prismisskey">
 					<template #label>{{ i18n.ts.name }}</template>
