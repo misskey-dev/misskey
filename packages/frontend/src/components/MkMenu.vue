@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
 		@contextmenu.self="e => e.preventDefault()"
 	>
-		<template v-for="(item, i) in items2">
+		<template v-for="(item, i) in (items2 ?? [])">
 			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
 			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item,{[$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]">
 				<span style="opacity: 0.7;">{{ item.text }}</span>
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
-			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: getValue(item.active) }, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]" :disabled="getValue(item.active)" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon, {  [$style.gamingDark]: gamingType === 'dark',[$style.gamingLight]: gamingType === 'light' }]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
@@ -63,18 +63,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</button>
 		</template>
-		<span v-if="items2.length === 0" :class="[$style.none, $style.item]">
+		<span v-if="items2 == null || items2.length === 0" :class="[$style.none, $style.item]">
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>
 	<div v-if="childMenu">
-		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned" @close="close(false)"/>
+		<XChild ref="child" :items="childMenu" :targetElement="childTarget!" :rootElement="itemsEl!" showing @actioned="childActioned" @close="close(false)"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
+import { ComputedRef, computed, defineAsyncComponent, isRef, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu.js';
 import * as os from '@/os.js';
@@ -106,7 +106,7 @@ const emit = defineEmits<{
 
 const itemsEl = shallowRef<HTMLDivElement>();
 
-const items2 = ref<InnerMenuItem[]>([]);
+const items2 = ref<InnerMenuItem[]>();
 
 const child = shallowRef<InstanceType<typeof XChild>>();
 
@@ -121,15 +121,15 @@ const childShowingItem = ref<MenuItem | null>();
 let preferClick = isTouchUsing || props.asDrawer;
 
 watch(() => props.items, () => {
-	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
+	const items = [...props.items].filter(item => item !== undefined) as (NonNullable<MenuItem> | MenuPending)[];
 
 	for (let i = 0; i < items.length; i++) {
 		const item = items[i];
 
-		if (item && 'then' in item) { // if item is Promise
+		if ('then' in item) { // if item is Promise
 			items[i] = { type: 'pending' };
 			item.then(actualItem => {
-				items2.value[i] = actualItem;
+				if (items2.value?.[i]) items2.value[i] = actualItem;
 			});
 		}
 	}
@@ -153,7 +153,7 @@ function childActioned() {
 }
 
 const onGlobalMousedown = (event: MouseEvent) => {
-	if (childTarget.value && (event.target === childTarget.value || childTarget.value.contains(event.target))) return;
+	if (childTarget.value && (event.target === childTarget.value || childTarget.value.contains(event.target as Node))) return;
 	if (child.value && child.value.checkHit(event)) return;
 	closeChild();
 };
@@ -171,7 +171,7 @@ function onItemMouseLeave(item) {
 }
 
 async function showChildren(item: MenuParent, ev: MouseEvent) {
-	const children = await (async () => {
+	const children: MenuItem[] = await (async () => {
 		if (childrenCache.has(item)) {
 			return childrenCache.get(item)!;
 		} else {
@@ -191,7 +191,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 		});
 		emit('hide');
 	} else {
-		childTarget.value = ev.currentTarget ?? ev.target;
+		childTarget.value = (ev.currentTarget ?? ev.target) as HTMLElement;
 		// これでもリアクティビティは保たれる
 		childMenu.value = children;
 		childShowingItem.value = item;
@@ -218,6 +218,10 @@ function focusDown() {
 function switchItem(item: MenuSwitch & { ref: any }) {
 	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
 	item.ref = !item.ref;
+}
+
+function getValue<T>(item?: ComputedRef<T> | T) {
+	return isRef(item) ? item.value : item;
 }
 
 onMounted(() => {

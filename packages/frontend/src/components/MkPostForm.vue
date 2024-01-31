@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         <button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
         <button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
         <button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-        <button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+        <button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
         <button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 				<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 				<button v-tooltip="i18n.ts.ruby" :class="['_button', $style.footerButton]" @click="insertRuby"><i class="ti ti-abc"></i></button>
@@ -108,7 +108,7 @@ import { toASCII } from 'punycode/';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
-import MkPollEditor from '@/components/MkPollEditor.vue';
+import MkPollEditor, { type PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import { host, url } from '@/config.js';
 import { erase, unique } from '@/scripts/array.js';
 import { extractMentions } from '@/scripts/extract-mentions.js';
@@ -152,13 +152,13 @@ const props = withDefaults(defineProps<{
 	renote?: Misskey.entities.Note;
 	channel?: Misskey.entities.Channel; // TODO
 	mention?: Misskey.entities.User;
-	specified?: Misskey.entities.User;
+	specified?: Misskey.entities.UserDetailed;
 	initialText?: string;
 	initialCw?: string;
 	initialVisibility?: (typeof Misskey.noteVisibilities)[number];
 	initialFiles?: Misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
-	initialVisibleUsers?: Misskey.entities.User[];
+	initialVisibleUsers?: Misskey.entities.UserDetailed[];
 	initialNote?: Misskey.entities.Note;
 	instant?: boolean;
 	fixed?: boolean;
@@ -192,12 +192,7 @@ const posting = ref(false);
 const posted = ref(false);
 const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
-const poll = ref<{
-  choices: string[];
-  multiple: boolean;
-  expiresAt: string | null;
-  expiredAfter: string | null;
-} | null>(null);
+const poll = ref<PollEditorModelValue | null>(null);
 let schedule = ref<{
     scheduledAt: string | null;
 }| null>(null);
@@ -365,7 +360,7 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
   if (visibility.value === 'specified') {
     if (props.reply.visibleUserIds) {
       misskeyApi('users/show', {
-        userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId),
+        userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
       }).then(users => {
         users.forEach(pushVisibleUser);
       });
@@ -574,7 +569,7 @@ async function toggleReactionAcceptance() {
   reactionAcceptance.value = select.result;
 }
 
-function pushVisibleUser(user) {
+function pushVisibleUser(user: Misskey.entities.UserDetailed) {
   if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
     visibleUsers.value.push(user);
   }
@@ -615,9 +610,11 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
-  if (props.mock) return;for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
+  if (props.mock) return;if (!ev.clipboardData) return;
+
+	for (const { item, i } of Array.from(ev.clipboardData.items, (data, x) => ({ item: data, i: x }))) {
     if (item.kind === 'file') {
-      const file = item.getAsFile();
+      const file = item.getAsFile();if (!file) continue;
       const lio = file.name.lastIndexOf('.');
       const ext = lio >= 0 ? file.name.slice(lio) : '';
       const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
@@ -639,7 +636,7 @@ async function onPaste(ev: ClipboardEvent) {
         return;
       }
 
-      quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
+      quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
     });
   }
 }
@@ -670,26 +667,26 @@ function onDragover(ev) {
   }
 }
 
-function onDragenter(ev) {
+function onDragenter() {
   draghover.value = true;
 }
 
-function onDragleave(ev) {
+function onDragleave() {
   draghover.value = false;
 }
 
-function onDrop(ev): void {
+function onDrop(ev: DragEvent): void {
   draghover.value = false;
 
   // ファイルだったら
-  if (ev.dataTransfer.files.length > 0) {
+  if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
     ev.preventDefault();
     for (const x of Array.from(ev.dataTransfer.files)) upload(x);
     return;
   }
 
   //#region ドライブのファイル
-  const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+  const driveFile = ev.dataTransfer?.getData(_DATA_TRANSFER_DRIVE_FILE_);
   if (driveFile != null && driveFile !== '') {
     const file = JSON.parse(driveFile);
     files.value.push(file);
@@ -735,12 +732,14 @@ async function post(ev?: MouseEvent) {
 		});
 		return;
 	}if (ev) {
-    const el = ev.currentTarget ?? ev.target;
+    const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
+
+		if (el) {
     const rect = el.getBoundingClientRect();
     const x = rect.left + (el.offsetWidth / 2);
     const y = rect.top + (el.offsetHeight / 2);
     os.popup(MkRippleEffect, { x, y }, {}, 'end');
-  }
+  }}
 
   if (props.mock) return;const annoying =
       text.value.includes('$[x2') ||
@@ -809,18 +808,18 @@ async function post(ev?: MouseEvent) {
   if (notePostInterruptors.length > 0) {
     for (const interruptor of notePostInterruptors) {
       try {
-				postData = await interruptor.handler(deepClone(postData));
+				postData = await interruptor.handler(deepClone(postData)) as typeof postData;
 			} catch (err) {
 				console.error(err);
 			}
     }
   }
 
-  let token = undefined;
+  let token: string | undefined = undefined;
 
   if (postAccount.value) {
     const storedAccounts = await getAccounts();
-    token = storedAccounts.find(x => x.id === postAccount?.value.id)?.token;
+    token = storedAccounts.find(x => x.id === postAccount?.value?.id)?.token;
   }
 
   posting.value = true;
@@ -834,7 +833,7 @@ async function post(ev?: MouseEvent) {
       deleteDraft();
       emit('posted');
       if (postData.text && postData.text !== '') {
-        const hashtags_ = mfm.parse(postData.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
+        const hashtags_ = mfm.parse(postData.text).map(x => x.type === 'hashtag' && x.props.hashtag).filter(x => x) as string[];
         const history = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]') as string[];
         miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
       }
@@ -911,9 +910,10 @@ function insertMention() {
 
 async function insertEmoji(ev: MouseEvent) {
   textAreaReadOnly.value = true;
-
+	const target = ev.currentTarget ?? ev.target;
+	if (target == null) return;
 	emojiPicker.show(
-		ev.currentTarget ?? ev.target,
+		target as HTMLElement,
 		emoji => {
 			insertTextAtCursor(textareaEl.value, emoji);
 		},
@@ -925,6 +925,7 @@ async function insertEmoji(ev: MouseEvent) {
 }
 
 async function insertMfmFunction(ev: MouseEvent) {
+	if (textareaEl.value == null) return;
 	mfmFunctionPicker(
 		ev.currentTarget ?? ev.target,
 		textareaEl.value,
@@ -932,14 +933,15 @@ async function insertMfmFunction(ev: MouseEvent) {
 	);
 }
 
-function showActions(ev) {
+function showActions(ev: MouseEvent) {
   os.popupMenu(postFormActions.map(action => ({
     text: action.title,
     action: () => {
       action.handler({
         text: text.value,
         cw: cw.value,
-      }, (key, value) => {
+      }, (key, value: any) => {
+				if (typeof key !== 'string') return;
         if (key === 'text') { text.value = value; }
         if (key === 'cw') { useCw.value = value !== null; cw.value = value; }
       });
@@ -1013,9 +1015,9 @@ onMounted(() => {
   }
 
   // TODO: detach when unmount
-  new Autocomplete(textareaEl.value, text);
-  new Autocomplete(cwInputEl.value, cw);
-  new Autocomplete(hashtagsInputEl.value, hashtags);
+  if (textareaEl.value)new Autocomplete(textareaEl.value, text);
+  if (cwInputEl.value)new Autocomplete(cwInputEl.value, cw);
+  if (hashtagsInputEl.value) new Autocomplete(hashtagsInputEl.value, hashtags);
 
   nextTick(() => {
     // 書きかけの投稿を復元
@@ -1038,8 +1040,8 @@ onMounted(() => {
     if (props.initialNote) {
       const init = props.initialNote;
       text.value = init.text ? init.text : '';
-      files.value = init.files;
-      cw.value = init.cw;
+      files.value = init.files ?? [];
+      cw.value = init.cw ?? null;
       useCw.value = init.cw != null;
       if (init.isSchedule) {
 				schedule.value = {
@@ -1050,12 +1052,12 @@ onMounted(() => {
         poll.value = {
           choices: init.poll.choices.map(x => x.text),
           multiple: init.poll.multiple,
-          expiresAt: init.poll.expiresAt,
-          expiredAfter: init.poll.expiredAfter,
+          expiresAt: init.poll.expiresAt? (new Date(init.poll.expiresAt)).getTime() : null,
+					expiredAfter: null,
         };
       }
       visibility.value = init.visibility;
-      localOnly.value = init.localOnly;
+      localOnly.value = init.localOnly?? false;
       quoteId.value = init.renote ? init.renote.id : null;
     }
 

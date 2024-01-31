@@ -27,7 +27,7 @@ import XCommon from './_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { instanceName, ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 

@@ -16,7 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
-			<FormSplit :minWidth="170">
+			<MkInput v-if="localOnly" v-model="username" :autofocus="true" @update:modelValue="search">
+				<template #label>{{ i18n.ts.username }}</template>
+				<template #prefix>@</template>
+			</MkInput>
+			<FormSplit v-else :minWidth="170">
 				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
@@ -67,7 +71,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { hostname } from '@/config.js';
+import { host as currentHost, hostname } from '@/config.js';
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
@@ -77,13 +81,14 @@ const emit = defineEmits<{
 const props = defineProps<{
 	includeSelf?: boolean;
 	multiple?: boolean;
+	localOnly?: boolean;
 }>();
 
 const username = ref('');
 const host = ref('');
-const users = ref<Misskey.entities.UserDetailed[]>([]);
+const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
-const selected = ref<Misskey.entities.UserDetailed | null>(null);
+const selected = ref<Misskey.entities.UserLite | null>(null);
 const multipleSelected = ref<Misskey.entities.UserDetailed[]>([]);
 const dialogEl = ref();
 
@@ -94,7 +99,7 @@ function search() {
 	}
 	misskeyApi('users/search-by-username-and-host', {
 		username: username.value,
-		host: host.value,
+		host: props.localOnly ? '.' : host.value,
 		limit: 10,
 		detail: false,
 	}).then(_users => {
@@ -110,7 +115,7 @@ function ok() {
 	// 最近使ったユーザー更新
 	if (multipleSelected.value.length < 0) return;
 	let recents = defaultStore.state.recentlyUsedUsers;
-	recents = recents.filter(x => x !== selected.value.id);
+	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
 	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
 }
@@ -123,11 +128,18 @@ function cancel() {
 onMounted(() => {
 	misskeyApi('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
-	}).then(users => {
-		if (props.includeSelf && users.find(x => $i ? x.id === $i.id : true) == null) {
-			recentUsers.value = [$i, ...users];
+	}).then(foundUsers => {
+		const _users = foundUsers.filter((u) => {
+			if (props.localOnly) {
+				return u.host == null;
+			} else {
+				return true;
+			}
+		});
+		if (props.includeSelf && _users.find(x => $i ? x.id === $i.id : true) == null) {
+			recentUsers.value = [$i!, ..._users];
 		} else {
-			recentUsers.value = users;
+			recentUsers.value = _users;
 		}
 	});
 });
@@ -136,7 +148,7 @@ onMounted(() => {
 <style lang="scss" module>
 
 .form {
-	padding: 0 var(--root-margin);
+	padding: calc(var(--root-margin) / 2) var(--root-margin);
 }
 
 .result,

@@ -117,7 +117,7 @@ import {defaultStore} from '@/store';
 import {navbarItemDef} from '@/navbar';
 import {i18n} from '@/i18n';
 import {$i} from '@/account';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 import {PageMetadata, provideMetadataReceiver} from '@/scripts/page-metadata';
 import {deviceKind} from '@/scripts/device-kind';
 import {miLocalStorage} from '@/local-storage';

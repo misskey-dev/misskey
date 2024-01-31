@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import {computed, inject, onMounted, ref, shallowRef, watch} from 'vue';
 import * as Misskey from 'misskey-js';
+import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
@@ -104,7 +104,7 @@ async function toggleReaction() {
 
 async function menu(ev) {
 	if (!canToggle.value) return;
-	if (!props.reaction.includes(":")) return;
+	if (!props.reaction.includes(':')) return;
 	os.popupMenu([{
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
@@ -119,8 +119,7 @@ async function menu(ev) {
 }
 
 function anime() {
-	if (document.hidden) return;
-	if (!defaultStore.state.animation) return;
+	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;

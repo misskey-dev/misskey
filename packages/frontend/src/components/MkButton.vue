@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			[$style.gamingLight]: gaming === 'light',
 		}
 	]"
-	:to="to"
+	:to="to ?? '#'"
 	@mousedown="onMousedown"
 >
 	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>

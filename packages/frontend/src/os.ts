@@ -437,23 +437,12 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser(opts: { includeSelf?: boolean, multiple?: boolean, } = {}) {
+export async function selectUser(opts: { includeSelf?: boolean; localOnly?: boolean; multiple?: boolean; } = {}): Promise<Misskey.entities.UserDetailed> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
-			multiple: opts.multiple,
-		}, {
-			ok: user => {
-				resolve(user);
-			},
-		}, 'closed');
-	});
-}
-
-export async function multipleSelectUser(opts: { includeSelf?: boolean } = {}): Promise<Misskey.entities.UserLite> {
-	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
-			includeSelf: opts.includeSelf,
+			localOnly: opts.localOnly,
+            multiple: opts.multiple,
 		}, {
 			ok: user => {
 				resolve(user);

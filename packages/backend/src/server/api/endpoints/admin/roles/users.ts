@@ -40,7 +40,7 @@ export const meta = {
 			},
 			required: ['id', 'createdAt', 'user'],
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
@@ -92,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
 				createdAt: this.idService.parse(assign.id).date.toISOString(),
-				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
+				user: await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
 				expiresAt: assign.expiresAt?.toISOString() ?? null,
 			})));
 		});

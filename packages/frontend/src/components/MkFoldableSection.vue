@@ -33,8 +33,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, shallowRef, ref } from 'vue';
+import { nextTick, onMounted, shallowRef, ref, watch } from 'vue';
 import { defaultStore } from '@/store.js';
+const miLocalStoragePrefix = 'ui:folder:' as const;
 
 const props = withDefaults(defineProps<{
     defaultOpen?: boolean;
@@ -43,41 +44,53 @@ const props = withDefaults(defineProps<{
 	defaultOpen: true,
 	maxHeight: null,
 });
-
 const getBgColor = (el: HTMLElement) => {
-	const style = window.getComputedStyle(el);
-	if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
-		return style.backgroundColor;
-	} else {
-		return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
-	}
+    const style = window.getComputedStyle(el);
+    if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
+        return style.backgroundColor;
+    } else {
+        return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
+    }
 };
+const rootEl = shallowRef<HTMLDivElement>();
+const bg = ref<string>();
+const showBody = ref((props.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`) === 't') : props.expanded);
+
+watch(showBody, () => {
+	if (props.persistKey) {
+		miLocalStorage.setItem(`${miLocalStoragePrefix}${props.persistKey}`, showBody.value ? 't' : 'f');
+	}
+});
 
 const rootEl = shallowRef<HTMLElement>();
 const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);
 
-function enter(el) {
+function enter(element: Element) {
+	const el = element as HTMLElement;
 	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = 0;
+	el.style.height = '0';
 	el.offsetHeight; // reflow
 	el.style.height = Math.min(elementHeight, props.maxHeight ?? Infinity) + 'px';
 }
 
-function afterEnter(el) {
-	el.style.height = null;
+function afterEnter(element: Element) {
+	const el = element as HTMLElement;
+	el.style.height = 'unset';
 }
 
-function leave(el) {
+function leave(element: Element) {
+	const el = element as HTMLElement;
 	const elementHeight = el.getBoundingClientRect().height;
 	el.style.height = elementHeight + 'px';
 	el.offsetHeight; // reflow
-	el.style.height = 0;
+	el.style.height = '0';
 }
 
-function afterLeave(el) {
-	el.style.height = null;
+function afterLeave(element: Element) {
+	const el = element as HTMLElement;
+	el.style.height = 'unset';
 }
 
 function toggle() {
@@ -91,10 +104,23 @@ function toggle() {
 }
 
 onMounted(() => {
-	const computedStyle = getComputedStyle(document.documentElement);
-	const parentBg = getBgColor(rootEl.value.parentElement);
-	const myBg = computedStyle.getPropertyValue('--panel');
-	bgSame.value = parentBg === myBg;
+	function getParentBg(el?: HTMLElement | null): string {
+		if (el == null || el.tagName === 'BODY') return 'var(--bg)';
+		const background = el.style.background || el.style.backgroundColor;
+		if (background) {
+			return background;
+		} else {
+			return getParentBg(el.parentElement);
+		}
+	}
+    const computedStyle = getComputedStyle(document.documentElement);
+    const parentBg = getBgColor(rootEl.value.parentElement);
+    const myBg = computedStyle.getPropertyValue('--panel');
+    bgSame.value = parentBg === myBg;
+	const rawBg = getParentBg(rootEl.value);
+	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+	_bg.setAlpha(0.85);
+	bg.value = _bg.toRgbString();
 });
 </script>
 

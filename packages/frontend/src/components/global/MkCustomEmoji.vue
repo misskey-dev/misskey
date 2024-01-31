@@ -58,7 +58,7 @@ const rawUrl = computed(() => {
 });
 
 const url = computed(() => {
-	if (rawUrl.value == null) return null;
+	if (rawUrl.value == null) return undefined;
   const useOriginalSize = props.useOriginalSize;
   const enableDataSaverMode = defaultStore.state.enableUltimateDataSaverMode;
   let datasaver_result ;

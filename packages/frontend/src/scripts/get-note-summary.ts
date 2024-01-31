@@ -10,7 +10,11 @@ import { i18n } from '@/i18n.js';
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-export const getNoteSummary = (note: Misskey.entities.Note): string => {
+export const getNoteSummary = (note?: Misskey.entities.Note | null): string => {
+	if (note == null) {
+		return '';
+	}
+
 	if (note.deletedAt) {
 		return `(${i18n.ts.deletedNote})`;
 	}

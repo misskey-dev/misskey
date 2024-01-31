@@ -1,0 +1,66 @@
+name: Deploy test environment
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository to deploy (optional)'
+        required: false
+      branch:
+        description: 'Branch to deploy (optional)'
+        required: false
+
+jobs:
+  deploy-test-environment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set environment variable (for tput command & pnpm)
+      run: |
+        echo "TERM=xterm" >> $GITHUB_ENV
+        REPOSITORY=${{ github.event.inputs.repository || github.repository }}
+        echo "REPOSITORY=$REPOSITORY" >> $GITHUB_ENV
+        BRANCH=${{ github.event.inputs.branch || github.ref_name }}
+        echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ env.REPOSITORY }}
+        ref: ${{ env.BRANCH }}
+
+    - name: Get the latest commit SHA
+      run: |
+        SHA=$(git log -1 --format="%H")
+        echo "SHA=$SHA" >> $GITHUB_ENV
+
+    - name: Start cloudflare tunnel (quick)
+      run: |
+        wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        sudo dpkg -i cloudflared-linux-amd64.deb
+        sudo cloudflared tunnel --metrics localhost:55555 --url localhost:3000 > /dev/null 2>&1 &
+        sleep 15
+        TUNNEL_RESPONSE=$(curl http://localhost:55555/quicktunnel)
+        TUNNEL_DOMAIN=$(echo $TUNNEL_RESPONSE | grep -o '"hostname":"[^"]*' | grep -o '[^"]*$')
+        echo "::add-mask::$TUNNEL_DOMAIN"
+        echo "TUNNEL_DOMAIN=$TUNNEL_DOMAIN" >> $GITHUB_ENV
+
+    - name: Install misskey
+      run: |
+        wget https://raw.githubusercontent.com/joinmisskey/bash-install/v4/misskey-install.sh
+        wget https://raw.githubusercontent.com/joinmisskey/bash-install/v4/testenv_githubactions.txt
+        sed -i "s/host=127.0.0.1/host=$TUNNEL_DOMAIN/g" testenv_githubactions.txt
+        sed -i "s|git_repository=https://github.com/misskey-dev/misskey|git_repository=https://github.com/$REPOSITORY|g" testenv_githubactions.txt
+        sed -i "s|git_branch=master|git_branch=$BRANCH|g" testenv_githubactions.txt
+        sudo chmod 555 ./misskey-install.sh
+        sudo bash -x ./misskey-install.sh -c ./testenv_githubactions.txt
+
+    - name: Post tunnel info to Discord
+      run: |
+        CURRENT_TIME=$(TZ=Asia/Tokyo date +'%Y-%m-%d %H:%M:%S JST')
+        COMMIT_URL="https://github.com/$REPOSITORY/commit/$SHA"
+        curl -X POST -H "Content-Type: application/json" -d "{\"content\": \"==============================\nURL: https://$TUNNEL_DOMAIN\nRepository: $REPOSITORY\nBranch: $BRANCH\nCommit: $COMMIT_URL\nTime: $CURRENT_TIME\n==============================\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    - name: Wait
+      run: |
+        timeout 3600 tail -f /var/log/syslog || true

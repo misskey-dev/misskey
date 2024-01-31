@@ -31,7 +31,7 @@ let gamingType = computed(defaultStore.makeGetterSetter('gamingType'));
 
 const props = withDefaults(defineProps<{
   checked: boolean | Ref<boolean>;
-  disabled?: boolean;
+  disabled?: boolean | Ref<boolean>;
 }>(), {
   disabled: false,
 });

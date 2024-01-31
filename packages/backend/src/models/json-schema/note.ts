@@ -74,6 +74,7 @@ export const packedNoteSchema = {
 		visibility: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['public', 'home', 'followers', 'specified'],
 		},
 		mentions: {
 			type: 'array',
@@ -122,6 +123,48 @@ export const packedNoteSchema = {
 		poll: {
 			type: 'object',
 			optional: true, nullable: true,
+			properties: {
+				expiresAt: {
+					type: 'string',
+					optional: true, nullable: true,
+					format: 'date-time',
+				},
+				multiple: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				choices: {
+					type: 'array',
+					optional: false, nullable: false,
+					items: {
+						type: 'object',
+						optional: false, nullable: false,
+						properties: {
+							isVoted: {
+								type: 'boolean',
+								optional: false, nullable: false,
+							},
+							text: {
+								type: 'string',
+								optional: false, nullable: false,
+							},
+							votes: {
+								type: 'number',
+								optional: false, nullable: false,
+							},
+						},
+					},
+				},
+			},
+		},
+		emojis: {
+			type: 'object',
+			optional: true, nullable: false,
+			additionalProperties: {
+				anyOf: [{
+					type: 'string',
+				}],
+			},
 		},
 		channelId: {
 			type: 'string',
@@ -167,9 +210,23 @@ export const packedNoteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		reactionEmojis: {
+			type: 'object',
+			optional: false, nullable: false,
+			additionalProperties: {
+				anyOf: [{
+					type: 'string',
+				}],
+			},
+		},
 		reactions: {
 			type: 'object',
 			optional: false, nullable: false,
+			additionalProperties: {
+				anyOf: [{
+					type: 'number',
+				}],
+			},
 		},
 		renoteCount: {
 			type: 'number',
@@ -201,7 +258,7 @@ export const packedNoteSchema = {
 		},
 
 		myReaction: {
-			type: 'object',
+			type: 'string',
 			optional: true, nullable: true,
 		},
 	},

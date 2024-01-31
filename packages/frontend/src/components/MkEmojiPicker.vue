@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</section>
 
 		<div v-if="tab === 'index'" class="group index">
-			<section v-if="showPinned">
+			<section v-if="showPinned && (pinned && pinned.length > 0)">
 				<div style="display: flex; ">
 					<div v-for="a in profileMax" :key="a" :title="defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`]" class="sllfktkhgl" :class="{ active: activeIndex === a || isDefaultProfile === a }" @click="pinnedProfileSelect(a)">
 						{{ defaultStore.state[`pickerProfileName${a > 1 ? a - 1 : ''}`] }}
@@ -349,7 +349,7 @@ watch(q, () => {
 });
 
 function filterAvailable(emoji: Misskey.entities.EmojiSimple): boolean {
-	return (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction == null || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)));
+	return ((emoji.roleIdsThatCanBeUsedThisEmojiAsReaction == null || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction?.includes(r.id)))) ?? false;
 }
 
 function focus() {

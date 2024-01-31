@@ -178,7 +178,7 @@ import {getUserMenu} from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import {userPage} from '@/filters/user.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 import {i18n} from '@/i18n.js';
 import {$i, iAmModerator} from '@/account.js';
 import {dateString} from '@/filters/date.js';
@@ -187,7 +187,6 @@ import  {misskeyApi} from '@/scripts/misskey-api.js';
 import {isFollowingVisibleForMe, isFollowersVisibleForMe} from '@/scripts/isFfVisibleForMe.js';
 import MkNotifyButton from "@/components/MkNotifyButton.vue";
 import MkRemoteInfoUpdate from "@/components/MkRemoteInfoUpdate.vue";
-import {defaultStore} from '@/store.js';
 import MkNotes from "@/components/MkNotes.vue";
 import MkLazy from "@/components/global/MkLazy.vue";
 

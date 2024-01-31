@@ -68,7 +68,7 @@ import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
+	user: Misskey.entities.UserDetailed;
 	initialComment?: string;
   initialNoteId?: Misskey.entities.Note['id'];
 }>();

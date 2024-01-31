@@ -19,7 +19,7 @@ import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(

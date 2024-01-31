@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await Promise.all(_users.map(u => this.userEntityService.pack(u, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				})));
 			} else {
 				// Lookup user
@@ -146,7 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await this.userEntityService.pack(user, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				});
 			}
 		});

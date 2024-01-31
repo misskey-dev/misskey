@@ -54,15 +54,15 @@ export interface MainEventTypes {
 	reply: Packed<'Note'>;
 	renote: Packed<'Note'>;
 	follow: Packed<'UserDetailedNotMe'>;
-	followed: Packed<'User'>;
-	unfollow: Packed<'User'>;
-	meUpdated: Packed<'User'>;
+	followed: Packed<'UserLite'>;
+	unfollow: Packed<'UserDetailedNotMe'>;
+	meUpdated: Packed<'MeDetailed'>;
 	pageEvent: {
 		pageId: MiPage['id'];
 		event: string;
 		var: any;
 		userId: MiUser['id'];
-		user: Packed<'User'>;
+		user: Packed<'UserDetailed'>;
 	};
 	urlUploadFinished: {
 		marker?: string | null;
@@ -92,7 +92,7 @@ export interface MainEventTypes {
 	};
 	driveFileCreated: Packed<'DriveFile'>;
 	readAntenna: MiAntenna;
-	receiveFollowRequest: Packed<'User'>;
+	receiveFollowRequest: Packed<'UserLite'>;
 	announcementCreated: {
 		announcement: Packed<'Announcement'>;
 	};
@@ -140,8 +140,8 @@ type NoteStreamEventTypes = {
 };
 
 export interface UserListEventTypes {
-	userAdded: Packed<'User'>;
-	userRemoved: Packed<'User'>;
+	userAdded: Packed<'UserLite'>;
+	userRemoved: Packed<'UserLite'>;
 }
 
 export interface AntennaEventTypes {
