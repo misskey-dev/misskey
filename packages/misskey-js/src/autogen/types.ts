@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.4
- * generatedAt: 2024-01-27T12:44:54.008Z
+ * version: 2024.2.0-beta.6
+ * generatedAt: 2024-01-24T07:32:10.370Z
  */
 
 /**
@@ -4493,6 +4493,7 @@ export type components = {
       timeoutUserId: string | null;
       black: number | null;
       bw: string;
+      noIrregularRules: boolean;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
@@ -4528,6 +4529,7 @@ export type components = {
       timeoutUserId: string | null;
       black: number | null;
       bw: string;
+      noIrregularRules: boolean;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
@@ -6539,7 +6541,16 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['EmojiDetailed'][];
+          'application/json': ({
+              /** Format: id */
+              id: string;
+              aliases: string[];
+              name: string;
+              category: string | null;
+              /** @description The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files. */
+              host: string | null;
+              url: string;
+            })[];
         };
       };
       /** @description Client error */
@@ -25790,6 +25801,10 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           userId?: string | null;
+          /** @default false */
+          noIrregularRules?: boolean;
+          /** @default false */
+          multiple?: boolean;
         };
       };
     };

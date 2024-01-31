@@ -43,7 +43,6 @@
 		"compare-versions": "6.1.0",
 		"cropperjs": "2.0.0-beta.4",
 		"date-fns": "2.30.0",
-		"defu": "^6.1.4",
 		"escape-regexp": "0.0.1",
 		"estree-walker": "3.0.3",
 		"eventemitter3": "5.0.1",
