@@ -39,7 +39,9 @@ import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { chooseFileFromPc } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const name = ref($i.name ?? '');
 const description = ref($i.description ?? '');

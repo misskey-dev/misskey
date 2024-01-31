@@ -39,7 +39,7 @@ export class ModerationLogEntityService {
 			info: log.info,
 			userId: log.userId,
 			user: this.userEntityService.pack(log.user ?? log.userId, me, {
-				detail: true,
+				schema: 'UserDetailed',
 			}),
 		});
 	}

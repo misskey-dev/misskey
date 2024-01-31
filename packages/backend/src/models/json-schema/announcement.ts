@@ -37,10 +37,12 @@ export const packedAnnouncementSchema = {
 		icon: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['info', 'warning', 'error', 'success'],
 		},
 		display: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['dialog', 'normal', 'banner'],
 		},
 		needConfirmationToRead: {
 			type: 'boolean',

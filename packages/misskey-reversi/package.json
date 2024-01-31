@@ -15,8 +15,7 @@
 	},
 	"scripts": {
 		"build": "node ./build.js",
-		"build:tsc": "npm run tsc",
-		"tsc": "npm run tsc-esm && npm run tsc-dts",
+		"build:tsc": "pnpm tsc-esm && pnpm tsc-dts",
 		"tsc-esm": "tsc --outDir built/esm",
 		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
 		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build:tsc\"",
@@ -26,7 +25,7 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@types/node": "20.11.6",
+		"@types/node": "20.11.10",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
 		"eslint": "8.56.0",
@@ -35,7 +34,7 @@
 	},
 	"dependencies": {
 		"crc-32": "1.2.2",
-		"esbuild": "0.19.12",
+		"esbuild": "0.20.0",
 		"glob": "10.3.10"
 	},
 	"files": [

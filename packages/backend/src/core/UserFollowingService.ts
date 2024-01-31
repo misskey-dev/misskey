@@ -13,7 +13,6 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { Packed } from '@/misc/json-schema.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
@@ -293,9 +292,9 @@ export class UserFollowingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			// Publish follow event
 			this.userEntityService.pack(followee.id, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
-				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
+				this.globalEventService.publishMainStream(follower.id, 'follow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
@@ -360,7 +359,7 @@ export class UserFollowingService implements OnModuleInit {
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
 			// Publish unfollow event
 			this.userEntityService.pack(followee.id, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
@@ -500,7 +499,7 @@ export class UserFollowingService implements OnModuleInit {
 			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventService.publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
 			this.userEntityService.pack(followee.id, followee, {
-				detail: true,
+				schema: 'MeDetailed',
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 
 			// 通知を作成
@@ -548,7 +547,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		this.userEntityService.pack(followee.id, followee, {
-			detail: true,
+			schema: 'MeDetailed',
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
@@ -576,7 +575,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		this.userEntityService.pack(followee.id, followee, {
-			detail: true,
+			schema: 'MeDetailed',
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
@@ -696,7 +695,7 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async publishUnfollow(followee: Both, follower: Local): Promise<void> {
 		const packedFollowee = await this.userEntityService.pack(followee.id, follower, {
-			detail: true,
+			schema: 'UserDetailedNotMe',
 		});
 
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);

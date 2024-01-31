@@ -93,7 +93,7 @@ async function rename(file) {
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.enterFileName,
 		default: file.name,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 	misskeyApi('drive/files/update', {

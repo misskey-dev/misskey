@@ -126,7 +126,7 @@ async function unsubscribe() {
 }
 
 function encode(buffer: ArrayBuffer | null) {
-	return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+	return btoa(String.fromCharCode.apply(null, buffer ? new Uint8Array(buffer) as any : []));
 }
 
 /**
@@ -156,7 +156,7 @@ if (navigator.serviceWorker == null) {
 
 		pushSubscription.value = await registration.value.pushManager.getSubscription();
 
-		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
+		if (instance.swPublickey && ('PushManager' in window) && $i?.token) {
 			supported.value = true;
 
 			if (pushSubscription.value) {

@@ -112,6 +112,7 @@ function onLogin(res: any): Promise<void> | void {
 }
 
 async function queryKey(): Promise<void> {
+	if (credentialRequest.value == null) return;
 	queryingKey.value = true;
 	await webAuthnRequest(credentialRequest.value)
 		.catch(() => {
@@ -141,7 +142,7 @@ async function queryKey(): Promise<void> {
 
 function onSubmit(): void {
 	signing.value = true;
-	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
+	if (!totpLogin.value && user.value?.twoFactorEnabled) {
 		if (webAuthnSupported() && user.value.securityKeys) {
 			misskeyApi('signin', {
 				username: username.value,

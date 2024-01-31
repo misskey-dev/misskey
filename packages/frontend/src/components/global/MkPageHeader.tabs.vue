@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 export type Tab = {
 	key: string;
+	title: string;
 	onClick?: (ev: MouseEvent) => void;
 } & (
 	| {
@@ -96,7 +97,7 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 
 function renderTab() {
 	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
+	if (tabEl && tabHighlightEl.value?.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
 		const parentRect = tabHighlightEl.value.parentElement.getBoundingClientRect();
@@ -120,8 +121,9 @@ function onTabWheel(ev: WheelEvent) {
 
 let entering = false;
 
-async function enter(el: HTMLElement) {
+async function enter(element: Element) {
 	entering = true;
+	const el = element as HTMLElement;
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
@@ -135,11 +137,12 @@ async function enter(el: HTMLElement) {
 	setTimeout(renderTab, 170);
 }
 
-function afterEnter(el: HTMLElement) {
+function afterEnter(element: Element) {
 	//el.style.width = '';
 }
 
-async function leave(el: HTMLElement) {
+async function leave(element: Element) {
+	const el = element as HTMLElement;
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = elementWidth + 'px';
 	el.style.paddingLeft = '';
@@ -148,7 +151,8 @@ async function leave(el: HTMLElement) {
 	el.style.paddingLeft = '0';
 }
 
-function afterLeave(el: HTMLElement) {
+function afterLeave(element: Element) {
+	const el = element as HTMLElement;
 	el.style.width = '';
 }
 

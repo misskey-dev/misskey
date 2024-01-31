@@ -9,9 +9,9 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class ReversiChannel extends Channel {
 	public readonly chName = 'reversi';
-	public static shouldShare = true;
-	public static requireCredential = true as const;
-	public static kind = 'read:account';
+	public static readonly shouldShare = true;
+	public static readonly requireCredential = true as const;
+	public static readonly kind = 'read:account';
 
 	@bindThis
 	public async init(params: any) {

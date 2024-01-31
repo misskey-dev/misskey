@@ -205,7 +205,7 @@ function onDragend() {
 }
 
 function go() {
-	emit('move', props.folder.id);
+	emit('move', props.folder);
 }
 
 function rename() {

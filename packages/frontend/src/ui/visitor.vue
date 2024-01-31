@@ -82,7 +82,7 @@ import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 const DESKTOP_THRESHOLD = 1100;
 

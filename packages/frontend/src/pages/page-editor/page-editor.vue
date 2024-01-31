@@ -76,7 +76,7 @@ import { selectFile } from '@/scripts/select-file.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i } from '@/account.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 const props = defineProps<{
 	initPageId?: string;

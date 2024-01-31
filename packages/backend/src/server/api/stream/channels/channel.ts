@@ -12,8 +12,8 @@ import Channel, { type MiChannelService } from '../channel.js';
 
 class ChannelChannel extends Channel {
 	public readonly chName = 'channel';
-	public static shouldShare = false;
-	public static requireCredential = false as const;
+	public static readonly shouldShare = false;
+	public static readonly requireCredential = false as const;
 	private channelId: string;
 
 	constructor(

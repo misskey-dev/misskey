@@ -32,14 +32,14 @@ import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js'
 import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
 import { packedNoteSchema } from '@/models/json-schema/note.js';
 import { packedNotificationSchema } from '@/models/json-schema/notification.js';
-import { packedPageLikeSchema, packedPageSchema } from '@/models/json-schema/page.js';
+import { packedPageLikeSchema, packedPageBlockSchema, packedPageSchema } from '@/models/json-schema/page.js';
 import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
 import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
 import { packedUserListMembershipSchema, packedUserListSchema } from '@/models/json-schema/user-list.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
-import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
+import { packedRoleLiteSchema, packedRoleSchema, packedRolePoliciesSchema } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
 import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
 
@@ -71,6 +71,7 @@ export const refs = {
 	Hashtag: packedHashtagSchema,
 	InviteCode: packedInviteCodeSchema,
 	Page: packedPageSchema,
+	PageBlock: packedPageBlockSchema,
 	PageLike: packedPageLikeSchema,
 	Channel: packedChannelSchema,
 	QueueCount: packedQueueCountSchema,
@@ -87,6 +88,7 @@ export const refs = {
 	Signin: packedSigninSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
+	RolePolicies: packedRolePoliciesSchema,
 	ReversiGameLite: packedReversiGameLiteSchema,
 	ReversiGameDetailed: packedReversiGameDetailedSchema,
 	AbuseUserReport: packedAbuseUserReportSchema,
@@ -94,6 +96,9 @@ export const refs = {
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
+
+export type KeyOf<x extends keyof typeof refs> = PropertiesToUnion<typeof refs[x]>;
+type PropertiesToUnion<p extends Schema> = p['properties'] extends NonNullable<Obj> ? keyof p['properties'] : never;
 
 type TypeStringef = 'null' | 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =

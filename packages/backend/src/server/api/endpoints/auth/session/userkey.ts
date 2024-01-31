@@ -27,7 +27,7 @@ export const meta = {
 			user: {
 				type: 'object',
 				optional: false, nullable: false,
-				ref: 'UserDetailedNotMe',
+				ref: 'UserDetailed',
 			},
 		},
 	},
@@ -112,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return {
 				accessToken: accessToken.token,
 				user: await this.userEntityService.pack(session.userId, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				}),
 			};
 		});

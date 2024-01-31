@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import Misskey from 'misskey-js';
 import { computed, watch, onUnmounted, provide, shallowRef } from 'vue';
 import { Connection } from 'misskey-js/streaming.js';
 import MkNotes from '@/components/MkNotes.vue';
@@ -29,7 +30,7 @@ import { defaultStore } from '@/store.js';
 import { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
-	src: string;
+	src: 'home' | 'local' | 'media' | 'social' | 'global' | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
 	list?: string;
 	antenna?: string;
 	channel?: string;
@@ -94,6 +95,7 @@ const stream = useStream();
 
 function connectChannel() {
 	if (props.src === 'antenna') {
+		if (props.antenna == null) return;
 		connection = stream.useChannel('antenna', {
 			antennaId: props.antenna,
 		});
@@ -138,21 +140,24 @@ function connectChannel() {
 		connection = stream.useChannel('main');
 		connection.on('mention', onNote);
 	} else if (props.src === 'list') {
+		if (props.list == null) return;
 		connection = stream.useChannel('userList', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		});
 	} else if (props.src === 'channel') {
+		if (props.channel == null) return;
 		connection = stream.useChannel('channel', {
 			channelId: props.channel,
 		});
 	} else if (props.src === 'role') {
+		if (props.role == null) return;
 		connection = stream.useChannel('roleTimeline', {
 			roleId: props.role,
 		});
 	}
-	if (props.src !== 'directs' || props.src !== 'mentions') connection.on('note', prepend);
+	if (props.src !== 'directs' && props.src !== 'mentions') connection.on('note', prepend);
 }
 
 function disconnectChannel() {
@@ -161,7 +166,7 @@ function disconnectChannel() {
 }
 
 function updatePaginationQuery() {
-	let endpoint: string | null;
+	let endpoint: keyof Misskey.Endpoints | null;
 	let query: TimelineQueryType | null;
 
 	if (props.src === 'antenna') {
