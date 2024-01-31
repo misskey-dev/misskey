@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.370Z
+ * version: 2024.2.0-beta.8
+ * generatedAt: 2024-01-31T05:27:45.068Z
  */
 
 /**
@@ -6541,16 +6541,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': ({
-              /** Format: id */
-              id: string;
-              aliases: string[];
-              name: string;
-              category: string | null;
-              /** @description The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files. */
-              host: string | null;
-              url: string;
-            })[];
+          'application/json': components['schemas']['EmojiDetailed'][];
         };
       };
       /** @description Client error */
