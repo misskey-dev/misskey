@@ -1,6 +1,6 @@
 /*
- * version: 2024.2.0-beta.7
- * generatedAt: 2024-01-30T11:53:29.839Z
+ * version: 2024.2.0-beta.8
+ * generatedAt: 2024-01-31T01:46:47.964Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';

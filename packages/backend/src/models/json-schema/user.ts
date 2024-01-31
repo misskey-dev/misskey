@@ -685,13 +685,5 @@ export const packedUserSchema = {
 			type: 'object',
 			ref: 'UserDetailed',
 		},
-		{
-			type: 'object',
-			ref: 'UserDetailedNotMe',
-		},
-		{
-			type: 'object',
-			ref: 'MeDetailed',
-		},
 	],
 } as const;
