@@ -16,12 +16,12 @@ import * as Misskey from 'misskey-js';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const meta = ref<Misskey.entities.MetaResponse | null>(null);
 
-os.api('meta', { detail: true }).then(res => {
+misskeyApi('meta', { detail: true }).then(res => {
 	meta.value = res;
 });
 
