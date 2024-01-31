@@ -4,18 +4,20 @@
  */
 
 import { App, AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
+import type { RouteDef } from '@/nirax.js';
 import { IRouter, Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import { setMainRouter } from '@/global/router/main.js';
+import { setMainRouter } from '@/router/main.js';
 
 const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loader: loader,
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
-const routes = [{
+
+const routes: RouteDef[] = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
 }, {
@@ -332,7 +334,11 @@ const routes = [{
 	component: page(() => import('@/pages/registry.vue')),
 }, {
 	path: '/install-extentions',
-	component: page(() => import('@/pages/install-extentions.vue')),
+	redirect: '/install-extensions',
+	loginRequired: true,
+}, {
+	path: '/install-extensions',
+	component: page(() => import('@/pages/install-extensions.vue')),
 	loginRequired: true,
 }, {
 	path: '/admin/user/:userId',
@@ -524,17 +530,25 @@ const routes = [{
 	component: page(() => import('@/pages/antenna-timeline.vue')),
 	loginRequired: true,
 }, {
-	path: '/games',
-	component: page(() => import('@/pages/games.vue')),
-	loginRequired: true,
-}, {
 	path: '/clicker',
 	component: page(() => import('@/pages/clicker.vue')),
 	loginRequired: true,
 }, {
+	path: '/games',
+	component: page(() => import('@/pages/games.vue')),
+	loginRequired: false,
+}, {
 	path: '/bubble-game',
 	component: page(() => import('@/pages/drop-and-fusion.vue')),
 	loginRequired: true,
+}, {
+	path: '/reversi',
+	component: page(() => import('@/pages/reversi/index.vue')),
+	loginRequired: false,
+}, {
+	path: '/reversi/g/:gameId',
+	component: page(() => import('@/pages/reversi/game.vue')),
+	loginRequired: false,
 }, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
@@ -543,6 +557,11 @@ const routes = [{
 	path: '/',
 	component: $i ? page(() => import('@/pages/timeline.vue')) : page(() => import('@/pages/welcome.vue')),
 	globalCacheKey: 'index',
+}, {
+	// テスト用リダイレクト設定。ログイン中ユーザのプロフィールにリダイレクトする
+	path: '/redirect-test',
+	redirect: $i ? `@${$i.username}` : '/',
+	loginRequired: true,
 }, {
 	path: '/:(*)',
 	component: page(() => import('@/pages/not-found.vue')),
@@ -561,8 +580,6 @@ export function setupRouter(app: App) {
 
 	const mainRouter = createRouterImpl(location.pathname + location.search + location.hash);
 
-	window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
-
 	window.addEventListener('popstate', (event) => {
 		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
 	});
@@ -570,6 +587,12 @@ export function setupRouter(app: App) {
 	mainRouter.addListener('push', ctx => {
 		window.history.pushState({ key: ctx.key }, '', ctx.path);
 	});
+
+	mainRouter.addListener('replace', ctx => {
+		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.init();
 
 	setMainRouter(mainRouter);
 }

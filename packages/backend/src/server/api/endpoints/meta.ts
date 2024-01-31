@@ -303,6 +303,11 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			policies: {
+				type: 'object',
+				optional: false, nullable: false,
+				ref: 'RolePolicies',
+			},
 		},
 	},
 } as const;

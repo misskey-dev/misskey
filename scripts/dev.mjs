@@ -28,6 +28,24 @@ await execa('pnpm', ['build-assets'], {
 	stderr: process.stderr,
 });
 
+await execa('pnpm', ['--filter', 'misskey-js', 'ts'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+await execa('pnpm', ['--filter', 'misskey-reversi', 'build:tsc'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+await execa('pnpm', ['--filter', 'misskey-bubble-game', 'build:tsc'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 execa('pnpm', ['build-pre', '--watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
@@ -59,6 +77,18 @@ execa('pnpm', ['--filter', 'sw', 'watch'], {
 });
 
 execa('pnpm', ['--filter', 'misskey-js', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'misskey-reversi', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'misskey-bubble-game', 'watch'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

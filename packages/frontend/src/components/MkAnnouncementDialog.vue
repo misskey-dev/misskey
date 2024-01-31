@@ -44,12 +44,12 @@ async function ok() {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.t('_announcement.readConfirmText', { title: props.announcement.title }),
+			text: i18n.tsx._announcement.readConfirmText({ title: props.announcement.title }),
 		});
 		if (confirm.canceled) return;
 	}
 
-	modal.value.close();
+	modal.value?.close();
 	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
@@ -57,7 +57,7 @@ async function ok() {
 }
 
 function onBgClick() {
-	rootEl.value.animate([{
+	rootEl.value?.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {

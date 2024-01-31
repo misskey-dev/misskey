@@ -20,11 +20,11 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 
 initChart();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement | null>(null);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
-let chartInstance: Chart;
+let chartInstance: Chart | null = null;
 
 const getYYYYMMDD = (date: Date) => {
 	const y = date.getFullYear().toString().padStart(2, '0');
@@ -47,6 +47,8 @@ onMounted(async () => {
 	const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
 	const color = accent.toHex();
 
+	if (chartEl.value == null) return;
+
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',
 		data: {
@@ -67,7 +69,7 @@ onMounted(async () => {
 					x: (i + 1).toString(),
 					y: (v / record.users) * 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
-				}))],
+				}))] as any,
 			})),
 		},
 		options: {
@@ -109,11 +111,11 @@ onMounted(async () => {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex];
+							const v = context[0].dataset.data[context[0].dataIndex] as unknown as { x: string, y: number, d: string };
 							return `${v.x} days later`;
 						},
 						label(context) {
-							const v = context.dataset.data[context.dataIndex];
+							const v = context.dataset.data[context.dataIndex] as unknown as { x: string, y: number, d: string };
 							const p = Math.round(v.y) + '%';
 							return `${v.d} ${p}`;
 						},

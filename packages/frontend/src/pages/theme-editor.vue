@@ -190,7 +190,7 @@ function applyThemeCode() {
 async function saveAs() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.name,
-		allowEmpty: false,
+		minLength: 1,
 	});
 	if (canceled) return;
 
@@ -208,7 +208,7 @@ async function saveAs() {
 	changed.value = false;
 	os.alert({
 		type: 'success',
-		text: i18n.t('_theme.installed', { name: theme.value.name }),
+		text: i18n.tsx._theme.installed({ name: theme.value.name }),
 	});
 }
 

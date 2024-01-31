@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-if="relay.status === 'accepted'" class="ti ti-check" :class="$style.icon" style="color: var(--success);"></i>
 					<i v-else-if="relay.status === 'rejected'" class="ti ti-ban" :class="$style.icon" style="color: var(--error);"></i>
 					<i v-else class="ti ti-clock" :class="$style.icon"></i>
-					<span>{{ i18n.t(`_relayStatus.${relay.status}`) }}</span>
+					<span>{{ i18n.ts._relayStatus[relay.status] }}</span>
 				</div>
 				<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>

@@ -359,6 +359,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Activează hCaptcha"
 hcaptchaSiteKey: "Site key"
 hcaptchaSecretKey: "Secret key"
+mcaptchaSiteKey: "Site key"
+mcaptchaSecretKey: "Secret key"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Activează reCAPTCHA"
 recaptchaSiteKey: "Site key"
@@ -725,3 +727,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendă"
   resetPassword: "Resetează parola"
+_reversi:
+  total: "Total"
+

@@ -180,6 +180,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
+import { DropAndFusionGame, Mono } from 'misskey-bubble-game';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
@@ -193,7 +194,6 @@ import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
-import { DropAndFusionGame, Mono } from '@/scripts/drop-and-fusion-engine.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
@@ -496,7 +496,7 @@ const SWEETS_MONOS: FrontendMonoDefinition[] = [{
 }];
 
 const props = defineProps<{
-	gameMode: 'normal' | 'square' | 'yen' | 'sweets';
+	gameMode: 'normal' | 'square' | 'yen' | 'sweets' | 'space';
 	mute: boolean;
 }>();
 
@@ -509,6 +509,7 @@ const monoDefinitions = computed(() => {
 		props.gameMode === 'square' ? SQUARE_MONOS :
 		props.gameMode === 'yen' ? YEN_MONOS :
 		props.gameMode === 'sweets' ? SWEETS_MONOS :
+		props.gameMode === 'space' ? NORAML_MONOS :
 		[] as never;
 });
 

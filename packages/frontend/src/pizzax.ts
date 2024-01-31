@@ -80,6 +80,41 @@ export class Storage<T extends StateDef> {
 		this.loaded = this.ready.then(() => this.load());
 	}
 
+	private isPureObject(value: unknown): value is Record<string | number | symbol, unknown> {
+		return typeof value === 'object' && value !== null && !Array.isArray(value);
+	}
+
+	/**
+	 * valueにないキーをdefからもらう（再帰的）\
+	 * nullはそのまま、undefinedはdefの値
+	 **/
+	private mergeObject<X>(value: X, def: X): X {
+		if (this.isPureObject(value) && this.isPureObject(def)) {
+			const result = structuredClone(value) as X;
+			for (const [k, v] of Object.entries(def) as [keyof X, X[keyof X]][]) {
+				if (!Object.prototype.hasOwnProperty.call(value, k) || value[k] === undefined) {
+					result[k] = v;
+				} else if (this.isPureObject(v) && this.isPureObject(result[k])) {
+					const child = structuredClone(result[k]) as X[keyof X] & Record<string | number | symbol, unknown>;
+					result[k] = this.mergeObject<typeof v>(child, v);
+				}
+			}
+			return result;
+		}
+		return value;
+	}
+
+	private mergeState<X>(value: X, def: X): X {
+		if (this.isPureObject(value) && this.isPureObject(def)) {
+			const merged = this.mergeObject(value, def);
+
+			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
+
+			return merged as X;
+		}
+		return value;
+	}
+
 	private async init(): Promise<void> {
 		await this.migrate();
 
@@ -89,11 +124,11 @@ export class Storage<T extends StateDef> {
 
 		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
-				this.reactiveState[k].value = this.state[k] = deviceState[k];
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], v.default);
 			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-				this.reactiveState[k].value = this.state[k] = registryCache[k];
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], v.default);
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-				this.reactiveState[k].value = this.state[k] = deviceAccountState[k];
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
 				this.reactiveState[k].value = this.state[k] = v.default;
 				if (_DEV_) console.log('Use default value', k, v.default);

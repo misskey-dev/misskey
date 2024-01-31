@@ -176,7 +176,7 @@ const rangePercent = computed({
 		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.5);
+const volume = ref(.25);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!videoEl.value) return 0;
@@ -236,7 +236,7 @@ function toggleFullscreen() {
 
 function toggleMute() {
 	if (volume.value === 0) {
-		volume.value = .5;
+		volume.value = .25;
 	} else {
 		volume.value = 0;
 	}
@@ -396,7 +396,7 @@ onDeactivated(() => {
 
 .hidden {
 	width: 100%;
-	background: none;
+	background: #000;
 	border: none;
 	outline: none;
 	font: inherit;
@@ -406,7 +406,6 @@ onDeactivated(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #000;
 }
 
 .hiddenTextWrapper {
@@ -466,7 +465,6 @@ onDeactivated(() => {
 	grid-template-columns: auto auto 1fr auto auto;
 	align-items: center;
 	gap: 4px 8px;
-	pointer-events: none;
 
 	padding: 35px 10px 10px 10px;
 	background: linear-gradient(rgba(0, 0, 0, 0),rgba(0, 0, 0, .75));
@@ -535,6 +533,9 @@ onDeactivated(() => {
 
 .seekbarRoot {
 	grid-area: seekbar;
+	/* ▼シークバー操作をやりやすくするためにクリックイベントが伝播されないエリアを拡張する */
+	margin: -10px;
+	padding: 10px;
 }
 
 @container (min-width: 500px) {

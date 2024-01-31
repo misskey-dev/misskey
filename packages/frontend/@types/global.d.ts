@@ -16,3 +16,8 @@ declare const _DATA_TRANSFER_DECK_COLUMN_: string;
 
 // for dev-mode
 declare const _LANGS_FULL_: string[][];
+
+// TagCanvas
+interface Window {
+	TagCanvas: any;
+}

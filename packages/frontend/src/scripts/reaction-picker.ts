@@ -38,7 +38,7 @@ class ReactionPicker {
 		});
 	}
 
-	public show(src: HTMLElement, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {
+	public show(src: HTMLElement | null, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {
 		this.src.value = src;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;
