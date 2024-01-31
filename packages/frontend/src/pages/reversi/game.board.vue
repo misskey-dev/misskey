@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.options }}</template>
 			<div class="_gaps_s" style="text-align: left;">
 				<MkSwitch v-model="showBoardLabels">Show labels</MkSwitch>
-				<MkSwitch v-model="showReaction">Show reactions</MkSwitch>
+				<MkSwitch v-model="showReaction">Show reaction</MkSwitch>
 				<MkSwitch v-model="useAvatarAsStone">useAvatarAsStone</MkSwitch>
 			</div>
 		</MkFolder>
@@ -189,7 +189,7 @@ const props = defineProps<{
 }>();
 
 const showBoardLabels = ref<boolean>(false);
-const showReactions = ref<boolean>(true);
+const showReaction = ref<boolean>(true);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -540,7 +540,7 @@ function sendReaction(emojiKey: string) {
 function onReacted(payload: Parameters<Misskey.Channels['reversiGame']['events']['reacted']>['0']) {
 	const { userId, reaction } = payload;
 
-	if (showReactions.value || userId === $i.id) {
+	if (showReaction.value || userId === $i.id) {
 		sound.playMisskeySfx('reaction');
 
 		const el = (userId === blackUser.value.id) ? blackUserEl.value : whiteUserEl.value;
