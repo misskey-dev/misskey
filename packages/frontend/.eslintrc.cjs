@@ -22,8 +22,7 @@ module.exports = {
 			},
 		],
 		// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
-		// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
-		'id-denylist': ['error', 'window', 'e'],
+		'id-denylist': ['error', 'window'],
 		'no-shadow': ['warn'],
 		'vue/attributes-order': ['error', {
 			'alphabetical': false,

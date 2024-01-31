@@ -4,23 +4,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.h]: ['3', '4', '5'].includes(variation), [$style.v]: ['1', '2'].includes(variation) }]">
+<div :class="[$style.root, { [$style.h]: ['3', '4', '5'].includes(variation), [$style.v]: ['1', '2'].includes(variation), [$style.isDora]: isDora }]">
 	<img :src="`/client-assets/mahjong/putted-tile-${variation}.png`" :class="$style.bg"/>
 	<img :src="`/client-assets/mahjong/tiles/${tile}.png`" :class="$style.fg"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
+import { computed } from 'vue';
 import * as Mahjong from 'misskey-mahjong';
 
 const props = defineProps<{
 	tile: Mahjong.Common.Tile;
 	variation: string;
+	doras: Mahjong.Common.Tile[];
 }>();
+
+const isDora = computed(() => props.doras.includes(props.tile));
 </script>
 
 <style lang="scss" module>
+@keyframes shine {
+	0% { translate: -30px; }
+	100% { translate: -130px; }
+}
+
 .root {
 	display: inline-block;
 	position: relative;
@@ -50,5 +58,21 @@ const props = defineProps<{
 	width: 53%;
 	height: 53%;
 	object-fit: contain;
+}
+
+.isDora {
+	&:after {
+		content: "";
+		display: block;
+		position: absolute;
+		top: 30px;
+		width: 200px;
+		height: 8px;
+		rotate: -45deg;
+		translate: -30px;
+		background: #ffffffee;
+		animation: shine 2s infinite;
+		pointer-events: none;
+	}
 }
 </style>

@@ -5,6 +5,7 @@
 
 import CRC32 from 'crc-32';
 import { Tile, House, Huro, TILE_TYPES, YAKU_DEFINITIONS } from './common.js';
+import * as Common from './common.js';
 import * as Utils from './utils.js';
 import { PlayerState } from './engine.player.js';
 
@@ -18,6 +19,8 @@ export type MasterState = {
 	kyoku: number;
 
 	tiles: Tile[];
+	kingTiles: Tile[];
+	activatedDorasCount: number;
 
 	/**
 	 * 副露した牌を含まない手牌
@@ -112,8 +115,12 @@ export class MasterGameEngine {
 		this.state = state;
 	}
 
+	public get doras(): Tile[] {
+		return this.state.kingTiles.slice(0, this.state.activatedDorasCount).map(t => Utils.nextTileForDora(t));
+	}
+
 	public static createInitialState(): MasterState {
-		const ikasama: Tile[] = ['haku', 'm2', 'm3', 'p5', 'p6', 'p7', 's2', 's3', 's4', 'chun', 'chun', 'chun', 'n', 'n'];
+		const ikasama: Tile[] = ['haku', 'hatsu', 'm3', 'p5', 'p6', 'p7', 's2', 's3', 's4', 'chun', 'chun', 'chun', 'n', 'n'];
 
 		const tiles = [...TILE_TYPES.slice(), ...TILE_TYPES.slice(), ...TILE_TYPES.slice(), ...TILE_TYPES.slice()];
 		tiles.sort(() => Math.random() - 0.5);
@@ -128,6 +135,7 @@ export class MasterGameEngine {
 		const sHandTiles = tiles.splice(0, 13);
 		const wHandTiles = tiles.splice(0, 13);
 		const nHandTiles = tiles.splice(0, 13);
+		const kingTiles = tiles.splice(0, 14);
 
 		return {
 			user1House: 'e',
@@ -137,6 +145,8 @@ export class MasterGameEngine {
 			round: 'e',
 			kyoku: 1,
 			tiles,
+			kingTiles,
+			activatedDorasCount: 1,
 			handTiles: {
 				e: eHandTiles,
 				s: sHandTiles,
@@ -219,6 +229,11 @@ export class MasterGameEngine {
 		newState.points = this.state.points;
 	}
 
+	/**
+	 * ロン
+	 * @param callers ロンする人
+	 * @param callee ロンされる人
+	 */
 	private ron(callers: House[], callee: House) {
 		for (const house of callers) {
 			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
@@ -229,6 +244,12 @@ export class MasterGameEngine {
 				ronTile: this.state.hoTiles[callee].at(-1)!,
 				riichi: this.state.riichis[house],
 			}));
+			const doraCount = Common.calcOwnedDoraCount(this.state.handTiles[house], this.state.huros[house], this.doras);
+			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
+			const point = Common.fanToPoint(fans, house === 'e');
+			this.state.points[callee] -= point;
+			this.state.points[house] += point;
+			console.log('fans point', fans, point);
 			console.log('yakus', house, yakus);
 		}
 
@@ -365,7 +386,42 @@ export class MasterGameEngine {
 	public commit_hora(house: House) {
 		if (this.state.turn !== house) throw new Error('Not your turn');
 
-		const yakus = Utils.getYakus(this.state.handTiles[house], null);
+		const isParent = house === 'e';
+
+		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
+			house: house,
+			handTiles: this.state.handTiles[house],
+			huros: this.state.huros[house],
+			tsumoTile: this.state.handTiles[house].at(-1)!,
+			ronTile: null,
+			riichi: this.state.riichis[house],
+		}));
+		const doraCount = Common.calcOwnedDoraCount(this.state.handTiles[house], this.state.huros[house], this.doras);
+		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
+		const point = Common.fanToPoint(fans, isParent);
+		this.state.points[house] += point;
+		if (isParent) {
+			const childPoint = Math.ceil(point / 3);
+			this.state.points.s -= childPoint;
+			this.state.points.w -= childPoint;
+			this.state.points.n -= childPoint;
+		} else {
+			const parentPoint = Math.ceil(point / 2);
+			this.state.points.e -= parentPoint;
+			const otherPoint = Math.ceil(point / 4);
+			if (house === 's') {
+				this.state.points.w -= otherPoint;
+				this.state.points.n -= otherPoint;
+			} else if (house === 'w') {
+				this.state.points.s -= otherPoint;
+				this.state.points.n -= otherPoint;
+			} else if (house === 'n') {
+				this.state.points.s -= otherPoint;
+				this.state.points.w -= otherPoint;
+			}
+		}
+		console.log('fans point', fans, point);
+		console.log('yakus', house, yakus);
 
 		this.endKyoku();
 	}
@@ -401,6 +457,8 @@ export class MasterGameEngine {
 
 			const tile = this.state.hoTiles[kan.callee].pop()!;
 			this.state.huros[kan.caller].push({ type: 'minkan', tile, from: kan.callee });
+
+			this.state.activatedDorasCount++;
 
 			const rinsyan = this.tsumo();
 
@@ -476,6 +534,7 @@ export class MasterGameEngine {
 			round: this.state.round,
 			kyoku: this.state.kyoku,
 			tilesCount: this.state.tiles.length,
+			doraIndicateTiles: this.state.kingTiles.slice(0, this.state.activatedDorasCount),
 			handTiles: {
 				e: house === 'e' ? this.state.handTiles.e : this.state.handTiles.e.map(() => null),
 				s: house === 's' ? this.state.handTiles.s : this.state.handTiles.s.map(() => null),

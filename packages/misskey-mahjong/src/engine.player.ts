@@ -5,6 +5,7 @@
 
 import CRC32 from 'crc-32';
 import { Tile, House, Huro, TILE_TYPES, YAKU_DEFINITIONS } from './common.js';
+import * as Common from './common.js';
 import * as Utils from './utils.js';
 
 export type PlayerState = {
@@ -17,6 +18,7 @@ export type PlayerState = {
 	kyoku: number;
 
 	tilesCount: number;
+	doraIndicateTiles: Tile[];
 
 	/**
 	 * 副露した牌を含まない手牌
@@ -94,6 +96,10 @@ export class PlayerGameEngine {
 		return this.state.riichis[this.myHouse];
 	}
 
+	public get doras(): Tile[] {
+		return this.state.doraIndicateTiles.map(t => Utils.nextTileForDora(t));
+	}
+
 	public commit_tsumo(house: House, tile: Tile) {
 		console.log('commit_tsumo', this.state.turn, house, tile);
 		this.state.tilesCount--;
@@ -161,7 +167,19 @@ export class PlayerGameEngine {
 
 		this.state.canRonSource = null;
 
-		// TODO: ロンした人の手牌情報を貰う必要がある
+		const yakusMap: Record<House, { name: string; fan: number; }[]> = {
+			e: [] as { name: string; fan: number; }[],
+			s: [] as { name: string; fan: number; }[],
+			w: [] as { name: string; fan: number; }[],
+			n: [] as { name: string; fan: number; }[],
+		};
+
+		const doraCountsMap: Record<House, number> = {
+			e: 0,
+			s: 0,
+			w: 0,
+			n: 0,
+		};
 
 		for (const house of callers) {
 			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
@@ -172,8 +190,20 @@ export class PlayerGameEngine {
 				ronTile: this.state.hoTiles[callee].at(-1)!,
 				riichi: this.state.riichis[house],
 			}));
+			const doraCount = Common.calcOwnedDoraCount(handTiles[house], this.state.huros[house], this.doras);
+			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
+			const point = Common.fanToPoint(fans, house === 'e');
+			this.state.points[callee] -= point;
+			this.state.points[house] += point;
+			yakusMap[house] = yakus.map(yaku => ({ name: yaku.name, fan: yaku.fan }));
+			doraCountsMap[house] = doraCount;
 			console.log('yakus', house, yakus);
 		}
+
+		return {
+			yakusMap,
+			doraCountsMap,
+		};
 	}
 
 	/**

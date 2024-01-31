@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { House, TILE_TYPES, Tile } from './common.js';
+import { House, NEXT_TILE_FOR_DORA_MAP, TILE_TYPES, Tile } from './common.js';
 
 export function isTile(tile: string): tile is Tile {
 	return TILE_TYPES.includes(tile as Tile);
@@ -241,4 +241,8 @@ export function getTilesForRiichi(handTiles: Tile[]): Tile[] {
 		const horaTiles = getHoraTiles(tempHandTiles);
 		return horaTiles.length > 0;
 	});
+}
+
+export function nextTileForDora(tile: Tile): Tile {
+	return NEXT_TILE_FOR_DORA_MAP[tile];
 }

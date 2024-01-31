@@ -64,6 +64,43 @@ export type Huro = {
 	from: House | null; // null で加槓
 };
 
+export const NEXT_TILE_FOR_DORA_MAP: Record<Tile, Tile> = {
+	m1: 'm2',
+	m2: 'm3',
+	m3: 'm4',
+	m4: 'm5',
+	m5: 'm6',
+	m6: 'm7',
+	m7: 'm8',
+	m8: 'm9',
+	m9: 'm1',
+	p1: 'p2',
+	p2: 'p3',
+	p3: 'p4',
+	p4: 'p5',
+	p5: 'p6',
+	p6: 'p7',
+	p7: 'p8',
+	p8: 'p9',
+	p9: 'p1',
+	s1: 's2',
+	s2: 's3',
+	s3: 's4',
+	s4: 's5',
+	s5: 's6',
+	s6: 's7',
+	s7: 's8',
+	s8: 's9',
+	s9: 's1',
+	e: 's',
+	s: 'w',
+	w: 'n',
+	n: 'e',
+	haku: 'hatsu',
+	hatsu: 'chun',
+	chun: 'haku',
+};
+
 export const yakuNames = [
 	'riichi',
 	'ippatsu',
@@ -245,3 +282,45 @@ export const YAKU_DEFINITIONS = [{
 		);
 	},
 }];
+
+export function fanToPoint(fan: number, isParent: boolean): number {
+	let point;
+
+	if (fan >= 13) {
+		point = 32000;
+	} else if (fan >= 11) {
+		point = 24000;
+	} else if (fan >= 8) {
+		point = 16000;
+	} else if (fan >= 6) {
+		point = 12000;
+	} else if (fan >= 4) {
+		point = 8000;
+	} else if (fan >= 3) {
+		point = 4000;
+	} else if (fan >= 2) {
+		point = 2000;
+	} else {
+		point = 1000;
+	}
+
+	if (isParent) {
+		point *= 1.5;
+	}
+
+	return point;
+}
+
+export function calcOwnedDoraCount(handTiles: Tile[], huros: Huro[], doras: Tile[]): number {
+	let count = 0;
+	for (const t of handTiles) {
+		if (doras.includes(t)) count++;
+	}
+	for (const huro of huros) {
+		if (huro.type === 'pon' && doras.includes(huro.tile)) count += 3;
+		if (huro.type === 'cii') count += huro.tiles.filter(t => doras.includes(t)).length;
+		if (huro.type === 'minkan' && doras.includes(huro.tile)) count += 4;
+		if (huro.type === 'ankan' && doras.includes(huro.tile)) count += 4;
+	}
+	return count;
+}
