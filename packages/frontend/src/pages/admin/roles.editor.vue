@@ -611,6 +611,63 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.emojiPickerProfileLimit, 'emojiPickerProfileLimit'])">
+				<template #label>{{ i18n.ts._role._options.emojiPickerProfileLimit }}</template>
+				<template #suffix>
+					<span v-if="role.policies.emojiPickerProfileLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.emojiPickerProfileLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.emojiPickerProfileLimit)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.emojiPickerProfileLimit.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+            <MkInput v-model="role.policies.emojiPickerProfileLimit.value" type="number" :min="0" :disabled="role.policies.emojiPickerProfileLimit.useDefault" >
+                <template #label>{{ i18n.ts._role._options.emojiPickerProfileLimit }}</template>
+            </MkInput>
+					<MkRange v-model="role.policies.emojiPickerProfileLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.listPinnedLimit, 'listPinnedLimit'])">
+				<template #label>{{ i18n.ts._role._options.listPinnedLimit }}</template>
+				<template #suffix>
+					<span v-if="role.policies.listPinnedLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.listPinnedLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.listPinnedLimit)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.listPinnedLimit.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+            <MkInput v-model="role.policies.listPinnedLimit.value" type="number" :min="0" :disabled="role.policies.listPinnedLimit.useDefault" >
+                <template #label>{{ i18n.ts._role._options.listPinnedLimit }}</template>
+            </MkInput>
+					<MkRange v-model="role.policies.listPinnedLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.localTimelineAnyLimit, 'localTimelineAnyLimit'])">
+				<template #label>{{ i18n.ts._role._options.localTimelineAnyLimit }}</template>
+				<template #suffix>
+					<span v-if="role.policies.localTimelineAnyLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.localTimelineAnyLimit.value}}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.localTimelineAnyLimit)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.localTimelineAnyLimit.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+            <MkInput v-model="role.policies.localTimelineAnyLimit.value" type="number" :min="0" :disabled="role.policies.localTimelineAnyLimit.useDefault" >
+                <template #label>{{ i18n.ts._role._options.localTimelineAnyLimit }}</template>
+            </MkInput>
+					<MkRange v-model="role.policies.localTimelineAnyLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 </div>
