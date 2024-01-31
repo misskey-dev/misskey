@@ -37,7 +37,7 @@ export class ModerationLogEntityService {
 			info: log.info,
 			userId: log.userId,
 			user: this.userEntityService.pack(log.user ?? log.userId, null, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}

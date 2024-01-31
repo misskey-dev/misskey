@@ -204,7 +204,7 @@ export class ServerService implements OnApplicationShutdown {
 				});
 
 				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-					detail: true,
+					schema: 'MeDetailed',
 					includeSecrets: true,
 				}));
 
