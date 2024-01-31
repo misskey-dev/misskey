@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 							</MkRange>
 						</MkFolder>
-						<MkFoldableSection :defaultOpen="false">
+						<MkFoldableSection :expanded="false">
 							<template #header>タイムライン系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.gtlAvailable, 'gtlAvailable'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :defaultOpen="false">
+						<MkFoldableSection :expanded="false">
 							<template #header>ノート系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canPublicNote, 'canPublicNote'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                 </MkInput>
                             </MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :defaultOpen="false">
+						<MkFoldableSection :expanded="false">
 							<template #header>招待系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
 								<template #label>{{ i18n.ts._role._options.canInvite }}</template>
@@ -120,7 +120,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-						<MkFoldableSection :defaultOpen="false">
+						<MkFoldableSection :expanded="false">
 							<template #header>PrisMisskey独自機能系</template>
 							<MkFolder v-if="matchQuery([i18n.ts._role._options.emojiPickerProfileLimit, 'pickerProfileDefault'])" class="_margin">
 								<template #label>{{ i18n.ts._role._options.emojiPickerProfileLimit }}</template>
@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</MkFolder>
 						</MkFoldableSection>
-                        <MkFoldableSection :defaultOpen="false">
+                        <MkFoldableSection :expanded="false">
                             <template #header>カスタム絵文字系</template>
                             <MkFolder v-if="matchQuery([i18n.ts._role._options.canManageCustomEmojis, 'canManageCustomEmojis'])" class="_margin">
                                 <template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
@@ -160,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                 </MkSwitch>
                             </MkFolder>
                         </MkFoldableSection>
-                        <MkFoldableSection :defaultOpen="false">
+                        <MkFoldableSection :expanded="false">
                             <template #header>ドライブ、ファイル系</template>
                             <MkFolder v-if="matchQuery([i18n.ts._role._options.driveCapacity, 'driveCapacityMb'])" class="_margin">
                                 <template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
@@ -178,7 +178,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                 </MkSwitch>
                             </MkFolder>
                         </MkFoldableSection>
-                        <MkFoldableSection :defaultOpen="false">
+                        <MkFoldableSection :expanded="false">
                             <template #header>アイコンデコレーション系</template>
                             <MkFolder v-if="matchQuery([i18n.ts._role._options.canManageAvatarDecorations, 'canManageAvatarDecorations'])" class="_margin">
                                 <template #label>{{ i18n.ts._role._options.canManageAvatarDecorations }}</template>
@@ -194,7 +194,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                 </MkInput>
                             </MkFolder>
                         </MkFoldableSection>
-                        <MkFoldableSection :defaultOpen="false">
+                        <MkFoldableSection :expanded="false">
                             <template #header>クリップ系</template>
                             <MkFolder v-if="matchQuery([i18n.ts._role._options.clipMax, 'clipLimit'])" class="_margin">
                                 <template #label>{{ i18n.ts._role._options.clipMax }}</template>
@@ -210,7 +210,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                 </MkInput>
                             </MkFolder>
                         </MkFoldableSection>
-                        <MkFoldableSection :defaultOpen="false">
+                        <MkFoldableSection :expanded="false">
                             <template #header>リスト系</template>
                             <MkFolder v-if="matchQuery([i18n.ts._role._options.userListMax, 'userListLimit'])" class="_margin">
                                 <template #label>{{ i18n.ts._role._options.userListMax }}</template>
@@ -226,7 +226,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                                 </MkInput>
                             </MkFolder>
                         </MkFoldableSection>
-                        <MkFoldableSection :defaultOpen="false">
+                        <MkFoldableSection :expanded="false">
                             <template #header>その他</template>
                             <MkFolder v-if="matchQuery([i18n.ts._role._options.antennaMax, 'antennaLimit'])" class="_margin">
                                 <template #label>{{ i18n.ts._role._options.antennaMax }}</template>
