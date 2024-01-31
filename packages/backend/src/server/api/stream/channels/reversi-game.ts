@@ -42,6 +42,7 @@ class ReversiGameChannel extends Channel {
 			case 'cancel': this.cancelGame(); break;
 			case 'putStone': this.putStone(body.pos, body.id); break;
 			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
+			case 'reaction': this.sendReaction(body); break;
 		}
 	}
 
@@ -78,6 +79,13 @@ class ReversiGameChannel extends Channel {
 		if (this.user == null) return;
 
 		this.reversiService.checkTimeout(this.gameId!);
+	}
+
+	@bindThis
+	private async sendReaction(reaction: string) {
+		if (this.user == null) return;
+
+		this.reversiService.sendReaction(this.gameId!, this.user, reaction);
 	}
 
 	@bindThis
