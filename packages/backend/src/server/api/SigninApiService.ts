@@ -126,12 +126,13 @@ export class SigninApiService {
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-		if (!user.approved && instance.approvalRequiredForSignup) {
+		if (user.approved === false && instance.approvalRequiredForSignup) {
 			reply.code(403);
 			return {
 				error: {
-					message: 'The account has not been approved by an admin yet. Try again later.',
-					code: 'NOT_APPROVED',
+					message: 'Your account is not approved yet.',
+					code: 'YOUR_ACCOUNT_NOT_APPROVED',
+					kind: 'permission',
 					id: '2fe70810-0ed2-47db-a70b-dc3ecbf5f069',
 				},
 			};
