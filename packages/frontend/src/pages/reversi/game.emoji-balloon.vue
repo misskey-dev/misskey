@@ -49,7 +49,7 @@ onMounted(() => {
 		active.value = false;
 		setTimeout(() => {
 			emit('end');
-		}, 1000);
+		}, 750);
 	}, 3000);
 });
 </script>
@@ -60,7 +60,7 @@ onMounted(() => {
 }
 
 .transition_balloon_leaveActive {
-	transition: all 1s ease;
+	transition: all .75s ease;
 }
 
 .transition_balloon_enterFrom {
@@ -75,7 +75,6 @@ onMounted(() => {
 .balloonRoot {
 	position: absolute;
 	filter: drop-shadow(0 2px 8px var(--shadow));
-	--balloon-radius: 24px;
 	user-select: none;
 	pointer-events: none;
 }

@@ -142,6 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.options }}</template>
 			<div class="_gaps_s" style="text-align: left;">
 				<MkSwitch v-model="showBoardLabels">Show labels</MkSwitch>
+				<MkSwitch v-model="showReaction">Show reactions</MkSwitch>
 				<MkSwitch v-model="useAvatarAsStone">useAvatarAsStone</MkSwitch>
 			</div>
 		</MkFolder>
@@ -188,6 +189,7 @@ const props = defineProps<{
 }>();
 
 const showBoardLabels = ref<boolean>(false);
+const showReactions = ref<boolean>(true);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -536,24 +538,24 @@ function sendReaction(emojiKey: string) {
 }
 
 function onReacted(payload: Parameters<Misskey.Channels['reversiGame']['events']['reacted']>['0']) {
-	console.log('onReacted', payload);
-
 	const { userId, reaction } = payload;
 
-	sound.playMisskeySfx('reaction');
+	if (showReactions.value || userId === $i.id) {
+		sound.playMisskeySfx('reaction');
 
-	const el = (userId === blackUser.value.id) ? blackUserEl.value : whiteUserEl.value;
+		const el = (userId === blackUser.value.id) ? blackUserEl.value : whiteUserEl.value;
 
-	if (el) {
-		const rect = el.getBoundingClientRect();
-		const x = rect.right;
-		const y = rect.bottom;
-		os.popup(XEmojiBalloon, {
-			reaction,
-			tail: 'left',
-			x,
-			y,
-		}, {}, 'end');
+		if (el) {
+			const rect = el.getBoundingClientRect();
+			const x = rect.right;
+			const y = rect.bottom;
+			os.popup(XEmojiBalloon, {
+				reaction,
+				tail: 'left',
+				x,
+				y,
+			}, {}, 'end');
+		}
 	}
 
 	if (userId === $i.id) {
@@ -789,12 +791,12 @@ $gap: 4px;
 		}
 	}
 
-	&:focus-visible {
+	&:not(:disabled):focus-visible {
 		outline: solid 2px var(--focus);
 		z-index: 1;
 	}
 
-	&:hover {
+	&:not(:disabled):hover {
 		background: rgba(0, 0, 0, 0.05);
 	}
 
