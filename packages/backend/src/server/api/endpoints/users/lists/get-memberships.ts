@@ -46,7 +46,7 @@ export const meta = {
 				},
 				user: {
 					type: 'object',
-					ref: 'User',
+					ref: 'UserLite',
 				},
 				withReplies: {
 					type: 'boolean',

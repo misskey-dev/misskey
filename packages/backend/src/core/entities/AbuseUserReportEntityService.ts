@@ -41,13 +41,13 @@ export class AbuseUserReportEntityService {
 			targetUserId: report.targetUserId,
 			assigneeId: report.assigneeId,
 			reporter: this.userEntityService.pack(report.reporter ?? report.reporterId, me, {
-				detail: true,
+				schema: 'UserDetailed',
 			}),
 			targetUser: this.userEntityService.pack(report.targetUser ?? report.targetUserId, me, {
-				detail: true,
+				schema: 'UserDetailed',
 			}),
 			assignee: report.assigneeId ? this.userEntityService.pack(report.assignee ?? report.assigneeId, me, {
-				detail: true,
+				schema: 'UserDetailed',
 			}) : null,
 			forwarded: report.forwarded,
 			category: report.category,

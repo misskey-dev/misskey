@@ -37,7 +37,7 @@ export class BlockingEntityService {
 			createdAt: this.idService.parse(blocking.id).date.toISOString(),
 			blockeeId: blocking.blockeeId,
 			blockee: this.userEntityService.pack(blocking.blockeeId, me, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}

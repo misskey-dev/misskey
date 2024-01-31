@@ -62,7 +62,7 @@ export class NotificationEntityService implements OnModuleInit {
 		},
 		hint?: {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'User'>>;
+			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = src;
@@ -76,9 +76,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const userIfNeed = 'notifierId' in notification ? (
 			hint?.packedUsers != null
 				? hint.packedUsers.get(notification.notifierId)
-				: this.userEntityService.pack(notification.notifierId, { id: meId }, {
-					detail: false,
-				})
+				: this.userEntityService.pack(notification.notifierId, { id: meId })
 		) : undefined;
 		const role = notification.type === 'roleAssigned' ? await this.roleEntityService.pack(notification.roleId, { id: meId }) : undefined;
 
@@ -131,9 +129,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const users = userIds.length > 0 ? await this.usersRepository.find({
 			where: { id: In(userIds) },
 		}) : [];
-		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId }, {
-			detail: false,
-		});
+		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId });
 		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
 
 		// 既に解決されたフォローリクエストの通知を除外
@@ -160,7 +156,7 @@ export class NotificationEntityService implements OnModuleInit {
 		},
 		hint?: {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'User'>>;
+			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = src;
@@ -174,18 +170,14 @@ export class NotificationEntityService implements OnModuleInit {
 		const userIfNeed = 'notifierId' in notification ? (
 			hint?.packedUsers != null
 				? hint.packedUsers.get(notification.notifierId)
-				: this.userEntityService.pack(notification.notifierId, { id: meId }, {
-					detail: false,
-				})
+				: this.userEntityService.pack(notification.notifierId, { id: meId })
 		) : undefined;
 
 		if (notification.type === 'reaction:grouped') {
 			const reactions = await Promise.allSettled(notification.reactions.map(async reaction => {
 				const user = hint?.packedUsers != null
 					? hint.packedUsers.get(reaction.userId)!
-					: await this.userEntityService.pack(reaction.userId, { id: meId }, {
-						detail: false,
-					});
+					: await this.userEntityService.pack(reaction.userId, { id: meId });
 				return {
 					user,
 					reaction: reaction.reaction,
@@ -206,9 +198,7 @@ export class NotificationEntityService implements OnModuleInit {
 					return packedUser;
 				}
 
-				return this.userEntityService.pack(userId, { id: meId }, {
-					detail: false,
-				});
+				return this.userEntityService.pack(userId, { id: meId });
 			}));
 			return await awaitAll({
 				id: notification.id,
@@ -276,9 +266,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const users = userIds.length > 0 ? await this.usersRepository.find({
 			where: { id: In(userIds) },
 		}) : [];
-		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId }, {
-			detail: false,
-		});
+		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId });
 		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
 
 		// 既に解決されたフォローリクエストの通知を除外

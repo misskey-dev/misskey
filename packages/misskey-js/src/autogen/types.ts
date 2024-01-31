@@ -3814,7 +3814,7 @@ export type components = {
     UserDetailedNotMe: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'];
     MeDetailed: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'] & components['schemas']['MeDetailedOnly'];
     UserDetailed: components['schemas']['UserDetailedNotMe'] | components['schemas']['MeDetailed'];
-    User: components['schemas']['UserLite'] | components['schemas']['UserDetailed'] | components['schemas']['UserDetailedNotMe'] | components['schemas']['MeDetailed'];
+    User: components['schemas']['UserLite'] | components['schemas']['UserDetailed'];
     UserList: {
       /**
        * Format: id
@@ -4235,8 +4235,8 @@ export type components = {
       followeeId: string;
       /** Format: id */
       followerId: string;
-      followee?: components['schemas']['UserDetailed'];
-      follower?: components['schemas']['UserDetailed'];
+      followee?: components['schemas']['UserDetailedNotMe'];
+      follower?: components['schemas']['UserDetailedNotMe'];
     };
     FollowRequest: {
       /**
@@ -4259,7 +4259,7 @@ export type components = {
       expiresAt: string | null;
       /** Format: id */
       muteeId: string;
-      mutee: components['schemas']['UserDetailed'];
+      mutee: components['schemas']['UserDetailedNotMe'];
     };
     RenoteMuting: {
       /**
@@ -4271,7 +4271,7 @@ export type components = {
       createdAt: string;
       /** Format: id */
       muteeId: string;
-      mutee: components['schemas']['UserDetailed'];
+      mutee: components['schemas']['UserDetailedNotMe'];
     };
     Blocking: {
       /**
@@ -4283,7 +4283,7 @@ export type components = {
       createdAt: string;
       /** Format: id */
       blockeeId: string;
-      blockee: components['schemas']['UserDetailed'];
+      blockee: components['schemas']['UserDetailedNotMe'];
     };
     Hashtag: {
       /** @example misskey */
@@ -4980,9 +4980,9 @@ export type operations = {
               targetUserId: string;
               /** Format: id */
               assigneeId: string | null;
-              reporter: components['schemas']['User'];
-              targetUser: components['schemas']['User'];
-              assignee?: components['schemas']['User'] | null;
+              reporter: components['schemas']['UserDetailed'];
+              targetUser: components['schemas']['UserDetailed'];
+              assignee?: components['schemas']['UserDetailed'] | null;
               category: string;
             })[];
         };
@@ -5038,7 +5038,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['User'];
+          'application/json': components['schemas']['MeDetailed'];
         };
       };
       /** @description Client error */
@@ -5143,7 +5143,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['User'];
+          'application/json': components['schemas']['UserDetailed'];
         };
       };
       /** @description Client error */
@@ -10433,7 +10433,7 @@ export type operations = {
         content: {
           'application/json': {
             accessToken: string;
-            user: components['schemas']['UserDetailedNotMe'];
+            user: components['schemas']['UserDetailed'];
           };
         };
       };
@@ -18764,7 +18764,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['UserDetailed'];
+          'application/json': components['schemas']['MeDetailed'];
         };
       };
       /** @description Client error */
@@ -23426,7 +23426,7 @@ export type operations = {
           'application/json': {
               /** Format: misskey:id */
               id: string;
-              user: components['schemas']['User'];
+              user: components['schemas']['UserDetailed'];
             }[];
         };
       };
@@ -25221,7 +25221,7 @@ export type operations = {
               createdAt: string;
               /** Format: misskey:id */
               userId: string;
-              user: components['schemas']['User'];
+              user: components['schemas']['UserLite'];
               withReplies: boolean;
             }[];
         };

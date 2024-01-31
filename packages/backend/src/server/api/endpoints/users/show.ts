@@ -117,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await this.userEntityService.packMany(_users, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				});
 			} else {
 				// Lookup user
@@ -147,7 +147,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await this.userEntityService.pack(user, me, {
-					detail: true,
+					schema: 'UserDetailed',
 				});
 			}
 		});
