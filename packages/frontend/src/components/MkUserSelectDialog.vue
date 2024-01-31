@@ -107,7 +107,7 @@ function search() {
 			} else {
 				return true;
 			}
-		})
+		});
 	});
 }
 
