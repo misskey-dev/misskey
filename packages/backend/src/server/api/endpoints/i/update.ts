@@ -446,8 +446,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				verifiedLinks: [],
 			});
 
-			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
-				detail: true,
+			const iObj = await this.userEntityService.pack(user.id, user, {
+				schema: 'MeDetailed',
 				includeSecrets: isSecure,
 			});
 
