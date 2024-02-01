@@ -3,9 +3,9 @@
 	ref="rootEl"
 	tabindex="-1"
 	:class="[$style.grid, $style.border]"
-	@mousedown="onMouseDown"
+	@mousedown.prevent="onMouseDown"
 	@keydown="onKeyDown"
-	@contextmenu="onContextMenu"
+	@contextmenu.prevent.stop="onContextMenu"
 >
 	<thead>
 		<MkHeaderRow
@@ -39,7 +39,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import {
-	CellValueChangedEvent,
 	ColumnSetting,
 	DataSource,
 	GridColumn,
@@ -51,12 +50,12 @@ import {
 } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { cellValidation, ValidateViolation } from '@/components/grid/cell-validators.js';
+import { cellValidation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import { calcCellWidth, equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
+import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
 
 const props = withDefaults(defineProps<{
 	gridSetting?: GridSetting,
@@ -69,14 +68,11 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'operation:cellValidation', violation: ValidateViolation): void;
-	(ev: 'operation:rowDeleting', rows: GridRow[]): void;
-	(ev: 'operation:cellContextMenu', cells: GridCell[], menuItems: MenuItem[]): void;
-	(ev: 'change:cellValue', event: CellValueChangedEvent): void;
+	(ev: 'event', event: GridEvent, current: GridCurrentState): void;
 }>();
 
 /**
- * grid -> 各子コンポーネントのイベント経路を担う{@link GridEventEmitter}。
+ * grid -> 各子コンポーネントのイベント経路を担う{@link GridEventEmitter}。おもにpropsでの伝搬が難しいイベントを伝搬するために使用する。
  * 子コンポーネント -> gridのイベントでは原則使用せず、{@link emit}を使用する。
  */
 const bus = new GridEventEmitter();
@@ -110,14 +106,18 @@ const selectedCell = computed(() => {
 const rangedCells = computed(() => cells.value.flat().filter(it => it.ranged));
 const rangedBounds = computed(() => {
 	const _cells = rangedCells.value;
+	const cols = _cells.map(it => it.address.col);
+	const rows = _cells.map(it => it.address.row);
+
 	const leftTop = {
-		col: Math.min(..._cells.map(it => it.address.col)),
-		row: Math.min(..._cells.map(it => it.address.row)),
+		col: Math.min(...cols),
+		row: Math.min(...rows),
 	};
 	const rightBottom = {
-		col: Math.max(..._cells.map(it => it.address.col)),
-		row: Math.max(..._cells.map(it => it.address.row)),
+		col: Math.max(...cols),
+		row: Math.max(...rows),
 	};
+
 	return {
 		leftTop,
 		rightBottom,
@@ -136,8 +136,8 @@ const availableBounds = computed(() => {
 });
 const rangedRows = computed(() => rows.value.filter(it => it.ranged));
 
-watch(columnSettings, refreshColumnsSetting);
-watch(data, refreshData);
+watch(columnSettings, refreshColumnsSetting, { immediate: true });
+watch(data, refreshData, { immediate: true, deep: true });
 
 if (_DEV_) {
 	watch(state, (value, oldValue) => {
@@ -232,16 +232,8 @@ function onKeyDown(ev: KeyboardEvent) {
 					unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
 					expandCellRange(newBounds.leftTop, newBounds.rightBottom);
 				} else {
-					switch (ev.code) {
-						case 'KeyC': {
-							rangeCopyToClipboard();
-							break;
-						}
-						case 'KeyV': {
-							pasteFromClipboard();
-							break;
-						}
-					}
+					// その他のキーは外部にゆだねる
+					emitGridEvent({ type: 'keydown', event: ev });
 				}
 			} else {
 				if (ev.shiftKey) {
@@ -348,19 +340,10 @@ function onKeyDown(ev: KeyboardEvent) {
 							selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row + 1 });
 							break;
 						}
-						case 'Delete': {
-							if (rangedRows.value.length > 0) {
-								emit('operation:rowDeleting', [...rangedRows.value]);
-							} else {
-								const ranges = rangedCells.value;
-								for (const range of ranges) {
-									range.value = undefined;
-								}
-							}
-							break;
-						}
 						default: {
-							return;
+							// その他のキーは外部にゆだねる
+							emitGridEvent({ type: 'keydown', event: ev });
+							break;
 						}
 					}
 				}
@@ -386,10 +369,8 @@ function onMouseDown(ev: MouseEvent) {
 function onLeftMouseDown(ev: MouseEvent) {
 	const cellAddress = getCellAddress(ev.target as HTMLElement);
 	if (_DEV_) {
-		console.log(`[grid][mouse-left] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
+		console.log(`[grid][mouse-left] state:${state.value}, button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
-
-	ev.preventDefault();
 
 	switch (state.value) {
 		case 'cellEditing': {
@@ -423,6 +404,8 @@ function onLeftMouseDown(ev: MouseEvent) {
 				const rowCells = cells.value[cellAddress.row];
 				selectionRange(...rowCells.map(cell => cell.address));
 
+				expandRowRange(cellAddress.row, cellAddress.row);
+
 				registerMouseUp();
 				registerMouseMove();
 				firstSelectionRowIdx.value = cellAddress.row;
@@ -440,8 +423,6 @@ function onRightMouseDown(ev: MouseEvent) {
 	if (_DEV_) {
 		console.log(`[grid][mouse-right] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
-
-	ev.preventDefault();
 
 	switch (state.value) {
 		case 'normal': {
@@ -462,10 +443,19 @@ function onRightMouseDown(ev: MouseEvent) {
 
 function onMouseMove(ev: MouseEvent) {
 	ev.preventDefault();
+
+	const targetCellAddress = getCellAddress(ev.target as HTMLElement);
+	if (equalCellAddress(previousCellAddress.value, targetCellAddress)) {
+		return;
+	}
+
+	if (_DEV_) {
+		console.log(`[grid][mouse-move] button: ${ev.button}, cell: ${targetCellAddress.row}x${targetCellAddress.col}`);
+	}
+
 	switch (state.value) {
 		case 'cellSelecting': {
 			const selectedCellAddress = selectedCell.value?.address;
-			const targetCellAddress = getCellAddress(ev.target as HTMLElement);
 			if (equalCellAddress(previousCellAddress.value, targetCellAddress) || !availableCellAddress(targetCellAddress) || !selectedCellAddress) {
 				return;
 			}
@@ -487,7 +477,6 @@ function onMouseMove(ev: MouseEvent) {
 			break;
 		}
 		case 'colSelecting': {
-			const targetCellAddress = getCellAddress(ev.target as HTMLElement);
 			if (!isColumnHeaderCellAddress(targetCellAddress) || previousCellAddress.value.col === targetCellAddress.col) {
 				return;
 			}
@@ -509,7 +498,6 @@ function onMouseMove(ev: MouseEvent) {
 			break;
 		}
 		case 'rowSelecting': {
-			const targetCellAddress = getCellAddress(ev.target as HTMLElement);
 			if (!isRowNumberCellAddress(targetCellAddress) || previousCellAddress.value.row === targetCellAddress.row) {
 				return;
 			}
@@ -560,23 +548,16 @@ function onContextMenu(ev: MouseEvent) {
 		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
 
-	if (!availableCellAddress(cellAddress)) {
-		return;
+	const menuItems = Array.of<MenuItem>();
+
+	// 外でメニュー項目を挿してもらう
+	if (availableCellAddress(cellAddress)) {
+		emitGridEvent({ type: 'cell-context-menu', event: ev, menuItems });
+	} else if (isRowNumberCellAddress(cellAddress)) {
+		emitGridEvent({ type: 'row-context-menu', event: ev, menuItems });
+	} else if (isColumnHeaderCellAddress(cellAddress)) {
+		emitGridEvent({ type: 'column-context-menu', event: ev, menuItems });
 	}
-
-	ev.preventDefault();
-
-	const _rangedCells = [...rangedCells.value];
-	const menuItems: MenuItem[] = [
-		{
-			text: 'コピー',
-			icon: 'ti ti-files',
-			action: () => rangeCopyToClipboard(),
-		},
-	];
-
-	// 外からメニューを挿せるようにイベントを投げる
-	emit('operation:cellContextMenu', _rangedCells, menuItems);
 
 	if (menuItems.length > 0) {
 		os.contextMenu(menuItems, ev);
@@ -600,7 +581,7 @@ function onCellEditEnd() {
 }
 
 function onChangeCellValue(sender: GridCell, newValue: CellValue) {
-	setCellValue(sender, newValue);
+	emitCellValue(sender, newValue);
 }
 
 function onChangeCellContentSize(sender: GridCell, contentSize: Size) {
@@ -679,23 +660,44 @@ function calcLargestCellWidth(column: GridColumn) {
 	column.width = `${Math.max(largestColumnWidth, largestCellWidth)}px`;
 }
 
-function setCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
+function emitGridEvent(ev: GridEvent) {
+	const currentState: GridCurrentState = {
+		selectedCell: selectedCell.value,
+		rangedCells: rangedCells.value,
+		rangedRows: rangedRows.value,
+		randedBounds: rangedBounds.value,
+		availableBounds: availableBounds.value,
+		state: state.value,
+		rows: rows.value,
+		columns: columns.value,
+	};
+
+	emit(
+		'event',
+		ev,
+		// 直接書き換えられると状態が狂う可能性があるのでコピーを渡す
+		JSON.parse(JSON.stringify(currentState)),
+	);
+}
+
+function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
 	const cell = cells.value[cellAddress.row][cellAddress.col];
 
 	const violation = cellValidation(cell, newValue);
-	emit('operation:cellValidation', violation);
+	emitGridEvent({ type: 'cell-validation', violation });
 
 	cell.validation = {
 		valid: violation.valid,
 		violations: violation.violations.filter(it => !it.valid),
 	};
-	cell.value = newValue;
 
-	emit('change:cellValue', {
+	emitGridEvent({
+		type: 'cell-value-change',
 		column: cell.column,
 		row: cell.row,
-		value: newValue,
+		oldValue: cell.value,
+		newValue: newValue,
 	});
 }
 
@@ -784,75 +786,6 @@ function isRowNumberCellAddress(cellAddress: CellAddress): boolean {
 	return cellAddress.row >= 0 && cellAddress.col === -1;
 }
 
-function rangeCopyToClipboard() {
-	const lines = Array.of<string>();
-	const bounds = rangedBounds.value;
-	for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
-		const items = Array.of<string>();
-		for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
-			const cell = cells.value[row][col];
-			items.push(cell.value?.toString() ?? '');
-		}
-		lines.push(items.join('\t'));
-	}
-
-	const text = lines.join('\n');
-	copyToClipboard(text);
-}
-
-async function pasteFromClipboard() {
-	function parseValue(value: string, type: ColumnSetting['type']): CellValue {
-		switch (type) {
-			case 'number': {
-				return Number(value);
-			}
-			case 'boolean': {
-				return value === 'true';
-			}
-			default: {
-				return value;
-			}
-		}
-	}
-
-	const clipBoardText = await navigator.clipboard.readText();
-
-	const bounds = rangedBounds.value;
-	const lines = clipBoardText.replace(/\r/g, '')
-		.split('\n')
-		.map(it => it.split('\t'));
-
-	if (lines.length === 1 && lines[0].length === 1) {
-		// 単独文字列の場合は選択範囲全体に同じテキストを貼り付ける
-		const ranges = rangedCells.value;
-		for (const cell of ranges) {
-			setCellValue(cell, parseValue(lines[0][0], cell.column.setting.type));
-		}
-	} else {
-		// 表形式文字列の場合は表形式にパースし、選択範囲に合うように貼り付ける
-		const offsetRow = bounds.leftTop.row;
-		const offsetCol = bounds.leftTop.col;
-		for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
-			const rowIdx = row - offsetRow;
-			if (lines.length <= rowIdx) {
-				// クリップボードから読んだ二次元配列よりも選択範囲の方が大きい場合、貼り付け操作を打ち切る
-				break;
-			}
-
-			const items = lines[rowIdx];
-			for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
-				const colIdx = col - offsetCol;
-				if (items.length <= colIdx) {
-					// クリップボードから読んだ二次元配列よりも選択範囲の方が大きい場合、貼り付け操作を打ち切る
-					break;
-				}
-
-				setCellValue(cells.value[row][col], parseValue(items[colIdx], cells.value[row][col].column.setting.type));
-			}
-		}
-	}
-}
-
 function refreshColumnsSetting() {
 	const bindToList = columnSettings.value.map(it => it.bindTo);
 	if (new Set(bindToList).size !== columnSettings.value.length) {
@@ -863,6 +796,10 @@ function refreshColumnsSetting() {
 }
 
 function refreshData() {
+	if (_DEV_) {
+		console.log('[grid][refresh-data]');
+	}
+
 	const _data: DataSource[] = data.value;
 	const _rows: GridRow[] = _data.map((_, index) => ({
 		index,
@@ -927,9 +864,6 @@ function unregisterMouseUp() {
 }
 
 onMounted(() => {
-	refreshColumnsSetting();
-	refreshData();
-
 	if (rootEl.value) {
 		resizeObserver.observe(rootEl.value);
 

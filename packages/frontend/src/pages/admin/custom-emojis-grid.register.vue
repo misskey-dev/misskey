@@ -36,7 +36,7 @@
 			<div v-if="registerLogs.length > 0" style="overflow-y: scroll;">
 				<MkGrid
 					:gridSetting="{ rowNumberVisible: false }"
-					:data="convertedRegisterLogs"
+					:data="registerLogs"
 					:columnSettings="registerLogColumnSettings"
 				/>
 			</div>
@@ -66,12 +66,9 @@
 		style="overflow-y: scroll;"
 	>
 		<MkGrid
-			:data="convertedGridItems"
+			:data="gridItems"
 			:columnSettings="columnSettings"
-			@operation:rowDeleting="onRowDeleting"
-			@operation:cellValidation="onCellValidation"
-			@operation:cellContextMenu="onCellContextMenu"
-			@change:cellValue="onChangeCellValue"
+			@event="onGridEvent"
 		/>
 	</div>
 
@@ -89,11 +86,11 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { GridItem, IGridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromDriveFile, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { CellValueChangedEvent, ColumnSetting, GridRow } from '@/components/grid/grid.js';
+import { ColumnSetting, GridRow } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -101,11 +98,19 @@ import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { required, ValidateViolation } from '@/components/grid/cell-validators.js';
+import { required } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
 import { uploadFile } from '@/scripts/upload.js';
-import { GridCell } from '@/components/grid/cell.js';
-import { MenuItem } from '@/types/menu.js';
+import {
+	GridCellValidationEvent,
+	GridCellValueChangeEvent,
+	GridCurrentState,
+	GridEvent,
+	GridKeyDownEvent,
+	GridRowContextMenuEvent,
+} from '@/components/grid/grid-event.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { CellValue } from '@/components/grid/cell.js';
 
 type FolderItem = {
 	id?: string;
@@ -114,7 +119,7 @@ type FolderItem = {
 
 type UploadResult = {
 	key: string,
-	item: IGridItem,
+	item: GridItem,
 	success: boolean,
 	err?: Error
 };
@@ -163,16 +168,13 @@ const emit = defineEmits<{
 }>();
 
 const uploadFolders = ref<FolderItem[]>([]);
-const gridItems = ref<IGridItem[]>([]);
+const gridItems = ref<GridItem[]>([]);
 const selectedFolderId = ref(defaultStore.state.uploadFolder);
 const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
 const directoryToCategory = ref<boolean>(true);
 
 const registerButtonDisabled = ref<boolean>(false);
 const registerLogs = ref<RegisterLogItem[]>([]);
-
-const convertedGridItems = computed(() => gridItems.value.map(it => it as Record<string, any>));
-const convertedRegisterLogs = computed(() => registerLogs.value.map(it => it as Record<string, any>));
 
 async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
@@ -185,7 +187,7 @@ async function onRegistryClicked() {
 		return;
 	}
 
-	const items = new Map<string, IGridItem>(gridItems.value.map(it => [`${it.fileId}|${it.name}`, it]));
+	const items = new Map<string, GridItem>(gridItems.value.map(it => [`${it.fileId}|${it.name}`, it]));
 	const upload = async (): Promise<UploadResult[]> => {
 		const result = Array.of<UploadResult>();
 		for (const [key, item] of items.entries()) {
@@ -243,9 +245,6 @@ async function onClearClicked() {
 }
 
 async function onDrop(ev: DragEvent) {
-	ev.preventDefault();
-	ev.stopPropagation();
-
 	const dropItems = ev.dataTransfer?.items;
 	if (!dropItems || dropItems.length === 0) {
 		return;
@@ -289,7 +288,7 @@ async function onDrop(ev: DragEvent) {
 	);
 
 	for (const { droppedFile, driveFile } of uploadedItems) {
-		const item = GridItem.fromDriveFile(driveFile);
+		const item = fromDriveFile(driveFile);
 		if (directoryToCategory.value) {
 			item.category = droppedFile.path
 				.replace(/^\//, '')
@@ -311,13 +310,13 @@ async function onFileSelectClicked(ev: MouseEvent) {
 			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
 		},
 	);
-	gridItems.value.push(...driveFiles.map(GridItem.fromDriveFile));
+	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
 async function onDriveSelectClicked(ev: MouseEvent) {
 	ev.preventDefault();
 	const driveFiles = await chooseFileFromDrive(true);
-	gridItems.value.push(...driveFiles.map(GridItem.fromDriveFile));
+	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
 function onRowDeleting(rows: GridRow[]) {
@@ -325,24 +324,65 @@ function onRowDeleting(rows: GridRow[]) {
 	gridItems.value = gridItems.value.filter((_, index) => !deletedIndexes.includes(index));
 }
 
-function onCellValidation(violation: ValidateViolation) {
-	registerButtonDisabled.value = !violation.valid;
+function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
+	switch (event.type) {
+		case 'cell-validation':
+			onGridCellValidation(event, currentState);
+			break;
+		case 'row-context-menu':
+			onGridRowContextMenu(event, currentState);
+			break;
+		case 'cell-value-change':
+			onGridCellValueChange(event, currentState);
+			break;
+		case 'keydown':
+			onGridKeyDown(event, currentState);
+			break;
+	}
 }
 
-function onCellContextMenu(cells: GridCell[], menuItems: MenuItem[]) {
-	menuItems.push(
+function onGridCellValidation(event: GridCellValidationEvent, _: GridCurrentState) {
+	registerButtonDisabled.value = !event.violation.valid;
+}
+
+function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: GridCurrentState) {
+	event.menuItems.push(
 		{
 			type: 'button',
 			text: '行を削除',
 			icon: 'ti ti-trash',
-			action: (ev: MouseEvent) => onRowDeleting(cells.map(it => it.row)),
+			action: () => onRowDeleting(currentState.rangedRows),
 		},
 	);
 }
 
-function onChangeCellValue(event: CellValueChangedEvent) {
+function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
 	const item = gridItems.value[event.row.index];
-	item[event.column.setting.bindTo] = event.value;
+	item[event.column.setting.bindTo] = event.newValue;
+}
+
+function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
+	switch (event.event.code) {
+		case 'KeyC': {
+			rangeCopyToClipboard(currentState);
+			break;
+		}
+		case 'KeyV': {
+			pasteFromClipboard(currentState);
+			break;
+		}
+		case 'Delete': {
+			if (currentState.rangedRows.length > 0) {
+				onRowDeleting(currentState.rangedRows);
+			} else {
+				const ranges = currentState.rangedCells;
+				for (const cell of ranges) {
+					gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+				}
+			}
+			break;
+		}
+	}
 }
 
 async function eachDroppedItems(itemList: DataTransferItemList): Promise<DroppedItem[]> {
@@ -401,6 +441,77 @@ function flattenDroppedItems(items: DroppedItem[]): DroppedFile[] {
 		}
 	}
 	return result;
+}
+
+function rangeCopyToClipboard(currentState: GridCurrentState) {
+	const lines = Array.of<string>();
+	const bounds = currentState.randedBounds;
+
+	for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
+		const items = Array.of<string>();
+		for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
+			const cell = gridItems.value[row][col];
+			items.push(cell.value?.toString() ?? '');
+		}
+		lines.push(items.join('\t'));
+	}
+
+	const text = lines.join('\n');
+	copyToClipboard(text);
+}
+
+async function pasteFromClipboard(currentState: GridCurrentState) {
+	function parseValue(value: string, type: ColumnSetting['type']): CellValue {
+		switch (type) {
+			case 'number': {
+				return Number(value);
+			}
+			case 'boolean': {
+				return value === 'true';
+			}
+			default: {
+				return value;
+			}
+		}
+	}
+
+	const cells = currentState.rangedCells;
+	const clipBoardText = await navigator.clipboard.readText();
+
+	const bounds = currentState.randedBounds;
+	const lines = clipBoardText.replace(/\r/g, '')
+		.split('\n')
+		.map(it => it.split('\t'));
+
+	if (lines.length === 1 && lines[0].length === 1) {
+		// 単独文字列の場合は選択範囲全体に同じテキストを貼り付ける
+		const ranges = currentState.rangedCells;
+		for (const cell of ranges) {
+			gridItems.value[cell.row.index][cell.column.setting.bindTo] = parseValue(lines[0][0], cell.column.setting.type);
+		}
+	} else {
+		// 表形式文字列の場合は表形式にパースし、選択範囲に合うように貼り付ける
+		const offsetRow = bounds.leftTop.row;
+		const offsetCol = bounds.leftTop.col;
+		for (let row = bounds.leftTop.row; row <= bounds.rightBottom.row; row++) {
+			const rowIdx = row - offsetRow;
+			if (lines.length <= rowIdx) {
+				// クリップボードから読んだ二次元配列よりも選択範囲の方が大きい場合、貼り付け操作を打ち切る
+				break;
+			}
+
+			const items = lines[rowIdx];
+			for (let col = bounds.leftTop.col; col <= bounds.rightBottom.col; col++) {
+				const colIdx = col - offsetCol;
+				if (items.length <= colIdx) {
+					// クリップボードから読んだ二次元配列よりも選択範囲の方が大きい場合、貼り付け操作を打ち切る
+					break;
+				}
+
+				gridItems.value[row][col] = parseValue(items[colIdx], cells[row][col].column.setting.type);
+			}
+		}
+	}
 }
 
 async function refreshUploadFolders() {

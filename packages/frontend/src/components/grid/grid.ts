@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { CellValidator } from '@/components/grid/cell-validators.js';
-import { CellValue, GridCell } from '@/components/grid/cell.js';
+import { CellValue } from '@/components/grid/cell.js';
 
 export type GridSetting = {
 	rowNumberVisible: boolean;
@@ -40,34 +40,6 @@ export type GridRow = {
 	index: number;
 	ranged: boolean;
 }
-
-export type CellValueChangedEvent = {
-	column: GridColumn;
-	row: GridRow;
-	value: CellValue;
-}
-
-export type GridEvent = {
-	current: {
-		selectedCell: GridCell;
-		rangedCells: GridCell[];
-		rangedRows: GridRow[];
-		state: GridState;
-		rows: GridRow[];
-		columns: GridColumn[];
-	}
-}
-
-export type GridPreKeyDownEvent = {
-	type: 'pre-keydown';
-	event: KeyboardEvent;
-	prevent: boolean;
-} & GridEvent;
-
-export type GridKeyDownEvent = {
-	type: 'keydown';
-	event: KeyboardEvent;
-} & GridEvent;
 
 export class GridEventEmitter extends EventEmitter<{
 	'forceRefreshContentSize': void;

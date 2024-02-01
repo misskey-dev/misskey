@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromEmojiDetailed, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { ColumnSetting } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
@@ -65,7 +65,7 @@ const { customEmojis } = toRefs(props);
 const query = ref('');
 const gridItems = ref<GridItem[]>([]);
 
-const convertedGridItems = computed(() => gridItems.value.map(it => it.asRecord()));
+const convertedGridItems = computed(() => gridItems.value.map(it => it as Record<string, any>));
 
 watch(customEmojis, refreshGridItems);
 
@@ -74,7 +74,7 @@ function onSearchButtonClicked() {
 }
 
 function refreshGridItems() {
-	gridItems.value = customEmojis.value.map(it => GridItem.fromEmojiDetailed(it));
+	gridItems.value = customEmojis.value.map(it => fromEmojiDetailed(it));
 }
 
 onMounted(() => {

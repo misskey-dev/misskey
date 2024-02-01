@@ -1,10 +1,6 @@
 <template>
 <th :class="[$style.cell]">
-	<div
-		:class="[
-			$style.root,
-		]"
-	>
+	<div :class="[$style.root]">
 		{{ content }}
 	</div>
 </th>

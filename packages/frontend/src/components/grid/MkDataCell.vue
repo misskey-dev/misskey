@@ -99,6 +99,10 @@ watch(() => cell.value.selected, () => {
 	}
 });
 
+watch(() => cell.value.value, (newValue, oldValue) => {
+	emitValueChange(newValue);
+});
+
 function onCellDoubleClick(ev: MouseEvent) {
 	switch (ev.type) {
 		case 'dblclick': {
@@ -119,6 +123,7 @@ function onCellKeyDown(ev: KeyboardEvent) {
 	if (!editing.value) {
 		ev.preventDefault();
 		switch (ev.code) {
+			case 'NumpadEnter':
 			case 'Enter':
 			case 'F2': {
 				beginEditing();
@@ -131,6 +136,7 @@ function onCellKeyDown(ev: KeyboardEvent) {
 				endEditing(false);
 				break;
 			}
+			case 'NumpadEnter':
 			case 'Enter': {
 				if (!ev.isComposing) {
 					endEditing(true);
