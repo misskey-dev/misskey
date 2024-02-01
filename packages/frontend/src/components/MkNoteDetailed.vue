@@ -228,6 +228,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
+import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
@@ -385,7 +386,21 @@ function react(viaKeyboard = false): void {
 		}
 	} else {
 		blur();
-		reactionPicker.show(reactButton.value ?? null, reaction => {
+		reactionPicker.show(reactButton.value ?? null, async reaction => {
+			if (reaction.includes(':')) {
+				const permissions = checkReactionPermissions($i!, props.note, await misskeyApi('emoji', {
+					name: reaction.replace(/:/g, '').replace(/@\./, ''),
+				}));
+				if (!permissions.allowed) {
+					os.alert({
+						type: "info",
+						title: i18n.ts.reactionDenied,
+						text: i18n.ts._reactionDeniedReason[permissions.deniedReason],
+					});
+					return;
+				}
+			}
+			
 			sound.playMisskeySfx('reaction');
 
 			misskeyApi('notes/reactions/create', {

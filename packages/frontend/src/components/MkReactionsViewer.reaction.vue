@@ -32,6 +32,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
+import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -48,12 +49,30 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+const canToggle = computed(() => {
+	return $i && !props.reaction.match(/@\w/);
+});
+
+const canGetInfo = computed(() => {
+	return !props.reaction.match(/@\w/);
+});
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	// TODO: その絵文字を使う権限があるかどうか確認
+	if (props.reaction.includes(':')) {
+		const permissions = checkReactionPermissions($i!, props.note, await misskeyApi('emoji', {
+			name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
+		}));
+		if (!permissions.allowed) {
+			os.alert({
+				type: "info",
+				title: i18n.ts.reactionDenied,
+				text: i18n.ts._reactionDeniedReason[permissions.deniedReason],
+			});
+			return;
+		}
+	}
 
 	const oldReaction = props.note.myReaction;
 	if (oldReaction) {
@@ -101,7 +120,7 @@ async function toggleReaction() {
 }
 
 async function menu(ev) {
-	if (!canToggle.value) return;
+	if (!canGetInfo.value) return;
 	if (!props.reaction.includes(':')) return;
 	os.popupMenu([{
 		text: i18n.ts.info,
