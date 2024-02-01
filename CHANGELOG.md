@@ -74,6 +74,7 @@
 - Fix: ipv4とipv6の両方が利用可能な環境でallowedPrivateNetworksが設定されていた場合プライベートipの検証ができていなかった問題を修正
 - Fix: properly handle cc followers
 - Fix: ジョブに関する設定の名前を修正 relashionshipJobPerSec -> relationshipJobPerSec
+- Fix: コントロールパネル->モデレーション->「誰でも新規登録できるようにする」の初期値をONからOFFに変更 #13122
 
 ### Service Worker
 - Enhance: オフライン表示のデザインを改善・多言語対応
