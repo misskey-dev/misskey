@@ -12,6 +12,7 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['users', 'reactions'],
@@ -70,16 +71,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userEntityService: UserEntityService,
 		private noteReactionEntityService: NoteReactionEntityService,
 		private queryService: QueryService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const user = await this.cacheService.findUserById(ps.userId);
-			if (this.userEntityService.isRemoteUser(user)) {
-				throw new ApiError(meta.errors.isRemoteUser);
-			}
+			const iAmModerator = await this.roleService.isModerator(me); // Moderators can see reactions of all users
+			if (!iAmModerator) {
+				const user = await this.cacheService.findUserById(ps.userId);
+				if (this.userEntityService.isRemoteUser(user)) {
+					throw new ApiError(meta.errors.isRemoteUser);
+				}
 
-			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
-			if ((me == null || me.id !== ps.userId) && !profile.publicReactions) {
-				throw new ApiError(meta.errors.reactionsNotPublic);
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
+				if ((me == null || me.id !== ps.userId) && !profile.publicReactions) {
+					throw new ApiError(meta.errors.reactionsNotPublic);
+				}
 			}
 
 			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'),
