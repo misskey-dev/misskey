@@ -96,11 +96,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// 登録名、エイリアス、カテゴリーの部分一致の検索
 					// TODO: クエリーで処理したいが、aliasesがarrayなので複雑になりすぎるためいったん放置
 					emojis = (await q.getMany())
-						.filter(emoji =>
-							emoji.name.includes(ps.query!) ||
-							emoji.aliases.some(a => a.includes(ps.query!)) ||
-							emoji.category?.includes(ps.query!))
-						.splice(ps.limit + 1);
+						.filter(emoji => emoji.name.includes(ps.query!)
+							|| emoji.aliases.some(a => a.includes(ps.query!))
+							|| emoji.category?.includes(ps.query!)
+						)
+						.slice(0, ps.limit);
 				}
 			} else {
 				emojis = await q.limit(ps.limit).getMany();
