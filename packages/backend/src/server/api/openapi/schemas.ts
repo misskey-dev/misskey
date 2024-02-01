@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { de } from 'date-fns/locale';
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
 
@@ -41,6 +42,10 @@ export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 're
 		} else {
 			res.$ref = $ref;
 		}
+	}
+
+	if (schema.selfRef) {
+		delete res.selfRef;
 	}
 
 	if (schema.nullable) {
