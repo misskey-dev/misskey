@@ -21,6 +21,9 @@
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
 - Fix: リストライムラインの「リノートを表示」が正しく機能しない問題を修正
 - Feat: Add support for TrueMail
+- Fix: リモートユーザーのリアクション一覧がすべて見えてしまうのを修正
+  * すべてのリモートユーザーのリアクション一覧を見えないようにします
+- Enhance: モデレーターはすべてのユーザーのリアクション一覧を見られるように
 
 ### Client
 - Feat: 新しいゲームを追加
