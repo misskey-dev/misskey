@@ -213,6 +213,10 @@ export class MasterGameEngine {
 		return this.state.handTiles[house].filter(t => t === tile).length === 2;
 	}
 
+	private canCii(house: House, tile: Tile): boolean {
+		// TODO
+	}
+
 	public getHouse(index: 1 | 2 | 3 | 4): House {
 		switch (index) {
 			case 1: return this.state.user1House;
@@ -376,7 +380,35 @@ export class MasterGameEngine {
 		};
 	}
 
-	public commit_kakan(house: House) {
+	public commit_kakan(house: House, tile: Tile) {
+		const pon = this.state.huros[house].find(h => h.type === 'pon' && h.tile === tile);
+		if (pon == null) throw new Error('No such pon');
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
+		this.state.huros[house].push({ type: 'minkan', tile, from: pon.from });
+
+		this.state.activatedDorasCount++;
+
+		const rinsyan = this.tsumo();
+
+		return {
+			rinsyan,
+		};
+	}
+
+	public commit_ankan(house: House, tile: Tile) {
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
+		this.state.huros[house].push({ type: 'ankan', tile });
+
+		this.state.activatedDorasCount++;
+
+		const rinsyan = this.tsumo();
+
+		return {
+			rinsyan,
+		};
 	}
 
 	/**
@@ -408,7 +440,7 @@ export class MasterGameEngine {
 
 	public commit_resolveCallAndRonInterruption(answers: {
 		pon: boolean;
-		cii: boolean;
+		cii: false | [Tile, Tile];
 		kan: boolean;
 		ron: House[];
 	}) {
@@ -467,14 +499,16 @@ export class MasterGameEngine {
 			};
 		} else if (cii != null && answers.cii) {
 			const tile = this.state.hoTiles[cii.callee].pop()!;
-			this.state.huros[cii.caller].push({ type: 'cii', tile, from: cii.callee });
+			this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(answers.cii[0]), 1);
+			this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(answers.cii[1]), 1);
+			this.state.huros[cii.caller].push({ type: 'cii', tiles: [tile, answers.cii[0], answers.cii[1]], from: cii.callee });
 
 			this.state.turn = cii.caller;
 			return {
 				type: 'ciied' as const,
 				caller: cii.caller,
 				callee: cii.callee,
-				tile,
+				tiles: [tile, answers.cii[0], answers.cii[1]],
 				turn: this.state.turn,
 			};
 		} else if (this.state.tiles.length === 0) {

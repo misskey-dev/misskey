@@ -43,7 +43,7 @@ type HoraSet = {
 	mentsus: [Tile, Tile, Tile][];
 };
 
-const SHUNTU_PATTERNS: [Tile, Tile, Tile][] = [
+export const SHUNTU_PATTERNS: [Tile, Tile, Tile][] = [
 	['m1', 'm2', 'm3'],
 	['m2', 'm3', 'm4'],
 	['m3', 'm4', 'm5'],

@@ -512,6 +512,24 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
+	public async commit_ankan(roomId: MiMahjongGame['id'], user: MiUser, tile: string) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		const engine = new Mahjong.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, engine, user.id);
+
+		await this.clearTurnWaitingTimer(room.id);
+
+		const res = engine.commit_ankan(myHouse, tile);
+
+		this.globalEventService.publishMahjongRoomStream(room.id, 'ankanned', { });
+
+		this.waitForTurn(room, myHouse, engine);
+	}
+
+	@bindThis
 	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
@@ -599,7 +617,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	/**
-	 * プレイヤーの行動(打牌、加槓、ツモ和了)を待つ
+	 * プレイヤーの行動(打牌、加槓、暗槓、ツモ和了)を待つ
 	 * 制限時間が過ぎたらツモ切り
 	 * NOTE: 時間切れチェックが行われたときにタイミングによっては次のwaitingが始まっている場合があることを考慮し、Setに一意のIDを格納する構造としている
 	 * @param room
@@ -642,7 +660,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	/**
-	 * プレイヤーが行動(打牌、加槓、ツモ和了)したら呼ぶ
+	 * プレイヤーが行動(打牌、加槓、暗槓、ツモ和了)したら呼ぶ
 	 * @param roomId
 	 */
 	@bindThis
