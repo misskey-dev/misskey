@@ -101,7 +101,13 @@ function search() {
 		limit: 10,
 		detail: false,
 	}).then(_users => {
-		users.value = _users;
+		users.value = _users.filter((u) => {
+			if (!props.includeSelf) {
+				return u.id !== $i?.id;
+			} else {
+				return true;
+			}
+		});
 	});
 }
 
@@ -131,13 +137,22 @@ onMounted(() => {
 	misskeyApi('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(foundUsers => {
-		const _users = foundUsers.filter((u) => {
-			if (props.localOnly) {
-				return u.host == null;
-			} else {
-				return true;
-			}
-		});
+		const _users = foundUsers
+			.filter((u) => {
+				if (props.localOnly) {
+					return u.host == null;
+				} else {
+					return true;
+				}
+			})
+			.filter((u) => {
+				if (!props.includeSelf) {
+					return u.id !== $i?.id;
+				} else {
+					return true;
+				}
+			});
+
 		if (props.includeSelf && $i && !_users.find(x => $i ? x.id === $i.id : true)) {
 			recentUsers.value = [$i, ..._users];
 		} else {
