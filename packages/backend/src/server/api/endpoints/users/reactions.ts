@@ -11,8 +11,8 @@ import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntitySer
 import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApiError } from '../../error.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users', 'reactions'],
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const iAmModerator = await this.roleService.isModerator(me); // Moderators can see reactions of all users
+			const iAmModerator = me ? await this.roleService.isModerator(me) : false; // Moderators can see reactions of all users
 			if (!iAmModerator) {
 				const user = await this.cacheService.findUserById(ps.userId);
 				if (this.userEntityService.isRemoteUser(user)) {
