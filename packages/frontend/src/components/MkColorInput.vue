@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
+			class="mk-input-color"
 			:class="$style.inputCore"
 			type="color"
 			:disabled="disabled"

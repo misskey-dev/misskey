@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :style="sliderBgWhite ? '--sliderBg: rgba(255,255,255,.25);' : '--sliderBg: var(--scrollbarHandle);'">
 	<div :class="$style.controlsSeekbar">
 		<progress v-if="buffer !== undefined" :class="$style.buffer" :value="isNaN(buffer) ? 0 : buffer" min="0" max="1">{{ Math.round(buffer * 100) }}% buffered</progress>
-		<input v-model="model" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any" @change="emit('dragEnded', modelValue)"/>
+		<input v-model="model" class="mk-input-range" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any" @change="emit('dragEnded', modelValue)"/>
 	</div>
 </div>
 </template>

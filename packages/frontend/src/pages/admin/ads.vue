@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts._ad.timezoneinfo }}
 						<div v-for="(day, index) in daysOfWeek" :key="index">
 							<input
-								:id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayOfWeek & (1 << index)) !== 0"
+								:id="`ad${ad.id}-${index}`" class="mk-input-checkbox" type="checkbox" :checked="(ad.dayOfWeek & (1 << index)) !== 0"
 								@change="toggleDayOfWeek(ad, index)"
 							>
 							<label :for="`ad${ad.id}-${index}`">{{ day }}</label>

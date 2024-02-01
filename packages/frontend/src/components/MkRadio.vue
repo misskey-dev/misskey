@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<input
 		type="radio"
 		:disabled="disabled"
+		class="mk-input-radio"
 		:class="$style.input"
 	>
 	<span :class="$style.button">

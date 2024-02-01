@@ -65,13 +65,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
-	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
+	<input v-show="useCw" ref="cwInputEl" v-model="cw" class="mk-input-text" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
-	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="mk-input-text" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<MkInfo v-if="files.length > 0" warn :class="$style.guidelineInfo" :rounded="false"><Mfm :text="i18n.tsx._postForm.guidelineInfo({ tosUrl: instance.tosUrl, nsfwGuideUrl })"/></MkInfo>
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>

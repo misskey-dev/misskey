@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.disabled]: disabled }]">
 	<input
 		ref="input"
+		class="mk-input-checkbox"
 		type="checkbox"
 		:disabled="disabled"
 		:class="$style.input"
