@@ -224,7 +224,8 @@ const setCategoryBulk = async () => {
 		ids: selectedEmojis.value,
 		category: result,
 	});
-	emojisPaginationComponent.value.reload();
+	selectedEmojis.value = [];
+	emojisPaginationComponent.value?.reload();
 };
 
 const setLicenseBulk = async () => {
@@ -237,7 +238,8 @@ const setLicenseBulk = async () => {
 		ids: selectedEmojis.value,
 		license: result,
 	});
-	emojisPaginationComponent.value.reload();
+	selectedEmojis.value = [];
+	emojisPaginationComponent.value?.reload();
 };
 
 const addTagBulk = async () => {
@@ -249,7 +251,8 @@ const addTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value.reload();
+	selectedEmojis.value = [];
+	emojisPaginationComponent.value?.reload();
 };
 
 const removeTagBulk = async () => {
@@ -261,7 +264,8 @@ const removeTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value.reload();
+	selectedEmojis.value = [];
+	emojisPaginationComponent.value?.reload();
 };
 
 const setTagBulk = async () => {
@@ -273,7 +277,8 @@ const setTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value.reload();
+	selectedEmojis.value = [];
+	emojisPaginationComponent.value?.reload();
 };
 
 const delBulk = async () => {
@@ -285,7 +290,8 @@ const delBulk = async () => {
 	await os.apiWithDialog('admin/emoji/delete-bulk', {
 		ids: selectedEmojis.value,
 	});
-	emojisPaginationComponent.value.reload();
+	selectedEmojis.value = [];
+	emojisPaginationComponent.value?.reload();
 };
 
 const headerActions = computed(() => [{

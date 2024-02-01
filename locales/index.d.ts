@@ -4221,6 +4221,10 @@ export interface Locale extends ILocale {
      */
     "license": string;
     /**
+     * リクエスト
+     */
+    "request": string;
+    /**
      * お気に入り解除しますか？
      */
     "unfavoriteConfirm": string;

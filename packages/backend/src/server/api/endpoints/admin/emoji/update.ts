@@ -53,6 +53,8 @@ export const paramDef = {
 		license: { type: 'string', nullable: true },
 		isSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
+		requestedBy: { type: 'string', nullable: true },
+		memo: { type: 'string', nullable: true },
 		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
 			type: 'string',
 			format: 'misskey:id',
@@ -98,6 +100,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				license: ps.license ?? null,
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
+				requestedBy: ps.requestedBy ?? null,
+				memo: ps.memo ?? null,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 				roleIdsThatCanNotBeUsedThisEmojiAsReaction: ps.roleIdsThatCanNotBeUsedThisEmojiAsReaction,
 			}, me);

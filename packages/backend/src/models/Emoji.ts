@@ -76,6 +76,16 @@ export class MiEmoji {
 	})
 	public isSensitive: boolean;
 
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public requestedBy: string | null;
+
+	@Column('varchar', {
+		length: 8192, default: '',
+	})
+	public memo: string | null;
+
 	// TODO: 定期ジョブで存在しなくなったロールIDを除去するようにする
 	@Column('varchar', {
 		array: true, length: 128, default: '{}',

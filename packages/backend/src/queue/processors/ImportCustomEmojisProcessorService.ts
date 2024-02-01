@@ -102,6 +102,8 @@ export class ImportCustomEmojisProcessorService {
 					license: emojiInfo.license,
 					isSensitive: emojiInfo.isSensitive,
 					localOnly: emojiInfo.localOnly,
+					requestedBy: emojiInfo.requestedBy,
+					memo: emojiInfo.memo,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 					roleIdsThatCanNotBeUsedThisEmojiAsReaction: [],
 				});

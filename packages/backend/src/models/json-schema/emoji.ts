@@ -60,6 +60,16 @@ export const packedEmojiDetailedSchema = {
 			optional: false, nullable: false,
 			format: 'id',
 		},
+		createdAt: {
+			type: 'string',
+			optional: true, nullable: false,
+			format: 'date-time',
+		},
+		updatedAt: {
+			type: 'string',
+			optional: true, nullable: true,
+			format: 'date-time',
+		},
 		aliases: {
 			type: 'array',
 			optional: false, nullable: false,
@@ -97,6 +107,14 @@ export const packedEmojiDetailedSchema = {
 		localOnly: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		requestedBy: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		memo: {
+			type: 'string',
+			optional: true, nullable: true,
 		},
 		roleIdsThatCanBeUsedThisEmojiAsReaction: {
 			type: 'array',

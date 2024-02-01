@@ -66,6 +66,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
+		requestedBy: string | null;
+		memo: string | null;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 		roleIdsThatCanNotBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
@@ -82,6 +84,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
+			requestedBy: data.requestedBy,
+			memo: data.memo,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
 			roleIdsThatCanNotBeUsedThisEmojiAsReaction: data.roleIdsThatCanNotBeUsedThisEmojiAsReaction,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
@@ -113,6 +117,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
+		requestedBy?: string | null;
+		memo?: string | null;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 		roleIdsThatCanNotBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<void> {
@@ -131,6 +137,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
 			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
 			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
+			requestedBy: data.requestedBy ?? undefined,
+			memo: data.memo ?? undefined,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
 			roleIdsThatCanNotBeUsedThisEmojiAsReaction: data.roleIdsThatCanNotBeUsedThisEmojiAsReaction ?? undefined,
 		});

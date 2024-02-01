@@ -49,6 +49,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTextarea v-model="license" :mfmAutocomplete="true">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkTextarea>
+				<MkInput v-model="requestedBy" autocapitalize="off">
+					<template #label>{{ i18n.ts.request }}</template>
+				</MkInput>
+				<MkTextarea v-model="memo" :mfmAutocomplete="true">
+					<template #label>{{ i18n.ts.memo }}</template>
+				</MkTextarea>
+				<MkKeyValue v-if="createdAt" oneline>
+					<template #key>{{ i18n.ts.createdAt }}</template>
+					<template #value><span class="_monospace"><MkTime :time="createdAt" :mode="'detail'"/></span></template>
+				</MkKeyValue>
+				<MkKeyValue v-if="updatedAt" oneline>
+					<template #key>{{ i18n.ts.updatedAt }}</template>
+					<template #value><span class="_monospace"><MkTime :time="updatedAt" :mode="'detail'"/></span></template>
+				</MkKeyValue>
 				<MkFolder>
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
@@ -111,6 +125,7 @@ import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const props = defineProps<{
 	emoji?: any,
@@ -120,9 +135,13 @@ const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji ? props.emoji.category : '');
 const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
+const createdAt = ref<string | null>(props.emoji ? props.emoji.createdAt : null);
+const updatedAt = ref<string | null>(props.emoji ? props.emoji.updatedAt : null);
 const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
 const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
 const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
+const requestedBy = ref(props.emoji ? props.emoji.requestedBy : '');
+const memo = ref(props.emoji ? props.emoji.memo : '');
 const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 const rolesThatCanBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
 const roleIdsThatCanNotBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction : []);
@@ -178,6 +197,8 @@ async function done() {
 		license: license.value === '' ? null : license.value,
 		isSensitive: isSensitive.value,
 		localOnly: localOnly.value,
+		requestedBy: requestedBy.value,
+		memo: memo.value,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
 		roleIdsThatCanNotBeUsedThisEmojiAsReaction: rolesThatCanNotBeUsedThisEmojiAsReaction.value.map(x => x.id),
 	};

@@ -9,12 +9,15 @@ import type { EmojisRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class EmojiEntityService {
 	constructor(
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		private idService: IdService,
 	) {
 	}
 
@@ -72,6 +75,41 @@ export class EmojiEntityService {
 		emojis: (MiEmoji['id'] | MiEmoji)[],
 	) : Promise<Packed<'EmojiDetailed'>[]> {
 		return (await Promise.allSettled(emojis.map(x => this.packDetailed(x))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'EmojiDetailed'>>).value);
+	}
+
+	@bindThis
+	public async packInternal(
+		src: MiEmoji['id'] | MiEmoji,
+	): Promise<Packed<'EmojiDetailed'>> {
+		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
+
+		return {
+			id: emoji.id,
+			createdAt: this.idService.parse(emoji.id).date.toISOString(),
+			updatedAt: emoji.updatedAt?.toISOString() ?? null,
+			aliases: emoji.aliases,
+			name: emoji.name,
+			category: emoji.category,
+			host: emoji.host,
+			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+			url: emoji.publicUrl || emoji.originalUrl,
+			license: emoji.license,
+			isSensitive: emoji.isSensitive,
+			localOnly: emoji.localOnly,
+			requestedBy: emoji.requestedBy,
+			memo: emoji.memo,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			roleIdsThatCanNotBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction,
+		};
+	}
+
+	@bindThis
+	public async packInternalMany(
+		emojis: (MiEmoji['id'] | MiEmoji)[],
+	) : Promise<Packed<'EmojiDetailed'>[]> {
+		return (await Promise.allSettled(emojis.map(x => this.packInternal(x))))
 			.filter(result => result.status === 'fulfilled')
 			.map(result => (result as PromiseFulfilledResult<Packed<'EmojiDetailed'>>).value);
 	}

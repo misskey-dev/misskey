@@ -4527,6 +4527,10 @@ export type components = {
     EmojiDetailed: {
       /** Format: id */
       id: string;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string | null;
       aliases: string[];
       name: string;
       category: string | null;
@@ -4536,6 +4540,8 @@ export type components = {
       license: string | null;
       isSensitive: boolean;
       localOnly: boolean;
+      requestedBy?: string | null;
+      memo?: string | null;
       roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
       roleIdsThatCanNotBeUsedThisEmojiAsReaction?: string[];
     };
@@ -6682,6 +6688,8 @@ export type operations = {
           license?: string | null;
           isSensitive?: boolean;
           localOnly?: boolean;
+          requestedBy?: string | null;
+          memo?: string | null;
           roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
           roleIdsThatCanNotBeUsedThisEmojiAsReaction?: string[];
         };
@@ -7311,6 +7319,8 @@ export type operations = {
           license?: string | null;
           isSensitive?: boolean;
           localOnly?: boolean;
+          requestedBy?: string | null;
+          memo?: string | null;
           roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
           roleIdsThatCanNotBeUsedThisEmojiAsReaction?: string[];
         };
