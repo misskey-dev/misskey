@@ -159,15 +159,15 @@ onMounted(() => {
 	lightbox.on('uiRegister', () => {
 		lightbox?.pswp?.ui?.registerElement({
 			name: 'altText',
-			className: 'pwsp__alt-text-container',
+			className: 'pswp__alt-text-container',
 			appendTo: 'wrapper',
-			onInit: (el, pwsp) => {
+			onInit: (el, pswp) => {
 				let textBox = document.createElement('p');
-				textBox.className = 'pwsp__alt-text _acrylic';
+				textBox.className = 'pswp__alt-text _acrylic';
 				el.appendChild(textBox);
 
-				pwsp.on('change', () => {
-					textBox.textContent = pwsp.currSlide?.data.comment;
+				pswp.on('change', () => {
+					textBox.textContent = pswp.currSlide?.data.comment;
 				});
 			},
 		});
@@ -298,7 +298,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	backdrop-filter: var(--modalBgFilter);
 }
 
-.pwsp__alt-text-container {
+.pswp__alt-text-container {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -312,7 +312,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	max-width: 800px;
 }
 
-.pwsp__alt-text {
+.pswp__alt-text {
 	color: var(--fg);
 	margin: 0 auto;
 	text-align: center;

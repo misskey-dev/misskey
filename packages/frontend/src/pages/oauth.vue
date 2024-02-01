@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="name">{{ i18n.tsx._auth.shareAccess({ name }) }}</div>
 			<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 			<form :class="$style.buttons" action="/oauth/decision" accept-charset="utf-8" method="post">
-				<input name="login_token" type="hidden" :value="$i.token"/>
-				<input name="transaction_id" type="hidden" :value="transactionIdMeta?.content"/>
+				<input name="login_token" class="mk-input-token-hidden" type="hidden" :value="$i.token"/>
+				<input name="transaction_id" class="mk-input-tr-id-hidden" type="hidden" :value="transactionIdMeta?.content"/>
 				<MkButton inline name="cancel" value="cancel">{{ i18n.ts.cancel }}</MkButton>
 				<MkButton inline primary>{{ i18n.ts.accept }}</MkButton>
 			</form>
