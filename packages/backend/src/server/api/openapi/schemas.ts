@@ -10,7 +10,7 @@ import { refs } from '@/misc/json-schema.js';
 export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 'res', includeSelfRef: boolean): any {
 	// optional, nullable, refはスキーマ定義に含まれないので分離しておく
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { optional, nullable, ref, ...res }: any = schema;
+	const { optional, nullable, ref, selfRef, ...res }: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {
 		if (type === 'res') {
@@ -42,10 +42,6 @@ export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 're
 		} else {
 			res.$ref = $ref;
 		}
-	}
-
-	if (schema.selfRef) {
-		delete res.selfRef;
 	}
 
 	if (schema.nullable) {
