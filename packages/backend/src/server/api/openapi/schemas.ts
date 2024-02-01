@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { de } from 'date-fns/locale';
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
 
