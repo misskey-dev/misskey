@@ -7,10 +7,10 @@ export class FixMetaDisableRegistration1706791962000 {
     name = 'FixMetaDisableRegistration1706791962000'
 
     async up(queryRunner) {
-        await queryRunner.query(`alter table meta	alter column "disableRegistration" set default true;`);
+        await queryRunner.query(`alter table meta alter column "disableRegistration" set default true;`);
     }
 
     async down(queryRunner) {
-        await queryRunner.query(`alter table meta	alter column "disableRegistration" set default false;`);
+        await queryRunner.query(`alter table meta alter column "disableRegistration" set default false;`);
     }
 }
