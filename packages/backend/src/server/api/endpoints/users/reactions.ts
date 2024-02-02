@@ -9,6 +9,9 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { CacheService } from '@/core/CacheService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 import { MiNoteReaction } from "@/models/_.js";
 
@@ -34,6 +37,11 @@ export const meta = {
 			message: 'Reactions of the user is not public.',
 			code: 'REACTIONS_NOT_PUBLIC',
 			id: '673a7dd2-6924-1093-e0c0-e68456ceae5c',
+		},
+		isRemoteUser: {
+			message: 'Currently unavailable to display reactions of remote users.',
+			code: 'IS_REMOTE_USER',
+			id: '6b95fa98-8cf9-2350-e284-f0ffdb54a805',
 		},
 	},
 } as const;
@@ -63,14 +71,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
+		private cacheService: CacheService,
+		private userEntityService: UserEntityService,
 		private noteReactionEntityService: NoteReactionEntityService,
 		private queryService: QueryService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
+			const iAmModerator = me ? await this.roleService.isModerator(me) : false; // Moderators can see reactions of all users
+			if (!iAmModerator) {
+				const user = await this.cacheService.findUserById(ps.userId);
+				if (this.userEntityService.isRemoteUser(user)) {
+					throw new ApiError(meta.errors.isRemoteUser);
+				}
 
-			if ((me == null || me.id !== ps.userId) && !profile.publicReactions) {
-				throw new ApiError(meta.errors.reactionsNotPublic);
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
+				if ((me == null || me.id !== ps.userId) && !profile.publicReactions) {
+					throw new ApiError(meta.errors.reactionsNotPublic);
+				}
 			}
 
 			const query = this.notesRepository.createQueryBuilder('note')
