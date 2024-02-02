@@ -9,7 +9,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
+import oauth2orize, {
+	type OAuth2,
+	OAuth2Server,
+	MiddlewareRequest,
+	OAuth2Req,
+	ValidateFunctionArity2,
+	AuthorizationError,
+} from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyCors from '@fastify/cors';
 import fastifyView from '@fastify/view';
@@ -28,12 +35,12 @@ import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { MiLocalUser } from '@/models/User.js';
-import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
+import * as Redis from 'ioredis';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
@@ -197,67 +204,61 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
  * 2. oauth/decision will call load() to retrieve the parameters and then remove()
  */
 class OAuth2Store {
-	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // expires after 5min
+	constructor(
+		private redisClient: Redis.Redis,
+	) {
+	}
 
-	load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): void {
+	async load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): Promise<void> {
 		const { transaction_id } = req.body;
 		if (!transaction_id) {
 			cb(new AuthorizationError('Missing transaction ID', 'invalid_request'));
 			return;
 		}
-		const loaded = this.#cache.get(transaction_id);
+		const loaded = await this.redisClient.get(`oauth2:transaction:${transaction_id}`);
 		if (!loaded) {
 			cb(new AuthorizationError('Invalid or expired transaction ID', 'access_denied'));
 			return;
 		}
-		cb(null, loaded);
+		cb(null, JSON.parse(loaded) as OAuth2);
 	}
 
-	store(req: OAuth2DecisionRequest, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
+	async store(req: OAuth2DecisionRequest, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): Promise<void> {
 		const transactionId = secureRndstr(128);
-		this.#cache.set(transactionId, oauth2);
+		await this.redisClient.set(`oauth2:transaction:${transactionId}`, JSON.stringify(oauth2), 'EX', 60 * 5);
 		cb(null, transactionId);
 	}
 
 	remove(req: OAuth2DecisionRequest, tid: string, cb: () => void): void {
-		this.#cache.delete(tid);
+		this.redisClient.del(`oauth2:transaction:${tid}`);
 		cb();
 	}
 }
 
 @Injectable()
 export class OAuth2ProviderService {
-	#server = oauth2orize.createServer({
-		store: new OAuth2Store(),
-	});
+	#server: OAuth2Server;
 	#logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		private httpRequestService: HttpRequestService,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 		@Inject(DI.accessTokensRepository)
-		accessTokensRepository: AccessTokensRepository,
-		idService: IdService,
+		private accessTokensRepository: AccessTokensRepository,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		private idService: IdService,
 		private cacheService: CacheService,
-		loggerService: LoggerService,
+		private loggerService: LoggerService,
+		private httpRequestService: HttpRequestService,
 	) {
 		this.#logger = loggerService.getLogger('oauth');
-
-		const grantCodeCache = new MemoryKVCache<{
-			clientId: string,
-			userId: string,
-			redirectUri: string,
-			codeChallenge: string,
-			scopes: string[],
-
-			// fields to prevent multiple code use
-			grantedToken?: string,
-			revoked?: boolean,
-			used?: boolean,
-		}>(1000 * 60 * 5); // expires after 5m
+		this.#server = oauth2orize.createServer({
+			store: new OAuth2Store(redisClient),
+		});
 
 		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
 		// "Authorization servers MUST support PKCE [RFC7636]."
@@ -280,38 +281,39 @@ export class OAuth2ProviderService {
 				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${client.id} through ${redirectUri}, with scope: [${areq.scope}]`);
 
 				const code = secureRndstr(128);
-				grantCodeCache.set(code, {
+				await this.redisClient.set(`oauth2:authorization:${code}`, JSON.stringify({
 					clientId: client.id,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
 					scopes: areq.scope,
-				});
+				}), 'EX', 60 * 5);
 				return [code];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
 		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, authInfo, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>> | undefined> => {
 				this.#logger.info('Checking the received authorization code for the exchange');
-				const granted = grantCodeCache.get(code);
-				if (!granted) {
+				const grantedJson = await this.redisClient.get(`oauth2:authorization:${code}`);
+				if (!grantedJson) {
 					return;
 				}
+				const granted = JSON.parse(grantedJson);
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2
 				// "If an authorization code is used more than once, the authorization server
 				// MUST deny the request and SHOULD revoke (when possible) all tokens
 				// previously issued based on that authorization code."
-				if (granted.used) {
+				let grantedState = await this.redisClient.get(`oauth2:authorization:${code}:state`);
+				if (grantedState !== null) {
 					this.#logger.info(`Detected multiple code use from ${granted.clientId} for user ${granted.userId}. Revoking the code.`);
-					grantCodeCache.delete(code);
-					granted.revoked = true;
+					await this.redisClient.set(`oauth2:authorization:${code}:state`, 'revoked', 'EX', 60 * 5);
 					if (granted.grantedToken) {
 						await accessTokensRepository.delete({ token: granted.grantedToken });
 					}
 					return;
 				}
-				granted.used = true;
+				await this.redisClient.set(`oauth2:authorization:${code}:state`, 'used', 'EX', 60 * 5);
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (body.client_id !== granted.clientId) return;
@@ -335,7 +337,8 @@ export class OAuth2ProviderService {
 					permission: granted.scopes,
 				});
 
-				if (granted.revoked) {
+				grantedState = await this.redisClient.get(`oauth2:authorization:${code}:state`);
+				if (grantedState === 'revoked') {
 					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
 					await accessTokensRepository.delete({ token: accessToken });
 					return;
@@ -343,6 +346,7 @@ export class OAuth2ProviderService {
 
 				granted.grantedToken = accessToken;
 				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
+				await this.redisClient.set(`oauth2:authorization:${code}`, JSON.stringify(granted), 'EX', 60 * 5);
 
 				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
 			})().then(args => done(null, ...args ?? []), err => done(err));
