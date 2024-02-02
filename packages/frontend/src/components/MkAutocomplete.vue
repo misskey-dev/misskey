@@ -431,7 +431,7 @@ function applySelect() {
 
 function chooseUser() {
 	props.close();
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		complete('user', user);
 		props.textarea.focus();
 	});

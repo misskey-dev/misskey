@@ -40,11 +40,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 				<MkSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
+					<option v-for="option in form[item].enum" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkSelect>
 				<MkRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
+					<option v-for="option in form[item].options" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkRadios>
 				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :textConverter="form[item].textConverter">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
@@ -86,6 +86,7 @@ const emit = defineEmits<{
 		canceled?: boolean;
 		result?: any;
 	}): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -99,13 +100,13 @@ function ok() {
 	emit('done', {
 		result: values,
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 function cancel() {
 	emit('done', {
 		canceled: true,
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>

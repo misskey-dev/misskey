@@ -50,21 +50,7 @@ jobs:
           CI: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/misskey-js/coverage/coverage-final.json
-
-  check-version:
-    # ルートの package.json と packages/misskey-js/package.json のバージョンが一致しているかを確認する
-    name: Check version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
-      - name: Check version
-        run: |
-          if [ "$(jq -r '.version' package.json)" != "$(jq -r '.version' packages/misskey-js/package.json)" ]; then
-            echo "Version mismatch!"
-            exit 1
-          fi

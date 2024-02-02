@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<MkSwitch v-model="isLocalOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 
-				<MkFolder>
+				<MkFolder :defaultOpen="true">
 					<template #label>{{ i18n.ts.specifyUser }}</template>
 					<template v-if="user" #suffix>@{{ user.username }}</template>
 
@@ -52,7 +52,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -64,7 +64,7 @@ const user = ref<any>(null);
 const isLocalOnly = ref(false);
 
 function selectUser() {
-	os.selectUser().then(_user => {
+	os.selectUser({ includeSelf: true }).then(_user => {
 		user.value = _user;
 	});
 }

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div v-if="achievements" :class="$style.root">
-		<div v-for="achievement in achievements" :key="achievement" :class="$style.achievement" class="_panel">
+		<div v-for="achievement in achievements" :key="achievement.name" :class="$style.achievement" class="_panel">
 			<div :class="$style.icon">
 				<div
 					:class="[$style.iconFrame, {

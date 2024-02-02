@@ -42,7 +42,7 @@ export class FlashEntityService {
 			createdAt: this.idService.parse(flash.id).date.toISOString(),
 			updatedAt: flash.updatedAt.toISOString(),
 			userId: flash.userId,
-			user: this.userEntityService.pack(flash.user ?? flash.userId, me), // { detail: true } すると無限ループするので注意
+			user: this.userEntityService.pack(flash.user ?? flash.userId, me), // { schema: 'UserDetailed' } すると無限ループするので注意
 			title: flash.title,
 			summary: flash.summary,
 			script: flash.script,
