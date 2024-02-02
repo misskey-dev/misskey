@@ -21,6 +21,9 @@
 - Feat: [mCaptcha](https://github.com/mCaptcha/mCaptcha)のサポートを追加
 - Fix: リストライムラインの「リノートを表示」が正しく機能しない問題を修正
 - Feat: Add support for TrueMail
+- Fix: リモートユーザーのリアクション一覧がすべて見えてしまうのを修正
+  * すべてのリモートユーザーのリアクション一覧を見えないようにします
+- Enhance: モデレーターはすべてのユーザーのリアクション一覧を見られるように
 
 ### Client
 - Feat: 新しいゲームを追加
@@ -58,6 +61,7 @@
 - Fix: プラグインで`Plugin:register_note_post_interruptor`を使用すると、ノートが投稿できなくなる問題を修正
 - Enhance: ページ遷移時にPlayerを閉じるように
 - Fix: iOSで大きな画像を変換してアップロードできない問題を修正
+- Fix: 「アニメーション画像を再生しない」もしくは「データセーバー（アイコン）」を有効にしていても、アイコンデコレーションのアニメーションが停止されない問題を修正
 
 ### Server
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
@@ -71,6 +75,7 @@
 - Fix: ipv4とipv6の両方が利用可能な環境でallowedPrivateNetworksが設定されていた場合プライベートipの検証ができていなかった問題を修正
 - Fix: properly handle cc followers
 - Fix: ジョブに関する設定の名前を修正 relashionshipJobPerSec -> relationshipJobPerSec
+- Fix: コントロールパネル->モデレーション->「誰でも新規登録できるようにする」の初期値をONからOFFに変更 #13122
 
 ### Service Worker
 - Enhance: オフライン表示のデザインを改善・多言語対応
