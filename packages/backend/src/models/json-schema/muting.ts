@@ -30,7 +30,7 @@ export const packedMutingSchema = {
 		mutee: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'UserDetailed',
+			ref: 'UserDetailedNotMe',
 		},
 	},
 } as const;
