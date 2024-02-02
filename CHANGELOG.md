@@ -61,6 +61,7 @@
 - Fix: プラグインで`Plugin:register_note_post_interruptor`を使用すると、ノートが投稿できなくなる問題を修正
 - Enhance: ページ遷移時にPlayerを閉じるように
 - Fix: iOSで大きな画像を変換してアップロードできない問題を修正
+- Fix: 「アニメーション画像を再生しない」もしくは「データセーバー（アイコン）」を有効にしていても、アイコンデコレーションのアニメーションが停止されない問題を修正
 - Fix: パスワードではない入力欄でパスワードマネージャーが起動する問題を修正 (Cherry-picked from https://github.com/misskeyIO/misskey/commit/6cd4ea548a1764cb22dfc263bec84840fc5d267b)
 
 ### Server
