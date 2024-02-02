@@ -14,10 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</header>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style['folder-toggle-enter-active'] : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style['folder-toggle-leave-active'] : ''"
-		:enterFromClass="defaultStore.state.animation ? $style['folder-toggle-enter-from'] : ''"
-		:leaveToClass="defaultStore.state.animation ? $style['folder-toggle-leave-to'] : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.folderToggleEnterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.folderToggleLeaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.folderToggleEnterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.folderToggleLeaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -100,12 +100,12 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.folder-toggle-enter-active, .folder-toggle-leave-active {
+.folderToggleEnterActive, .folderToggleLeaveActive {
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
 
-.folder-toggle-enter-from, .folder-toggle-leave-to {
+.folderToggleEnterFrom, .folderToggleLeaveTo {
 	opacity: 0;
 }
 
