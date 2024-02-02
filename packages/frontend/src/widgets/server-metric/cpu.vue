@@ -15,18 +15,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XPie from './pie.vue';
 
 const props = defineProps<{
 	connection: any,
-	meta: any
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
-let usage: number = $ref(0);
+const usage = ref<number>(0);
 
 function onStats(stats) {
-	usage = stats.cpu;
+	usage.value = stats.cpu;
 }
 
 onMounted(() => {

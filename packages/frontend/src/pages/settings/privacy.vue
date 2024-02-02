@@ -13,12 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
 	</MkSwitch>
 
-	<MkSelect v-model="ffVisibility" @update:modelValue="save()">
-		<template #label>{{ i18n.ts.ffVisibility }}</template>
+	<MkSelect v-model="followingVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followingVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-		<template #caption>{{ i18n.ts.ffVisibilityDescription }}</template>
+	</MkSelect>
+
+	<MkSelect v-model="followersVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followersVisibility }}</template>
+		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
+		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
+		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 	</MkSelect>
 
 	<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
@@ -66,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -77,36 +83,38 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let isLocked = $ref($i.isLocked);
-let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
-let noCrawle = $ref($i.noCrawle);
-let preventAiLearning = $ref($i.preventAiLearning);
-let isExplorable = $ref($i.isExplorable);
-let hideOnlineStatus = $ref($i.hideOnlineStatus);
-let publicReactions = $ref($i.publicReactions);
-let ffVisibility = $ref($i.ffVisibility);
+const isLocked = ref($i.isLocked);
+const autoAcceptFollowed = ref($i.autoAcceptFollowed);
+const noCrawle = ref($i.noCrawle);
+const preventAiLearning = ref($i.preventAiLearning);
+const isExplorable = ref($i.isExplorable);
+const hideOnlineStatus = ref($i.hideOnlineStatus);
+const publicReactions = ref($i.publicReactions);
+const followingVisibility = ref($i?.followingVisibility);
+const followersVisibility = ref($i?.followersVisibility);
 
-let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
-let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
-let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
-let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
+const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
+const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
+const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
+const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 function save() {
 	os.api('i/update', {
-		isLocked: !!isLocked,
-		autoAcceptFollowed: !!autoAcceptFollowed,
-		noCrawle: !!noCrawle,
-		preventAiLearning: !!preventAiLearning,
-		isExplorable: !!isExplorable,
-		hideOnlineStatus: !!hideOnlineStatus,
-		publicReactions: !!publicReactions,
-		ffVisibility: ffVisibility,
+		isLocked: !!isLocked.value,
+		autoAcceptFollowed: !!autoAcceptFollowed.value,
+		noCrawle: !!noCrawle.value,
+		preventAiLearning: !!preventAiLearning.value,
+		isExplorable: !!isExplorable.value,
+		hideOnlineStatus: !!hideOnlineStatus.value,
+		publicReactions: !!publicReactions.value,
+		followingVisibility: followingVisibility.value,
+		followersVisibility: followersVisibility.value,
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.privacy,

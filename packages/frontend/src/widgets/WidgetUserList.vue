@@ -24,7 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
@@ -57,9 +59,9 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-let list = $ref();
-let users = $ref([]);
-let fetching = $ref(true);
+const list = ref<Misskey.entities.UserList>();
+const users = ref<Misskey.entities.UserDetailed[]>([]);
+const fetching = ref(true);
 
 async function chooseList() {
 	const lists = await os.api('users/lists/list');
@@ -79,19 +81,19 @@ async function chooseList() {
 
 const fetch = () => {
 	if (widgetProps.listId == null) {
-		fetching = false;
+		fetching.value = false;
 		return;
 	}
 
 	os.api('users/lists/show', {
 		listId: widgetProps.listId,
 	}).then(_list => {
-		list = _list;
+		list.value = _list;
 		os.api('users/show', {
-			userIds: list.userIds,
+			userIds: list.value.userIds,
 		}).then(_users => {
-			users = _users;
-			fetching = false;
+			users.value = _users;
+			fetching.value = false;
 		});
 	});
 };

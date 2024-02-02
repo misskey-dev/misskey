@@ -4,6 +4,7 @@
  */
 
 import type { Schema } from '@/misc/json-schema.js';
+import { permissions } from 'misskey-js';
 import { RolePolicies } from '@/core/RoleService.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
@@ -24,6 +25,8 @@ import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-d
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
+import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
+import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
@@ -381,6 +384,8 @@ const eps = [
 	['admin/avatar-decorations/list', ep___admin_avatarDecorations_list],
 	['admin/avatar-decorations/update', ep___admin_avatarDecorations_update],
 	['admin/delete-all-files-of-a-user', ep___admin_deleteAllFilesOfAUser],
+	['admin/unset-user-avatar', ep___admin_unsetUserAvatar],
+	['admin/unset-user-banner', ep___admin_unsetUserBanner],
 	['admin/drive/clean-remote-files', ep___admin_drive_cleanRemoteFiles],
 	['admin/drive/cleanup', ep___admin_drive_cleanup],
 	['admin/drive/files', ep___admin_drive_files],
@@ -720,7 +725,7 @@ const eps = [
 	['retention', ep___retention],
 ];
 
-export interface IEndpointMeta {
+interface IEndpointMetaBase {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
 
 	readonly tags?: ReadonlyArray<string>;
@@ -818,6 +823,23 @@ export interface IEndpointMeta {
 	 */
 	readonly cacheSec?: number;
 }
+
+export type IEndpointMeta = (Omit<IEndpointMetaBase, 'requireCrential' | 'requireModerator' | 'requireAdmin'> & {
+	requireCredential?: false,
+	requireAdmin?: false,
+	requireModerator?: false,
+}) | (Omit<IEndpointMetaBase, 'secure'> & {
+	secure: true,
+}) | (Omit<IEndpointMetaBase, 'requireCredential' | 'kind'> & {
+	requireCredential: true,
+	kind: (typeof permissions)[number],
+}) | (Omit<IEndpointMetaBase, 'requireModerator' | 'kind'> & {
+	requireModerator: true,
+	kind: (typeof permissions)[number],
+}) | (Omit<IEndpointMetaBase, 'requireAdmin' | 'kind'> & {
+	requireAdmin: true,
+	kind: (typeof permissions)[number],
+})
 
 export interface IEndpoint {
 	name: string;

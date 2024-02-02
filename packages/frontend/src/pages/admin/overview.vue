@@ -65,7 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { markRaw, onMounted, onBeforeUnmount, nextTick, shallowRef, ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XFederation from './overview.federation.vue';
 import XInstances from './overview.instances.vue';
 import XQueue from './overview.queue.vue';
@@ -76,22 +77,23 @@ import XStats from './overview.stats.vue';
 import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
+import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
-const rootEl = $shallowRef<HTMLElement>();
-let serverInfo: any = $ref(null);
-let topSubInstancesForPie: any = $ref(null);
-let topPubInstancesForPie: any = $ref(null);
-let federationPubActive = $ref<number | null>(null);
-let federationPubActiveDiff = $ref<number | null>(null);
-let federationSubActive = $ref<number | null>(null);
-let federationSubActiveDiff = $ref<number | null>(null);
-let newUsers = $ref(null);
-let activeInstances = $shallowRef(null);
+const rootEl = shallowRef<HTMLElement>();
+const serverInfo = ref<Misskey.entities.ServerInfoResponse | null>(null);
+const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
+const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);
+const federationPubActive = ref<number | null>(null);
+const federationPubActiveDiff = ref<number | null>(null);
+const federationSubActive = ref<number | null>(null);
+const federationSubActiveDiff = ref<number | null>(null);
+const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
+const activeInstances = shallowRef<Misskey.entities.FederationInstance | null>(null);
 const queueStatsConnection = markRaw(useStream().useChannel('queueStats'));
 const now = new Date();
 const filesPagination = {
@@ -116,47 +118,53 @@ onMounted(async () => {
 	*/
 
 	os.apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
-		federationPubActive = chart.pubActive[0];
-		federationPubActiveDiff = chart.pubActive[0] - chart.pubActive[1];
-		federationSubActive = chart.subActive[0];
-		federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
+		federationPubActive.value = chart.pubActive[0];
+		federationPubActiveDiff.value = chart.pubActive[0] - chart.pubActive[1];
+		federationSubActive.value = chart.subActive[0];
+		federationSubActiveDiff.value = chart.subActive[0] - chart.subActive[1];
 	});
 
 	os.apiGet('federation/stats', { limit: 10 }).then(res => {
-		topSubInstancesForPie = res.topSubInstances.map(x => ({
-			name: x.host,
-			color: x.themeColor,
-			value: x.followersCount,
-			onClick: () => {
-				os.pageWindow(`/instance-info/${x.host}`);
-			},
-		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowersCount }]);
-		topPubInstancesForPie = res.topPubInstances.map(x => ({
-			name: x.host,
-			color: x.themeColor,
-			value: x.followingCount,
-			onClick: () => {
-				os.pageWindow(`/instance-info/${x.host}`);
-			},
-		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
+		topSubInstancesForPie.value = [
+			...res.topSubInstances.map(x => ({
+				name: x.host,
+				color: x.themeColor,
+				value: x.followersCount,
+				onClick: () => {
+					os.pageWindow(`/instance-info/${x.host}`);
+				},
+			})),
+			{ name: '(other)', color: '#80808080', value: res.otherFollowersCount },
+		];
+		topPubInstancesForPie.value = [
+			...res.topPubInstances.map(x => ({
+				name: x.host,
+				color: x.themeColor,
+				value: x.followingCount,
+				onClick: () => {
+					os.pageWindow(`/instance-info/${x.host}`);
+				},
+			})),
+			{ name: '(other)', color: '#80808080', value: res.otherFollowingCount },
+		];
 	});
 
 	os.api('admin/server-info').then(serverInfoResponse => {
-		serverInfo = serverInfoResponse;
+		serverInfo.value = serverInfoResponse;
 	});
 
 	os.api('admin/show-users', {
 		limit: 5,
 		sort: '+createdAt',
 	}).then(res => {
-		newUsers = res;
+		newUsers.value = res;
 	});
 
 	os.api('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {
-		activeInstances = res;
+		activeInstances.value = res;
 	});
 
 	nextTick(() => {
@@ -171,9 +179,9 @@ onBeforeUnmount(() => {
 	queueStatsConnection.dispose();
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.dashboard,

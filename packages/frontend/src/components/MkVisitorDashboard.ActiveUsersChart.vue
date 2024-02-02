@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import tinycolor from 'tinycolor2';
@@ -25,11 +25,11 @@ import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
-const chartEl = $shallowRef<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;
-let fetching = $ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -65,7 +65,7 @@ async function renderChart() {
 
 	const max = Math.max(...raw.read);
 
-	chartInstance = new Chart(chartEl, {
+	chartInstance = new Chart(chartEl.value, {
 		type: 'bar',
 		data: {
 			datasets: [{
@@ -147,7 +147,7 @@ async function renderChart() {
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	fetching = false;
+	fetching.value = false;
 }
 
 onMounted(async () => {
