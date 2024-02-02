@@ -15,10 +15,10 @@ type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
 	keyof U
 > & U;
 
-type SwitchCase = {
+type SwitchCase<Condition = unknown, BranchResult = unknown> = {
 	$switch: {
-		$cases: [unknown, unknown][],
-		$default: unknown;
+		$cases: [Condition, BranchResult][],
+		$default: BranchResult;
 	};
 };
 
