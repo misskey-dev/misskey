@@ -613,13 +613,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (!game.isStarted || game.isEnded) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 
-		const lastReactedAt = await this.redisClient.get(`reversi:game:lastReactedAt:${game.id}:${user.id}`);
-
-		if (lastReactedAt && (Date.now() - parseInt(lastReactedAt, 10) < 3000)) {
-			// レートリミット（3秒）
-			return;
-		}
-
 		let _reaction = '❤️';
 
 		const custom = reaction.match(isCustomEmojiRegexp);
@@ -639,8 +632,6 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			userId: user.id,
 			reaction: _reaction,
 		});
-
-		this.redisClient.setex(`reversi:game:lastReactedAt:${game.id}:${user.id}`, 60 * 60, Date.now().toString());
 	}
 
 	@bindThis
