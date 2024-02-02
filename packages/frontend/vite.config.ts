@@ -116,6 +116,7 @@ export function getConfig(): UserConfig {
 					manualChunks: {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
+						shiki: ['shiki', 'shiki/wasm', 'shiki/core', 'shiki/langs'],
 					},
 					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
 					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
@@ -127,6 +128,7 @@ export function getConfig(): UserConfig {
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',
 			reportCompressedSize: false,
+			chunkSizeWarningLimit: 650,
 
 			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 			commonjsOptions: {
