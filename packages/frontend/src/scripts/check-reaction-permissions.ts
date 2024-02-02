@@ -4,16 +4,16 @@ export function checkReactionPermissions(me: Misskey.entities.MeDetailed, note: 
   allowed: true;
 } | {
   allowed: false;
-  deniedReason: 'localOnly' | 'isSensitive' | 'roleIdsThatCanBeUsedThisEmojiAsReaction';
+  rejectedReason: 'localOnly' | 'isSensitive' | 'roleIdsThatCanBeUsedThisEmojiAsReaction';
 } {
   if (emoji.localOnly && note.user.host !== me.host) {
-    return { allowed: false, deniedReason: 'localOnly' };
+    return { allowed: false, rejectedReason: 'localOnly' };
   }
   if (emoji.isSensitive && (note.reactionAcceptance === 'nonSensitiveOnly' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote')) {
-    return { allowed: false, deniedReason: 'isSensitive' };
+    return { allowed: false, rejectedReason: 'isSensitive' };
   }
   if (!(emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || me.roles.some(role => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(role.id)))) {
-    return { allowed: false, deniedReason: 'roleIdsThatCanBeUsedThisEmojiAsReaction' };
+    return { allowed: false, rejectedReason: 'roleIdsThatCanBeUsedThisEmojiAsReaction' };
   }
   return { allowed: true };
 }

@@ -61,8 +61,8 @@ async function toggleReaction() {
 		if (!permissions.allowed) {
 			os.alert({
 				type: "info",
-				title: i18n.ts.reactionDenied,
-				text: i18n.ts._reactionDeniedReason[permissions.deniedReason],
+				title: i18n.ts.reactionRejected,
+				text: i18n.ts._reactionRejectedReason[permissions.rejectedReason],
 			});
 			return;
 		}

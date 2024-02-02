@@ -121,8 +121,8 @@ sensitive: "センシティブ"
 add: "追加"
 reaction: "リアクション"
 reactions: "リアクション"
-reactionDenied: "このリアクションをつける権限がありません。"
-_reactionDeniedReason:
+reactionRejected: "このリアクションをつける権限がありません。"
+_reactionRejectedReason:
   isSensitive: "投稿者がセンシティブなリアクションを許可していないため、リアクションできません。"
   localOnly: "この絵文字はリモートから見られないように設定されているため、リアクションできません。"
   roleIdsThatCanBeUsedThisEmojiAsReaction: "この絵文字をリアクションとして使うにはロールが必要です。"

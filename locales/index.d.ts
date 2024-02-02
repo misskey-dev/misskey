@@ -503,8 +503,8 @@ export interface Locale extends ILocale {
     /**
      * このリアクションをつける権限がありません。
      */
-    "reactionDenied": string;
-    "_reactionDeniedReason": {
+    "reactionRejected": string;
+    "_reactionRejectedReason": {
         /**
          * 投稿者がセンシティブなリアクションを許可していないため、リアクションできません。
          */
