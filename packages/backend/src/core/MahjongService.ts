@@ -428,8 +428,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 			if (aiHouses.includes(res.canPonHouse)) {
 				// TODO: ちゃんと思考するようにする
-				//answers.pon = Math.random() < 0.25;
-				answers.pon = false;
+				answers.pon = Math.random() < 0.25;
 			}
 			if (aiHouses.includes(res.canCiiHouse)) {
 				// TODO: ちゃんと思考するようにする
@@ -438,8 +437,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			}
 			if (aiHouses.includes(res.canKanHouse)) {
 				// TODO: ちゃんと思考するようにする
-				//answers.kan = Math.random() < 0.25;
-				answers.kan = false;
+				answers.kan = Math.random() < 0.25;
 			}
 			for (const h of res.canRonHouses) {
 				if (aiHouses.includes(h)) {
@@ -501,7 +499,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
-		if (!Mahjong.Utils.isTile(tile)) return;
+		if (!Mahjong.Common.isTile(tile)) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = getHouseOfUserId(room, engine, user.id);
@@ -629,7 +627,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (engine.state.riichis[house]) {
 			// リーチ時はアガリ牌でない限りツモ切り
 			const handTiles = engine.state.handTiles[house];
-			const horaSets = Mahjong.Utils.getHoraSets(handTiles);
+			const horaSets = Mahjong.Common.getHoraSets(handTiles);
 			if (horaSets.length === 0) {
 				setTimeout(() => {
 					this.dahai(room, engine, house, handTiles.at(-1));

@@ -6,7 +6,6 @@
 import CRC32 from 'crc-32';
 import { Tile, House, Huro, TILE_TYPES, YAKU_DEFINITIONS } from './common.js';
 import * as Common from './common.js';
-import * as Utils from './utils.js';
 
 export type PlayerState = {
 	user1House: House;
@@ -97,7 +96,7 @@ export class PlayerGameEngine {
 	}
 
 	public get doras(): Tile[] {
-		return this.state.doraIndicateTiles.map(t => Utils.nextTileForDora(t));
+		return this.state.doraIndicateTiles.map(t => Common.nextTileForDora(t));
 	}
 
 	public commit_tsumo(house: House, tile: Tile) {
@@ -131,7 +130,7 @@ export class PlayerGameEngine {
 
 		if (house === this.myHouse) {
 		} else {
-			const canRon = Utils.getHoraSets(this.myHandTiles.concat(tile)).length > 0;
+			const canRon = Common.getHoraSets(this.myHandTiles.concat(tile)).length > 0;
 			const canPon = this.myHandTiles.filter(t => t === tile).length === 2;
 
 			// TODO: canCii
@@ -243,7 +242,7 @@ export class PlayerGameEngine {
 		if (this.state.riichis[this.myHouse]) return false;
 		if (this.state.points[this.myHouse] < 1000) return false;
 		if (!this.isMenzen) return false;
-		if (Utils.getTilesForRiichi(this.myHandTiles).length === 0) return false;
+		if (Common.getTilesForRiichi(this.myHandTiles).length === 0) return false;
 		return true;
 	}
 }

@@ -6,7 +6,6 @@
 import CRC32 from 'crc-32';
 import { Tile, House, Huro, TILE_TYPES, YAKU_DEFINITIONS } from './common.js';
 import * as Common from './common.js';
-import * as Utils from './utils.js';
 import { PlayerState } from './engine.player.js';
 
 export type MasterState = {
@@ -116,7 +115,7 @@ export class MasterGameEngine {
 	}
 
 	public get doras(): Tile[] {
-		return this.state.kingTiles.slice(0, this.state.activatedDorasCount).map(t => Utils.nextTileForDora(t));
+		return this.state.kingTiles.slice(0, this.state.activatedDorasCount).map(t => Common.nextTileForDora(t));
 	}
 
 	public static createInitialState(): MasterState {
@@ -199,7 +198,7 @@ export class MasterGameEngine {
 		// TODO: ポンされるなどして自分の河にない場合の考慮
 		if (this.state.hoTiles[house].includes(tile)) return false;
 
-		const horaSets = Utils.getHoraSets(this.state.handTiles[house].concat(tile));
+		const horaSets = Common.getHoraSets(this.state.handTiles[house].concat(tile));
 		if (horaSets.length === 0) return false; // 完成形じゃない
 
 		// TODO
@@ -213,8 +212,12 @@ export class MasterGameEngine {
 		return this.state.handTiles[house].filter(t => t === tile).length === 2;
 	}
 
-	private canCii(house: House, tile: Tile): boolean {
-		// TODO
+	private canCii(caller: House, callee: House, tile: Tile): boolean {
+		if (callee !== Common.prevHouse(caller)) return false;
+		const hand = this.state.handTiles[caller];
+		return Common.SHUNTU_PATTERNS.some(pattern =>
+			pattern.includes(tile) &&
+			pattern.filter(t => hand.includes(t)).length >= 2);
 	}
 
 	public getHouse(index: 1 | 2 | 3 | 4): House {
@@ -266,7 +269,7 @@ export class MasterGameEngine {
 		if (riichi) {
 			const tempHandTiles = [...this.state.handTiles[house]];
 			tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
-			if (Utils.getHoraTiles(tempHandTiles).length === 0) throw new Error('Not tenpai');
+			if (Common.getHoraTiles(tempHandTiles).length === 0) throw new Error('Not tenpai');
 			if (this.state.points[house] < 1000) throw new Error('Not enough points');
 		}
 
@@ -360,7 +363,7 @@ export class MasterGameEngine {
 				};
 			}
 			this.state.turn = null;
-			this.state.nextTurnAfterAsking = Utils.nextHouse(house);
+			this.state.nextTurnAfterAsking = Common.nextHouse(house);
 			return {
 				asking: true as const,
 				canRonHouses: canRonHouses,
@@ -370,7 +373,7 @@ export class MasterGameEngine {
 			};
 		}
 
-		this.state.turn = Utils.nextHouse(house);
+		this.state.turn = Common.nextHouse(house);
 
 		const tsumoTile = this.tsumo();
 
