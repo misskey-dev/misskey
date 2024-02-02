@@ -25,8 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<template v-if="showDecoration">
 		<img
-			v-for="decoration, index in decorations ?? user.avatarDecorations"
-			:key="`${index}-${decoration.url}`"
+			v-for="decoration in decorations ?? user.avatarDecorations"
 			:class="[$style.decoration]"
 			:src="getDecorationUrl(decoration)"
 			:style="{
