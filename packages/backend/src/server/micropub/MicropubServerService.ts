@@ -351,7 +351,7 @@ export class MicropubServerService {
 			if (isPureRenote(renote)) throw new MicropubError(errorSymbols.BAD_REQUEST, 'Cannot renote a pure renote');
 			if (renote.visibility === 'followers' && renote.userId !== user.id) throw new MicropubError(errorSymbols.BAD_REQUEST);
 			if (renote.visibility === 'specified') throw new MicropubError(errorSymbols.BAD_REQUEST);
-			if (renote.channelId && renote.userId !== options.channel?.id) {
+			if (renote.channelId && renote.channelId !== options.channel?.id) {
 				const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
 				if (renoteChannel === null) throw new MicropubError(errorSymbols.BAD_REQUEST, 'Cannot find channel');
 				if (!renoteChannel.allowRenoteToExternal) throw new MicropubError(errorSymbols.BAD_REQUEST, 'Cannot renote outside of channel');
