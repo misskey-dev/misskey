@@ -20,10 +20,11 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { GridEventEmitter, GridRow, GridSetting, Size } from '@/components/grid/grid.js';
+import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
 import MkDataCell from '@/components/grid/MkDataCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
+import { GridRow } from '@/components/grid/row.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;

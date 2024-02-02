@@ -1,7 +1,9 @@
 import { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
-import { GridColumn, GridRow, GridState } from '@/components/grid/grid.js';
+import { GridState } from '@/components/grid/grid.js';
 import { ValidateViolation } from '@/components/grid/cell-validators.js';
 import { MenuItem } from '@/types/menu.js';
+import { GridColumn } from '@/components/grid/column.js';
+import { GridRow } from '@/components/grid/row.js';
 
 export type GridCurrentState = {
 	selectedCell?: GridCell;
@@ -34,6 +36,7 @@ export type GridCellValueChangeEvent = {
 	type: 'cell-value-change';
 	column: GridColumn;
 	row: GridRow;
+	violation: ValidateViolation;
 	oldValue: CellValue;
 	newValue: CellValue;
 };

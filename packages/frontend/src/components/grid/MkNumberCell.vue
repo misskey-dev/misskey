@@ -7,7 +7,8 @@
 </template>
 
 <script setup lang="ts">
-import { GridRow } from '@/components/grid/grid.js';
+
+import { GridRow } from '@/components/grid/row.js';
 
 defineProps<{
 	content: string,

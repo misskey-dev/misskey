@@ -56,10 +56,12 @@ import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
+import { cellValidation, ValidateViolation } from '@/components/grid/cell-validators.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
 	(ev: 'operation:endEdit', sender: GridCell): void;
+	(ev: 'operation:validation', sender: GridCell, violation: ValidateViolation): void;
 	(ev: 'change:value', sender: GridCell, newValue: CellValue): void;
 	(ev: 'change:contentSize', sender: GridCell, newSize: Size): void;
 }>();
@@ -210,7 +212,9 @@ function endEditing(applyValue: boolean) {
 }
 
 function emitValueChange(newValue: CellValue) {
-	emit('change:value', cell.value, newValue);
+	const _cell = cell.value;
+	const violation = cellValidation(_cell, newValue);
+	emit('operation:validation', _cell, violation);
 }
 
 function emitContentSizeChanged() {

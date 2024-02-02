@@ -90,7 +90,6 @@ import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fromDriveFile, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { ColumnSetting, GridRow } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -111,6 +110,8 @@ import {
 } from '@/components/grid/grid-event.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { CellValue } from '@/components/grid/cell.js';
+import { ColumnSetting } from '@/components/grid/column.js';
+import { GridRow } from '@/components/grid/row.js';
 
 type FolderItem = {
 	id?: string;

@@ -34,11 +34,11 @@ import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { fromEmojiDetailed, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { ColumnSetting } from '@/components/grid/grid.js';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import { required } from '@/components/grid/cell-validators.js';
 import MkButton from '@/components/MkButton.vue';
+import { ColumnSetting } from '@/components/grid/column.js';
 
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'selected', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },

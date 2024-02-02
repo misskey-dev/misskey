@@ -38,24 +38,17 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import {
-	ColumnSetting,
-	DataSource,
-	GridColumn,
-	GridEventEmitter,
-	GridRow,
-	GridSetting,
-	GridState,
-	Size,
-} from '@/components/grid/grid.js';
+import { DataSource, GridEventEmitter, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
-import { cellValidation } from '@/components/grid/cell-validators.js';
-import { CELL_ADDRESS_NONE, CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
-import { calcCellWidth, equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
+import { ValidateViolation } from '@/components/grid/cell-validators.js';
+import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell } from '@/components/grid/cell.js';
+import { equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
+import { ColumnSetting, createColumn, GridColumn } from '@/components/grid/column.js';
+import { createRow, GridRow } from '@/components/grid/row.js';
 
 const props = withDefaults(defineProps<{
 	gridSetting?: GridSetting,
@@ -66,10 +59,14 @@ const props = withDefaults(defineProps<{
 		rowNumberVisible: true,
 	}),
 });
+const { gridSetting, columnSettings, data } = toRefs(props);
 
 const emit = defineEmits<{
 	(ev: 'event', event: GridEvent, current: GridCurrentState): void;
 }>();
+
+// #region Event Definitions
+// region Event Definitions
 
 /**
  * grid -> 各子コンポーネントのイベント経路を担う{@link GridEventEmitter}。おもにpropsでの伝搬が難しいイベントを伝搬するために使用する。
@@ -87,35 +84,70 @@ const bus = new GridEventEmitter();
  */
 const resizeObserver = new ResizeObserver((entries) => setTimeout(() => onResize(entries)));
 
-const { gridSetting, columnSettings, data } = toRefs(props);
-
 const rootEl = ref<InstanceType<typeof HTMLTableElement>>();
-const columns = ref<GridColumn[]>([]);
-const rows = ref<GridRow[]>([]);
-const cells = ref<GridCell[][]>([]);
-const previousCellAddress = ref<CellAddress>(CELL_ADDRESS_NONE);
-const editingCellAddress = ref<CellAddress>(CELL_ADDRESS_NONE);
-const firstSelectionColumnIdx = ref<number>(CELL_ADDRESS_NONE.col);
-const firstSelectionRowIdx = ref<number>(CELL_ADDRESS_NONE.row);
+/**
+ * グリッドの最も上位にある状態。
+ */
 const state = ref<GridState>('normal');
+/**
+ * グリッドの列定義。propsで受け取った{@link columnSettings}をもとに、{@link refreshColumnsSetting}で再計算される。
+ */
+const columns = ref<GridColumn[]>([]);
+/**
+ * グリッドの行定義。propsで受け取った{@link data}をもとに、{@link refreshData}で再計算される。
+ */
+const rows = ref<GridRow[]>([]);
+/**
+ * グリッドのセル定義。propsで受け取った{@link data}をもとに、{@link refreshData}で再計算される。
+ */
+const cells = ref<GridCell[][]>([]);
 
+/**
+ * mousemoveイベントが発生した際に、イベントから取得したセルアドレスを保持するための変数。
+ * セルアドレスが変わった瞬間にイベントを起こしたい時のために前回値として使用する。
+ */
+const previousCellAddress = ref<CellAddress>(CELL_ADDRESS_NONE);
+/**
+ * 編集中のセルのアドレスを保持するための変数。
+ */
+const editingCellAddress = ref<CellAddress>(CELL_ADDRESS_NONE);
+/**
+ * 列の範囲選択をする際の開始地点となるインデックスを保持するための変数。
+ * この開始地点からマウスが動いた地点までの範囲を選択する。
+ */
+const firstSelectionColumnIdx = ref<number>(CELL_ADDRESS_NONE.col);
+/**
+ * 行の範囲選択をする際の開始地点となるインデックスを保持するための変数。
+ * この開始地点からマウスが動いた地点までの範囲を選択する。
+ */
+const firstSelectionRowIdx = ref<number>(CELL_ADDRESS_NONE.row);
+
+/**
+ * 選択状態のセルを取得するための計算プロパティ。選択状態とは{@link GridCell.selected}がtrueのセルのこと。
+ */
 const selectedCell = computed(() => {
 	const selected = cells.value.flat().filter(it => it.selected);
 	return selected.length > 0 ? selected[0] : undefined;
 });
+/**
+ * 範囲選択状態のセルを取得するための計算プロパティ。範囲選択状態とは{@link GridCell.ranged}がtrueのセルのこと。
+ */
 const rangedCells = computed(() => cells.value.flat().filter(it => it.ranged));
+/**
+ * 範囲選択状態のセルの範囲を取得するための計算プロパティ。左上のセル番地と右下のセル番地を計算する。
+ */
 const rangedBounds = computed(() => {
 	const _cells = rangedCells.value;
-	const cols = _cells.map(it => it.address.col);
-	const rows = _cells.map(it => it.address.row);
+	const _cols = _cells.map(it => it.address.col);
+	const _rows = _cells.map(it => it.address.row);
 
 	const leftTop = {
-		col: Math.min(...cols),
-		row: Math.min(...rows),
+		col: Math.min(..._cols),
+		row: Math.min(..._rows),
 	};
 	const rightBottom = {
-		col: Math.max(...cols),
-		row: Math.max(...rows),
+		col: Math.max(..._cols),
+		row: Math.max(..._rows),
 	};
 
 	return {
@@ -123,6 +155,9 @@ const rangedBounds = computed(() => {
 		rightBottom,
 	};
 });
+/**
+ * グリッドの中で使用可能なセルの範囲を取得するための計算プロパティ。左上のセル番地と右下のセル番地を計算する。
+ */
 const availableBounds = computed(() => {
 	const leftTop = {
 		col: 0,
@@ -134,7 +169,13 @@ const availableBounds = computed(() => {
 	};
 	return { leftTop, rightBottom };
 });
+/**
+ * 範囲選択状態の行を取得するための計算プロパティ。範囲選択状態とは{@link GridRow.ranged}がtrueの行のこと。
+ */
 const rangedRows = computed(() => rows.value.filter(it => it.ranged));
+
+// endregion
+// #endregion
 
 watch(columnSettings, refreshColumnsSetting, { immediate: true });
 watch(data, refreshData, { immediate: true, deep: true });
@@ -144,6 +185,9 @@ if (_DEV_) {
 		console.log(`[grid][state] ${oldValue} -> ${value}`);
 	});
 }
+
+// #region Event Handlers
+// region Event Handlers
 
 function onResize(entries: ResizeObserverEntry[]) {
 	if (entries.length !== 1 || entries[0].target !== rootEl.value) {
@@ -162,7 +206,7 @@ function onResize(entries: ResizeObserverEntry[]) {
 				state.value = 'normal';
 
 				// 選択状態が狂うかもしれないので解除しておく
-				unSelectionRange();
+				unSelectionRangeAll();
 
 				// 再計算要求を発行。各セル側で最低限必要な横幅を算出し、emitで返してくるようになっている
 				bus.emit('forceRefreshContentSize');
@@ -179,6 +223,10 @@ function onResize(entries: ResizeObserverEntry[]) {
 }
 
 function onKeyDown(ev: KeyboardEvent) {
+	function emitKeyEvent() {
+		emitGridEvent({ type: 'keydown', event: ev });
+	}
+
 	if (_DEV_) {
 		console.log(`[grid][key] ctrl: ${ev.ctrlKey}, shift: ${ev.shiftKey}, code: ${ev.code}`);
 	}
@@ -225,6 +273,8 @@ function onKeyDown(ev: KeyboardEvent) {
 							break;
 						}
 						default: {
+							// その他のキーは外部にゆだねる
+							emitKeyEvent();
 							return;
 						}
 					}
@@ -233,7 +283,7 @@ function onKeyDown(ev: KeyboardEvent) {
 					expandCellRange(newBounds.leftTop, newBounds.rightBottom);
 				} else {
 					// その他のキーは外部にゆだねる
-					emitGridEvent({ type: 'keydown', event: ev });
+					emitKeyEvent();
 				}
 			} else {
 				if (ev.shiftKey) {
@@ -311,6 +361,8 @@ function onKeyDown(ev: KeyboardEvent) {
 							break;
 						}
 						default: {
+							// その他のキーは外部にゆだねる
+							emitKeyEvent();
 							return;
 						}
 					}
@@ -342,7 +394,7 @@ function onKeyDown(ev: KeyboardEvent) {
 						}
 						default: {
 							// その他のキーは外部にゆだねる
-							emitGridEvent({ type: 'keydown', event: ev });
+							emitKeyEvent();
 							break;
 						}
 					}
@@ -387,7 +439,7 @@ function onLeftMouseDown(ev: MouseEvent) {
 				registerMouseMove();
 				state.value = 'cellSelecting';
 			} else if (isColumnHeaderCellAddress(cellAddress)) {
-				unSelectionRange();
+				unSelectionRangeAll();
 
 				const colCells = cells.value.map(row => row[cellAddress.col]);
 				selectionRange(...colCells.map(cell => cell.address));
@@ -399,7 +451,7 @@ function onLeftMouseDown(ev: MouseEvent) {
 
 				rootEl.value?.focus();
 			} else if (isRowNumberCellAddress(cellAddress)) {
-				unSelectionRange();
+				unSelectionRangeAll();
 
 				const rowCells = cells.value[cellAddress.row];
 				selectionRange(...rowCells.map(cell => cell.address));
@@ -580,6 +632,11 @@ function onCellEditEnd() {
 	state.value = 'normal';
 }
 
+function onCellValidation(sender: GridCell, violation: ValidateViolation) {
+	sender.validation = violation;
+	emitGridEvent({ type: 'cell-validation', violation });
+}
+
 function onChangeCellValue(sender: GridCell, newValue: CellValue) {
 	emitCellValue(sender, newValue);
 }
@@ -640,6 +697,15 @@ function onHeaderCellWidthLargest(sender: GridColumn) {
 	}
 }
 
+// endregion
+// #endregion
+
+// #region Methods
+// region Methods
+
+/**
+ * カラム内のコンテンツを表示しきるために必要な横幅と、各セルのコンテンツを表示しきるために必要な横幅を比較し、大きい方を列全体の横幅として採用する。
+ */
 function calcLargestCellWidth(column: GridColumn) {
 	const _cells = cells.value;
 	const largestColumnWidth = columns.value[column.index].contentSize.width;
@@ -660,6 +726,9 @@ function calcLargestCellWidth(column: GridColumn) {
 	column.width = `${Math.max(largestColumnWidth, largestCellWidth)}px`;
 }
 
+/**
+ * {@link emit}を使用してイベントを発行する。
+ */
 function emitGridEvent(ev: GridEvent) {
 	const currentState: GridCurrentState = {
 		selectedCell: selectedCell.value,
@@ -680,39 +749,27 @@ function emitGridEvent(ev: GridEvent) {
 	);
 }
 
+/**
+ * 親コンポーネントに新しい値を通知する。セル値のバリデーション結果は問わない（親コンポーネント側で制御する）
+ */
 function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
 	const cell = cells.value[cellAddress.row][cellAddress.col];
-
-	const violation = cellValidation(cell, newValue);
-	emitGridEvent({ type: 'cell-validation', violation });
-
-	cell.validation = {
-		valid: violation.valid,
-		violations: violation.violations.filter(it => !it.valid),
-	};
 
 	emitGridEvent({
 		type: 'cell-value-change',
 		column: cell.column,
 		row: cell.row,
+		violation: cell.validation,
 		oldValue: cell.value,
 		newValue: newValue,
 	});
 }
 
-function selectionCell(target: CellAddress) {
-	if (!availableCellAddress(target)) {
-		return;
-	}
-
-	unSelectionRange();
-
-	const _cells = cells.value;
-	_cells[target.row][target.col].selected = true;
-	_cells[target.row][target.col].ranged = true;
-}
-
+/**
+ * {@link selectedCell}のセル番地を取得する。
+ * いずれかのセルが選択されている状態で呼ばれることを想定しているため、選択されていない場合は例外を投げる。
+ */
 function requireSelectionCell(): CellAddress {
 	const selected = selectedCell.value;
 	if (!selected) {
@@ -722,6 +779,25 @@ function requireSelectionCell(): CellAddress {
 	return selected.address;
 }
 
+/**
+ * {@link target}のセルを選択状態にする。
+ * その際、{@link target}以外の行およびセルの範囲選択状態を解除する。
+ */
+function selectionCell(target: CellAddress) {
+	if (!availableCellAddress(target)) {
+		return;
+	}
+
+	unSelectionRangeAll();
+
+	const _cells = cells.value;
+	_cells[target.row][target.col].selected = true;
+	_cells[target.row][target.col].ranged = true;
+}
+
+/**
+ * {@link targets}のセルを範囲選択状態にする。
+ */
 function selectionRange(...targets: CellAddress[]) {
 	const _cells = cells.value;
 	for (const target of targets) {
@@ -729,7 +805,10 @@ function selectionRange(...targets: CellAddress[]) {
 	}
 }
 
-function unSelectionRange() {
+/**
+ * 行およびセルの範囲選択状態をすべて解除する。
+ */
+function unSelectionRangeAll() {
 	const _cells = rangedCells.value;
 	for (const cell of _cells) {
 		cell.selected = false;
@@ -742,6 +821,9 @@ function unSelectionRange() {
 	}
 }
 
+/**
+ * {@link leftTop}から{@link rightBottom}の範囲外にあるセルを範囲選択状態から外す。
+ */
 function unSelectionOutOfRange(leftTop: CellAddress, rightBottom: CellAddress) {
 	const _cells = rangedCells.value;
 	for (const cell of _cells) {
@@ -758,6 +840,9 @@ function unSelectionOutOfRange(leftTop: CellAddress, rightBottom: CellAddress) {
 	}
 }
 
+/**
+ * {@link leftTop}から{@link rightBottom}の範囲内にあるセルを範囲選択状態にする。
+ */
 function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
 	const targetRows = cells.value.slice(leftTop.row, rightBottom.row + 1);
 	for (const row of targetRows) {
@@ -767,6 +852,9 @@ function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
 	}
 }
 
+/**
+ * {@link top}から{@link bottom}までの行を範囲選択状態にする。
+ */
 function expandRowRange(top: number, bottom: number) {
 	const targetRows = rows.value.slice(top, bottom + 1);
 	for (const row of targetRows) {
@@ -786,65 +874,6 @@ function isRowNumberCellAddress(cellAddress: CellAddress): boolean {
 	return cellAddress.row >= 0 && cellAddress.col === -1;
 }
 
-function refreshColumnsSetting() {
-	const bindToList = columnSettings.value.map(it => it.bindTo);
-	if (new Set(bindToList).size !== columnSettings.value.length) {
-		throw new Error(`Duplicate bindTo setting : [${bindToList.join(',')}]}]`);
-	}
-
-	refreshData();
-}
-
-function refreshData() {
-	if (_DEV_) {
-		console.log('[grid][refresh-data]');
-	}
-
-	const _data: DataSource[] = data.value;
-	const _rows: GridRow[] = _data.map((_, index) => ({
-		index,
-		ranged: false,
-	}));
-	const _columns: GridColumn[] = columnSettings.value.map((setting, index) => ({
-		index,
-		setting,
-		width: calcCellWidth(setting.width),
-		contentSize: { width: 0, height: 0 },
-	}));
-	const _cells = Array.of<GridCell[]>();
-
-	for (const [rowIndex, row] of _rows.entries()) {
-		const rowCells = Array.of<GridCell>();
-		for (const [colIndex, column] of _columns.entries()) {
-			const value = (column.setting.bindTo in _data[rowIndex])
-				? _data[rowIndex][column.setting.bindTo]
-				: undefined;
-
-			const cell: GridCell = {
-				address: { col: colIndex, row: rowIndex },
-				value,
-				column: column,
-				row: row,
-				selected: false,
-				ranged: false,
-				contentSize: { width: 0, height: 0 },
-				validation: {
-					valid: true,
-					violations: [],
-				},
-			};
-
-			rowCells.push(cell);
-		}
-
-		_cells.push(rowCells);
-	}
-
-	rows.value = _rows;
-	columns.value = _columns;
-	cells.value = _cells;
-}
-
 function registerMouseMove() {
 	unregisterMouseMove();
 	addEventListener('mousemove', onMouseMove);
@@ -862,6 +891,45 @@ function registerMouseUp() {
 function unregisterMouseUp() {
 	removeEventListener('mouseup', onMouseUp);
 }
+
+function refreshColumnsSetting() {
+	const bindToList = columnSettings.value.map(it => it.bindTo);
+	if (new Set(bindToList).size !== columnSettings.value.length) {
+		// 取得元のプロパティ名重複は許容したくない
+		throw new Error(`Duplicate bindTo setting : [${bindToList.join(',')}]}]`);
+	}
+
+	refreshData();
+}
+
+function refreshData() {
+	if (_DEV_) {
+		console.log('[grid][refresh-data]');
+	}
+
+	const _data: DataSource[] = data.value;
+	const _rows: GridRow[] = _data.map((_, index) => createRow(index));
+	const _cols: GridColumn[] = columnSettings.value.map(createColumn);
+
+	// 行・列の定義から、元データの配列より値を取得してセルを作成する。
+	// 行・列の定義はそれぞれインデックスを持っており、そのインデックスは元データの配列番地に対応している。
+	const _cells = _rows.map((row, rowIndex) =>
+		_cols.map(col =>
+			createCell(
+				col,
+				row,
+				(col.setting.bindTo in _data[rowIndex])	? _data[rowIndex][col.setting.bindTo]	: undefined,
+			),
+		),
+	);
+
+	rows.value = _rows;
+	columns.value = _cols;
+	cells.value = _cells;
+}
+
+// endregion
+// #endregion
 
 onMounted(() => {
 	if (rootEl.value) {
