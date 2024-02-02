@@ -137,8 +137,8 @@ export const moderationLogTypes = [
 
 export type ModerationLogPayloads = {
 	updateServerSettings: {
-		before: any | null;
-		after: any | null;
+		before: object | null;
+		after: object | null;
 	};
 	suspend: {
 		userId: string;
@@ -159,16 +159,16 @@ export type ModerationLogPayloads = {
 	};
 	addCustomEmoji: {
 		emojiId: string;
-		emoji: any;
+		emoji: object;
 	};
 	updateCustomEmoji: {
 		emojiId: string;
-		before: any;
-		after: any;
+		before: object;
+		after: object;
 	};
 	deleteCustomEmoji: {
 		emojiId: string;
-		emoji: any;
+		emoji: object;
 	};
 	assignRole: {
 		userId: string;
@@ -187,16 +187,16 @@ export type ModerationLogPayloads = {
 	};
 	createRole: {
 		roleId: string;
-		role: any;
+		role: object;
 	};
 	updateRole: {
 		roleId: string;
-		before: any;
-		after: any;
+		before: object;
+		after: object;
 	};
 	deleteRole: {
 		roleId: string;
-		role: any;
+		role: object;
 	};
 	clearQueue: Record<string, never>;
 	promoteQueue: Record<string, never>;
@@ -211,39 +211,39 @@ export type ModerationLogPayloads = {
 		noteUserId: string;
 		noteUserUsername: string;
 		noteUserHost: string | null;
-		note: any;
+		note: object;
 	};
 	createGlobalAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: object;
 	};
 	createUserAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: object;
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
 	};
 	updateGlobalAnnouncement: {
 		announcementId: string;
-		before: any;
-		after: any;
+		before: object;
+		after: object;
 	};
 	updateUserAnnouncement: {
 		announcementId: string;
-		before: any;
-		after: any;
+		before: object;
+		after: object;
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
 	};
 	deleteGlobalAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: object;
 	};
 	deleteUserAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: object;
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
@@ -275,11 +275,11 @@ export type ModerationLogPayloads = {
 	};
 	resolveAbuseReport: {
 		reportId: string;
-		report: any;
+		report: object;
 		forwarded: boolean;
 	};
 	createInvitation: {
-		invitations: any[];
+		invitations: object[];
 	};
 	createAd: {
 		adId: string;
@@ -287,25 +287,25 @@ export type ModerationLogPayloads = {
 	};
 	updateAd: {
 		adId: string;
-		before: any;
-		after: any;
+		before: object;
+		after: object;
 	};
 	deleteAd: {
 		adId: string;
-		ad: any;
+		ad: object;
 	};
 	createAvatarDecoration: {
 		avatarDecorationId: string;
-		avatarDecoration: any;
+		avatarDecoration: object;
 	};
 	updateAvatarDecoration: {
 		avatarDecorationId: string;
-		before: any;
-		after: any;
+		before: object;
+		after: object;
 	};
 	deleteAvatarDecoration: {
 		avatarDecorationId: string;
-		avatarDecoration: any;
+		avatarDecoration: object;
 	};
 	unsetUserAvatar: {
 		userId: string;
