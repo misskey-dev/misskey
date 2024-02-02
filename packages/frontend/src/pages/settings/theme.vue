@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-adaptive-border class="rfqxtzch _panel">
 		<div class="toggle">
 			<div class="toggleWrapper">
+				<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 				<input id="dn" v-model="darkMode" class="mk-input-checkbox dn" type="checkbox"/>
 				<label for="dn" class="toggle">
 					<span class="before">{{ i18n.ts.light }}</span>

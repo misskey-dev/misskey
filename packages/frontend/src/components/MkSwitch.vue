@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.disabled]: disabled }]">
+	<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 	<input
 		ref="input"
 		class="mk-input-checkbox"

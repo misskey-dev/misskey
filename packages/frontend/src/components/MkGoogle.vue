@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
+	<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 	<input v-model="query" class="mk-input-search" :class="$style.input" type="search" :placeholder="q">
 	<button :class="$style.button" @click="search"><i class="ti ti-search"></i> {{ i18n.ts.searchByGoogle }}</button>
 </div>

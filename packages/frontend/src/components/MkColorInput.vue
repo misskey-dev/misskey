@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<div :class="$style.label"><slot name="label"></slot></div>
 	<div :class="[$style.input, { disabled }]">
+		<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 		<input
 			ref="inputEl"
 			v-model="v"

@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span>
 						{{ i18n.ts._ad.timezoneinfo }}
 						<div v-for="(day, index) in daysOfWeek" :key="index">
+							<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 							<input
 								:id="`ad${ad.id}-${index}`" class="mk-input-checkbox" type="checkbox" :checked="(ad.dayOfWeek & (1 << index)) !== 0"
 								@change="toggleDayOfWeek(ad, index)"

@@ -90,6 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="fetching"/>
 	</div>
 	<div v-if="draghover" :class="$style.dropzone"></div>
+	<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 	<input ref="fileInput" style="display: none;" class="mk-input-file" type="file" accept="*/*" multiple tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>

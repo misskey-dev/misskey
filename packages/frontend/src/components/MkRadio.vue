@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:aria-disabled="disabled"
 	@click="toggle"
 >
+	<!-- input要素のclass "mk-input-xxxx" について: https://github.com/misskey-dev/misskey/pull/13141 -->
 	<input
 		type="radio"
 		:disabled="disabled"
