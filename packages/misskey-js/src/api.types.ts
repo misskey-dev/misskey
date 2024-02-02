@@ -27,12 +27,14 @@ type StrictExtract<Union, Cond> = Cond extends Union ? Union : never;
 
 type IsCaseMatched<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
 	Endpoints[E]['res'] extends SwitchCase
-		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, unknown]>> extends false ? true : false
+		// unknownにするとresがずれる
+		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, never]>> extends false ? true : false
 		: false
 
 type GetCaseResult<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
 	Endpoints[E]['res'] extends SwitchCase
-		? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, unknown]>[1]
+		// unknownにすると壊れる
+		? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, never]>[1]
 		: never
 
 export type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoints[E]['req']> = Endpoints[E]['res'] extends SwitchCase
