@@ -49,13 +49,7 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
-const canToggle = computed(() => {
-	return $i && !props.reaction.match(/@\w/);
-});
-
-const canGetInfo = computed(() => {
-	return !props.reaction.match(/@\w/);
-});
+const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
@@ -120,7 +114,7 @@ async function toggleReaction() {
 }
 
 async function menu(ev) {
-	if (!canGetInfo.value) return;
+	if (!canToggle.value) return;
 	if (!props.reaction.includes(':')) return;
 	os.popupMenu([{
 		text: i18n.ts.info,
