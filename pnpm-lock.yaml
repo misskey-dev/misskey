@@ -797,8 +797,8 @@ importers:
         specifier: 1.70.0
         version: 1.70.0
       shiki:
-        specifier: 0.14.7
-        version: 0.14.7
+        specifier: 1.0.0-beta.3
+        version: 1.0.0-beta.3
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -5951,6 +5951,10 @@ packages:
       string-argv: 0.3.1
     dev: true
 
+  /@shikijs/core@1.0.0-beta.3:
+    resolution: {integrity: sha512-SCwPom2Wn8XxNlEeqdzycU93SKgzYeVsedjqDsgZaz4XiiPpZUzlHt2NAEQTwTnPcHNZapZ6vbkwJ8P11ggL3Q==}
+    dev: false
+
   /@sideway/address@4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
     dependencies:
@@ -9296,10 +9300,6 @@ packages:
   /ansi-regex@6.0.1:
     resolution: {integrity: sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA==}
     engines: {node: '>=12'}
-
-  /ansi-sequence-parser@1.1.1:
-    resolution: {integrity: sha512-vJXt3yiaUL4UU546s3rPXlsry/RnM730G1+HkpKE012AN0sx1eOrxSu95oKDIonskeLTijMgqWZ3uDEe3NFvyg==}
-    dev: false
 
   /ansi-styles@3.2.1:
     resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==}
@@ -14693,6 +14693,7 @@ packages:
 
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
+    dev: true
 
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -18247,13 +18248,10 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  /shiki@0.14.7:
-    resolution: {integrity: sha512-dNPAPrxSc87ua2sKJ3H5dQ/6ZaY8RNnaAqK+t0eG7p0Soi2ydiqbGOTaZCqaYvA/uZYfS1LJnemt3Q+mSfcPCg==}
+  /shiki@1.0.0-beta.3:
+    resolution: {integrity: sha512-z7cHTNSSvwGx2DfeLwjSNLo+HcVxifgNIzLm6Ye52eXcIwNHXT0wHbhy7FDOKSKveuEHBwt9opfj3Hoc8LE1Yg==}
     dependencies:
-      ansi-sequence-parser: 1.1.1
-      jsonc-parser: 3.2.0
-      vscode-oniguruma: 1.7.0
-      vscode-textmate: 8.0.0
+      '@shikijs/core': 1.0.0-beta.3
     dev: false
 
   /side-channel@1.0.4:
@@ -20018,14 +20016,6 @@ packages:
   /void-elements@3.1.0:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
-
-  /vscode-oniguruma@1.7.0:
-    resolution: {integrity: sha512-L9WMGRfrjOhgHSdOYgCt/yRMsXzLDJSL7BPrOZt73gU0iWO4mpqzqQzOz5srxqTvMBaR0XZTSrVWo4j55Rc6cA==}
-    dev: false
-
-  /vscode-textmate@8.0.0:
-    resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
-    dev: false
 
   /vue-component-type-helpers@1.8.27:
     resolution: {integrity: sha512-0vOfAtI67UjeO1G6UiX5Kd76CqaQ67wrRZiOe7UAb9Jm6GzlUr/fC7CV90XfwapJRjpCMaZFhv1V0ajWRmE9Dg==}
