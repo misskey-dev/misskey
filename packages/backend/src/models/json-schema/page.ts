@@ -53,6 +53,7 @@ const sectionBlockSchema = {
 				type: 'object',
 				optional: false, nullable: false,
 				ref: 'PageBlock',
+				selfRef: true,
 			},
 		},
 	},
