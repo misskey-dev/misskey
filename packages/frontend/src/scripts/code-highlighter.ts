@@ -1,5 +1,4 @@
-import { getHighlighterCore } from 'shiki/core';
-import getWasm from 'shiki/wasm';
+import { getHighlighterCore, loadWasm } from 'shiki/core';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import type { Highlighter, LanguageRegistration } from 'shiki';
 
@@ -15,6 +14,8 @@ export async function getHighlighter(): Promise<Highlighter> {
 export async function initHighlighter() {
 	const aiScriptGrammar = await import('aiscript-vscode/aiscript/syntaxes/aiscript.tmLanguage.json');
 
+	await loadWasm(import('shiki/onig.wasm?init'));
+
 	const highlighter = await getHighlighterCore({
 		themes: [darkPlus],
 		langs: [
@@ -24,7 +25,6 @@ export async function initHighlighter() {
 				...aiScriptGrammar.default,
 			} as unknown as LanguageRegistration,
 		],
-		loadWasm: getWasm,
 	});
 
 	_highlighter = highlighter;
