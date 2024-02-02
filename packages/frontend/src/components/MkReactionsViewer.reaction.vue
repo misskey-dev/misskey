@@ -58,7 +58,7 @@ async function toggleReaction() {
 		const permissions = checkReactionPermissions($i!, props.note, await misskeyApi('emoji', {
 			name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
 		}));
-		if (!permissions.allowed) {
+		if (!permissions.accepted) {
 			os.alert({
 				type: "info",
 				title: i18n.ts.reactionRejected,
