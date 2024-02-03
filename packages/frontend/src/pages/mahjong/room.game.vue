@@ -187,9 +187,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div :class="$style.actions" class="_buttons">
-			<MkButton v-if="engine.state.canRonSource != null" primary gradate @click="ron">Ron</MkButton>
-			<MkButton v-if="engine.state.canPonSource != null" primary @click="pon">Pon</MkButton>
-			<MkButton v-if="engine.state.canRonSource != null || engine.state.canPonSource != null" @click="skip">Skip</MkButton>
+			<MkButton v-if="engine.state.canRon != null" primary gradate @click="ron">Ron</MkButton>
+			<MkButton v-if="engine.state.canPon != null" primary @click="pon">Pon</MkButton>
+			<MkButton v-if="engine.state.canCii != null" primary @click="cii">Cii</MkButton>
+			<MkButton v-if="engine.state.canKan != null" primary @click="kan">Kan</MkButton>
+			<MkButton v-if="engine.state.canRon != null || engine.state.canPon != null || engine.state.canCii != null || engine.state.canKan != null" @click="skip">Skip</MkButton>
+			<MkButton v-if="isMyTurn && engine.canAnkan()" @click="ankan">Ankan</MkButton>
+			<MkButton v-if="isMyTurn && engine.canKakan()" @click="kakan">Kakan</MkButton>
 			<MkButton v-if="isMyTurn && canHora" primary gradate @click="tsumoHora">Tsumo</MkButton>
 			<MkButton v-if="isMyTurn && engine.canRiichi()" primary @click="riichi">Riichi</MkButton>
 		</div>
@@ -197,7 +201,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="showKyokuResults" :class="$style.kyokuResult">
 		<div v-for="(res, house) in kyokuResults" :key="house">
 			<div v-if="res != null">
-				<div>{{ house === 'e' ? i18n.ts._mahjong.east : house === 's' ? i18n.ts._mahjong.south : house === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</div>
+				<div>
+					<div>{{ house === 'e' ? i18n.ts._mahjong.east : house === 's' ? i18n.ts._mahjong.south : house === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</div>
+					<template v-if="houseToUser(house) != null">
+						<MkAvatar :user="houseToUser(house)" style="width: 30px; height: 30px;"/>
+					</template>
+					<template v-else>
+						CPU
+					</template>
+				</div>
 				<div v-for="yaku in res.yakus">
 					<div>{{ i18n.ts._mahjong._yakus[yaku.name] }} {{ yaku.fan }}{{ i18n.ts._mahjong.fan }}</div>
 				</div>
@@ -333,12 +345,37 @@ if (!props.room.isEnded) {
 }
 */
 
+function houseToUser(house: Mahjong.House) {
+	return room.value.gameState.user1House === house ? room.value.user1 : room.value.gameState.user2House === house ? room.value.user2 : room.value.gameState.user3House === house ? room.value.user3 : room.value.user4;
+}
+
 let riichiSelect = false;
+let ankanSelect = false;
+let kakanSelect = false;
+let ciiSelect = false;
 
 function chooseTile(tile: Mahjong.Tile, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
 	iTsumoed.value = false;
+
+	if (ankanSelect) {
+		props.connection!.send('ankan', {
+			tile: tile,
+		});
+		ankanSelect = false;
+		selectableTiles.value = null;
+		return;
+	} else if (kakanSelect) {
+		props.connection!.send('kakan', {
+			tile: tile,
+		});
+		kakanSelect = false;
+		selectableTiles.value = null;
+		return;
+	} else if (ciiSelect) {
+		return;
+	}
 
 	props.connection!.send('dahai', {
 		tile: tile,
@@ -357,11 +394,18 @@ function riichi() {
 	console.log(Mahjong.getTilesForRiichi(engine.value.myHandTiles));
 }
 
+function ankan() {
+	if (!isMyTurn.value) return;
+
+	ankanSelect = true;
+	selectableTiles.value = engine.value.getAnkanableTiles();
+}
+
 function kakan() {
 	if (!isMyTurn.value) return;
 
-	props.connection!.send('kakan', {
-	});
+	kakanSelect = true;
+	selectableTiles.value = engine.value.getKakanableTiles();
 }
 
 function tsumoHora() {
@@ -378,6 +422,16 @@ function ron() {
 
 function pon() {
 	props.connection!.send('pon', {
+	});
+}
+
+function cii() {
+	props.connection!.send('cii', {
+	});
+}
+
+function kan() {
+	props.connection!.send('kan', {
 	});
 }
 
@@ -649,6 +703,7 @@ onUnmounted(() => {
 	height: 100%;
 	max-width: 800px;
 	margin: auto;
+	padding: 30px;
 	box-sizing: border-box;
 	background: #0009;
 	color: #fff;

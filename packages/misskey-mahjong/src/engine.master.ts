@@ -310,34 +310,21 @@ export class MasterGameEngine {
 
 		let canPonHouse: House | null = null;
 		switch (house) {
-			case 'e':
-				canPonHouse = this.canPon('s', tile) ? 's' : this.canPon('w', tile) ? 'w' : this.canPon('n', tile) ? 'n' : null;
-				break;
-			case 's':
-				canPonHouse = this.canPon('e', tile) ? 'e' : this.canPon('w', tile) ? 'w' : this.canPon('n', tile) ? 'n' : null;
-				break;
-			case 'w':
-				canPonHouse = this.canPon('e', tile) ? 'e' : this.canPon('s', tile) ? 's' : this.canPon('n', tile) ? 'n' : null;
-				break;
-			case 'n':
-				canPonHouse = this.canPon('e', tile) ? 'e' : this.canPon('s', tile) ? 's' : this.canPon('w', tile) ? 'w' : null;
-				break;
+			case 'e': canPonHouse = this.canPon('s', tile) ? 's' : this.canPon('w', tile) ? 'w' : this.canPon('n', tile) ? 'n' : null; break;
+			case 's': canPonHouse = this.canPon('e', tile) ? 'e' : this.canPon('w', tile) ? 'w' : this.canPon('n', tile) ? 'n' : null; break;
+			case 'w': canPonHouse = this.canPon('e', tile) ? 'e' : this.canPon('s', tile) ? 's' : this.canPon('n', tile) ? 'n' : null; break;
+			case 'n': canPonHouse = this.canPon('e', tile) ? 'e' : this.canPon('s', tile) ? 's' : this.canPon('w', tile) ? 'w' : null; break;
 		}
 
-		const canCiiHouse: House | null = null;
-		// TODO
-		//let canCii: boolean = false;
-		//if (house === 'e') {
-		//	canCii = this.state.sHandTiles...
-		//} else if (house === 's') {
-		//	canCii = this.state.wHandTiles...
-		//} else if (house === 'w') {
-		//	canCii = this.state.nHandTiles...
-		//} else if (house === 'n') {
-		//	canCii = this.state.eHandTiles...
-		//}
+		let canCiiHouse: House | null = null;
+		switch (house) {
+			case 'e': canCiiHouse = this.canCii('s', house, tile) ? 's' : this.canCii('w', house, tile) ? 'w' : this.canCii('n', house, tile) ? 'n' : null; break;
+			case 's': canCiiHouse = this.canCii('e', house, tile) ? 'e' : this.canCii('w', house, tile) ? 'w' : this.canCii('n', house, tile) ? 'n' : null; break;
+			case 'w': canCiiHouse = this.canCii('e', house, tile) ? 'e' : this.canCii('s', house, tile) ? 's' : this.canCii('n', house, tile) ? 'n' : null; break;
+			case 'n': canCiiHouse = this.canCii('e', house, tile) ? 'e' : this.canCii('s', house, tile) ? 's' : this.canCii('w', house, tile) ? 'w' : null; break;
+		}
 
-		if (canRonHouses.length > 0 || canPonHouse != null) {
+		if (canRonHouses.length > 0 || canPonHouse != null || canCiiHouse != null) {
 			if (canRonHouses.length > 0) {
 				this.state.ronAsking = {
 					callee: house,
@@ -447,9 +434,9 @@ export class MasterGameEngine {
 		};
 	}
 
-	public commit_resolveCallAndRonInterruption(answers: {
+	public commit_resolveCallingInterruption(answers: {
 		pon: boolean;
-		cii: false | [Tile, Tile];
+		cii: false | [Tile, Tile, Tile];
 		kan: boolean;
 		ron: House[];
 	}) {
@@ -484,6 +471,7 @@ export class MasterGameEngine {
 			const rinsyan = this.tsumo();
 
 			this.state.turn = kan.caller;
+
 			return {
 				type: 'kanned' as const,
 				caller: kan.caller,
@@ -499,6 +487,7 @@ export class MasterGameEngine {
 			this.state.huros[pon.caller].push({ type: 'pon', tile, from: pon.callee });
 
 			this.state.turn = pon.caller;
+
 			return {
 				type: 'ponned' as const,
 				caller: pon.caller,
@@ -513,6 +502,7 @@ export class MasterGameEngine {
 			this.state.huros[cii.caller].push({ type: 'cii', tiles: [tile, answers.cii[0], answers.cii[1]], from: cii.callee });
 
 			this.state.turn = cii.caller;
+
 			return {
 				type: 'ciied' as const,
 				caller: cii.caller,

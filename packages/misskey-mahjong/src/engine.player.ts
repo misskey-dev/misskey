@@ -55,13 +55,10 @@ export type PlayerState = {
 	};
 	latestDahaiedTile: Tile | null;
 	turn: House | null;
-	canPonSource: House | null;
-	canCiiSource: House | null;
-	canKanSource: House | null;
-	canRonSource: House | null;
-	canCiiTo: House | null;
-	canKanTo: House | null;
-	canRonTo: House | null;
+	canPon: { callee: House } | null;
+	canCii: { callee: House } | null;
+	canKan: { callee: House } | null; // = 大明槓
+	canRon: { callee: House } | null;
 };
 
 export type KyokuResult = {
@@ -138,11 +135,16 @@ export class PlayerGameEngine {
 		} else {
 			const canRon = Common.getHoraSets(this.myHandTiles.concat(tile)).length > 0;
 			const canPon = this.myHandTiles.filter(t => t === tile).length === 2;
+			const canKan = this.myHandTiles.filter(t => t === tile).length === 3;
+			const canCii = house === Common.prevHouse(this.myHouse) &&
+				Common.SHUNTU_PATTERNS.some(pattern =>
+					pattern.includes(tile) &&
+					pattern.filter(t => this.myHandTiles.includes(t)).length >= 2);
 
-			// TODO: canCii
-
-			if (canRon) this.state.canRonSource = house;
-			if (canPon) this.state.canPonSource = house;
+			if (canRon) this.state.canRon = { callee: house };
+			if (canPon) this.state.canPon = { callee: house };
+			if (canKan) this.state.canKan = { callee: house };
+			if (canCii) this.state.canCii = { callee: house };
 		}
 	}
 
@@ -193,7 +195,7 @@ export class PlayerGameEngine {
 	}): Record<House, KyokuResult | null> {
 		console.log('commit_ronHora', this.state.turn, callers, callee);
 
-		this.state.canRonSource = null;
+		this.state.canRon = null;
 
 		const resultMap: Record<House, KyokuResult> = {
 			e: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
@@ -236,7 +238,7 @@ export class PlayerGameEngine {
 	 * @param callee 牌を捨てた人
 	 */
 	public commit_pon(caller: House, callee: House) {
-		this.state.canPonSource = null;
+		this.state.canPon = null;
 
 		const lastTile = this.state.hoTiles[callee].pop();
 		if (lastTile == null) throw new PlayerGameEngine.InvalidOperationError();
@@ -253,8 +255,10 @@ export class PlayerGameEngine {
 	}
 
 	public commit_nop() {
-		this.state.canRonSource = null;
-		this.state.canPonSource = null;
+		this.state.canRon = null;
+		this.state.canPon = null;
+		this.state.canKan = null;
+		this.state.canCii = null;
 	}
 
 	public get isMenzen(): boolean {
@@ -269,5 +273,23 @@ export class PlayerGameEngine {
 		if (!this.isMenzen) return false;
 		if (Common.getTilesForRiichi(this.myHandTiles).length === 0) return false;
 		return true;
+	}
+
+	public canAnkan(): boolean {
+		if (this.state.turn !== this.myHouse) return false;
+		return this.myHandTiles.filter(t => this.myHandTiles.filter(tt => tt === t).length >= 4).length > 0;
+	}
+
+	public canKakan(): boolean {
+		if (this.state.turn !== this.myHouse) return false;
+		return this.state.huros[this.myHouse].filter(h => h.type === 'pon' && this.myHandTiles.includes(h.tile)).length > 0;
+	}
+
+	public getAnkanableTiles(): Tile[] {
+		return this.myHandTiles.filter(t => this.myHandTiles.filter(tt => tt === t).length >= 4);
+	}
+
+	public getKakanableTiles(): Tile[] {
+		return this.state.huros[this.myHouse].filter(h => h.type === 'pon' && this.myHandTiles.includes(h.tile)).map(h => h.tile);
 	}
 }

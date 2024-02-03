@@ -26,7 +26,7 @@ import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
-const CALL_AND_RON_ASKING_TIMEOUT_MS = 1000 * 7; // 7sec
+const CALL_AND_RON_ASKING_TIMEOUT_MS = 1000 * 10; // 10sec
 const TURN_TIMEOUT_MS = 1000 * 30; // 30sec
 const NEXT_KYOKU_CONFIRMATION_TIMEOUT_MS = 1000 * 15; // 15sec
 
@@ -58,9 +58,9 @@ type Room = {
 	gameState?: Mahjong.MasterState;
 };
 
-type CallAndRonAnswers = {
+type CallingAnswers = {
 	pon: null | boolean;
-	cii: null | boolean;
+	cii: null | false | [Mahjong.Tile, Mahjong.Tile, Mahjong.Tile];
 	kan: null | boolean;
 	ron: {
 		e: null | boolean;
@@ -305,8 +305,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async answer(room: Room, engine: Mahjong.MasterGameEngine, answers: CallAndRonAnswers) {
-		const res = engine.commit_resolveCallAndRonInterruption({
+	private async answer(room: Room, engine: Mahjong.MasterGameEngine, answers: CallingAnswers) {
+		const res = engine.commit_resolveCallingInterruption({
 			pon: answers.pon ?? false,
 			cii: answers.cii ?? false,
 			kan: answers.kan ?? false,
@@ -386,7 +386,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (res.asking) {
 			console.log('asking', res);
 
-			const answers: CallAndRonAnswers = {
+			const answers: CallingAnswers = {
 				pon: null,
 				cii: null,
 				kan: null,
@@ -428,12 +428,12 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				}
 			}
 
-			this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(answers));
+			this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(answers));
 			const waitingStartedAt = Date.now();
 			const interval = setInterval(async () => {
-				const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
-				if (current == null) throw new Error('arienai (gameCallAndRonAsking)');
-				const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+				const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
+				if (current == null) throw new Error('arienai (gameCallingAsking)');
+				const currentAnswers = JSON.parse(current) as CallingAnswers;
 				const allAnswered = !(
 					(res.canPonHouse != null && currentAnswers.pon == null) ||
 					(res.canCiiHouse != null && currentAnswers.cii == null) ||
@@ -445,7 +445,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				);
 				if (allAnswered || (Date.now() - waitingStartedAt > CALL_AND_RON_ASKING_TIMEOUT_MS)) {
 					console.log(allAnswered ? 'ask all answerd' : 'ask timeout');
-					await this.redisClient.del(`mahjong:gameCallAndRonAsking:${room.id}`);
+					await this.redisClient.del(`mahjong:gameCallingAsking:${room.id}`);
 					clearInterval(interval);
 					this.answer(room, engine, currentAnswers);
 					return;
@@ -511,7 +511,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser) {
+	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser, tile: string) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
@@ -521,7 +521,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		await this.clearTurnWaitingTimer(room.id);
 
-		const res = engine.commit_kakan(myHouse);
+		const res = engine.commit_kakan(myHouse, tile);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'kakanned', { });
 	}
@@ -551,14 +551,14 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = getHouseOfUserId(room, engine, user.id);
 
-		// TODO: 自分にロン回答する権利がある状態かバリデーション
+		// TODO: 自分に回答する権利がある状態かバリデーション
 
 		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
-		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
 		if (current == null) throw new Error('no asking found');
-		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+		const currentAnswers = JSON.parse(current) as CallingAnswers;
 		currentAnswers.ron[myHouse] = true;
-		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
+		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 
 	@bindThis
@@ -567,14 +567,46 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		// TODO: 自分にポン回答する権利がある状態かバリデーション
+		// TODO: 自分に回答する権利がある状態かバリデーション
 
 		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
-		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
 		if (current == null) throw new Error('no asking found');
-		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+		const currentAnswers = JSON.parse(current) as CallingAnswers;
 		currentAnswers.pon = true;
-		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
+		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
+	}
+
+	@bindThis
+	public async commit_kan(roomId: MiMahjongGame['id'], user: MiUser) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		// TODO: 自分に回答する権利がある状態かバリデーション
+
+		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
+		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
+		if (current == null) throw new Error('no asking found');
+		const currentAnswers = JSON.parse(current) as CallingAnswers;
+		currentAnswers.kan = true;
+		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
+	}
+
+	@bindThis
+	public async commit_cii(roomId: MiMahjongGame['id'], user: MiUser, tiles: [Mahjong.Tile, Mahjong.Tile, Mahjong.Tile]) {
+		const room = await this.getRoom(roomId);
+		if (room == null) return;
+		if (room.gameState == null) return;
+
+		// TODO: 自分に回答する権利がある状態かバリデーション
+
+		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
+		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
+		if (current == null) throw new Error('no asking found');
+		const currentAnswers = JSON.parse(current) as CallingAnswers;
+		currentAnswers.cii = tiles;
+		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 
 	@bindThis
@@ -587,14 +619,14 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const myHouse = getHouseOfUserId(room, engine, user.id);
 
 		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
-		const current = await this.redisClient.get(`mahjong:gameCallAndRonAsking:${room.id}`);
+		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
 		if (current == null) throw new Error('no asking found');
-		const currentAnswers = JSON.parse(current) as CallAndRonAnswers;
+		const currentAnswers = JSON.parse(current) as CallingAnswers;
 		if (engine.state.ponAsking?.caller === myHouse) currentAnswers.pon = false;
 		if (engine.state.ciiAsking?.caller === myHouse) currentAnswers.cii = false;
 		if (engine.state.kanAsking?.caller === myHouse) currentAnswers.kan = false;
 		if (engine.state.ronAsking != null && engine.state.ronAsking.callers.includes(myHouse)) currentAnswers.ron[myHouse] = false;
-		await this.redisClient.set(`mahjong:gameCallAndRonAsking:${room.id}`, JSON.stringify(currentAnswers));
+		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 
 	/**
