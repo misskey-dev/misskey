@@ -1,7 +1,6 @@
 <template>
 <table
 	ref="rootEl"
-	tabindex="-1"
 	:class="[$style.grid, $style.border]"
 	@mousedown.prevent="onMouseDown"
 	@keydown="onKeyDown"
@@ -43,7 +42,7 @@ import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import { cellValidation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell } from '@/components/grid/cell.js';
-import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
+import { equalCellAddress, getCellAddress, getCellElement } from '@/components/grid/grid-utils.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
@@ -454,7 +453,8 @@ function onLeftMouseDown(ev: MouseEvent) {
 				firstSelectionColumnIdx.value = cellAddress.col;
 				state.value = 'colSelecting';
 
-				rootEl.value?.focus();
+				// フォーカスを当てないとキーイベントが拾えないので
+				getCellElement(ev.target as HTMLElement)?.focus();
 			} else if (isRowNumberCellAddress(cellAddress)) {
 				unSelectionRangeAll();
 
@@ -468,7 +468,8 @@ function onLeftMouseDown(ev: MouseEvent) {
 				firstSelectionRowIdx.value = cellAddress.row;
 				state.value = 'rowSelecting';
 
-				rootEl.value?.focus();
+				// フォーカスを当てないとキーイベントが拾えないので
+				getCellElement(ev.target as HTMLElement)?.focus();
 			}
 			break;
 		}
@@ -552,6 +553,9 @@ function onMouseMove(ev: MouseEvent) {
 			expandCellRange(leftTop, rightBottom);
 			previousCellAddress.value = targetCellAddress;
 
+			// フォーカスを当てないとキーイベントが拾えないので
+			getCellElement(ev.target as HTMLElement)?.focus();
+
 			break;
 		}
 		case 'rowSelecting': {
@@ -578,6 +582,9 @@ function onMouseMove(ev: MouseEvent) {
 			expandRowRange(Math.min(...rangedRowIndexes), Math.max(...rangedRowIndexes));
 
 			previousCellAddress.value = targetCellAddress;
+
+			// フォーカスを当てないとキーイベントが拾えないので
+			getCellElement(ev.target as HTMLElement)?.focus();
 
 			break;
 		}
@@ -962,6 +969,9 @@ function refreshData() {
 function patchData(newItems: DataSource[]) {
 	const gridRows = cells.value;
 	if (gridRows.length > newItems.length) {
+		// 状態が壊れるかもしれないので選択を全解除
+		unSelectionRangeAll();
+
 		// 行数が減った場合
 		const diff = gridRows
 			.map((it, idx) => ({ origin: it.origin, idx }))
@@ -979,6 +989,9 @@ function patchData(newItems: DataSource[]) {
 			}
 		}
 	} else if (gridRows.length < newItems.length) {
+		// 状態が壊れるかもしれないので選択を全解除
+		unSelectionRangeAll();
+
 		// 行数が増えた場合
 		const oldOrigins = gridRows.map(it => it.origin);
 		const diff = newItems

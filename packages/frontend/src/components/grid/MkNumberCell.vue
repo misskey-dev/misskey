@@ -1,5 +1,5 @@
 <template>
-<th :class="[$style.cell]">
+<th :class="[$style.cell]" tabindex="-1">
 	<div :class="[$style.root]">
 		{{ content }}
 	</div>

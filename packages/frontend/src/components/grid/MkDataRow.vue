@@ -9,6 +9,7 @@
 		v-for="cell in cells"
 		:key="cell.address.col"
 		:cell="cell"
+		:gridSetting="gridSetting"
 		:bus="bus"
 		@operation:beginEdit="(sender) => emit('operation:beginEdit', sender)"
 		@operation:endEdit="(sender) => emit('operation:endEdit', sender)"
@@ -39,7 +40,7 @@ const props = defineProps<{
 	bus: GridEventEmitter,
 }>();
 
-const { cells } = toRefs(props);
+const { cells, gridSetting } = toRefs(props);
 
 </script>
 

@@ -43,6 +43,23 @@ export function getCellAddress(elem: HTMLElement, gridSetting: GridSetting, pare
 	return CELL_ADDRESS_NONE;
 }
 
+export function getCellElement(elem: HTMLElement, parentNodeCount = 10): HTMLTableCellElement | null {
+	let node = elem;
+	for (let i = 0; i < parentNodeCount; i++) {
+		if (isCellElement(node)) {
+			return node;
+		}
+
+		if (!node.parentElement) {
+			break;
+		}
+
+		node = node.parentElement;
+	}
+
+	return null;
+}
+
 export function equalCellAddress(a: CellAddress, b: CellAddress): boolean {
 	return a.row === b.row && a.col === b.col;
 }
