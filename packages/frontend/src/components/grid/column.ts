@@ -1,6 +1,6 @@
 import { CellValidator } from '@/components/grid/cell-validators.js';
 import { Size, SizeStyle } from '@/components/grid/grid.js';
-import { calcCellWidth } from '@/components/grid/utils.js';
+import { calcCellWidth } from '@/components/grid/grid-utils.js';
 
 export type ColumnType = 'text' | 'number' | 'date' | 'boolean' | 'image';
 

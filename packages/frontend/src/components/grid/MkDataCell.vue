@@ -66,7 +66,7 @@ import { GridEventEmitter, Size } from '@/components/grid/grid.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
-import { equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
+import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
 import { cellValidation, ValidateViolation } from '@/components/grid/cell-validators.js';
 
 const emit = defineEmits<{

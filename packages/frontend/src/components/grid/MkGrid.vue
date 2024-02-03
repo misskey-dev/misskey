@@ -43,7 +43,7 @@ import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import { cellValidation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell } from '@/components/grid/cell.js';
-import { equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
+import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
 import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { GridCurrentState, GridEvent } from '@/components/grid/grid-event.js';
@@ -774,6 +774,10 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 			oldValue: cell.value,
 			newValue: newValue,
 		});
+
+		if (_DEV_) {
+			console.log(`[grid][cell-value] row:${cell.row}, col:${cell.column.index}, value:${newValue}`);
+		}
 	}
 }
 

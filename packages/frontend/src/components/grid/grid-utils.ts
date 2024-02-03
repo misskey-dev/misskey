@@ -1,4 +1,4 @@
-import { SizeStyle } from '@/components/grid/types.js';
+import { SizeStyle } from '@/components/grid/grid.js';
 import { CELL_ADDRESS_NONE, CellAddress } from '@/components/grid/cell.js';
 
 export function isCellElement(elem: any): elem is HTMLTableCellElement {
