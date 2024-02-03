@@ -295,7 +295,7 @@ export class MicropubServerService {
 		photos = [...photos, ...(options.photos ?? []).map(photo => typeof photo === 'string' ? photo : { source: photo.value, alt: photo.alt })];
 		audios = [...audios, ...(options.audios ?? [])];
 		videos = [...videos, ...(options.videos ?? [])];
-		message += ' ' + (options.category ?? []).map(hashtag => `#${hashtag}`).join(' ');
+		message += options.category && options.category.length > 0 ? ' ' + options.category.map(hashtag => `#${hashtag}`).join(' ') : '';
 		const media = [...photos, ...audios, ...videos];
 		let attachedMedia: MiDriveFile[] = [];
 
