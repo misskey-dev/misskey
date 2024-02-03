@@ -109,7 +109,6 @@ export async function readDataTransferItems(itemList: DataTransferItemList): Pro
  * {@link DroppedItem}のリストからディレクトリを再帰的に検索し、ファイルのリストを取得する。
  */
 export function flattenDroppedFiles(items: DroppedItem[]): DroppedFile[] {
-	console.log(items);
 	const result = Array.of<DroppedFile>();
 	for (const item of items) {
 		if (item.isFile) {
