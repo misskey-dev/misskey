@@ -78,11 +78,14 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	includeSelf?: boolean;
 	multiple?: boolean;
 	localOnly?: boolean;
-}>();
+}>(), {
+	includeSelf: false,
+	localOnly: false,
+});
 
 const username = ref('');
 const host = ref('');
@@ -103,7 +106,13 @@ function search() {
 		limit: 10,
 		detail: false,
 	}).then(_users => {
-		users.value = _users;
+		users.value = _users.filter((u) => {
+			if (props.includeSelf) {
+				return true;
+			} else {
+				return u.id !== $i?.id;
+			}
+		});
 	});
 }
 
@@ -129,18 +138,22 @@ onMounted(() => {
 	misskeyApi('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(foundUsers => {
-		const _users = foundUsers.filter((u) => {
+		let _users = foundUsers;
+		_users = _users.filter((u) => {
 			if (props.localOnly) {
 				return u.host == null;
 			} else {
 				return true;
 			}
 		});
-		if (props.includeSelf && _users.find(x => $i ? x.id === $i.id : true) == null) {
-			recentUsers.value = [$i!, ..._users];
-		} else {
-			recentUsers.value = _users;
-		}
+		_users = _users.filter((u) => {
+			if (props.includeSelf) {
+				return true;
+			} else {
+				return u.id !== $i?.id;
+			}
+		});
+		recentUsers.value = _users;
 	});
 });
 </script>

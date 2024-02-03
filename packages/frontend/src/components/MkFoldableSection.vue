@@ -14,10 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</header>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.folder_toggle_enter_active : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.folder_toggle_leave_active : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.folder_toggle_enter_from : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.folder_toggle_leave_to : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.folderToggleEnterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.folderToggleLeaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.folderToggleEnterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.folderToggleLeaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -39,9 +39,8 @@ import { defaultStore } from '@/store.js';
 const miLocalStoragePrefix = 'ui:folder:' as const;
 
 const props = withDefaults(defineProps<{
-    expanded?: boolean;
-    persistKey?: string;
-    defaultOpen?: boolean;
+	expanded?: boolean;
+	persistKey?: string;
 }>(), {
 	expanded: true,
 });
@@ -100,55 +99,50 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.folder_toggle_enter_active {
-  overflow-y: clip;
-  transition: opacity 0.5s, height 0.5s !important;
-}
-.folder_toggle_leave_active {
+.folderToggleEnterActive, .folderToggleLeaveActive {
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
-.folder_toggle_enter_from {
-  opacity: 0;
-}
-.folder_toggle_leave_to {
+
+.folderToggleEnterFrom, .folderToggleLeaveTo {
 	opacity: 0;
 }
+
 .root {
-  position: relative;
+	position: relative;
 }
 
 .header {
-  display: flex;
-  position: relative;
-  z-index: 10;
-  position: sticky;
-  top: var(--stickyTop, 0px);
-  -webkit-backdrop-filter: var(--blur, blur(8px));
-  backdrop-filter: var(--blur, blur(20px));
+	display: flex;
+	position: relative;
+	z-index: 10;
+	position: sticky;
+	top: var(--stickyTop, 0px);
+	-webkit-backdrop-filter: var(--blur, blur(8px));
+	backdrop-filter: var(--blur, blur(20px));
 }
 
 .title {
-  display: grid;
-  place-content: center;
-  margin: 0;
-  padding: 12px 16px 12px 0;
+	display: grid;
+	place-content: center;
+	margin: 0;
+	padding: 12px 16px 12px 0;
 }
 
 .divider {
-  flex: 1;
-  margin: auto;
-  height: 1px;
-  background: var(--divider);
+	flex: 1;
+	margin: auto;
+	height: 1px;
+	background: var(--divider);
 }
 
 .button {
-  padding: 12px 0 12px 16px;
+	padding: 12px 0 12px 16px;
 }
 
 @container (max-width: 500px) {
-  .title {
-    padding: 8px 10px 8px 0;
-  }
+	.title {
+		padding: 8px 10px 8px 0;
+	}
 }
 </style>
