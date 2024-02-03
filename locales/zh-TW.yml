@@ -1221,7 +1221,7 @@ _announcement:
   tooManyActiveAnnouncementDescription: "有過多公告可能會影響使用者體驗。請考慮歸檔已結束的公告。"
   readConfirmTitle: "標記為已讀嗎？"
   readConfirmText: "閱讀「{title}」的內容並標記為已讀。"
-  shouldNotBeUsedToPresentPermanentInfo: "由於可能會破壞使用者體驗，尤其是對於新使用者而言，我們建議使用公告來發布有時效性的資訊而不是固定不變的資訊。"
+  shouldNotBeUsedToPresentPermanentInfo: "為了避免損害新用戶的使用體驗，建議使用公告來發布即時性的訊息，而不是用於固定不變的資訊。"
   dialogAnnouncementUxWarn: "如果同時有 2 個以上對話方塊形式的公告存在，對於使用者體驗很可能會有不良的影響，因此建議謹慎使用。"
   silence: "不發送通知"
   silenceDescription: "啟用此選項後，將不會發送此公告的通知，並且無需將其標記為已讀。"
