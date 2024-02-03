@@ -76,11 +76,18 @@ export async function readDataTransferItems(itemList: DataTransferItemList): Pro
 	}
 
 	function readDirectory(fileSystemDirectoryEntry: FileSystemDirectoryEntry): Promise<DroppedItem[]> {
-		return new Promise((resolve, reject) => {
-			fileSystemDirectoryEntry.createReader().readEntries(
-				async (entries) => resolve(await Promise.all(entries.map(readEntry))),
-				reject,
-			);
+		return new Promise(async (resolve, reject) => {
+			const allEntries = Array.of<FileSystemEntry>();
+			const reader = fileSystemDirectoryEntry.createReader();
+			while (true) {
+				const entries = await new Promise<FileSystemEntry[]>((res, rej) => reader.readEntries(res, rej));
+				if (entries.length === 0) {
+					break;
+				}
+				allEntries.push(...entries);
+			}
+
+			resolve(await Promise.all(allEntries.map(readEntry)));
 		});
 	}
 
@@ -102,6 +109,7 @@ export async function readDataTransferItems(itemList: DataTransferItemList): Pro
  * {@link DroppedItem}のリストからディレクトリを再帰的に検索し、ファイルのリストを取得する。
  */
 export function flattenDroppedFiles(items: DroppedItem[]): DroppedFile[] {
+	console.log(items);
 	const result = Array.of<DroppedFile>();
 	for (const item of items) {
 		if (item.isFile) {

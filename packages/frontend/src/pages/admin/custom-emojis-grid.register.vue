@@ -72,6 +72,7 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fromDriveFile, GridItem, RegisterLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
@@ -96,7 +97,7 @@ import {
 	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
 import { ColumnSetting } from '@/components/grid/column.js';
-import { extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
+import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.register.logs.vue';
 
@@ -212,21 +213,35 @@ async function onClearClicked() {
 }
 
 async function onDrop(ev: DragEvent) {
-	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
-	const uploadedItems = await Promise.all(
-		droppedFiles.map(async (it) => ({
-			droppedFile: it,
-			driveFile: await os.promiseDialog(
-				uploadFile(
-					it.file,
-					selectedFolderId.value,
-					it.file.name.replace(/\.[^.]+$/, ''),
-					keepOriginalUploading.value,
+	isDragOver.value = false;
+
+	const uploadedItems = Array.of<{ droppedFile: DroppedFile, driveFile: Misskey.entities.DriveFile }>();
+	try {
+		const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
+		uploadedItems.push(
+			...await os.promiseDialog(
+				Promise.all(
+					droppedFiles.map(async (it) => ({
+						droppedFile: it,
+						driveFile: await uploadFile(
+							it.file,
+							selectedFolderId.value,
+							it.file.name.replace(/\.[^.]+$/, ''),
+							keepOriginalUploading.value,
+						),
+					}),
+					),
 				),
+				() => {
+				},
+				() => {
+				},
 			),
-		}),
-		),
-	);
+		);
+	} catch (err: any) {
+		// ダイアログは共通部品側で出ているはずなので何もしない
+		return;
+	}
 
 	const items = uploadedItems.map(({ droppedFile, driveFile }) => {
 		const item = fromDriveFile(driveFile);
@@ -323,7 +338,9 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 
 function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
 	const { row, column, newValue } = event;
-	gridItems.value[row.index][column.setting.bindTo] = newValue;
+	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
+		gridItems.value[row.index][column.setting.bindTo] = newValue;
+	}
 }
 
 function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
