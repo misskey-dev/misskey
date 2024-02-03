@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { getCurrentInstance, toRefs, watch } from 'vue';
 import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
 import MkDataCell from '@/components/grid/MkDataCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';

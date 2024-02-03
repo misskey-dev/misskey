@@ -37,11 +37,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { DataSource, GridEventEmitter, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
-import { ValidateViolation } from '@/components/grid/cell-validators.js';
+import { cellValidation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell } from '@/components/grid/cell.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/utils.js';
 import { MenuItem } from '@/types/menu.js';
@@ -177,8 +177,8 @@ const rangedRows = computed(() => rows.value.filter(it => it.ranged));
 // endregion
 // #endregion
 
-watch(columnSettings, refreshColumnsSetting, { immediate: true });
-watch(data, refreshData, { immediate: true, deep: true });
+watch(columnSettings, refreshColumnsSetting);
+watch(data, patchData, { deep: true });
 
 if (_DEV_) {
 	watch(state, (value, oldValue) => {
@@ -632,11 +632,6 @@ function onCellEditEnd() {
 	state.value = 'normal';
 }
 
-function onCellValidation(sender: GridCell, violation: ValidateViolation) {
-	sender.validation = violation;
-	emitGridEvent({ type: 'cell-validation', violation });
-}
-
 function onChangeCellValue(sender: GridCell, newValue: CellValue) {
 	emitCellValue(sender, newValue);
 }
@@ -756,11 +751,19 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
 	const cell = cells.value[cellAddress.row][cellAddress.col];
 
+	const violation = cellValidation(cell, newValue);
+	cell.violation = violation;
+	emitGridEvent({
+		type: 'cell-validation',
+		violation: violation,
+	});
+
+	cell.value = newValue;
 	emitGridEvent({
 		type: 'cell-value-change',
 		column: cell.column,
 		row: cell.row,
-		violation: cell.validation,
+		violation: violation,
 		oldValue: cell.value,
 		newValue: newValue,
 	});
@@ -908,7 +911,7 @@ function refreshData() {
 	}
 
 	const _data: DataSource[] = data.value;
-	const _rows: GridRow[] = _data.map((_, index) => createRow(index));
+	const _rows: GridRow[] = _data.map((it, index) => createRow(index, it));
 	const _cols: GridColumn[] = columnSettings.value.map(createColumn);
 
 	// 行・列の定義から、元データの配列より値を取得してセルを作成する。
@@ -928,10 +931,47 @@ function refreshData() {
 	cells.value = _cells;
 }
 
+/**
+ * セル値を部分更新する。この関数は、外部起因でデータが変更された場合に呼ばれる。
+ *
+ * 外部起因でデータが変更された場合は{@link data}の値が変更されるが、何処の番地がどのように変わったのかまでは検知できない。
+ * セルをすべて作り直せばいいが、その手法だと以下のデメリットがある。
+ * - 描画負荷がかかる
+ * - 各セルが持つ個別の状態（選択中状態やバリデーション結果など）が失われる
+ *
+ * そこで、新しい値とセルが持つ値を突き合わせ、変更があった場合のみセルの値を更新することで、セルを使いまわしつつ値を最新化する。
+ */
+function patchData(newItems: DataSource[]) {
+	const oldRows = cells.value;
+	if (oldRows.length !== newItems.length) {
+		// どこの行が増減したのかを割り出すコストと増減した行以降のインデックスを再付与するコストが重いので
+		// 行数が変わっていた場合は作り直したほうが楽
+		refreshData();
+		return;
+	}
+
+	const _cols = columns.value;
+	for (let rowIdx = 0; rowIdx < oldRows.length; rowIdx++) {
+		const oldCells = oldRows[rowIdx];
+		const newItem = newItems[rowIdx];
+		for (let colIdx = 0; colIdx < oldCells.length; colIdx++) {
+			const _col = _cols[colIdx];
+
+			const oldCell = oldCells[colIdx];
+			const newValue = newItem[_col.setting.bindTo];
+			if (oldCell.value !== newValue) {
+				oldCell.value = newValue;
+			}
+		}
+	}
+}
+
 // endregion
 // #endregion
 
 onMounted(() => {
+	refreshColumnsSetting();
+
 	if (rootEl.value) {
 		resizeObserver.observe(rootEl.value);
 

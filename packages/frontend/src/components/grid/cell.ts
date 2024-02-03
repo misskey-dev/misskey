@@ -23,7 +23,7 @@ export type GridCell = {
 	selected: boolean;
 	ranged: boolean;
 	contentSize: Size;
-	validation: ValidateViolation;
+	violation: ValidateViolation;
 }
 
 export function createCell(
@@ -39,7 +39,7 @@ export function createCell(
 		selected: false,
 		ranged: false,
 		contentSize: { width: 0, height: 0 },
-		validation: {
+		violation: {
 			valid: true,
 			params: {
 				column,

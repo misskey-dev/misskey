@@ -10,7 +10,7 @@
 	<div
 		:class="[
 			$style.root,
-			[(cell.validation.valid || cell.selected) ? {} : $style.error],
+			[(cell.violation.valid || cell.selected) ? {} : $style.error],
 			[cell.selected ? $style.selected : {}],
 			// 行が選択されているときは範囲選択色の適用を行側に任せる
 			[(cell.ranged && !cell.row.ranged) ? $style.ranged : {}],
@@ -50,7 +50,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
+import {
+	computed,
+	defineAsyncComponent,
+	getCurrentInstance,
+	nextTick,
+	onMounted,
+	onUnmounted,
+	ref,
+	shallowRef,
+	toRefs,
+	watch,
+} from 'vue';
 import { GridEventEmitter, Size } from '@/components/grid/grid.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
@@ -61,7 +72,6 @@ import { cellValidation, ValidateViolation } from '@/components/grid/cell-valida
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
 	(ev: 'operation:endEdit', sender: GridCell): void;
-	(ev: 'operation:validation', sender: GridCell, violation: ValidateViolation): void;
 	(ev: 'change:value', sender: GridCell, newValue: CellValue): void;
 	(ev: 'change:contentSize', sender: GridCell, newSize: Size): void;
 }>();
@@ -101,7 +111,7 @@ watch(() => cell.value.selected, () => {
 	}
 });
 
-watch(() => cell.value.value, (newValue, oldValue) => {
+watch(() => cell.value.value, (newValue) => {
 	emitValueChange(newValue);
 });
 
@@ -213,8 +223,7 @@ function endEditing(applyValue: boolean) {
 
 function emitValueChange(newValue: CellValue) {
 	const _cell = cell.value;
-	const violation = cellValidation(_cell, newValue);
-	emit('operation:validation', _cell, violation);
+	emit('change:value', _cell, newValue);
 }
 
 function emitContentSizeChanged() {
@@ -225,11 +234,11 @@ function emitContentSizeChanged() {
 }
 
 useTooltip(rootEl, (showing) => {
-	if (cell.value.validation.valid) {
+	if (cell.value.violation.valid) {
 		return;
 	}
 
-	const content = cell.value.validation.violations.map(it => it.result.message).join('\n');
+	const content = cell.value.violation.violations.map(it => it.result.message).join('\n');
 	os.popup(defineAsyncComponent(() => import('@/components/grid/MkCellTooltip.vue')), {
 		showing,
 		content,

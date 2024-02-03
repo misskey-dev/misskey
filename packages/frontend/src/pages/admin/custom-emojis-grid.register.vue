@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { onMounted, ref } from 'vue';
+import { getCurrentInstance, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fromDriveFile, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
@@ -296,7 +296,7 @@ async function onDrop(ev: DragEvent) {
 				.replace(/\/[^/]+$/, '')
 				.replace(droppedFile.file.name, '');
 		}
-		gridItems.value.push(item);
+		gridItems.value.push(reactive(item));
 	}
 }
 
@@ -358,8 +358,7 @@ function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: Grid
 }
 
 function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
-	const item = gridItems.value[event.row.index];
-	item[event.column.setting.bindTo] = event.newValue;
+	gridItems.value[event.row.index][event.column.setting.bindTo] = event.newValue;
 }
 
 function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
