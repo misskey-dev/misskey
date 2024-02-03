@@ -44,6 +44,7 @@ export type GridCellValueChangeEvent = {
 export type GridCellValidationEvent = {
 	type: 'cell-validation';
 	violation: ValidateViolation;
+	all: ValidateViolation[];
 };
 
 export type GridKeyDownEvent = {

@@ -79,7 +79,9 @@
 		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
 			{{ i18n.ts.registration }}
 		</MkButton>
-		<MkButton @click="onClearClicked">{{ i18n.ts.clear }}</MkButton>
+		<MkButton @click="onClearClicked">
+			{{ i18n.ts.clear }}
+		</MkButton>
 	</div>
 </div>
 </template>
@@ -147,7 +149,7 @@ type DroppedDirectory = {
 }
 
 const columnSettings: ColumnSetting[] = [
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required] },
+	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
 	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
@@ -328,7 +330,7 @@ function onRowDeleting(rows: GridRow[]) {
 function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 	switch (event.type) {
 		case 'cell-validation':
-			onGridCellValidation(event, currentState);
+			onGridCellValidation(event);
 			break;
 		case 'row-context-menu':
 			onGridRowContextMenu(event, currentState);
@@ -342,8 +344,8 @@ function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 	}
 }
 
-function onGridCellValidation(event: GridCellValidationEvent, _: GridCurrentState) {
-	registerButtonDisabled.value = !event.violation.valid;
+function onGridCellValidation(event: GridCellValidationEvent) {
+	registerButtonDisabled.value = event.all.filter(it => !it.valid).length > 0;
 }
 
 function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: GridCurrentState) {
@@ -377,7 +379,9 @@ function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) 
 			} else {
 				const ranges = currentState.rangedCells;
 				for (const cell of ranges) {
-					gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+					if (cell.column.setting.editable) {
+						gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+					}
 				}
 			}
 			break;

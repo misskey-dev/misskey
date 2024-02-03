@@ -756,22 +756,25 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
 	const cell = cells.value[cellAddress.row].cells[cellAddress.col];
 
-	const violation = cellValidation(cell, newValue);
-	cell.violation = violation;
-	emitGridEvent({
-		type: 'cell-validation',
-		violation: violation,
-	});
+	if (cell.column.setting.editable) {
+		const violation = cellValidation(cell, newValue);
+		cell.violation = violation;
+		emitGridEvent({
+			type: 'cell-validation',
+			violation: violation,
+			all: cells.value.flatMap(it => it.cells).map(it => it.violation),
+		});
 
-	cell.value = newValue;
-	emitGridEvent({
-		type: 'cell-value-change',
-		column: cell.column,
-		row: cell.row,
-		violation: violation,
-		oldValue: cell.value,
-		newValue: newValue,
-	});
+		cell.value = newValue;
+		emitGridEvent({
+			type: 'cell-value-change',
+			column: cell.column,
+			row: cell.row,
+			violation: violation,
+			oldValue: cell.value,
+			newValue: newValue,
+		});
+	}
 }
 
 /**
