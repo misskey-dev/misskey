@@ -88,7 +88,7 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fromDriveFile, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
@@ -111,11 +111,11 @@ import {
 	GridKeyDownEvent,
 	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { CellValue } from '@/components/grid/cell.js';
 import { ColumnSetting } from '@/components/grid/column.js';
-import { DroppedFile, readDataTransferItems, flattenDroppedFiles, extractDroppedItems } from '@/scripts/file-drop.js';
+import { extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
+
+const MAXIMUM_EMOJI_COUNT = 100;
 
 type FolderItem = {
 	id?: string;
@@ -237,20 +237,30 @@ async function onClearClicked() {
 
 async function onDrop(ev: DragEvent) {
 	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
+	if (droppedFiles.length + gridItems.value.length >= MAXIMUM_EMOJI_COUNT) {
+		await os.alert({
+			type: 'warning',
+			title: '確認',
+			text: `一度に登録できる絵文字の数は${MAXIMUM_EMOJI_COUNT}件までです。この数を超過した分はリストアップされずに切り捨てられます。`,
+		});
+	}
+
 	const uploadedItems = await Promise.all(
 		droppedFiles.map(async (it) => ({
 			droppedFile: it,
-			driveFile: await uploadFile(
-				it.file,
-				selectedFolderId.value,
-				it.file.name.replace(/\.[^.]+$/, ''),
-				keepOriginalUploading.value,
+			driveFile: await os.promiseDialog(
+				uploadFile(
+					it.file,
+					selectedFolderId.value,
+					it.file.name.replace(/\.[^.]+$/, ''),
+					keepOriginalUploading.value,
+				),
 			),
 		}),
 		),
 	);
 
-	for (const { droppedFile, driveFile } of uploadedItems) {
+	const items = uploadedItems.map(({ droppedFile, driveFile }) => {
 		const item = fromDriveFile(driveFile);
 		if (directoryToCategory.value) {
 			item.category = droppedFile.path
@@ -258,26 +268,31 @@ async function onDrop(ev: DragEvent) {
 				.replace(/\/[^/]+$/, '')
 				.replace(droppedFile.file.name, '');
 		}
-		gridItems.value.push(reactive(item));
-	}
+		return item;
+	});
+
+	await pushToGridItems(items);
 }
 
 async function onFileSelectClicked(ev: MouseEvent) {
-	const driveFiles = await chooseFileFromPc(
-		true,
-		{
-			uploadFolder: selectedFolderId.value,
-			keepOriginal: keepOriginalUploading.value,
-			// 拡張子は消す
-			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
-		},
+	const driveFiles = await os.promiseDialog(
+		chooseFileFromPc(
+			true,
+			{
+				uploadFolder: selectedFolderId.value,
+				keepOriginal: keepOriginalUploading.value,
+				// 拡張子は消す
+				nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+			},
+		),
 	);
-	gridItems.value.push(...driveFiles.map(fromDriveFile));
+
+	await pushToGridItems(driveFiles.map(fromDriveFile));
 }
 
 async function onDriveSelectClicked(ev: MouseEvent) {
-	const driveFiles = await chooseFileFromDrive(true);
-	gridItems.value.push(...driveFiles.map(fromDriveFile));
+	const driveFiles = await os.promiseDialog(chooseFileFromDrive(true));
+	await pushToGridItems(driveFiles.map(fromDriveFile));
 }
 
 function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
@@ -344,6 +359,20 @@ function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: Gr
 
 function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
 	optInGridUtils.commonKeyDownHandler(gridItems, event, currentState);
+}
+
+async function pushToGridItems(items: GridItem[]) {
+	for (const item of items) {
+		if (gridItems.value.length < 100) {
+			gridItems.value.push(item);
+		} else {
+			await os.alert({
+				type: 'error',
+				text: `一度に登録できる絵文字は${MAXIMUM_EMOJI_COUNT}件までです。`,
+			});
+			break;
+		}
+	}
 }
 
 async function refreshUploadFolders() {
