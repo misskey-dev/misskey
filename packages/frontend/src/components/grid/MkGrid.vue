@@ -967,53 +967,70 @@ function refreshData() {
  * そこで、新しい値とセルが持つ値を突き合わせ、変更があった場合のみ値を更新し、セルそのものは使いまわしつつ値を最新化する。
  */
 function patchData(newItems: DataSource[]) {
-	const gridRows = cells.value;
+	const gridRows = [...cells.value];
 	if (gridRows.length > newItems.length) {
+		// 行数が減った場合
+
 		// 状態が壊れるかもしれないので選択を全解除
 		unSelectionRangeAll();
 
-		// 行数が減った場合
 		const diff = gridRows
 			.map((it, idx) => ({ origin: it.origin, idx }))
-			.filter(it => !newItems.includes(it.origin));
-		for (const { idx } of diff) {
-			rows.value.splice(idx, 1);
-			gridRows.splice(idx, 1);
-		}
+			.filter(it => !newItems.includes(it.origin))
+			.map(it => it.idx);
+		const newRows = rows.value.filter((_, idx) => !diff.includes(idx));
+		const newCells = gridRows.filter((_, idx) => !diff.includes(idx));
 
 		// 行数が減ったので再度採番
-		for (let rowIdx = 0; rowIdx < rows.value.length; rowIdx++) {
-			rows.value[rowIdx].index = rowIdx;
-			for (const cell of gridRows[rowIdx].cells) {
+		for (let rowIdx = 0; rowIdx < newRows.length; rowIdx++) {
+			newRows[rowIdx].index = rowIdx;
+			for (const cell of newCells[rowIdx].cells) {
 				cell.address.row = rowIdx;
 			}
 		}
+
+		rows.value = newRows;
+		cells.value = newCells;
 	} else if (gridRows.length < newItems.length) {
+		// 行数が増えた場合
+
 		// 状態が壊れるかもしれないので選択を全解除
 		unSelectionRangeAll();
 
-		// 行数が増えた場合
 		const oldOrigins = gridRows.map(it => it.origin);
-		const diff = newItems
-			.map((it, idx) => ({ origin: it, idx }))
-			.filter(it => oldOrigins.indexOf(it.origin) === -1);
-
-		const _cols = columns.value;
-		for (const { origin, idx } of diff) {
-			const newRow = createRow(idx);
-			const newCells = _cols.map(col => createCell(col, newRow, origin[col.setting.bindTo]));
-
-			rows.value.splice(idx, 0, newRow);
-			gridRows.splice(idx, 0, { cells: newCells, origin });
+		const newRows = Array.of<GridRow>();
+		const newCells = Array.of<RowHolder>();
+		for (const it of newItems) {
+			const idx = oldOrigins.indexOf(it);
+			if (idx >= 0) {
+				// 既存の行
+				newRows.push(rows.value[idx]);
+				newCells.push(gridRows[idx]);
+			} else {
+				// 新規の行
+				const newRow = createRow(newRows.length);
+				newRows.push(newRow);
+				newCells.push({
+					cells: columns.value.map(col => {
+						const cell = createCell(col, newRow, it[col.setting.bindTo]);
+						cell.violation = cellValidation(cell, cell.value);
+						return cell;
+					}),
+					origin: it,
+				});
+			}
 		}
 
 		// 行数が増えたので再度採番
-		for (let rowIdx = 0; rowIdx < rows.value.length; rowIdx++) {
-			rows.value[rowIdx].index = rowIdx;
-			for (const cell of gridRows[rowIdx].cells) {
+		for (let rowIdx = 0; rowIdx < newCells.length; rowIdx++) {
+			newRows[rowIdx].index = rowIdx;
+			for (const cell of newCells[rowIdx].cells) {
 				cell.address.row = rowIdx;
 			}
 		}
+
+		rows.value = newRows;
+		cells.value = newCells;
 	} else {
 		// 行数が変わらない場合
 		const _cols = columns.value;
@@ -1026,7 +1043,8 @@ function patchData(newItems: DataSource[]) {
 				const oldCell = oldCells[colIdx];
 				const newValue = newItem[_col.setting.bindTo];
 				if (oldCell.value !== newValue) {
-					emitCellValue(oldCell, newValue);
+					oldCell.violation = cellValidation(oldCell, newValue);
+					oldCell.value = newValue;
 				}
 			}
 		}
