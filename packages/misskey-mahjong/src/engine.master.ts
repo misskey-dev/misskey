@@ -380,6 +380,7 @@ export class MasterGameEngine {
 		return {
 			asking: false as const,
 			tsumoTile: tsumoTile,
+			next: this.state.turn,
 		};
 	}
 
@@ -439,6 +440,11 @@ export class MasterGameEngine {
 		console.log('yakus', house, yakus);
 
 		this.endKyoku();
+
+		return {
+			handTiles: this.state.handTiles[house],
+			tsumoTile: this.state.handTiles[house].at(-1)!,
+		};
 	}
 
 	public commit_resolveCallAndRonInterruption(answers: {

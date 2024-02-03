@@ -158,7 +158,7 @@ type EnvForCalcYaku = {
 	house: House;
 
 	/**
-	 * 和了る人の手牌(副露した牌は含まない)
+	 * 和了る人の手牌(副露牌および和了る際のツモ牌・ロン牌は含まない)
 	 */
 	handTiles: Tile[];
 
@@ -213,6 +213,12 @@ export const YAKU_DEFINITIONS = [{
 	fan: 1,
 	calc: (state: EnvForCalcYaku) => {
 		return state.riichi;
+	},
+}, {
+	name: 'tsumo',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.tsumoTile != null;
 	},
 }, {
 	name: 'red',
@@ -272,7 +278,7 @@ export const YAKU_DEFINITIONS = [{
 	calc: (state: EnvForCalcYaku) => {
 		const yaochuTiles: Tile[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 		return (
-			(state.handTiles.filter(t => yaochuTiles.includes(t)).length === 0) &&
+			(!state.handTiles.some(t => yaochuTiles.includes(t))) &&
 			(state.huros.filter(huro =>
 				huro.type === 'pon' ? yaochuTiles.includes(huro.tile) :
 				huro.type === 'ankan' ? yaochuTiles.includes(huro.tile) :
@@ -280,6 +286,27 @@ export const YAKU_DEFINITIONS = [{
 				huro.type === 'cii' ? huro.tiles.some(t2 => yaochuTiles.includes(t2)) :
 				false).length === 0)
 		);
+	},
+}, {
+	name: 'pinfu',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		// 面前じゃないとダメ
+		if (state.huros.length !== 0) return false;
+		// 三元牌はダメ
+		if (state.handTiles.some(t => ['haku', 'hatsu', 'chun'].includes(t))) return false;
+
+		// TODO: 両面待ちかどうか
+
+		const horaSets = getHoraSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+		return horaSets.some(horaSet => {
+			// 風牌判定(役牌でなければOK)
+			if (horaSet.head === state.seatWind) return false;
+			if (horaSet.head === state.fieldWind) return false;
+
+			// 全て順子か？
+			if (horaSet.mentsus.some((mentsu) => mentsu[0] === mentsu[1])) return false;
+		});
 	},
 }];
 
@@ -423,29 +450,44 @@ export const SHUNTU_PATTERNS: [Tile, Tile, Tile][] = [
 	['s7', 's8', 's9'],
 ];
 
-const SHUNTU_PATTERN_IDS = [
-	'm123',
-	'm234',
-	'm345',
-	'm456',
-	'm567',
-	'm678',
-	'm789',
-	'p123',
-	'p234',
-	'p345',
-	'p456',
-	'p567',
-	'p678',
-	'p789',
-	's123',
-	's234',
-	's345',
-	's456',
-	's567',
-	's678',
-	's789',
-] as const;
+export type KyokuResult = {
+	yakus: { name: string; fan: number; }[];
+	doraCount: number;
+	pointDeltas: { e: number; s: number; w: number; n: number; };
+};
+
+function extractShuntsus(tiles: Tile[]): [Tile, Tile, Tile][] {
+	const tempTiles = [...tiles];
+
+	tempTiles.sort((a, b) => {
+		const aIndex = TILE_TYPES.indexOf(a);
+		const bIndex = TILE_TYPES.indexOf(b);
+		return aIndex - bIndex;
+	});
+
+	const shuntsus: [Tile, Tile, Tile][] = [];
+	while (tempTiles.length > 0) {
+		let isShuntu = false;
+		for (const shuntuPattern of SHUNTU_PATTERNS) {
+			if (
+				tempTiles[0] === shuntuPattern[0] &&
+				tempTiles.includes(shuntuPattern[1]) &&
+				tempTiles.includes(shuntuPattern[2])
+			) {
+				shuntsus.push(shuntuPattern);
+				tempTiles.splice(0, 1);
+				tempTiles.splice(tempTiles.indexOf(shuntuPattern[1]), 1);
+				tempTiles.splice(tempTiles.indexOf(shuntuPattern[2]), 1);
+				isShuntu = true;
+				break;
+			}
+		}
+
+		if (!isShuntu) tempTiles.splice(0, 1);
+	}
+
+	return shuntsus;
+}
 
 /**
  * アガリ形パターン一覧を取得
@@ -537,34 +579,7 @@ export function getHoraSets(handTiles: Tile[]): HoraSet[] {
 				tempHandTilesWithoutKotsu.splice(tempHandTilesWithoutKotsu.indexOf(kotsuTile), 1);
 			}
 
-			tempHandTilesWithoutKotsu.sort((a, b) => {
-				const aIndex = TILE_TYPES.indexOf(a);
-				const bIndex = TILE_TYPES.indexOf(b);
-				return aIndex - bIndex;
-			});
-
-			const tempHandTilesWithoutKotsuAndShuntsu: (Tile | null)[] = [...tempHandTilesWithoutKotsu];
-
-			const shuntsus: [Tile, Tile, Tile][] = [];
-			while (tempHandTilesWithoutKotsuAndShuntsu.length > 0) {
-				let isShuntu = false;
-				for (const shuntuPattern of SHUNTU_PATTERNS) {
-					if (
-						tempHandTilesWithoutKotsuAndShuntsu[0] === shuntuPattern[0] &&
-						tempHandTilesWithoutKotsuAndShuntsu.includes(shuntuPattern[1]) &&
-						tempHandTilesWithoutKotsuAndShuntsu.includes(shuntuPattern[2])
-					) {
-						shuntsus.push(shuntuPattern);
-						tempHandTilesWithoutKotsuAndShuntsu.splice(0, 1);
-						tempHandTilesWithoutKotsuAndShuntsu.splice(tempHandTilesWithoutKotsuAndShuntsu.indexOf(shuntuPattern[1]), 1);
-						tempHandTilesWithoutKotsuAndShuntsu.splice(tempHandTilesWithoutKotsuAndShuntsu.indexOf(shuntuPattern[2]), 1);
-						isShuntu = true;
-						break;
-					}
-				}
-
-				if (!isShuntu) tempHandTilesWithoutKotsuAndShuntsu.splice(0, 1);
-			}
+			const shuntsus = extractShuntsus(tempHandTilesWithoutKotsu);
 
 			if (shuntsus.length * 3 === tempHandTilesWithoutKotsu.length) { // アガリ形
 				horaSets.push({

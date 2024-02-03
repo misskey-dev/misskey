@@ -26,7 +26,7 @@ import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
-const CALL_AND_RON_ASKING_TIMEOUT_MS = 1000 * 5; // 5sec
+const CALL_AND_RON_ASKING_TIMEOUT_MS = 1000 * 7; // 7sec
 const TURN_TIMEOUT_MS = 1000 * 30; // 30sec
 const NEXT_KYOKU_CONFIRMATION_TIMEOUT_MS = 1000 * 15; // 15sec
 
@@ -318,7 +318,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		switch (res.type) {
 			case 'tsumo':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'tsumo', { house: res.house, tile: res.tile });
-				this.next(room, engine);
+				this.waitForTurn(room, res.turn, engine);
 				break;
 			case 'ponned':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'ponned', { caller: res.caller, callee: res.callee, tile: res.tile });
@@ -346,23 +346,6 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				});
 				this.endKyoku(room, engine);
 				break;
-		}
-	}
-
-	@bindThis
-	private async next(room: Room, engine: Mahjong.MasterGameEngine) {
-		const turn = engine.state.turn;
-		if (turn == null) throw new Error('turn is null');
-
-		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
-
-		if (aiHouses.includes(turn)) {
-			// TODO: ちゃんと思考するようにする
-			setTimeout(() => {
-				this.dahai(room, engine, turn, engine.state.handTiles[turn].at(-1));
-			}, 500);
-		} else {
-			this.waitForTurn(room, turn, engine);
 		}
 	}
 
@@ -469,11 +452,11 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				}
 			}, 1000);
 
-			this.globalEventService.publishMahjongRoomStream(room.id, 'dahai', { house: house, tile });
+			this.globalEventService.publishMahjongRoomStream(room.id, 'dahai', { house: house, tile, riichi });
 		} else {
-			this.globalEventService.publishMahjongRoomStream(room.id, 'dahaiAndTsumo', { dahaiHouse: house, dahaiTile: tile, tsumoTile: res.tsumoTile });
+			this.globalEventService.publishMahjongRoomStream(room.id, 'dahaiAndTsumo', { dahaiHouse: house, dahaiTile: tile, tsumoTile: res.tsumoTile, riichi });
 
-			this.next(room, engine);
+			this.waitForTurn(room, res.next, engine);
 		}
 	}
 
@@ -556,7 +539,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		const res = engine.commit_tsumoHora(myHouse);
 
-		this.globalEventService.publishMahjongRoomStream(room.id, 'tsumoHora', { });
+		this.globalEventService.publishMahjongRoomStream(room.id, 'tsumoHora', { house: myHouse, handTiles: res.handTiles, tsumoTile: res.tsumoTile });
 	}
 
 	@bindThis
@@ -624,6 +607,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	 */
 	@bindThis
 	private async waitForTurn(room: Room, house: Mahjong.Common.House, engine: Mahjong.MasterGameEngine) {
+		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
+
 		if (engine.state.riichis[house]) {
 			// リーチ時はアガリ牌でない限りツモ切り
 			const handTiles = engine.state.handTiles[house];
@@ -634,6 +619,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				}, 500);
 				return;
 			}
+		}
+
+		if (aiHouses.includes(house)) {
+			setTimeout(() => {
+				this.dahai(room, engine, house, engine.state.handTiles[house].at(-1));
+			}, 500);
+			return;
 		}
 
 		const id = Math.random().toString(36).slice(2);

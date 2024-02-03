@@ -215,11 +215,13 @@ export interface MahjongRoomEventTypes {
 	dahai: {
 		house: Mahjong.Common.House;
 		tile: Mahjong.Common.Tile;
+		riichi: boolean;
 	};
 	dahaiAndTsumo: {
 		dahaiHouse: Mahjong.Common.House;
 		dahaiTile: Mahjong.Common.Tile;
 		tsumoTile: Mahjong.Common.Tile;
+		riichi: boolean;
 	};
 	ponned: {
 		caller: Mahjong.Common.House;

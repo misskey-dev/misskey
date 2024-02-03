@@ -64,6 +64,12 @@ export type PlayerState = {
 	canRonTo: House | null;
 };
 
+export type KyokuResult = {
+	yakus: { name: string; fan: number; }[];
+	doraCount: number;
+	pointDeltas: { e: number; s: number; w: number; n: number; };
+};
+
 export class PlayerGameEngine {
 	/**
 	 * このエラーが発生したときはdesyncが疑われる
@@ -145,10 +151,33 @@ export class PlayerGameEngine {
 		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
 	}
 
-	public commit_tsumoHora(house: House) {
+	public commit_tsumoHora(house: House, handTiles: Tile[], tsumoTile: Tile): KyokuResult {
 		console.log('commit_tsumoHora', this.state.turn, house);
 
-	// TODO: ツモした人の手牌情報を貰う必要がある
+		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
+			house: house,
+			handTiles: handTiles,
+			huros: this.state.huros[house],
+			tsumoTile: tsumoTile,
+			ronTile: null,
+			riichi: this.state.riichis[house],
+		}));
+		const doraCount = Common.calcOwnedDoraCount(handTiles, this.state.huros[house], this.doras);
+		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
+		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
+		this.state.points.e += pointDeltas.e;
+		this.state.points.s += pointDeltas.s;
+		this.state.points.w += pointDeltas.w;
+		this.state.points.n += pointDeltas.n;
+
+		return {
+			yakus: yakus.map(yaku => ({
+				name: yaku.name,
+				fan: yaku.fan,
+			})),
+			doraCount,
+			pointDeltas,
+		};
 	}
 
 	/**
@@ -161,23 +190,16 @@ export class PlayerGameEngine {
 		s: Tile[];
 		w: Tile[];
 		n: Tile[];
-	}) {
+	}): Record<House, KyokuResult | null> {
 		console.log('commit_ronHora', this.state.turn, callers, callee);
 
 		this.state.canRonSource = null;
 
-		const yakusMap: Record<House, { name: string; fan: number; }[]> = {
-			e: [] as { name: string; fan: number; }[],
-			s: [] as { name: string; fan: number; }[],
-			w: [] as { name: string; fan: number; }[],
-			n: [] as { name: string; fan: number; }[],
-		};
-
-		const doraCountsMap: Record<House, number> = {
-			e: 0,
-			s: 0,
-			w: 0,
-			n: 0,
+		const resultMap: Record<House, KyokuResult> = {
+			e: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
+			s: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
+			w: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
+			n: { yakus: [], doraCount: 0, pointDeltas: { e: 0, s: 0, w: 0, n: 0 } },
 		};
 
 		for (const house of callers) {
@@ -194,14 +216,17 @@ export class PlayerGameEngine {
 			const point = Common.fanToPoint(fans, house === 'e');
 			this.state.points[callee] -= point;
 			this.state.points[house] += point;
-			yakusMap[house] = yakus.map(yaku => ({ name: yaku.name, fan: yaku.fan }));
-			doraCountsMap[house] = doraCount;
-			console.log('yakus', house, yakus);
+			resultMap[house].yakus = yakus.map(yaku => ({ name: yaku.name, fan: yaku.fan }));
+			resultMap[house].doraCount = doraCount;
+			resultMap[house].pointDeltas[callee] = -point;
+			resultMap[house].pointDeltas[house] = point;
 		}
 
 		return {
-			yakusMap,
-			doraCountsMap,
+			e: callers.includes('e') ? resultMap.e : null,
+			s: callers.includes('s') ? resultMap.s : null,
+			w: callers.includes('w') ? resultMap.w : null,
+			n: callers.includes('n') ? resultMap.n : null,
 		};
 	}
 
