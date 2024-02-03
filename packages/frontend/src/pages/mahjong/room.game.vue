@@ -10,20 +10,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="text-align: center;">
 				<div :class="$style.centerPanelTickerToi">
 					<div style="position: absolute; left: 10px; bottom: 5px;">
-						<span :class="$style.centerPanelHouse">{{ Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse)) === 'e' ? i18n.ts._mahjong.east : Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse)) === 's' ? i18n.ts._mahjong.south : Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse)) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
-						<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))] }}</span>
+						<span :class="$style.centerPanelHouse">{{ Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse)) === 'e' ? i18n.ts._mahjong.east : Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse)) === 's' ? i18n.ts._mahjong.south : Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse)) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+						<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))] }}</span>
 					</div>
 				</div>
 				<div :class="$style.centerPanelTickerKami">
 					<div style="position: absolute; left: 10px; bottom: 5px;">
-						<span :class="$style.centerPanelHouse">{{ Mahjong.Common.prevHouse(engine.myHouse) === 'e' ? i18n.ts._mahjong.east : Mahjong.Common.prevHouse(engine.myHouse) === 's' ? i18n.ts._mahjong.south : Mahjong.Common.prevHouse(engine.myHouse) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
-						<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.Common.prevHouse(engine.myHouse)] }}</span>
+						<span :class="$style.centerPanelHouse">{{ Mahjong.prevHouse(engine.myHouse) === 'e' ? i18n.ts._mahjong.east : Mahjong.prevHouse(engine.myHouse) === 's' ? i18n.ts._mahjong.south : Mahjong.prevHouse(engine.myHouse) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+						<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.prevHouse(engine.myHouse)] }}</span>
 					</div>
 				</div>
 				<div :class="$style.centerPanelTickerSimo">
 					<div style="position: absolute; left: 10px; bottom: 5px;">
-						<span :class="$style.centerPanelHouse">{{ Mahjong.Common.nextHouse(engine.myHouse) === 'e' ? i18n.ts._mahjong.east : Mahjong.Common.nextHouse(engine.myHouse) === 's' ? i18n.ts._mahjong.south : Mahjong.Common.nextHouse(engine.myHouse) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
-						<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.Common.nextHouse(engine.myHouse)] }}</span>
+						<span :class="$style.centerPanelHouse">{{ Mahjong.nextHouse(engine.myHouse) === 'e' ? i18n.ts._mahjong.east : Mahjong.nextHouse(engine.myHouse) === 's' ? i18n.ts._mahjong.south : Mahjong.nextHouse(engine.myHouse) === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</span>
+						<span :class="$style.centerPanelPoint">{{ engine.state.points[Mahjong.nextHouse(engine.myHouse)] }}</span>
 					</div>
 				</div>
 				<div :class="$style.centerPanelTickerMe">
@@ -39,33 +39,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div :class="$style.handTilesOfToimen">
-			<div v-for="tile in engine.state.handTiles[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" style="display: inline-block;">
+			<div v-for="tile in engine.state.handTiles[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" style="display: inline-block;">
 				<img :src="`/client-assets/mahjong/tile-back.png`" :class="$style.handTileImgOfToimen"/>
 			</div>
 		</div>
 
 		<div :class="$style.handTilesOfKamitya">
-			<div v-for="tile in engine.state.handTiles[Mahjong.Common.prevHouse(engine.myHouse)]" :class="$style.sideTile">
+			<div v-for="tile in engine.state.handTiles[Mahjong.prevHouse(engine.myHouse)]" :class="$style.sideTile">
 				<img :src="`/client-assets/mahjong/tile-side.png`" style="display: inline-block; width: 32px;"/>
 			</div>
 		</div>
 
 		<div :class="$style.handTilesOfSimotya">
-			<div v-for="tile in engine.state.handTiles[Mahjong.Common.nextHouse(engine.myHouse)]" :class="$style.sideTile">
+			<div v-for="tile in engine.state.handTiles[Mahjong.nextHouse(engine.myHouse)]" :class="$style.sideTile">
 				<img :src="`/client-assets/mahjong/tile-side.png`" style="display: inline-block; width: 32px; scale: -1 1;"/>
 			</div>
 		</div>
 
 		<div :class="$style.huroTilesOfToimen">
-			<XHuro v-for="huro in engine.state.huros[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :huro="huro" :variation="1" :doras="engine.doras"/>
+			<XHuro v-for="huro in engine.state.huros[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :huro="huro" :variation="1" :doras="engine.doras"/>
 		</div>
 
 		<div :class="$style.huroTilesOfKamitya">
-			<XHuro v-for="huro in engine.state.huros[Mahjong.Common.prevHouse(engine.myHouse)]" :huro="huro" :variation="1" :doras="engine.doras"/>
+			<XHuro v-for="huro in engine.state.huros[Mahjong.prevHouse(engine.myHouse)]" :huro="huro" :variation="1" :doras="engine.doras"/>
 		</div>
 
 		<div :class="$style.huroTilesOfSimotya">
-			<XHuro v-for="huro in engine.state.huros[Mahjong.Common.nextHouse(engine.myHouse)]" :huro="huro" :variation="1" :doras="engine.doras"/>
+			<XHuro v-for="huro in engine.state.huros[Mahjong.nextHouse(engine.myHouse)]" :huro="huro" :variation="1" :doras="engine.doras"/>
 		</div>
 
 		<div :class="$style.huroTilesOfMe">
@@ -75,21 +75,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.hoTilesContainer">
 			<div :class="$style.hoTilesContainerOfToimen">
 				<div :class="$style.hoTilesOfToimen">
-					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))].length - i }">
+					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))].length - i }">
 						<XTile :tile="tile" variation="2" :doras="engine.doras"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfKamitya">
 				<div :class="$style.hoTilesOfKamitya">
-					<div v-for="tile in engine.state.hoTiles[Mahjong.Common.prevHouse(engine.myHouse)]" :class="$style.hoTile">
+					<div v-for="tile in engine.state.hoTiles[Mahjong.prevHouse(engine.myHouse)]" :class="$style.hoTile">
 						<XTile :tile="tile" variation="4" :doras="engine.doras"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfSimotya">
 				<div :class="$style.hoTilesOfSimotya">
-					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.Common.nextHouse(engine.myHouse)]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.Common.nextHouse(engine.myHouse)].length - i }">
+					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.nextHouse(engine.myHouse)]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.nextHouse(engine.myHouse)].length - i }">
 						<XTile :tile="tile" variation="5" :doras="engine.doras"/>
 					</div>
 				</div>
@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div :class="$style.handTilesOfMe">
 			<div
-				v-for="tile in Mahjong.Common.sortTiles((isMyTurn && iTsumoed) ? engine.myHandTiles.slice(0, engine.myHandTiles.length - 1) : engine.myHandTiles)"
+				v-for="tile in Mahjong.sortTiles((isMyTurn && iTsumoed) ? engine.myHandTiles.slice(0, engine.myHandTiles.length - 1) : engine.myHandTiles)"
 				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(tile), [$style.myTileDora]: engine.doras.includes(tile) }]"
 				@click="chooseTile(tile, $event)"
 			>
@@ -131,12 +131,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:enterFromClass="$style.transition_serif_enterFrom"
 					:leaveToClass="$style.transition_serif_leaveTo"
 				>
-					<img v-if="ronSerifHouses[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/ron.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="ciiSerifHouses[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/cii.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="ponSerifHouses[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/pon.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="kanSerifHouses[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/kan.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="tsumoSerifHouses[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/tsumo.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="riichiSerifHouses[Mahjong.Common.prevHouse(Mahjong.Common.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/riichi.png`" style="display: block; width: 100%;"/>
+					<img v-if="ronSerifHouses[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/ron.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="ciiSerifHouses[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/cii.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="ponSerifHouses[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/pon.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="kanSerifHouses[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/kan.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="tsumoSerifHouses[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/tsumo.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="riichiSerifHouses[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :src="`/client-assets/mahjong/riichi.png`" style="display: block; width: 100%;"/>
 				</Transition>
 			</div>
 			<div :class="$style.serifContainerOfKamitya">
@@ -146,12 +146,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:enterFromClass="$style.transition_serif_enterFrom"
 					:leaveToClass="$style.transition_serif_leaveTo"
 				>
-					<img v-if="ronSerifHouses[Mahjong.Common.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/ron.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="ciiSerifHouses[Mahjong.Common.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/cii.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="ponSerifHouses[Mahjong.Common.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/pon.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="kanSerifHouses[Mahjong.Common.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/kan.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="tsumoSerifHouses[Mahjong.Common.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/tsumo.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="riichiSerifHouses[Mahjong.Common.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/riichi.png`" style="display: block; width: 100%;"/>
+					<img v-if="ronSerifHouses[Mahjong.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/ron.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="ciiSerifHouses[Mahjong.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/cii.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="ponSerifHouses[Mahjong.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/pon.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="kanSerifHouses[Mahjong.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/kan.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="tsumoSerifHouses[Mahjong.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/tsumo.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="riichiSerifHouses[Mahjong.prevHouse(engine.myHouse)]" :src="`/client-assets/mahjong/riichi.png`" style="display: block; width: 100%;"/>
 				</Transition>
 			</div>
 			<div :class="$style.serifContainerOfSimotya">
@@ -161,12 +161,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:enterFromClass="$style.transition_serif_enterFrom"
 					:leaveToClass="$style.transition_serif_leaveTo"
 				>
-					<img v-if="ronSerifHouses[Mahjong.Common.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/ron.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="ciiSerifHouses[Mahjong.Common.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/cii.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="ponSerifHouses[Mahjong.Common.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/pon.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="kanSerifHouses[Mahjong.Common.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/kan.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="tsumoSerifHouses[Mahjong.Common.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/tsumo.png`" style="display: block; width: 100%;"/>
-					<img v-else-if="riichiSerifHouses[Mahjong.Common.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/riichi.png`" style="display: block; width: 100%;"/>
+					<img v-if="ronSerifHouses[Mahjong.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/ron.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="ciiSerifHouses[Mahjong.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/cii.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="ponSerifHouses[Mahjong.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/pon.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="kanSerifHouses[Mahjong.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/kan.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="tsumoSerifHouses[Mahjong.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/tsumo.png`" style="display: block; width: 100%;"/>
+					<img v-else-if="riichiSerifHouses[Mahjong.nextHouse(engine.myHouse)]" :src="`/client-assets/mahjong/riichi.png`" style="display: block; width: 100%;"/>
 				</Transition>
 			</div>
 			<div :class="$style.serifContainerOfMe">
@@ -194,14 +194,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="isMyTurn && engine.canRiichi()" primary @click="riichi">Riichi</MkButton>
 		</div>
 	</div>
-	<div v-if="kyokuEnded" :class="$style.kyokuResult">
+	<div v-if="showKyokuResults" :class="$style.kyokuResult">
 		<div v-for="(res, house) in kyokuResults" :key="house">
 			<div v-if="res != null">
 				<div>{{ house === 'e' ? i18n.ts._mahjong.east : house === 's' ? i18n.ts._mahjong.south : house === 'w' ? i18n.ts._mahjong.west : i18n.ts._mahjong.north }}</div>
 				<div v-for="yaku in res.yakus">
-					<div>{{ yaku.name }} ({{ yaku.fan }})</div>
+					<div>{{ i18n.ts._mahjong._yakus[yaku.name] }} {{ yaku.fan }}{{ i18n.ts._mahjong.fan }}</div>
 				</div>
-				<div>{{ res.doraCount }} dora</div>
+				<div>{{ i18n.ts._mahjong.dora }} {{ res.doraCount }}{{ i18n.ts._mahjong.fan }}</div>
 				<div>{{ res.pointDeltas.e }} / {{ res.pointDeltas.s }} / {{ res.pointDeltas.w }} / {{ res.pointDeltas.n }}</div>
 			</div>
 		</div>
@@ -244,19 +244,19 @@ const isMyTurn = computed(() => {
 });
 
 const canHora = computed(() => {
-	return Mahjong.Common.getHoraSets(engine.value.myHandTiles).length > 0;
+	return Mahjong.getHoraSets(engine.value.myHandTiles).length > 0;
 });
 
-const selectableTiles = ref<Mahjong.Common.Tile[] | null>(null);
-const ronSerifHouses = reactive<Record<Mahjong.Common.House, boolean>>({ e: false, s: false, w: false, n: false });
-const ciiSerifHouses = reactive<Record<Mahjong.Common.House, boolean>>({ e: false, s: false, w: false, n: false });
-const ponSerifHouses = reactive<Record<Mahjong.Common.House, boolean>>({ e: false, s: false, w: false, n: false });
-const kanSerifHouses = reactive<Record<Mahjong.Common.House, boolean>>({ e: false, s: false, w: false, n: false });
-const tsumoSerifHouses = reactive<Record<Mahjong.Common.House, boolean>>({ e: false, s: false, w: false, n: false });
-const riichiSerifHouses = reactive<Record<Mahjong.Common.House, boolean>>({ e: false, s: false, w: false, n: false });
+const selectableTiles = ref<Mahjong.Tile[] | null>(null);
+const ronSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
+const ciiSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
+const ponSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
+const kanSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
+const tsumoSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
+const riichiSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
 
 /*
-console.log(Mahjong.Common.getTilesForRiichi([
+console.log(Mahjong.getTilesForRiichi([
 	'm1',
 	'm2',
 	'm2',
@@ -274,7 +274,7 @@ console.log(Mahjong.Common.getTilesForRiichi([
 ]));
 */
 /*
-console.log(Mahjong.Common.getHoraSets([
+console.log(Mahjong.getHoraSets([
 	'm3',
 	'm3',
 	'm4',
@@ -335,7 +335,7 @@ if (!props.room.isEnded) {
 
 let riichiSelect = false;
 
-function chooseTile(tile: Mahjong.Common.Tile, ev: MouseEvent) {
+function chooseTile(tile: Mahjong.Tile, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
 	iTsumoed.value = false;
@@ -353,8 +353,8 @@ function riichi() {
 	if (!isMyTurn.value) return;
 
 	riichiSelect = true;
-	selectableTiles.value = Mahjong.Common.getTilesForRiichi(engine.value.myHandTiles);
-	console.log(Mahjong.Common.getTilesForRiichi(engine.value.myHandTiles));
+	selectableTiles.value = Mahjong.getTilesForRiichi(engine.value.myHandTiles);
+	console.log(Mahjong.getTilesForRiichi(engine.value.myHandTiles));
 }
 
 function kakan() {
@@ -389,14 +389,14 @@ function skip() {
 }
 
 const iTsumoed = ref(false);
-const kyokuEnded = ref(false);
-const kyokuResults = ref<Record<Mahjong.Common.House, {
+const showKyokuResults = ref(false);
+const kyokuResults = ref<Record<Mahjong.House, {
 	yakus: {
 		name: string;
 		fan: number;
 	}[];
 	doraCount: number;
-	pointDeltas: Record<Mahjong.Common.House, number>;
+	pointDeltas: Record<Mahjong.House, number>;
 } | null>>({
 	e: null,
 	s: null,
@@ -405,7 +405,7 @@ const kyokuResults = ref<Record<Mahjong.Common.House, {
 });
 
 function kyokuEnd() {
-	kyokuEnded.value = true;
+	showKyokuResults.value = true;
 }
 
 function onStreamDahai(log) {
@@ -481,10 +481,10 @@ function onStreamDahaiAndTsumo(log) {
 	}, 2000);
 
 	window.setTimeout(() => {
-		engine.value.commit_tsumo(Mahjong.Common.nextHouse(log.dahaiHouse), log.tsumoTile);
+		engine.value.commit_tsumo(Mahjong.nextHouse(log.dahaiHouse), log.tsumoTile);
 		triggerRef(engine);
 
-		if (Mahjong.Common.nextHouse(log.dahaiHouse) === engine.value.myHouse) {
+		if (Mahjong.nextHouse(log.dahaiHouse) === engine.value.myHouse) {
 			iTsumoed.value = true;
 		}
 	}, 100);
@@ -521,7 +521,10 @@ function onStreamRonned(log) {
 	triggerRef(engine);
 
 	kyokuResults.value = res;
-	kyokuEnded.value = true;
+
+	window.setTimeout(() => {
+		showKyokuResults.value = true;
+	}, 1500);
 
 	for (const caller of log.callers) {
 		ronSerifHouses[caller] = true;
@@ -537,7 +540,10 @@ function onStreamTsumoHora(log) {
 	triggerRef(engine);
 
 	kyokuResults.value[log.house] = res;
-	kyokuEnded.value = true;
+
+	window.setTimeout(() => {
+		showKyokuResults.value = true;
+	}, 1500);
 
 	tsumoSerifHouses[log.house] = true;
 

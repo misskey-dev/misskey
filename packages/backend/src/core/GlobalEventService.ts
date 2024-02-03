@@ -209,30 +209,30 @@ export interface MahjongRoomEventTypes {
 		room: Packed<'MahjongRoomDetailed'>;
 	};
 	tsumo: {
-		house: Mahjong.Common.House;
-		tile: Mahjong.Common.Tile;
+		house: Mahjong.House;
+		tile: Mahjong.Tile;
 	};
 	dahai: {
-		house: Mahjong.Common.House;
-		tile: Mahjong.Common.Tile;
+		house: Mahjong.House;
+		tile: Mahjong.Tile;
 		riichi: boolean;
 	};
 	dahaiAndTsumo: {
-		dahaiHouse: Mahjong.Common.House;
-		dahaiTile: Mahjong.Common.Tile;
-		tsumoTile: Mahjong.Common.Tile;
+		dahaiHouse: Mahjong.House;
+		dahaiTile: Mahjong.Tile;
+		tsumoTile: Mahjong.Tile;
 		riichi: boolean;
 	};
 	ponned: {
-		caller: Mahjong.Common.House;
-		callee: Mahjong.Common.House;
-		tile: Mahjong.Common.Tile;
+		caller: Mahjong.House;
+		callee: Mahjong.House;
+		tile: Mahjong.Tile;
 	};
 	kanned: {
-		caller: Mahjong.Common.House;
-		callee: Mahjong.Common.House;
-		tile: Mahjong.Common.Tile;
-		rinsyan: Mahjong.Common.Tile;
+		caller: Mahjong.House;
+		callee: Mahjong.House;
+		tile: Mahjong.Tile;
+		rinsyan: Mahjong.Tile;
 	};
 	ronned: {
 	};

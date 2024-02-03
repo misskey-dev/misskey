@@ -15,9 +15,9 @@ import { computed } from 'vue';
 import * as Mahjong from 'misskey-mahjong';
 
 const props = defineProps<{
-	tile: Mahjong.Common.Tile;
+	tile: Mahjong.Tile;
 	variation: string;
-	doras: Mahjong.Common.Tile[];
+	doras: Mahjong.Tile[];
 }>();
 
 const isDora = computed(() => props.doras.includes(props.tile));

@@ -101,59 +101,6 @@ export const NEXT_TILE_FOR_DORA_MAP: Record<Tile, Tile> = {
 	chun: 'haku',
 };
 
-export const yakuNames = [
-	'riichi',
-	'ippatsu',
-	'tsumo',
-	'tanyao',
-	'pinfu',
-	'iipeko',
-	'field-wind',
-	'seat-wind',
-	'white',
-	'green',
-	'red',
-	'rinshan',
-	'chankan',
-	'haitei',
-	'hotei',
-	'sanshoku-dojun',
-	'sanshoku-doko',
-	'ittsu',
-	'chanta',
-	'chitoitsu',
-	'toitoi',
-	'sananko',
-	'honroto',
-	'sankantsu',
-	'shosangen',
-	'double-riichi',
-	'honitsu',
-	'junchan',
-	'ryampeko',
-	'chinitsu',
-	'dora',
-	'red-dora',
-] as const;
-
-export const yakumanNames = [
-	'kokushi',
-	'kokushi-13',
-	'suanko',
-	'suanko-tanki',
-	'daisangen',
-	'tsuiso',
-	'shosushi',
-	'daisushi',
-	'ryuiso',
-	'chinroto',
-	'sukantsu',
-	'churen',
-	'pure-churen',
-	'tenho',
-	'chiho',
-] as const;
-
 type EnvForCalcYaku = {
 	house: House;
 
@@ -260,15 +207,80 @@ export const YAKU_DEFINITIONS = [{
 		);
 	},
 }, {
-	name: 'seat-wind',
+	name: 'field-wind-e',
 	fan: 1,
 	calc: (state: EnvForCalcYaku) => {
-		return (
-			(state.handTiles.filter(t => t === state.house).length >= 3) ||
+		return state.fieldWind === 'e' && (
+			(state.handTiles.filter(t => t === 'e').length >= 3) ||
 			(state.huros.filter(huro =>
-				huro.type === 'pon' ? huro.tile === state.house :
-				huro.type === 'ankan' ? huro.tile === state.house :
-				huro.type === 'minkan' ? huro.tile === state.house :
+				huro.type === 'pon' ? huro.tile === 'e' :
+				huro.type === 'ankan' ? huro.tile === 'e' :
+				huro.type === 'minkan' ? huro.tile === 'e' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'field-wind-s',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.fieldWind === 's' && (
+			(state.handTiles.filter(t => t === 's').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 's' :
+				huro.type === 'ankan' ? huro.tile === 's' :
+				huro.type === 'minkan' ? huro.tile === 's' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'seat-wind-e',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.house === 'e' && (
+			(state.handTiles.filter(t => t === 'e').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 'e' :
+				huro.type === 'ankan' ? huro.tile === 'e' :
+				huro.type === 'minkan' ? huro.tile === 'e' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'seat-wind-s',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.house === 's' && (
+			(state.handTiles.filter(t => t === 's').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 's' :
+				huro.type === 'ankan' ? huro.tile === 's' :
+				huro.type === 'minkan' ? huro.tile === 's' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'seat-wind-w',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.house === 'w' && (
+			(state.handTiles.filter(t => t === 'w').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 'w' :
+				huro.type === 'ankan' ? huro.tile === 'w' :
+				huro.type === 'minkan' ? huro.tile === 'w' :
+				false).length >= 3)
+		);
+	},
+}, {
+	name: 'seat-wind-n',
+	fan: 1,
+	calc: (state: EnvForCalcYaku) => {
+		return state.house === 'n' && (
+			(state.handTiles.filter(t => t === 'n').length >= 3) ||
+			(state.huros.filter(huro =>
+				huro.type === 'pon' ? huro.tile === 'n' :
+				huro.type === 'ankan' ? huro.tile === 'n' :
+				huro.type === 'minkan' ? huro.tile === 'n' :
 				false).length >= 3)
 		);
 	},
@@ -449,12 +461,6 @@ export const SHUNTU_PATTERNS: [Tile, Tile, Tile][] = [
 	['s6', 's7', 's8'],
 	['s7', 's8', 's9'],
 ];
-
-export type KyokuResult = {
-	yakus: { name: string; fan: number; }[];
-	doraCount: number;
-	pointDeltas: { e: number; s: number; w: number; n: number; };
-};
 
 function extractShuntsus(tiles: Tile[]): [Tile, Tile, Tile][] {
 	const tempTiles = [...tiles];

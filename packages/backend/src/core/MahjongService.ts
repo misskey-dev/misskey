@@ -77,11 +77,11 @@ type NextKyokuConfirmation = {
 	user4: boolean;
 };
 
-function getUserIdOfHouse(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.Common.House): MiUser['id'] {
+function getUserIdOfHouse(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.House): MiUser['id'] {
 	return engine.state.user1House === house ? room.user1Id : engine.state.user2House === house ? room.user2Id : engine.state.user3House === house ? room.user3Id : room.user4Id;
 }
 
-function getHouseOfUserId(room: Room, engine: Mahjong.MasterGameEngine, userId: MiUser['id']): Mahjong.Common.House {
+function getHouseOfUserId(room: Room, engine: Mahjong.MasterGameEngine, userId: MiUser['id']): Mahjong.House {
 	return userId === room.user1Id ? engine.state.user1House : userId === room.user2Id ? engine.state.user2House : userId === room.user3Id ? engine.state.user3House : engine.state.user4House;
 }
 
@@ -310,7 +310,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			pon: answers.pon ?? false,
 			cii: answers.cii ?? false,
 			kan: answers.kan ?? false,
-			ron: [...(answers.ron.e ? ['e'] : []), ...(answers.ron.s ? ['s'] : []), ...(answers.ron.w ? ['w'] : []), ...(answers.ron.n ? ['n'] : [])] as Mahjong.Common.House[],
+			ron: [...(answers.ron.e ? ['e'] : []), ...(answers.ron.s ? ['s'] : []), ...(answers.ron.w ? ['w'] : []), ...(answers.ron.n ? ['n'] : [])] as Mahjong.House[],
 		});
 		room.gameState = engine.state;
 		await this.saveRoom(room);
@@ -376,7 +376,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async dahai(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.Common.House, tile: Mahjong.Common.Tile, riichi = false) {
+	private async dahai(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.House, tile: Mahjong.Tile, riichi = false) {
 		const res = engine.commit_dahai(house, tile, riichi);
 		room.gameState = engine.state;
 		await this.saveRoom(room);
@@ -482,7 +482,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
-		if (!Mahjong.Common.isTile(tile)) return;
+		if (!Mahjong.isTile(tile)) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = getHouseOfUserId(room, engine, user.id);
@@ -606,13 +606,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	 * @param engine
 	 */
 	@bindThis
-	private async waitForTurn(room: Room, house: Mahjong.Common.House, engine: Mahjong.MasterGameEngine) {
+	private async waitForTurn(room: Room, house: Mahjong.House, engine: Mahjong.MasterGameEngine) {
 		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
 
 		if (engine.state.riichis[house]) {
 			// リーチ時はアガリ牌でない限りツモ切り
 			const handTiles = engine.state.handTiles[house];
-			const horaSets = Mahjong.Common.getHoraSets(handTiles);
+			const horaSets = Mahjong.getHoraSets(handTiles);
 			if (horaSets.length === 0) {
 				setTimeout(() => {
 					this.dahai(room, engine, house, handTiles.at(-1));

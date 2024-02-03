@@ -34,9 +34,9 @@ import * as Mahjong from 'misskey-mahjong';
 import XTile from './tile.vue';
 
 const props = defineProps<{
-	huro: Mahjong.Common.Huro;
+	huro: Mahjong.Huro;
 	variation: string;
-	doras: Mahjong.Common.Tile[];
+	doras: Mahjong.Tile[];
 }>();
 </script>
 
