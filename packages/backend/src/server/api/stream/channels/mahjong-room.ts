@@ -56,7 +56,7 @@ class MahjongRoomChannel extends Channel {
 			case 'tsumoHora': this.tsumoHora(); break;
 			case 'ronHora': this.ronHora(); break;
 			case 'pon': this.pon(); break;
-			case 'cii': this.cii(body.tiles); break;
+			case 'cii': this.cii(body.pattern); break;
 			case 'kan': this.kan(); break;
 			case 'ankan': this.ankan(body.tile); break;
 			case 'kakan': this.kakan(body.tile); break;
@@ -122,10 +122,10 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-	private async cii(tiles: string[]) {
+	private async cii(pattern: string) {
 		if (this.user == null) return;
 
-		this.mahjongService.commit_cii(this.roomId!, this.user, tiles);
+		this.mahjongService.commit_cii(this.roomId!, this.user, pattern);
 	}
 
 @bindThis

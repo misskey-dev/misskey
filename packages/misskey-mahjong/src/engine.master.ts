@@ -436,7 +436,7 @@ export class MasterGameEngine {
 
 	public commit_resolveCallingInterruption(answers: {
 		pon: boolean;
-		cii: false | [Tile, Tile, Tile];
+		cii: false | 'x__' | '_x_' | '__x';
 		kan: boolean;
 		ron: House[];
 	}) {
@@ -497,9 +497,42 @@ export class MasterGameEngine {
 			};
 		} else if (cii != null && answers.cii) {
 			const tile = this.state.hoTiles[cii.callee].pop()!;
-			this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(answers.cii[0]), 1);
-			this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(answers.cii[1]), 1);
-			this.state.huros[cii.caller].push({ type: 'cii', tiles: [tile, answers.cii[0], answers.cii[1]], from: cii.callee });
+			let tiles: [Tile, Tile, Tile];
+
+			switch (answers.cii) {
+				case 'x__': {
+					const a = Common.NEXT_TILE_FOR_SHUNTSU[tile];
+					if (a == null) throw new Error();
+					const b = Common.NEXT_TILE_FOR_SHUNTSU[a];
+					if (b == null) throw new Error();
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(a), 1);
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(b), 1);
+					tiles = [tile, a, b];
+					break;
+				}
+				case '_x_': {
+					const a = Common.PREV_TILE_FOR_SHUNTSU[tile];
+					if (a == null) throw new Error();
+					const b = Common.NEXT_TILE_FOR_SHUNTSU[tile];
+					if (b == null) throw new Error();
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(a), 1);
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(b), 1);
+					tiles = [a, tile, b];
+					break;
+				}
+				case '__x': {
+					const a = Common.PREV_TILE_FOR_SHUNTSU[tile];
+					if (a == null) throw new Error();
+					const b = Common.PREV_TILE_FOR_SHUNTSU[a];
+					if (b == null) throw new Error();
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(a), 1);
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(b), 1);
+					tiles = [b, a, tile];
+					break;
+				}
+			}
+
+			this.state.huros[cii.caller].push({ type: 'cii', tiles: tiles, from: cii.callee });
 
 			this.state.turn = cii.caller;
 
@@ -507,7 +540,7 @@ export class MasterGameEngine {
 				type: 'ciied' as const,
 				caller: cii.caller,
 				callee: cii.callee,
-				tiles: [tile, answers.cii[0], answers.cii[1]],
+				tiles: tiles,
 				turn: this.state.turn,
 			};
 		} else if (this.state.tiles.length === 0) {

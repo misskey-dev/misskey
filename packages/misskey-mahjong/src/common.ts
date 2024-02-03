@@ -101,6 +101,80 @@ export const NEXT_TILE_FOR_DORA_MAP: Record<Tile, Tile> = {
 	chun: 'haku',
 };
 
+export const NEXT_TILE_FOR_SHUNTSU: Record<Tile, Tile | null> = {
+	m1: 'm2',
+	m2: 'm3',
+	m3: 'm4',
+	m4: 'm5',
+	m5: 'm6',
+	m6: 'm7',
+	m7: 'm8',
+	m8: 'm9',
+	m9: null,
+	p1: 'p2',
+	p2: 'p3',
+	p3: 'p4',
+	p4: 'p5',
+	p5: 'p6',
+	p6: 'p7',
+	p7: 'p8',
+	p8: 'p9',
+	p9: null,
+	s1: 's2',
+	s2: 's3',
+	s3: 's4',
+	s4: 's5',
+	s5: 's6',
+	s6: 's7',
+	s7: 's8',
+	s8: 's9',
+	s9: null,
+	e: null,
+	s: null,
+	w: null,
+	n: null,
+	haku: null,
+	hatsu: null,
+	chun: null,
+};
+
+export const PREV_TILE_FOR_SHUNTSU: Record<Tile, Tile | null> = {
+	m1: null,
+	m2: 'm1',
+	m3: 'm2',
+	m4: 'm3',
+	m5: 'm4',
+	m6: 'm5',
+	m7: 'm6',
+	m8: 'm7',
+	m9: 'm8',
+	p1: null,
+	p2: 'p1',
+	p3: 'p2',
+	p4: 'p3',
+	p5: 'p4',
+	p6: 'p5',
+	p7: 'p6',
+	p8: 'p7',
+	p9: 'p8',
+	s1: null,
+	s2: 's1',
+	s3: 's2',
+	s4: 's3',
+	s5: 's4',
+	s6: 's5',
+	s7: 's6',
+	s8: 's7',
+	s9: 's8',
+	e: null,
+	s: null,
+	w: null,
+	n: null,
+	haku: null,
+	hatsu: null,
+	chun: null,
+};
+
 type EnvForCalcYaku = {
 	house: House;
 
@@ -626,4 +700,28 @@ export function getTilesForRiichi(handTiles: Tile[]): Tile[] {
 
 export function nextTileForDora(tile: Tile): Tile {
 	return NEXT_TILE_FOR_DORA_MAP[tile];
+}
+
+export function getAvailableCiiPatterns(handTiles: Tile[], targetTile: Tile): [Tile, Tile, Tile][] {
+	const patterns: [Tile, Tile, Tile][] = [];
+	const prev1 = PREV_TILE_FOR_SHUNTSU[targetTile];
+	const prev2 = prev1 != null ? PREV_TILE_FOR_SHUNTSU[prev1] : null;
+	const next1 = NEXT_TILE_FOR_SHUNTSU[targetTile];
+	const next2 = next1 != null ? NEXT_TILE_FOR_SHUNTSU[next1] : null;
+	if (prev2 != null && prev1 != null) {
+		if (handTiles.includes(prev2) && handTiles.includes(prev1)) {
+			patterns.push([prev2, prev1, targetTile]);
+		}
+	}
+	if (prev1 != null && next1 != null) {
+		if (handTiles.includes(prev1) && handTiles.includes(next1)) {
+			patterns.push([prev1, targetTile, next1]);
+		}
+	}
+	if (next1 != null && next2 != null) {
+		if (handTiles.includes(next1) && handTiles.includes(next2)) {
+			patterns.push([targetTile, next1, next2]);
+		}
+	}
+	return patterns;
 }

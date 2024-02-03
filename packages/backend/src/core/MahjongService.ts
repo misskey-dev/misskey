@@ -60,7 +60,7 @@ type Room = {
 
 type CallingAnswers = {
 	pon: null | boolean;
-	cii: null | false | [Mahjong.Tile, Mahjong.Tile, Mahjong.Tile];
+	cii: null | false | 'x__' | '_x_' | '__x';
 	kan: null | boolean;
 	ron: {
 		e: null | boolean;
@@ -594,7 +594,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_cii(roomId: MiMahjongGame['id'], user: MiUser, tiles: [Mahjong.Tile, Mahjong.Tile, Mahjong.Tile]) {
+	public async commit_cii(roomId: MiMahjongGame['id'], user: MiUser, pattern: 'x__' | '_x_' | '__x') {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
@@ -605,7 +605,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
 		if (current == null) throw new Error('no asking found');
 		const currentAnswers = JSON.parse(current) as CallingAnswers;
-		currentAnswers.cii = tiles;
+		currentAnswers.cii = pattern;
 		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 

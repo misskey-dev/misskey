@@ -781,7 +781,6 @@ onUnmounted(() => {
 	display: inline-block;
 	vertical-align: bottom;
 	width: 32px;
-	box-shadow: 0px 8px 2px 0px #0003;
 }
 
 .handTilesOfKamitya {
