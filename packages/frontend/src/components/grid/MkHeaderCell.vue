@@ -176,7 +176,8 @@ $handleWidth: 5px;
 
 	.contentArea {
 		display: flex;
-		padding: 4px 0;
+		padding: 6px 4px;
+		box-sizing: border-box;
 		overflow: hidden;
 		white-space: nowrap;
 		text-align: center;

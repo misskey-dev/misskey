@@ -32,23 +32,13 @@
 			絵文字登録時のログが表示されます。登録操作を行ったり、ページをリロードすると消えます。
 		</template>
 
-		<div>
-			<div v-if="registerLogs.length > 0" style="overflow-y: scroll;">
-				<MkGrid
-					:gridSetting="{ rowNumberVisible: false }"
-					:data="registerLogs"
-					:columnSettings="registerLogColumnSettings"
-				/>
-			</div>
-			<div v-else>
-				ログはありません。
-			</div>
-		</div>
+		<XRegisterLogs :logs="registerLogs"/>
 	</MkFolder>
 
 	<div
-		:class="$style.uploadBox"
-		@dragover.prevent
+		:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
+		@dragover.prevent="isDragOver = true"
+		@dragleave.prevent="isDragOver = false"
 		@drop.prevent.stop="onDrop"
 	>
 		<div style="margin-top: 1em">
@@ -61,10 +51,7 @@
 		</ul>
 	</div>
 
-	<div
-		v-if="gridItems.length > 0"
-		style="overflow-y: scroll;"
-	>
+	<div v-if="gridItems.length > 0" style="overflow-y: scroll;">
 		<MkGrid
 			:data="gridItems"
 			:columnSettings="columnSettings"
@@ -72,10 +59,7 @@
 		/>
 	</div>
 
-	<div
-		v-if="gridItems.length > 0"
-		:class="$style.buttons"
-	>
+	<div v-if="gridItems.length > 0" :class="$style.buttons">
 		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
 			{{ i18n.ts.registration }}
 		</MkButton>
@@ -90,7 +74,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fromDriveFile, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromDriveFile, GridItem, RegisterLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -99,7 +83,7 @@ import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { required } from '@/components/grid/cell-validators.js';
+import { validators } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
 import { uploadFile } from '@/scripts/upload.js';
 import {
@@ -114,6 +98,7 @@ import {
 import { ColumnSetting } from '@/components/grid/column.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
+import XRegisterLogs from '@/pages/admin/custom-emojis-grid.register.logs.vue';
 
 const MAXIMUM_EMOJI_COUNT = 100;
 
@@ -129,29 +114,17 @@ type UploadResult = {
 	err?: Error
 };
 
-type RegisterLogItem = {
-	failed: boolean;
-	url: string;
-	name: string;
-	error?: string;
-};
-
+const required = validators.required();
+const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required] },
+	{ bindTo: 'name', title: 'name', type: 'text', editable: true, width: 140, validators: [required, regex] },
 	{ bindTo: 'category', title: 'category', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'aliases', title: 'aliases', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'license', title: 'license', type: 'text', editable: true, width: 140 },
 	{ bindTo: 'isSensitive', title: 'sensitive', type: 'boolean', editable: true, width: 90 },
 	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
-];
-
-const registerLogColumnSettings: ColumnSetting[] = [
-	{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
-	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
-	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 140 },
-	{ bindTo: 'error', title: 'log', type: 'text', editable: false, width: 'auto' },
 ];
 
 const emit = defineEmits<{
@@ -163,15 +136,15 @@ const gridItems = ref<GridItem[]>([]);
 const selectedFolderId = ref(defaultStore.state.uploadFolder);
 const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
 const directoryToCategory = ref<boolean>(true);
-
 const registerButtonDisabled = ref<boolean>(false);
 const registerLogs = ref<RegisterLogItem[]>([]);
+const isDragOver = ref<boolean>(false);
 
 async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
 		type: 'info',
 		title: '確認',
-		text: 'リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？',
+		text: `リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は${MAXIMUM_EMOJI_COUNT}件までです）`,
 	});
 
 	if (dialogSelection.canceled) {
@@ -181,7 +154,7 @@ async function onRegistryClicked() {
 	const items = new Map<string, GridItem>(gridItems.value.map(it => [`${it.fileId}|${it.name}`, it]));
 	const upload = async (): Promise<UploadResult[]> => {
 		const result = Array.of<UploadResult>();
-		for (const [key, item] of items.entries()) {
+		for (const [key, item] of [...items.entries()].slice(0, MAXIMUM_EMOJI_COUNT)) {
 			try {
 				await misskeyApi('admin/emoji/add', {
 					name: item.name,
@@ -218,7 +191,10 @@ async function onRegistryClicked() {
 		name: it.item.name,
 		error: it.err ? JSON.stringify(it.err) : undefined,
 	}));
-	gridItems.value = failedItems.map(it => it.item);
+
+	// 登録に成功したものは一覧から除く
+	const successItems = result.filter(it => it.success).map(it => it.item);
+	gridItems.value = gridItems.value.filter(it => !successItems.includes(it));
 
 	emit('operation:registered');
 }
@@ -237,14 +213,6 @@ async function onClearClicked() {
 
 async function onDrop(ev: DragEvent) {
 	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
-	if (droppedFiles.length + gridItems.value.length >= MAXIMUM_EMOJI_COUNT) {
-		await os.alert({
-			type: 'warning',
-			title: '確認',
-			text: `一度に登録できる絵文字の数は${MAXIMUM_EMOJI_COUNT}件までです。この数を超過した分はリストアップされずに切り捨てられます。`,
-		});
-	}
-
 	const uploadedItems = await Promise.all(
 		droppedFiles.map(async (it) => ({
 			droppedFile: it,
@@ -271,7 +239,7 @@ async function onDrop(ev: DragEvent) {
 		return item;
 	});
 
-	await pushToGridItems(items);
+	gridItems.value.push(...items);
 }
 
 async function onFileSelectClicked(ev: MouseEvent) {
@@ -287,12 +255,12 @@ async function onFileSelectClicked(ev: MouseEvent) {
 		),
 	);
 
-	await pushToGridItems(driveFiles.map(fromDriveFile));
+	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
 async function onDriveSelectClicked(ev: MouseEvent) {
 	const driveFiles = await os.promiseDialog(chooseFileFromDrive(true));
-	await pushToGridItems(driveFiles.map(fromDriveFile));
+	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
 function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
@@ -325,7 +293,7 @@ function onGridRowContextMenu(event: GridRowContextMenuEvent, currentState: Grid
 			type: 'button',
 			text: '選択行をコピー',
 			icon: 'ti ti-copy',
-			action: () => optInGridUtils.rangeCopyToClipboard(gridItems, currentState),
+			action: () => optInGridUtils.copyToClipboard(gridItems, currentState),
 		},
 		{
 			type: 'button',
@@ -342,7 +310,7 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 			type: 'button',
 			text: '選択範囲をコピー',
 			icon: 'ti ti-copy',
-			action: () => optInGridUtils.rangeCopyToClipboard(gridItems, currentState),
+			action: () => optInGridUtils.copyToClipboard(gridItems, currentState),
 		},
 		{
 			type: 'button',
@@ -354,25 +322,12 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 }
 
 function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
-	optInGridUtils.applyCellValueFromEvent(gridItems, event);
+	const { row, column, newValue } = event;
+	gridItems.value[row.index][column.setting.bindTo] = newValue;
 }
 
 function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
-	optInGridUtils.commonKeyDownHandler(gridItems, event, currentState);
-}
-
-async function pushToGridItems(items: GridItem[]) {
-	for (const item of items) {
-		if (gridItems.value.length < 100) {
-			gridItems.value.push(item);
-		} else {
-			await os.alert({
-				type: 'error',
-				text: `一度に登録できる絵文字は${MAXIMUM_EMOJI_COUNT}件までです。`,
-			});
-			break;
-		}
-	}
+	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
 }
 
 async function refreshUploadFolders() {
@@ -397,6 +352,10 @@ onMounted(async () => {
 	border-radius: var(--border-radius);
 	background-color: var(--accentedBg);
 	box-sizing: border-box;
+
+	&.dragOver {
+		cursor: copy;
+	}
 }
 
 .buttons {

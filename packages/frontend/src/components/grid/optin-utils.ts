@@ -1,17 +1,12 @@
 import { Ref } from 'vue';
-import { GridCellValueChangeEvent, GridCurrentState, GridKeyDownEvent } from '@/components/grid/grid-event.js';
+import { GridCurrentState, GridKeyDownEvent } from '@/components/grid/grid-event.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { ColumnSetting } from '@/components/grid/column.js';
 import { CellValue } from '@/components/grid/cell.js';
 import { DataSource } from '@/components/grid/grid.js';
 
 class OptInGridUtils {
-	async applyCellValueFromEvent(gridItems: Ref<DataSource[]>, event: GridCellValueChangeEvent) {
-		const { row, column, newValue } = event;
-		gridItems.value[row.index][column.setting.bindTo] = newValue;
-	}
-
-	async commonKeyDownHandler(gridItems: Ref<DataSource[]>, event: GridKeyDownEvent, currentState: GridCurrentState) {
+	async defaultKeyDownHandler(gridItems: Ref<DataSource[]>, event: GridKeyDownEvent, currentState: GridCurrentState) {
 		const { ctrlKey, shiftKey, code } = event.event;
 
 		switch (true) {
@@ -21,7 +16,7 @@ class OptInGridUtils {
 			case ctrlKey: {
 				switch (code) {
 					case 'KeyC': {
-						this.rangeCopyToClipboard(gridItems, currentState);
+						this.copyToClipboard(gridItems, currentState);
 						break;
 					}
 					case 'KeyV': {
@@ -46,7 +41,7 @@ class OptInGridUtils {
 		}
 	}
 
-	rangeCopyToClipboard(gridItems: Ref<DataSource[]>, currentState: GridCurrentState) {
+	copyToClipboard(gridItems: Ref<DataSource[]>, currentState: GridCurrentState) {
 		const lines = Array.of<string>();
 		const bounds = currentState.randedBounds;
 

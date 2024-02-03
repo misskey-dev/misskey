@@ -1,5 +1,12 @@
 import * as Misskey from 'misskey-js';
 
+export type RegisterLogItem = {
+	failed: boolean;
+	url: string;
+	name: string;
+	error?: string;
+};
+
 export type GridItem = {
 	readonly id?: string;
 	readonly fileId?: string;
@@ -37,7 +44,7 @@ export function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 		fileId: it.id,
 		url: it.url,
 		checked: false,
-		name: it.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+		name: it.name.replace(/(\.[a-zA-Z0-9]+)+$/, ''),
 		category: '',
 		aliases: '',
 		license: '',

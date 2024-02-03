@@ -62,7 +62,7 @@ import {
 	toRefs,
 	watch,
 } from 'vue';
-import { GridEventEmitter, Size } from '@/components/grid/grid.js';
+import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
@@ -77,10 +77,11 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
 	cell: GridCell,
+	gridSetting: GridSetting,
 	bus: GridEventEmitter,
 }>();
 
-const { cell, bus } = toRefs(props);
+const { cell, gridSetting, bus } = toRefs(props);
 
 const rootEl = shallowRef<InstanceType<typeof HTMLTableCellElement>>();
 const contentAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
@@ -126,7 +127,7 @@ function onCellDoubleClick(ev: MouseEvent) {
 
 function onOutsideMouseDown(ev: MouseEvent) {
 	const isOutside = ev.target instanceof Node && !rootEl.value?.contains(ev.target);
-	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement))) {
+	if (isOutside || !equalCellAddress(cell.value.address, getCellAddress(ev.target as HTMLElement, gridSetting.value))) {
 		endEditing(true);
 	}
 }

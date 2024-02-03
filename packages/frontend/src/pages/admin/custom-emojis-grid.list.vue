@@ -36,10 +36,11 @@ import { fromEmojiDetailed, GridItem } from '@/pages/admin/custom-emojis-grid.im
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
-import { required } from '@/components/grid/cell-validators.js';
 import MkButton from '@/components/MkButton.vue';
 import { ColumnSetting } from '@/components/grid/column.js';
+import { validators } from '@/components/grid/cell-validators.js';
 
+const required = validators.required();
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'selected', icon: 'ti-trash', type: 'boolean', editable: true, width: 34 },
 	{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto', validators: [required] },

@@ -57,14 +57,39 @@ export function cellValidation(cell: GridCell, newValue: CellValue): ValidateVio
 	};
 }
 
-export const required: CellValidator = {
-	name: 'required',
-	validate: (params: ValidatorParams): ValidatorResult => {
-		const { value } = params;
+class ValidatorPreset {
+	required(): CellValidator {
 		return {
-			valid: value !== null && value !== undefined && value !== '',
-			message: 'This field is required.',
+			name: 'required',
+			validate: (params: ValidatorParams): ValidatorResult => {
+				const { value } = params;
+				return {
+					valid: value !== null && value !== undefined && value !== '',
+					message: 'This field is required.',
+				};
+			},
 		};
-	},
-};
+	}
 
+	regex(pattern: RegExp): CellValidator {
+		return {
+			name: 'regex',
+			validate: (params: ValidatorParams): ValidatorResult => {
+				const { value, column } = params;
+				if (column.setting.type !== 'text') {
+					return {
+						valid: false,
+						message: 'Regex validation is only available for text type.',
+					};
+				}
+
+				return {
+					valid: pattern.test(value?.toString() ?? ''),
+					message: 'Not an allowed format. Please check the input. (Allowed format: ' + pattern.source + ')',
+				};
+			},
+		};
+	}
+}
+
+export const validators = new ValidatorPreset();

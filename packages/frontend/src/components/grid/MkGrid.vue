@@ -424,7 +424,7 @@ function onMouseDown(ev: MouseEvent) {
 }
 
 function onLeftMouseDown(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement);
+	const cellAddress = getCellAddress(ev.target as HTMLElement, gridSetting.value);
 	if (_DEV_) {
 		console.log(`[grid][mouse-left] state:${state.value}, button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -476,7 +476,7 @@ function onLeftMouseDown(ev: MouseEvent) {
 }
 
 function onRightMouseDown(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement);
+	const cellAddress = getCellAddress(ev.target as HTMLElement, gridSetting.value);
 	if (_DEV_) {
 		console.log(`[grid][mouse-right] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -501,7 +501,7 @@ function onRightMouseDown(ev: MouseEvent) {
 function onMouseMove(ev: MouseEvent) {
 	ev.preventDefault();
 
-	const targetCellAddress = getCellAddress(ev.target as HTMLElement);
+	const targetCellAddress = getCellAddress(ev.target as HTMLElement, gridSetting.value);
 	if (equalCellAddress(previousCellAddress.value, targetCellAddress)) {
 		return;
 	}
@@ -600,7 +600,7 @@ function onMouseUp(ev: MouseEvent) {
 }
 
 function onContextMenu(ev: MouseEvent) {
-	const cellAddress = getCellAddress(ev.target as HTMLElement);
+	const cellAddress = getCellAddress(ev.target as HTMLElement, gridSetting.value);
 	if (_DEV_) {
 		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);
 	}
@@ -756,28 +756,26 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 	const cellAddress = 'address' in sender ? sender.address : sender;
 	const cell = cells.value[cellAddress.row].cells[cellAddress.col];
 
-	if (cell.column.setting.editable) {
-		const violation = cellValidation(cell, newValue);
-		cell.violation = violation;
-		emitGridEvent({
-			type: 'cell-validation',
-			violation: violation,
-			all: cells.value.flatMap(it => it.cells).map(it => it.violation),
-		});
+	const violation = cellValidation(cell, newValue);
+	cell.violation = violation;
+	emitGridEvent({
+		type: 'cell-validation',
+		violation: violation,
+		all: cells.value.flatMap(it => it.cells).map(it => it.violation),
+	});
 
-		cell.value = newValue;
-		emitGridEvent({
-			type: 'cell-value-change',
-			column: cell.column,
-			row: cell.row,
-			violation: violation,
-			oldValue: cell.value,
-			newValue: newValue,
-		});
+	cell.value = newValue;
+	emitGridEvent({
+		type: 'cell-value-change',
+		column: cell.column,
+		row: cell.row,
+		violation: violation,
+		oldValue: cell.value,
+		newValue: newValue,
+	});
 
-		if (_DEV_) {
-			console.log(`[grid][cell-value] row:${cell.row}, col:${cell.column.index}, value:${newValue}`);
-		}
+	if (_DEV_) {
+		console.log(`[grid][cell-value] row:${cell.row}, col:${cell.column.index}, value:${newValue}`);
 	}
 }
 
@@ -930,13 +928,18 @@ function refreshData() {
 	// 行・列の定義はそれぞれインデックスを持っており、そのインデックスは元データの配列番地に対応している。
 	const _cells: RowHolder[] = _rows.map((row, rowIndex) => (
 		{
-			cells: _cols.map(col =>
-				createCell(
+			cells: _cols.map(col => {
+				const cell = createCell(
 					col,
 					row,
 					(col.setting.bindTo in _data[rowIndex]) ? _data[rowIndex][col.setting.bindTo] : undefined,
-				),
-			),
+				);
+
+				// 元の値の時点で不正な場合もあり得るので、バリデーションを実行してすぐに警告できるようにしておく
+				cell.violation = cellValidation(cell, cell.value);
+
+				return cell;
+			}),
 			origin: _data[rowIndex],
 		}
 	));
@@ -1010,7 +1013,7 @@ function patchData(newItems: DataSource[]) {
 				const oldCell = oldCells[colIdx];
 				const newValue = newItem[_col.setting.bindTo];
 				if (oldCell.value !== newValue) {
-					oldCell.value = newValue;
+					emitCellValue(oldCell, newValue);
 				}
 			}
 		}
