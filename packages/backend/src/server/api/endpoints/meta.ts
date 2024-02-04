@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
+import { LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
-import type { AdsRepository, UsersRepository } from '@/models/_.js';
+import type { AdsRepository } from '@/models/_.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
@@ -327,14 +328,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
+		private instanceActorService: InstanceActorService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
@@ -413,9 +412,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				...(ps.detail ? {
 					cacheRemoteFiles: instance.cacheRemoteFiles,
 					cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
-					requireSetup: (await this.usersRepository.countBy({
-						host: IsNull(),
-					})) === 0,
+					requireSetup: !await this.instanceActorService.realLocalUsersPresent(),
 				} : {}),
 			};
 

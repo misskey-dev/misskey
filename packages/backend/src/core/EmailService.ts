@@ -40,6 +40,8 @@ export class EmailService {
 	public async sendEmail(to: string, subject: string, html: string, text: string) {
 		const meta = await this.metaService.fetch(true);
 
+		if (!meta.enableEmail) return;
+
 		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
 		const emailSettingUrl = `${this.config.url}/settings/email`;
 
