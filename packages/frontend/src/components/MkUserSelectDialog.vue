@@ -78,10 +78,13 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	includeSelf?: boolean;
 	localOnly?: boolean;
-}>();
+}>(), {
+	includeSelf: false,
+	localOnly: false,
+});
 
 const username = ref('');
 const host = ref('');
@@ -102,10 +105,10 @@ function search() {
 		detail: false,
 	}).then(_users => {
 		users.value = _users.filter((u) => {
-			if (props.includeSelf === false) {
-				return u.id !== $i?.id;
-			} else {
+			if (props.includeSelf) {
 				return true;
+			} else {
+				return u.id !== $i?.id;
 			}
 		});
 	});
@@ -146,10 +149,10 @@ onMounted(() => {
 			}
 		});
 		_users = _users.filter((u) => {
-			if (props.includeSelf === false) {
-				return u.id !== $i?.id;
-			} else {
+			if (props.includeSelf) {
 				return true;
+			} else {
+				return u.id !== $i?.id;
 			}
 		});
 		recentUsers.value = _users;

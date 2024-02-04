@@ -2482,6 +2482,11 @@ _reversi:
   freeMatch: "프리매치"
   lookingForPlayer: "상대를 찾고 있습니다"
   gameCanceled: "대국이 취소되었습니다"
+  shareToTlTheGameWhenStart: "대국 시작 시 타임라인에 대국을 게시"
+  iStartedAGame: "대국이 시작되었습니다! #MisskeyReversi"
+  opponentHasSettingsChanged: "상대방이 설정을 변경했습니다"
+  allowIrregularRules: "규칙변경 허가 (완전 자유)"
+  disallowIrregularRules: "규칙변경 없음"
 _offlineScreen:
   title: "오프라인 - 서버에 접속할 수 없습니다"
   header: "서버에 접속할 수 없습니다"

@@ -90,7 +90,7 @@ const pagination = {
 };
 
 function searchUser() {
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		show(user);
 	});
 }

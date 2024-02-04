@@ -9,6 +9,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { Packed } from '@/misc/json-schema.js';
@@ -46,13 +47,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private signupService: SignupService,
+		private instanceActorService: InstanceActorService,
 	) {
 		super(meta, paramDef, async (ps, _me, token) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
-			const noUsers = (await this.usersRepository.countBy({
-				host: IsNull(),
-			})) === 0;
-			if ((!noUsers && !me?.isRoot) || token !== null) throw new Error('access denied');
+			const realUsers = await this.instanceActorService.realLocalUsersPresent();
+			if ((realUsers && !me?.isRoot) || token !== null) throw new Error('access denied');
 
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,
