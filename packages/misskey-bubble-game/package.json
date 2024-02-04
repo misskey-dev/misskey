@@ -16,6 +16,7 @@
 	"scripts": {
 		"build": "node ./build.js",
 		"build:tsc": "npm run tsc",
+		"postinstall": "pnpm build",
 		"tsc": "npm run tsc-esm && npm run tsc-dts",
 		"tsc-esm": "tsc --outDir built/esm",
 		"tsc-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",

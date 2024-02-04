@@ -15,6 +15,7 @@
 		}
 	},
 	"scripts": {
+		"postinstall": "pnpm build",
 		"build": "npm run ts",
 		"ts": "npm run ts-esm && npm run ts-dts",
 		"ts-esm": "tsc --outDir built/esm",

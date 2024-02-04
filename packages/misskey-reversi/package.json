@@ -14,6 +14,7 @@
 		}
 	},
 	"scripts": {
+		"postinstall": "pnpm build",
 		"build": "node ./build.js",
 		"build:tsc": "npm run tsc",
 		"tsc": "npm run tsc-esm && npm run tsc-dts",

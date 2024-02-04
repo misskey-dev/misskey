@@ -2,6 +2,7 @@
 	"name": "sw",
 	"private": true,
 	"scripts": {
+		"postinstall": "pnpm build",
 		"watch": "nodemon -w ../../package.json -e json --exec \"node build.js watch\"",
 		"build": "node build.js",
 		"typecheck": "tsc --noEmit",
