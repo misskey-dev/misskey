@@ -13,7 +13,7 @@ function $(tileId: TileId): Common.TileInstance {
 }
 
 function $type(tileId: TileId): TileType {
-	return Common.findTileByIdOrFail(tileId).t;
+	return $(tileId).t;
 }
 //#endregion
 

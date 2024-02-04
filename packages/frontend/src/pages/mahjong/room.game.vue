@@ -76,28 +76,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.hoTilesContainerOfToimen">
 				<div :class="$style.hoTilesOfToimen">
 					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.prevHouse(Mahjong.prevHouse(engine.myHouse))].length - i }">
-						<XTile :tile="tile" variation="2" :doras="engine.doras"/>
+						<XTile :tile="Mahjong.findTileByIdOrFail(tile)" variation="2" :doras="engine.doras"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfKamitya">
 				<div :class="$style.hoTilesOfKamitya">
 					<div v-for="tile in engine.state.hoTiles[Mahjong.prevHouse(engine.myHouse)]" :class="$style.hoTile">
-						<XTile :tile="tile" variation="4" :doras="engine.doras"/>
+						<XTile :tile="Mahjong.findTileByIdOrFail(tile)" variation="4" :doras="engine.doras"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfSimotya">
 				<div :class="$style.hoTilesOfSimotya">
 					<div v-for="(tile, i) in engine.state.hoTiles[Mahjong.nextHouse(engine.myHouse)]" :class="$style.hoTile" :style="{ zIndex: engine.state.hoTiles[Mahjong.nextHouse(engine.myHouse)].length - i }">
-						<XTile :tile="tile" variation="5" :doras="engine.doras"/>
+						<XTile :tile="Mahjong.findTileByIdOrFail(tile)" variation="5" :doras="engine.doras"/>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.hoTilesContainerOfMe">
 				<div :class="$style.hoTilesOfMe">
 					<div v-for="tile in engine.state.hoTiles[engine.myHouse]" :class="$style.hoTile">
-						<XTile :tile="tile" variation="1" :doras="engine.doras"/>
+						<XTile :tile="Mahjong.findTileByIdOrFail(tile)" variation="1" :doras="engine.doras"/>
 					</div>
 				</div>
 			</div>
@@ -106,20 +106,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.handTilesOfMe">
 			<div
 				v-for="tile in Mahjong.sortTiles((isMyTurn && iTsumoed) ? engine.myHandTiles.slice(0, engine.myHandTiles.length - 1) : engine.myHandTiles)"
-				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(tile), [$style.myTileDora]: engine.doras.includes(tile) }]"
+				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(Mahjong.findTileByIdOrFail(tile).t), [$style.myTileDora]: engine.doras.includes(Mahjong.findTileByIdOrFail(tile).t) }]"
 				@click="chooseTile(tile, $event)"
 			>
 				<img :src="`/client-assets/mahjong/tile-front.png`" :class="$style.myTileBg"/>
-				<img :src="`/client-assets/mahjong/tiles/${tile}.png`" :class="$style.myTileFg"/>
+				<img :src="`/client-assets/mahjong/tiles/${Mahjong.findTileByIdOrFail(tile).red ? Mahjong.findTileByIdOrFail(tile).t + 'r' : Mahjong.findTileByIdOrFail(tile).t}.png`" :class="$style.myTileFg"/>
 			</div>
 			<div
 				v-if="isMyTurn && iTsumoed"
 				style="display: inline-block; margin-left: 5px;"
-				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(engine.myHandTiles.at(-1)), [$style.myTileDora]: engine.doras.includes(engine.myHandTiles.at(-1)) }]"
+				:class="[$style.myTile, { [$style.myTileNonSelectable]: selectableTiles != null && !selectableTiles.includes(Mahjong.findTileByIdOrFail(engine.myHandTiles.at(-1)).t), [$style.myTileDora]: engine.doras.includes(Mahjong.findTileByIdOrFail(engine.myHandTiles.at(-1)).t) }]"
 				@click="chooseTile(engine.myHandTiles.at(-1), $event)"
 			>
 				<img :src="`/client-assets/mahjong/tile-front.png`" :class="$style.myTileBg"/>
-				<img :src="`/client-assets/mahjong/tiles/${engine.myHandTiles.at(-1)}.png`" :class="$style.myTileFg"/>
+				<img :src="`/client-assets/mahjong/tiles/${Mahjong.findTileByIdOrFail(engine.myHandTiles.at(-1)).red ? Mahjong.findTileByIdOrFail(engine.myHandTiles.at(-1)).t + 'r' : Mahjong.findTileByIdOrFail(engine.myHandTiles.at(-1)).t}.png`" :class="$style.myTileFg"/>
 			</div>
 		</div>
 
@@ -259,50 +259,13 @@ const canHora = computed(() => {
 	return Mahjong.getHoraSets(engine.value.myHandTiles).length > 0;
 });
 
-const selectableTiles = ref<Mahjong.Tile[] | null>(null);
+const selectableTiles = ref<Mahjong.TileType[] | null>(null);
 const ronSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
 const ciiSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
 const ponSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
 const kanSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
 const tsumoSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
 const riichiSerifHouses = reactive<Record<Mahjong.House, boolean>>({ e: false, s: false, w: false, n: false });
-
-/*
-console.log(Mahjong.getTilesForRiichi([
-	'm1',
-	'm2',
-	'm2',
-	'm3',
-	'm3',
-	'm5',
-	'm6',
-	'p4',
-	'p5',
-	'p6',
-	's6',
-	's7',
-	's8',
-	'm7',
-]));
-*/
-/*
-console.log(Mahjong.getHoraSets([
-	'm3',
-	'm3',
-	'm4',
-	'm4',
-	'm5',
-	'm5',
-	'p4',
-	'p4',
-	'p7',
-	'p8',
-	'p9',
-	's4',
-	's5',
-	's6',
-]));
-*/
 
 /*
 if (room.value.isStarted && !room.value.isEnded) {
@@ -354,7 +317,7 @@ let ankanSelect = false;
 let kakanSelect = false;
 let ciiSelect = false;
 
-function chooseTile(tile: Mahjong.Tile, ev: MouseEvent) {
+function chooseTile(tile: Mahjong.TileId, ev: MouseEvent) {
 	if (!isMyTurn.value) return;
 
 	iTsumoed.value = false;
@@ -390,22 +353,22 @@ function riichi() {
 	if (!isMyTurn.value) return;
 
 	riichiSelect = true;
-	selectableTiles.value = Mahjong.getTilesForRiichi(engine.value.myHandTiles);
-	console.log(Mahjong.getTilesForRiichi(engine.value.myHandTiles));
+	selectableTiles.value = Mahjong.getTilesForRiichi(engine.value.myHandTileTypes);
+	console.log(Mahjong.getTilesForRiichi(engine.value.myHandTileTypes));
 }
 
 function ankan() {
 	if (!isMyTurn.value) return;
 
 	ankanSelect = true;
-	selectableTiles.value = engine.value.getAnkanableTiles();
+	selectableTiles.value = engine.value.getAnkanableTiles().map(id => Mahjong.findTileByIdOrFail(id).t);
 }
 
 function kakan() {
 	if (!isMyTurn.value) return;
 
 	kakanSelect = true;
-	selectableTiles.value = engine.value.getKakanableTiles();
+	selectableTiles.value = engine.value.getKakanableTiles().map(id => Mahjong.findTileByIdOrFail(id).t);
 }
 
 function tsumoHora() {
@@ -957,7 +920,6 @@ onUnmounted(() => {
 	aspect-ratio: 0.7;
 	transition: translate 0.1s ease;
 	cursor: pointer;
-	overflow: clip;
 }
 .myTile:hover {
 	translate: 0 -10px;
@@ -967,6 +929,7 @@ onUnmounted(() => {
 	opacity: 0.7;
 	pointer-events: none;
 }
+/*
 .myTileDora {
 	&:after {
 		content: "";
@@ -982,6 +945,7 @@ onUnmounted(() => {
 		pointer-events: none;
 	}
 }
+*/
 .myTileBg {
 	position: absolute;
 	top: 0;

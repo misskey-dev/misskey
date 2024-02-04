@@ -14,7 +14,7 @@ function $(tileId: TileId): Common.TileInstance {
 }
 
 function $type(tileId: TileId): TileType {
-	return Common.findTileByIdOrFail(tileId).t;
+	return $(tileId).t;
 }
 //#endregion
 
@@ -148,7 +148,7 @@ export class MasterGameEngine {
 	}
 
 	public static createInitialState(): MasterState {
-		const ikasama: TileId[] = [125, 129, 9, 54, 57, 61, 77, 81, 85, 133, 134, 135, 121, 122];
+		const ikasama: TileId[] = [125, 129, 9, 56, 57, 61, 77, 81, 85, 133, 134, 135, 121, 122];
 
 		const tiles = [...Common.TILE_ID_MAP.keys()];
 		tiles.sort(() => Math.random() - 0.5);

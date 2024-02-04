@@ -94,7 +94,7 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-	private async dahai(tile: string, riichi = false) {
+	private async dahai(tile: number, riichi = false) {
 		if (this.user == null) return;
 
 		this.mahjongService.commit_dahai(this.roomId!, this.user, tile, riichi);
@@ -136,14 +136,14 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-private async ankan(tile: string) {
+private async ankan(tile: number) {
 	if (this.user == null) return;
 
 	this.mahjongService.commit_ankan(this.roomId!, this.user, tile);
 }
 
 	@bindThis
-	private async kakan(tile: string) {
+	private async kakan(tile: number) {
 		if (this.user == null) return;
 
 		this.mahjongService.commit_kakan(this.roomId!, this.user, tile);

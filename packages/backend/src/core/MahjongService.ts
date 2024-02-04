@@ -376,7 +376,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async dahai(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.House, tile: Mahjong.Tile, riichi = false) {
+	private async dahai(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.House, tile: Mahjong.TileId, riichi = false) {
 		const res = engine.commit_dahai(house, tile, riichi);
 		room.gameState = engine.state;
 		await this.saveRoom(room);
@@ -384,8 +384,6 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
 
 		if (res.asking) {
-			console.log('asking', res);
-
 			const answers: CallingAnswers = {
 				pon: null,
 				cii: null,
@@ -478,11 +476,10 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: string, riichi = false) {
+	public async commit_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: Mahjong.TileId, riichi = false) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
-		if (!Mahjong.isTile(tile)) return;
 
 		const engine = new Mahjong.MasterGameEngine(room.gameState);
 		const myHouse = getHouseOfUserId(room, engine, user.id);
@@ -493,7 +490,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_ankan(roomId: MiMahjongGame['id'], user: MiUser, tile: string) {
+	public async commit_ankan(roomId: MiMahjongGame['id'], user: MiUser, tile: Mahjong.TileId) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
@@ -511,7 +508,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser, tile: string) {
+	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser, tile: Mahjong.TileId) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
@@ -643,11 +640,10 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		if (engine.state.riichis[house]) {
 			// リーチ時はアガリ牌でない限りツモ切り
-			const handTiles = engine.state.handTiles[house];
-			const horaSets = Mahjong.getHoraSets(handTiles);
+			const horaSets = Mahjong.getHoraSets(engine.handTileTypes[house]);
 			if (horaSets.length === 0) {
 				setTimeout(() => {
-					this.dahai(room, engine, house, handTiles.at(-1));
+					this.dahai(room, engine, house, engine.state.handTiles[house].at(-1));
 				}, 500);
 				return;
 			}
