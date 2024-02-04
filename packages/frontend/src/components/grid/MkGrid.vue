@@ -61,6 +61,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	gridSetting: () => ({
 		rowNumberVisible: true,
+		rowSelectable: true,
 	}),
 });
 const { gridSetting, columnSettings, data } = toRefs(props);
@@ -576,9 +577,7 @@ function onMouseMove(ev: MouseEvent) {
 			unSelectionOutOfRange(leftTop, rightBottom);
 			expandCellRange(leftTop, rightBottom);
 
-			rows.value[targetCellAddress.row].ranged = true;
-
-			const rangedRowIndexes = rangedRows.value.map(it => it.index);
+			const rangedRowIndexes = [rows.value[targetCellAddress.row].index, ...rangedRows.value.map(it => it.index)];
 			expandRowRange(Math.min(...rangedRowIndexes), Math.max(...rangedRowIndexes));
 
 			previousCellAddress.value = targetCellAddress;
@@ -884,6 +883,10 @@ function expandCellRange(leftTop: CellAddress, rightBottom: CellAddress) {
  * {@link top}から{@link bottom}までの行を範囲選択状態にする。
  */
 function expandRowRange(top: number, bottom: number) {
+	if (!gridSetting.value.rowSelectable) {
+		return;
+	}
+
 	const targetRows = rows.value.slice(top, bottom + 1);
 	for (const row of targetRows) {
 		row.ranged = true;
@@ -983,11 +986,11 @@ function patchData(newItems: DataSource[]) {
 		console.log(`[grid][patch-data][begin] new:${newItems.length} old:${cells.value.length}`);
 	}
 
-	const _cells = [...cells.value];
-	const _rows = [...rows.value];
-	const _cols = columns.value;
+	if (cells.value.length != newItems.length) {
+		const _cells = [...cells.value];
+		const _rows = [...rows.value];
+		const _cols = columns.value;
 
-	if (_cells.length != newItems.length) {
 		// 状態が壊れるかもしれないので選択を全解除
 		unSelectionRangeAll();
 
@@ -1026,20 +1029,19 @@ function patchData(newItems: DataSource[]) {
 
 		rows.value = newRows;
 		cells.value = newCells;
-	} else {
-		// 行数が変わらない場合
-		for (let rowIdx = 0; rowIdx < _cells.length; rowIdx++) {
-			const oldCells = _cells[rowIdx].cells;
-			const newItem = newItems[rowIdx];
-			for (let colIdx = 0; colIdx < oldCells.length; colIdx++) {
-				const _col = _cols[colIdx];
+	}
 
-				const oldCell = oldCells[colIdx];
-				const newValue = newItem[_col.setting.bindTo];
-				if (oldCell.value !== newValue) {
-					oldCell.violation = cellValidation(oldCell, newValue);
-					oldCell.value = newValue;
-				}
+	for (let rowIdx = 0; rowIdx < cells.value.length; rowIdx++) {
+		const oldCells = cells.value[rowIdx].cells;
+		const newItem = newItems[rowIdx];
+		for (let colIdx = 0; colIdx < oldCells.length; colIdx++) {
+			const _col = columns.value[colIdx];
+
+			const oldCell = oldCells[colIdx];
+			const newValue = newItem[_col.setting.bindTo];
+			if (oldCell.value !== newValue) {
+				oldCell.violation = cellValidation(oldCell, newValue);
+				oldCell.value = newValue;
 			}
 		}
 	}

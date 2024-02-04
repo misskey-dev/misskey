@@ -154,17 +154,20 @@ async function onRegistryClicked() {
 
 	const items = new Map<string, GridItem>(gridItems.value.map(it => [`${it.fileId}|${it.name}`, it]));
 	const upload = async (): Promise<UploadResult[]> => {
+		const emptyStrToNull = (value: string) => value === '' ? null : value;
+		const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
+
 		const result = Array.of<UploadResult>();
 		for (const [key, item] of [...items.entries()].slice(0, MAXIMUM_EMOJI_COUNT)) {
 			try {
 				await misskeyApi('admin/emoji/add', {
 					name: item.name,
-					category: item.category,
-					aliases: item.aliases.split(',').map(it => it.trim()),
-					license: item.license,
+					category: emptyStrToNull(item.category),
+					aliases: emptyStrToEmptyArray(item.aliases),
+					license: emptyStrToNull(item.license),
 					isSensitive: item.isSensitive,
 					localOnly: item.localOnly,
-					roleIdsThatCanBeUsedThisEmojiAsReaction: item.roleIdsThatCanBeUsedThisEmojiAsReaction.split(',').map(it => it.trim()),
+					roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
 					fileId: item.fileId!,
 				});
 				result.push({ key, item, success: true, err: undefined });

@@ -3,6 +3,7 @@ import { CellValue } from '@/components/grid/cell.js';
 
 export type GridSetting = {
 	rowNumberVisible: boolean;
+	rowSelectable: boolean;
 }
 
 export type DataSource = Record<string, CellValue>;

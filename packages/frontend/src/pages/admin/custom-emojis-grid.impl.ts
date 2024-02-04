@@ -12,7 +12,8 @@ export type GridItem = {
 	readonly fileId?: string;
 	readonly url: string;
 
-	checked: boolean;
+	deleteCheck: boolean;
+
 	name: string;
 	category: string;
 	aliases: string;
@@ -27,7 +28,7 @@ export function fromEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem 
 		id: it.id,
 		fileId: undefined,
 		url: it.url,
-		checked: false,
+		deleteCheck: false,
 		name: it.name,
 		category: it.category ?? '',
 		aliases: it.aliases.join(', '),
@@ -43,7 +44,7 @@ export function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 		id: undefined,
 		fileId: it.id,
 		url: it.url,
-		checked: false,
+		deleteCheck: false,
 		name: it.name.replace(/(\.[a-zA-Z0-9]+)+$/, ''),
 		category: '',
 		aliases: '',

@@ -50,23 +50,12 @@
 </template>
 
 <script setup lang="ts">
-import {
-	computed,
-	defineAsyncComponent,
-	nextTick,
-	onMounted,
-	onUnmounted,
-	ref,
-	shallowRef,
-	toRefs,
-	watch,
-} from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
 import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
 import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
-import { cellValidation, ValidateViolation } from '@/components/grid/cell-validators.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
