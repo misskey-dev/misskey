@@ -124,6 +124,7 @@ reactions: "반엉"
 reactionSettingDescription2: "꺼시서 두고, 누질라서 뭉캐고,  ‘+’럴 누질라서 옇십니다."
 rememberNoteVisibility: "공개 범위럴 기억하기"
 attachCancel: "붙임 빼기"
+deleteFile: "파일 뭉캐기"
 markAsSensitive: "수ᇚ힘 설정"
 unmarkAsSensitive: "수ᇚ힘 무루기"
 enterFileName: "파일 이럼 서기"
@@ -571,6 +572,7 @@ userSilenced: "요 게정은... 수ᇚ혀 있십니다."
 relays: "릴레이"
 addRelay: "릴레이 옇기"
 addedRelays: "옇은 릴레이"
+deletedNote: "뭉캔 걸"
 enableInfiniteScroll: "알아서 더 보기"
 author: "맨던 사람"
 manage: "간리"
@@ -626,6 +628,7 @@ role: "옉할"
 noRole: "옉할이 없십니다"
 thisPostMayBeAnnoyingCancel: "아이예"
 likeOnly: "좋네예마"
+myClips: "내 클립"
 icon: "아바타"
 replies: "답하기"
 renotes: "리노트"
@@ -641,9 +644,48 @@ _initialTutorial:
     title: "길라잡이가 껕낫십니다!🎉"
 _achievements:
   _types:
+    _notes1:
+      description: "첫 노트럴 섯어예"
+    _notes10:
+      description: "노트럴 10번 섰어예"
+    _notes100:
+      description: "노트럴 100번 섰어예"
+    _notes500:
+      description: "노트럴 500번 섰어예"
+    _notes1000:
+      description: "노트럴 1,000번 섰어예"
+    _notes5000:
+      description: "노트럴 5,000번 섰어예"
+    _notes10000:
+      description: "노트럴 10,000번 섰어예"
+    _notes20000:
+      description: "노트럴 20,000번 섰어예"
+    _notes30000:
+      description: "노트럴 30,000번 섰어예"
+    _notes40000:
+      description: "노트럴 40,000번 섰어예"
+    _notes50000:
+      description: "노트럴 50,000번 섰어예"
+    _notes60000:
+      description: "노트럴 60,000번 섰어예"
+    _notes70000:
+      description: "노트럴 70,000번 섰어예"
+    _notes80000:
+      description: "노트럴 80,000번 섰어예"
+    _notes90000:
+      description: "노트럴 90,000번 섰어예"
+    _notes100000:
+      description: "노트럴 100,000번 섰어예"
+    _noteClipped1:
+      description: "첫 노트럴 클립햇어예"
+    _iLoveMisskey:
+      description: "“I ❤ #Misskey”럴 섰어예"
+    _postedAt0min0sec:
+      description: "0분 0초에 노트를 섰어예"
     _tutorialCompleted:
       description: "길라잡이럴 껕냇십니다"
 _gallery:
+  my: "내 걸"
   liked: "좋네예한 걸"
   like: "좋네예!"
   unlike: "좋네예 무루기"
@@ -654,6 +696,7 @@ _serverDisconnectedBehavior:
   reload: "알아서 새로곤침"
 _channel:
   removeBanner: "배너 뭉캐기"
+  notesCount: "노트 {n}개"
 _theme:
   keys:
     mention: "멘션"
@@ -692,16 +735,19 @@ _charts:
 _timelines:
   home: "덜머리"
 _play:
+  my: "내 플레이"
   script: "스크립트"
 _pages:
   like: "좋네예"
   unlike: "좋네예 무루기"
+  my: "내 페이지"
   blocks:
     image: "이미지"
     _note:
       id: "노트 아이디"
 _notification:
   youWereFollowed: "새 팔로워가 잇십니다"
+  newNote: "새 걸"
   _types:
     follow: "팔로잉"
     mention: "멘션"
