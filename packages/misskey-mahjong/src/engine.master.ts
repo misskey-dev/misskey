@@ -4,9 +4,19 @@
  */
 
 import CRC32 from 'crc-32';
-import { Tile, House, Huro, TILE_TYPES, YAKU_DEFINITIONS } from './common.js';
+import { TileType, House, Huro, TILE_TYPES, YAKU_DEFINITIONS, TileId } from './common.js';
 import * as Common from './common.js';
 import { PlayerState } from './engine.player.js';
+
+//#region syntax suger
+function $(tileId: TileId): Common.TileInstance {
+	return Common.findTileByIdOrFail(tileId);
+}
+
+function $type(tileId: TileId): TileType {
+	return Common.findTileByIdOrFail(tileId).t;
+}
+//#endregion
 
 export type MasterState = {
 	user1House: House;
@@ -17,25 +27,25 @@ export type MasterState = {
 	round: 'e' | 's' | 'w' | 'n';
 	kyoku: number;
 
-	tiles: Tile[];
-	kingTiles: Tile[];
+	tiles: TileId[];
+	kingTiles: TileId[];
 	activatedDorasCount: number;
 
 	/**
 	 * 副露した牌を含まない手牌
 	 */
 	handTiles: {
-		e: Tile[];
-		s: Tile[];
-		w: Tile[];
-		n: Tile[];
+		e: TileId[];
+		s: TileId[];
+		w: TileId[];
+		n: TileId[];
 	};
 
 	hoTiles: {
-		e: Tile[];
-		s: Tile[];
-		w: Tile[];
-		n: Tile[];
+		e: TileId[];
+		s: TileId[];
+		w: TileId[];
+		n: TileId[];
 	};
 	huros: {
 		e: Huro[];
@@ -114,14 +124,33 @@ export class MasterGameEngine {
 		this.state = state;
 	}
 
-	public get doras(): Tile[] {
-		return this.state.kingTiles.slice(0, this.state.activatedDorasCount).map(t => Common.nextTileForDora(t));
+	public get doras(): TileType[] {
+		return this.state.kingTiles.slice(0, this.state.activatedDorasCount)
+			.map(id => Common.nextTileForDora($type(id)));
+	}
+
+	public get handTileTypes(): Record<House, TileType[]> {
+		return {
+			e: this.state.handTiles.e.map(id => $type(id)),
+			s: this.state.handTiles.s.map(id => $type(id)),
+			w: this.state.handTiles.w.map(id => $type(id)),
+			n: this.state.handTiles.n.map(id => $type(id)),
+		};
+	}
+
+	public get hoTileTypes(): Record<House, TileType[]> {
+		return {
+			e: this.state.hoTiles.e.map(id => $type(id)),
+			s: this.state.hoTiles.s.map(id => $type(id)),
+			w: this.state.hoTiles.w.map(id => $type(id)),
+			n: this.state.hoTiles.n.map(id => $type(id)),
+		};
 	}
 
 	public static createInitialState(): MasterState {
-		const ikasama: Tile[] = ['haku', 'hatsu', 'm3', 'p5', 'p6', 'p7', 's2', 's3', 's4', 'chun', 'chun', 'chun', 'n', 'n'];
+		const ikasama: TileId[] = [125, 129, 9, 54, 57, 61, 77, 81, 85, 133, 134, 135, 121, 122];
 
-		const tiles = [...TILE_TYPES.slice(), ...TILE_TYPES.slice(), ...TILE_TYPES.slice(), ...TILE_TYPES.slice()];
+		const tiles = [...Common.TILE_ID_MAP.keys()];
 		tiles.sort(() => Math.random() - 0.5);
 
 		for (const tile of ikasama) {
@@ -185,7 +214,7 @@ export class MasterGameEngine {
 		};
 	}
 
-	private tsumo(): Tile {
+	private tsumo(): TileId {
 		const tile = this.state.tiles.pop();
 		if (tile == null) throw new Error('No tiles left');
 		if (this.state.turn == null) throw new Error('Not your turn');
@@ -193,12 +222,12 @@ export class MasterGameEngine {
 		return tile;
 	}
 
-	private canRon(house: House, tile: Tile): boolean {
+	private canRon(house: House, tile: TileId): boolean {
 		// フリテン
 		// TODO: ポンされるなどして自分の河にない場合の考慮
-		if (this.state.hoTiles[house].includes(tile)) return false;
+		if (this.hoTileTypes[house].includes($type(tile))) return false;
 
-		const horaSets = Common.getHoraSets(this.state.handTiles[house].concat(tile));
+		const horaSets = Common.getHoraSets(this.handTileTypes[house].concat($type(tile)));
 		if (horaSets.length === 0) return false; // 完成形じゃない
 
 		// TODO
@@ -208,15 +237,15 @@ export class MasterGameEngine {
 		return true;
 	}
 
-	private canPon(house: House, tile: Tile): boolean {
-		return this.state.handTiles[house].filter(t => t === tile).length === 2;
+	private canPon(house: House, tile: TileId): boolean {
+		return this.handTileTypes[house].filter(t => t === $type(tile)).length === 2;
 	}
 
-	private canCii(caller: House, callee: House, tile: Tile): boolean {
+	private canCii(caller: House, callee: House, tile: TileId): boolean {
 		if (callee !== Common.prevHouse(caller)) return false;
-		const hand = this.state.handTiles[caller];
+		const hand = this.handTileTypes[caller];
 		return Common.SHUNTU_PATTERNS.some(pattern =>
-			pattern.includes(tile) &&
+			pattern.includes($type(tile)) &&
 			pattern.filter(t => hand.includes(t)).length >= 2);
 	}
 
@@ -245,13 +274,14 @@ export class MasterGameEngine {
 		for (const house of callers) {
 			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
 				house: house,
-				handTiles: this.state.handTiles[house],
+				handTiles: this.handTileTypes[house],
 				huros: this.state.huros[house],
 				tsumoTile: null,
-				ronTile: this.state.hoTiles[callee].at(-1)!,
+				ronTile: this.hoTileTypes[callee].at(-1)!,
 				riichi: this.state.riichis[house],
 			}));
-			const doraCount = Common.calcOwnedDoraCount(this.state.handTiles[house], this.state.huros[house], this.doras);
+			const doraCount = Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras);
+			// TODO: 赤ドラ
 			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 			const point = Common.fanToPoint(fans, house === 'e');
 			this.state.points[callee] -= point;
@@ -263,12 +293,12 @@ export class MasterGameEngine {
 		this.endKyoku();
 	}
 
-	public commit_dahai(house: House, tile: Tile, riichi = false) {
+	public commit_dahai(house: House, tile: TileId, riichi = false) {
 		if (this.state.turn !== house) throw new Error('Not your turn');
 
 		if (riichi) {
-			const tempHandTiles = [...this.state.handTiles[house]];
-			tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
+			const tempHandTiles = [...this.handTileTypes[house]];
+			tempHandTiles.splice(tempHandTiles.indexOf($type(tile)), 1);
 			if (Common.getHoraTiles(tempHandTiles).length === 0) throw new Error('Not tenpai');
 			if (this.state.points[house] < 1000) throw new Error('Not enough points');
 		}
@@ -371,11 +401,11 @@ export class MasterGameEngine {
 		};
 	}
 
-	public commit_kakan(house: House, tile: Tile) {
-		const pon = this.state.huros[house].find(h => h.type === 'pon' && h.tile === tile);
+	public commit_kakan(house: House, tile: TileId) {
+		const pon = this.state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tile));
 		if (pon == null) throw new Error('No such pon');
 		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
-		this.state.huros[house].push({ type: 'minkan', tile, from: pon.from });
+		this.state.huros[house].push({ type: 'minkan', tiles: [...pon.tiles, tile], from: pon.from });
 
 		this.state.activatedDorasCount++;
 
@@ -386,12 +416,20 @@ export class MasterGameEngine {
 		};
 	}
 
-	public commit_ankan(house: House, tile: Tile) {
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
-		this.state.huros[house].push({ type: 'ankan', tile });
+	public commit_ankan(house: House, tile: TileId) {
+		const t1 = this.state.handTiles[house].filter(t => $type(t) === $type(tile)).at(0);
+		if (t1 == null) throw new Error('No such tile');
+		const t2 = this.state.handTiles[house].filter(t => $type(t) === $type(tile)).at(1);
+		if (t2 == null) throw new Error('No such tile');
+		const t3 = this.state.handTiles[house].filter(t => $type(t) === $type(tile)).at(2);
+		if (t3 == null) throw new Error('No such tile');
+		const t4 = this.state.handTiles[house].filter(t => $type(t) === $type(tile)).at(3);
+		if (t4 == null) throw new Error('No such tile');
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t1), 1);
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t2), 1);
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t3), 1);
+		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t4), 1);
+		this.state.huros[house].push({ type: 'ankan', tiles: [t1, t2, t3, t4] });
 
 		this.state.activatedDorasCount++;
 
@@ -411,13 +449,14 @@ export class MasterGameEngine {
 
 		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
 			house: house,
-			handTiles: this.state.handTiles[house],
+			handTiles: this.handTileTypes[house],
 			huros: this.state.huros[house],
-			tsumoTile: this.state.handTiles[house].at(-1)!,
+			tsumoTile: this.handTileTypes[house].at(-1)!,
 			ronTile: null,
 			riichi: this.state.riichis[house],
 		}));
-		const doraCount = Common.calcOwnedDoraCount(this.state.handTiles[house], this.state.huros[house], this.doras);
+		const doraCount = Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras);
+		// TODO: 赤ドラ
 		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
 		this.state.points.e += pointDeltas.e;
@@ -463,8 +502,19 @@ export class MasterGameEngine {
 		} else if (kan != null && answers.kan) {
 			// 大明槓
 
+			const t1 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(0);
+			if (t1 == null) throw new Error('No such tile');
+			const t2 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(1);
+			if (t2 == null) throw new Error('No such tile');
+			const t3 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(2);
+			if (t3 == null) throw new Error('No such tile');
 			const tile = this.state.hoTiles[kan.callee].pop()!;
-			this.state.huros[kan.caller].push({ type: 'minkan', tile, from: kan.callee });
+
+			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t1), 1);
+			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t2), 1);
+			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t3), 1);
+
+			this.state.huros[kan.caller].push({ type: 'minkan', tiles: [tile, t1, t2, t3], from: kan.callee });
 
 			this.state.activatedDorasCount++;
 
@@ -481,10 +531,16 @@ export class MasterGameEngine {
 				turn: this.state.turn,
 			};
 		} else if (pon != null && answers.pon) {
+			const t1 = this.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(0);
+			if (t1 == null) throw new Error('No such tile');
+			const t2 = this.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(1);
+			if (t2 == null) throw new Error('No such tile');
 			const tile = this.state.hoTiles[pon.callee].pop()!;
-			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(tile), 1);
-			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(tile), 1);
-			this.state.huros[pon.caller].push({ type: 'pon', tile, from: pon.callee });
+
+			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(t1), 1);
+			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(t2), 1);
+
+			this.state.huros[pon.caller].push({ type: 'pon', tiles: [tile, t1, t2], from: pon.callee });
 
 			this.state.turn = pon.caller;
 
@@ -497,37 +553,49 @@ export class MasterGameEngine {
 			};
 		} else if (cii != null && answers.cii) {
 			const tile = this.state.hoTiles[cii.callee].pop()!;
-			let tiles: [Tile, Tile, Tile];
+			let tiles: [TileId, TileId, TileId];
 
 			switch (answers.cii) {
 				case 'x__': {
-					const a = Common.NEXT_TILE_FOR_SHUNTSU[tile];
+					const a = Common.NEXT_TILE_FOR_SHUNTSU[$type(tile)];
 					if (a == null) throw new Error();
 					const b = Common.NEXT_TILE_FOR_SHUNTSU[a];
 					if (b == null) throw new Error();
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(a), 1);
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(b), 1);
-					tiles = [tile, a, b];
+					const aTile = this.state.handTiles[cii.caller].find(t => $type(t) === a);
+					if (aTile == null) throw new Error();
+					const bTile = this.state.handTiles[cii.caller].find(t => $type(t) === b);
+					if (bTile == null) throw new Error();
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(aTile), 1);
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(bTile), 1);
+					tiles = [tile, aTile, bTile];
 					break;
 				}
 				case '_x_': {
-					const a = Common.PREV_TILE_FOR_SHUNTSU[tile];
+					const a = Common.PREV_TILE_FOR_SHUNTSU[$type(tile)];
 					if (a == null) throw new Error();
-					const b = Common.NEXT_TILE_FOR_SHUNTSU[tile];
+					const b = Common.NEXT_TILE_FOR_SHUNTSU[$type(tile)];
 					if (b == null) throw new Error();
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(a), 1);
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(b), 1);
-					tiles = [a, tile, b];
+					const aTile = this.state.handTiles[cii.caller].find(t => $type(t) === a);
+					if (aTile == null) throw new Error();
+					const bTile = this.state.handTiles[cii.caller].find(t => $type(t) === b);
+					if (bTile == null) throw new Error();
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(aTile), 1);
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(bTile), 1);
+					tiles = [aTile, tile, bTile];
 					break;
 				}
 				case '__x': {
-					const a = Common.PREV_TILE_FOR_SHUNTSU[tile];
+					const a = Common.PREV_TILE_FOR_SHUNTSU[$type(tile)];
 					if (a == null) throw new Error();
 					const b = Common.PREV_TILE_FOR_SHUNTSU[a];
 					if (b == null) throw new Error();
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(a), 1);
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(b), 1);
-					tiles = [b, a, tile];
+					const aTile = this.state.handTiles[cii.caller].find(t => $type(t) === a);
+					if (aTile == null) throw new Error();
+					const bTile = this.state.handTiles[cii.caller].find(t => $type(t) === b);
+					if (bTile == null) throw new Error();
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(aTile), 1);
+					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(bTile), 1);
+					tiles = [bTile, aTile, tile];
 					break;
 				}
 			}

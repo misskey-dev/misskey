@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Tile } from './common.js';
+import { TileType } from './common.js';
 
 export type Log = {
 	time: number;
@@ -14,7 +14,7 @@ export type Log = {
 
 export type SerializedLog = number[];
 
-export const TILE_MAP: Record<Tile, number> = {
+export const TILE_MAP: Record<TileType, number> = {
 	'm1': 1,
 	'm2': 2,
 	'm3': 3,
@@ -51,12 +51,12 @@ export const TILE_MAP: Record<Tile, number> = {
 	'chun': 34,
 };
 
-export function serializeTile(tile: Tile): number {
+export function serializeTile(tile: TileType): number {
 	return TILE_MAP[tile];
 }
 
-export function deserializeTile(tile: number): Tile {
-	return Object.keys(TILE_MAP).find(key => TILE_MAP[key as Tile] === tile) as Tile;
+export function deserializeTile(tile: number): TileType {
+	return Object.keys(TILE_MAP).find(key => TILE_MAP[key as TileType] === tile) as TileType;
 }
 
 export function serializeLogs(logs: Log[]) {

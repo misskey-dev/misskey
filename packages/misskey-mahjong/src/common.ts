@@ -43,28 +43,84 @@ export const TILE_TYPES = [
 	'chun',
 ] as const;
 
-export type Tile = typeof TILE_TYPES[number];
+export type TileType = typeof TILE_TYPES[number];
+
+export type TileInstance = {
+	t: TileType;
+	red?: boolean;
+};
+
+export type TileId = number;
+
+export const TILE_ID_MAP = new Map<TileId, TileInstance>([
+	/* eslint-disable no-multi-spaces */
+	[1,   { t: 'm1' }],    [2,   { t: 'm1' }],    [3,   { t: 'm1' }],    [4,   { t: 'm1' }],
+	[5,   { t: 'm2' }],    [6,   { t: 'm2' }],    [7,   { t: 'm2' }],    [8,   { t: 'm2' }],
+	[9,   { t: 'm3' }],    [10,  { t: 'm3' }],    [11,  { t: 'm3' }],    [12,  { t: 'm3' }],
+	[13,  { t: 'm4' }],    [14,  { t: 'm4' }],    [15,  { t: 'm4' }],    [16,  { t: 'm4' }],
+	[17,  { t: 'm5' }],    [18,  { t: 'm5' }],    [19,  { t: 'm5' }],    [20,  { t: 'm5', red: true }],
+	[21,  { t: 'm6' }],    [22,  { t: 'm6' }],    [23,  { t: 'm6' }],    [24,  { t: 'm6' }],
+	[25,  { t: 'm7' }],    [26,  { t: 'm7' }],    [27,  { t: 'm7' }],    [28,  { t: 'm7' }],
+	[29,  { t: 'm8' }],    [30,  { t: 'm8' }],    [31,  { t: 'm8' }],    [32,  { t: 'm8' }],
+	[33,  { t: 'm9' }],    [34,  { t: 'm9' }],    [35,  { t: 'm9' }],    [36,  { t: 'm9' }],
+	[37,  { t: 'p1' }],    [38,  { t: 'p1' }],    [39,  { t: 'p1' }],    [40,  { t: 'p1' }],
+	[41,  { t: 'p2' }],    [42,  { t: 'p2' }],    [43,  { t: 'p2' }],    [44,  { t: 'p2' }],
+	[45,  { t: 'p3' }],    [46,  { t: 'p3' }],    [47,  { t: 'p3' }],    [48,  { t: 'p3' }],
+	[49,  { t: 'p4' }],    [50,  { t: 'p4' }],    [51,  { t: 'p4' }],    [52,  { t: 'p4' }],
+	[53,  { t: 'p5' }],    [54,  { t: 'p5' }],    [55,  { t: 'p5' }],    [56,  { t: 'p5', red: true }],
+	[57,  { t: 'p6' }],    [58,  { t: 'p6' }],    [59,  { t: 'p6' }],    [60,  { t: 'p6' }],
+	[61,  { t: 'p7' }],    [62,  { t: 'p7' }],    [63,  { t: 'p7' }],    [64,  { t: 'p7' }],
+	[65,  { t: 'p8' }],    [66,  { t: 'p8' }],    [67,  { t: 'p8' }],    [68,  { t: 'p8' }],
+	[69,  { t: 'p9' }],    [70,  { t: 'p9' }],    [71,  { t: 'p9' }],    [72,  { t: 'p9' }],
+	[73,  { t: 's1' }],    [74,  { t: 's1' }],    [75,  { t: 's1' }],    [76,  { t: 's1' }],
+	[77,  { t: 's2' }],    [78,  { t: 's2' }],    [79,  { t: 's2' }],    [80,  { t: 's2' }],
+	[81,  { t: 's3' }],    [82,  { t: 's3' }],    [83,  { t: 's3' }],    [84,  { t: 's3' }],
+	[85,  { t: 's4' }],    [86,  { t: 's4' }],    [87,  { t: 's4' }],    [88,  { t: 's4' }],
+	[89,  { t: 's5' }],    [90,  { t: 's5' }],    [91,  { t: 's5' }],    [92,  { t: 's5', red: true }],
+	[93,  { t: 's6' }],    [94,  { t: 's6' }],    [95,  { t: 's6' }],    [96,  { t: 's6' }],
+	[97,  { t: 's7' }],    [98,  { t: 's7' }],    [99,  { t: 's7' }],    [100, { t: 's7' }],
+	[101, { t: 's8' }],    [102, { t: 's8' }],    [103, { t: 's8' }],    [104, { t: 's8' }],
+	[105, { t: 's9' }],    [106, { t: 's9' }],    [107, { t: 's9' }],    [108, { t: 's9' }],
+	[109, { t: 'e' }],     [110, { t: 'e' }],     [111, { t: 'e' }],     [112, { t: 'e' }],
+	[113, { t: 's' }],     [114, { t: 's' }],     [115, { t: 's' }],     [116, { t: 's' }],
+	[117, { t: 'w' }],     [118, { t: 'w' }],     [119, { t: 'w' }],     [120, { t: 'w' }],
+	[121, { t: 'n' }],     [122, { t: 'n' }],     [123, { t: 'n' }],     [124, { t: 'n' }],
+	[125, { t: 'haku' }],  [126, { t: 'haku' }],  [127, { t: 'haku' }],  [128, { t: 'haku' }],
+	[129, { t: 'hatsu' }], [130, { t: 'hatsu' }], [131, { t: 'hatsu' }], [132, { t: 'hatsu' }],
+	[133, { t: 'chun' }],  [134, { t: 'chun' }],  [135, { t: 'chun' }],  [136, { t: 'chun' }],
+	/* eslint-enable no-multi-spaces */
+]);
+
+export function findTileByIdOrFail(tileId: TileId): TileInstance {
+	const tile = TILE_ID_MAP.get(tileId);
+	if (tile == null) throw new Error(`tile not found: ${tileId}`);
+	return tile;
+}
+
+export function findTileById(tileId: TileId): TileInstance | null {
+	return TILE_ID_MAP.get(tileId) ?? null;
+}
 
 export type House = 'e' | 's' | 'w' | 'n';
 
 export type Huro = {
 	type: 'pon';
-	tile: Tile;
+	tiles: [TileId, TileId, TileId];
 	from: House;
 } | {
 	type: 'cii';
-	tiles: [Tile, Tile, Tile];
+	tiles: [TileId, TileId, TileId];
 	from: House;
 } | {
 	type: 'ankan';
-	tile: Tile;
+	tiles: [TileId, TileId, TileId, TileId];
 } | {
 	type: 'minkan';
-	tile: Tile;
+	tiles: [TileId, TileId, TileId, TileId];
 	from: House | null; // null で加槓
 };
 
-export const NEXT_TILE_FOR_DORA_MAP: Record<Tile, Tile> = {
+export const NEXT_TILE_FOR_DORA_MAP: Record<TileType, TileType> = {
 	m1: 'm2',
 	m2: 'm3',
 	m3: 'm4',
@@ -101,7 +157,7 @@ export const NEXT_TILE_FOR_DORA_MAP: Record<Tile, Tile> = {
 	chun: 'haku',
 };
 
-export const NEXT_TILE_FOR_SHUNTSU: Record<Tile, Tile | null> = {
+export const NEXT_TILE_FOR_SHUNTSU: Record<TileType, TileType | null> = {
 	m1: 'm2',
 	m2: 'm3',
 	m3: 'm4',
@@ -138,7 +194,7 @@ export const NEXT_TILE_FOR_SHUNTSU: Record<Tile, Tile | null> = {
 	chun: null,
 };
 
-export const PREV_TILE_FOR_SHUNTSU: Record<Tile, Tile | null> = {
+export const PREV_TILE_FOR_SHUNTSU: Record<TileType, TileType | null> = {
 	m1: null,
 	m2: 'm1',
 	m3: 'm2',
@@ -181,12 +237,12 @@ type EnvForCalcYaku = {
 	/**
 	 * 和了る人の手牌(副露牌および和了る際のツモ牌・ロン牌は含まない)
 	 */
-	handTiles: Tile[];
+	handTiles: TileType[];
 
 	/**
 	 * 河
 	 */
-	hoTiles: Tile[];
+	hoTiles: TileType[];
 
 	/**
 	 * 副露
@@ -196,22 +252,22 @@ type EnvForCalcYaku = {
 	/**
 	 * ツモ牌
 	 */
-	tsumoTile: Tile | null;
+	tsumoTile: TileType | null;
 
 	/**
 	 * ロン牌
 	 */
-	ronTile: Tile | null;
+	ronTile: TileType | null;
 
 	/**
 	 * ドラ表示牌
 	 */
-	doraTiles: Tile[];
+	doraTiles: TileType[];
 
 	/**
 	 * 赤ドラ表示牌
 	 */
-	redDoraTiles: Tile[];
+	redDoraTiles: TileType[];
 
 	/**
 	 * 場風
@@ -362,7 +418,7 @@ export const YAKU_DEFINITIONS = [{
 	name: 'tanyao',
 	fan: 1,
 	calc: (state: EnvForCalcYaku) => {
-		const yaochuTiles: Tile[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
+		const yaochuTiles: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 		return (
 			(!state.handTiles.some(t => yaochuTiles.includes(t))) &&
 			(state.huros.filter(huro =>
@@ -424,7 +480,7 @@ export function fanToPoint(fan: number, isParent: boolean): number {
 	return point;
 }
 
-export function calcOwnedDoraCount(handTiles: Tile[], huros: Huro[], doras: Tile[]): number {
+export function calcOwnedDoraCount(handTiles: TileType[], huros: Huro[], doras: TileType[]): number {
 	let count = 0;
 	for (const t of handTiles) {
 		if (doras.includes(t)) count++;
@@ -474,11 +530,11 @@ export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<Hou
 	return deltas;
 }
 
-export function isTile(tile: string): tile is Tile {
-	return TILE_TYPES.includes(tile as Tile);
+export function isTile(tile: string): tile is TileType {
+	return TILE_TYPES.includes(tile as TileType);
 }
 
-export function sortTiles(tiles: Tile[]): Tile[] {
+export function sortTiles(tiles: TileType[]): TileType[] {
 	tiles.sort((a, b) => {
 		const aIndex = TILE_TYPES.indexOf(a);
 		const bIndex = TILE_TYPES.indexOf(b);
@@ -508,11 +564,11 @@ export function prevHouse(house: House): House {
 }
 
 type HoraSet = {
-	head: Tile;
-	mentsus: [Tile, Tile, Tile][];
+	head: TileType;
+	mentsus: [TileType, TileType, TileType][];
 };
 
-export const SHUNTU_PATTERNS: [Tile, Tile, Tile][] = [
+export const SHUNTU_PATTERNS: [TileType, TileType, TileType][] = [
 	['m1', 'm2', 'm3'],
 	['m2', 'm3', 'm4'],
 	['m3', 'm4', 'm5'],
@@ -536,7 +592,7 @@ export const SHUNTU_PATTERNS: [Tile, Tile, Tile][] = [
 	['s7', 's8', 's9'],
 ];
 
-function extractShuntsus(tiles: Tile[]): [Tile, Tile, Tile][] {
+function extractShuntsus(tiles: TileType[]): [TileType, TileType, TileType][] {
 	const tempTiles = [...tiles];
 
 	tempTiles.sort((a, b) => {
@@ -545,7 +601,7 @@ function extractShuntsus(tiles: Tile[]): [Tile, Tile, Tile][] {
 		return aIndex - bIndex;
 	});
 
-	const shuntsus: [Tile, Tile, Tile][] = [];
+	const shuntsus: [TileType, TileType, TileType][] = [];
 	while (tempTiles.length > 0) {
 		let isShuntu = false;
 		for (const shuntuPattern of SHUNTU_PATTERNS) {
@@ -574,11 +630,11 @@ function extractShuntsus(tiles: Tile[]): [Tile, Tile, Tile][] {
  * @param handTiles ポン、チー、カンした牌を含まない手牌
  * @returns
  */
-export function getHoraSets(handTiles: Tile[]): HoraSet[] {
+export function getHoraSets(handTiles: TileType[]): HoraSet[] {
 	const horaSets: HoraSet[] = [];
 
-	const headSet: Tile[] = [];
-	const countMap = new Map<Tile, number>();
+	const headSet: TileType[] = [];
+	const countMap = new Map<TileType, number>();
 	for (const tile of handTiles) {
 		const count = (countMap.get(tile) ?? 0) + 1;
 		countMap.set(tile, count);
@@ -592,7 +648,7 @@ export function getHoraSets(handTiles: Tile[]): HoraSet[] {
 		tempHandTiles.splice(tempHandTiles.indexOf(head), 1);
 		tempHandTiles.splice(tempHandTiles.indexOf(head), 1);
 
-		const kotsuTileSet: Tile[] = []; // インデックスアクセスしたいため配列だが実態はSet
+		const kotsuTileSet: TileType[] = []; // インデックスアクセスしたいため配列だが実態はSet
 		for (const [t, c] of countMap.entries()) {
 			if (t === head) continue; // 同じ牌種は4枚しかないので、頭と同じ牌種は刻子になりえない
 			if (c >= 3) {
@@ -600,7 +656,7 @@ export function getHoraSets(handTiles: Tile[]): HoraSet[] {
 			}
 		}
 
-		let kotsuPatterns: Tile[][];
+		let kotsuPatterns: TileType[][];
 		if (kotsuTileSet.length === 0) {
 			kotsuPatterns = [
 				[],
@@ -664,7 +720,7 @@ export function getHoraSets(handTiles: Tile[]): HoraSet[] {
 			if (shuntsus.length * 3 === tempHandTilesWithoutKotsu.length) { // アガリ形
 				horaSets.push({
 					head,
-					mentsus: [...kotsuPattern.map(t => [t, t, t] as [Tile, Tile, Tile]), ...shuntsus],
+					mentsus: [...kotsuPattern.map(t => [t, t, t] as [TileType, TileType, TileType]), ...shuntsus],
 				});
 			}
 		}
@@ -677,7 +733,7 @@ export function getHoraSets(handTiles: Tile[]): HoraSet[] {
  * アガリ牌リストを取得
  * @param handTiles ポン、チー、カンした牌を含まない手牌
  */
-export function getHoraTiles(handTiles: Tile[]): Tile[] {
+export function getHoraTiles(handTiles: TileType[]): TileType[] {
 	return TILE_TYPES.filter(tile => {
 		const tempHandTiles = [...handTiles, tile];
 		const horaSets = getHoraSets(tempHandTiles);
@@ -689,7 +745,7 @@ export function getHoraTiles(handTiles: Tile[]): Tile[] {
 
 // TODO: 七対子判定関数
 
-export function getTilesForRiichi(handTiles: Tile[]): Tile[] {
+export function getTilesForRiichi(handTiles: TileType[]): TileType[] {
 	return handTiles.filter(tile => {
 		const tempHandTiles = [...handTiles];
 		tempHandTiles.splice(tempHandTiles.indexOf(tile), 1);
@@ -698,12 +754,12 @@ export function getTilesForRiichi(handTiles: Tile[]): Tile[] {
 	});
 }
 
-export function nextTileForDora(tile: Tile): Tile {
+export function nextTileForDora(tile: TileType): TileType {
 	return NEXT_TILE_FOR_DORA_MAP[tile];
 }
 
-export function getAvailableCiiPatterns(handTiles: Tile[], targetTile: Tile): [Tile, Tile, Tile][] {
-	const patterns: [Tile, Tile, Tile][] = [];
+export function getAvailableCiiPatterns(handTiles: TileType[], targetTile: TileType): [TileType, TileType, TileType][] {
+	const patterns: [TileType, TileType, TileType][] = [];
 	const prev1 = PREV_TILE_FOR_SHUNTSU[targetTile];
 	const prev2 = prev1 != null ? PREV_TILE_FOR_SHUNTSU[prev1] : null;
 	const next1 = NEXT_TILE_FOR_SHUNTSU[targetTile];
