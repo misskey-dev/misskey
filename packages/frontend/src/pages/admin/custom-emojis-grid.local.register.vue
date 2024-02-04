@@ -51,7 +51,7 @@
 		</ul>
 	</div>
 
-	<div v-if="gridItems.length > 0" style="overflow-y: scroll;">
+	<div v-if="gridItems.length > 0" :class="$style.gridArea">
 		<MkGrid
 			:data="gridItems"
 			:columnSettings="columnSettings"
@@ -376,6 +376,14 @@ onMounted(async () => {
 	&.dragOver {
 		cursor: copy;
 	}
+}
+
+.gridArea {
+	overflow: scroll;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	height: 400px;
+	resize: vertical;
 }
 
 .buttons {

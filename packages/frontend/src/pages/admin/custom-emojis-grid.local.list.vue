@@ -13,7 +13,7 @@
 			</MkButton>
 		</div>
 
-		<div style="overflow-y: scroll; padding-top: 8px; padding-bottom: 8px;">
+		<div :class="$style.gridArea">
 			<MkGrid :data="gridItems" :gridSetting="gridSetting" :columnSettings="columnSettings" @event="onGridEvent"/>
 		</div>
 
@@ -300,6 +300,14 @@ function refreshGridItems() {
 	align-items: center;
 	justify-content: stretch;
 	gap: 8px;
+}
+
+.gridArea {
+	overflow: scroll;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	height: 570px;
+	resize: vertical;
 }
 
 .pages {

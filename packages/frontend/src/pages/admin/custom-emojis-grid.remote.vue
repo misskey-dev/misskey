@@ -15,7 +15,7 @@
 	</div>
 
 	<div v-if="gridItems.length > 0">
-		<div style="overflow-y: scroll; padding-top: 8px; padding-bottom: 8px;">
+		<div :class="$style.gridArea">
 			<MkGrid :data="gridItems" :columnSettings="columnSettings" @event="onGridEvent"/>
 		</div>
 
@@ -220,6 +220,14 @@ onMounted(async () => {
 	align-items: flex-end;
 	justify-content: stretch;
 	gap: 8px;
+}
+
+.gridArea {
+	overflow: scroll;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	height: 620px;
+	resize: vertical;
 }
 
 .pages {
