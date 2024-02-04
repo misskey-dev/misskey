@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue';
 import { GridEventEmitter, GridSetting, Size } from '@/components/grid/grid.js';
 import MkDataCell from '@/components/grid/MkDataCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
@@ -33,14 +32,12 @@ const emit = defineEmits<{
 	(ev: 'change:value', sender: GridCell, newValue: CellValue): void;
 	(ev: 'change:contentSize', sender: GridCell, newSize: Size): void;
 }>();
-const props = defineProps<{
+defineProps<{
 	row: GridRow,
 	cells: GridCell[],
 	gridSetting: GridSetting,
 	bus: GridEventEmitter,
 }>();
-
-const { cells, gridSetting } = toRefs(props);
 
 </script>
 

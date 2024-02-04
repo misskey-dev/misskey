@@ -2,9 +2,16 @@ import { EventEmitter } from 'eventemitter3';
 import { CellValue } from '@/components/grid/cell.js';
 
 export type GridSetting = {
-	rowNumberVisible: boolean;
-	rowSelectable: boolean;
+	rowNumberVisible?: boolean;
+	rowSelectable?: boolean;
+	rowMinimumDefinitionCount?: number;
 }
+
+export const defaultGridSetting: Required<GridSetting> = {
+	rowNumberVisible: true,
+	rowSelectable: true,
+	rowMinimumDefinitionCount: 100,
+};
 
 export type DataSource = Record<string, CellValue>;
 

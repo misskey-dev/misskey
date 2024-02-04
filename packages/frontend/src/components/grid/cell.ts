@@ -50,3 +50,17 @@ export function createCell(
 		},
 	};
 }
+
+export function resetCell(cell: GridCell): void {
+	cell.selected = false;
+	cell.ranged = false;
+	cell.violation = {
+		valid: true,
+		params: {
+			column: cell.column,
+			row: cell.row,
+			value: cell.value,
+		},
+		violations: [],
+	};
+}
