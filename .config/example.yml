@@ -129,6 +129,20 @@ redis:
 #  index: ''
 #  scope: local
 
+#   ┌───────────────────────────┐
+#───┘ ElasticSearch configuration └─────────────────────────────
+
+# If MeiliSearch is also enabled, the MeiliSearch feature is used 
+# and ElasticSearch is disabled.
+
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  user: ''
+#  pass: ''
+#  ssl: true
+#  index: ''
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 

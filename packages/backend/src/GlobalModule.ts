@@ -6,6 +6,7 @@
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
+import { Client as ElasticSearch } from '@elastic/elasticsearch';
 import { MeiliSearch } from 'meilisearch';
 import { DI } from './di-symbols.js';
 import { Config, loadConfig } from './config.js';
@@ -35,6 +36,25 @@ const $meilisearch: Provider = {
 			return new MeiliSearch({
 				host: `${config.meilisearch.ssl ? 'https' : 'http'}://${config.meilisearch.host}:${config.meilisearch.port}`,
 				apiKey: config.meilisearch.apiKey,
+			});
+		} else {
+			return null;
+		}
+	},
+	inject: [DI.config],
+};
+
+const $elasticsearch: Provider = {
+	provide: DI.elasticsearch,
+	useFactory: (config: Config) => {
+		if (config.elasticsearch) {
+			return new ElasticSearch({
+				nodes: `${config.elasticsearch.ssl ? 'https' : 'http'}://${config.elasticsearch.host}:${config.elasticsearch.port}`,
+				auth: {
+					username: config.elasticsearch.user,
+					password: config.elasticsearch.pass,
+				},
+				//headers: {'Content-Type': 'application/json'},
 			});
 		} else {
 			return null;
@@ -81,8 +101,8 @@ const $redisForTimelines: Provider = {
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines],
-	exports: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, RepositoryModule],
+	providers: [$config, $db, $meilisearch, $elasticsearch, $redis, $redisForPub, $redisForSub, $redisForTimelines],
+	exports: [$config, $db, $meilisearch, $elasticsearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
