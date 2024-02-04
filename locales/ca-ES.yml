@@ -1355,20 +1355,40 @@ _achievements:
       description: "Publica 500 notes"
     _notes1000:
       title: "Un piló de notes"
-      description: "Publica 1 000 notes"
+      description: "1 000 notes publicades"
     _notes5000:
       title: "Desbordament de notes"
-      description: "Publica més de 5 000 notes"
+      description: "5 000 notes publicades"
     _notes10000:
       title: "Supernota"
-      description: "Publica 10 000 notes"
+      description: "10 000 notes publicades"
     _notes20000:
       title: "Necessito... Més... Notes!"
-      description: "Publica 20 000 notes"
+      description: "20 000 notes publicades"
     _notes30000:
       title: "Notes notes notes!"
-      description: "Publica 30 000 notes"
+      description: "30 000 notes publicades"
+    _notes40000:
+      title: "Fàbrica de notes"
+      description: "40 000 notes publicades"
+    _notes50000:
+      title: "Planeta de notes"
+      description: "50 000 notes publicades"
+    _notes60000:
+      title: "Quàsar de notes"
+      description: "60 000 notes publicades"
+    _notes70000:
+      title: "Forat negre de notes"
+      description: "70 000 notes publicades"
+    _notes80000:
+      title: "Galàxia de notes"
+      description: "80 000 notes publicades"
+    _notes90000:
+      title: "Univers de notes"
+      description: "90 000 notes publicades"
     _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "100 000 notes publicades"
       flavor: "Segur que tens moltes coses a dir?"
     _login3:
       title: "Principiant I"
@@ -1441,7 +1461,45 @@ _achievements:
       description: "És la primera vegada que et segueixo"
     _following10:
       title: "Segueix-me... Segueix-me..."
+      description: "Seguir 10 usuaris"
+    _following50:
+      title: "Molts amics"
+      description: "Seguir 50 comptes"
+    _following100:
+      title: "100 amics"
+      description: "Segueixes 100 comptes"
+    _following300:
+      title: "Sobrecàrrega d'amics"
+      description: "Segueixes 300 comptes"
+    _followers1:
+      title: "Primer seguidor"
+      description: "1 seguidor guanyat"
+    _followers10:
+      title: "Segueix-me!"
+      description: "10 seguidors guanyats"
+    _followers50:
+      title: "Venen en manada"
+      description: "50 seguidors guanyats"
+    _followers100:
+      title: "Popular"
+      description: "100 seguidors guanyats"
+    _followers300:
+      title: "Si us plau, d'un en un!"
+      description: "300 seguidors guanyats"
+    _followers500:
+      title: "Torre de ràdio"
+      description: "500 seguidors guanyats"
+    _followers1000:
+      title: "Influenciador"
+      description: "1 000 seguidors guanyats"
+    _collectAchievements30:
+      title: "Col·leccionista d'èxits "
+      description: "Desbloqueja 30 assoliments"
+    _viewAchievements3min:
+      title: "M'agraden els èxits "
+      description: "Mira la teva llista d'assoliments durant més de 3 minuts"
     _iLoveMisskey:
+      title: "Estimo Misskey"
       description: "Publica \"I ❤ #Misskey\""
       flavor: "L'equip de desenvolupament de Misskey agraeix el vostre suport!"
     _foundTreasure:
@@ -1466,7 +1524,27 @@ _achievements:
     _driveFolderCircularReference:
       title: "Consulteu la secció de bucle"
 _role:
+  permission: "Permisos de rol"
+  descriptionOfPermission: "Els <b>Moderadors</b> poden fer operacions bàsiques de moderació.\nEls <b>Administradors</b> poden canviar tots els ajustos del servidor."
   assignTarget: "Assignar "
+  descriptionOfAssignTarget: "<b>Manual</b> per canviar manualment qui és part d'aquest rol i qui no.\n<b>Condicional</b> per afegir o eliminar de manera automàtica els usuaris d'aquest rol basat en una determinada condició."
+  manual: "Manual"
+  manualRoles: "Rols manuals"
+  conditional: "Condicional"
+  conditionalRoles: "Rols condicionals"
+  condition: "Condició"
+  isConditionalRole: "Aquest és un rol condicional"
+  isPublic: "Rol públic"
+  descriptionOfIsPublic: "Aquest rol es mostrarà al perfil dels usuaris al que se'ls assigni."
+  options: "Opcions"
+  policies: "Polítiques"
+  baseRole: "Plantilla de rols"
+  useBaseValue: "Fer servir els valors de la plantilla de rols"
+  chooseRoleToAssign: "Selecciona els rols a assignar"
+  iconUrl: "URL de la icona "
+  asBadge: "Mostrar com a insígnia "
+  descriptionOfAsBadge: "La icona d'aquest rol es mostrarà al costat dels noms d'usuaris que tinguin assignats aquest rol."
+  isExplorable: "Fer el rol explorable"
   priority: "Prioritat"
   _priority:
     low: "Baixa"
