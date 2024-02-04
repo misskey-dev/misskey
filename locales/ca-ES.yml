@@ -1210,6 +1210,8 @@ _bubbleGame:
   howToPlay: "Com es juga"
   _howToPlay:
     section1: "Ajusta la posició i deixa caure l'objecte dintre la caixa."
+    section2: "Quan dos objectes del mateix tipus es toquen, canviaran en un objecte diferent i guanyares punts."
+    section3: "El joc s'acabarà quan els objectes sobresurtin de la caixa. Intenta aconseguir la puntuació més gran possible fusionant objectes mentre impedeixes que sobresurtin de la caixa!"
 _announcement:
   forExistingUsers: "Anunci per usuaris registrats"
   forExistingUsersDescription: "Aquest avís només es mostrarà als usuaris existents fins al moment de la publicació. Si no també es mostrarà als usuaris que es registrin després de la publicació."
@@ -1231,8 +1233,32 @@ _initialAccountSetting:
   privacySetting: "Configuració de seguretat"
   theseSettingsCanEditLater: "Aquests ajustos es poden canviar més tard."
   youCanEditMoreSettingsInSettingsPageLater: "A més d'això, es poden fer diferents configuracions a través de la pàgina de configuració. Assegureu-vos de comprovar-ho més tard."
+  followUsers: "Prova de seguir usuaris que t'interessin per construir la teva línia de temps."
+  pushNotificationDescription: "Activant les notificacions emergents et permetrà rebre notificacions de {name} directament al teu dispositiu."
+  initialAccountSettingCompleted: "Configuració del perfil completada!"
+  haveFun: "Disfruta {name}!"
+  youCanContinueTutorial: "Pots continuar amb un tutorial per aprendre a Fer servir {name} (MissKey) o tu pots estalviar i començar a fer-lo servir ja."
+  startTutorial: "Començar el tutorial"
+  skipAreYouSure: "Et vols saltar la configuració del perfil?"
+  laterAreYouSure: "Vols continuar la configuració del perfil més tard?"
 _initialTutorial:
+  launchTutorial: "Començar tutorial"
+  title: "Tutorial"
+  wellDone: "Ben fet!"
+  skipAreYouSure: "Sortir del tutorial?"
+  _landing:
+    title: "Benvingut al tutorial"
+    description: "Aquí aprendràs el bàsic per poder fer servir Misskey i les seves característiques."
+  _note:
+    title: "Què és una Nota?"
+    description: "Les publicacions a Misskey es diuen 'Notes'. Les Notes s'ordenen cronològicament a la línia de temps i s'actualitzen de forma automàtica."
+    reply: "Fes clic en aquest botó per contestar a un missatge. També és possible contestar a una contestació, continuant la conversació en forma de fil."
+    renote: "Pots compartir una Nota a la teva pròpia línia de temps. Inclús pots citar-les amb els teus comentaris."
+    reaction: "Pots afegir reaccions a les Notes. Entrarem més en detall a la pròxima pàgina."
+    menu: "Pots veure els detalls de les Notes, copiar enllaços i fer diferents accions."
   _reaction:
+    title: "Què són les Reaccions?"
+    description: "Es poden reaccionar a les Notes amb diferents emoticones. Les reaccions et permeten expressar matisos que hi són més enllà d'un simple m'agrada."
     letsTryReacting: "Es poden afegir reaccions fent clic al botó '+'. Prova reaccionant a aquesta nota!"
     reactToContinue: "Afegeix una reacció per continuar."
     reactNotification: "Rebràs notificacions en temps real quan un usuari reaccioni a les teves notes."
@@ -1294,6 +1320,7 @@ _serverSettings:
   shortName: "Nom curt"
   shortNameDescription: "Una abreviatura del nom de la instància que es poguí mostrar en cas que el nom oficial sigui massa llarg"
   fanoutTimelineDescription: "Quan es troba activat millora bastant el rendiment quan es recuperen les línies de temps i redueix la carrega de la base de dades. Com a contrapunt, l'ús de memòria de Redis es veurà incrementada. Considera d'estabilitat aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes de inestabilitat."
+  fanoutTimelineDbFallback: "Carregar de la base de dades"
 _achievements:
   _types:
     _notes100000:
