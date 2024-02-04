@@ -501,24 +501,6 @@ export interface Locale extends ILocale {
      */
     "reactions": string;
     /**
-     * このリアクションをつける権限がありません。
-     */
-    "reactionRejected": string;
-    "_reactionRejectedReason": {
-        /**
-         * 投稿者がセンシティブなリアクションを許可していないため、リアクションできません。
-         */
-        "isSensitive": string;
-        /**
-         * この絵文字はリモートから見られないように設定されているため、リアクションできません。
-         */
-        "localOnly": string;
-        /**
-         * この絵文字をリアクションとして使うにはロールが必要です。
-         */
-        "roleIdsThatCanBeUsedThisEmojiAsReaction": string;
-    };
-    /**
      * 絵文字ピッカー
      */
     "emojiPicker": string;
