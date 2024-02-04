@@ -109,6 +109,22 @@ export interface Locale extends ILocale {
      */
     "showGlobalTimeline": string;
     /**
+     * ホームタイムラインを表示する
+     */
+    "showHomeTimeline": string;
+    /**
+     * ローカルタイムラインを表示する
+     */
+    "showLocalTimeline": string;
+    /**
+     * ソーシャルタイムラインを表示する
+     */
+    "showSocialTimeline": string;
+    /**
+     * 上のバーのTLの名前を表示する
+     */
+    "topBarNameShown": string;
+    /**
      * {user}がリノート
      */
     "renotedBy": ParameterizedString<"user">;

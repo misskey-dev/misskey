@@ -5,7 +5,7 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, NotesRepository , DriveFilesRepository, MiDriveFile} from '@/models/_.js';
+import type { UsersRepository, NotesRepository, DriveFilesRepository, MiDriveFile } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
@@ -13,7 +13,6 @@ import { GetterService } from '@/server/api/GetterService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { ApiError } from '../../error.js';
-
 
 export const meta = {
 	tags: ['notes'],
@@ -35,11 +34,11 @@ export const meta = {
 			code: 'NO_SUCH_NOTE',
 			id: 'a6584e14-6e01-4ad3-b566-851e7bf0d474',
 		},
-      noSuchFile: {
-          message: 'Some files are not found.',
-          code: 'NO_SUCH_FILE',
-          id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
-      },
+		noSuchFile: {
+			message: 'Some files are not found.',
+			code: 'NO_SUCH_FILE',
+			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
+		},
 	},
 } as const;
 
@@ -49,8 +48,8 @@ export const paramDef = {
 		noteId: { type: 'string', format: 'misskey:id' },
 		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: 'public' },
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
-				type: 'string', format: 'misskey:id',
-			} },
+			type: 'string', format: 'misskey:id',
+		} },
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
@@ -132,34 +131,43 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-        let files: MiDriveFile[] = [];
-        const fileIds = ps.fileIds ?? null;
+			let files: MiDriveFile[] = [];
+			const fileIds = ps.fileIds ?? null;
 
-        if (fileIds != null) {
-            files = await this.driveFilesRepository.createQueryBuilder('file')
-                .where('file.userId = :userId AND file.id IN (:...fileIds)', {
-                    userId: me.id,
-                    fileIds,
-                })
-                .orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
-                .setParameters({ fileIds })
-                .getMany();
+			if (fileIds != null) {
+				files = await this.driveFilesRepository.createQueryBuilder('file')
+					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
+						userId: me.id,
+						fileIds,
+					})
+					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
+					.setParameters({ fileIds })
+					.getMany();
 
-            if (files.length !== fileIds.length) {
-                throw new ApiError(meta.errors.noSuchFile);
-            }
-        }
+				if (files.length !== fileIds.length) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			}
 
 			if (note.userId !== me.id) {
 				throw new ApiError(meta.errors.noSuchNote);
 			}
-
 
 			await this.notesRepository.update({ id: note.id }, {
 				updatedAt: new Date(),
 				cw: ps.cw,
 				text: ps.text,
 				fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
+				poll: ps.poll ? {
+					choices: ps.poll.choices,
+					multiple: ps.poll.multiple ?? false,
+					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+				} : undefined,
+				localOnly: ps.localOnly,
+				reactionAcceptance: ps.reactionAcceptance,
+				apMentions: ps.noExtractMentions ? [] : undefined,
+				apHashtags: ps.noExtractHashtags ? [] : undefined,
+				apEmojis: ps.noExtractEmojis ? [] : undefined,
 			});
 
 			this.globalEventService.publishNoteStream(note.id, 'updated', {

@@ -364,6 +364,22 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	topBarNameShown: {
+		where: 'device',
+		default: false,
+	},
+	showHomeTimeline: {
+		where: 'device',
+		default: true,
+	},
+	showLocalTimeline: {
+		where: 'device',
+		default: true,
+	},
+	showSocialTimeline: {
+		where: 'device',
+		default: true,
+	},
 	showGapBetweenNotesInTimeline: {
 		where: 'device',
 		default: false,
@@ -676,10 +692,10 @@ export const defaultStore = markRaw(new Storage('base', {
 			sfxVolume: 1,
 		},
 	},
-  hemisphere: {
+	hemisphere: {
 		where: 'device',
 		default: hemisphere as 'N' | 'S',
-  },
+	},
 	enableHorizontalSwipe: {
 		where: 'device',
 		default: true,

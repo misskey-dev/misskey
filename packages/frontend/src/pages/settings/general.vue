@@ -38,16 +38,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
-				<div class="_margin" v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value">
+				<div v-for="pinnedLists in defaultStore.reactiveState.pinnedUserLists.value" class="_margin">
 					{{ pinnedLists.name }}
-                    <MkButton danger @click="removePinnedList(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+					<MkButton danger @click="removePinnedList(pinnedLists.id,pinnedLists.name)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 				</div>
 				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedUserLists.value.length " @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
-                <MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{i18n.ts.all}}{{ i18n.ts.remove }}</MkButton>
-
+				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
 			</MkFolder>
 			<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline }}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
 			<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
+			<MkSwitch v-model="showHomeTimeline">{{ i18n.ts.showHomeTimeline }}</MkSwitch>
+			<MkSwitch v-model="showSocialTimeline">{{ i18n.ts.showSocialTimeline }}</MkSwitch>
+			<MkSwitch v-model="showLocalTimeline">{{ i18n.ts.showLocalTimeline }}</MkSwitch>
+			<MkSwitch v-model="topBarNameShown">{{ i18n.ts.topBarNameShown }}</MkSwitch>
 		</div>
 	</FormSection>
 	<MkFoldableSection :expanded="false" class="item">
@@ -350,7 +353,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import {signinRequired} from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -422,6 +425,10 @@ const enableonlyAndWithSave = computed(defaultStore.makeGetterSetter('onlyAndWit
 const enablehanntenn = computed(defaultStore.makeGetterSetter('enablehanntenn'));
 const showMediaTimeline = computed(defaultStore.makeGetterSetter('showMediaTimeline'));
 const showGlobalTimeline = computed(defaultStore.makeGetterSetter('showGlobalTimeline'));
+const showLocalTimeline = computed(defaultStore.makeGetterSetter('showLocalTimeline'));
+const showHomeTimeline = computed(defaultStore.makeGetterSetter('showHomeTimeline'));
+const showSocialTimeline = computed(defaultStore.makeGetterSetter('showSocialTimeline'));
+const topBarNameShown = computed(defaultStore.makeGetterSetter('topBarNameShown'));
 const showVisibilityColor = computed(defaultStore.makeGetterSetter('showVisibilityColor'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
@@ -449,8 +456,8 @@ const remoteLocalTimelineEnable3 = computed(defaultStore.makeGetterSetter('remot
 const remoteLocalTimelineEnable4 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable4'));
 const remoteLocalTimelineEnable5 = computed(defaultStore.makeGetterSetter('remoteLocalTimelineEnable5'));
 const $i = signinRequired();
-const pinnedMax = $i.policies?.listPinnedLimit;
-const maxLocalTimeline = $i.policies?.localTimelineAnyLimit;
+const pinnedMax = $i.policies.listPinnedLimit;
+const maxLocalTimeline = $i.policies.localTimelineAnyLimit;
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
@@ -518,6 +525,10 @@ watch([
 	showVisibilityColor,
 	enableonlyAndWithSave,
 	showGlobalTimeline,
+	showSocialTimeline,
+	showLocalTimeline,
+	showHomeTimeline,
+	topBarNameShown,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
 ], async () => {
@@ -611,26 +622,24 @@ async function setPinnedList() {
 	}
 }
 
-async function removePinnedList(id,name) {
+async function removePinnedList(id, name) {
+	if (!id) return;
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.removeAreYouSure({ x: name ?? id }),
+	});
+	if (canceled) return;
 
-    if (!id) return;
-    const {canceled} = await os.confirm({
-        type: 'warning',
-        text: i18n.tsx.removeAreYouSure({x: name ?? id }),
-    });
-    if (canceled) return;
+	if (id === 'all') {
+		if (canceled) return;
 
-    if (id === 'all') {
+		defaultStore.set('pinnedUserLists', []);
+		return;
+	}
 
-        if (canceled) return;
-
-        defaultStore.set('pinnedUserLists', []);
-        return;
-    }
-
-    const pinnedLists = defaultStore.state.pinnedUserLists;
-    const newPinnedLists = pinnedLists.filter(pinnedList => pinnedList.id !== id);
-    defaultStore.set('pinnedUserLists', newPinnedLists);
+	const pinnedLists = defaultStore.state.pinnedUserLists;
+	const newPinnedLists = pinnedLists.filter(pinnedList => pinnedList.id !== id);
+	defaultStore.set('pinnedUserLists', newPinnedLists);
 }
 
 let smashCount = 0;

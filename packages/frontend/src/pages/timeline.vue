@@ -55,7 +55,7 @@ import { miLocalStorage } from '@/local-storage.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
+const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable && defaultStore.state.showLocalTimeline) || ($i != null && $i.policies.ltlAvailable && defaultStore.state.showLocalTimeline);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable && defaultStore.state.showGlobalTimeline) || ($i != null && $i.policies.gtlAvailable && defaultStore.state.showGlobalTimeline);
 const keymap = {
 	't': focus,
@@ -110,6 +110,8 @@ const remoteLocalTimelineEnable2 = ref(defaultStore.state.remoteLocalTimelineEna
 const remoteLocalTimelineEnable3 = ref(defaultStore.state.remoteLocalTimelineEnable3);
 const remoteLocalTimelineEnable4 = ref(defaultStore.state.remoteLocalTimelineEnable4);
 const remoteLocalTimelineEnable5 = ref(defaultStore.state.remoteLocalTimelineEnable5);
+const showHomeTimeline = ref(defaultStore.state.showHomeTimeline);
+const showSocialTimeline = ref(defaultStore.state.showSocialTimeline);
 watch(src, () => {
 	queue.value = 0;
 });
@@ -282,57 +284,57 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	key: 'list:' + l.id,
 	title: l.name,
 	icon: 'ti ti-star',
-	iconOnly: false,
-}))), {
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
+}))), ...(showHomeTimeline.value ? [{
 	key: 'home',
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',
-	iconOnly: false,
-}, ...(isLocalTimelineAvailable ? [{
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
+}] : []), ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
-	iconOnly: false,
-}, ...(isShowMediaTimeline.value ? [{
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
+}] : []), ...(isShowMediaTimeline.value ? [{
 	key: 'media',
 	title: i18n.ts._timelines.media,
 	icon: 'ti ti-photo',
-	iconOnly: false,
-}] : []), {
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
+}] : []), ...(showSocialTimeline.value ? [{
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-universe',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), ...(remoteLocalTimelineEnable1.value ? [{
 	key: 'custom-timeline-1',
 	title: defaultStore.state.remoteLocalTimelineName1,
 	icon: 'ti ti-plus',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), ...(remoteLocalTimelineEnable2.value ? [{
 	key: 'custom-timeline-2',
 	title: defaultStore.state.remoteLocalTimelineName2,
 	icon: 'ti ti-plus',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), ...(remoteLocalTimelineEnable3.value ? [{
 	key: 'custom-timeline-3',
 	title: defaultStore.state.remoteLocalTimelineName3,
 	icon: 'ti ti-plus',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), ...(remoteLocalTimelineEnable4.value ? [{
 	key: 'custom-timeline-4',
 	title: defaultStore.state.remoteLocalTimelineName4,
 	icon: 'ti ti-plus',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), ...(remoteLocalTimelineEnable5.value ? [{
 	key: 'custom-timeline-5',
 	title: defaultStore.state.remoteLocalTimelineName5,
 	icon: 'ti ti-plus',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-whirl',
-	iconOnly: false,
+	iconOnly: defaultStore.state.topBarNameShown ?? false,
 }] : []), {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
