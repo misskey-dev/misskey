@@ -53,7 +53,6 @@
 import {
 	computed,
 	defineAsyncComponent,
-	getCurrentInstance,
 	nextTick,
 	onMounted,
 	onUnmounted,
@@ -101,7 +100,7 @@ const needsContentCentering = computed(() => {
 	}
 });
 
-watch(() => [cell, cell.value.value], () => {
+watch(() => [cell.value.value], () => {
 	// 中身がセットされた直後はサイズが分からないので、次のタイミングで更新する
 	nextTick(emitContentSizeChanged);
 }, { immediate: true });
@@ -110,10 +109,6 @@ watch(() => cell.value.selected, () => {
 	if (cell.value.selected) {
 		rootEl.value?.focus();
 	}
-});
-
-watch(() => cell.value.value, (newValue) => {
-	emitValueChange(newValue);
 });
 
 function onCellDoubleClick(ev: MouseEvent) {

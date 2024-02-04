@@ -12,13 +12,13 @@
 	<div
 		style="overflow-y: scroll; padding-top: 8px; padding-bottom: 8px;"
 	>
-		<MkGrid :data="convertedGridItems" :columnSettings="columnSettings"/>
+		<MkGrid :data="gridItems" :columnSettings="columnSettings"/>
 	</div>
 
 	<div class="_gaps">
 		<div :class="$style.pages">
-			<button>&lt;</button>
-			<button>&gt;</button>
+			<button @click="onLatestButtonClicked">&lt;</button>
+			<button @click="onOldestButtonClicked">&gt;</button>
 		</div>
 
 		<div :class="$style.buttons">
@@ -66,12 +66,21 @@ const { customEmojis } = toRefs(props);
 const query = ref('');
 const gridItems = ref<GridItem[]>([]);
 
-const convertedGridItems = computed(() => gridItems.value.map(it => it as Record<string, any>));
+const latest = computed(() => customEmojis.value.length > 0 ? customEmojis.value[0]?.id : undefined);
+const oldest = computed(() => customEmojis.value.length > 0 ? customEmojis.value[customEmojis.value.length - 1]?.id : undefined);
 
 watch(customEmojis, refreshGridItems);
 
 function onSearchButtonClicked() {
 	emit('operation:search', query.value, undefined, undefined);
+}
+
+async function onLatestButtonClicked() {
+	emit('operation:search', query.value, latest.value, undefined);
+}
+
+async function onOldestButtonClicked() {
+	emit('operation:search', query.value, undefined, oldest.value);
 }
 
 function refreshGridItems() {

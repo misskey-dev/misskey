@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, toRefs, watch } from 'vue';
 import { DataSource, GridEventEmitter, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
@@ -649,9 +649,15 @@ function onChangeCellValue(sender: GridCell, newValue: CellValue) {
 }
 
 function onChangeCellContentSize(sender: GridCell, contentSize: Size) {
-	cells.value[sender.address.row].cells[sender.address.col].contentSize = contentSize;
-	if (sender.column.setting.width === 'auto') {
-		calcLargestCellWidth(sender.column);
+	const _cells = cells.value;
+	if (_cells.length > sender.address.row && _cells[sender.address.row].cells.length > sender.address.col) {
+		const currentSize = _cells[sender.address.row].cells[sender.address.col].contentSize;
+		if (currentSize.width !== contentSize.width || currentSize.height !== contentSize.height) {
+			_cells[sender.address.row].cells[sender.address.col].contentSize = contentSize;
+			if (sender.column.setting.width === 'auto') {
+				calcLargestCellWidth(sender.column);
+			}
+		}
 	}
 }
 
@@ -686,9 +692,12 @@ function onHeaderCellChangeWidth(sender: GridColumn, width: string) {
 function onHeaderCellChangeContentSize(sender: GridColumn, newSize: Size) {
 	switch (state.value) {
 		case 'normal': {
-			columns.value[sender.index].contentSize = newSize;
-			if (sender.setting.width === 'auto') {
-				calcLargestCellWidth(sender);
+			const currentSize = columns.value[sender.index].contentSize;
+			if (currentSize.width !== newSize.width || currentSize.height !== newSize.height) {
+				columns.value[sender.index].contentSize = newSize;
+				if (sender.setting.width === 'auto') {
+					calcLargestCellWidth(sender);
+				}
 			}
 			break;
 		}
@@ -924,7 +933,7 @@ function refreshColumnsSetting() {
 
 function refreshData() {
 	if (_DEV_) {
-		console.log('[grid][refresh-data]');
+		console.log('[grid][refresh-data][begin]');
 	}
 
 	const _data: DataSource[] = data.value;
@@ -954,6 +963,10 @@ function refreshData() {
 	rows.value = _rows;
 	columns.value = _cols;
 	cells.value = _cells;
+
+	if (_DEV_) {
+		console.log('[grid][refresh-data][end]');
+	}
 }
 
 /**
@@ -967,51 +980,34 @@ function refreshData() {
  * そこで、新しい値とセルが持つ値を突き合わせ、変更があった場合のみ値を更新し、セルそのものは使いまわしつつ値を最新化する。
  */
 function patchData(newItems: DataSource[]) {
-	const gridRows = [...cells.value];
-	if (gridRows.length > newItems.length) {
-		// 行数が減った場合
+	if (_DEV_) {
+		console.log(`[grid][patch-data][begin] new:${newItems.length} old:${cells.value.length}`);
+	}
 
+	const _cells = [...cells.value];
+	const _rows = [...rows.value];
+	const _cols = columns.value;
+
+	if (_cells.length != newItems.length) {
 		// 状態が壊れるかもしれないので選択を全解除
 		unSelectionRangeAll();
 
-		const diff = gridRows
-			.map((it, idx) => ({ origin: it.origin, idx }))
-			.filter(it => !newItems.includes(it.origin))
-			.map(it => it.idx);
-		const newRows = rows.value.filter((_, idx) => !diff.includes(idx));
-		const newCells = gridRows.filter((_, idx) => !diff.includes(idx));
-
-		// 行数が減ったので再度採番
-		for (let rowIdx = 0; rowIdx < newRows.length; rowIdx++) {
-			newRows[rowIdx].index = rowIdx;
-			for (const cell of newCells[rowIdx].cells) {
-				cell.address.row = rowIdx;
-			}
-		}
-
-		rows.value = newRows;
-		cells.value = newCells;
-	} else if (gridRows.length < newItems.length) {
-		// 行数が増えた場合
-
-		// 状態が壊れるかもしれないので選択を全解除
-		unSelectionRangeAll();
-
-		const oldOrigins = gridRows.map(it => it.origin);
+		const oldOrigins = _cells.map(it => it.origin);
 		const newRows = Array.of<GridRow>();
 		const newCells = Array.of<RowHolder>();
+
 		for (const it of newItems) {
 			const idx = oldOrigins.indexOf(it);
 			if (idx >= 0) {
 				// 既存の行
-				newRows.push(rows.value[idx]);
-				newCells.push(gridRows[idx]);
+				newRows.push(_rows[idx]);
+				newCells.push(_cells[idx]);
 			} else {
 				// 新規の行
 				const newRow = createRow(newRows.length);
 				newRows.push(newRow);
 				newCells.push({
-					cells: columns.value.map(col => {
+					cells: _cols.map(col => {
 						const cell = createCell(col, newRow, it[col.setting.bindTo]);
 						cell.violation = cellValidation(cell, cell.value);
 						return cell;
@@ -1021,7 +1017,7 @@ function patchData(newItems: DataSource[]) {
 			}
 		}
 
-		// 行数が増えたので再度採番
+		// 行数が変わっているので再度番地を振り直す
 		for (let rowIdx = 0; rowIdx < newCells.length; rowIdx++) {
 			newRows[rowIdx].index = rowIdx;
 			for (const cell of newCells[rowIdx].cells) {
@@ -1033,9 +1029,8 @@ function patchData(newItems: DataSource[]) {
 		cells.value = newCells;
 	} else {
 		// 行数が変わらない場合
-		const _cols = columns.value;
-		for (let rowIdx = 0; rowIdx < gridRows.length; rowIdx++) {
-			const oldCells = gridRows[rowIdx].cells;
+		for (let rowIdx = 0; rowIdx < _cells.length; rowIdx++) {
+			const oldCells = _cells[rowIdx].cells;
 			const newItem = newItems[rowIdx];
 			for (let colIdx = 0; colIdx < oldCells.length; colIdx++) {
 				const _col = _cols[colIdx];
@@ -1048,6 +1043,16 @@ function patchData(newItems: DataSource[]) {
 				}
 			}
 		}
+	}
+
+	// セル値が書き換わっており、バリデーションの結果も変わっているので外部に通知する必要がある
+	emitGridEvent({
+		type: 'cell-validation',
+		all: cells.value.flatMap(it => it.cells).map(it => it.violation).filter(it => !it.valid),
+	});
+
+	if (_DEV_) {
+		console.log('[grid][patch-data][end]');
 	}
 }
 

@@ -32,6 +32,7 @@ import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os.js';
 import MkTab from '@/components/MkTab.vue';
 import XListComponent from '@/pages/admin/custom-emojis-grid.list.vue';
 import XRegisterComponent from '@/pages/admin/custom-emojis-grid.register.vue';
@@ -44,12 +45,19 @@ const modeTab = ref<PageMode>('list');
 const query = ref<string>();
 
 async function refreshCustomEmojis(query?: string, sinceId?: string, untilId?: string) {
-	customEmojis.value = await misskeyApi('admin/emoji/list', {
+	const emojis = await misskeyApi('admin/emoji/list', {
 		limit: 100,
 		query,
 		sinceId,
 		untilId,
 	});
+
+	if (sinceId) {
+		// 通常はID降順だが、sinceIdを設定すると昇順での並び替えとなるので、逆順にする必要がある
+		emojis.reverse();
+	}
+
+	customEmojis.value = emojis;
 }
 
 async function onOperationSearch(q: string, sinceId?: string, untilId?: string) {
