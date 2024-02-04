@@ -1353,6 +1353,21 @@ _achievements:
     _notes500:
       title: "Cobert de notes"
       description: "Publica 500 notes"
+    _notes1000:
+      title: "Un piló de notes"
+      description: "Publica 1 000 notes"
+    _notes5000:
+      title: "Desbordament de notes"
+      description: "Publica més de 5 000 notes"
+    _notes10000:
+      title: "Supernota"
+      description: "Publica 10 000 notes"
+    _notes20000:
+      title: "Necessito... Més... Notes!"
+      description: "Publica 20 000 notes"
+    _notes30000:
+      title: "Notes notes notes!"
+      description: "Publica 30 000 notes"
     _notes100000:
       flavor: "Segur que tens moltes coses a dir?"
     _login3:
