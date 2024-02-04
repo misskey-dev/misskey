@@ -780,7 +780,6 @@ function emitCellValue(sender: GridCell | CellAddress, newValue: CellValue) {
 		all: cells.value.flatMap(it => it.cells).map(it => it.violation),
 	});
 
-	cell.value = newValue;
 	emitGridEvent({
 		type: 'cell-value-change',
 		column: cell.column,
