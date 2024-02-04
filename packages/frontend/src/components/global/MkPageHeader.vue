@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
 			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
-		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft"/>
+		<div v-else-if="!thin_ && narrow && !hideTitle"/>
 
 		<template v-if="metadata">
 			<div v-if="!hideTitle && !hide" :class="$style.titleContainer" @click="top">
@@ -170,7 +170,9 @@ onUnmounted(() => {
 	&.slim {
 		text-align: center;
 		gap: 0;
-
+        .buttonsRight {
+          margin-left: auto;
+        }
 		.tabs:first-child {
 			margin-left: 0;
 		}

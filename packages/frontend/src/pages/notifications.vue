@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs" hide="true" :actions="headerActions"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs" :hide="true" :actions="headerActions"/></template>
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'all'" key="all">
@@ -73,7 +73,7 @@ const headerActions = computed(() => [{
 	icon: 'ti ti-filter',
 	highlighted: includeTypes.value != null,
 	handler: setFilter,
-} ].filter(x => x !== undefined));
+}].filter(x => x !== undefined));
 misskeyApi('notifications/mark-all-as-read');
 const headerTabs = computed(() => [{
 	key: 'all',
