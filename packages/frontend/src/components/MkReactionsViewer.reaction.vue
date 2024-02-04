@@ -55,8 +55,8 @@ const emoji = computed(() => isCustomEmoji.value ? customEmojis.value.find(emoji
 
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i
-	&& (emoji.value && checkReactionPermissions($i, props.note, emoji.value))
-	|| !isCustomEmoji.value
+			&& (emoji.value && checkReactionPermissions($i, props.note, emoji.value))
+			|| !isCustomEmoji.value;
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
