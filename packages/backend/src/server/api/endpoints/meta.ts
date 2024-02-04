@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
+import { LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
 import type { AdsRepository } from '@/models/_.js';
