@@ -141,7 +141,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		action: () => { rename(file); },
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
+		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
 		action: () => { toggleSensitive(file); },
 	}, {
 		text: i18n.ts.describeFile,
