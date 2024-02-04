@@ -17,7 +17,7 @@ export type APIError = {
 	info: Record<string, any>;
 };
 
-export function isAPIError(reason: any): reason is APIError {
+export function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError {
 	return reason[MK_API_ERROR] === true;
 }
 
@@ -29,7 +29,7 @@ export type FetchLike = (input: string, init?: {
 	headers: { [key in string]: string }
 }) => Promise<{
 	status: number;
-	json(): Promise<any>;
+	json(): Promise<(number | string | object | unknown[]) | {error: {}}>;
 }>;
 
 export class APIClient {
@@ -67,14 +67,15 @@ export class APIClient {
 				credentials: 'omit',
 				cache: 'no-cache',
 			}).then(async (res) => {
-				const body = res.status === 204 ? null : await res.json();
+				const status = res.status;
+				const body = status === 204 ? null : await res.json();
 
-				if (res.status === 200 || res.status === 204) {
-					resolve(body);
+				if (status === 200 || status === 204) {
+					resolve(body as SwitchCaseResponseType<E, P>);
 				} else {
 					reject({
 						[MK_API_ERROR]: true,
-						...body.error,
+						...(body! as { error: {} }).error,
 					});
 				}
 			}).catch(reject);

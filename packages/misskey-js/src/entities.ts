@@ -10,7 +10,7 @@ export type DateString = string;
 export type PageEvent = {
 	pageId: Page['id'];
 	event: string;
-	var: any;
+	var: unknown;
 	userId: User['id'];
 	user: User;
 };

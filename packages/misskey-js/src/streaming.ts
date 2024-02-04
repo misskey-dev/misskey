@@ -15,7 +15,7 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 		.join('&');
 }
 
-type AnyOf<T extends Record<any, any>> = T[keyof T];
+type AnyOf<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
 type StreamEvents = {
 	_connected_: void;
@@ -34,7 +34,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
-		WebSocket?: any;
+		WebSocket?: unknown;
 	}) {
 		super();
 
