@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiReversiGame, ReversiGamesRepository } from '@/models/_.js';
+import type { MiReversiGame } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ReversiService } from '@/core/ReversiService.js';
@@ -19,7 +19,6 @@ class ReversiGameChannel extends Channel {
 
 	constructor(
 		private reversiService: ReversiService,
-		private reversiGamesRepository: ReversiGamesRepository,
 		private reversiGameEntityService: ReversiGameEntityService,
 
 		id: string,
@@ -32,11 +31,6 @@ class ReversiGameChannel extends Channel {
 	public async init(params: any) {
 		this.gameId = params.gameId as string;
 
-		const game = await this.reversiGamesRepository.findOneBy({
-			id: this.gameId,
-		});
-		if (game == null) return;
-
 		this.subscriber.on(`reversiGameStream:${this.gameId}`, this.send);
 	}
 
@@ -45,8 +39,9 @@ class ReversiGameChannel extends Channel {
 		switch (type) {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
+			case 'cancel': this.cancelGame(); break;
 			case 'putStone': this.putStone(body.pos, body.id); break;
-			case 'syncState': this.syncState(body.crc32); break;
+			case 'claimTimeIsUp': this.claimTimeIsUp(); break;
 		}
 	}
 
@@ -54,45 +49,35 @@ class ReversiGameChannel extends Channel {
 	private async updateSettings(key: string, value: any) {
 		if (this.user == null) return;
 
-		// TODO: キャッシュしたい
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		this.reversiService.updateSettings(game, this.user, key, value);
+		this.reversiService.updateSettings(this.gameId!, this.user, key, value);
 	}
 
 	@bindThis
 	private async ready(ready: boolean) {
 		if (this.user == null) return;
 
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
+		this.reversiService.gameReady(this.gameId!, this.user, ready);
+	}
 
-		this.reversiService.gameReady(game, this.user, ready);
+	@bindThis
+	private async cancelGame() {
+		if (this.user == null) return;
+
+		this.reversiService.cancelGame(this.gameId!, this.user);
 	}
 
 	@bindThis
 	private async putStone(pos: number, id: string) {
 		if (this.user == null) return;
 
-		// TODO: キャッシュしたい
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
-
-		this.reversiService.putStoneToGame(game, this.user, pos, id);
+		this.reversiService.putStoneToGame(this.gameId!, this.user, pos, id);
 	}
 
 	@bindThis
-	private async syncState(crc32: string | number) {
-		// TODO: キャッシュしたい
-		const game = await this.reversiGamesRepository.findOneBy({ id: this.gameId! });
-		if (game == null) throw new Error('game not found');
+	private async claimTimeIsUp() {
+		if (this.user == null) return;
 
-		if (!game.isStarted) return;
-
-		if (crc32.toString() !== game.crc32) {
-			this.send('rescue', await this.reversiGameEntityService.packDetail(game, this.user));
-		}
+		this.reversiService.checkTimeout(this.gameId!);
 	}
 
 	@bindThis
@@ -109,9 +94,6 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 	public readonly kind = ReversiGameChannel.kind;
 
 	constructor(
-		@Inject(DI.reversiGamesRepository)
-		private reversiGamesRepository: ReversiGamesRepository,
-
 		private reversiService: ReversiService,
 		private reversiGameEntityService: ReversiGameEntityService,
 	) {
@@ -121,7 +103,6 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 	public create(id: string, connection: Channel['connection']): ReversiGameChannel {
 		return new ReversiGameChannel(
 			this.reversiService,
-			this.reversiGamesRepository,
 			this.reversiGameEntityService,
 			id,
 			connection,

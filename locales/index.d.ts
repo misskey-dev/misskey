@@ -537,6 +537,10 @@ export interface Locale extends ILocale {
      */
     "attachCancel": string;
     /**
+     * ファイルを削除
+     */
+    "deleteFile": string;
+    /**
      * センシティブとして設定
      */
     "markAsSensitive": string;
@@ -4820,6 +4824,18 @@ export interface Locale extends ILocale {
      * タイトルへ
      */
     "backToTitle": string;
+    /**
+     * お住まいの地域
+     */
+    "hemisphere": string;
+    /**
+     * センシティブなファイルを含むノートを表示
+     */
+    "withSensitive": string;
+    /**
+     * {name}のセンシティブなファイルを含む投稿
+     */
+    "userSaysSomethingSensitive": ParameterizedString<"name">;
     /**
      * スワイプしてタブを切り替える
      */
@@ -9408,6 +9424,20 @@ export interface Locale extends ILocale {
             "description": string;
         };
     };
+    "_hemisphere": {
+        /**
+         * 北半球
+         */
+        "N": string;
+        /**
+         * 南半球
+         */
+        "S": string;
+        /**
+         * 一部のクライアント設定で、季節を判定するために使用します。
+         */
+        "caption": string;
+    };
     "_reversi": {
         /**
          * リバーシ
@@ -9482,6 +9512,10 @@ export interface Locale extends ILocale {
          */
         "surrendered": string;
         /**
+         * 時間切れ
+         */
+        "timeout": string;
+        /**
          * 引き分け
          */
         "drawn": string;
@@ -9534,6 +9568,10 @@ export interface Locale extends ILocale {
          */
         "canPutEverywhere": string;
         /**
+         * 1ターンの時間制限
+         */
+        "timeLimitForEachTurn": string;
+        /**
          * フリーマッチ
          */
         "freeMatch": string;
@@ -9541,6 +9579,40 @@ export interface Locale extends ILocale {
          * 対戦相手を探しています
          */
         "lookingForPlayer": string;
+        /**
+         * 対局がキャンセルされました
+         */
+        "gameCanceled": string;
+        /**
+         * 開始時に対局をタイムラインに投稿
+         */
+        "shareToTlTheGameWhenStart": string;
+        /**
+         * 対局を開始しました！ #MisskeyReversi
+         */
+        "iStartedAGame": string;
+        /**
+         * 相手が設定を変更しました
+         */
+        "opponentHasSettingsChanged": string;
+        /**
+         * 変則許可 (完全フリー)
+         */
+        "allowIrregularRules": string;
+        /**
+         * 変則なし
+         */
+        "disallowIrregularRules": string;
+    };
+    "_offlineScreen": {
+        /**
+         * オフライン - サーバーに接続できません
+         */
+        "title": string;
+        /**
+         * サーバーに接続できません
+         */
+        "header": string;
     };
 }
 declare const locales: {

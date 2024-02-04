@@ -130,6 +130,7 @@ overwriteFromPinnedEmojis: "全般設定から上書きする"
 reactionSettingDescription2: "ドラッグして並び替え、クリックして削除、＋を押して追加します。"
 rememberNoteVisibility: "公開範囲を記憶する"
 attachCancel: "添付取り消し"
+deleteFile: "ファイルを削除"
 markAsSensitive: "センシティブとして設定"
 unmarkAsSensitive: "センシティブを解除する"
 enterFileName: "ファイル名を入力"
@@ -1201,6 +1202,9 @@ replaying: "リプレイ中"
 ranking: "ランキング"
 lastNDays: "直近{n}日"
 backToTitle: "タイトルへ"
+hemisphere: "お住まいの地域"
+withSensitive: "センシティブなファイルを含むノートを表示"
+userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
 
 _bubbleGame:
@@ -2507,6 +2511,11 @@ _dataSaver:
     title: "コードハイライト"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
 
+_hemisphere:
+  N: "北半球"
+  S: "南半球"
+  caption: "一部のクライアント設定で、季節を判定するために使用します。"
+
 _reversi:
   reversi: "リバーシ"
   gameSettings: "対局の設定"
@@ -2526,6 +2535,7 @@ _reversi:
   pastTurnOf: "{name}のターン"
   surrender: "投了"
   surrendered: "投了により"
+  timeout: "時間切れ"
   drawn: "引き分け"
   won: "{name}の勝ち"
   black: "黒"
@@ -2539,5 +2549,17 @@ _reversi:
   isLlotheo: "石の少ない方が勝ち(ロセオ)"
   loopedMap: "ループマップ"
   canPutEverywhere: "どこでも置けるモード"
+  timeLimitForEachTurn: "1ターンの時間制限"
   freeMatch: "フリーマッチ"
   lookingForPlayer: "対戦相手を探しています"
+  gameCanceled: "対局がキャンセルされました"
+  shareToTlTheGameWhenStart: "開始時に対局をタイムラインに投稿"
+  iStartedAGame: "対局を開始しました！ #MisskeyReversi"
+  opponentHasSettingsChanged: "相手が設定を変更しました"
+  allowIrregularRules: "変則許可 (完全フリー)"
+  disallowIrregularRules: "変則なし"
+
+_offlineScreen:
+  title: "オフライン - サーバーに接続できません"
+  header: "サーバーに接続できません"
+

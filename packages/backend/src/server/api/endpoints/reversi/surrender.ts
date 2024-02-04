@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			await this.reversiService.surrender(game, me);
+			await this.reversiService.surrender(game.id, me);
 		});
 	}
 }
