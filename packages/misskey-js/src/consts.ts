@@ -283,7 +283,7 @@ export type ModerationLogPayloads = {
 	};
 	createAd: {
 		adId: string;
-		ad: any;
+		ad: object;
 	};
 	updateAd: {
 		adId: string;
