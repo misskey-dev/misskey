@@ -74,9 +74,16 @@ function fetchUser(): void {
 	});
 }
 
-watch(() => props.acct, fetchUser, {
-	immediate: true,
-});
+watch(
+	[() => props.acct, () => $i],
+	() => {
+		fetchUser();
+	},
+	{
+		immediate: true,
+		deep: true,
+	},
+);
 
 const headerActions = computed(() => []);
 
