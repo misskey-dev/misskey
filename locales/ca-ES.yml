@@ -1321,8 +1321,38 @@ _serverSettings:
   shortNameDescription: "Una abreviatura del nom de la instància que es poguí mostrar en cas que el nom oficial sigui massa llarg"
   fanoutTimelineDescription: "Quan es troba activat millora bastant el rendiment quan es recuperen les línies de temps i redueix la carrega de la base de dades. Com a contrapunt, l'ús de memòria de Redis es veurà incrementada. Considera d'estabilitat aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes de inestabilitat."
   fanoutTimelineDbFallback: "Carregar de la base de dades"
+  fanoutTimelineDbFallbackDescription: "Quan s'activa, la línia de temps fa servir la base de dades per consultes adicionals si la línia de temps no es troba a la memòria cau. Si és desactiva la càrrega del servidor és veure reduïda, però també és reduirà el nombre de línies de temps que és poden obtenir."
+_accountMigration:
+  moveFrom: "Migrar un altre compte a aquest"
+  moveFromSub: "Crear un àlies per un altre compte"
+  moveFromLabel: "Compte original #{n}"
+  moveFromDescription: "Has de crear un àlies del compte que vols migrar en aquest compte.\nFes servir aquest format per posar el compte que vols migrar: @nomusuari@servidor.exemple.com\nPer esborrar l'àlies deixa el camp en blanc (no és recomanable de fer)"
+  moveTo: "Migrar aquest compte a un altre"
+  moveToLabel: "Compte al qual es vol migrar:"
+  moveCannotBeUndone: "Les migracions dels comptes no es poden desfer."
+  moveAccountDescription: "Això migrarà la teva compte a un altre diferent.\n　・Els seguidors d'aquest compte és passaran al compte nou de forma automàtica\n　・Es deixaran de seguir a tots els usuaris que es segueixen actualment en aquest compte\n　・No es poden crear notes noves, etc. en aquest compte\n\nSi bé la migració de seguidors es automàtica, has de preparar alguns pasos manualment per migrar la llista d'usuaris que segueixes. Per fer això has d'exportar els seguidors que després importaraes al compte nou mitjançant el menú de configuració. El mateix procediment s'ha de seguir per less teves llistes i els teus usuaris silenciats i bloquejats.\n\n(Aquesta explicació s'aplica a Misskey v13.12.0 i posteriors. Altres aplicacions, com Mastodon, poden funcionar diferent.)"
+  moveAccountHowTo: "Per fer la migració, primer has de crear un àlies per aquest compte al compte al qual vols migrar.\nDesprés de crear l'àlies, introdueix el compte al qual vols migrar amb el format següent: @nomusuari@servidor.exemple.com"
+  startMigration: "Migrar"
+  migrationConfirm: "Vols migrar aquest compte a {account}? Una vegada comenci la migració no es podrà parar O fer marxa enrere i no podràs tornar a fer servir aquest compte mai més."
+  movedAndCannotBeUndone: "Aquest compte ha migrat.\nLes migracions no es poden desfer."
+  postMigrationNote: "Aquest compte deixarà de seguir tots els comptes que segueix 24 hores després de germinar la migració.\nEl nombre de seguidors i seguits passarà a ser de zero. Per evitar que els teus seguidors no puguin veure les publicacions marcades com a només seguidors continuaren seguint aquest compte."
+  movedTo: "Nou compte:"
 _achievements:
+  earnedAt: "Desbloquejat el"
   _types:
+    _notes1:
+      title: "Aquí, configurant el meu msky"
+      description: "Publica la teva primera Nota"
+      flavor: "Passa-t'ho bé fent servir Miskey!"
+    _notes10:
+      title: "Algunes notes"
+      description: "Publica 10 notes"
+    _notes100:
+      title: "Un piló de notes"
+      description: "Publica 100 notes"
+    _notes500:
+      title: "Cobert de notes"
+      description: "Publica 500 notes"
     _notes100000:
       flavor: "Segur que tens moltes coses a dir?"
     _login3:
@@ -1396,6 +1426,25 @@ _achievements:
       description: "És la primera vegada que et segueixo"
     _following10:
       title: "Segueix-me... Segueix-me..."
+    _iLoveMisskey:
+      description: "Publica \"I ❤ #Misskey\""
+      flavor: "L'equip de desenvolupament de Misskey agraeix el vostre suport!"
+    _foundTreasure:
+      title: "A la Recerca del Tresor"
+      description: "Has trobat el tresor amagat"
+    _client30min:
+      title: "Parem una estona"
+      description: "Mantingues obert Misskey per 30 minuts"
+    _client60min:
+      title: "A totes amb Misskey"
+      description: "Mantingues Misskey obert per 60 minuts"
+    _noteDeletedWithin1min:
+      title: "No et preocupis"
+      description: "Esborra una nota al minut de publicar-la"
+    _postedAtLateNight:
+      title: "Nocturn"
+      description: "Publica una nota a altes hores de la nit "
+      flavor: "És hora d'anar a dormir."
     _open3windows:
       title: "Multi finestres"
       description: "I va obrir més de tres finestres"
