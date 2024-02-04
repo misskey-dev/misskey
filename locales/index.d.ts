@@ -4585,6 +4585,10 @@ export interface Locale extends ILocale {
      */
     "renotes": string;
     /**
+     * 引用
+     */
+    "quotes": string;
+    /**
      * 返信を見る
      */
     "loadReplies": string;

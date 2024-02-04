@@ -143,13 +143,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'">
-			<div v-if="!repliesLoaded" style="padding: 16px">
-				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
-			</div>
-			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+			<MkPagination :pagination="repliesPagination" :disableAutoLoad="true">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
@@ -176,6 +178,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserCardMini :user="item.user" :withChart="false"/>
 						</MkA>
 					</div>
+				</template>
+			</MkPagination>
+		</div>
+		<div v-if="tab === 'quotes'" :class="$style.tab_quotes" :disableAutoLoad="true">
+			<MkPagination :pagination="quotesPagination">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
 				</template>
 			</MkPagination>
 		</div>
@@ -302,6 +311,14 @@ provide('react', (reaction: string) => {
 const tab = ref('replies');
 const reactionTabType = ref<string | null>(null);
 
+const repliesPagination = computed<Paging>(() => ({
+	endpoint: 'notes/replies',
+	limit: 10,
+	params: {
+		noteId: appearNote.value.id,
+	},
+}));
+
 const renotesPagination = computed<Paging>(() => ({
 	endpoint: 'notes/renotes',
 	limit: 10,
@@ -316,6 +333,14 @@ const reactionsPagination = computed<Paging>(() => ({
 	params: {
 		noteId: appearNote.value.id,
 		type: reactionTabType.value,
+	},
+}));
+
+const quotesPagination = computed(() => ({
+	endpoint: 'notes/quotes',
+	limit: 10,
+	params: {
+		noteId: appearNote.value.id,
 	},
 }));
 
@@ -465,18 +490,6 @@ function focus() {
 
 function blur() {
 	rootEl.value?.blur();
-}
-
-const repliesLoaded = ref(false);
-
-function loadReplies() {
-	repliesLoaded.value = true;
-	misskeyApi('notes/children', {
-		noteId: appearNote.value.id,
-		limit: 30,
-	}).then(res => {
-		replies.value = res;
-	});
 }
 
 const conversationLoaded = ref(false);
@@ -716,6 +729,10 @@ function loadConversation() {
 }
 
 .tab_reactions {
+	padding: 16px;
+}
+
+.tab_quotes {
 	padding: 16px;
 }
 
