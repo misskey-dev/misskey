@@ -33,6 +33,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
+import { customEmojis } from '@/custom-emojis.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -49,24 +50,18 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+const isCustomEmoji = computed(() => props.reaction.includes(':'));
+const emoji = computed(() => isCustomEmoji.value ? customEmojis.value.find(emoji => emoji.name === props.reaction.replace(/:/g, '').replace(/@\./, '')) : null);
+
+const canToggle = computed(() => {
+	return !props.reaction.match(/@\w/) && $i
+	&& (emoji.value && checkReactionPermissions($i, props.note, emoji.value))
+	|| !isCustomEmoji.value
+});
+const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
-
-	if (props.reaction.includes(':')) {
-		const permissions = checkReactionPermissions($i!, props.note, await misskeyApi('emoji', {
-			name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
-		}));
-		if (!permissions.accepted) {
-			os.alert({
-				type: "info",
-				title: i18n.ts.reactionRejected,
-				text: i18n.ts._reactionRejectedReason[permissions.rejectedReason],
-			});
-			return;
-		}
-	}
 
 	const oldReaction = props.note.myReaction;
 	if (oldReaction) {
@@ -114,8 +109,8 @@ async function toggleReaction() {
 }
 
 async function menu(ev) {
-	if (!canToggle.value) return;
-	if (!props.reaction.includes(':')) return;
+	if (!canGetInfo.value) return;
+
 	os.popupMenu([{
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
