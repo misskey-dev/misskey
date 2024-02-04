@@ -40,7 +40,7 @@ favorites: "질겨찾기"
 unfavorite: "질겨찾기서 어ᇝ애기"
 favorited: "질겨찾기에 담앗십니다."
 alreadyFavorited: "벌시로 질겨찾기에 담기 잇십니다."
-cantFavorite: "질겨찾기에 몬 담았십니다."
+cantFavorite: "질겨찾기에 몬 담앗십니다."
 pin: "프로필에 붙이기"
 unpin: "프로필서 띠기"
 copyContent: "내용 복사하기"
@@ -464,6 +464,8 @@ onlyOneFileCanBeAttached: "메시지엔 파일 하나까제밖에 몬 넣십니�
 invitations: "초대하기"
 invitationCode: "초대장"
 checking: "학인하고 잇십니다"
+tooShort: "억수로 짜립니다"
+tooLong: "억수로 집니다"
 passwordMatched: "맞십니다"
 passwordNotMatched: "안 맞십니다"
 signinFailed: "로그인 몬 했십니다. 고 이름이랑 비밀번호 제대로 썼는가 확인해 주이소."
@@ -574,6 +576,9 @@ addRelay: "릴레이 옇기"
 addedRelays: "옇은 릴레이"
 deletedNote: "뭉캔 걸"
 enableInfiniteScroll: "알아서 더 보기"
+useCw: "내용 수ᇚ후기"
+description: "설멩"
+describeFile: "캡션 옇기"
 author: "맨던 사람"
 manage: "간리"
 emailServer: "전자우펜 서버"
@@ -602,6 +607,7 @@ renotesCount: "리노트한 수"
 renotedCount: "리노트덴 수"
 followingCount: "팔로우 수"
 followersCount: "팔로워 수"
+noteFavoritesCount: "질겨찾기한 노트 수"
 clips: "클립 맨걸기"
 clearCache: "캐시 비우기"
 unlikeConfirm: "좋네예럴 무룹니꺼?"
@@ -610,6 +616,7 @@ user: "사용자"
 administration: "간리"
 on: "킴"
 off: "껌"
+hide: "수ᇚ후기"
 clickToFinishEmailVerification: "[{ok}]럴 누질라서 전자우펜 정멩얼 껕내이소."
 searchByGoogle: "찾기"
 tenMinutes: "십 분"
@@ -632,6 +639,7 @@ myClips: "내 클립"
 icon: "아바타"
 replies: "답하기"
 renotes: "리노트"
+attach: "옇기"
 _initialAccountSetting:
   startTutorial: "길라잡이 하기"
 _initialTutorial:
@@ -678,6 +686,10 @@ _achievements:
       description: "노트럴 100,000번 섰어예"
     _noteClipped1:
       description: "첫 노트럴 클립햇어예"
+    _noteFavorited1:
+      description: "첫 노트럴 질겨찾기에 담앗어예"
+    _myNoteFavorited1:
+      description: "다런 사람이 내 노트럴 질겨찾기에 담앗십니다"
     _iLoveMisskey:
       description: "“I ❤ #Misskey”럴 섰어예"
     _postedAt0min0sec:
@@ -696,8 +708,12 @@ _serverDisconnectedBehavior:
   reload: "알아서 새로곤침"
 _channel:
   removeBanner: "배너 뭉캐기"
+  usersCount: "{n}명 참여"
   notesCount: "노트 {n}개"
+_menuDisplay:
+  hide: "수ᇚ후기"
 _theme:
+  description: "설멩"
   keys:
     mention: "멘션"
 _sfx:
@@ -706,6 +722,9 @@ _sfx:
 _2fa:
   step3Title: "학인 기호럴 서기"
   renewTOTPCancel: "뎃어예"
+_permissions:
+  "read:favorites": "질겨찾기 보기"
+  "write:favorites": "질겨찾기 곤치기"
 _widgets:
   profile: "프로필"
   instanceInfo: "서버 정보"
@@ -717,7 +736,10 @@ _widgets:
   _userList:
     chooseList: "리스트 개리기"
 _cw:
+  hide: "수ᇚ후기"
   show: "더 볼래예"
+  chars: "걸자 {count}개"
+  files: "파일 {count}개"
 _visibility:
   home: "덜머리"
   followers: "팔로워"
@@ -725,6 +747,7 @@ _profile:
   name: "이럼"
   username: "사용자 이럼"
 _exportOrImport:
+  favoritedNotes: "질겨찾기한 노트"
   clips: "클립 맨걸기"
   followingList: "팔로잉"
   muteList: "수ᇚ후기"
@@ -737,6 +760,7 @@ _timelines:
 _play:
   my: "내 플레이"
   script: "스크립트"
+  summary: "설멩"
 _pages:
   like: "좋네예"
   unlike: "좋네예 무루기"
