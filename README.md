@@ -26,3 +26,19 @@ Misskey Improvement and Synthesis Through Experimental Modified Systems.
 
 
 - 転んでも泣かない
+
+
+## MISTEMS CHANGELOG
+
+
+#features (4)
+
+- enhance: update datasaver switch titles (#16) ( ibuki2003 )
+- enhance: ノート詳細ページでリプライ一覧と引用一覧を別々に表示するように (#14) (GrapeApple0, kakkokari-gtyih )
+- 開いてるページで投稿先がチャンネルになってほしい misskey-dev#13028 (#13) (fruitriin, samunohito mesichicken )
+- プロフィールの編集を検知できるようにした (#11) (mesichicken)
+
+# fix (2)
+- Fix hswipe animation control (#12) (kakkokari-gtyih)
+- build libraries after install (#10)
+
