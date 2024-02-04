@@ -2022,7 +2022,7 @@ _permissions:
   "write:report-abuse": "위반 내용 신고하기"
 _auth:
   shareAccessTitle: "어플리케이션의 접근 허가"
-  shareAccess: "\"{name}\" 이 계정에 접근하는 것을 허용하시겠습니까?"
+  shareAccess: "‘{name}’에서 계정에 접근하는 것을 허용하시겠습니까?"
   shareAccessAsk: "이 애플리케이션이 계정에 접근하는 것을 허용하시겠습니까?"
   permission: "{name}에서 다음 권한을 요청하였습니다"
   permissionAsk: "이 앱은 다음의 권한을 요청합니다"
