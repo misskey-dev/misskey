@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.8
- * generatedAt: 2024-01-31T01:46:47.878Z
+ * version: 2024.2.0-beta.9
+ * generatedAt: 2024-02-04T04:46:12.805Z
  */
 
 /**
@@ -4423,6 +4423,7 @@ export type components = {
       name: string;
       category: string | null;
       url: string;
+      localOnly?: boolean;
       isSensitive?: boolean;
       roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
     };
