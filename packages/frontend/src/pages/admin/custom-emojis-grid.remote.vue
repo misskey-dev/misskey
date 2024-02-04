@@ -226,7 +226,6 @@ onMounted(async () => {
 	overflow: scroll;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	height: 620px;
 	resize: vertical;
 }
 

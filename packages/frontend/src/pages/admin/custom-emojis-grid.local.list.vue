@@ -306,7 +306,6 @@ function refreshGridItems() {
 	overflow: scroll;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	height: 570px;
 	resize: vertical;
 }
 
