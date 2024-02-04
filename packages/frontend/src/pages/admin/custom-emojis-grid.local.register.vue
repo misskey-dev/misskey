@@ -99,7 +99,7 @@ import {
 import { ColumnSetting } from '@/components/grid/column.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
-import XRegisterLogs from '@/pages/admin/custom-emojis-grid.register.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.register.logs.vue';
 
 const MAXIMUM_EMOJI_COUNT = 100;
 

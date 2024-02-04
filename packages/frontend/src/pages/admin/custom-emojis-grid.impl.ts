@@ -8,13 +8,12 @@ export type RegisterLogItem = {
 };
 
 export type GridItem = {
-	readonly id?: string;
-	readonly fileId?: string;
-	readonly url: string;
-
-	deleteCheck: boolean;
-
+	checked: boolean;
+	id?: string;
+	fileId?: string;
+	url: string;
 	name: string;
+	host: string;
 	category: string;
 	aliases: string;
 	license: string;
@@ -25,11 +24,12 @@ export type GridItem = {
 
 export function fromEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem {
 	return {
+		checked: false,
 		id: it.id,
 		fileId: undefined,
 		url: it.url,
-		deleteCheck: false,
 		name: it.name,
+		host: it.host ?? '',
 		category: it.category ?? '',
 		aliases: it.aliases.join(', '),
 		license: it.license ?? '',
@@ -41,11 +41,12 @@ export function fromEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem 
 
 export function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 	return {
+		checked: false,
 		id: undefined,
 		fileId: it.id,
 		url: it.url,
-		deleteCheck: false,
 		name: it.name.replace(/(\.[a-zA-Z0-9]+)+$/, ''),
+		host: '',
 		category: '',
 		aliases: '',
 		license: '',

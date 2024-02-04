@@ -2,7 +2,7 @@
 <div>
 	<div v-if="logs.length > 0" style="overflow-y: scroll;">
 		<MkGrid
-			:gridSetting="{ rowNumberVisible: false }"
+			:gridSetting="{ rowNumberVisible: false, rowSelectable: false }"
 			:data="logs"
 			:columnSettings="columnSettings"
 			@event="onGridEvent"
