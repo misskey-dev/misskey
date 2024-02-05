@@ -79,9 +79,9 @@ const ok = async () => {
 			formData.append('isSensitive', props.file.isSensitive ? 'true' : 'false');
 			formData.append('comment', props.file.comment ?? 'null');
 			formData.append('i', $i!.token);
-			if (props.uploadFolder || props.uploadFolder === null) {
-				formData.append('folderId', props.uploadFolder ?? 'null');
-			} else if (defaultStore.state.uploadFolder) {
+			if (props.uploadFolder) {
+				formData.append('folderId', props.uploadFolder);
+			} else if (props.uploadFolder !== null && defaultStore.state.uploadFolder) {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
 
