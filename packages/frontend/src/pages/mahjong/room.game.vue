@@ -168,6 +168,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
+		<div :class="$style.ryuukyokuContainer">
+			<Transition
+				:enterActiveClass="$style.transition_serif_enterActive"
+				:leaveActiveClass="$style.transition_serif_leaveActive"
+				:enterFromClass="$style.transition_serif_enterFrom"
+				:leaveToClass="$style.transition_serif_leaveTo"
+			>
+				<img v-if="ryuukyokued" :src="`/client-assets/mahjong/ryuukyoku.png`" style="display: block; width: 100%;"/>
+			</Transition>
+		</div>
+
 		<div :class="$style.actions" class="_buttons">
 			<MkButton v-if="mj.canRon != null" primary gradate @click="ron">Ron</MkButton>
 			<MkButton v-if="mj.canPon != null" primary @click="pon">Pon</MkButton>
@@ -259,6 +270,22 @@ const ponSerifHouses = reactive<Record<Mmj.House, boolean>>({ e: false, s: false
 const kanSerifHouses = reactive<Record<Mmj.House, boolean>>({ e: false, s: false, w: false, n: false });
 const tsumoSerifHouses = reactive<Record<Mmj.House, boolean>>({ e: false, s: false, w: false, n: false });
 const riichiSerifHouses = reactive<Record<Mmj.House, boolean>>({ e: false, s: false, w: false, n: false });
+const iTsumoed = ref(false);
+const showKyokuResults = ref(false);
+const kyokuResults = ref<Record<Mmj.House, {
+	yakus: {
+		name: string;
+		fan: number;
+	}[];
+	doraCount: number;
+	pointDeltas: Record<Mmj.House, number>;
+} | null>>({
+	e: null,
+	s: null,
+	w: null,
+	n: null,
+});
+const ryuukyokued = ref(false);
 
 /*
 if (room.value.isStarted && !room.value.isEnded) {
@@ -387,7 +414,7 @@ function cii(ev: MouseEvent) {
 	os.popupMenu(patterns.map(pattern => ({
 		text: pattern.join(' '),
 		action: () => {
-			const index = Mmj.sortTileTypes(pattern).indexOf(targetTile);
+			const index = Mmj.sortTileTypes(pattern).indexOf(mj$type(targetTile));
 			props.connection!.send('cii', {
 				pattern: index === 0 ? 'x__' : index === 1 ? '_x_' : '__x',
 			});
@@ -405,26 +432,6 @@ function skip() {
 	triggerRef(mj);
 
 	props.connection!.send('nop', {});
-}
-
-const iTsumoed = ref(false);
-const showKyokuResults = ref(false);
-const kyokuResults = ref<Record<Mmj.House, {
-	yakus: {
-		name: string;
-		fan: number;
-	}[];
-	doraCount: number;
-	pointDeltas: Record<Mmj.House, number>;
-} | null>>({
-	e: null,
-	s: null,
-	w: null,
-	n: null,
-});
-
-function kyokuEnd() {
-	showKyokuResults.value = true;
 }
 
 function onStreamDahai(log) {
@@ -617,6 +624,16 @@ function onStreamTsumoHora(log) {
 	console.log('tsumohora', res);
 }
 
+function onStreamRyuukyoku(log) {
+	console.log('onStreamRyuukyoku', log);
+
+	ryuukyokued.value = true;
+
+	window.setTimeout(() => {
+		showKyokuResults.value = true;
+	}, 1500);
+}
+
 function restoreRoom(_room) {
 	room.value = deepClone(_room);
 
@@ -635,6 +652,7 @@ onMounted(() => {
 		props.connection.on('ciied', onStreamCiied);
 		props.connection.on('ronned', onStreamRonned);
 		props.connection.on('tsumoHora', onStreamTsumoHora);
+		props.connection.on('ryuukyoku', onStreamRyuukyoku);
 	}
 });
 
@@ -650,6 +668,7 @@ onActivated(() => {
 		props.connection.on('ciied', onStreamCiied);
 		props.connection.on('ronned', onStreamRonned);
 		props.connection.on('tsumoHora', onStreamTsumoHora);
+		props.connection.on('ryuukyoku', onStreamRyuukyoku);
 	}
 });
 
@@ -665,6 +684,7 @@ onDeactivated(() => {
 		props.connection.off('ciied', onStreamCiied);
 		props.connection.off('ronned', onStreamRonned);
 		props.connection.off('tsumoHora', onStreamTsumoHora);
+		props.connection.off('ryuukyoku', onStreamRyuukyoku);
 	}
 });
 
@@ -680,6 +700,7 @@ onUnmounted(() => {
 		props.connection.off('ciied', onStreamCiied);
 		props.connection.off('ronned', onStreamRonned);
 		props.connection.off('tsumoHora', onStreamTsumoHora);
+		props.connection.off('ryuukyoku', onStreamRyuukyoku);
 	}
 });
 </script>
@@ -967,6 +988,19 @@ onUnmounted(() => {
 	margin: auto;
 	width: 200px;
 	height: min-content;
+}
+
+.ryuukyokuContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 200px;
+	height: min-content;
+	margin: auto;
+	z-index: 100;
+	pointer-events: none;
 }
 
 .sideTile {

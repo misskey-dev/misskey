@@ -345,8 +345,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				});
 				this.endKyoku(room, mj);
 				break;
-			case 'ryukyoku':
-				this.globalEventService.publishMahjongRoomStream(room.id, 'ryukyoku', {
+			case 'ryuukyoku':
+				this.globalEventService.publishMahjongRoomStream(room.id, 'ryuukyoku', {
 				});
 				this.endKyoku(room, mj);
 				break;
@@ -387,7 +387,11 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => mj.getHouse(id));
 
-		if (res.asking) {
+		if (res.ryuukyoku) {
+			this.endKyoku(room, mj);
+			this.globalEventService.publishMahjongRoomStream(room.id, 'ryuukyoku', {
+			});
+		} else if (res.asking) {
 			const answers: CallingAnswers = {
 				pon: null,
 				cii: null,

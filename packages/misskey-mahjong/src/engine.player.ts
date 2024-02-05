@@ -152,19 +152,19 @@ export class PlayerGameEngine {
 		return this.state.riichis[this.myHouse];
 	}
 
-	public commit_tsumo(house: House, tile: TileId) {
-		console.log('commit_tsumo', this.state.turn, house, tile);
+	public commit_tsumo(house: House, tileId: TileId) {
+		console.log('commit_tsumo', this.state.turn, house, tileId);
 		this.state.tilesCount--;
 		this.state.turn = house;
 		if (house === this.myHouse) {
-			this.myHandTiles.push(tile);
+			this.myHandTiles.push(tileId);
 		} else {
 			this.state.handTiles[house].push(0);
 		}
 	}
 
-	public commit_dahai(house: House, tile: TileId, riichi = false) {
-		console.log('commit_dahai', this.state.turn, house, tile, riichi);
+	public commit_dahai(house: House, tileId: TileId, riichi = false) {
+		console.log('commit_dahai', this.state.turn, house, tileId, riichi);
 		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
 
 		if (riichi) {
@@ -172,29 +172,29 @@ export class PlayerGameEngine {
 		}
 
 		if (house === this.myHouse) {
-			this.myHandTiles.splice(this.myHandTiles.indexOf(tile), 1);
-			this.state.hoTiles[this.myHouse].push(tile);
+			this.myHandTiles.splice(this.myHandTiles.indexOf(tileId), 1);
+			this.state.hoTiles[this.myHouse].push(tileId);
 		} else {
 			this.state.handTiles[house].pop();
-			this.state.hoTiles[house].push(tile);
+			this.state.hoTiles[house].push(tileId);
 		}
 
 		this.state.turn = null;
 
 		if (house === this.myHouse) {
 		} else {
-			const canRon = Common.getHoraSets(this.myHandTiles.concat(tile).map(id => $type(id))).length > 0;
-			const canPon = !this.isMeRiichi && this.myHandTiles.filter(t => t === tile).length === 2;
-			const canKan = !this.isMeRiichi && this.myHandTiles.filter(t => t === tile).length === 3;
+			const canRon = Common.getHoraSets(this.myHandTiles.concat(tileId).map(id => $type(id))).length > 0;
+			const canPon = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tileId)).length === 2;
+			const canKan = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tileId)).length === 3;
 			const canCii = !this.isMeRiichi && house === Common.prevHouse(this.myHouse) &&
 				Common.SHUNTU_PATTERNS.some(pattern =>
-					pattern.includes($type(tile)) &&
+					pattern.includes($type(tileId)) &&
 					pattern.filter(t => this.myHandTileTypes.includes(t)).length >= 2);
 
-			if (canRon) this.state.canRon = { callee: house };
-			if (canPon) this.state.canPon = { callee: house };
-			if (canKan) this.state.canKan = { callee: house };
-			if (canCii) this.state.canCii = { callee: house };
+			this.state.canRon = canRon ? { callee: house } : null;
+			this.state.canPon = canPon ? { callee: house } : null;
+			this.state.canKan = canKan ? { callee: house } : null;
+			this.state.canCii = canCii ? { callee: house } : null;
 		}
 	}
 
