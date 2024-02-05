@@ -6,53 +6,21 @@
 	</MkTab>
 
 	<div>
-		<XListComponent
-			v-if="modeTab === 'list'"
-			:customEmojis="customEmojis"
-			@operation:search="onOperationSearch"
-		/>
-		<XRegisterComponent
-			v-else
-			@operation:registered="onOperationRegistered"
-		/>
+		<XListComponent v-if="modeTab === 'list'"/>
+		<XRegisterComponent v-else/>
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { ref } from 'vue';
 import MkTab from '@/components/MkTab.vue';
 import XListComponent from '@/pages/admin/custom-emojis-grid.local.list.vue';
 import XRegisterComponent from '@/pages/admin/custom-emojis-grid.local.register.vue';
 
 type PageMode = 'list' | 'register';
 
-const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const modeTab = ref<PageMode>('list');
-const query = ref<string>();
-
-async function refreshCustomEmojis(query?: string, sinceId?: string, untilId?: string) {
-	const emojis = await misskeyApi('admin/emoji/v2/list', {
-		limit: 100,
-	}).then(it => it.emojis);
-
-	customEmojis.value = emojis;
-}
-
-async function onOperationSearch(q: string, sinceId?: string, untilId?: string) {
-	query.value = q;
-	await refreshCustomEmojis(q, sinceId, untilId);
-}
-
-async function onOperationRegistered() {
-	await refreshCustomEmojis(query.value);
-}
-
-onMounted(async () => {
-	await refreshCustomEmojis();
-});
 </script>
 
 <style lang="scss">

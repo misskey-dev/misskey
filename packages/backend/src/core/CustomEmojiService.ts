@@ -455,7 +455,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				builder.andWhere('emoji.name LIKE :name', { name: `%${q.name}%` });
 			}
 			if (q.hostType === 'local') {
-				builder.andWhere('emoji.host LIKE :host', { host: `%${q.host}%` });
+				builder.andWhere('emoji.host IS NULL');
 			} else {
 				if (q.host) {
 					// noIndexScan
@@ -524,7 +524,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		return {
 			emojis,
-		  count: (count > limit ? emojis.length : count),
+			count: (count > limit ? emojis.length : count),
 			allCount: count,
 			allPages: Math.ceil(count / limit),
 		};

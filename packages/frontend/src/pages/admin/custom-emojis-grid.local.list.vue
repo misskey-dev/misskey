@@ -1,6 +1,6 @@
 <template>
 <div>
-	<div v-if="gridItems.length === 0" style="text-align: center">
+	<div v-if="false" style="text-align: center">
 		登録された絵文字はありません。
 	</div>
 	<div v-else class="_gaps">
@@ -17,12 +17,9 @@
 			<MkGrid :data="gridItems" :gridSetting="gridSetting" :columnSettings="columnSettings" @event="onGridEvent"/>
 		</div>
 
-		<div class="_gaps">
-			<div :class="$style.pages">
-				<button @click="onLatestButtonClicked">&lt;</button>
-				<button @click="onOldestButtonClicked">&gt;</button>
-			</div>
+		<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
 
+		<div class="_gaps">
 			<div :class="$style.buttons">
 				<MkButton danger style="margin-right: auto" @click="onDeleteClicked">{{ i18n.ts.delete }}</MkButton>
 				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateClicked">{{ i18n.ts.update }}</MkButton>
@@ -34,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { fromEmojiDetailedAdmin, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
@@ -56,6 +53,7 @@ import {
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import MkPagingButtons from '@/components/MkPagingButtons.vue';
 
 const gridSetting: GridSetting = {
 	rowNumberVisible: true,
@@ -76,25 +74,15 @@ const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 140 },
 ];
 
-const emit = defineEmits<{
-	(ev: 'operation:search', query: string, sinceId?: string, untilId?: string): void;
-}>();
-
-const props = defineProps<{
-	customEmojis: Misskey.entities.EmojiDetailedAdmin[];
-}>();
-
-const { customEmojis } = toRefs(props);
-
+const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const query = ref('');
+const allPages = ref<number>(0);
+const currentPage = ref<number>(0);
+const previousQuery = ref<string | undefined>(undefined);
+
 const gridItems = ref<GridItem[]>([]);
 const originGridItems = ref<GridItem[]>([]);
 const updateButtonDisabled = ref<boolean>(false);
-
-const latest = computed(() => customEmojis.value.length > 0 ? customEmojis.value[0]?.id : undefined);
-const oldest = computed(() => customEmojis.value.length > 0 ? customEmojis.value[customEmojis.value.length - 1]?.id : undefined);
-
-watch(customEmojis, refreshGridItems, { immediate: true });
 
 async function onUpdateClicked() {
 	const _items = gridItems.value;
@@ -144,8 +132,6 @@ async function onUpdateClicked() {
 		() => {},
 		() => {},
 	);
-
-	emit('operation:search', query.value, undefined, undefined);
 }
 
 async function onDeleteClicked() {
@@ -183,8 +169,6 @@ async function onDeleteClicked() {
 		() => {},
 		() => {},
 	);
-
-	emit('operation:search', query.value, undefined, undefined);
 }
 
 function onResetClicked() {
@@ -192,15 +176,11 @@ function onResetClicked() {
 }
 
 function onSearchButtonClicked() {
-	emit('operation:search', query.value, undefined, undefined);
 }
 
-async function onLatestButtonClicked() {
-	emit('operation:search', query.value, latest.value, undefined);
-}
-
-async function onOldestButtonClicked() {
-	emit('operation:search', query.value, undefined, oldest.value);
+async function onPageChanged(pageNumber: number) {
+	currentPage.value = pageNumber;
+	await refreshCustomEmojis();
 }
 
 function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
@@ -286,10 +266,43 @@ function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) 
 	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
 }
 
+async function refreshCustomEmojis() {
+	const limit = 10;
+
+	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
+		hostType: 'local',
+	};
+
+	if (JSON.stringify(query) !== previousQuery.value) {
+		currentPage.value = 1;
+	}
+
+	const result = await os.promiseDialog(
+		misskeyApi('admin/emoji/v2/list', {
+			query: query,
+			limit: limit,
+			page: currentPage.value,
+		}),
+		() => {},
+		() => {},
+	);
+
+	customEmojis.value = result.emojis;
+	allPages.value = result.allPages;
+
+	previousQuery.value = JSON.stringify(query);
+
+	refreshGridItems();
+}
+
 function refreshGridItems() {
 	gridItems.value = customEmojis.value.map(it => fromEmojiDetailedAdmin(it));
 	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
 }
+
+onMounted(async () => {
+	await refreshCustomEmojis();
+});
 
 </script>
 
@@ -307,20 +320,6 @@ function refreshGridItems() {
 	padding-top: 8px;
 	padding-bottom: 8px;
 	resize: vertical;
-}
-
-.pages {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	button {
-		background-color: var(--buttonBg);
-		border-radius: 9999px;
-		border: none;
-		margin: 0 4px;
-		padding: 8px;
-	}
 }
 
 .buttons {
