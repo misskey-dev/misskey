@@ -47,7 +47,7 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { useRouter } from '@/global/router/supplier.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 

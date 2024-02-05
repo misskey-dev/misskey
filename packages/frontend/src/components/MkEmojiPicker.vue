@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</section>
 
 		<div v-if="tab === 'index'" class="group index">
-			<section v-if="showPinned && pinned.length > 0">
+			<section v-if="showPinned && (pinned && pinned.length > 0)">
 				<div class="body">
 					<button
 						v-for="emoji in pinned"
@@ -340,7 +340,7 @@ watch(q, () => {
 });
 
 function filterAvailable(emoji: Misskey.entities.EmojiSimple): boolean {
-	return (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction == null || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)));
+	return ((emoji.roleIdsThatCanBeUsedThisEmojiAsReaction == null || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction?.includes(r.id)))) ?? false;
 }
 
 function focus() {

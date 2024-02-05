@@ -37,6 +37,8 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
+		noIrregularRules: { type: 'boolean', default: false },
+		multiple: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -56,11 +58,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			}) : null;
 
-			const game = target ? await this.reversiService.matchSpecificUser(me, target) : await this.reversiService.matchAnyUser(me);
+			const game = target
+				? await this.reversiService.matchSpecificUser(me, target, ps.multiple)
+				: await this.reversiService.matchAnyUser(me, { noIrregularRules: ps.noIrregularRules }, ps.multiple);
 
 			if (game == null) return;
 
-			return await this.reversiGameEntityService.packDetail(game, me);
+			return await this.reversiGameEntityService.packDetail(game);
 		});
 	}
 }

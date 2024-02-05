@@ -41,8 +41,8 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.j
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
-import { useRouterFactory } from '@/global/router/supplier.js';
-import { mainRouter } from '@/global/router/main.js';
+import { useRouterFactory } from '@/router/supplier.js';
+import { mainRouter } from '@/router/main.js';
 
 const props = defineProps<{
 	initialPath: string;
@@ -55,7 +55,7 @@ defineEmits<{
 const routerFactory = useRouterFactory();
 const windowRouter = routerFactory(props.initialPath);
 
-const contents = shallowRef<HTMLElement>();
+const contents = shallowRef<HTMLElement | null>(null);
 const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
 const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
 const history = ref<{ path: string; key: any; }[]>([{
@@ -63,7 +63,7 @@ const history = ref<{ path: string; key: any; }[]>([{
 	key: windowRouter.getCurrentKey(),
 }]);
 const buttonsLeft = computed(() => {
-	const buttons = [];
+	const buttons: Record<string, unknown>[] = [];
 
 	if (history.value.length > 1) {
 		buttons.push({
@@ -93,6 +93,13 @@ windowRouter.addListener('push', ctx => {
 	history.value.push({ path: ctx.path, key: ctx.key });
 });
 
+windowRouter.addListener('replace', ctx => {
+	history.value.pop();
+	history.value.push({ path: ctx.path, key: ctx.key });
+});
+
+windowRouter.init();
+
 provide('router', windowRouter);
 provideMetadataReceiver((info) => {
 	pageMetadata.value = info;
@@ -114,7 +121,7 @@ const contextmenu = computed(() => ([{
 	text: i18n.ts.openInNewTab,
 	action: () => {
 		window.open(url + windowRouter.getCurrentPath(), '_blank', 'noopener');
-		windowEl.value.close();
+		windowEl.value?.close();
 	},
 }, {
 	icon: 'ti ti-link',
@@ -134,17 +141,17 @@ function reload() {
 }
 
 function close() {
-	windowEl.value.close();
+	windowEl.value?.close();
 }
 
 function expand() {
 	mainRouter.push(windowRouter.getCurrentPath(), 'forcePage');
-	windowEl.value.close();
+	windowEl.value?.close();
 }
 
 function popout() {
-	_popout(windowRouter.getCurrentPath(), windowEl.value.$el);
-	windowEl.value.close();
+	_popout(windowRouter.getCurrentPath(), windowEl.value?.$el);
+	windowEl.value?.close();
 }
 
 useScrollPositionManager(() => getScrollContainer(contents.value), windowRouter);
