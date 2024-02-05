@@ -45,12 +45,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="pinnedMax > defaultStore.reactiveState.pinnedUserLists.value.length " @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length " danger @click="removePinnedList('all')"><i class="ti ti-trash"></i> {{ i18n.ts.all }}{{ i18n.ts.remove }}</MkButton>
 			</MkFolder>
-			<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.showMediaTimeline }}<template #caption>{{ i18n.ts.showMediaTimelineInfo }} </template></MkSwitch>
-			<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.showGlobalTimeline }}</MkSwitch>
-			<MkSwitch v-model="showHomeTimeline">{{ i18n.ts.showHomeTimeline }}</MkSwitch>
-			<MkSwitch v-model="showSocialTimeline">{{ i18n.ts.showSocialTimeline }}</MkSwitch>
-			<MkSwitch v-model="showLocalTimeline">{{ i18n.ts.showLocalTimeline }}</MkSwitch>
-			<MkSwitch v-model="topBarNameShown">{{ i18n.ts.topBarNameShown }}</MkSwitch>
+			<MkFoldableSection :expanded="false" class="item">
+				<template #header>{{ i18n.ts.topbarCustom }}</template>
+
+
+				{{ i18n.ts._timelines.home }}
+				<MkSwitch v-model="showHomeTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.local }}
+				<MkSwitch v-model="showLocalTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.social }}
+				<MkSwitch v-model="showSocialTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.media }}
+				<MkSwitch v-model="showMediaTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts._timelines.global }}
+				<MkSwitch v-model="showGlobalTimeline">{{ i18n.ts.enable }}</MkSwitch>
+				<br>
+				{{ i18n.ts.topBarNameShown }}
+				<MkSwitch v-model="topBarNameShown">{{ i18n.ts.enable }}</MkSwitch>
+			</MkFoldableSection>
 		</div>
 	</FormSection>
 	<MkFoldableSection :expanded="false" class="item">

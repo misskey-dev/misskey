@@ -117,11 +117,15 @@ export interface Locale extends ILocale {
      */
     "showLocalTimeline": string;
     /**
+     * トップバーのカスタムをする
+     */
+    "topbarCustom": string;
+    /**
      * ソーシャルタイムラインを表示する
      */
     "showSocialTimeline": string;
     /**
-     * 上のバーのTLの名前を表示する
+     * 上のバーにTLの名前を常時表示する
      */
     "topBarNameShown": string;
     /**
