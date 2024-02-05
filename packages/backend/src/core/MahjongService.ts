@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { ModuleRef } from '@nestjs/core';
 import { IsNull, LessThan, MoreThan } from 'typeorm';
-import * as Mahjong from 'misskey-mahjong';
+import * as Mmj from 'misskey-mahjong';
 import type {
 	MiMahjongGame,
 	MahjongGamesRepository,
@@ -55,7 +55,7 @@ type Room = {
 	isStarted?: boolean;
 	timeLimitForEachTurn: number;
 
-	gameState?: Mahjong.MasterState;
+	gameState?: Mmj.MasterState;
 };
 
 type CallingAnswers = {
@@ -77,12 +77,12 @@ type NextKyokuConfirmation = {
 	user4: boolean;
 };
 
-function getUserIdOfHouse(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.House): MiUser['id'] {
-	return engine.state.user1House === house ? room.user1Id : engine.state.user2House === house ? room.user2Id : engine.state.user3House === house ? room.user3Id : room.user4Id;
+function getUserIdOfHouse(room: Room, mj: Mmj.MasterGameEngine, house: Mmj.House): MiUser['id'] {
+	return mj.user1House === house ? room.user1Id : mj.user2House === house ? room.user2Id : mj.user3House === house ? room.user3Id : room.user4Id;
 }
 
-function getHouseOfUserId(room: Room, engine: Mahjong.MasterGameEngine, userId: MiUser['id']): Mahjong.House {
-	return userId === room.user1Id ? engine.state.user1House : userId === room.user2Id ? engine.state.user2House : userId === room.user3Id ? engine.state.user3House : engine.state.user4House;
+function getHouseOfUserId(room: Room, mj: Mmj.MasterGameEngine, userId: MiUser['id']): Mmj.House {
+	return userId === room.user1Id ? mj.user1House : userId === room.user2Id ? mj.user2House : userId === room.user3Id ? mj.user3House : mj.user4House;
 }
 
 @Injectable()
@@ -278,7 +278,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			throw new Error('Not ready');
 		}
 
-		room.gameState = Mahjong.MasterGameEngine.createInitialState();
+		room.gameState = Mmj.MasterGameEngine.createInitialState();
 		room.isStarted = true;
 
 		await this.saveRoom(room);
@@ -291,11 +291,11 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async packRoom(room: Room, me: MiUser) {
 		if (room.gameState) {
-			const engine = new Mahjong.MasterGameEngine(room.gameState);
+			const mj = new Mmj.MasterGameEngine(room.gameState);
 			const myIndex = room.user1Id === me.id ? 1 : room.user2Id === me.id ? 2 : room.user3Id === me.id ? 3 : 4;
 			return {
 				...room,
-				gameState: engine.createPlayerState(myIndex),
+				gameState: mj.createPlayerState(myIndex),
 			};
 		} else {
 			return {
@@ -305,52 +305,56 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async answer(room: Room, engine: Mahjong.MasterGameEngine, answers: CallingAnswers) {
-		const res = engine.commit_resolveCallingInterruption({
+	private async answer(room: Room, mj: Mmj.MasterGameEngine, answers: CallingAnswers) {
+		const res = mj.commit_resolveCallingInterruption({
 			pon: answers.pon ?? false,
 			cii: answers.cii ?? false,
 			kan: answers.kan ?? false,
-			ron: [...(answers.ron.e ? ['e'] : []), ...(answers.ron.s ? ['s'] : []), ...(answers.ron.w ? ['w'] : []), ...(answers.ron.n ? ['n'] : [])] as Mahjong.House[],
+			ron: [...(answers.ron.e ? ['e'] : []), ...(answers.ron.s ? ['s'] : []), ...(answers.ron.w ? ['w'] : []), ...(answers.ron.n ? ['n'] : [])] as Mmj.House[],
 		});
-		room.gameState = engine.state;
+		room.gameState = mj.getState();
 		await this.saveRoom(room);
 
 		switch (res.type) {
 			case 'tsumo':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'tsumo', { house: res.house, tile: res.tile });
-				this.waitForTurn(room, res.turn, engine);
+				this.waitForTurn(room, res.turn, mj);
 				break;
 			case 'ponned':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'ponned', { caller: res.caller, callee: res.callee, tiles: res.tiles });
-				this.waitForTurn(room, res.turn, engine);
+				this.waitForTurn(room, res.turn, mj);
 				break;
 			case 'kanned':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'kanned', { caller: res.caller, callee: res.callee, tiles: res.tiles, rinsyan: res.rinsyan });
-				this.waitForTurn(room, res.turn, engine);
+				this.waitForTurn(room, res.turn, mj);
+				break;
+			case 'ciied':
+				this.globalEventService.publishMahjongRoomStream(room.id, 'ciied', { caller: res.caller, callee: res.callee, tiles: res.tiles });
+				this.waitForTurn(room, res.turn, mj);
 				break;
 			case 'ronned':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'ronned', {
 					callers: res.callers,
 					callee: res.callee,
 					handTiles: {
-						e: engine.state.handTiles.e,
-						s: engine.state.handTiles.s,
-						w: engine.state.handTiles.w,
-						n: engine.state.handTiles.n,
+						e: mj.handTiles.e,
+						s: mj.handTiles.s,
+						w: mj.handTiles.w,
+						n: mj.handTiles.n,
 					},
 				});
-				this.endKyoku(room, engine);
+				this.endKyoku(room, mj);
 				break;
 			case 'ryukyoku':
 				this.globalEventService.publishMahjongRoomStream(room.id, 'ryukyoku', {
 				});
-				this.endKyoku(room, engine);
+				this.endKyoku(room, mj);
 				break;
 		}
 	}
 
 	@bindThis
-	private async endKyoku(room: Room, engine: Mahjong.MasterGameEngine) {
+	private async endKyoku(room: Room, mj: Mmj.MasterGameEngine) {
 		const confirmation: NextKyokuConfirmation = {
 			user1: false,
 			user2: false,
@@ -370,18 +374,18 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			if (allConfirmed || (Date.now() - waitingStartedAt > NEXT_KYOKU_CONFIRMATION_TIMEOUT_MS)) {
 				await this.redisClient.del(`mahjong:gameNextKyokuConfirmation:${room.id}`);
 				clearInterval(interval);
-				this.nextKyoku(room, engine);
+				this.nextKyoku(room, mj);
 			}
 		}, 2000);
 	}
 
 	@bindThis
-	private async dahai(room: Room, engine: Mahjong.MasterGameEngine, house: Mahjong.House, tile: Mahjong.TileId, riichi = false) {
-		const res = engine.commit_dahai(house, tile, riichi);
-		room.gameState = engine.state;
+	private async dahai(room: Room, mj: Mmj.MasterGameEngine, house: Mmj.House, tile: Mmj.TileId, riichi = false) {
+		const res = mj.commit_dahai(house, tile, riichi);
+		room.gameState = mj.getState();
 		await this.saveRoom(room);
 
-		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
+		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => mj.getHouse(id));
 
 		if (res.asking) {
 			const answers: CallingAnswers = {
@@ -397,13 +401,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 			};
 
 			// リーチ中はポン、チー、カンできない
-			if (res.canPonHouse != null && engine.state.riichis[res.canPonHouse]) {
+			if (res.canPonHouse != null && mj.riichis[res.canPonHouse]) {
 				answers.pon = false;
 			}
-			if (res.canCiiHouse != null && engine.state.riichis[res.canCiiHouse]) {
+			if (res.canCiiHouse != null && mj.riichis[res.canCiiHouse]) {
 				answers.cii = false;
 			}
-			if (res.canKanHouse != null && engine.state.riichis[res.canKanHouse]) {
+			if (res.canKanHouse != null && mj.riichis[res.canKanHouse]) {
 				answers.kan = false;
 			}
 
@@ -445,7 +449,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 					console.log(allAnswered ? 'ask all answerd' : 'ask timeout');
 					await this.redisClient.del(`mahjong:gameCallingAsking:${room.id}`);
 					clearInterval(interval);
-					this.answer(room, engine, currentAnswers);
+					this.answer(room, mj, currentAnswers);
 					return;
 				}
 			}, 1000);
@@ -454,7 +458,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		} else {
 			this.globalEventService.publishMahjongRoomStream(room.id, 'dahaiAndTsumo', { dahaiHouse: house, dahaiTile: tile, tsumoTile: res.tsumoTile, riichi });
 
-			this.waitForTurn(room, res.next, engine);
+			this.waitForTurn(room, res.next, mj);
 		}
 	}
 
@@ -476,52 +480,52 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async commit_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: Mahjong.TileId, riichi = false) {
+	public async commit_dahai(roomId: MiMahjongGame['id'], user: MiUser, tile: Mmj.TileId, riichi = false) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = getHouseOfUserId(room, engine, user.id);
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, mj, user.id);
 
 		await this.clearTurnWaitingTimer(room.id);
 
-		await this.dahai(room, engine, myHouse, tile, riichi);
+		await this.dahai(room, mj, myHouse, tile, riichi);
 	}
 
 	@bindThis
-	public async commit_ankan(roomId: MiMahjongGame['id'], user: MiUser, tile: Mahjong.TileId) {
+	public async commit_ankan(roomId: MiMahjongGame['id'], user: MiUser, tile: Mmj.TileId) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = getHouseOfUserId(room, engine, user.id);
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, mj, user.id);
 
 		await this.clearTurnWaitingTimer(room.id);
 
-		const res = engine.commit_ankan(myHouse, tile);
-		room.gameState = engine.state;
+		const res = mj.commit_ankan(myHouse, tile);
+		room.gameState = mj.getState();
 		await this.saveRoom(room);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'ankanned', { house: myHouse, tiles: res.tiles, rinsyan: res.rinsyan });
 
-		this.waitForTurn(room, myHouse, engine);
+		this.waitForTurn(room, myHouse, mj);
 	}
 
 	@bindThis
-	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser, tile: Mahjong.TileId) {
+	public async commit_kakan(roomId: MiMahjongGame['id'], user: MiUser, tile: Mmj.TileId) {
 		const room = await this.getRoom(roomId);
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = getHouseOfUserId(room, engine, user.id);
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, mj, user.id);
 
 		await this.clearTurnWaitingTimer(room.id);
 
-		const res = engine.commit_kakan(myHouse, tile);
-		room.gameState = engine.state;
+		const res = mj.commit_kakan(myHouse, tile);
+		room.gameState = mj.getState();
 		await this.saveRoom(room);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'kakanned', { house: myHouse, tiles: res.tiles, rinsyan: res.rinsyan, from: res.from });
@@ -533,13 +537,13 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = getHouseOfUserId(room, engine, user.id);
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, mj, user.id);
 
 		await this.clearTurnWaitingTimer(room.id);
 
-		const res = engine.commit_tsumoHora(myHouse);
-		room.gameState = engine.state;
+		const res = mj.commit_tsumoHora(myHouse);
+		room.gameState = mj.getState();
 		await this.saveRoom(room);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'tsumoHora', { house: myHouse, handTiles: res.handTiles, tsumoTile: res.tsumoTile });
@@ -551,8 +555,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = getHouseOfUserId(room, engine, user.id);
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, mj, user.id);
 
 		// TODO: 自分に回答する権利がある状態かバリデーション
 
@@ -618,17 +622,17 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		if (room == null) return;
 		if (room.gameState == null) return;
 
-		const engine = new Mahjong.MasterGameEngine(room.gameState);
-		const myHouse = getHouseOfUserId(room, engine, user.id);
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myHouse = getHouseOfUserId(room, mj, user.id);
 
 		// TODO: この辺の処理はアトミックに行いたいけどJSONサポートはRedis Stackが必要
 		const current = await this.redisClient.get(`mahjong:gameCallingAsking:${room.id}`);
 		if (current == null) throw new Error('no asking found');
 		const currentAnswers = JSON.parse(current) as CallingAnswers;
-		if (engine.state.ponAsking?.caller === myHouse) currentAnswers.pon = false;
-		if (engine.state.ciiAsking?.caller === myHouse) currentAnswers.cii = false;
-		if (engine.state.kanAsking?.caller === myHouse) currentAnswers.kan = false;
-		if (engine.state.ronAsking != null && engine.state.ronAsking.callers.includes(myHouse)) currentAnswers.ron[myHouse] = false;
+		if (mj.askings.pon?.caller === myHouse) currentAnswers.pon = false;
+		if (mj.askings.cii?.caller === myHouse) currentAnswers.cii = false;
+		if (mj.askings.kan?.caller === myHouse) currentAnswers.kan = false;
+		if (mj.askings.ron != null && mj.askings.ron.callers.includes(myHouse)) currentAnswers.ron[myHouse] = false;
 		await this.redisClient.set(`mahjong:gameCallingAsking:${room.id}`, JSON.stringify(currentAnswers));
 	}
 
@@ -638,18 +642,18 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	 * NOTE: 時間切れチェックが行われたときにタイミングによっては次のwaitingが始まっている場合があることを考慮し、Setに一意のIDを格納する構造としている
 	 * @param room
 	 * @param house
-	 * @param engine
+	 * @param mj
 	 */
 	@bindThis
-	private async waitForTurn(room: Room, house: Mahjong.House, engine: Mahjong.MasterGameEngine) {
-		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => engine.getHouse(id));
+	private async waitForTurn(room: Room, house: Mmj.House, mj: Mmj.MasterGameEngine) {
+		const aiHouses = [[1, room.user1Ai], [2, room.user2Ai], [3, room.user3Ai], [4, room.user4Ai]].filter(([id, ai]) => ai).map(([id, ai]) => mj.getHouse(id));
 
-		if (engine.state.riichis[house]) {
+		if (mj.riichis[house]) {
 			// リーチ時はアガリ牌でない限りツモ切り
-			const horaSets = Mahjong.getHoraSets(engine.handTileTypes[house]);
+			const horaSets = Mmj.getHoraSets(mj.handTileTypes[house]);
 			if (horaSets.length === 0) {
 				setTimeout(() => {
-					this.dahai(room, engine, house, engine.state.handTiles[house].at(-1));
+					this.dahai(room, mj, house, mj.handTiles[house].at(-1));
 				}, 500);
 				return;
 			}
@@ -657,7 +661,7 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		if (aiHouses.includes(house)) {
 			setTimeout(() => {
-				this.dahai(room, engine, house, engine.state.handTiles[house].at(-1));
+				this.dahai(room, mj, house, mj.handTiles[house].at(-1));
 			}, 500);
 			return;
 		}
@@ -676,8 +680,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				await this.redisClient.srem(`mahjong:gameTurnWaiting:${room.id}`, id);
 				console.log('turn timeout', house, id);
 				clearInterval(interval);
-				const handTiles = engine.state.handTiles[house];
-				await this.dahai(room, engine, house, handTiles.at(-1));
+				const handTiles = mj.handTiles[house];
+				await this.dahai(room, mj, house, handTiles.at(-1));
 				return;
 			}
 		}, 2000);

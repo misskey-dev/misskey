@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as Mahjong from 'misskey-mahjong';
+import * as Mmj from 'misskey-mahjong';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { deepClone } from '@/scripts/clone.js';

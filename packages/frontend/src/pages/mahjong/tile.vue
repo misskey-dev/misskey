@@ -12,12 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as Mahjong from 'misskey-mahjong';
+import * as Mmj from 'misskey-mahjong';
 
 const props = defineProps<{
-	tile: Mahjong.TileInstance;
+	tile: Mmj.TileInstance;
 	variation: string;
-	doras: Mahjong.TileType[];
+	doras: Mmj.TileType[];
 }>();
 
 const isDora = computed(() => props.doras.includes(props.tile.t));
@@ -37,7 +37,7 @@ const isDora = computed(() => props.doras.includes(props.tile.t));
 	margin: -17px;
 }
 .h {
-	margin: -14px -21px -5px;
+	margin: -14px -19px -5px;
 }
 .v {
 	margin: -14px -18px -11px;

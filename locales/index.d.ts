@@ -9661,6 +9661,32 @@ export interface Locale extends ILocale {
          * 飜
          */
         "fan": string;
+        "_fanNames": {
+            /**
+             * 満貫
+             */
+            "mangan": string;
+            /**
+             * 跳満
+             */
+            "haneman": string;
+            /**
+             * 倍満
+             */
+            "baiman": string;
+            /**
+             * 三倍満
+             */
+            "sanbaiman": string;
+            /**
+             * 役満
+             */
+            "yakuman": string;
+            /**
+             * 数え役満
+             */
+            "kazoeyakuman": string;
+        };
         "_yakus": {
             /**
              * 立直

@@ -2574,6 +2574,13 @@ _mahjong:
   dora: "ドラ"
   redDora: "赤ドラ"
   fan: "飜"
+  _fanNames:
+    mangan: "満貫"
+    haneman: "跳満"
+    baiman: "倍満"
+    sanbaiman: "三倍満"
+    yakuman: "役満"
+    kazoeyakuman: "数え役満"
   _yakus:
     "riichi": "立直"
     "ippatsu": "一発"

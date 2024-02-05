@@ -67,58 +67,59 @@ export type MasterState = {
 	};
 	turn: House | null;
 	nextTurnAfterAsking: House | null;
+	askings: {
+		ron: {
+			/**
+			 * 牌を捨てた人
+			 */
+			callee: House;
 
-	ronAsking: {
-		/**
-		 * 牌を捨てた人
-		 */
-		callee: House;
+			/**
+			 * ロンする権利がある人
+			 */
+			callers: House[];
+		} | null;
 
-		/**
-		 * ロンする権利がある人
-		 */
-		callers: House[];
-	} | null;
+		pon: {
+			/**
+			 * 牌を捨てた人
+			 */
+			callee: House;
 
-	ponAsking: {
-		/**
-		 * 牌を捨てた人
-		 */
-		callee: House;
+			/**
+			 * ポンする権利がある人
+			 */
+			caller: House;
+		} | null;
 
-		/**
-		 * ポンする権利がある人
-		 */
-		caller: House;
-	} | null;
+		cii: {
+			/**
+			 * 牌を捨てた人
+			 */
+			callee: House;
 
-	ciiAsking: {
-		/**
-		 * 牌を捨てた人
-		 */
-		callee: House;
+			/**
+			 * チーする権利がある人(calleeの下家なのは自明だがプログラム簡略化のため)
+			 */
+			caller: House;
+		} | null;
 
-		/**
-		 * チーする権利がある人(calleeの下家なのは自明だがプログラム簡略化のため)
-		 */
-		caller: House;
-	} | null;
+		kan: {
+			/**
+			 * 牌を捨てた人
+			 */
+			callee: House;
 
-	kanAsking: {
-		/**
-		 * 牌を捨てた人
-		 */
-		callee: House;
-
-		/**
-		 * カンする権利がある人
-		 */
-		caller: House;
-	} | null;
+			/**
+			 * カンする権利がある人
+			 */
+			caller: House;
+		} | null;
+	};
 };
 
 export class MasterGameEngine {
-	public state: MasterState;
+	private state: MasterState;
 
 	constructor(state: MasterState) {
 		this.state = state;
@@ -127,6 +128,10 @@ export class MasterGameEngine {
 	public get doras(): TileType[] {
 		return this.state.kingTiles.slice(0, this.state.activatedDorasCount)
 			.map(id => Common.nextTileForDora($type(id)));
+	}
+
+	public get handTiles(): Record<House, TileId[]> {
+		return this.state.handTiles;
 	}
 
 	public get handTileTypes(): Record<House, TileType[]> {
@@ -145,6 +150,30 @@ export class MasterGameEngine {
 			w: this.state.hoTiles.w.map(id => $type(id)),
 			n: this.state.hoTiles.n.map(id => $type(id)),
 		};
+	}
+
+	public get riichis(): Record<House, boolean> {
+		return this.state.riichis;
+	}
+
+	public get askings(): MasterState['askings'] {
+		return this.state.askings;
+	}
+
+	public get user1House(): House {
+		return this.state.user1House;
+	}
+
+	public get user2House(): House {
+		return this.state.user2House;
+	}
+
+	public get user3House(): House {
+		return this.state.user3House;
+	}
+
+	public get user4House(): House {
+		return this.state.user4House;
 	}
 
 	public static createInitialState(): MasterState {
@@ -207,10 +236,12 @@ export class MasterGameEngine {
 			},
 			turn: 'e',
 			nextTurnAfterAsking: null,
-			ponAsking: null,
-			ciiAsking: null,
-			kanAsking: null,
-			ronAsking: null,
+			askings: {
+				ron: null,
+				pon: null,
+				cii: null,
+				kan: null,
+			},
 		};
 	}
 
@@ -280,8 +311,9 @@ export class MasterGameEngine {
 				ronTile: this.hoTileTypes[callee].at(-1)!,
 				riichi: this.state.riichis[house],
 			}));
-			const doraCount = Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras);
-			// TODO: 赤ドラ
+			const doraCount =
+				Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras) +
+				Common.calcRedDoraCount(this.state.handTiles[house], this.state.huros[house]);
 			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 			const point = Common.fanToPoint(fans, house === 'e');
 			this.state.points[callee] -= point;
@@ -356,25 +388,25 @@ export class MasterGameEngine {
 
 		if (canRonHouses.length > 0 || canPonHouse != null || canCiiHouse != null) {
 			if (canRonHouses.length > 0) {
-				this.state.ronAsking = {
+				this.state.askings.ron = {
 					callee: house,
 					callers: canRonHouses,
 				};
 			}
 			if (canKanHouse != null) {
-				this.state.kanAsking = {
+				this.state.askings.kan = {
 					callee: house,
 					caller: canKanHouse,
 				};
 			}
 			if (canPonHouse != null) {
-				this.state.ponAsking = {
+				this.state.askings.pon = {
 					callee: house,
 					caller: canPonHouse,
 				};
 			}
 			if (canCiiHouse != null) {
-				this.state.ciiAsking = {
+				this.state.askings.cii = {
 					callee: house,
 					caller: canCiiHouse,
 				};
@@ -460,8 +492,9 @@ export class MasterGameEngine {
 			ronTile: null,
 			riichi: this.state.riichis[house],
 		}));
-		const doraCount = Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras);
-		// TODO: 赤ドラ
+		const doraCount =
+			Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras) +
+			Common.calcRedDoraCount(this.state.handTiles[house], this.state.huros[house]);
 		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
 		this.state.points.e += pointDeltas.e;
@@ -484,17 +517,17 @@ export class MasterGameEngine {
 		kan: boolean;
 		ron: House[];
 	}) {
-		if (this.state.ponAsking == null && this.state.ciiAsking == null && this.state.kanAsking == null && this.state.ronAsking == null) throw new Error();
+		if (this.state.askings.pon == null && this.state.askings.cii == null && this.state.askings.kan == null && this.state.askings.ron == null) throw new Error();
 
-		const pon = this.state.ponAsking;
-		const cii = this.state.ciiAsking;
-		const kan = this.state.kanAsking;
-		const ron = this.state.ronAsking;
+		const pon = this.state.askings.pon;
+		const cii = this.state.askings.cii;
+		const kan = this.state.askings.kan;
+		const ron = this.state.askings.ron;
 
-		this.state.ponAsking = null;
-		this.state.ciiAsking = null;
-		this.state.kanAsking = null;
-		this.state.ronAsking = null;
+		this.state.askings.pon = null;
+		this.state.askings.cii = null;
+		this.state.askings.kan = null;
+		this.state.askings.ron = null;
 
 		if (ron != null && answers.ron.length > 0) {
 			this.ronHora(answers.ron, ron.callee);
@@ -657,10 +690,10 @@ export class MasterGameEngine {
 			tilesCount: this.state.tiles.length,
 			doraIndicateTiles: this.state.kingTiles.slice(0, this.state.activatedDorasCount),
 			handTiles: {
-				e: house === 'e' ? this.state.handTiles.e : this.state.handTiles.e.map(() => null),
-				s: house === 's' ? this.state.handTiles.s : this.state.handTiles.s.map(() => null),
-				w: house === 'w' ? this.state.handTiles.w : this.state.handTiles.w.map(() => null),
-				n: house === 'n' ? this.state.handTiles.n : this.state.handTiles.n.map(() => null),
+				e: house === 'e' ? this.state.handTiles.e : this.state.handTiles.e.map(() => 0),
+				s: house === 's' ? this.state.handTiles.s : this.state.handTiles.s.map(() => 0),
+				w: house === 'w' ? this.state.handTiles.w : this.state.handTiles.w.map(() => 0),
+				n: house === 'n' ? this.state.handTiles.n : this.state.handTiles.n.map(() => 0),
 			},
 			hoTiles: {
 				e: this.state.hoTiles.e,
@@ -705,5 +738,9 @@ export class MasterGameEngine {
 
 	public calcCrc32ForUser4(): number {
 		// TODO
+	}
+
+	public getState(): MasterState {
+		return structuredClone(this.state);
 	}
 }

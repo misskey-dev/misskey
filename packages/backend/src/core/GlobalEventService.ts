@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as Reversi from 'misskey-reversi';
-import * as Mahjong from 'misskey-mahjong';
+import * as Mmj from 'misskey-mahjong';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -209,30 +209,30 @@ export interface MahjongRoomEventTypes {
 		room: Packed<'MahjongRoomDetailed'>;
 	};
 	tsumo: {
-		house: Mahjong.House;
-		tile: Mahjong.Tile;
+		house: Mmj.House;
+		tile: Mmj.Tile;
 	};
 	dahai: {
-		house: Mahjong.House;
-		tile: Mahjong.Tile;
+		house: Mmj.House;
+		tile: Mmj.Tile;
 		riichi: boolean;
 	};
 	dahaiAndTsumo: {
-		dahaiHouse: Mahjong.House;
-		dahaiTile: Mahjong.Tile;
-		tsumoTile: Mahjong.Tile;
+		dahaiHouse: Mmj.House;
+		dahaiTile: Mmj.Tile;
+		tsumoTile: Mmj.Tile;
 		riichi: boolean;
 	};
 	ponned: {
-		caller: Mahjong.House;
-		callee: Mahjong.House;
-		tile: Mahjong.Tile;
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tile: Mmj.Tile;
 	};
 	kanned: {
-		caller: Mahjong.House;
-		callee: Mahjong.House;
-		tile: Mahjong.Tile;
-		rinsyan: Mahjong.Tile;
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tile: Mmj.Tile;
+		rinsyan: Mmj.Tile;
 	};
 	ronned: {
 	};

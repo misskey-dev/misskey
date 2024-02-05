@@ -52,6 +52,7 @@ export type TileInstance = {
 
 export type TileId = number;
 
+// NOTE: 0 は"不明"(他プレイヤーの手牌など)を表すものとして予約されている
 export const TILE_ID_MAP = new Map<TileId, TileInstance>([
 	/* eslint-disable no-multi-spaces */
 	[1,   { t: 'm1' }],    [2,   { t: 'm1' }],    [3,   { t: 'm1' }],    [4,   { t: 'm1' }],
@@ -288,18 +289,21 @@ type EnvForCalcYaku = {
 export const YAKU_DEFINITIONS = [{
 	name: 'riichi',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.riichi;
 	},
 }, {
 	name: 'tsumo',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.tsumoTile != null;
 	},
 }, {
 	name: 'red',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return (
 			(state.handTiles.filter(t => t === 'chun').length >= 3) ||
@@ -313,6 +317,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'white',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return (
 			(state.handTiles.filter(t => t === 'haku').length >= 3) ||
@@ -326,6 +331,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'green',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return (
 			(state.handTiles.filter(t => t === 'hatsu').length >= 3) ||
@@ -339,6 +345,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'field-wind-e',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.fieldWind === 'e' && (
 			(state.handTiles.filter(t => t === 'e').length >= 3) ||
@@ -352,6 +359,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'field-wind-s',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.fieldWind === 's' && (
 			(state.handTiles.filter(t => t === 's').length >= 3) ||
@@ -365,6 +373,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'seat-wind-e',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.house === 'e' && (
 			(state.handTiles.filter(t => t === 'e').length >= 3) ||
@@ -378,6 +387,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'seat-wind-s',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.house === 's' && (
 			(state.handTiles.filter(t => t === 's').length >= 3) ||
@@ -391,6 +401,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'seat-wind-w',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.house === 'w' && (
 			(state.handTiles.filter(t => t === 'w').length >= 3) ||
@@ -404,6 +415,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'seat-wind-n',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.house === 'n' && (
 			(state.handTiles.filter(t => t === 'n').length >= 3) ||
@@ -417,6 +429,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'tanyao',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		const yaochuTiles: TileType[] = ['m1', 'm9', 'p1', 'p9', 's1', 's9', 'e', 's', 'w', 'n', 'haku', 'hatsu', 'chun'];
 		return (
@@ -432,6 +445,7 @@ export const YAKU_DEFINITIONS = [{
 }, {
 	name: 'pinfu',
 	fan: 1,
+	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		// 面前じゃないとダメ
 		if (state.huros.length !== 0) return false;
@@ -494,6 +508,19 @@ export function calcOwnedDoraCount(handTiles: TileType[], huros: Huro[], doras: 
 	return count;
 }
 
+export function calcRedDoraCount(handTiles: TileId[], huros: Huro[]): number {
+	let count = 0;
+	for (const t of handTiles) {
+		if (findTileByIdOrFail(t).red) count++;
+	}
+	for (const huro of huros) {
+		for (const t of huro.tiles) {
+			if (findTileByIdOrFail(t).red) count++;
+		}
+	}
+	return count;
+}
+
 export function calcTsumoHoraPointDeltas(house: House, fans: number): Record<House, number> {
 	const isParent = house === 'e';
 
@@ -534,13 +561,18 @@ export function isTile(tile: string): tile is TileType {
 	return TILE_TYPES.includes(tile as TileType);
 }
 
-export function sortTiles(tiles: TileType[]): TileType[] {
-	tiles.sort((a, b) => {
+export function sortTiles(tiles: TileId[]): TileId[] {
+	return tiles.toSorted((a, b) => {
+		return a - b;
+	});
+}
+
+export function sortTileTypes(tiles: TileType[]): TileType[] {
+	return tiles.toSorted((a, b) => {
 		const aIndex = TILE_TYPES.indexOf(a);
 		const bIndex = TILE_TYPES.indexOf(b);
 		return aIndex - bIndex;
 	});
-	return tiles;
 }
 
 export function nextHouse(house: House): House {

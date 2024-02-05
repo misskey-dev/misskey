@@ -33,10 +33,10 @@ export type PlayerState = {
 	 * 副露した牌を含まない手牌
 	 */
 	handTiles: {
-		e: TileId[] | null[];
-		s: TileId[] | null[];
-		w: TileId[] | null[];
-		n: TileId[] | null[];
+		e: TileId[] | 0[];
+		s: TileId[] | 0[];
+		w: TileId[] | 0[];
+		n: TileId[] | 0[];
 	};
 
 	hoTiles: {
@@ -72,7 +72,7 @@ export type PlayerState = {
 };
 
 export type KyokuResult = {
-	yakus: { name: string; fan: number; }[];
+	yakus: { name: string; fan: number; isYakuman: boolean; }[];
 	doraCount: number;
 	pointDeltas: { e: number; s: number; w: number; n: number; };
 };
@@ -84,11 +84,51 @@ export class PlayerGameEngine {
 	public static InvalidOperationError = class extends Error {};
 
 	private myUserNumber: 1 | 2 | 3 | 4;
-	public state: PlayerState;
+	private state: PlayerState;
 
 	constructor(myUserNumber: PlayerGameEngine['myUserNumber'], state: PlayerState) {
 		this.myUserNumber = myUserNumber;
 		this.state = state;
+	}
+
+	public get doras(): TileType[] {
+		return this.state.doraIndicateTiles.map(t => Common.nextTileForDora($type(t)));
+	}
+
+	public get points(): Record<House, number> {
+		return this.state.points;
+	}
+
+	public get handTiles(): Record<House, number[]> {
+		return this.state.handTiles;
+	}
+
+	public get hoTiles(): Record<House, number[]> {
+		return this.state.hoTiles;
+	}
+
+	public get huros(): Record<House, Huro[]> {
+		return this.state.huros;
+	}
+
+	public get tilesCount(): number {
+		return this.state.tilesCount;
+	}
+
+	public get canRon(): PlayerState['canRon'] {
+		return this.state.canRon;
+	}
+
+	public get canPon(): PlayerState['canPon'] {
+		return this.state.canPon;
+	}
+
+	public get canKan(): PlayerState['canKan'] {
+		return this.state.canKan;
+	}
+
+	public get canCii(): PlayerState['canCii'] {
+		return this.state.canCii;
 	}
 
 	public get myHouse(): House {
@@ -112,10 +152,6 @@ export class PlayerGameEngine {
 		return this.state.riichis[this.myHouse];
 	}
 
-	public get doras(): TileType[] {
-		return this.state.doraIndicateTiles.map(t => Common.nextTileForDora($type(t)));
-	}
-
 	public commit_tsumo(house: House, tile: TileId) {
 		console.log('commit_tsumo', this.state.turn, house, tile);
 		this.state.tilesCount--;
@@ -123,7 +159,7 @@ export class PlayerGameEngine {
 		if (house === this.myHouse) {
 			this.myHandTiles.push(tile);
 		} else {
-			this.state.handTiles[house].push(null);
+			this.state.handTiles[house].push(0);
 		}
 	}
 
@@ -148,9 +184,9 @@ export class PlayerGameEngine {
 		if (house === this.myHouse) {
 		} else {
 			const canRon = Common.getHoraSets(this.myHandTiles.concat(tile).map(id => $type(id))).length > 0;
-			const canPon = this.myHandTiles.filter(t => t === tile).length === 2;
-			const canKan = this.myHandTiles.filter(t => t === tile).length === 3;
-			const canCii = house === Common.prevHouse(this.myHouse) &&
+			const canPon = !this.isMeRiichi && this.myHandTiles.filter(t => t === tile).length === 2;
+			const canKan = !this.isMeRiichi && this.myHandTiles.filter(t => t === tile).length === 3;
+			const canCii = !this.isMeRiichi && house === Common.prevHouse(this.myHouse) &&
 				Common.SHUNTU_PATTERNS.some(pattern =>
 					pattern.includes($type(tile)) &&
 					pattern.filter(t => this.myHandTileTypes.includes(t)).length >= 2);
@@ -173,8 +209,9 @@ export class PlayerGameEngine {
 			ronTile: null,
 			riichi: this.state.riichis[house],
 		}));
-		const doraCount = Common.calcOwnedDoraCount(handTiles.map(id => $type(id)), this.state.huros[house], this.doras);
-		// TODO: 赤ドラ
+		const doraCount =
+			Common.calcOwnedDoraCount(handTiles.map(id => $type(id)), this.state.huros[house], this.doras) +
+			Common.calcRedDoraCount(handTiles, this.state.huros[house]);
 		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
 		this.state.points.e += pointDeltas.e;
@@ -186,6 +223,7 @@ export class PlayerGameEngine {
 			yakus: yakus.map(yaku => ({
 				name: yaku.name,
 				fan: yaku.fan,
+				isYakuman: yaku.isYakuman,
 			})),
 			doraCount,
 			pointDeltas,
@@ -223,13 +261,14 @@ export class PlayerGameEngine {
 				ronTile: $type(this.state.hoTiles[callee].at(-1)!),
 				riichi: this.state.riichis[house],
 			}));
-			const doraCount = Common.calcOwnedDoraCount(handTiles[house].map(id => $type(id)), this.state.huros[house], this.doras);
-			// TODO: 赤ドラ
+			const doraCount =
+				Common.calcOwnedDoraCount(handTiles[house].map(id => $type(id)), this.state.huros[house], this.doras) +
+				Common.calcRedDoraCount(handTiles[house], this.state.huros[house]);
 			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 			const point = Common.fanToPoint(fans, house === 'e');
 			this.state.points[callee] -= point;
 			this.state.points[house] += point;
-			resultMap[house].yakus = yakus.map(yaku => ({ name: yaku.name, fan: yaku.fan }));
+			resultMap[house].yakus = yakus.map(yaku => ({ name: yaku.name, fan: yaku.fan, isYakuman: yaku.isYakuman }));
 			resultMap[house].doraCount = doraCount;
 			resultMap[house].pointDeltas[callee] = -point;
 			resultMap[house].pointDeltas[house] = point;
@@ -297,6 +336,28 @@ export class PlayerGameEngine {
 		console.log('commit_kakan', this.state.turn, house, tiles);
 	}
 
+	/**
+	 * チーします
+	 * @param caller チーした人
+	 * @param callee 牌を捨てた人
+	 */
+	public commit_cii(caller: House, callee: House, tiles: TileId[]) {
+		this.state.canCii = null;
+
+		this.state.hoTiles[callee].pop();
+		if (caller === this.myHouse) {
+			if (this.myHandTiles.includes(tiles[0])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[0]), 1);
+			if (this.myHandTiles.includes(tiles[1])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[1]), 1);
+			if (this.myHandTiles.includes(tiles[2])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[2]), 1);
+		} else {
+			this.state.handTiles[caller].unshift();
+			this.state.handTiles[caller].unshift();
+		}
+		this.state.huros[caller].push({ type: 'cii', tiles: tiles, from: callee });
+
+		this.state.turn = caller;
+	}
+
 	public commit_nop() {
 		this.state.canRon = null;
 		this.state.canPon = null;
@@ -336,5 +397,9 @@ export class PlayerGameEngine {
 
 	public getKakanableTiles(): TileId[] {
 		return this.myHandTiles.filter(t => this.state.huros[this.myHouse].some(h => h.type === 'pon' && $type(t) === $type(h.tiles[0])));
+	}
+
+	public getState(): PlayerState {
+		return structuredClone(this.state);
 	}
 }
