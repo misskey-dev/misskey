@@ -25,6 +25,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
+import { mainRouter } from '@/global/router/main.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -614,15 +615,39 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       Vueが渡されたコンポーネントに内部的に__propsというプロパティを生やす影響で、
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
-		let dispose;
-		popup(MkPostFormDialog, props, {
-			closed: () => {
-				resolve();
-				dispose();
-			},
-		}).then(res => {
-			dispose = res.dispose;
-		});
+
+		const route = mainRouter.getCurrentPath().split('/');
+		if (route[1] === 'channels' && !props.channel) {
+			misskeyApi('channels/show', {
+				channelId: route[2],
+			}).then(channel => {
+				props = {
+					...props,
+					channel: { ...channel },
+				};
+				return makePostFormPopup(props);
+			}).catch(err => {
+				console.error(err);
+				alert({
+					type: 'error',
+					text: err.message,
+				});
+			});
+		} else {
+			makePostFormPopup(props);
+		}
+	});
+}
+
+function makePostFormPopup(props) {
+	let dispose;
+	popup(MkPostFormDialog, props, {
+		closed: () => {
+			resolve();
+			dispose();
+		},
+	}).then(res => {
+		dispose = res.dispose;
 	});
 }
 
