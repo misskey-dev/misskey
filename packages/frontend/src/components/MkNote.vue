@@ -93,9 +93,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<MkReactionsViewer :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
+			<MkReactionsViewer :note="appearNote" :maxNumber="1" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
-					<div :class="$style.reactionOmitted">{{ i18n.ts.more }}</div>
+					<MkButton class="_button" link :to="`/notes/${appearNote.id}/reactions`" :class="$style.reactionOmitted">{{ i18n.ts.more }}</MkButton>
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
@@ -168,6 +168,7 @@ import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
+import MkButton from './MkButton.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
@@ -984,10 +985,13 @@ function emitUpdReaction(emoji: string, delta: number) {
 }
 
 .reactionOmitted {
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	height: 32px;
-	margin: 2px;
-	padding: 0 6px;
-	opacity: .8;
+	margin: auto 2px;
+	border-radius: 6px;
+	padding: 0 3px;
+	border: dashed 1px var(--divider);
 }
 </style>

@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-							<MkNoteDetailed :key="note.id" v-model:note="note" :class="$style.note"/>
+							<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_margin">
 							<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
@@ -66,6 +66,7 @@ import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	noteId: string;
+	initialTab?: string;
 }>();
 
 const note = ref<null | Misskey.entities.Note>();
