@@ -12,7 +12,7 @@ import * as mfm from 'mfm-js';
 import ms from 'ms';
 import Ajv from 'ajv';
 import { In } from 'typeorm';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, type OnApplicationShutdown } from '@nestjs/common';
 import formbody from '@fastify/formbody';
 import multipart from '@fastify/multipart';
 import { format as dateFormat } from 'date-fns';
@@ -45,7 +45,7 @@ type MediaImage = { source: string, alt: string } | string;
 type MediaRawSource = { path: string, filename: string };
 type MediaRawSources = { photo: MediaRawSource[], audio: MediaRawSource[], video: MediaRawSource[] };
 type MediaSource = { photos: MediaImage[], audios: string[], videos: string[] };
-type MicropubRequest = { h?: string, media?: MediaRawSources, action?: string, url?: string, body: unknown };
+type MicropubRequest = { h?: string, media?: MediaRawSources, action?: string, url?: string, body: unknown, coalition: string };
 type NoteCreateOptions = {
 	content: (string | { html: string })[],
 	cw?: string,
@@ -120,8 +120,9 @@ class MicropubError extends Error {
 }
 
 @Injectable()
-export class MicropubServerService {
+export class MicropubServerService implements OnApplicationShutdown {
 	#logger: Logger;
+	#temporaryFileCleaners: Map<string, (() => void)[]>;
 
 	constructor(
 		@Inject(DI.config)
@@ -148,6 +149,7 @@ export class MicropubServerService {
 		private rateLimiterService: RateLimiterService,
 		private authenticateService: AuthenticateService,
 	) {
+		this.#temporaryFileCleaners = new Map();
 		this.#logger = this.loggerService.getLogger('micropub');
 	}
 
@@ -287,7 +289,7 @@ export class MicropubServerService {
 	}
 
 	@bindThis
-	private async createNote(user: MiUser, options: NoteCreateOptions, rawMedia?: MediaRawSources): Promise<{ noteId: MiNote['id'] }> {
+	private async createNote(user: MiUser, options: NoteCreateOptions, coalition: string, rawMedia?: MediaRawSources): Promise<{ noteId: MiNote['id'] }> {
 		let message = options.content.map(m => typeof m === 'object' && 'html' in m ? this.mfmService.fromHtml(m.html) : m).join('\n');
 		const published = options.published && options.published.length > 0 ? new Date(options.published[0]) : new Date();
 		const html = options.content.reduce<string>((a, b) => typeof b === 'object' && 'html' in b ? a + b.html : a, '');
@@ -312,7 +314,8 @@ export class MicropubServerService {
 				if (driveFile === null) throw new MicropubError(errorSymbols.BAD_REQUEST, `Cannot access to ${medium}`);
 				attachedMedia = [...attachedMedia, driveFile];
 			} else {
-				const [destPath] = await createTemp();
+				const [destPath, cleanup] = await createTemp();
+				this.#temporaryFileCleaners.set(coalition, [...(this.#temporaryFileCleaners.get(coalition) ?? []), cleanup]);
 				await this.downloadService.downloadUrl(source, destPath);
 				const extension = await this.fileInfoService.detectType(destPath);
 				const filename = correctFilename('micropub-' + dateFormat(new Date(), 'yyyy-MM-ddHH-mm-ss'), extension.ext);
@@ -436,7 +439,7 @@ export class MicropubServerService {
 			if (!valid) throw new MicropubError(errorSymbols.BAD_REQUEST, message);
 			if (app && !app.permission.includes('write:notes')) throw new MicropubError(errorSymbols.INSUFFICIENT_SCOPE);
 			const validated = request.body as SchemaType<typeof createNoteSchema>;
-			const { noteId } = await this.createNote(user, { ...this.serializeNoteFromRequest(validated), content: validated.content }, request.media);
+			const { noteId } = await this.createNote(user, { ...this.serializeNoteFromRequest(validated), content: validated.content }, request.coalition, request.media);
 			reply.code(201 /* Created */);
 			reply.header('Location', new URL('/notes/' + noteId, this.config.url));
 			return await reply.send();
@@ -498,7 +501,7 @@ export class MicropubServerService {
 			const message = `${validateIsCreatingNote.errors?.at(0)?.schemaPath}: ${validateIsCreatingNote.errors?.at(0)?.message}`;
 			if (!valid) throw new MicropubError(errorSymbols.BAD_REQUEST, message);
 			await this.deleteNote(user, note);
-			const { noteId: createdNoteId } = await this.createNote(user, options);
+			const { noteId: createdNoteId } = await this.createNote(user, options, request.coalition);
 			reply.code(201 /* Created */);
 			reply.header('Location', new URL('/notes/' + createdNoteId, this.config.url));
 			return await reply.send();
@@ -554,7 +557,8 @@ export class MicropubServerService {
 						if (part.type === 'file') {
 							if (/^(photo|audio|video)$/.test(part.fieldname)) {
 								const fieldname = part.fieldname as keyof MediaRawSources;
-								const [destPath] = await createTemp();
+								const [destPath, cleanup] = await createTemp();
+								this.#temporaryFileCleaners.set(request.id, [...(this.#temporaryFileCleaners.get(request.id) ?? []), cleanup]);
 								await stream.pipeline(part.file, fs.createWriteStream(destPath));
 								media[fieldname] = [...media[fieldname], { path: destPath, filename: part.filename }];
 							}
@@ -597,6 +601,7 @@ export class MicropubServerService {
 
 				return await this.handleRequest({
 					media,
+					coalition: request.id,
 					h: request.body?.type ? 'entry' : request.body?.h ?? params.h,
 					action: request.body?.action ?? params.action,
 					url: request.body?.url ?? params.url,
@@ -604,6 +609,9 @@ export class MicropubServerService {
 				}, user, app, reply);
 			} catch (err) {
 				return await this.sendMicropubApiError(err, reply);
+			} finally {
+				this.#temporaryFileCleaners.get(request.id)?.forEach(v => v());
+				this.#temporaryFileCleaners.delete(request.id);
 			}
 		});
 
@@ -669,7 +677,8 @@ export class MicropubServerService {
 				const [user, app] = await this.authenticateService.authenticate(token);
 				if (user === null) throw new MicropubError(errorSymbols.UNAUTHORIZED);
 				if (app && !app.permission.includes('write:drive')) throw new MicropubError(errorSymbols.INSUFFICIENT_SCOPE);
-				const [destPath] = await createTemp();
+				const [destPath, cleanup] = await createTemp();
+				this.#temporaryFileCleaners.set(request.id, [...(this.#temporaryFileCleaners.get(request.id) ?? []), cleanup]);
 				await stream.pipeline(multipartData.file, fs.createWriteStream(destPath));
 				if (multipartData.fieldname !== 'file') throw new MicropubError(errorSymbols.BAD_REQUEST);
 				const driveFile = await this.driveService.addFile({ user, path: destPath, name: path.parse(multipartData.filename).name, force: true });
@@ -678,7 +687,17 @@ export class MicropubServerService {
 				return await reply.send();
 			} catch (err) {
 				return await this.sendMicropubApiError(err, reply);
+			} finally {
+				this.#temporaryFileCleaners.get(request.id)?.forEach(v => v());
+				this.#temporaryFileCleaners.delete(request.id);
 			}
 		});
+	}
+
+	@bindThis // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public onApplicationShutdown(signal?: string | undefined) {
+		for (const cleaners of this.#temporaryFileCleaners.values()) {
+			cleaners.forEach(v => v());
+		}
 	}
 }
