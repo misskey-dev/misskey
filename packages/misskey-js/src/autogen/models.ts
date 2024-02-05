@@ -1,6 +1,6 @@
 /*
  * version: 2024.2.0-beta.7
- * generatedAt: 2024-02-04T07:16:03.620Z
+ * generatedAt: 2024-02-05T06:03:40.651Z
  */
 
 import { components } from './types.js';
@@ -37,6 +37,7 @@ export type FederationInstance = components['schemas']['FederationInstance'];
 export type GalleryPost = components['schemas']['GalleryPost'];
 export type EmojiSimple = components['schemas']['EmojiSimple'];
 export type EmojiDetailed = components['schemas']['EmojiDetailed'];
+export type EmojiDetailedAdmin = components['schemas']['EmojiDetailedAdmin'];
 export type Flash = components['schemas']['Flash'];
 export type Signin = components['schemas']['Signin'];
 export type RoleLite = components['schemas']['RoleLite'];

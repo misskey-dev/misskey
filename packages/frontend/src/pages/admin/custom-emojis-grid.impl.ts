@@ -22,12 +22,12 @@ export type GridItem = {
 	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
 }
 
-export function fromEmojiDetailed(it: Misskey.entities.EmojiDetailed): GridItem {
+export function fromEmojiDetailedAdmin(it: Misskey.entities.EmojiDetailedAdmin): GridItem {
 	return {
 		checked: false,
 		id: it.id,
 		fileId: undefined,
-		url: it.url,
+		url: it.publicUrl,
 		name: it.name,
 		host: it.host ?? '',
 		category: it.category ?? '',

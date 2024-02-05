@@ -43,7 +43,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { ColumnSetting } from '@/components/grid/column.js';
-import { fromEmojiDetailed, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromEmojiDetailedAdmin, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
 	GridCellContextMenuEvent,
 	GridCellValueChangeEvent,
@@ -187,7 +187,7 @@ async function refreshCustomEmojis(query?: string, host?: string, sinceId?: stri
 
 	customEmojis.value = emojis;
 	console.log(customEmojis.value);
-	gridItems.value = customEmojis.value.map(it => fromEmojiDetailed(it));
+	gridItems.value = customEmojis.value.map(it => fromEmojiDetailedAdmin(it));
 }
 
 onMounted(async () => {

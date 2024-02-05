@@ -1,6 +1,6 @@
 /*
  * version: 2024.2.0-beta.7
- * generatedAt: 2024-02-04T07:16:03.625Z
+ * generatedAt: 2024-02-05T06:03:40.656Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -411,6 +411,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
      */
     request<E extends 'admin/emoji/update', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
+     */
+    request<E extends 'admin/emoji/v2/list', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

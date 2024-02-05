@@ -70,5 +70,35 @@ export class EmojiEntityService {
 	): Promise<Packed<'EmojiDetailed'>[]> {
 		return Promise.all(emojis.map(x => this.packDetailed(x)));
 	}
+
+	@bindThis
+	public async packDetailedAdmin(
+		src: MiEmoji['id'] | MiEmoji,
+	): Promise<Packed<'EmojiDetailedAdmin'>> {
+		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
+
+		return {
+			id: emoji.id,
+			updatedAt: emoji.updatedAt?.toISOString() ?? null,
+			name: emoji.name,
+			host: emoji.host,
+			uri: emoji.uri,
+			type: emoji.type,
+			aliases: emoji.aliases,
+			category: emoji.category,
+			publicUrl: emoji.publicUrl,
+			license: emoji.license,
+			localOnly: emoji.localOnly,
+			isSensitive: emoji.isSensitive,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+		};
+	}
+
+	@bindThis
+	public packDetailedAdminMany(
+		emojis: any[],
+	): Promise<Packed<'EmojiDetailedAdmin'>[]> {
+		return Promise.all(emojis.map(x => this.packDetailedAdmin(x)));
+	}
 }
 

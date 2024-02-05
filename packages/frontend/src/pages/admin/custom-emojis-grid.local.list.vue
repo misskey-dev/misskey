@@ -37,7 +37,7 @@
 import { computed, ref, toRefs, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { fromEmojiDetailed, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromEmojiDetailedAdmin, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
@@ -81,7 +81,7 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-	customEmojis: Misskey.entities.EmojiDetailed[];
+	customEmojis: Misskey.entities.EmojiDetailedAdmin[];
 }>();
 
 const { customEmojis } = toRefs(props);
@@ -287,7 +287,7 @@ function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) 
 }
 
 function refreshGridItems() {
-	gridItems.value = customEmojis.value.map(it => fromEmojiDetailed(it));
+	gridItems.value = customEmojis.value.map(it => fromEmojiDetailedAdmin(it));
 	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
 }
 

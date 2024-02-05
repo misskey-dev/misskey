@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setImmediate } from 'node:timers/promises';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import * as Redis from 'ioredis';
@@ -20,6 +21,53 @@ import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
+
+export const fetchEmojisHostTypes = [
+	'local',
+	'remote',
+	'all',
+] as const;
+export type FetchEmojisHostTypes = typeof fetchEmojisHostTypes[number];
+export const fetchEmojisSortKeys = [
+	'id',
+	'updatedAt',
+	'name',
+	'host',
+	'uri',
+	'publicUrl',
+	'type',
+	'aliases',
+	'category',
+	'license',
+	'isSensitive',
+	'localOnly',
+] as const;
+export type FetchEmojisSortKeys = typeof fetchEmojisSortKeys[number];
+export type FetchEmojisParams = {
+	query?: {
+		updatedAtFrom?: string;
+		updatedAtTo?: string;
+		name?: string;
+		host?: string;
+		uri?: string;
+		publicUrl?: string;
+		type?: string;
+		aliases?: string;
+		category?: string;
+		license?: string;
+		isSensitive?: boolean;
+		localOnly?: boolean;
+		hostType?: FetchEmojisHostTypes;
+	},
+	sinceId?: string;
+	untilId?: string;
+	limit?: number;
+	page?: number;
+	sort?: {
+		key : FetchEmojisSortKeys;
+		order : 'ASC' | 'DESC';
+	}[]
+}
 
 @Injectable()
 export class CustomEmojiService implements OnApplicationShutdown {
@@ -100,64 +148,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addBulk(
-		params: {
-			driveFile: MiDriveFile;
-			name: string;
-			category: string | null;
-			aliases: string[];
-			host: string | null;
-			license: string | null;
-			isSensitive: boolean;
-			localOnly: boolean;
-			roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
-		}[],
-		moderator?: MiUser,
-	): Promise<MiEmoji[]> {
-		const emojis = await this.emojisRepository
-			.insert(
-				params.map(it => ({
-					id: this.idService.gen(),
-					updatedAt: new Date(),
-					name: it.name,
-					category: it.category,
-					host: it.host,
-					aliases: it.aliases,
-					originalUrl: it.driveFile.url,
-					publicUrl: it.driveFile.webpublicUrl ?? it.driveFile.url,
-					type: it.driveFile.webpublicType ?? it.driveFile.type,
-					license: it.license,
-					isSensitive: it.isSensitive,
-					localOnly: it.localOnly,
-					roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction,
-				})),
-			)
-			.then(x => this.emojisRepository.createQueryBuilder('emoji').whereInIds(x.identifiers).getMany());
-
-		const localEmojis = emojis.filter(it => it.host == null);
-		if (localEmojis.length > 0) {
-			this.localEmojisCache.refresh();
-
-			this.emojiEntityService.packDetailedMany(localEmojis).then(it => {
-				for (const emoji of it) {
-					this.globalEventService.publishBroadcastStream('emojiAdded', { emoji });
-				}
-			});
-
-			if (moderator) {
-				for (const emoji of localEmojis) {
-					this.moderationLogService.log(moderator, 'addCustomEmoji', {
-						emojiId: emoji.id,
-						emoji: emoji,
-					});
-				}
-			}
-		}
-
-		return emojis;
-	}
-
-	@bindThis
 	public async update(id: MiEmoji['id'], data: {
 		driveFile?: MiDriveFile;
 		name?: string;
@@ -211,103 +201,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				before: emoji,
 				after: updated,
 			});
-		}
-	}
-
-	@bindThis
-	public async updateBulk(
-		params: {
-			id: MiEmoji['id'];
-			driveFile?: MiDriveFile;
-			name?: string;
-			category?: string | null;
-			aliases?: string[];
-			license?: string | null;
-			isSensitive?: boolean;
-			localOnly?: boolean;
-			roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
-		}[],
-		moderator?: MiUser,
-	): Promise<void> {
-		const ids = params.map(it => it.id);
-
-		// IDに対応するものと、新しく設定しようとしている名前と同じ名前を持つレコードをそれぞれ取得する
-		const [storedEmojis, sameNameEmojis] = await Promise.all([
-			this.emojisRepository.createQueryBuilder('emoji')
-				.whereInIds(ids)
-				.getMany()
-				.then(emojis => new Map(emojis.map(it => [it.id, it]))),
-			this.emojisRepository.createQueryBuilder('emoji')
-				.where('emoji.name IN (:...names) AND emoji.host IS NULL', { names: params.map(it => it.name) })
-				.getMany(),
-		]);
-
-		// 新しく設定しようとしている名前と同じ名前を持つ別レコードがある場合、重複とみなしてエラーとする
-		const alreadyExists = Array.of<string>();
-		for (const sameNameEmoji of sameNameEmojis) {
-			const emoji = storedEmojis.get(sameNameEmoji.id);
-			if (emoji != null && emoji.id !== sameNameEmoji.id) {
-				alreadyExists.push(sameNameEmoji.name);
-			}
-		}
-		if (alreadyExists.length > 0) {
-			throw new Error(`name already exists: ${alreadyExists.join(', ')}`);
-		}
-
-		for (const emoji of params) {
-			await this.emojisRepository.update(emoji.id, {
-				updatedAt: new Date(),
-				name: emoji.name,
-				category: emoji.category,
-				aliases: emoji.aliases,
-				license: emoji.license,
-				isSensitive: emoji.isSensitive,
-				localOnly: emoji.localOnly,
-				originalUrl: emoji.driveFile != null ? emoji.driveFile.url : undefined,
-				publicUrl: emoji.driveFile != null ? (emoji.driveFile.webpublicUrl ?? emoji.driveFile.url) : undefined,
-				type: emoji.driveFile != null ? (emoji.driveFile.webpublicType ?? emoji.driveFile.type) : undefined,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
-			});
-		}
-
-		this.localEmojisCache.refresh();
-
-		// 名前が変わっていないものはそのまま更新としてイベント発信
-		const updateEmojis = params.filter(it => storedEmojis.get(it.id)?.name === it.name);
-		if (updateEmojis.length > 0) {
-			const packedList = await this.emojiEntityService.packDetailedMany(updateEmojis);
-			this.globalEventService.publishBroadcastStream('emojiUpdated', {
-				emojis: packedList,
-			});
-		}
-
-		// 名前が変わったものは削除・追加としてイベント発信
-		const nameChangeEmojis = params.filter(it => storedEmojis.get(it.id)?.name !== it.name);
-		if (nameChangeEmojis.length > 0) {
-			const packedList = await this.emojiEntityService.packDetailedMany(nameChangeEmojis);
-			this.globalEventService.publishBroadcastStream('emojiDeleted', {
-				emojis: packedList,
-			});
-
-			for (const packed of packedList) {
-				this.globalEventService.publishBroadcastStream('emojiAdded', {
-					emoji: packed,
-				});
-			}
-		}
-
-		if (moderator) {
-			const updatedEmojis = await this.emojisRepository.createQueryBuilder('emoji')
-				.whereInIds(storedEmojis.keys())
-				.getMany()
-				.then(it => new Map(it.map(it => [it.id, it])));
-			for (const emoji of storedEmojis.values()) {
-				this.moderationLogService.log(moderator, 'updateCustomEmoji', {
-					emojiId: emoji.id,
-					before: emoji,
-					after: updatedEmojis.get(emoji.id),
-				});
-			}
 		}
 	}
 
@@ -543,6 +436,265 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	@bindThis
 	public getEmojiById(id: string): Promise<MiEmoji | null> {
 		return this.emojisRepository.findOneBy({ id });
+	}
+
+	@bindThis
+	public async fetchEmojis(params?: FetchEmojisParams) {
+		const builder = this.emojisRepository.createQueryBuilder('emoji');
+		if (params?.query) {
+			const q = params.query;
+			if (q.updatedAtFrom) {
+				// noIndexScan
+				builder.andWhere('emoji.updatedAt >= :updateAtFrom', { updateAtFrom: q.updatedAtFrom });
+			}
+			if (q.updatedAtTo) {
+				// noIndexScan
+				builder.andWhere('emoji.updatedAt <= :updateAtTo', { updateAtTo: q.updatedAtTo });
+			}
+			if (q.name) {
+				builder.andWhere('emoji.name LIKE :name', { name: `%${q.name}%` });
+			}
+			if (q.hostType === 'local') {
+				builder.andWhere('emoji.host LIKE :host', { host: `%${q.host}%` });
+			} else {
+				if (q.host) {
+					// noIndexScan
+					builder.andWhere('emoji.host LIKE :host', { host: `%${q.host}%` });
+				} else {
+					builder.andWhere('emoji.host IS NOT NULL');
+				}
+			}
+			if (q.uri) {
+				// noIndexScan
+				builder.andWhere('emoji.uri LIKE :uri', { url: `%${q.uri}%` });
+			}
+			if (q.publicUrl) {
+				// noIndexScan
+				builder.andWhere('emoji.publicUrl LIKE :publicUrl', { publicUrl: `%${q.publicUrl}%` });
+			}
+			if (q.type) {
+				// noIndexScan
+				builder.andWhere('emoji.type LIKE :type', { type: `%${q.type}%` });
+			}
+			if (q.aliases) {
+				// noIndexScan
+				builder.andWhere('emoji.aliases ANY(:aliases)', { aliases: q.aliases });
+			}
+			if (q.category) {
+				// noIndexScan
+				builder.andWhere('emoji.category LIKE :category', { category: `%${q.category}%` });
+			}
+			if (q.license) {
+				// noIndexScan
+				builder.andWhere('emoji.license LIKE :license', { license: `%${q.license}%` });
+			}
+			if (q.isSensitive != null) {
+				// noIndexScan
+				builder.andWhere('emoji.isSensitive = :isSensitive', { isSensitive: q.isSensitive });
+			}
+			if (q.localOnly != null) {
+				// noIndexScan
+				builder.andWhere('emoji.localOnly = :localOnly', { localOnly: q.localOnly });
+			}
+		}
+
+		if (params?.sinceId) {
+			builder.andWhere('emoji.id > :sinceId', { sinceId: params.sinceId });
+		}
+		if (params?.untilId) {
+			builder.andWhere('emoji.id < :untilId', { untilId: params.untilId });
+		}
+
+		if (params?.sort) {
+			for (const sort of params.sort) {
+				builder.addOrderBy(`emoji.${sort.key}`, sort.order);
+			}
+		} else {
+			builder.addOrderBy('emoji.id', 'DESC');
+		}
+
+		const limit = params?.limit ?? 10;
+		if (params?.page) {
+			builder.skip((params.page - 1) * limit);
+		}
+
+		builder.take(limit);
+
+		const [emojis, count] = await builder.getManyAndCount();
+
+		return {
+			emojis,
+		  count: (count > limit ? emojis.length : count),
+			allCount: count,
+			allPages: Math.ceil(count / limit),
+		};
+	}
+
+	@bindThis
+	public async addBulk(
+		params: {
+			driveFile: MiDriveFile;
+			name: string;
+			category: string | null;
+			aliases: string[];
+			host: string | null;
+			license: string | null;
+			isSensitive: boolean;
+			localOnly: boolean;
+			roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
+		}[],
+		moderator?: MiUser,
+	): Promise<MiEmoji[]> {
+		const emojis = await this.emojisRepository
+			.insert(
+				params.map(it => ({
+					id: this.idService.gen(),
+					updatedAt: new Date(),
+					name: it.name,
+					category: it.category,
+					host: it.host,
+					aliases: it.aliases,
+					originalUrl: it.driveFile.url,
+					publicUrl: it.driveFile.webpublicUrl ?? it.driveFile.url,
+					type: it.driveFile.webpublicType ?? it.driveFile.type,
+					license: it.license,
+					isSensitive: it.isSensitive,
+					localOnly: it.localOnly,
+					roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				})),
+			)
+			.then(x => this.emojisRepository.createQueryBuilder('emoji')
+				.where({ id: In(x.identifiers) })
+				.getMany(),
+			);
+
+		// 以降は絵文字登録による副作用なのでリクエストから切り離して実行
+
+		// noinspection ES6MissingAwait
+		setImmediate(async () => {
+			const localEmojis = emojis.filter(it => it.host == null);
+			if (localEmojis.length > 0) {
+				await this.localEmojisCache.refresh();
+
+				const packedEmojis = await this.emojiEntityService.packDetailedMany(localEmojis);
+				for (const emoji of packedEmojis) {
+					this.globalEventService.publishBroadcastStream('emojiAdded', { emoji });
+				}
+
+				if (moderator) {
+					for (const emoji of localEmojis) {
+						await this.moderationLogService.log(moderator, 'addCustomEmoji', {
+							emojiId: emoji.id,
+							emoji: emoji,
+						});
+					}
+				}
+			}
+		});
+
+		return emojis;
+	}
+
+	@bindThis
+	public async updateBulk(
+		params: {
+			id: MiEmoji['id'];
+			driveFile?: MiDriveFile;
+			name?: string;
+			category?: string | null;
+			aliases?: string[];
+			license?: string | null;
+			isSensitive?: boolean;
+			localOnly?: boolean;
+			roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
+		}[],
+		moderator?: MiUser,
+	): Promise<void> {
+		const ids = params.map(it => it.id);
+
+		// IDに対応するものと、新しく設定しようとしている名前と同じ名前を持つレコードをそれぞれ取得する
+		const [storedEmojis, sameNameEmojis] = await Promise.all([
+			this.emojisRepository.createQueryBuilder('emoji')
+				.whereInIds(ids)
+				.getMany()
+				.then(emojis => new Map(emojis.map(it => [it.id, it]))),
+			this.emojisRepository.createQueryBuilder('emoji')
+				.where('emoji.name IN (:...names) AND emoji.host IS NULL', { names: params.map(it => it.name) })
+				.getMany(),
+		]);
+
+		// 新しく設定しようとしている名前と同じ名前を持つ別レコードがある場合、重複とみなしてエラーとする
+		const alreadyExists = Array.of<string>();
+		for (const sameNameEmoji of sameNameEmojis) {
+			const emoji = storedEmojis.get(sameNameEmoji.id);
+			if (emoji != null && emoji.id !== sameNameEmoji.id) {
+				alreadyExists.push(sameNameEmoji.name);
+			}
+		}
+		if (alreadyExists.length > 0) {
+			throw new Error(`name already exists: ${alreadyExists.join(', ')}`);
+		}
+
+		for (const emoji of params) {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				name: emoji.name,
+				category: emoji.category,
+				aliases: emoji.aliases,
+				license: emoji.license,
+				isSensitive: emoji.isSensitive,
+				localOnly: emoji.localOnly,
+				originalUrl: emoji.driveFile != null ? emoji.driveFile.url : undefined,
+				publicUrl: emoji.driveFile != null ? (emoji.driveFile.webpublicUrl ?? emoji.driveFile.url) : undefined,
+				type: emoji.driveFile != null ? (emoji.driveFile.webpublicType ?? emoji.driveFile.type) : undefined,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
+			});
+		}
+
+		// 以降は絵文字更新による副作用なのでリクエストから切り離して実行
+
+		// noinspection ES6MissingAwait
+		setImmediate(async () => {
+			await this.localEmojisCache.refresh();
+
+			// 名前が変わっていないものはそのまま更新としてイベント発信
+			const updateEmojis = params.filter(it => storedEmojis.get(it.id)?.name === it.name);
+			if (updateEmojis.length > 0) {
+				const packedList = await this.emojiEntityService.packDetailedMany(updateEmojis);
+				this.globalEventService.publishBroadcastStream('emojiUpdated', {
+					emojis: packedList,
+				});
+			}
+
+			// 名前が変わったものは削除・追加としてイベント発信
+			const nameChangeEmojis = params.filter(it => storedEmojis.get(it.id)?.name !== it.name);
+			if (nameChangeEmojis.length > 0) {
+				const packedList = await this.emojiEntityService.packDetailedMany(nameChangeEmojis);
+				this.globalEventService.publishBroadcastStream('emojiDeleted', {
+					emojis: packedList,
+				});
+
+				for (const packed of packedList) {
+					this.globalEventService.publishBroadcastStream('emojiAdded', {
+						emoji: packed,
+					});
+				}
+			}
+
+			if (moderator) {
+				const updatedEmojis = await this.emojisRepository.createQueryBuilder('emoji')
+					.whereInIds(storedEmojis.keys())
+					.getMany()
+					.then(it => new Map(it.map(it => [it.id, it])));
+				for (const emoji of storedEmojis.values()) {
+					await this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+						emojiId: emoji.id,
+						before: emoji,
+						after: updatedEmojis.get(emoji.id),
+					});
+				}
+			}
+		});
 	}
 
 	@bindThis

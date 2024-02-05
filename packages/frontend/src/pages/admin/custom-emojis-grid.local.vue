@@ -29,22 +29,14 @@ import XRegisterComponent from '@/pages/admin/custom-emojis-grid.local.register.
 
 type PageMode = 'list' | 'register';
 
-const customEmojis = ref<Misskey.entities.EmojiDetailed[]>([]);
+const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const modeTab = ref<PageMode>('list');
 const query = ref<string>();
 
 async function refreshCustomEmojis(query?: string, sinceId?: string, untilId?: string) {
-	const emojis = await misskeyApi('admin/emoji/list', {
+	const emojis = await misskeyApi('admin/emoji/v2/list', {
 		limit: 100,
-		query: query?.length ? query : undefined,
-		sinceId,
-		untilId,
-	});
-
-	if (sinceId) {
-		// 通常はID降順だが、sinceIdを設定すると昇順での並び替えとなるので、逆順にする必要がある
-		emojis.reverse();
-	}
+	}).then(it => it.emojis);
 
 	customEmojis.value = emojis;
 }

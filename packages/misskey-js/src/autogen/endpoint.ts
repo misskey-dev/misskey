@@ -1,6 +1,6 @@
 /*
  * version: 2024.2.0-beta.7
- * generatedAt: 2024-02-04T07:16:03.623Z
+ * generatedAt: 2024-02-05T06:03:40.654Z
  */
 
 import type {
@@ -54,6 +54,8 @@ import type {
 	AdminEmojiSetCategoryBulkRequest,
 	AdminEmojiSetLicenseBulkRequest,
 	AdminEmojiUpdateRequest,
+	AdminEmojiV2ListRequest,
+	AdminEmojiV2ListResponse,
 	AdminFederationDeleteAllFilesRequest,
 	AdminFederationRefreshRemoteInstanceMetadataRequest,
 	AdminFederationRemoveAllFollowingRequest,
@@ -596,6 +598,7 @@ export type Endpoints = {
 	'admin/emoji/set-category-bulk': { req: AdminEmojiSetCategoryBulkRequest; res: EmptyResponse };
 	'admin/emoji/set-license-bulk': { req: AdminEmojiSetLicenseBulkRequest; res: EmptyResponse };
 	'admin/emoji/update': { req: AdminEmojiUpdateRequest; res: EmptyResponse };
+	'admin/emoji/v2/list': { req: AdminEmojiV2ListRequest; res: AdminEmojiV2ListResponse };
 	'admin/federation/delete-all-files': { req: AdminFederationDeleteAllFilesRequest; res: EmptyResponse };
 	'admin/federation/refresh-remote-instance-metadata': { req: AdminFederationRefreshRemoteInstanceMetadataRequest; res: EmptyResponse };
 	'admin/federation/remove-all-following': { req: AdminFederationRemoveAllFollowingRequest; res: EmptyResponse };
