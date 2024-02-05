@@ -321,11 +321,11 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				this.waitForTurn(room, res.turn, engine);
 				break;
 			case 'ponned':
-				this.globalEventService.publishMahjongRoomStream(room.id, 'ponned', { caller: res.caller, callee: res.callee, tile: res.tile });
+				this.globalEventService.publishMahjongRoomStream(room.id, 'ponned', { caller: res.caller, callee: res.callee, tiles: res.tiles });
 				this.waitForTurn(room, res.turn, engine);
 				break;
 			case 'kanned':
-				this.globalEventService.publishMahjongRoomStream(room.id, 'kanned', { caller: res.caller, callee: res.callee, tile: res.tile, rinsyan: res.rinsyan });
+				this.globalEventService.publishMahjongRoomStream(room.id, 'kanned', { caller: res.caller, callee: res.callee, tiles: res.tiles, rinsyan: res.rinsyan });
 				this.waitForTurn(room, res.turn, engine);
 				break;
 			case 'ronned':
@@ -501,8 +501,10 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		await this.clearTurnWaitingTimer(room.id);
 
 		const res = engine.commit_ankan(myHouse, tile);
+		room.gameState = engine.state;
+		await this.saveRoom(room);
 
-		this.globalEventService.publishMahjongRoomStream(room.id, 'ankanned', { });
+		this.globalEventService.publishMahjongRoomStream(room.id, 'ankanned', { house: myHouse, tiles: res.tiles, rinsyan: res.rinsyan });
 
 		this.waitForTurn(room, myHouse, engine);
 	}
@@ -519,8 +521,10 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		await this.clearTurnWaitingTimer(room.id);
 
 		const res = engine.commit_kakan(myHouse, tile);
+		room.gameState = engine.state;
+		await this.saveRoom(room);
 
-		this.globalEventService.publishMahjongRoomStream(room.id, 'kakanned', { });
+		this.globalEventService.publishMahjongRoomStream(room.id, 'kakanned', { house: myHouse, tiles: res.tiles, rinsyan: res.rinsyan, from: res.from });
 	}
 
 	@bindThis
@@ -535,6 +539,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		await this.clearTurnWaitingTimer(room.id);
 
 		const res = engine.commit_tsumoHora(myHouse);
+		room.gameState = engine.state;
+		await this.saveRoom(room);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'tsumoHora', { house: myHouse, handTiles: res.handTiles, tsumoTile: res.tsumoTile });
 	}

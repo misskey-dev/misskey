@@ -9803,7 +9803,7 @@ export interface Locale extends ILocale {
              */
             "kokushi": string;
             /**
-             * 国士無双13面待ち
+             * 国士無双十三面待
              */
             "kokushi-13": string;
             /**
@@ -9811,7 +9811,7 @@ export interface Locale extends ILocale {
              */
             "suanko": string;
             /**
-             * 四暗刻単騎待ち
+             * 四暗刻単騎待
              */
             "suanko-tanki": string;
             /**

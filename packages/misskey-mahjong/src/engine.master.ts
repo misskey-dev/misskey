@@ -405,7 +405,8 @@ export class MasterGameEngine {
 		const pon = this.state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tile));
 		if (pon == null) throw new Error('No such pon');
 		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tile), 1);
-		this.state.huros[house].push({ type: 'minkan', tiles: [...pon.tiles, tile], from: pon.from });
+		const tiles = [tile, ...pon.tiles];
+		this.state.huros[house].push({ type: 'minkan', tiles: tiles, from: pon.from });
 
 		this.state.activatedDorasCount++;
 
@@ -413,6 +414,8 @@ export class MasterGameEngine {
 
 		return {
 			rinsyan,
+			tiles,
+			from: pon.from,
 		};
 	}
 
@@ -429,7 +432,8 @@ export class MasterGameEngine {
 		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t2), 1);
 		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t3), 1);
 		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t4), 1);
-		this.state.huros[house].push({ type: 'ankan', tiles: [t1, t2, t3, t4] });
+		const tiles = [t1, t2, t3, t4];
+		this.state.huros[house].push({ type: 'ankan', tiles: tiles });
 
 		this.state.activatedDorasCount++;
 
@@ -437,6 +441,7 @@ export class MasterGameEngine {
 
 		return {
 			rinsyan,
+			tiles,
 		};
 	}
 
@@ -502,19 +507,20 @@ export class MasterGameEngine {
 		} else if (kan != null && answers.kan) {
 			// 大明槓
 
+			const tile = this.state.hoTiles[kan.callee].pop()!;
 			const t1 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(0);
 			if (t1 == null) throw new Error('No such tile');
 			const t2 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(1);
 			if (t2 == null) throw new Error('No such tile');
 			const t3 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(2);
 			if (t3 == null) throw new Error('No such tile');
-			const tile = this.state.hoTiles[kan.callee].pop()!;
 
 			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t1), 1);
 			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t2), 1);
 			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t3), 1);
 
-			this.state.huros[kan.caller].push({ type: 'minkan', tiles: [tile, t1, t2, t3], from: kan.callee });
+			const tiles = [tile, t1, t2, t3];
+			this.state.huros[kan.caller].push({ type: 'minkan', tiles: tiles, from: kan.callee });
 
 			this.state.activatedDorasCount++;
 
@@ -526,21 +532,22 @@ export class MasterGameEngine {
 				type: 'kanned' as const,
 				caller: kan.caller,
 				callee: kan.callee,
-				tile,
+				tiles: tiles,
 				rinsyan,
 				turn: this.state.turn,
 			};
 		} else if (pon != null && answers.pon) {
+			const tile = this.state.hoTiles[pon.callee].pop()!;
 			const t1 = this.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(0);
 			if (t1 == null) throw new Error('No such tile');
 			const t2 = this.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(1);
 			if (t2 == null) throw new Error('No such tile');
-			const tile = this.state.hoTiles[pon.callee].pop()!;
 
 			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(t1), 1);
 			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(t2), 1);
 
-			this.state.huros[pon.caller].push({ type: 'pon', tiles: [tile, t1, t2], from: pon.callee });
+			const tiles = [tile, t1, t2];
+			this.state.huros[pon.caller].push({ type: 'pon', tiles: tiles, from: pon.callee });
 
 			this.state.turn = pon.caller;
 
@@ -548,7 +555,7 @@ export class MasterGameEngine {
 				type: 'ponned' as const,
 				caller: pon.caller,
 				callee: pon.callee,
-				tile,
+				tiles: tiles,
 				turn: this.state.turn,
 			};
 		} else if (cii != null && answers.cii) {

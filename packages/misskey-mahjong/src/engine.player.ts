@@ -162,11 +162,6 @@ export class PlayerGameEngine {
 		}
 	}
 
-	public commit_kakan(house: House, tile: TileId) {
-		console.log('commit_kakan', this.state.turn, house, tile);
-		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
-	}
-
 	public commit_tsumoHora(house: House, handTiles: TileId[], tsumoTile: TileId): KyokuResult {
 		console.log('commit_tsumoHora', this.state.turn, house);
 
@@ -268,6 +263,38 @@ export class PlayerGameEngine {
 		this.state.huros[caller].push({ type: 'pon', tiles: tiles, from: callee });
 
 		this.state.turn = caller;
+	}
+
+	/**
+	 * 大明槓します
+	 * @param caller 大明槓した人
+	 * @param callee 牌を捨てた人
+	 */
+	public commit_kan(caller: House, callee: House, tiles: TileId[], rinsyan: TileId) {
+		this.state.canKan = null;
+
+		this.state.hoTiles[callee].pop();
+		if (caller === this.myHouse) {
+			if (this.myHandTiles.includes(tiles[0])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[0]), 1);
+			if (this.myHandTiles.includes(tiles[1])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[1]), 1);
+			if (this.myHandTiles.includes(tiles[2])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[2]), 1);
+			if (this.myHandTiles.includes(tiles[3])) this.myHandTiles.splice(this.myHandTiles.indexOf(tiles[3]), 1);
+		} else {
+			this.state.handTiles[caller].unshift();
+			this.state.handTiles[caller].unshift();
+			this.state.handTiles[caller].unshift();
+		}
+		this.state.huros[caller].push({ type: 'minkan', tiles: tiles, from: callee });
+
+		this.state.turn = caller;
+	}
+
+	public commit_kakan(house: House, tiles: TileId[], rinsyan: TileId) {
+		console.log('commit_kakan', this.state.turn, house, tiles);
+	}
+
+	public commit_ankan(house: House, tiles: TileId[], rinsyan: TileId) {
+		console.log('commit_kakan', this.state.turn, house, tiles);
 	}
 
 	public commit_nop() {

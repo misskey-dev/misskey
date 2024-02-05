@@ -520,7 +520,7 @@ function onStreamPonned(log) {
 	//	return;
 	//}
 
-	engine.value.commit_pon(log.caller, log.callee);
+	engine.value.commit_pon(log.caller, log.callee, log.tiles);
 	triggerRef(engine);
 
 	ponSerifHouses[log.caller] = true;
@@ -529,6 +529,42 @@ function onStreamPonned(log) {
 	}, 2000);
 
 	myTurnTimerRmain.value = room.value.timeLimitForEachTurn;
+}
+
+function onStreamKanned(log) {
+	console.log('onStreamKanned', log);
+
+	engine.value.commit_kan(log.caller, log.callee, log.tiles, log.rinsyan);
+	triggerRef(engine);
+
+	kanSerifHouses[log.caller] = true;
+	window.setTimeout(() => {
+		kanSerifHouses[log.caller] = false;
+	}, 2000);
+}
+
+function onStreamKakanned(log) {
+	console.log('onStreamKakanned', log);
+
+	engine.value.commit_kakan(log.house, log.tiles, log.rinsyan);
+	triggerRef(engine);
+
+	kanSerifHouses[log.caller] = true;
+	window.setTimeout(() => {
+		kanSerifHouses[log.caller] = false;
+	}, 2000);
+}
+
+function onStreamAnkanned(log) {
+	console.log('onStreamAnkanned', log);
+
+	engine.value.commit_ankan(log.house, log.tiles, log.rinsyan);
+	triggerRef(engine);
+
+	kanSerifHouses[log.caller] = true;
+	window.setTimeout(() => {
+		kanSerifHouses[log.caller] = false;
+	}, 2000);
 }
 
 function onStreamRonned(log) {
@@ -579,6 +615,9 @@ onMounted(() => {
 		props.connection.on('tsumo', onStreamTsumo);
 		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.on('ponned', onStreamPonned);
+		props.connection.on('kanned', onStreamKanned);
+		props.connection.on('kakanned', onStreamKakanned);
+		props.connection.on('ankanned', onStreamAnkanned);
 		props.connection.on('ronned', onStreamRonned);
 		props.connection.on('tsumoHora', onStreamTsumoHora);
 	}
@@ -590,6 +629,9 @@ onActivated(() => {
 		props.connection.on('tsumo', onStreamTsumo);
 		props.connection.on('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.on('ponned', onStreamPonned);
+		props.connection.on('kanned', onStreamKanned);
+		props.connection.on('kakanned', onStreamKakanned);
+		props.connection.on('ankanned', onStreamAnkanned);
 		props.connection.on('ronned', onStreamRonned);
 		props.connection.on('tsumoHora', onStreamTsumoHora);
 	}
@@ -601,6 +643,9 @@ onDeactivated(() => {
 		props.connection.off('tsumo', onStreamTsumo);
 		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.off('ponned', onStreamPonned);
+		props.connection.off('kanned', onStreamKanned);
+		props.connection.off('kakanned', onStreamKakanned);
+		props.connection.off('ankanned', onStreamAnkanned);
 		props.connection.off('ronned', onStreamRonned);
 		props.connection.off('tsumoHora', onStreamTsumoHora);
 	}
@@ -612,6 +657,9 @@ onUnmounted(() => {
 		props.connection.off('tsumo', onStreamTsumo);
 		props.connection.off('dahaiAndTsumo', onStreamDahaiAndTsumo);
 		props.connection.off('ponned', onStreamPonned);
+		props.connection.off('kanned', onStreamKanned);
+		props.connection.off('kakanned', onStreamKakanned);
+		props.connection.off('ankanned', onStreamAnkanned);
 		props.connection.off('ronned', onStreamRonned);
 		props.connection.off('tsumoHora', onStreamTsumoHora);
 	}
