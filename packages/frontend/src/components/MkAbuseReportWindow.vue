@@ -23,9 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="page === 0">
 			<MkSpacer :marginMin="20" :marginMax="28">
 				<div class="_gaps_m" :class="$style.root">
-					<MkPagination v-slot="{items}" :key="user.id" :pagination="Pagination">
+					<MkPagination v-slot="{items}" :key="user.id" :pagination="Pagination" :disableAutoLoad="true">
 						<div v-for="item in items" :key="item.id" :class="$style.note">
-							<MkSwitch :modelValue="item.id === initialNoteId" @update:modelValue="pushAbuseReportNote($event,item.id)"></MkSwitch>
+							<MkSwitch :modelValue="abuseNotesId.includes(item.id)" @update:modelValue="pushAbuseReportNote($event,item.id)"></MkSwitch>
 							<MkAvatar :user="item.user" preview/>
 							<MkNoteSimple :note="item"/>
 						</div>
@@ -80,7 +80,6 @@ const Pagination = {
 		userId: props.user.id,
 	},
 };
-
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
@@ -90,8 +89,8 @@ const page = ref(0);
 const uiWindow = shallowRef<InstanceType<typeof MkWindow>>();
 const comment = ref(props.initialComment ?? '');
 
-function pushAbuseReportNote(v, id) {
-	if (v) {
+function pushAbuseReportNote(ev, id) {
+	if (ev) {
 		abuseNotesId.value.push(id);
 	} else {
 		abuseNotesId.value = abuseNotesId.value.filter(noteId => noteId !== id);

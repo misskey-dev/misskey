@@ -125,7 +125,7 @@ export interface Locale extends ILocale {
      */
     "showSocialTimeline": string;
     /**
-     * 上のバーにTLの名前を常時表示する
+     * 上のバーにTLの名前を省略して表示する
      */
     "topBarNameShown": string;
     /**
