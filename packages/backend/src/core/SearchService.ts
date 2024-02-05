@@ -120,7 +120,7 @@ export class SearchService {
 			}).then((indexExists) => {
 				if (!indexExists) {
 					this.elasticsearch?.indices.create({
-						index: indexName,
+						index: indexName+`-${new Date().toISOString().slice(0, 7).replace(/-/g, '')}`,
 						body: {
 							mappings: {
 								properties: {
@@ -140,8 +140,6 @@ export class SearchService {
 					}).catch((error) => {
 						console.error(error);
 					});
-				} else {
-					console.log(`Index ${indexName} already exists`);
 				}
 			}).catch((error) => {
 				console.error(error);
@@ -202,11 +200,8 @@ export class SearchService {
 				tags: note.tags,
 			};
 
-			console.log(body);
-			console.log(this.elasticsearchNoteIndex);
-
 			await this.elasticsearch.index({
-				index: this.elasticsearchNoteIndex as string,
+				index: this.elasticsearchNoteIndex+`-${new Date().toISOString().slice(0, 7).replace(/-/g, '')}` as string,
 				id: note.id,
 				body: body,
 			});
@@ -223,7 +218,7 @@ export class SearchService {
 
 		if (!this.meilisearch && this.elasticsearch) {
 			(this.elasticsearch.delete)({
-				index: this.elasticsearchNoteIndex as string,
+				index: this.elasticsearchNoteIndex+`-${new Date().toISOString().slice(0, 7).replace(/-/g, '')}` as string,
 				id: note.id,
 			});
 		}
@@ -296,7 +291,7 @@ export class SearchService {
 				}
 			}
 			const res = await (this.elasticsearch.search)({
-				index: this.elasticsearchNoteIndex as string,
+				index: this.elasticsearchNoteIndex+`*` as string,
 				body: {
 					query: {
 						bool: {
