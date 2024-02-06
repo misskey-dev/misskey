@@ -263,7 +263,7 @@ function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) 
 }
 
 async function refreshCustomEmojis() {
-	const limit = 10;
+	const limit = 100;
 
 	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
 		hostType: 'local',
