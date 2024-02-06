@@ -38,11 +38,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="select.items">
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 			</template>
-			<template v-else>
-				<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
-					<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
-				</optgroup>
-			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
 			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
@@ -64,7 +59,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n.js';
 
 type Input = {
-	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string | number | null;
@@ -74,22 +69,15 @@ type Input = {
 
 type Select = {
 	items: {
-		value: string;
+		value: any;
 		text: string;
-	}[];
-	groupedItems: {
-		label: string;
-		items: {
-			value: string;
-			text: string;
-		}[];
 	}[];
 	default: string | null;
 };
 
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
-	title: string;
+	title?: string;
 	text?: string;
 	input?: Input;
 	select?: Select;

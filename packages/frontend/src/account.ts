@@ -185,7 +185,7 @@ export async function refreshAccount() {
 export async function login(token: Account['token'], redirect?: string) {
 	const showing = ref(true);
 	popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
-		success: false,
+		success: ref(false),
 		showing: showing,
 	}, {}, 'closed');
 	if (_DEV_) console.log('logging as token ', token);
@@ -290,7 +290,7 @@ export async function openAccountMenu(opts: {
 			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,
 			avatar: $i,
-		}, { type: 'divider' }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+		}, { type: 'divider' as const }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent' as const,
 			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,

@@ -117,6 +117,7 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
+import { MenuItem } from '@/types/menu.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -221,21 +222,19 @@ document.documentElement.style.scrollBehavior = 'auto';
 loadDeck();
 
 function changeProfile(ev: MouseEvent) {
-	const items = ref([{
+	let items: MenuItem[] = [{
 		text: deckStore.state.profile,
-		active: true.valueOf,
-	}]);
+		active: true,
+		action: () => {},
+	}];
 	getProfiles().then(profiles => {
-		items.value = [{
-			text: deckStore.state.profile,
-			active: true.valueOf,
-		}, ...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
+		items.push(...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
 			text: k,
 			action: () => {
 				deckStore.set('profile', k);
 				unisonReload();
 			},
-		}))), { type: 'divider' }, {
+		}))), { type: 'divider' as const }, {
 			text: i18n.ts._deck.newProfile,
 			icon: 'ti ti-plus',
 			action: async () => {
@@ -248,9 +247,10 @@ function changeProfile(ev: MouseEvent) {
 				deckStore.set('profile', name);
 				unisonReload();
 			},
-		}];
+		});
+	}).then(() => {
+		os.popupMenu(items, ev.currentTarget ?? ev.target);
 	});
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function deleteProfile() {

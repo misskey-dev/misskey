@@ -14,14 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, shallowRef } from 'vue';
+import { Ref, watch, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = defineProps<{
-	success: boolean;
-	showing: boolean;
+	success: Ref<boolean>;
+	showing: Ref<boolean>;
 	text?: string;
 }>();
 
