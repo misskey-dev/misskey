@@ -32,3 +32,7 @@ jobs:
     with:
       pr_number: ${{ github.event.pull_request.number }}
       package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
+      use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
