@@ -32,7 +32,7 @@
 			絵文字登録時のログが表示されます。登録操作を行ったり、ページをリロードすると消えます。
 		</template>
 
-		<XRegisterLogs :logs="registerLogs"/>
+		<XRegisterLogs :logs="requestLogs"/>
 	</MkFolder>
 
 	<div
@@ -75,7 +75,12 @@
 import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { fromDriveFile, GridItem, RegisterLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import {
+	EmojiOperationResult,
+	fromDriveFile,
+	GridItem,
+	RequestLogItem,
+} from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -99,20 +104,13 @@ import {
 import { ColumnSetting } from '@/components/grid/column.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
-import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.register.logs.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 
 const MAXIMUM_EMOJI_COUNT = 100;
 
 type FolderItem = {
 	id?: string;
 	name: string;
-};
-
-type UploadResult = {
-	key: string,
-	item: GridItem,
-	success: boolean,
-	err?: Error
 };
 
 const required = validators.required();
@@ -138,7 +136,7 @@ const selectedFolderId = ref(defaultStore.state.uploadFolder);
 const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
 const directoryToCategory = ref<boolean>(false);
 const registerButtonDisabled = ref<boolean>(false);
-const registerLogs = ref<RegisterLogItem[]>([]);
+const requestLogs = ref<RequestLogItem[]>([]);
 const isDragOver = ref<boolean>(false);
 
 async function onRegistryClicked() {
@@ -153,12 +151,12 @@ async function onRegistryClicked() {
 	}
 
 	const items = new Map<string, GridItem>(gridItems.value.map(it => [`${it.fileId}|${it.name}`, it]));
-	const upload = (): Promise<UploadResult>[] => {
+	const upload = (): Promise<EmojiOperationResult>[] => {
 		const emptyStrToNull = (value: string) => value === '' ? null : value;
 		const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
 
-		return [...items.entries()].slice(0, MAXIMUM_EMOJI_COUNT)
-			.map(([key, item]) =>
+		return [...items.values()].slice(0, MAXIMUM_EMOJI_COUNT)
+			.map(item =>
 				misskeyApi(
 					'admin/emoji/add', {
 						name: item.name,
@@ -170,8 +168,8 @@ async function onRegistryClicked() {
 						roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
 						fileId: item.fileId!,
 					})
-					.then((): UploadResult => ({ key, item, success: true, err: undefined }))
-					.catch((err: any): UploadResult => ({ key, item, success: false, err })),
+					.then(() => ({ item, success: true, err: undefined }))
+					.catch(err => ({ item, success: false, err })),
 			);
 	};
 
@@ -186,7 +184,7 @@ async function onRegistryClicked() {
 		});
 	}
 
-	registerLogs.value = result.map(it => ({
+	requestLogs.value = result.map(it => ({
 		failed: !it.success,
 		url: it.item.url,
 		name: it.item.name,

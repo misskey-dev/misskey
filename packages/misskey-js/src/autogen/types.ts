@@ -3,7 +3,7 @@
 
 /*
  * version: 2024.2.0-beta.7
- * generatedAt: 2024-02-05T06:03:40.574Z
+ * generatedAt: 2024-02-06T12:17:59.576Z
  */
 
 /**
@@ -6877,9 +6877,7 @@ export type operations = {
       content: {
         'application/json': {
           query?: ({
-            /** Format: date-time */
             updatedAtFrom?: string;
-            /** Format: date-time */
             updatedAtTo?: string;
             name?: string;
             host?: string;

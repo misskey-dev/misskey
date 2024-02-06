@@ -1,6 +1,12 @@
 import * as Misskey from 'misskey-js';
 
-export type RegisterLogItem = {
+export type EmojiOperationResult = {
+	item: GridItem,
+	success: boolean,
+	err?: Error
+};
+
+export type RequestLogItem = {
 	failed: boolean;
 	url: string;
 	name: string;
@@ -55,3 +61,4 @@ export function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: '',
 	};
 }
+

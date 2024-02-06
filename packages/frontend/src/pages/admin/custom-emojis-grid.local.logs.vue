@@ -18,7 +18,7 @@
 
 import { toRefs } from 'vue';
 import { ColumnSetting } from '@/components/grid/column.js';
-import { RegisterLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
 	GridCellContextMenuEvent,
 	GridCurrentState,
@@ -37,7 +37,7 @@ const columnSettings: ColumnSetting[] = [
 ];
 
 const props = defineProps<{
-	logs: RegisterLogItem[];
+	logs: RequestLogItem[];
 }>();
 
 const { logs } = toRefs(props);

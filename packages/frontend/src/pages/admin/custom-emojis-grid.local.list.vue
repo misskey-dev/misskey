@@ -4,14 +4,70 @@
 		登録された絵文字はありません。
 	</div>
 	<div v-else class="_gaps">
-		<div :class="$style.searchArea">
-			<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" style="flex: 1">
-				<template #prefix><i class="ti ti-search"></i></template>
-			</MkInput>
-			<MkButton primary style="margin-left: auto;" @click="onSearchButtonClicked">
-				{{ i18n.ts.search }}
-			</MkButton>
-		</div>
+		<MkFolder>
+			<template #icon><i class="ti ti-search"></i></template>
+			<template #label>検索設定</template>
+			<template #caption>
+				検索条件を詳細に設定します。
+			</template>
+
+			<div :class="$style.searchArea">
+				<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" style="grid-column: 1 / 2; grid-row: 1 / 2">
+					<template #label>name</template>
+				</MkInput>
+				<MkInput v-model="queryCategory" :debounce="true" type="search" autocapitalize="off" style="grid-column: 2 / 3; grid-row: 1 / 2">
+					<template #label>category</template>
+				</MkInput>
+				<MkInput v-model="queryAlias" :debounce="true" type="search" autocapitalize="off" style="grid-column: 3 / 4; grid-row: 1 / 2">
+					<template #label>alias</template>
+				</MkInput>
+
+				<MkInput v-model="queryType" :debounce="true" type="search" autocapitalize="off" style="grid-column: 1 / 2; grid-row: 2 / 3">
+					<template #label>type</template>
+				</MkInput>
+				<MkInput v-model="queryLicense" :debounce="true" type="search" autocapitalize="off" style="grid-column: 2 / 3; grid-row: 2 / 3">
+					<template #label>license</template>
+				</MkInput>
+
+				<MkInput v-model="queryUpdatedAtFrom" :debounce="true" type="date" autocapitalize="off" style="grid-column: 1 / 2; grid-row: 3 / 4">
+					<template #label>updatedAt(from)</template>
+				</MkInput>
+				<MkInput v-model="queryUpdatedAtTo" :debounce="true" type="date" autocapitalize="off" style="grid-column: 2 / 3; grid-row: 3 / 4">
+					<template #label>updatedAt(to)</template>
+				</MkInput>
+
+				<MkSelect v-model="querySensitive" style="grid-column: 1 / 2; grid-row: 4 / 5">
+					<template #label>sensitive</template>
+					<option :value="null">-</option>
+					<option :value="true">true</option>
+					<option :value="false">false</option>
+				</MkSelect>
+				<MkSelect v-model="queryLocalOnly" style="grid-column: 2 / 3; grid-row: 4 / 5">
+					<template #label>localOnly</template>
+					<option :value="null">-</option>
+					<option :value="true">true</option>
+					<option :value="false">false</option>
+				</MkSelect>
+				<div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 8px; grid-column: 3 / 4; grid-row: 4 / 5">
+					<MkButton primary @click="onSearchButtonClicked">
+						{{ i18n.ts.search }}
+					</MkButton>
+					<MkButton @click="onQueryResetButtonClicked">
+						リセット
+					</MkButton>
+				</div>
+			</div>
+		</MkFolder>
+
+		<MkFolder>
+			<template #icon><i class="ti ti-notes"></i></template>
+			<template #label>登録ログ</template>
+			<template #caption>
+				絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページをリロードすると消えます。
+			</template>
+
+			<XRegisterLogs :logs="requestLogs"/>
+		</MkFolder>
 
 		<div :class="$style.gridArea">
 			<MkGrid :data="gridItems" :gridSetting="gridSetting" :columnSettings="columnSettings" @event="onGridEvent"/>
@@ -21,9 +77,9 @@
 
 		<div class="_gaps">
 			<div :class="$style.buttons">
-				<MkButton danger style="margin-right: auto" @click="onDeleteClicked">{{ i18n.ts.delete }}</MkButton>
-				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateClicked">{{ i18n.ts.update }}</MkButton>
-				<MkButton @click="onResetClicked">リセット</MkButton>
+				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">{{ i18n.ts.delete }}</MkButton>
+				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">{{ i18n.ts.update }}</MkButton>
+				<MkButton @click="onGridResetButtonClicked">リセット</MkButton>
 			</div>
 		</div>
 	</div>
@@ -34,7 +90,7 @@
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { fromEmojiDetailedAdmin, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromEmojiDetailedAdmin, GridItem, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
@@ -54,7 +110,12 @@ import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
+const emptyStrToUndefined = (value: string | null) => value ? value : undefined;
 const emptyStrToNull = (value: string) => value === '' ? null : value;
 const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
 
@@ -78,16 +139,27 @@ const columnSettings: ColumnSetting[] = [
 ];
 
 const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
-const queryName = ref('');
 const allPages = ref<number>(0);
 const currentPage = ref<number>(0);
+
+const queryName = ref<string | null>(null);
+const queryCategory = ref<string | null>(null);
+const queryAlias = ref<string | null>(null);
+const queryType = ref<string | null>(null);
+const queryLicense = ref<string | null>(null);
+const queryUpdatedAtFrom = ref<string | null>(null);
+const queryUpdatedAtTo = ref<string | null>(null);
+const querySensitive = ref<string | null>(null);
+const queryLocalOnly = ref<string | null>(null);
 const previousQuery = ref<string | undefined>(undefined);
+
+const requestLogs = ref<RequestLogItem[]>([]);
 
 const gridItems = ref<GridItem[]>([]);
 const originGridItems = ref<GridItem[]>([]);
 const updateButtonDisabled = ref<boolean>(false);
 
-async function onUpdateClicked() {
+async function onUpdateButtonClicked() {
 	const _items = gridItems.value;
 	const _originItems = originGridItems.value;
 	if (_items.length !== _originItems.length) {
@@ -114,23 +186,46 @@ async function onUpdateClicked() {
 
 	const action = () => {
 		return updatedItems.map(item =>
-			misskeyApi('admin/emoji/update', {
-				id: item.id!,
-				name: item.name,
-				category: emptyStrToNull(item.category),
-				aliases: emptyStrToEmptyArray(item.aliases),
-				license: emptyStrToNull(item.license),
-				isSensitive: item.isSensitive,
-				localOnly: item.localOnly,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
-			}),
+			misskeyApi(
+				'admin/emoji/update',
+				{
+					// eslint-disable-next-line
+					id: item.id!,
+					name: item.name,
+					category: emptyStrToNull(item.category),
+					aliases: emptyStrToEmptyArray(item.aliases),
+					license: emptyStrToNull(item.license),
+					isSensitive: item.isSensitive,
+					localOnly: item.localOnly,
+					roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
+				})
+				.then(() => ({ item, success: true, err: undefined }))
+				.catch(err => ({ item, success: false, err })),
 		);
 	};
 
-	await os.promiseDialog(Promise.all(action()));
+	const result = await os.promiseDialog(Promise.all(action()));
+	const failedItems = result.filter(it => !it.success);
+
+	if (failedItems.length > 0) {
+		await os.alert({
+			type: 'error',
+			title: 'エラー',
+			text: '絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。',
+		});
+	}
+
+	requestLogs.value = result.map(it => ({
+		failed: !it.success,
+		url: it.item.url,
+		name: it.item.name,
+		error: it.err ? JSON.stringify(it.err) : undefined,
+	}));
+
+	await refreshCustomEmojis();
 }
 
-async function onDeleteClicked() {
+async function onDeleteButtonClicked() {
 	const _items = gridItems.value;
 	const _originItems = originGridItems.value;
 	if (_items.length !== _originItems.length) {
@@ -167,12 +262,24 @@ async function onDeleteClicked() {
 	);
 }
 
-function onResetClicked() {
+function onGridResetButtonClicked() {
 	refreshGridItems();
 }
 
 async function onSearchButtonClicked() {
 	await refreshCustomEmojis();
+}
+
+function onQueryResetButtonClicked() {
+	queryName.value = null;
+	queryCategory.value = null;
+	queryAlias.value = null;
+	queryType.value = null;
+	queryLicense.value = null;
+	queryUpdatedAtFrom.value = null;
+	queryUpdatedAtTo.value = null;
+	querySensitive.value = null;
+	queryLocalOnly.value = null;
 }
 
 async function onPageChanged(pageNumber: number) {
@@ -267,9 +374,19 @@ async function refreshCustomEmojis() {
 	const limit = 100;
 
 	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
-		name: emptyStrToNull(queryName.value) ?? undefined,
+		name: emptyStrToUndefined(queryName.value),
+		type: emptyStrToUndefined(queryType.value),
+		aliases: emptyStrToUndefined(queryAlias.value),
+		category: emptyStrToUndefined(queryCategory.value),
+		license: emptyStrToUndefined(queryLicense.value),
+		isSensitive: querySensitive.value ? Boolean(querySensitive.value).valueOf() : undefined,
+		localOnly: queryLocalOnly.value ? Boolean(queryLocalOnly.value).valueOf() : undefined,
+		updatedAtFrom: emptyStrToUndefined(queryUpdatedAtFrom.value),
+		updatedAtTo: emptyStrToUndefined(queryUpdatedAtTo.value),
 		hostType: 'local',
 	};
+
+	console.log(queryUpdatedAtTo.value);
 
 	if (JSON.stringify(query) !== previousQuery.value) {
 		currentPage.value = 1;
@@ -306,11 +423,9 @@ onMounted(async () => {
 
 <style module lang="scss">
 .searchArea {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: stretch;
-	gap: 8px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 16px;
 }
 
 .gridArea {
