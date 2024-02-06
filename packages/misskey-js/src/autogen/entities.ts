@@ -1,8 +1,3 @@
-/*
- * version: 2024.2.0-beta.10
- * generatedAt: 2024-02-06T11:31:33.226Z
- */
-
 import { operations } from './types.js';
 
 export type EmptyRequest = Record<string, unknown> | undefined;
