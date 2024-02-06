@@ -1,8 +1,59 @@
+import { bundledThemesInfo } from 'shiki';
 import { getHighlighterCore, loadWasm } from 'shiki/core';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
-import type { Highlighter, LanguageRegistration } from 'shiki';
+import { unique } from './array.js';
+import { deepClone } from './clone.js';
+import type { Highlighter, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki';
+import { ColdDeviceStorage } from '@/store.js';
+import lightTheme from '@/themes/_light.json5';
+import darkTheme from '@/themes/_dark.json5';
 
 let _highlighter: Highlighter | null = null;
+
+export async function getTheme(mode: 'light' | 'dark', getName: true): Promise<string>;
+export async function getTheme(mode: 'light' | 'dark', getName?: false): Promise<ThemeRegistration | ThemeRegistrationRaw>;
+export async function getTheme(mode: 'light' | 'dark', getName = false): Promise<ThemeRegistration | ThemeRegistrationRaw | string | null> {
+	const def = ColdDeviceStorage.get(mode === 'light' ? 'codeLightTheme' : 'codeDarkTheme');
+	if (def === '_inheritFromTheme_') {
+		const theme = deepClone(ColdDeviceStorage.get(mode === 'light' ? 'lightTheme' : 'darkTheme'));
+
+		if (theme.base) {
+			const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
+			if (base && base.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
+		}
+		
+		if (theme.codeHighlighter) {
+			let _res: ThemeRegistration = {};
+			if (theme.codeHighlighter.base === '_none_') {
+				_res = deepClone(theme.codeHighlighter.overrides);
+			} else {
+				const base = await bundledThemesInfo.find(t => t.id === theme.codeHighlighter!.base)?.import() ?? darkPlus;
+				_res = {
+					...('default' in base ? base.default : base),
+					...deepClone(theme.codeHighlighter.overrides ?? {}),
+				};
+			}
+			if (_res.name == null) {
+				_res.name = theme.id;
+			}
+			_res.type = mode;
+
+			if (getName) {
+				return _res.name;
+			}
+			return _res;
+		}
+	} else {
+		if (getName) {
+			return def;
+		}
+		return (await bundledThemesInfo.find(t => t.id === def)?.import())?.default ?? darkPlus;
+	}
+	if (getName) {
+		return 'dark-plus';
+	}
+	return darkPlus;
+}
 
 export async function getHighlighter(): Promise<Highlighter> {
 	if (!_highlighter) {
@@ -13,11 +64,17 @@ export async function getHighlighter(): Promise<Highlighter> {
 
 export async function initHighlighter() {
 	const aiScriptGrammar = await import('aiscript-vscode/aiscript/syntaxes/aiscript.tmLanguage.json');
-
+	
 	await loadWasm(import('shiki/onig.wasm?init'));
 
+	// テーマの重複を消す
+	const themes = unique([
+		darkPlus,
+		...(await Promise.all([getTheme('light'), getTheme('dark')])),
+	]);
+
 	const highlighter = await getHighlighterCore({
-		themes: [darkPlus],
+		themes,
 		langs: [
 			import('shiki/langs/javascript.mjs'),
 			{

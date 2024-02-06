@@ -56,6 +56,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSelect>
 	</div>
 
+	<div class="selects">
+		<MkSelect v-model="codeLightTheme" large manualSave class="select">
+			<template #label>{{ i18n.ts.themeForLightMode }} ({{ i18n.ts.code }})</template>
+			<template #prefix><i class="ti ti-sun"></i></template>
+			<option value="_inheritFromTheme_">{{ i18n.ts.inheritFromTheme }}</option>
+			<optgroup :label="i18n.ts._theme.builtinThemes">
+				<option v-for="x in codeBuiltinLightThemes" :key="'code:builtin:' + x.id" :value="x.id">{{ x.displayName }}</option>
+			</optgroup>
+		</MkSelect>
+		<MkSelect v-model="codeDarkTheme" large manualSave class="select">
+			<template #label>{{ i18n.ts.themeForDarkMode }} ({{ i18n.ts.code }})</template>
+			<template #prefix><i class="ti ti-moon"></i></template>
+			<option value="_inheritFromTheme_">{{ i18n.ts.inheritFromTheme }}</option>
+			<optgroup :label="i18n.ts._theme.builtinThemes">
+				<option v-for="x in codeBuiltinDarkThemes" :key="'code:builtin:' + x.id" :value="x.id">{{ x.displayName }}</option>
+			</optgroup>
+		</MkSelect>
+	</div>
+
 	<FormSection>
 		<div class="_formLinksGrid">
 			<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
@@ -73,6 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
+import { bundledThemesInfo as shikiBundledThemes } from 'shiki';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -88,6 +108,18 @@ import { uniqueBy } from '@/scripts/array.js';
 import { fetchThemes, getThemes } from '@/theme-store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import * as os from '@/os.js';
+
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
+
+	unisonReload();
+}
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -95,9 +127,11 @@ const builtinThemes = getBuiltinThemesRef();
 const instanceDarkTheme = computed(() => instance.defaultDarkTheme ? JSON5.parse(instance.defaultDarkTheme) : null);
 const installedDarkThemes = computed(() => installedThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
 const builtinDarkThemes = computed(() => builtinThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
+const codeBuiltinDarkThemes = shikiBundledThemes.filter(t => t.type === 'dark');
 const instanceLightTheme = computed(() => instance.defaultLightTheme ? JSON5.parse(instance.defaultLightTheme) : null);
 const installedLightThemes = computed(() => installedThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const builtinLightThemes = computed(() => builtinThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
+const codeBuiltinLightThemes = shikiBundledThemes.filter(t => t.type === 'light');
 const themes = computed(() => uniqueBy([instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value].filter(x => x != null), theme => theme.id));
 
 const darkTheme = ColdDeviceStorage.ref('darkTheme');
@@ -124,6 +158,9 @@ const lightThemeId = computed({
 		}
 	},
 });
+const codeLightTheme = computed(ColdDeviceStorage.makeGetterSetter('codeLightTheme'));
+const codeDarkTheme = computed(ColdDeviceStorage.makeGetterSetter('codeDarkTheme'));
+
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
@@ -141,7 +178,11 @@ watch(wallpaper, () => {
 	} else {
 		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
-	location.reload();
+	reloadAsk();
+});
+
+watch([codeLightTheme, codeDarkTheme], () => {
+	reloadAsk();
 });
 
 onActivated(() => {
