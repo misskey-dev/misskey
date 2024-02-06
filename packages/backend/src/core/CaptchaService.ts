@@ -73,6 +73,37 @@ export class CaptchaService {
 		}
 	}
 
+	// https://codeberg.org/Gusted/mCaptcha/src/branch/main/mcaptcha.go
+	@bindThis
+	public async verifyMcaptcha(secret: string, siteKey: string, instanceHost: string, response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw new Error('mcaptcha-failed: no response provided');
+		}
+
+		const endpointUrl = new URL('/api/v1/pow/siteverify', instanceHost);
+		const result = await this.httpRequestService.send(endpointUrl.toString(), {
+			method: 'POST',
+			body: JSON.stringify({
+				key: siteKey,
+				secret: secret,
+				token: response,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (result.status !== 200) {
+			throw new Error('mcaptcha-failed: mcaptcha didn\'t return 200 OK');
+		}
+
+		const resp = (await result.json()) as { valid: boolean };
+
+		if (!resp.valid) {
+			throw new Error('mcaptcha-request-failed');
+		}
+	}
+
 	@bindThis
 	public async verifyTurnstile(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {

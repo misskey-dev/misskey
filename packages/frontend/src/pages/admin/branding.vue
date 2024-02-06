@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
 						<template #caption>
-							<div>{{ i18n.t('_serverSettings.appIconDescription', { host: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
 							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
-							<div><strong>{{ i18n.t('_serverSettings.appIconResolutionMustBe', { resolution: '192x192px' }) }}</strong></div>
+							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '192x192px' }) }}</strong></div>
 						</template>
 					</MkInput>
 
@@ -30,10 +30,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
 						<template #caption>
-							<div>{{ i18n.t('_serverSettings.appIconDescription', { host: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._serverSettings.appIconDescription({ host: instance.name ?? host }) }}</div>
 							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
 							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
-							<div><strong>{{ i18n.t('_serverSettings.appIconResolutionMustBe', { resolution: '512x512px' }) }}</strong></div>
+							<div><strong>{{ i18n.tsx._serverSettings.appIconResolutionMustBe({ resolution: '512x512px' }) }}</strong></div>
 						</template>
 					</MkInput>
 
@@ -97,13 +97,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
 import XHeader from './_header_.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import FormSection from '@/components/form/section.vue';
-import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { instance, fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -116,16 +114,16 @@ const app192IconUrl = ref<string | null>(null);
 const app512IconUrl = ref<string | null>(null);
 const bannerUrl = ref<string | null>(null);
 const backgroundImageUrl = ref<string | null>(null);
-const themeColor = ref<any>(null);
-const defaultLightTheme = ref<any>(null);
-const defaultDarkTheme = ref<any>(null);
+const themeColor = ref<string | null>(null);
+const defaultLightTheme = ref<string | null>(null);
+const defaultDarkTheme = ref<string | null>(null);
 const serverErrorImageUrl = ref<string | null>(null);
 const infoImageUrl = ref<string | null>(null);
 const notFoundImageUrl = ref<string | null>(null);
 const manifestJsonOverride = ref<string>('{}');
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	iconUrl.value = meta.iconUrl;
 	app192IconUrl.value = meta.app192IconUrl;
 	app512IconUrl.value = meta.app512IconUrl;
@@ -150,9 +148,9 @@ function save() {
 		themeColor: themeColor.value === '' ? null : themeColor.value,
 		defaultLightTheme: defaultLightTheme.value === '' ? null : defaultLightTheme.value,
 		defaultDarkTheme: defaultDarkTheme.value === '' ? null : defaultDarkTheme.value,
-		infoImageUrl: infoImageUrl.value,
-		notFoundImageUrl: notFoundImageUrl.value,
-		serverErrorImageUrl: serverErrorImageUrl.value,
+		infoImageUrl: infoImageUrl.value === '' ? null : infoImageUrl.value,
+		notFoundImageUrl: notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
+		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
 		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
 	}).then(() => {
 		fetchInstance();

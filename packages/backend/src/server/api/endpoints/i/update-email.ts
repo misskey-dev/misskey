@@ -40,6 +40,11 @@ export const meta = {
 			id: 'a2defefb-f220-8849-0af6-17f816099323',
 		},
 	},
+
+	res: {
+		type: 'object',
+		ref: 'MeDetailed',
+	},
 } as const;
 
 export const paramDef = {
@@ -101,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			const iObj = await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			});
 

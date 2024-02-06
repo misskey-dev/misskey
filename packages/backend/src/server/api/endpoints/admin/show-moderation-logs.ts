@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:show-moderation-log',
 
 	res: {
 		type: 'array',
@@ -49,7 +50,7 @@ export const meta = {
 				user: {
 					type: 'object',
 					optional: false, nullable: false,
-					ref: 'UserDetailed',
+					ref: 'UserDetailedNotMe',
 				},
 			},
 		},

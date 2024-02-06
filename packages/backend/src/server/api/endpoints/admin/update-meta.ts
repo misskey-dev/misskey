@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:meta',
 } as const;
 
 export const paramDef = {
@@ -62,6 +63,10 @@ export const paramDef = {
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
 		hcaptchaSecretKey: { type: 'string', nullable: true },
+		enableMcaptcha: { type: 'boolean' },
+		mcaptchaSiteKey: { type: 'string', nullable: true },
+		mcaptchaInstanceUrl: { type: 'string', nullable: true },
+		mcaptchaSecretKey: { type: 'string', nullable: true },
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
@@ -115,6 +120,9 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableVerifymailApi: { type: 'boolean' },
 		verifymailAuthKey: { type: 'string', nullable: true },
+		enableTruemailApi: { type: 'boolean' },
+		truemailInstance: { type: 'string', nullable: true },
+		truemailAuthKey: { type: 'string', nullable: true },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
@@ -122,6 +130,7 @@ export const paramDef = {
 		doNotSendNotificationEmailsForAbuseReport: { type: 'boolean' },
 		emailToReceiveAbuseReport: { type: 'string', nullable: true },
 		serverRules: { type: 'array', items: { type: 'string' } },
+		bannedEmailDomains: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
@@ -264,6 +273,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.hcaptchaSecretKey !== undefined) {
 				set.hcaptchaSecretKey = ps.hcaptchaSecretKey;
+			}
+
+			if (ps.enableMcaptcha !== undefined) {
+				set.enableMcaptcha = ps.enableMcaptcha;
+			}
+
+			if (ps.mcaptchaSiteKey !== undefined) {
+				set.mcaptchaSitekey = ps.mcaptchaSiteKey;
+			}
+
+			if (ps.mcaptchaInstanceUrl !== undefined) {
+				set.mcaptchaInstanceUrl = ps.mcaptchaInstanceUrl;
+			}
+
+			if (ps.mcaptchaSecretKey !== undefined) {
+				set.mcaptchaSecretKey = ps.mcaptchaSecretKey;
 			}
 
 			if (ps.enableRecaptcha !== undefined) {
@@ -470,6 +495,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			if (ps.enableTruemailApi !== undefined) {
+				set.enableTruemailApi = ps.enableTruemailApi;
+			}
+
+			if (ps.truemailInstance !== undefined) {
+				if (ps.truemailInstance === '') {
+					set.truemailInstance = null;
+				} else {
+					set.truemailInstance = ps.truemailInstance;
+				}
+			}
+
+			if (ps.truemailAuthKey !== undefined) {
+				if (ps.truemailAuthKey === '') {
+					set.truemailAuthKey = null;
+				} else {
+					set.truemailAuthKey = ps.truemailAuthKey;
+				}
+			}
+
 			if (ps.enableChartsForRemoteUser !== undefined) {
 				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
 			}
@@ -532,6 +577,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.notesPerOneAd !== undefined) {
 				set.notesPerOneAd = ps.notesPerOneAd;
+			}
+
+			if (ps.bannedEmailDomains !== undefined) {
+				set.bannedEmailDomains = ps.bannedEmailDomains;
 			}
 
 			const before = await this.metaService.fetch(true);

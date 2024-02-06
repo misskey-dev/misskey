@@ -17,6 +17,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'write:report-abuse',
 
 	description: 'File a report.',
 

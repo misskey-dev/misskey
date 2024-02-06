@@ -73,13 +73,14 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 
 const enableEmail = ref<boolean>(false);
-const email = ref<any>(null);
+const email = ref<string | null>(null);
 const smtpSecure = ref<boolean>(false);
 const smtpHost = ref<string>('');
 const smtpPort = ref<number>(0);
@@ -87,7 +88,7 @@ const smtpUser = ref<string>('');
 const smtpPass = ref<string>('');
 
 async function init() {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	enableEmail.value = meta.enableEmail;
 	email.value = meta.email;
 	smtpSecure.value = meta.smtpSecure;

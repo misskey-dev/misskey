@@ -27,7 +27,6 @@ import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { $i } from '@/account.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

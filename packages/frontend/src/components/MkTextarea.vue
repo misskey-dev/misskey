@@ -26,8 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></textarea>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
-	<button style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
-	<div v-show="preview" v-panel :class="$style.mfmPreview">
+	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
+	<div v-if="mfmPreview" v-show="preview" v-panel :class="$style.mfmPreview">
 		<Mfm :text="v"/>
 	</div>
 
@@ -76,9 +76,9 @@ const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
 const inputEl = shallowRef<HTMLTextAreaElement>();
 const preview = ref(false);
-let autocomplete: Autocomplete;
+let autocompleteWorker: Autocomplete | null = null;
 
-const focus = () => inputEl.value.focus();
+const focus = () => inputEl.value?.focus();
 const onInput = (ev) => {
 	changed.value = true;
 	emit('change', ev);
@@ -91,6 +91,16 @@ const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.code === 'Enter') {
 		emit('enter');
 	}
+
+	if (props.code && ev.key === 'Tab') {
+		const pos = inputEl.value?.selectionStart ?? 0;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
+		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		nextTick(() => {
+			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		});
+		ev.preventDefault();
+	}
 };
 
 const updated = () => {
@@ -101,10 +111,10 @@ const updated = () => {
 const debouncedUpdated = debounce(1000, updated);
 
 watch(modelValue, newValue => {
-	v.value = newValue;
+	v.value = newValue ?? '';
 });
 
-watch(v, newValue => {
+watch(v, () => {
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -113,7 +123,7 @@ watch(v, newValue => {
 		}
 	}
 
-	invalid.value = inputEl.value.validity.badInput;
+	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
 
 onMounted(() => {
@@ -123,14 +133,14 @@ onMounted(() => {
 		}
 	});
 
-	if (props.mfmAutocomplete) {
-		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
+	if (props.mfmAutocomplete && inputEl.value) {
+		autocompleteWorker = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? undefined : props.mfmAutocomplete);
 	}
 });
 
 onUnmounted(() => {
-	if (autocomplete) {
-		autocomplete.detach();
+	if (autocompleteWorker) {
+		autocompleteWorker.detach();
 	}
 });
 </script>

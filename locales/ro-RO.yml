@@ -121,7 +121,6 @@ sensitive: "NSFW"
 add: "Adaugă"
 reaction: "Reacție"
 reactions: "Reacție"
-reactionSetting: "Reacții care să apară in selectorul de reacții"
 reactionSettingDescription2: "Trage pentru a rearanja, apasă pe \"+\" pentru a adăuga."
 rememberNoteVisibility: "Amintește setarea de vizibilitate a notelor"
 attachCancel: "Înlătură atașament"
@@ -360,6 +359,8 @@ hcaptcha: "hCaptcha"
 enableHcaptcha: "Activează hCaptcha"
 hcaptchaSiteKey: "Site key"
 hcaptchaSecretKey: "Secret key"
+mcaptchaSiteKey: "Site key"
+mcaptchaSecretKey: "Secret key"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "Activează reCAPTCHA"
 recaptchaSiteKey: "Site key"
@@ -726,3 +727,6 @@ _webhookSettings:
 _moderationLogTypes:
   suspend: "Suspendă"
   resetPassword: "Resetează parola"
+_reversi:
+  total: "Total"
+

@@ -6,14 +6,14 @@
 import Xev from 'xev';
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 const ev = new Xev();
 
 class ServerStatsChannel extends Channel {
 	public readonly chName = 'serverStats';
 	public static shouldShare = true;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 
 	constructor(id: string, connection: Channel['connection']) {
 		super(id, connection);
@@ -53,9 +53,10 @@ class ServerStatsChannel extends Channel {
 }
 
 @Injectable()
-export class ServerStatsChannelService {
+export class ServerStatsChannelService implements MiChannelService<false> {
 	public readonly shouldShare = ServerStatsChannel.shouldShare;
 	public readonly requireCredential = ServerStatsChannel.requireCredential;
+	public readonly kind = ServerStatsChannel.kind;
 
 	constructor(
 	) {

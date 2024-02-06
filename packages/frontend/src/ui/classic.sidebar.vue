@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, computed, watch, nextTick, ref, shallowRef } from 'vue';
+import { defineAsyncComponent, computed, watch, ref, shallowRef } from 'vue';
 import { openInstanceMenu } from './_common_/common.js';
 // import { host } from '@/config.js';
 import * as os from '@/os.js';
@@ -220,7 +220,7 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 			left: 0;
 			color: var(--navIndicator);
 			font-size: 8px;
-			animation: blink 1s infinite;
+			animation: global-blink 1s infinite;
 
 			&:has(.itemIndicateValueIcon) {
 				animation: none;

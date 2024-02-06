@@ -138,7 +138,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const algo = match[1];
+			const algo = match[1].toUpperCase();
 			const digestValue = match[2];
 
 			if (algo !== 'SHA-256') {
@@ -195,11 +195,11 @@ export class ActivityPubServerService {
 		//#region Check ff visibility
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-		if (profile.ffVisibility === 'private') {
+		if (profile.followersVisibility === 'private') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
-		} else if (profile.ffVisibility === 'followers') {
+		} else if (profile.followersVisibility === 'followers') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
@@ -287,11 +287,11 @@ export class ActivityPubServerService {
 		//#region Check ff visibility
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
-		if (profile.ffVisibility === 'private') {
+		if (profile.followingVisibility === 'private') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
-		} else if (profile.ffVisibility === 'followers') {
+		} else if (profile.followingVisibility === 'followers') {
 			reply.code(403);
 			reply.header('Cache-Control', 'public, max-age=30');
 			return;
@@ -648,6 +648,8 @@ export class ActivityPubServerService {
 		});
 
 		fastify.get<{ Params: { user: string; } }>('/users/:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
 			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
@@ -660,6 +662,8 @@ export class ActivityPubServerService {
 		});
 
 		fastify.get<{ Params: { user: string; } }>('/@:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: request.params.user.toLowerCase(),
 				host: IsNull(),

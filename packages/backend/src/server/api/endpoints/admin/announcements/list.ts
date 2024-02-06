@@ -16,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:announcements',
 
 	res: {
 		type: 'array',

@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
 function done() {
 	emit('done');
-	modal.value.close();
+	modal.value?.close();
 }
 
 watch(() => props.showing, () => {

@@ -25,6 +25,7 @@ export const meta = {
 	tags: ['federation'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	limit: {
 		duration: ms('1hour'),
@@ -147,7 +148,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (user != null) {
 			return {
 				type: 'User',
-				object: await this.userEntityService.pack(user, me, { detail: true }),
+				object: await this.userEntityService.pack(user, me, { schema: 'UserDetailedNotMe' }),
 			};
 		} else if (note != null) {
 			try {

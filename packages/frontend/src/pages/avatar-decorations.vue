@@ -35,18 +35,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-const avatarDecorations = ref<any[]>([]);
+const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
 
 function add() {
 	avatarDecorations.value.unshift({
@@ -61,11 +60,11 @@ function add() {
 function del(avatarDecoration) {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: avatarDecoration.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: avatarDecoration.name }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		avatarDecorations.value = avatarDecorations.value.filter(x => x !== avatarDecoration);
-		os.api('admin/avatar-decorations/delete', avatarDecoration);
+		misskeyApi('admin/avatar-decorations/delete', avatarDecoration);
 	});
 }
 
@@ -79,7 +78,7 @@ async function save(avatarDecoration) {
 }
 
 function load() {
-	os.api('admin/avatar-decorations/list').then(_avatarDecorations => {
+	misskeyApi('admin/avatar-decorations/list').then(_avatarDecorations => {
 		avatarDecorations.value = _avatarDecorations;
 	});
 }

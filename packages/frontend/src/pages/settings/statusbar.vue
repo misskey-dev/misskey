@@ -16,21 +16,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const statusbars = defaultStore.reactiveState.statusbars;
 
-const userLists = ref();
+const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 onMounted(() => {
-	os.api('users/lists/list').then(res => {
+	misskeyApi('users/lists/list').then(res => {
 		userLists.value = res;
 	});
 });

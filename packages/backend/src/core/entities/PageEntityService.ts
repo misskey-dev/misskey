@@ -90,7 +90,7 @@ export class PageEntityService {
 			createdAt: this.idService.parse(page.id).date.toISOString(),
 			updatedAt: page.updatedAt.toISOString(),
 			userId: page.userId,
-			user: this.userEntityService.pack(page.user ?? page.userId, me), // { detail: true } すると無限ループするので注意
+			user: this.userEntityService.pack(page.user ?? page.userId, me), // { schema: 'UserDetailed' } すると無限ループするので注意
 			content: page.content,
 			variables: page.variables,
 			title: page.title,

@@ -24,6 +24,25 @@ export const meta = {
 			id: '30aaaee3-4792-48dc-ab0d-cf501a575ac5',
 		},
 	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			nullable: false,
+			properties: {
+				id: {
+					type: 'string',
+					format: 'misskey:id',
+				},
+				user: {
+					type: 'object',
+					ref: 'UserDetailed',
+				},
+			},
+			required: ['id', 'user'],
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -75,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
-				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
+				user: await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
 			})));
 		});
 	}
