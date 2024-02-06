@@ -18,6 +18,114 @@ function $type(tid: TileId): TileType {
 }
 //#endregion
 
+class StateManager {
+	public state: MasterState;
+	private commitCallback: (state: MasterState) => void;
+
+	constructor(state: MasterState, commitCallback: (state: MasterState) => void) {
+		this.state = structuredClone(state);
+		this.commitCallback = commitCallback;
+	}
+
+	public commit() {
+		this.commitCallback(this.state);
+	}
+
+	public get doras(): TileType[] {
+		return this.state.kingTiles.slice(0, this.state.activatedDorasCount)
+			.map(id => Common.nextTileForDora($type(id)));
+	}
+
+	public get handTiles(): Record<House, TileId[]> {
+		return this.state.handTiles;
+	}
+
+	public get handTileTypes(): Record<House, TileType[]> {
+		return {
+			e: this.state.handTiles.e.map(id => $type(id)),
+			s: this.state.handTiles.s.map(id => $type(id)),
+			w: this.state.handTiles.w.map(id => $type(id)),
+			n: this.state.handTiles.n.map(id => $type(id)),
+		};
+	}
+
+	public get hoTileTypes(): Record<House, TileType[]> {
+		return {
+			e: this.state.hoTiles.e.map(id => $type(id)),
+			s: this.state.hoTiles.s.map(id => $type(id)),
+			w: this.state.hoTiles.w.map(id => $type(id)),
+			n: this.state.hoTiles.n.map(id => $type(id)),
+		};
+	}
+
+	public get riichis(): Record<House, boolean> {
+		return this.state.riichis;
+	}
+
+	public get askings(): MasterState['askings'] {
+		return this.state.askings;
+	}
+
+	public get user1House(): House {
+		return this.state.user1House;
+	}
+
+	public get user2House(): House {
+		return this.state.user2House;
+	}
+
+	public get user3House(): House {
+		return this.state.user3House;
+	}
+
+	public get user4House(): House {
+		return this.state.user4House;
+	}
+
+	public get turn(): House | null {
+		return this.state.turn;
+	}
+
+	public canRon(house: House, tid: TileId): boolean {
+		// フリテン
+		// TODO: ポンされるなどして自分の河にない場合の考慮
+		if (this.hoTileTypes[house].includes($type(tid))) return false;
+
+		const horaSets = Common.getHoraSets(this.handTileTypes[house].concat($type(tid)));
+		if (horaSets.length === 0) return false; // 完成形じゃない
+
+		// TODO
+		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
+		//if (yakus.length === 0) return false; // 役がない
+
+		return true;
+	}
+
+	public canPon(house: House, tid: TileId): boolean {
+		return this.handTileTypes[house].filter(t => t === $type(tid)).length === 2;
+	}
+
+	public canDaiminkan(caller: House, tid: TileId): boolean {
+		return this.handTileTypes[caller].filter(t => t === $type(tid)).length === 3;
+	}
+
+	public canCii(caller: House, callee: House, tid: TileId): boolean {
+		if (callee !== Common.prevHouse(caller)) return false;
+		const hand = this.handTileTypes[caller];
+		return Common.SHUNTU_PATTERNS.some(pattern =>
+			pattern.includes($type(tid)) &&
+			pattern.filter(t => hand.includes(t)).length >= 2);
+	}
+
+	public tsumo(): TileId {
+		const tile = this.state.tiles.pop();
+		if (tile == null) throw new Error('No tiles left');
+		if (this.state.turn == null) throw new Error('Not your turn');
+		this.state.handTiles[this.state.turn].push(tile);
+		return tile;
+	}
+}
+
 export type MasterState = {
 	user1House: House;
 	user2House: House;
@@ -239,6 +347,12 @@ export class MasterGameEngine {
 				w: false,
 				n: false,
 			},
+			ippatsus: {
+				e: false,
+				s: false,
+				w: false,
+				n: false,
+			},
 			points: {
 				e: 25000,
 				s: 25000,
@@ -256,45 +370,6 @@ export class MasterGameEngine {
 		};
 	}
 
-	private tsumo(): TileId {
-		const tile = this.state.tiles.pop();
-		if (tile == null) throw new Error('No tiles left');
-		if (this.state.turn == null) throw new Error('Not your turn');
-		this.state.handTiles[this.state.turn].push(tile);
-		return tile;
-	}
-
-	private canRon(house: House, tid: TileId): boolean {
-		// フリテン
-		// TODO: ポンされるなどして自分の河にない場合の考慮
-		if (this.hoTileTypes[house].includes($type(tid))) return false;
-
-		const horaSets = Common.getHoraSets(this.handTileTypes[house].concat($type(tid)));
-		if (horaSets.length === 0) return false; // 完成形じゃない
-
-		// TODO
-		//const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc(this.state, { tsumoTile: null, ronTile: tile }));
-		//if (yakus.length === 0) return false; // 役がない
-
-		return true;
-	}
-
-	private canPon(house: House, tid: TileId): boolean {
-		return this.handTileTypes[house].filter(t => t === $type(tid)).length === 2;
-	}
-
-	private canDaiminkan(caller: House, tid: TileId): boolean {
-		return this.handTileTypes[caller].filter(t => t === $type(tid)).length === 3;
-	}
-
-	private canCii(caller: House, callee: House, tid: TileId): boolean {
-		if (callee !== Common.prevHouse(caller)) return false;
-		const hand = this.handTileTypes[caller];
-		return Common.SHUNTU_PATTERNS.some(pattern =>
-			pattern.includes($type(tid)) &&
-			pattern.filter(t => hand.includes(t)).length >= 2);
-	}
-
 	public getHouse(index: 1 | 2 | 3 | 4): House {
 		switch (index) {
 			case 1: return this.state.user1House;
@@ -304,50 +379,10 @@ export class MasterGameEngine {
 		}
 	}
 
-	private endKyoku() {
-		console.log('endKyoku');
-		const newState = MasterGameEngine.createInitialState();
-		newState.kyoku = this.state.kyoku + 1;
-		newState.points = this.state.points;
-	}
-
-	/**
-	 * ロン和了
-	 * @param callers ロンする人
-	 * @param callee ロンされる人
-	 */
-	private ronHora(callers: House[], callee: House) {
-		for (const house of callers) {
-			const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
-				house: house,
-				handTiles: this.handTileTypes[house],
-				huros: this.state.huros[house],
-				tsumoTile: null,
-				ronTile: this.hoTileTypes[callee].at(-1)!,
-				riichi: this.state.riichis[house],
-			}));
-			const doraCount =
-				Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras) +
-				Common.calcRedDoraCount(this.state.handTiles[house], this.state.huros[house]);
-			const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
-			const point = Common.fanToPoint(fans, house === 'e');
-			this.state.points[callee] -= point;
-			this.state.points[house] += point;
-			console.log('fans point', fans, point);
-			console.log('yakus', house, yakus);
-		}
-
-		this.endKyoku();
-	}
-
 	public startTransaction() {
-		const newState = structuredClone(this.state);
-		return {
-			state: newState,
-			commit: () => {
-				this.state = newState;
-			},
-		};
+		return new StateManager(this.state, (newState) => {
+			this.state = newState;
+		});
 	}
 
 	public commit_nextKyoku() {
@@ -363,107 +398,109 @@ export class MasterGameEngine {
 	}
 
 	public commit_dahai(house: House, tid: TileId, riichi = false) {
-		const { state, commit } = this.startTransaction();
+		const tx = this.startTransaction();
 
-		if (this.state.turn !== house) throw new Error('Not your turn');
+		if (tx.state.turn !== house) throw new Error('Not your turn');
 
 		if (riichi) {
-			if (this.state.riichis[house]) throw new Error('Already riichi');
-			const tempHandTiles = [...this.handTileTypes[house]];
+			if (tx.state.riichis[house]) throw new Error('Already riichi');
+			const tempHandTiles = [...tx.handTileTypes[house]];
 			tempHandTiles.splice(tempHandTiles.indexOf($type(tid)), 1);
 			if (Common.getHoraTiles(tempHandTiles).length === 0) throw new Error('Not tenpai');
-			if (this.state.points[house] < 1000) throw new Error('Not enough points');
+			if (tx.state.points[house] < 1000) throw new Error('Not enough points');
 		}
 
-		const handTiles = this.state.handTiles[house];
+		const handTiles = tx.state.handTiles[house];
 		if (!handTiles.includes(tid)) throw new Error('No such tile in your hand');
 		handTiles.splice(handTiles.indexOf(tid), 1);
-		this.state.hoTiles[house].push(tid);
+		tx.state.hoTiles[house].push(tid);
 
-		if (this.state.riichis[house]) {
-			this.state.ippatsus[house] = false;
+		if (tx.state.riichis[house]) {
+			tx.state.ippatsus[house] = false;
 		}
 
 		if (riichi) {
-			this.state.riichis[house] = true;
-			this.state.ippatsus[house] = true;
+			tx.state.riichis[house] = true;
+			tx.state.ippatsus[house] = true;
 		}
 
 		const canRonHouses: House[] = [];
 		switch (house) {
 			case 'e':
-				if (this.canRon('s', tid)) canRonHouses.push('s');
-				if (this.canRon('w', tid)) canRonHouses.push('w');
-				if (this.canRon('n', tid)) canRonHouses.push('n');
+				if (tx.canRon('s', tid)) canRonHouses.push('s');
+				if (tx.canRon('w', tid)) canRonHouses.push('w');
+				if (tx.canRon('n', tid)) canRonHouses.push('n');
 				break;
 			case 's':
-				if (this.canRon('e', tid)) canRonHouses.push('e');
-				if (this.canRon('w', tid)) canRonHouses.push('w');
-				if (this.canRon('n', tid)) canRonHouses.push('n');
+				if (tx.canRon('e', tid)) canRonHouses.push('e');
+				if (tx.canRon('w', tid)) canRonHouses.push('w');
+				if (tx.canRon('n', tid)) canRonHouses.push('n');
 				break;
 			case 'w':
-				if (this.canRon('e', tid)) canRonHouses.push('e');
-				if (this.canRon('s', tid)) canRonHouses.push('s');
-				if (this.canRon('n', tid)) canRonHouses.push('n');
+				if (tx.canRon('e', tid)) canRonHouses.push('e');
+				if (tx.canRon('s', tid)) canRonHouses.push('s');
+				if (tx.canRon('n', tid)) canRonHouses.push('n');
 				break;
 			case 'n':
-				if (this.canRon('e', tid)) canRonHouses.push('e');
-				if (this.canRon('s', tid)) canRonHouses.push('s');
-				if (this.canRon('w', tid)) canRonHouses.push('w');
+				if (tx.canRon('e', tid)) canRonHouses.push('e');
+				if (tx.canRon('s', tid)) canRonHouses.push('s');
+				if (tx.canRon('w', tid)) canRonHouses.push('w');
 				break;
 		}
 
 		let canKanHouse: House | null = null;
 		switch (house) {
-			case 'e': canKanHouse = this.canDaiminkan('s', tid) ? 's' : this.canDaiminkan('w', tid) ? 'w' : this.canDaiminkan('n', tid) ? 'n' : null; break;
-			case 's': canKanHouse = this.canDaiminkan('e', tid) ? 'e' : this.canDaiminkan('w', tid) ? 'w' : this.canDaiminkan('n', tid) ? 'n' : null; break;
-			case 'w': canKanHouse = this.canDaiminkan('e', tid) ? 'e' : this.canDaiminkan('s', tid) ? 's' : this.canDaiminkan('n', tid) ? 'n' : null; break;
-			case 'n': canKanHouse = this.canDaiminkan('e', tid) ? 'e' : this.canDaiminkan('s', tid) ? 's' : this.canDaiminkan('w', tid) ? 'w' : null; break;
+			case 'e': canKanHouse = tx.canDaiminkan('s', tid) ? 's' : tx.canDaiminkan('w', tid) ? 'w' : tx.canDaiminkan('n', tid) ? 'n' : null; break;
+			case 's': canKanHouse = tx.canDaiminkan('e', tid) ? 'e' : tx.canDaiminkan('w', tid) ? 'w' : tx.canDaiminkan('n', tid) ? 'n' : null; break;
+			case 'w': canKanHouse = tx.canDaiminkan('e', tid) ? 'e' : tx.canDaiminkan('s', tid) ? 's' : tx.canDaiminkan('n', tid) ? 'n' : null; break;
+			case 'n': canKanHouse = tx.canDaiminkan('e', tid) ? 'e' : tx.canDaiminkan('s', tid) ? 's' : tx.canDaiminkan('w', tid) ? 'w' : null; break;
 		}
 
 		let canPonHouse: House | null = null;
 		switch (house) {
-			case 'e': canPonHouse = this.canPon('s', tid) ? 's' : this.canPon('w', tid) ? 'w' : this.canPon('n', tid) ? 'n' : null; break;
-			case 's': canPonHouse = this.canPon('e', tid) ? 'e' : this.canPon('w', tid) ? 'w' : this.canPon('n', tid) ? 'n' : null; break;
-			case 'w': canPonHouse = this.canPon('e', tid) ? 'e' : this.canPon('s', tid) ? 's' : this.canPon('n', tid) ? 'n' : null; break;
-			case 'n': canPonHouse = this.canPon('e', tid) ? 'e' : this.canPon('s', tid) ? 's' : this.canPon('w', tid) ? 'w' : null; break;
+			case 'e': canPonHouse = tx.canPon('s', tid) ? 's' : tx.canPon('w', tid) ? 'w' : tx.canPon('n', tid) ? 'n' : null; break;
+			case 's': canPonHouse = tx.canPon('e', tid) ? 'e' : tx.canPon('w', tid) ? 'w' : tx.canPon('n', tid) ? 'n' : null; break;
+			case 'w': canPonHouse = tx.canPon('e', tid) ? 'e' : tx.canPon('s', tid) ? 's' : tx.canPon('n', tid) ? 'n' : null; break;
+			case 'n': canPonHouse = tx.canPon('e', tid) ? 'e' : tx.canPon('s', tid) ? 's' : tx.canPon('w', tid) ? 'w' : null; break;
 		}
 
 		let canCiiHouse: House | null = null;
 		switch (house) {
-			case 'e': canCiiHouse = this.canCii('s', house, tid) ? 's' : this.canCii('w', house, tid) ? 'w' : this.canCii('n', house, tid) ? 'n' : null; break;
-			case 's': canCiiHouse = this.canCii('e', house, tid) ? 'e' : this.canCii('w', house, tid) ? 'w' : this.canCii('n', house, tid) ? 'n' : null; break;
-			case 'w': canCiiHouse = this.canCii('e', house, tid) ? 'e' : this.canCii('s', house, tid) ? 's' : this.canCii('n', house, tid) ? 'n' : null; break;
-			case 'n': canCiiHouse = this.canCii('e', house, tid) ? 'e' : this.canCii('s', house, tid) ? 's' : this.canCii('w', house, tid) ? 'w' : null; break;
+			case 'e': canCiiHouse = tx.canCii('s', house, tid) ? 's' : tx.canCii('w', house, tid) ? 'w' : tx.canCii('n', house, tid) ? 'n' : null; break;
+			case 's': canCiiHouse = tx.canCii('e', house, tid) ? 'e' : tx.canCii('w', house, tid) ? 'w' : tx.canCii('n', house, tid) ? 'n' : null; break;
+			case 'w': canCiiHouse = tx.canCii('e', house, tid) ? 'e' : tx.canCii('s', house, tid) ? 's' : tx.canCii('n', house, tid) ? 'n' : null; break;
+			case 'n': canCiiHouse = tx.canCii('e', house, tid) ? 'e' : tx.canCii('s', house, tid) ? 's' : tx.canCii('w', house, tid) ? 'w' : null; break;
 		}
 
 		if (canRonHouses.length > 0 || canKanHouse != null || canPonHouse != null || canCiiHouse != null) {
 			if (canRonHouses.length > 0) {
-				this.state.askings.ron = {
+				tx.state.askings.ron = {
 					callee: house,
 					callers: canRonHouses,
 				};
 			}
 			if (canKanHouse != null) {
-				this.state.askings.kan = {
+				tx.state.askings.kan = {
 					callee: house,
 					caller: canKanHouse,
 				};
 			}
 			if (canPonHouse != null) {
-				this.state.askings.pon = {
+				tx.state.askings.pon = {
 					callee: house,
 					caller: canPonHouse,
 				};
 			}
 			if (canCiiHouse != null) {
-				this.state.askings.cii = {
+				tx.state.askings.cii = {
 					callee: house,
 					caller: canCiiHouse,
 				};
 			}
-			this.state.turn = null;
-			this.state.nextTurnAfterAsking = Common.nextHouse(house);
+			tx.state.turn = null;
+			tx.state.nextTurnAfterAsking = Common.nextHouse(house);
+			tx.commit();
+
 			return {
 				asking: true as const,
 				canRonHouses: canRonHouses,
@@ -474,10 +511,9 @@ export class MasterGameEngine {
 		}
 
 		// 流局
-		if (this.state.tiles.length === 0) {
-			this.state.turn = null;
-
-			this.endKyoku();
+		if (tx.state.tiles.length === 0) {
+			tx.state.turn = null;
+			tx.commit();
 
 			return {
 				asking: false as const,
@@ -485,32 +521,38 @@ export class MasterGameEngine {
 			};
 		}
 
-		this.state.turn = Common.nextHouse(house);
+		tx.state.turn = Common.nextHouse(house);
 
-		const tsumoTile = this.tsumo();
+		const tsumoTile = tx.tsumo();
+
+		tx.commit();
 
 		return {
 			asking: false as const,
 			tsumoTile: tsumoTile,
-			next: this.state.turn,
+			next: tx.state.turn,
 		};
 	}
 
 	public commit_kakan(house: House, tid: TileId) {
-		const pon = this.state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tid));
+		const tx = this.startTransaction();
+
+		const pon = tx.state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tid));
 		if (pon == null) throw new Error('No such pon');
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(tid), 1);
+		tx.state.handTiles[house].splice(tx.state.handTiles[house].indexOf(tid), 1);
 		const tiles = [tid, ...pon.tiles];
-		this.state.huros[house].push({ type: 'minkan', tiles: tiles, from: pon.from });
+		tx.state.huros[house].push({ type: 'minkan', tiles: tiles, from: pon.from });
 
-		this.state.ippatsus.e = false;
-		this.state.ippatsus.s = false;
-		this.state.ippatsus.w = false;
-		this.state.ippatsus.n = false;
+		tx.state.ippatsus.e = false;
+		tx.state.ippatsus.s = false;
+		tx.state.ippatsus.w = false;
+		tx.state.ippatsus.n = false;
 
-		this.state.activatedDorasCount++;
+		tx.state.activatedDorasCount++;
 
-		const rinsyan = this.tsumo();
+		const rinsyan = tx.tsumo();
+
+		tx.commit();
 
 		return {
 			rinsyan,
@@ -520,29 +562,33 @@ export class MasterGameEngine {
 	}
 
 	public commit_ankan(house: House, tid: TileId) {
-		const t1 = this.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(0);
+		const tx = this.startTransaction();
+
+		const t1 = tx.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(0);
 		if (t1 == null) throw new Error('No such tile');
-		const t2 = this.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(1);
+		const t2 = tx.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(1);
 		if (t2 == null) throw new Error('No such tile');
-		const t3 = this.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(2);
+		const t3 = tx.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(2);
 		if (t3 == null) throw new Error('No such tile');
-		const t4 = this.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(3);
+		const t4 = tx.state.handTiles[house].filter(t => $type(t) === $type(tid)).at(3);
 		if (t4 == null) throw new Error('No such tile');
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t1), 1);
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t2), 1);
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t3), 1);
-		this.state.handTiles[house].splice(this.state.handTiles[house].indexOf(t4), 1);
+		tx.state.handTiles[house].splice(tx.state.handTiles[house].indexOf(t1), 1);
+		tx.state.handTiles[house].splice(tx.state.handTiles[house].indexOf(t2), 1);
+		tx.state.handTiles[house].splice(tx.state.handTiles[house].indexOf(t3), 1);
+		tx.state.handTiles[house].splice(tx.state.handTiles[house].indexOf(t4), 1);
 		const tiles = [t1, t2, t3, t4];
-		this.state.huros[house].push({ type: 'ankan', tiles: tiles });
+		tx.state.huros[house].push({ type: 'ankan', tiles: tiles });
 
-		this.state.ippatsus.e = false;
-		this.state.ippatsus.s = false;
-		this.state.ippatsus.w = false;
-		this.state.ippatsus.n = false;
+		tx.state.ippatsus.e = false;
+		tx.state.ippatsus.s = false;
+		tx.state.ippatsus.w = false;
+		tx.state.ippatsus.n = false;
 
-		this.state.activatedDorasCount++;
+		tx.state.activatedDorasCount++;
 
-		const rinsyan = this.tsumo();
+		const rinsyan = tx.tsumo();
+
+		tx.commit();
 
 		return {
 			rinsyan,
@@ -555,32 +601,35 @@ export class MasterGameEngine {
 	 * @param house
 	 */
 	public commit_tsumoHora(house: House) {
-		if (this.state.turn !== house) throw new Error('Not your turn');
+		const tx = this.startTransaction();
+
+		if (tx.state.turn !== house) throw new Error('Not your turn');
 
 		const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
 			house: house,
-			handTiles: this.handTileTypes[house],
-			huros: this.state.huros[house],
-			tsumoTile: this.handTileTypes[house].at(-1)!,
+			handTiles: tx.handTileTypes[house],
+			huros: tx.state.huros[house],
+			tsumoTile: tx.handTileTypes[house].at(-1)!,
 			ronTile: null,
-			riichi: this.state.riichis[house],
+			riichi: tx.state.riichis[house],
+			ippatsu: tx.state.ippatsus[house],
 		}));
 		const doraCount =
-			Common.calcOwnedDoraCount(this.handTileTypes[house], this.state.huros[house], this.doras) +
-			Common.calcRedDoraCount(this.state.handTiles[house], this.state.huros[house]);
+			Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.state.huros[house], tx.doras) +
+			Common.calcRedDoraCount(tx.state.handTiles[house], tx.state.huros[house]);
 		const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
 		const pointDeltas = Common.calcTsumoHoraPointDeltas(house, fans);
-		this.state.points.e += pointDeltas.e;
-		this.state.points.s += pointDeltas.s;
-		this.state.points.w += pointDeltas.w;
-		this.state.points.n += pointDeltas.n;
+		tx.state.points.e += pointDeltas.e;
+		tx.state.points.s += pointDeltas.s;
+		tx.state.points.w += pointDeltas.w;
+		tx.state.points.n += pointDeltas.n;
 		console.log('yakus', house, yakus);
 
-		this.endKyoku();
+		tx.commit();
 
 		return {
-			handTiles: this.state.handTiles[house],
-			tsumoTile: this.state.handTiles[house].at(-1)!,
+			handTiles: tx.state.handTiles[house],
+			tsumoTile: tx.state.handTiles[house].at(-1)!,
 		};
 	}
 
@@ -590,20 +639,47 @@ export class MasterGameEngine {
 		kan: boolean;
 		ron: House[];
 	}) {
-		if (this.state.askings.pon == null && this.state.askings.cii == null && this.state.askings.kan == null && this.state.askings.ron == null) throw new Error();
+		const tx = this.startTransaction();
 
-		const pon = this.state.askings.pon;
-		const cii = this.state.askings.cii;
-		const kan = this.state.askings.kan;
-		const ron = this.state.askings.ron;
+		if (tx.state.askings.pon == null && tx.state.askings.cii == null && tx.state.askings.kan == null && tx.state.askings.ron == null) throw new Error();
 
-		this.state.askings.pon = null;
-		this.state.askings.cii = null;
-		this.state.askings.kan = null;
-		this.state.askings.ron = null;
+		const pon = tx.state.askings.pon;
+		const cii = tx.state.askings.cii;
+		const kan = tx.state.askings.kan;
+		const ron = tx.state.askings.ron;
+
+		tx.state.askings.pon = null;
+		tx.state.askings.cii = null;
+		tx.state.askings.kan = null;
+		tx.state.askings.ron = null;
 
 		if (ron != null && answers.ron.length > 0) {
-			this.ronHora(answers.ron, ron.callee);
+			const callers = answers.ron;
+			const callee = ron.callee;
+
+			for (const house of callers) {
+				const yakus = YAKU_DEFINITIONS.filter(yaku => yaku.calc({
+					house: house,
+					handTiles: tx.handTileTypes[house],
+					huros: tx.state.huros[house],
+					tsumoTile: null,
+					ronTile: tx.hoTileTypes[callee].at(-1)!,
+					riichi: tx.state.riichis[house],
+					ippatsu: tx.state.ippatsus[house],
+				}));
+				const doraCount =
+					Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.state.huros[house], tx.doras) +
+					Common.calcRedDoraCount(tx.state.handTiles[house], tx.state.huros[house]);
+				const fans = yakus.map(yaku => yaku.fan).reduce((a, b) => a + b, 0) + doraCount;
+				const point = Common.fanToPoint(fans, house === 'e');
+				tx.state.points[callee] -= point;
+				tx.state.points[house] += point;
+				console.log('fans point', fans, point);
+				console.log('yakus', house, yakus);
+			}
+
+			tx.commit();
+
 			return {
 				type: 'ronned' as const,
 				callers: ron.callers,
@@ -613,31 +689,33 @@ export class MasterGameEngine {
 		} else if (kan != null && answers.kan) {
 			// 大明槓
 
-			const tile = this.state.hoTiles[kan.callee].pop()!;
-			const t1 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(0);
+			const tile = tx.state.hoTiles[kan.callee].pop()!;
+			const t1 = tx.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(0);
 			if (t1 == null) throw new Error('No such tile');
-			const t2 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(1);
+			const t2 = tx.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(1);
 			if (t2 == null) throw new Error('No such tile');
-			const t3 = this.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(2);
+			const t3 = tx.state.handTiles[kan.caller].filter(t => $type(t) === $type(tile)).at(2);
 			if (t3 == null) throw new Error('No such tile');
 
-			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t1), 1);
-			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t2), 1);
-			this.state.handTiles[kan.caller].splice(this.state.handTiles[kan.caller].indexOf(t3), 1);
+			tx.state.handTiles[kan.caller].splice(tx.state.handTiles[kan.caller].indexOf(t1), 1);
+			tx.state.handTiles[kan.caller].splice(tx.state.handTiles[kan.caller].indexOf(t2), 1);
+			tx.state.handTiles[kan.caller].splice(tx.state.handTiles[kan.caller].indexOf(t3), 1);
 
 			const tiles = [tile, t1, t2, t3];
-			this.state.huros[kan.caller].push({ type: 'minkan', tiles: tiles, from: kan.callee });
+			tx.state.huros[kan.caller].push({ type: 'minkan', tiles: tiles, from: kan.callee });
 
-			this.state.ippatsus.e = false;
-			this.state.ippatsus.s = false;
-			this.state.ippatsus.w = false;
-			this.state.ippatsus.n = false;
+			tx.state.ippatsus.e = false;
+			tx.state.ippatsus.s = false;
+			tx.state.ippatsus.w = false;
+			tx.state.ippatsus.n = false;
 
-			this.state.activatedDorasCount++;
+			tx.state.activatedDorasCount++;
 
-			const rinsyan = this.tsumo();
+			const rinsyan = tx.tsumo();
 
-			this.state.turn = kan.caller;
+			tx.state.turn = kan.caller;
+
+			tx.commit();
 
 			return {
 				type: 'kanned' as const,
@@ -645,37 +723,39 @@ export class MasterGameEngine {
 				callee: kan.callee,
 				tiles: tiles,
 				rinsyan,
-				turn: this.state.turn,
+				turn: tx.state.turn,
 			};
 		} else if (pon != null && answers.pon) {
-			const tile = this.state.hoTiles[pon.callee].pop()!;
-			const t1 = this.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(0);
+			const tile = tx.state.hoTiles[pon.callee].pop()!;
+			const t1 = tx.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(0);
 			if (t1 == null) throw new Error('No such tile');
-			const t2 = this.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(1);
+			const t2 = tx.state.handTiles[pon.caller].filter(t => $type(t) === $type(tile)).at(1);
 			if (t2 == null) throw new Error('No such tile');
 
-			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(t1), 1);
-			this.state.handTiles[pon.caller].splice(this.state.handTiles[pon.caller].indexOf(t2), 1);
+			tx.state.handTiles[pon.caller].splice(tx.state.handTiles[pon.caller].indexOf(t1), 1);
+			tx.state.handTiles[pon.caller].splice(tx.state.handTiles[pon.caller].indexOf(t2), 1);
 
 			const tiles = [tile, t1, t2];
-			this.state.huros[pon.caller].push({ type: 'pon', tiles: tiles, from: pon.callee });
+			tx.state.huros[pon.caller].push({ type: 'pon', tiles: tiles, from: pon.callee });
 
-			this.state.ippatsus.e = false;
-			this.state.ippatsus.s = false;
-			this.state.ippatsus.w = false;
-			this.state.ippatsus.n = false;
+			tx.state.ippatsus.e = false;
+			tx.state.ippatsus.s = false;
+			tx.state.ippatsus.w = false;
+			tx.state.ippatsus.n = false;
 
-			this.state.turn = pon.caller;
+			tx.state.turn = pon.caller;
+
+			tx.commit();
 
 			return {
 				type: 'ponned' as const,
 				caller: pon.caller,
 				callee: pon.callee,
 				tiles: tiles,
-				turn: this.state.turn,
+				turn: tx.state.turn,
 			};
 		} else if (cii != null && answers.cii) {
-			const tile = this.state.hoTiles[cii.callee].pop()!;
+			const tile = tx.state.hoTiles[cii.callee].pop()!;
 			let tiles: [TileId, TileId, TileId];
 
 			switch (answers.cii) {
@@ -684,12 +764,12 @@ export class MasterGameEngine {
 					if (a == null) throw new Error();
 					const b = Common.NEXT_TILE_FOR_SHUNTSU[a];
 					if (b == null) throw new Error();
-					const aTile = this.state.handTiles[cii.caller].find(t => $type(t) === a);
+					const aTile = tx.state.handTiles[cii.caller].find(t => $type(t) === a);
 					if (aTile == null) throw new Error();
-					const bTile = this.state.handTiles[cii.caller].find(t => $type(t) === b);
+					const bTile = tx.state.handTiles[cii.caller].find(t => $type(t) === b);
 					if (bTile == null) throw new Error();
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(aTile), 1);
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(bTile), 1);
+					tx.state.handTiles[cii.caller].splice(tx.state.handTiles[cii.caller].indexOf(aTile), 1);
+					tx.state.handTiles[cii.caller].splice(tx.state.handTiles[cii.caller].indexOf(bTile), 1);
 					tiles = [tile, aTile, bTile];
 					break;
 				}
@@ -698,12 +778,12 @@ export class MasterGameEngine {
 					if (a == null) throw new Error();
 					const b = Common.NEXT_TILE_FOR_SHUNTSU[$type(tile)];
 					if (b == null) throw new Error();
-					const aTile = this.state.handTiles[cii.caller].find(t => $type(t) === a);
+					const aTile = tx.state.handTiles[cii.caller].find(t => $type(t) === a);
 					if (aTile == null) throw new Error();
-					const bTile = this.state.handTiles[cii.caller].find(t => $type(t) === b);
+					const bTile = tx.state.handTiles[cii.caller].find(t => $type(t) === b);
 					if (bTile == null) throw new Error();
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(aTile), 1);
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(bTile), 1);
+					tx.state.handTiles[cii.caller].splice(tx.state.handTiles[cii.caller].indexOf(aTile), 1);
+					tx.state.handTiles[cii.caller].splice(tx.state.handTiles[cii.caller].indexOf(bTile), 1);
 					tiles = [aTile, tile, bTile];
 					break;
 				}
@@ -712,55 +792,59 @@ export class MasterGameEngine {
 					if (a == null) throw new Error();
 					const b = Common.PREV_TILE_FOR_SHUNTSU[a];
 					if (b == null) throw new Error();
-					const aTile = this.state.handTiles[cii.caller].find(t => $type(t) === a);
+					const aTile = tx.state.handTiles[cii.caller].find(t => $type(t) === a);
 					if (aTile == null) throw new Error();
-					const bTile = this.state.handTiles[cii.caller].find(t => $type(t) === b);
+					const bTile = tx.state.handTiles[cii.caller].find(t => $type(t) === b);
 					if (bTile == null) throw new Error();
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(aTile), 1);
-					this.state.handTiles[cii.caller].splice(this.state.handTiles[cii.caller].indexOf(bTile), 1);
+					tx.state.handTiles[cii.caller].splice(tx.state.handTiles[cii.caller].indexOf(aTile), 1);
+					tx.state.handTiles[cii.caller].splice(tx.state.handTiles[cii.caller].indexOf(bTile), 1);
 					tiles = [bTile, aTile, tile];
 					break;
 				}
 			}
 
-			this.state.huros[cii.caller].push({ type: 'cii', tiles: tiles, from: cii.callee });
+			tx.state.huros[cii.caller].push({ type: 'cii', tiles: tiles, from: cii.callee });
 
-			this.state.ippatsus.e = false;
-			this.state.ippatsus.s = false;
-			this.state.ippatsus.w = false;
-			this.state.ippatsus.n = false;
+			tx.state.ippatsus.e = false;
+			tx.state.ippatsus.s = false;
+			tx.state.ippatsus.w = false;
+			tx.state.ippatsus.n = false;
 
-			this.state.turn = cii.caller;
+			tx.state.turn = cii.caller;
+
+			tx.commit();
 
 			return {
 				type: 'ciied' as const,
 				caller: cii.caller,
 				callee: cii.callee,
 				tiles: tiles,
-				turn: this.state.turn,
+				turn: tx.state.turn,
 			};
-		} else if (this.state.tiles.length === 0) {
+		} else if (tx.state.tiles.length === 0) {
 			// 流局
 
-			this.state.turn = null;
-			this.state.nextTurnAfterAsking = null;
+			tx.state.turn = null;
+			tx.state.nextTurnAfterAsking = null;
 
-			this.endKyoku();
+			tx.commit();
 
 			return {
 				type: 'ryuukyoku' as const,
 			};
 		} else {
-			this.state.turn = this.state.nextTurnAfterAsking!;
-			this.state.nextTurnAfterAsking = null;
+			tx.state.turn = tx.state.nextTurnAfterAsking!;
+			tx.state.nextTurnAfterAsking = null;
 
-			const tile = this.tsumo();
+			const tile = tx.tsumo();
+
+			tx.commit();
 
 			return {
 				type: 'tsumo' as const,
-				house: this.state.turn,
+				house: tx.state.turn,
 				tile,
-				turn: this.state.turn,
+				turn: tx.state.turn,
 			};
 		}
 	}
@@ -801,6 +885,12 @@ export class MasterGameEngine {
 				s: this.state.riichis.s,
 				w: this.state.riichis.w,
 				n: this.state.riichis.n,
+			},
+			ippatsus: {
+				e: this.state.ippatsus.e,
+				s: this.state.ippatsus.s,
+				w: this.state.ippatsus.w,
+				n: this.state.ippatsus.n,
 			},
 			points: {
 				e: this.state.points.e,

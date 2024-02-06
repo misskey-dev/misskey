@@ -32,6 +32,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span :class="$style.centerPanelPoint">{{ mj.points[mj.myHouse] }}</span>
 					</div>
 				</div>
+				<div :class="$style.centerPanelIndicatorContainerToi">
+					<div style="position: absolute; left: 0; right: 0; bottom: 0;">
+						<div :class="[$style.centerPanelIndicator, { [$style.centerPanelIndicatorIndicated]: mj.turn === Mmj.prevHouse(Mmj.prevHouse(mj.myHouse)) }]"></div>
+					</div>
+				</div>
+				<div :class="$style.centerPanelIndicatorContainerKami">
+					<div style="position: absolute; left: 0; right: 0; bottom: 0;">
+						<div :class="[$style.centerPanelIndicator, { [$style.centerPanelIndicatorIndicated]: mj.turn === Mmj.prevHouse(mj.myHouse) }]"></div>
+					</div>
+				</div>
+				<div :class="$style.centerPanelIndicatorContainerSimo">
+					<div style="position: absolute; left: 0; right: 0; bottom: 0;">
+						<div :class="[$style.centerPanelIndicator, { [$style.centerPanelIndicatorIndicated]: mj.turn === Mmj.nextHouse(mj.myHouse) }]"></div>
+					</div>
+				</div>
+				<div :class="$style.centerPanelIndicatorContainerMe">
+					<div style="position: absolute; left: 0; right: 0; bottom: 0;">
+						<div :class="[$style.centerPanelIndicator, { [$style.centerPanelIndicatorIndicated]: mj.turn === mj.myHouse }]"></div>
+					</div>
+				</div>
 				<div>
 					<div>{{ mj.tilesCount }}</div>
 				</div>
@@ -865,6 +885,63 @@ onUnmounted(() => {
 }
 .centerPanelPoint {
 	margin-left: 10px;
+}
+.centerPanelIndicatorContainerToi {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	rotate: 180deg;
+}
+.centerPanelIndicatorContainerKami {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	rotate: 90deg;
+}
+.centerPanelIndicatorContainerSimo {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	rotate: -90deg;
+}
+.centerPanelIndicatorContainerMe {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+}
+.centerPanelIndicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	width: 100px;
+	height: 10px;
+	border-radius: 999px;
+}
+.centerPanelIndicatorIndicated {
+	background: #ff0;
 }
 
 .handTilesOfToimen {

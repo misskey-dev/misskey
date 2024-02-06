@@ -58,6 +58,12 @@ export type PlayerState = {
 		w: boolean;
 		n: boolean;
 	};
+	ippatsus: {
+		e: boolean;
+		s: boolean;
+		w: boolean;
+		n: boolean;
+	};
 	points: {
 		e: number;
 		s: number;
@@ -237,6 +243,7 @@ export class PlayerGameEngine {
 			tsumoTile: $type(tsumoTile),
 			ronTile: null,
 			riichi: this.state.riichis[house],
+			ippatsu: this.state.ippatsus[house],
 		}));
 		const doraCount =
 			Common.calcOwnedDoraCount(handTiles.map(id => $type(id)), this.state.huros[house], this.doras) +
@@ -289,6 +296,7 @@ export class PlayerGameEngine {
 				tsumoTile: null,
 				ronTile: $type(this.state.hoTiles[callee].at(-1)!),
 				riichi: this.state.riichis[house],
+				ippatsu: this.state.ippatsus[house],
 			}));
 			const doraCount =
 				Common.calcOwnedDoraCount(handTiles[house].map(id => $type(id)), this.state.huros[house], this.doras) +

@@ -284,6 +284,11 @@ type EnvForCalcYaku = {
 	 * リーチしたかどうか
 	 */
 	riichi: boolean;
+
+	/**
+	 * 一巡目以内かどうか
+	 */
+	ippatsu: boolean;
 };
 
 export const YAKU_DEFINITIONS = [{
@@ -305,7 +310,7 @@ export const YAKU_DEFINITIONS = [{
 	fan: 1,
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
-
+		return state.ippatsu;
 	},
 }, {
 	name: 'red',
