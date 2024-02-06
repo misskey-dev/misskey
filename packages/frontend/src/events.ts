@@ -4,6 +4,10 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+import * as Misskey from 'misskey-js';
 
-// TODO: 型付け
-export const globalEvents = new EventEmitter();
+export const globalEvents = new EventEmitter<{
+	themeChanged: () => void;
+	clientNotification: (notification: Misskey.entities.Notification) => void;
+	requestClearPageCache: () => void;
+}>();

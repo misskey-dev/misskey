@@ -625,6 +625,7 @@ export class ApRendererService {
 				'https://www.w3.org/ns/activitystreams',
 				'https://w3id.org/security/v1',
 				{
+					Key: 'sec:Key',
 					// as non-standards
 					manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
 					sensitive: 'as:sensitive',

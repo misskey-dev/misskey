@@ -4,22 +4,6 @@ import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
 import openapiTS from 'openapi-typescript';
 
-function generateVersionHeaderComment(openApiDocs: OpenAPIV3_1.Document): string {
-	const contents = {
-		version: openApiDocs.info.version,
-		generatedAt: new Date().toISOString(),
-	};
-
-	const lines: string[] = [];
-	lines.push('/*');
-	for (const [key, value] of Object.entries(contents)) {
-		lines.push(` * ${key}: ${value}`);
-	}
-	lines.push(' */');
-
-	return lines.join('\n');
-}
-
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
 	openApiJsonPath: string,
@@ -34,9 +18,6 @@ async function generateBaseTypes(
 	for (const lint of disabledLints) {
 		lines.push(`/* eslint ${lint}: 0 */`);
 	}
-	lines.push('');
-
-	lines.push(generateVersionHeaderComment(openApiDocs));
 	lines.push('');
 
 	const generatedTypes = await openapiTS(openApiJsonPath, { exportType: true });
@@ -59,8 +40,6 @@ async function generateSchemaEntities(
 	const schemaNames = Object.keys(schemas);
 	const typeAliasLines: string[] = [];
 
-	typeAliasLines.push(generateVersionHeaderComment(openApiDocs));
-	typeAliasLines.push('');
 	typeAliasLines.push(`import { components } from '${toImportPath(typeFileName)}';`);
 	typeAliasLines.push(
 		...schemaNames.map(it => `export type ${it} = components['schemas']['${it}'];`),
@@ -119,9 +98,6 @@ async function generateEndpoints(
 
 	const entitiesOutputLine: string[] = [];
 
-	entitiesOutputLine.push(generateVersionHeaderComment(openApiDocs));
-	entitiesOutputLine.push('');
-
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
 	entitiesOutputLine.push('');
 
@@ -138,9 +114,6 @@ async function generateEndpoints(
 	await writeFile(entitiesOutputPath, entitiesOutputLine.join('\n'));
 
 	const endpointOutputLine: string[] = [];
-
-	endpointOutputLine.push(generateVersionHeaderComment(openApiDocs));
-	endpointOutputLine.push('');
 
 	endpointOutputLine.push('import type {');
 	endpointOutputLine.push(
@@ -186,9 +159,6 @@ async function generateApiClientJSDoc(
 	}
 
 	const endpointOutputLine: string[] = [];
-
-	endpointOutputLine.push(generateVersionHeaderComment(openApiDocs));
-	endpointOutputLine.push('');
 
 	endpointOutputLine.push(`import type { SwitchCaseResponseType } from '${toImportPath(apiClientFileName)}';`);
 	endpointOutputLine.push(`import type { Endpoints } from '${toImportPath(endpointsFileName)}';`);
