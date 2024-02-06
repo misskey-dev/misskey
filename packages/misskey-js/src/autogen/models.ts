@@ -1,8 +1,3 @@
-/*
- * version: 2024.2.0-beta.8
- * generatedAt: 2024-02-06T08:37:12.142Z
- */
-
 import { components } from './types.js';
 export type Error = components['schemas']['Error'];
 export type UserLite = components['schemas']['UserLite'];
