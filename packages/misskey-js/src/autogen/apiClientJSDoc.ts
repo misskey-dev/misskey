@@ -1,6 +1,6 @@
 /*
- * version: 2024.2.0-beta.8
- * generatedAt: 2024-02-04T16:51:09.469Z
+ * version: 2024.2.0-beta.10
+ * generatedAt: 2024-02-06T11:31:33.267Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -154,7 +154,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *write:admin:avatar-decorations*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
      */
     request<E extends 'admin/abuse-report-resolver/create', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -165,7 +165,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolver*
      */
     request<E extends 'admin/abuse-report-resolver/list', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -176,7 +176,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *No* / **Permission**: *write:admin:abuse-report-resolver*
      */
     request<E extends 'admin/abuse-report-resolver/delete', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -187,7 +187,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
      */
     request<E extends 'admin/abuse-report-resolver/update', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -198,7 +198,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:admin:avatar-decorations*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:avatar-decorations*
      */
     request<E extends 'admin/avatar-decorations/create', P extends Endpoints[E]['req']>(
       endpoint: E,

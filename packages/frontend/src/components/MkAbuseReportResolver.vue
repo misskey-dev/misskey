@@ -4,21 +4,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps dslkjkwejflew">
+<div class="_gaps">
 	<MkInput v-model="value.name" :readonly="!props.editable">
 		<template #label>{{ i18n.ts.name }}</template>
 	</MkInput>
 	<div>
 		<div :class="$style.label">{{ i18n.ts._abuse._resolver.targetUserPattern }}</div>
-		<PrismEditor v-model="value.targetUserPattern" placeholder="^(LocalUser|RemoteUser@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
+		<MkCodeEditor v-model="value.targetUserPattern" lang="js" placeholder="^(LocalUser|RemoteUser@RemoteHost)$" :readonly="!editable"/>
 	</div>
 	<div>
 		<div :class="$style.label">{{ i18n.ts._abuse._resolver.reporterPattern }}</div>
-		<PrismEditor v-model="value.reporterPattern" placeholder="^(LocalUser|.*@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
+		<MkCodeEditor v-model="value.reporterPattern" lang="js" placeholder="^(LocalUser|.*@RemoteHost)$" :readonly="!editable"/>
 	</div>
 	<div>
 		<div :class="$style.label">{{ i18n.ts._abuse._resolver.reportContentPattern }}</div>
-		<PrismEditor v-model="value.reportContentPattern" placeholder=".*" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
+		<MkCodeEditor v-model="value.reportContentPattern" lang="js" placeholder=".*" :readonly="!editable"/>
 	</div>
 	<MkSelect v-model="value.expiresAt" :disabled="!props.editable">
 		<template #label>{{ i18n.ts._abuse._resolver.expiresAt }}<span v-if="expirationDate" style="float: right;"><MkDate :time="expirationDate" mode="absolute">{{ expirationDate }}</MkDate></span></template>
@@ -40,17 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import { PrismEditor } from 'vue-prism-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
+import { computed, watch, ref } from 'vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n';
-import 'vue-prism-editor/dist/prismeditor.min.css';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-regex';
-import 'prismjs/themes/prism-okaidia.css';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue?: {
@@ -69,13 +64,13 @@ const props = defineProps<{
 		targetUserPattern: string | null;
 		reporterPattern: string | null;
 		reportContentPattern: string | null;
-		expirationDate: string | null;
+		expirationDate?: string | null;
 		expiresAt: string;
 		forward: boolean;
 		previousExpiresAt?: string;
 	}
 }>();
-let expirationDate: Date | null = $ref(null);
+let expirationDate = ref<Date | null>(null);
 
 type NonNullType<T> = {
 	[P in keyof T]: NonNullable<T[P]>
@@ -112,15 +107,11 @@ const value = computed({
 	},
 });
 
-function highlighter(code) {
-	return highlight(code, languages.regex);
-}
-
 function renderExpirationDate(empty = false) {
 	if (value.value.expirationDate && !empty) {
-		expirationDate = new Date(value.value.expirationDate);
+		expirationDate.value = new Date(value.value.expirationDate);
 	} else {
-		expirationDate = null;
+		expirationDate.value = null;
 	}
 }
 
@@ -133,17 +124,6 @@ watch(() => props.editable, () => {
 });
 
 </script>
-<style lang="scss">
-.dslkjkwejflew .prism-editor__textarea {
-	padding-left: 10px !important;
-	padding-bottom: 10px !important;
-}
-
-.dslkjkwejflew .prism-editor__editor {
-	padding-left: 10px !important;
-	padding-bottom: 10px !important;
-}
-</style>
 <style lang="scss" module>
 .label {
 	font-size: 0.85em;

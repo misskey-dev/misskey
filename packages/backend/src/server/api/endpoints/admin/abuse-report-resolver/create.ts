@@ -14,9 +14,9 @@ import { IdService } from '@/core/IdService.js';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true,
-
 	requireAdmin: true,
+	requireCredential: true,
+	kind: 'write:admin:abuse-report-resolver',
 
 	res: {
 		type: 'object',

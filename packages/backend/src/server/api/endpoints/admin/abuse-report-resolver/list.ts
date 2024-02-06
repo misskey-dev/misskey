@@ -11,9 +11,11 @@ import { QueryService } from '@/core/QueryService.js';
 import type { AbuseReportResolversRepository } from '@/models/_.js';
 
 export const meta = {
-	requireCredential: true,
+	tags: ['admin'],
 
 	requireAdmin: true,
+	requireCredential: true,
+	kind: 'read:admin:abuse-report-resolver',
 
 	res: {
 		type: 'array',

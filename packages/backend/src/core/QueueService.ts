@@ -7,17 +7,17 @@ import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiAbuseReport } from '@/models/AbuseReport.js';
+import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import type { MiWebhook, webhookEventTypes } from '@/models/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
-import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 
 @Injectable()
 export class QueueService {

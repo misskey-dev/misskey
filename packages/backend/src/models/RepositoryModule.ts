@@ -401,7 +401,7 @@ const $userMemosRepository: Provider = {
 
 const $abuseReportResolversRepository: Provider = {
 	provide: DI.abuseReportResolversRepository,
-	useFactory: (db: DataSource) => db.getRepository(AbuseReportResolver),
+	useFactory: (db: DataSource) => db.getRepository(MiAbuseReportResolver),
 	inject: [DI.db],
 };
 

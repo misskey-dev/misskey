@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:disabled="disabled"
 				:required="required"
 				:readonly="readonly"
+				:placeholder="placeholder"
 				autocomplete="off"
 				wrap="off"
 				spellcheck="false"
@@ -41,6 +42,7 @@ import XCode from '@/components/MkCode.core.vue';
 const props = withDefaults(defineProps<{
 	modelValue: string | null;
 	lang: string;
+	placeholder?: string;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -48,6 +50,7 @@ const props = withDefaults(defineProps<{
 	manualSave?: boolean;
 }>(), {
 	lang: 'js',
+	placeholder: '',
 });
 
 const emit = defineEmits<{

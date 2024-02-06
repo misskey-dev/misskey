@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.0-beta.4
- * generatedAt: 2023-12-15T10:19:10.945Z
+ * version: 2024.2.0-beta.10
+ * generatedAt: 2024-02-06T11:31:32.924Z
  */
 
 /**
@@ -139,7 +139,7 @@ export type paths = {
      * admin/abuse-report-resolver/create
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
      */
     post: operations['admin/abuse-report-resolver/create'];
   };
@@ -148,7 +148,7 @@ export type paths = {
      * admin/abuse-report-resolver/list
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolver*
      */
     post: operations['admin/abuse-report-resolver/list'];
   };
@@ -157,7 +157,7 @@ export type paths = {
      * admin/abuse-report-resolver/delete
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *No* / **Permission**: *write:admin:abuse-report-resolver*
      */
     post: operations['admin/abuse-report-resolver/delete'];
   };
@@ -166,7 +166,7 @@ export type paths = {
      * admin/abuse-report-resolver/update
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
      */
     post: operations['admin/abuse-report-resolver/update'];
   };
@@ -3780,31 +3780,7 @@ export type components = {
           unlockedAt: number;
         }[];
       loggedInDays: number;
-      policies: {
-        gtlAvailable: boolean;
-        ltlAvailable: boolean;
-        canPublicNote: boolean;
-        canInvite: boolean;
-        inviteLimit: number;
-        inviteLimitCycle: number;
-        inviteExpirationTime: number;
-        canManageCustomEmojis: boolean;
-        canManageAvatarDecorations: boolean;
-        canSearchNotes: boolean;
-        canUseTranslator: boolean;
-        canHideAds: boolean;
-        driveCapacityMb: number;
-        alwaysMarkNsfw: boolean;
-        pinLimit: number;
-        antennaLimit: number;
-        wordMuteLimit: number;
-        webhookLimit: number;
-        clipLimit: number;
-        noteEachClipsLimit: number;
-        userListLimit: number;
-        userEachUserListsLimit: number;
-        rateLimitFactor: number;
-      };
+      policies: components['schemas']['RolePolicies'];
       email?: string | null;
       emailVerified?: boolean | null;
       securityKeysList?: {
@@ -4569,119 +4545,105 @@ export type components = {
           priority?: number;
           useDefault?: boolean;
         };
-        canInvite: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        clipLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canHideAds: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        inviteLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        antennaLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        gtlAvailable: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        ltlAvailable: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        webhookLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canPublicNote: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        userListLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        wordMuteLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        alwaysMarkNsfw: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canSearchNotes: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        driveCapacityMb: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        rateLimitFactor: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        inviteLimitCycle: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        noteEachClipsLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        inviteExpirationTime: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canManageCustomEmojis: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        userEachUserListsLimit: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canManageAvatarDecorations: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
-        canUseTranslator: {
-          value: number | boolean;
-          priority: number;
-          useDefault: boolean;
-        };
       };
       usersCount: number;
     });
+    RolePolicies: {
+      gtlAvailable: boolean;
+      ltlAvailable: boolean;
+      canPublicNote: boolean;
+      canInvite: boolean;
+      inviteLimit: number;
+      inviteLimitCycle: number;
+      inviteExpirationTime: number;
+      canManageCustomEmojis: boolean;
+      canManageAvatarDecorations: boolean;
+      canSearchNotes: boolean;
+      canUseTranslator: boolean;
+      canHideAds: boolean;
+      driveCapacityMb: number;
+      alwaysMarkNsfw: boolean;
+      pinLimit: number;
+      antennaLimit: number;
+      wordMuteLimit: number;
+      webhookLimit: number;
+      clipLimit: number;
+      noteEachClipsLimit: number;
+      userListLimit: number;
+      userEachUserListsLimit: number;
+      rateLimitFactor: number;
+      avatarDecorationLimit: number;
+    };
+    ReversiGameLite: {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
+      isStarted: boolean;
+      isEnded: boolean;
+      /** Format: id */
+      user1Id: string;
+      /** Format: id */
+      user2Id: string;
+      user1: components['schemas']['User'];
+      user2: components['schemas']['User'];
+      /** Format: id */
+      winnerId: string | null;
+      winner: components['schemas']['User'] | null;
+      /** Format: id */
+      surrenderedUserId: string | null;
+      /** Format: id */
+      timeoutUserId: string | null;
+      black: number | null;
+      bw: string;
+      noIrregularRules: boolean;
+      isLlotheo: boolean;
+      canPutEverywhere: boolean;
+      loopedBoard: boolean;
+      timeLimitForEachTurn: number;
+    };
+    ReversiGameDetailed: {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
+      isStarted: boolean;
+      isEnded: boolean;
+      form1: Record<string, never> | null;
+      form2: Record<string, never> | null;
+      user1Ready: boolean;
+      user2Ready: boolean;
+      /** Format: id */
+      user1Id: string;
+      /** Format: id */
+      user2Id: string;
+      user1: components['schemas']['User'];
+      user2: components['schemas']['User'];
+      /** Format: id */
+      winnerId: string | null;
+      winner: components['schemas']['User'] | null;
+      /** Format: id */
+      surrenderedUserId: string | null;
+      /** Format: id */
+      timeoutUserId: string | null;
+      black: number | null;
+      bw: string;
+      noIrregularRules: boolean;
+      isLlotheo: boolean;
+      canPutEverywhere: boolean;
+      loopedBoard: boolean;
+      timeLimitForEachTurn: number;
+      logs: unknown[][];
+      map: string[];
+    };
   };
   responses: never;
   parameters: never;
@@ -5613,7 +5575,7 @@ export type operations = {
    * admin/abuse-report-resolver/create
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
    */
   'admin/abuse-report-resolver/create': {
     requestBody: {
@@ -5679,7 +5641,7 @@ export type operations = {
    * admin/abuse-report-resolver/list
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *read:admin:abuse-report-resolver*
    */
   'admin/abuse-report-resolver/list': {
     requestBody: {
@@ -5744,7 +5706,7 @@ export type operations = {
    * admin/abuse-report-resolver/delete
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *No* / **Permission**: *write:admin:abuse-report-resolver*
    */
   'admin/abuse-report-resolver/delete': {
     requestBody: {
@@ -5796,7 +5758,7 @@ export type operations = {
    * admin/abuse-report-resolver/update
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:abuse-report-resolver*
    */
   'admin/abuse-report-resolver/update': {
     requestBody: {

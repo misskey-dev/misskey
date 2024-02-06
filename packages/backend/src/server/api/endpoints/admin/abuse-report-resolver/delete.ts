@@ -10,9 +10,11 @@ import type { AbuseReportResolversRepository } from '@/models/_.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
-	requireCrendential: true,
+	tags: ['admin'],
 
 	requireAdmin: true,
+	requireCrendential: true,
+	kind: 'write:admin:abuse-report-resolver',
 
 	errors: {
 		resolverNotFound: {
