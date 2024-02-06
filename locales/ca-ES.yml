@@ -1521,11 +1521,52 @@ _achievements:
     _postedAt0min0sec:
       title: "Rellotge xerraire"
       description: "Publica una nota a les 0:00"
+      flavor: "Tic tac, tic tac, tic tac, DING!"
+    _selfQuote:
+      title: "Autoreferència "
+      description: "Cita una nota teva"
+    _htl20npm:
+      title: "Línia de temps fluida"
+      description: "La teva línia de temps va a més de 20npm (notes per minut)"
+    _viewInstanceChart:
+      title: "Analista "
+      description: "Mira els gràfics de la teva instància "
+    _outputHelloWorldOnScratchpad:
+      title: "Hola, món!"
+      description: "Escriu \"hola, món\" al bloc de notes"
     _open3windows:
       title: "Multi finestres"
       description: "I va obrir més de tres finestres"
     _driveFolderCircularReference:
       title: "Consulteu la secció de bucle"
+      description: "Intenta crear carpetes recursives al Disc"
+    _reactWithoutRead:
+      title: "De veritat has llegit això?"
+      description: "Reaccions a una nota de més de 100 caràcters publicada fa menys de 3 segons "
+    _clickedClickHere:
+      title: "Fer clic"
+      description: "Has fet clic aquí "
+    _justPlainLucky:
+      title: "Ha sigut sort"
+      description: "Oportunitat de guanyar-lo amb una probabilitat d'un 0.005% cada 10 segons"
+    _setNameToSyuilo:
+      title: "soc millor"
+      description: "Posat \"siuylo\" com a nom"
+    _passedSinceAccountCreated1:
+      title: "Primer aniversari"
+      description: "Ja ha passat un any d'ençà que vas crear el teu compte"
+    _passedSinceAccountCreated2:
+      title: "Segon aniversari"
+      description: "Ja han passat dos anys d'ençà que vas crear el teu compte"
+    _passedSinceAccountCreated3:
+      title: "Tres anys"
+      description: "Ja han passat tres anys d'ençà que vas crear el teu compte"
+    _loggedInOnBirthday:
+      title: "Felicitats!"
+      description: "T'has identificat el dia del teu aniversari"
+    _loggedInOnNewYearsDay:
+      title: "Bon any nou!"
+      description: "T'has identificat el primer dia de l'any "
 _role:
   permission: "Permisos de rol"
   descriptionOfPermission: "Els <b>Moderadors</b> poden fer operacions bàsiques de moderació.\nEls <b>Administradors</b> poden canviar tots els ajustos del servidor."
