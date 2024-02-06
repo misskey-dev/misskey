@@ -385,7 +385,7 @@ function react(viaKeyboard = false): void {
 		}
 	} else {
 		blur();
-		reactionPicker.show(reactButton.value ?? null, reaction => {
+		reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
 			sound.playMisskeySfx('reaction');
 
 			misskeyApi('notes/reactions/create', {
