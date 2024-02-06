@@ -65,7 +65,7 @@ const opening = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = ref<HTMLObjectElement | null><HTMLSelectElement | null>(null);
+const inputEl = ref<HTMLSelectElement | null>(null);
 const prefixEl = ref<HTMLElement | null>(null);
 const suffixEl = ref<HTMLElement | null>(null);
 const container = ref<HTMLElement | null>(null);
