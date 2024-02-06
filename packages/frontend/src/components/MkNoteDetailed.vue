@@ -149,7 +149,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div>
 		<div v-if="tab === 'replies'">
-			<MkPagination :pagination="repliesPagination" :disableAutoLoad="true">
+			<div v-if="!showReplies" style="padding: 16px">
+				<MkButton style="margin: 0 auto;" primary rounded @click="showReplies = true">{{ i18n.ts.loadReplies }}</MkButton>
+			</div>
+			<MkPagination v-else :pagination="repliesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<MkNoteSub v-for="item, index in items" :key="item.id" :note="item" :class="{ [$style.replyBorder]: (index > 0) }" :detail="true"/>
 				</template>
@@ -167,7 +170,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'quotes'">
-			<MkPagination :pagination="quotesPagination" :disableAutoLoad="true">
+			<div v-if="!showQuotes" style="padding: 16px">
+				<MkButton style="margin: 0 auto;" primary rounded @click="showQuotes = true">{{ i18n.ts.loadQuotes }}</MkButton>
+			</div>
+			<MkPagination v-else :pagination="quotesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<MkNoteSub v-for="item, index in items" :key="item.id" :note="item" :class="{ [$style.replyBorder]: (index > 0) }" :detail="true"/>
 				</template>
@@ -292,6 +298,8 @@ const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
+const showReplies = ref(false);
+const showQuotes = ref(false);
 
 const keymap = {
 	'r': () => reply(true),
