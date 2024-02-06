@@ -455,7 +455,28 @@ function onLeftMouseDown(ev: MouseEvent) {
 		}
 		case 'normal': {
 			if (availableCellAddress(cellAddress)) {
-				selectionCell(cellAddress);
+				if (ev.shiftKey && selectedCell.value && !equalCellAddress(cellAddress, selectedCell.value.address)) {
+					const selectedCellAddress = selectedCell.value.address;
+
+					const leftTop = {
+						col: Math.min(selectedCellAddress.col, cellAddress.col),
+						row: Math.min(selectedCellAddress.row, cellAddress.row),
+					};
+
+					const rightBottom = {
+						col: Math.max(selectedCellAddress.col, cellAddress.col),
+						row: Math.max(selectedCellAddress.row, cellAddress.row),
+					};
+
+					unSelectionRangeAll();
+					expandCellRange(leftTop, rightBottom);
+
+					cells.value[selectedCellAddress.row].cells[selectedCellAddress.col].selected = true;
+				} else {
+					selectionCell(cellAddress);
+				}
+
+				previousCellAddress.value = cellAddress;
 
 				registerMouseUp();
 				registerMouseMove();
