@@ -1971,6 +1971,9 @@ _permissions:
   "write:flash": "Edit Plays"
   "read:flash-likes": "View list of liked Plays"
   "write:flash-likes": "Edit list of liked Plays"
+  "read:admin:abuse-user-reports": "View user reports"
+  "write:admin:delete-account": "Delete user account"
+  "read:admin:meta": "View instance metadata"
 _auth:
   shareAccessTitle: "Granting application permissions"
   shareAccess: "Would you like to authorize \"{name}\" to access this account?"
