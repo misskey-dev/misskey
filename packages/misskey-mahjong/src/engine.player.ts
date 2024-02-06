@@ -8,12 +8,12 @@ import { TileType, House, Huro, TileId, YAKU_DEFINITIONS } from './common.js';
 import * as Common from './common.js';
 
 //#region syntax suger
-function $(tileId: TileId): Common.TileInstance {
-	return Common.findTileByIdOrFail(tileId);
+function $(tid: TileId): Common.TileInstance {
+	return Common.findTileByIdOrFail(tid);
 }
 
-function $type(tileId: TileId): TileType {
-	return $(tileId).t;
+function $type(tid: TileId): TileType {
+	return $(tid).t;
 }
 //#endregion
 
@@ -26,6 +26,7 @@ export type PlayerState = {
 	round: 'e' | 's' | 'w' | 'n';
 	kyoku: number;
 
+	turnCount: number;
 	tilesCount: number;
 	doraIndicateTiles: TileId[];
 
@@ -111,6 +112,10 @@ export class PlayerGameEngine {
 		return this.state.huros;
 	}
 
+	public get turnCount(): number {
+		return this.state.turnCount;
+	}
+
 	public get tilesCount(): number {
 		return this.state.tilesCount;
 	}
@@ -129,6 +134,26 @@ export class PlayerGameEngine {
 
 	public get canCii(): PlayerState['canCii'] {
 		return this.state.canCii;
+	}
+
+	public get turn(): House | null {
+		return this.state.turn;
+	}
+
+	public get user1House(): House {
+		return this.state.user1House;
+	}
+
+	public get user2House(): House {
+		return this.state.user2House;
+	}
+
+	public get user3House(): House {
+		return this.state.user3House;
+	}
+
+	public get user4House(): House {
+		return this.state.user4House;
 	}
 
 	public get myHouse(): House {
@@ -152,19 +177,23 @@ export class PlayerGameEngine {
 		return this.state.riichis[this.myHouse];
 	}
 
-	public commit_tsumo(house: House, tileId: TileId) {
-		console.log('commit_tsumo', this.state.turn, house, tileId);
+	public commit_nextKyoku(state: PlayerState) {
+		this.state = state;
+	}
+
+	public commit_tsumo(house: House, tid: TileId) {
+		console.log('commit_tsumo', this.state.turn, house, tid);
 		this.state.tilesCount--;
 		this.state.turn = house;
 		if (house === this.myHouse) {
-			this.myHandTiles.push(tileId);
+			this.myHandTiles.push(tid);
 		} else {
 			this.state.handTiles[house].push(0);
 		}
 	}
 
-	public commit_dahai(house: House, tileId: TileId, riichi = false) {
-		console.log('commit_dahai', this.state.turn, house, tileId, riichi);
+	public commit_dahai(house: House, tid: TileId, riichi = false) {
+		console.log('commit_dahai', this.state.turn, house, tid, riichi);
 		if (this.state.turn !== house) throw new PlayerGameEngine.InvalidOperationError();
 
 		if (riichi) {
@@ -172,23 +201,23 @@ export class PlayerGameEngine {
 		}
 
 		if (house === this.myHouse) {
-			this.myHandTiles.splice(this.myHandTiles.indexOf(tileId), 1);
-			this.state.hoTiles[this.myHouse].push(tileId);
+			this.myHandTiles.splice(this.myHandTiles.indexOf(tid), 1);
+			this.state.hoTiles[this.myHouse].push(tid);
 		} else {
 			this.state.handTiles[house].pop();
-			this.state.hoTiles[house].push(tileId);
+			this.state.hoTiles[house].push(tid);
 		}
 
 		this.state.turn = null;
 
 		if (house === this.myHouse) {
 		} else {
-			const canRon = Common.getHoraSets(this.myHandTiles.concat(tileId).map(id => $type(id))).length > 0;
-			const canPon = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tileId)).length === 2;
-			const canKan = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tileId)).length === 3;
+			const canRon = Common.getHoraSets(this.myHandTiles.concat(tid).map(id => $type(id))).length > 0;
+			const canPon = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tid)).length === 2;
+			const canKan = !this.isMeRiichi && this.myHandTileTypes.filter(t => t === $type(tid)).length === 3;
 			const canCii = !this.isMeRiichi && house === Common.prevHouse(this.myHouse) &&
 				Common.SHUNTU_PATTERNS.some(pattern =>
-					pattern.includes($type(tileId)) &&
+					pattern.includes($type(tid)) &&
 					pattern.filter(t => this.myHandTileTypes.includes(t)).length >= 2);
 
 			this.state.canRon = canRon ? { callee: house } : null;

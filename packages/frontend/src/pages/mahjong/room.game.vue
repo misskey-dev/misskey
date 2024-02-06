@@ -168,6 +168,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
+		<div :class="$style.startTextContainer">
+			<Transition
+				:enterActiveClass="$style.transition_serif_enterActive"
+				:leaveActiveClass="$style.transition_serif_leaveActive"
+				:enterFromClass="$style.transition_serif_enterFrom"
+				:leaveToClass="$style.transition_serif_leaveTo"
+			>
+				<img v-if="startTextShowing" :src="`/client-assets/mahjong/kaisi.png`" style="display: block; width: 100%;"/>
+			</Transition>
+		</div>
+
 		<div :class="$style.ryuukyokuContainer">
 			<Transition
 				:enterActiveClass="$style.transition_serif_enterActive"
@@ -210,6 +221,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ res.pointDeltas.e }} / {{ res.pointDeltas.s }} / {{ res.pointDeltas.w }} / {{ res.pointDeltas.n }}</div>
 			</div>
 		</div>
+		<MkButton primary @click="confirmKyokuResult">OK</MkButton>
 	</div>
 </div>
 </template>
@@ -235,12 +247,12 @@ import * as os from '@/os.js';
 import { confetti } from '@/scripts/confetti.js';
 
 //#region syntax suger
-function mj$(tileId: Mmj.TileId): Mmj.TileInstance {
-	return Mmj.findTileByIdOrFail(tileId);
+function mj$(tid: Mmj.TileId): Mmj.TileInstance {
+	return Mmj.findTileByIdOrFail(tid);
 }
 
-function mj$type(tileId: Mmj.TileId): Mmj.TileType {
-	return mj$(tileId).t;
+function mj$type(tid: Mmj.TileId): Mmj.TileType {
+	return mj$(tid).t;
 }
 //#endregion
 
@@ -256,11 +268,11 @@ const myUserNumber = computed(() => room.value.user1Id === $i.id ? 1 : room.valu
 const mj = shallowRef(new Mmj.PlayerGameEngine(myUserNumber.value, room.value.gameState));
 
 const isMyTurn = computed(() => {
-	return mj.value.state.turn === mj.value.myHouse;
+	return mj.value.turn === mj.value.myHouse;
 });
 
 const canHora = computed(() => {
-	return Mmj.getHoraSets(mj.value.myHandTiles).length > 0;
+	return Mmj.getHoraSets(mj.value.myHandTileTypes).length > 0;
 });
 
 const selectableTiles = ref<Mmj.TileType[] | null>(null);
@@ -286,6 +298,7 @@ const kyokuResults = ref<Record<Mmj.House, {
 	n: null,
 });
 const ryuukyokued = ref(false);
+const startTextShowing = ref(false);
 
 /*
 if (room.value.isStarted && !room.value.isEnded) {
@@ -329,7 +342,7 @@ if (!props.room.isEnded) {
 */
 
 function houseToUser(house: Mmj.House) {
-	return room.value.gameState.user1House === house ? room.value.user1 : room.value.gameState.user2House === house ? room.value.user2 : room.value.gameState.user3House === house ? room.value.user3 : room.value.user4;
+	return mj.value.user1House === house ? room.value.user1 : mj.value.user2House === house ? room.value.user2 : mj.value.user3House === house ? room.value.user3 : room.value.user4;
 }
 
 let riichiSelect = false;
@@ -432,6 +445,10 @@ function skip() {
 	triggerRef(mj);
 
 	props.connection!.send('nop', {});
+}
+
+function confirmKyokuResult() {
+	props.connection!.send('confirmNextKyoku', {});
 }
 
 function onStreamDahai(log) {
@@ -602,6 +619,10 @@ function onStreamRonned(log) {
 
 	for (const caller of log.callers) {
 		ronSerifHouses[caller] = true;
+
+		window.setTimeout(() => {
+			ronSerifHouses[caller] = false;
+		}, 2000);
 	}
 
 	console.log('ronned', res);
@@ -620,6 +641,9 @@ function onStreamTsumoHora(log) {
 	}, 1500);
 
 	tsumoSerifHouses[log.house] = true;
+	window.setTimeout(() => {
+		tsumoSerifHouses[log.house] = false;
+	}, 2000);
 
 	console.log('tsumohora', res);
 }
@@ -632,6 +656,23 @@ function onStreamRyuukyoku(log) {
 	window.setTimeout(() => {
 		showKyokuResults.value = true;
 	}, 1500);
+}
+
+function onStreamNextKyoku(log) {
+	console.log('onStreamNextKyoku', log);
+
+	const res = mj.value.commit_nextKyoku(log.state);
+	triggerRef(mj);
+
+	iTsumoed.value = false;
+	showKyokuResults.value = false;
+	kyokuResults.value = {
+		e: null,
+		s: null,
+		w: null,
+		n: null,
+	};
+	ryuukyokued.value = false;
 }
 
 function restoreRoom(_room) {
@@ -653,6 +694,7 @@ onMounted(() => {
 		props.connection.on('ronned', onStreamRonned);
 		props.connection.on('tsumoHora', onStreamTsumoHora);
 		props.connection.on('ryuukyoku', onStreamRyuukyoku);
+		props.connection.on('nextKyoku', onStreamNextKyoku);
 	}
 });
 
@@ -669,6 +711,7 @@ onActivated(() => {
 		props.connection.on('ronned', onStreamRonned);
 		props.connection.on('tsumoHora', onStreamTsumoHora);
 		props.connection.on('ryuukyoku', onStreamRyuukyoku);
+		props.connection.on('nextKyoku', onStreamNextKyoku);
 	}
 });
 
@@ -685,6 +728,7 @@ onDeactivated(() => {
 		props.connection.off('ronned', onStreamRonned);
 		props.connection.off('tsumoHora', onStreamTsumoHora);
 		props.connection.off('ryuukyoku', onStreamRyuukyoku);
+		props.connection.off('nextKyoku', onStreamNextKyoku);
 	}
 });
 
@@ -701,6 +745,7 @@ onUnmounted(() => {
 		props.connection.off('ronned', onStreamRonned);
 		props.connection.off('tsumoHora', onStreamTsumoHora);
 		props.connection.off('ryuukyoku', onStreamRyuukyoku);
+		props.connection.off('nextKyoku', onStreamNextKyoku);
 	}
 });
 </script>

@@ -92,14 +92,14 @@ export const TILE_ID_MAP = new Map<TileId, TileInstance>([
 	/* eslint-enable no-multi-spaces */
 ]);
 
-export function findTileByIdOrFail(tileId: TileId): TileInstance {
-	const tile = TILE_ID_MAP.get(tileId);
-	if (tile == null) throw new Error(`tile not found: ${tileId}`);
+export function findTileByIdOrFail(tid: TileId): TileInstance {
+	const tile = TILE_ID_MAP.get(tid);
+	if (tile == null) throw new Error(`tile not found: ${tid}`);
 	return tile;
 }
 
-export function findTileById(tileId: TileId): TileInstance | null {
-	return TILE_ID_MAP.get(tileId) ?? null;
+export function findTileById(tid: TileId): TileInstance | null {
+	return TILE_ID_MAP.get(tid) ?? null;
 }
 
 export type House = 'e' | 's' | 'w' | 'n';
@@ -299,6 +299,13 @@ export const YAKU_DEFINITIONS = [{
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		return state.tsumoTile != null;
+	},
+}, {
+	name: 'ippatsu',
+	fan: 1,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku) => {
+
 	},
 }, {
 	name: 'red',

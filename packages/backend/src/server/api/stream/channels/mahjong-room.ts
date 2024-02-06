@@ -40,6 +40,11 @@ class MahjongRoomChannel extends Channel {
 			this.send('started', {
 				room: packed,
 			});
+		} else if (message.type === 'nextKyoku') {
+			const packed = this.mahjongService.packState(message.body.room, this.user!);
+			this.send('nextKyoku', {
+				state: packed,
+			});
 		} else {
 			this.send(message.type, message.body);
 		}

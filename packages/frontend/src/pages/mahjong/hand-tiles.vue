@@ -40,12 +40,12 @@ import { computed } from 'vue';
 import * as Mmj from 'misskey-mahjong';
 
 //#region syntax suger
-function mj$(tileId: Mmj.TileId): Mmj.TileInstance {
-	return Mmj.findTileByIdOrFail(tileId);
+function mj$(tid: Mmj.TileId): Mmj.TileInstance {
+	return Mmj.findTileByIdOrFail(tid);
 }
 
-function mj$type(tileId: Mmj.TileId): Mmj.TileType {
-	return mj$(tileId).t;
+function mj$type(tid: Mmj.TileId): Mmj.TileType {
+	return mj$(tid).t;
 }
 //#endregion
 

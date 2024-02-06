@@ -280,28 +280,18 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 
 		room.gameState = Mmj.MasterGameEngine.createInitialState();
 		room.isStarted = true;
-
 		await this.saveRoom(room);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'started', { room: room });
 
-		return room;
+		this.kyokuStarted(room);
 	}
 
 	@bindThis
-	public async packRoom(room: Room, me: MiUser) {
-		if (room.gameState) {
-			const mj = new Mmj.MasterGameEngine(room.gameState);
-			const myIndex = room.user1Id === me.id ? 1 : room.user2Id === me.id ? 2 : room.user3Id === me.id ? 3 : 4;
-			return {
-				...room,
-				gameState: mj.createPlayerState(myIndex),
-			};
-		} else {
-			return {
-				...room,
-			};
-		}
+	private kyokuStarted(room: Room) {
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+
+		this.waitForTurn(room, mj.turn, mj);
 	}
 
 	@bindThis
@@ -377,6 +367,17 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 				this.nextKyoku(room, mj);
 			}
 		}, 2000);
+	}
+
+	@bindThis
+	private async nextKyoku(room: Room, mj: Mmj.MasterGameEngine) {
+		const res = mj.commit_nextKyoku();
+		room.gameState = mj.getState();
+		await this.saveRoom(room);
+		this.globalEventService.publishMahjongRoomStream(room.id, 'nextKyoku', {
+			room: room,
+		});
+		this.kyokuStarted(room);
 	}
 
 	@bindThis
@@ -551,6 +552,8 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 		await this.saveRoom(room);
 
 		this.globalEventService.publishMahjongRoomStream(room.id, 'tsumoHora', { house: myHouse, handTiles: res.handTiles, tsumoTile: res.tsumoTile });
+
+		this.endKyoku(room, mj);
 	}
 
 	@bindThis
@@ -698,6 +701,27 @@ export class MahjongService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	private async clearTurnWaitingTimer(roomId: Room['id']) {
 		await this.redisClient.del(`mahjong:gameTurnWaiting:${roomId}`);
+	}
+
+	@bindThis
+	public packState(room: Room, me: MiUser) {
+		const mj = new Mmj.MasterGameEngine(room.gameState);
+		const myIndex = room.user1Id === me.id ? 1 : room.user2Id === me.id ? 2 : room.user3Id === me.id ? 3 : 4;
+		return mj.createPlayerState(myIndex);
+	}
+
+	@bindThis
+	public async packRoom(room: Room, me: MiUser) {
+		if (room.gameState) {
+			return {
+				...room,
+				gameState: this.packState(room, me),
+			};
+		} else {
+			return {
+				...room,
+			};
+		}
 	}
 
 	@bindThis
