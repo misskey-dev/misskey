@@ -43,14 +43,19 @@ const props = defineProps<{
 	buttonCount: number;
 }>();
 
-const { current, max, buttonCount } = toRefs(props);
+const { current, max } = toRefs(props);
 
+const buttonCount = computed(() => Math.min(max.value, props.buttonCount));
 const buttonCountHalf = computed(() => Math.floor(buttonCount.value / 2));
 const buttonCountStart = computed(() => Math.min(Math.max(min, current.value - buttonCountHalf.value), max.value - buttonCount.value + 1));
 const buttonRanges = computed(() => Array.from({ length: buttonCount.value }, (_, i) => buttonCountStart.value + i));
 
-const prevDotVisible = computed(() => (current.value - 1 > buttonCountHalf.value) || (max.value < buttonCount.value));
-const nextDotVisible = computed(() => (current.value < max.value - buttonCountHalf.value) || (max.value < buttonCount.value));
+const prevDotVisible = computed(() => (current.value - 1 > buttonCountHalf.value) && (max.value > buttonCount.value));
+const nextDotVisible = computed(() => (current.value < max.value - buttonCountHalf.value) && (max.value > buttonCount.value));
+
+console.log(current.value, max.value, buttonCount.value, buttonCountHalf.value);
+console.log(current.value < max.value - buttonCountHalf.value);
+console.log(max.value > buttonCount.value);
 
 function onNumberButtonClicked(pageNumber: number) {
 	emit('pageChanged', pageNumber);
