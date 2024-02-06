@@ -18,6 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:showPinned="showPinned"
 		:pinnedEmojis="pinnedEmojis"
 		:asReactionPicker="asReactionPicker"
+		:targetNote="targetNote"
 		asWindow
 		@chosen="chosen"
 	/>
@@ -25,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 
@@ -33,6 +35,7 @@ withDefaults(defineProps<{
 	showPinned?: boolean;
 	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
+	targetNote?: Misskey.entities.Note
 }>(), {
 	showPinned: true,
 });
