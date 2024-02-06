@@ -34,7 +34,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
 		let title: string | undefined;
-		let text = err.message + '\n' + (err as any).id;
+		let text = err.message + '\n' + err.id;
 		if (err.code === 'INTERNAL_ERROR') {
 			title = i18n.ts.internalServerError;
 			text = i18n.ts.internalServerErrorDescription;
