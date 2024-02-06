@@ -11,44 +11,53 @@
 				検索条件を詳細に設定します。
 			</template>
 
-			<div :class="$style.searchArea">
-				<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" style="grid-column: 1 / 2; grid-row: 1 / 2">
-					<template #label>name</template>
-				</MkInput>
-				<MkInput v-model="queryCategory" :debounce="true" type="search" autocapitalize="off" style="grid-column: 2 / 3; grid-row: 1 / 2">
-					<template #label>category</template>
-				</MkInput>
-				<MkInput v-model="queryAlias" :debounce="true" type="search" autocapitalize="off" style="grid-column: 3 / 4; grid-row: 1 / 2">
-					<template #label>alias</template>
-				</MkInput>
+			<div class="_gaps">
+				<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
+					<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" class="col1 row1">
+						<template #label>name</template>
+					</MkInput>
+					<MkInput
+						v-model="queryCategory" :debounce="true" type="search" autocapitalize="off" class="col2 row1"
+					>
+						<template #label>category</template>
+					</MkInput>
+					<MkInput
+						v-model="queryAlias" :debounce="true" type="search" autocapitalize="off" class="col3 row1"
+					>
+						<template #label>alias</template>
+					</MkInput>
 
-				<MkInput v-model="queryType" :debounce="true" type="search" autocapitalize="off" style="grid-column: 1 / 2; grid-row: 2 / 3">
-					<template #label>type</template>
-				</MkInput>
-				<MkInput v-model="queryLicense" :debounce="true" type="search" autocapitalize="off" style="grid-column: 2 / 3; grid-row: 2 / 3">
-					<template #label>license</template>
-				</MkInput>
+					<MkInput
+						v-model="queryType" :debounce="true" type="search" autocapitalize="off" class="col1 row2"
+					>
+						<template #label>type</template>
+					</MkInput>
+					<MkInput
+						v-model="queryLicense" :debounce="true" type="search" autocapitalize="off" class="col2 row2"
+					>
+						<template #label>license</template>
+					</MkInput>
+					<MkSelect v-model="querySensitive" class="col3 row2">
+						<template #label>sensitive</template>
+						<option :value="null">-</option>
+						<option :value="true">true</option>
+						<option :value="false">false</option>
+					</MkSelect>
 
-				<MkInput v-model="queryUpdatedAtFrom" :debounce="true" type="date" autocapitalize="off" style="grid-column: 1 / 2; grid-row: 3 / 4">
-					<template #label>updatedAt(from)</template>
-				</MkInput>
-				<MkInput v-model="queryUpdatedAtTo" :debounce="true" type="date" autocapitalize="off" style="grid-column: 2 / 3; grid-row: 3 / 4">
-					<template #label>updatedAt(to)</template>
-				</MkInput>
-
-				<MkSelect v-model="querySensitive" style="grid-column: 1 / 2; grid-row: 4 / 5">
-					<template #label>sensitive</template>
-					<option :value="null">-</option>
-					<option :value="true">true</option>
-					<option :value="false">false</option>
-				</MkSelect>
-				<MkSelect v-model="queryLocalOnly" style="grid-column: 2 / 3; grid-row: 4 / 5">
-					<template #label>localOnly</template>
-					<option :value="null">-</option>
-					<option :value="true">true</option>
-					<option :value="false">false</option>
-				</MkSelect>
-				<div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 8px; grid-column: 3 / 4; grid-row: 4 / 5">
+					<MkSelect v-model="queryLocalOnly" class="col1 row3">
+						<template #label>localOnly</template>
+						<option :value="null">-</option>
+						<option :value="true">true</option>
+						<option :value="false">false</option>
+					</MkSelect>
+					<MkInput v-model="queryUpdatedAtFrom" :debounce="true" type="date" autocapitalize="off" class="col2 row3">
+						<template #label>updatedAt(from)</template>
+					</MkInput>
+					<MkInput v-model="queryUpdatedAtTo" :debounce="true" type="date" autocapitalize="off" class="col3 row3">
+						<template #label>updatedAt(to)</template>
+					</MkInput>
+				</div>
+				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 					<MkButton primary @click="onSearchButtonClicked">
 						{{ i18n.ts.search }}
 					</MkButton>
@@ -78,7 +87,11 @@
 		<div class="_gaps">
 			<div :class="$style.buttons">
 				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">{{ i18n.ts.delete }}</MkButton>
-				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">{{ i18n.ts.update }}</MkButton>
+				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
+					{{
+						i18n.ts.update
+					}}
+				</MkButton>
 				<MkButton @click="onGridResetButtonClicked">リセット</MkButton>
 			</div>
 		</div>
@@ -87,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { fromEmojiDetailedAdmin, GridItem, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
@@ -112,8 +125,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 const emptyStrToUndefined = (value: string | null) => value ? value : undefined;
 const emptyStrToNull = (value: string) => value === '' ? null : value;
@@ -158,6 +171,8 @@ const requestLogs = ref<RequestLogItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
 const originGridItems = ref<GridItem[]>([]);
 const updateButtonDisabled = ref<boolean>(false);
+
+const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
 
 async function onUpdateButtonClicked() {
 	const _items = gridItems.value;
@@ -257,8 +272,10 @@ async function onDeleteButtonClicked() {
 
 	await os.promiseDialog(
 		action(),
-		() => {},
-		() => {},
+		() => {
+		},
+		() => {
+		},
 	);
 }
 
@@ -398,8 +415,10 @@ async function refreshCustomEmojis() {
 			limit: limit,
 			page: currentPage.value,
 		}),
-		() => {},
-		() => {},
+		() => {
+		},
+		() => {
+		},
 	);
 
 	customEmojis.value = result.emojis;
@@ -421,11 +440,61 @@ onMounted(async () => {
 
 </script>
 
+<style lang="scss">
+.row1 {
+	grid-row: 1 / 2;
+}
+
+.row2 {
+	grid-row: 2 / 3;
+}
+
+.row3 {
+	grid-row: 3 / 4;
+}
+
+.row4 {
+	grid-row: 4 / 5;
+}
+
+.col1 {
+	grid-column: 1 / 2;
+}
+
+.col2 {
+	grid-column: 2 / 3;
+}
+
+.col3 {
+	grid-column: 3 / 4;
+}
+</style>
+
 <style module lang="scss">
 .searchArea {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: 16px;
+}
+
+.searchAreaSp {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.searchButtons {
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	gap: 8px;
+}
+
+.searchButtonsSp {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
 }
 
 .gridArea {
