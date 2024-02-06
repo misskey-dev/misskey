@@ -110,7 +110,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { CURRENT_STICKY_BOTTOM } from '@/const.js';
 import { useScrollPositionManager } from '@/nirax.js';
-import { mainRouter } from '@/global/router/main.js';
+import { mainRouter } from '@/router/main.js';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));

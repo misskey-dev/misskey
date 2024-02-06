@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-if="meta" :class="$style.root">
 	<div :class="[$style.main, $style.panel]">
-		<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.mainIcon"/>
+		<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.mainIcon"/>
 		<button class="_button _acrylic" :class="$style.mainMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 		<div :class="$style.mainFg">
 			<h1 :class="$style.mainTitle">
@@ -106,19 +106,19 @@ function showMenu(ev) {
 		text: i18n.ts.impressum,
 		icon: 'ti ti-file-invoice',
 		action: () => {
-			window.open(instance.impressumUrl, '_blank', 'noopener');
+			window.open(instance.impressumUrl!, '_blank', 'noopener');
 		},
 	} : undefined, (instance.tosUrl) ? {
 		text: i18n.ts.termsOfService,
 		icon: 'ti ti-notebook',
 		action: () => {
-			window.open(instance.tosUrl, '_blank', 'noopener');
+			window.open(instance.tosUrl!, '_blank', 'noopener');
 		},
 	} : undefined, (instance.privacyPolicyUrl) ? {
 		text: i18n.ts.privacyPolicy,
 		icon: 'ti ti-shield-lock',
 		action: () => {
-			window.open(instance.privacyPolicyUrl, '_blank', 'noopener');
+			window.open(instance.privacyPolicyUrl!, '_blank', 'noopener');
 		},
 	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
 		text: i18n.ts.help,

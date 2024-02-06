@@ -4894,7 +4894,7 @@ export interface Locale extends ILocale {
          */
         "readConfirmText": ParameterizedString<"title">;
         /**
-         * 特に新規ユーザーのUXを損ねる可能性が高いため、ストック情報ではなくフロー情報の掲示にお知らせを使用することを推奨します。
+         * 特に新規ユーザーのUXを損ねる可能性が高いため、常時掲示するための情報ではなく、即時性が求められる情報の掲示のためにお知らせを使用することを推奨します。
          */
         "shouldNotBeUsedToPresentPermanentInfo": string;
         /**
@@ -9595,6 +9595,14 @@ export interface Locale extends ILocale {
          * 相手が設定を変更しました
          */
         "opponentHasSettingsChanged": string;
+        /**
+         * 変則許可 (完全フリー)
+         */
+        "allowIrregularRules": string;
+        /**
+         * 変則なし
+         */
+        "disallowIrregularRules": string;
     };
     "_offlineScreen": {
         /**

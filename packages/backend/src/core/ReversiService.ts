@@ -85,6 +85,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			map: game.map,
 			bw: game.bw,
 			crc32: game.crc32,
+			noIrregularRules: game.noIrregularRules,
 		} satisfies Partial<MiReversiGame>;
 	}
 
@@ -119,7 +120,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (invitations.includes(targetUser.id)) {
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, targetUser.id);
 
-			const game = await this.matched(targetUser.id, me.id);
+			const game = await this.matched(targetUser.id, me.id, {
+				noIrregularRules: false,
+			});
 
 			return game;
 		}
@@ -138,7 +141,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async matchAnyUser(me: MiUser, multiple = false): Promise<MiReversiGame | null> {
+	public async matchAnyUser(me: MiUser, options: { noIrregularRules: boolean }, multiple = false): Promise<MiReversiGame | null> {
 		if (!multiple) {
 			// 既にマッチしている対局が無いか探す(3分以内)
 			const games = await this.reversiGamesRepository.find({
@@ -165,7 +168,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			const invitorId = invitations[Math.floor(Math.random() * invitations.length)];
 			await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, invitorId);
 
-			const game = await this.matched(invitorId, me.id);
+			const game = await this.matched(invitorId, me.id, {
+				noIrregularRules: false,
+			});
 
 			return game;
 		}
@@ -177,19 +182,29 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			2, // 自分自身のIDが入っている場合もあるので2つ取得
 			'REV');
 
-		const userIds = matchings.filter(id => id !== me.id);
+		const items = matchings.filter(id => !id.startsWith(me.id));
 
-		if (userIds.length > 0) {
-			const matchedUserId = userIds[0];
+		if (items.length > 0) {
+			const [matchedUserId, option] = items[0].split(':');
 
-			await this.redisClient.zrem('reversi:matchAny', me.id, matchedUserId);
+			await this.redisClient.zrem('reversi:matchAny',
+				me.id,
+				matchedUserId,
+				me.id + ':noIrregularRules',
+				matchedUserId + ':noIrregularRules');
 
-			const game = await this.matched(matchedUserId, me.id);
+			const game = await this.matched(matchedUserId, me.id, {
+				noIrregularRules: options.noIrregularRules || option === 'noIrregularRules',
+			});
 
 			return game;
 		} else {
 			const redisPipeline = this.redisClient.pipeline();
-			redisPipeline.zadd('reversi:matchAny', Date.now(), me.id);
+			if (options.noIrregularRules) {
+				redisPipeline.zadd('reversi:matchAny', Date.now(), me.id + ':noIrregularRules');
+			} else {
+				redisPipeline.zadd('reversi:matchAny', Date.now(), me.id);
+			}
 			redisPipeline.expire('reversi:matchAny', 15, 'NX');
 			await redisPipeline.exec();
 			return null;
@@ -203,7 +218,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUserCancel(user: MiUser) {
-		await this.redisClient.zrem('reversi:matchAny', user.id);
+		await this.redisClient.zrem('reversi:matchAny', user.id, user.id + ':noIrregularRules');
 	}
 
 	@bindThis
@@ -265,7 +280,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async matched(parentId: MiUser['id'], childId: MiUser['id']): Promise<MiReversiGame> {
+	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean; }): Promise<MiReversiGame> {
 		const game = await this.reversiGamesRepository.insert({
 			id: this.idService.gen(),
 			user1Id: parentId,
@@ -278,6 +293,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			map: Reversi.maps.eighteight.data,
 			bw: 'random',
 			isLlotheo: false,
+			noIrregularRules: options.noIrregularRules,
 		}).then(x => this.reversiGamesRepository.findOneOrFail({
 			where: { id: x.identifiers[0].id },
 			relations: ['user1', 'user2'],

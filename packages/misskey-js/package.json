@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.2.0-beta.3",
+	"version": "2024.2.0-beta.8",
 	"description": "Misskey SDK for JavaScript",
 	"types": "./built/dts/index.d.ts",
 	"exports": {
@@ -19,7 +19,7 @@
 		"ts": "npm run ts-esm && npm run ts-dts",
 		"ts-esm": "tsc --outDir built/esm",
 		"ts-dts": "tsc --outDir built/dts --declaration true --emitDeclarationOnly true --declarationMap true",
-		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run build\"",
+		"watch": "nodemon -w src -e ts,js,cjs,mjs,json --exec \"pnpm run ts\"",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
@@ -39,7 +39,7 @@
 		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@swc/jest": "0.2.31",
 		"@types/jest": "29.5.11",
-		"@types/node": "20.11.5",
+		"@types/node": "20.11.10",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
 		"eslint": "8.56.0",

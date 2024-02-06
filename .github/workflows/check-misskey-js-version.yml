@@ -1,0 +1,28 @@
+name: Check Misskey JS version
+
+on:
+  push:
+    branches: [ develop ]
+    paths:
+      - packages/misskey-js/package.json
+      - package.json
+  pull_request:
+    branches: [ develop ]
+    paths:
+      - packages/misskey-js/package.json
+      - package.json
+
+jobs:
+  check-version:
+    # ルートの package.json と packages/misskey-js/package.json のバージョンが一致しているかを確認する
+    name: Check version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Check version
+        run: |
+          if [ "$(jq -r '.version' package.json)" != "$(jq -r '.version' packages/misskey-js/package.json)" ]; then
+            echo "Version mismatch!"
+            exit 1
+          fi

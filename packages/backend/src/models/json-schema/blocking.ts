@@ -25,7 +25,7 @@ export const packedBlockingSchema = {
 		blockee: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'UserDetailed',
+			ref: 'UserDetailedNotMe',
 		},
 	},
 } as const;
