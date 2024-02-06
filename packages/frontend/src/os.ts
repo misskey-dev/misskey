@@ -26,9 +26,9 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 
 export const openingWindowsCount = ref(0);
 
-export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints>(
+export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
 	endpoint: E,
-	data: Record<string, any> = {},
+	data: P = {} as any,
 	token?: string | null | undefined,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
