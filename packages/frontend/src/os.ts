@@ -162,7 +162,12 @@ type EmitsExtractor<T> = {
 	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
 };
 
-export async function popup<T extends Component>(component: T, props: ComponentProps<T>, events: ComponentEmit<T> = {} as ComponentEmit<T>, disposeEvent?: keyof ComponentEmit<T>) {
+export async function popup<T extends Component>(
+	component: T,
+	props: ComponentProps<T>,
+	events: ComponentEmit<T> = {} as ComponentEmit<T>,
+	disposeEvent?: keyof ComponentEmit<T>,
+): Promise<{ dispose: () => void }> {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -246,7 +251,9 @@ export function actions<T extends {
 	title?: string;
 	text?: string;
 	actions: T;
-}): Promise<{ canceled: true; result: undefined; } | {
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
 	canceled: false; result: T[number]['value'];
 }> {
 	return new Promise(resolve => {
@@ -277,7 +284,9 @@ export function inputText(props: {
 	default?: string | null;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{ canceled: true; result: undefined; } | {
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
 	canceled: false; result: string;
 }> {
 	return new Promise(resolve => {
@@ -306,7 +315,9 @@ export function inputNumber(props: {
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
-}): Promise<{ canceled: true; result: undefined; } | {
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
 	canceled: false; result: number;
 }> {
 	return new Promise(resolve => {
@@ -332,7 +343,9 @@ export function inputDate(props: {
 	text?: string;
 	placeholder?: string | null;
 	default?: string | null;
-}): Promise<{ canceled: true; result: undefined; } | {
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
 	canceled: false; result: Date;
 }> {
 	return new Promise(resolve => {
@@ -352,7 +365,9 @@ export function inputDate(props: {
 	});
 }
 
-export function authenticateDialog(): Promise<{ canceled: true; result: undefined; } | {
+export function authenticateDialog(): Promise<{
+	canceled: true; result: undefined;
+} | {
 	canceled: false; result: { password: string; token: string | null; };
 }> {
 	return new Promise(resolve => {
@@ -372,7 +387,9 @@ export function select<C = any>(props: {
 		value: C;
 		text: string;
 	}[];
-}): Promise<{ canceled: true; result: undefined; } | {
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
 	canceled: false; result: C;
 }> {
 	return new Promise(resolve => {
@@ -418,7 +435,7 @@ export function waiting(): Promise<void> {
 	});
 }
 
-export function form(title: string, form: any) {
+export function form(title: string, form: any): Promise<unknown> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form }, {
 			done: result => {
@@ -456,7 +473,7 @@ export async function selectDriveFile(multiple: boolean): Promise<Misskey.entiti
 	});
 }
 
-export async function selectDriveFolder(multiple: boolean) {
+export async function selectDriveFolder(multiple: boolean): Promise<Misskey.entities.DriveFolder[]> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'folder',
@@ -464,14 +481,14 @@ export async function selectDriveFolder(multiple: boolean) {
 		}, {
 			done: folders => {
 				if (folders) {
-					resolve(multiple ? folders : folders[0]);
+					resolve(folders);
 				}
 			},
 		}, 'closed');
 	});
 }
 
-export async function pickEmoji(src: HTMLElement | null, opts) {
+export async function pickEmoji(src: HTMLElement | null, opts): Promise<unknown> {
 	return new Promise(resolve => {
 		popup(MkEmojiPickerDialog, {
 			src,
