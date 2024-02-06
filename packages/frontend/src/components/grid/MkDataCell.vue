@@ -43,6 +43,8 @@
 				:class="$style.editingInput"
 				:value="editingValue"
 				@input="onInputText"
+				@mousedown.stop
+				@contextmenu.stop
 			/>
 		</div>
 	</div>
