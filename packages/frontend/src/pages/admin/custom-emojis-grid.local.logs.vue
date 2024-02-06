@@ -1,12 +1,22 @@
 <template>
 <div>
-	<div v-if="logs.length > 0" style="overflow-y: scroll;">
-		<MkGrid
-			:gridSetting="{ rowNumberVisible: false, rowSelectable: false }"
-			:data="logs"
-			:columnSettings="columnSettings"
-			@event="onGridEvent"
-		/>
+	<div v-if="logs.length > 0" style="display:flex; flex-direction: column; overflow-y: scroll; gap: 16px;">
+		<MkSwitch v-model="showingSuccessLogs">
+			<template #label>成功ログを表示する</template>
+		</MkSwitch>
+		<div>
+			<div v-if="filteredLogs.length > 0">
+				<MkGrid
+					:gridSetting="{ rowNumberVisible: false, rowSelectable: false }"
+					:data="filteredLogs"
+					:columnSettings="columnSettings"
+					@event="onGridEvent"
+				/>
+			</div>
+			<div v-else>
+				失敗ログはありません。
+			</div>
+		</div>
 	</div>
 	<div v-else>
 		ログはありません。
@@ -16,7 +26,7 @@
 
 <script setup lang="ts">
 
-import { toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { ColumnSetting } from '@/components/grid/column.js';
 import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
@@ -28,6 +38,7 @@ import {
 } from '@/components/grid/grid-event.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'failed', title: 'failed', type: 'boolean', editable: false, width: 50 },
@@ -41,6 +52,12 @@ const props = defineProps<{
 }>();
 
 const { logs } = toRefs(props);
+const showingSuccessLogs = ref<boolean>(false);
+
+const filteredLogs = computed(() => {
+	const forceShowing = showingSuccessLogs.value;
+	return logs.value.filter((log) => forceShowing || log.failed);
+});
 
 function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 	switch (event.type) {
