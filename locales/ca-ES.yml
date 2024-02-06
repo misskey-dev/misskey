@@ -1567,6 +1567,9 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "Bon any nou!"
       description: "T'has identificat el primer dia de l'any "
+      flavor: "A per un altre any memorable a la teva instància   "
+    _cookieClicked:
+      title: "Un joc en què fas clic a les galetes"
 _role:
   permission: "Permisos de rol"
   descriptionOfPermission: "Els <b>Moderadors</b> poden fer operacions bàsiques de moderació.\nEls <b>Administradors</b> poden canviar tots els ajustos del servidor."
