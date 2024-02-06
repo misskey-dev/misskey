@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
-import { IRouter, Resolved, RouteDef } from '@/nirax.js';
+import { IRouter, Resolved } from '@/nirax.js';
 import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
@@ -76,7 +76,7 @@ router.addListener('change', onChange);
 
 /**
  * キャッシュクリアが有効になったら、全キャッシュをクリアする
- * 
+ *
  * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
  * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
  */
