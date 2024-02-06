@@ -3,7 +3,7 @@
 
 /*
  * version: 2024.2.0-beta.8
- * generatedAt: 2024-02-04T11:51:13.473Z
+ * generatedAt: 2024-02-04T16:51:09.378Z
  */
 
 /**
@@ -4423,6 +4423,7 @@ export type components = {
       name: string;
       category: string | null;
       url: string;
+      localOnly?: boolean;
       isSensitive?: boolean;
       roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
     };
