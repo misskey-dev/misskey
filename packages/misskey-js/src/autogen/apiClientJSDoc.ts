@@ -1,6 +1,6 @@
 /*
  * version: 2024.2.0-beta.8
- * generatedAt: 2024-02-04T16:51:09.469Z
+ * generatedAt: 2024-02-06T08:37:12.150Z
  */
 
 import type { SwitchCaseResponseType } from '../api.js';
@@ -3019,6 +3019,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:votes*
      */
     request<E extends 'notes/polls/vote', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *No*
+     */
+    request<E extends 'notes/quotes', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

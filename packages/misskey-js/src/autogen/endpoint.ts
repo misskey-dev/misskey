@@ -1,6 +1,6 @@
 /*
  * version: 2024.2.0-beta.8
- * generatedAt: 2024-02-04T16:51:09.467Z
+ * generatedAt: 2024-02-06T08:37:12.146Z
  */
 
 import type {
@@ -407,6 +407,8 @@ import type {
 	NotesPollsRecommendationRequest,
 	NotesPollsRecommendationResponse,
 	NotesPollsVoteRequest,
+	NotesQuotesRequest,
+	NotesQuotesResponse,
 	NotesReactionsRequest,
 	NotesReactionsResponse,
 	NotesReactionsCreateRequest,
@@ -830,6 +832,7 @@ export type Endpoints = {
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
 	'notes/polls/vote': { req: NotesPollsVoteRequest; res: EmptyResponse };
+	'notes/quotes': { req: NotesQuotesRequest; res: NotesQuotesResponse };
 	'notes/reactions': { req: NotesReactionsRequest; res: NotesReactionsResponse };
 	'notes/reactions/create': { req: NotesReactionsCreateRequest; res: EmptyResponse };
 	'notes/reactions/delete': { req: NotesReactionsDeleteRequest; res: EmptyResponse };

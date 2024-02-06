@@ -1,6 +1,6 @@
 /*
  * version: 2024.2.0-beta.8
- * generatedAt: 2024-02-04T16:51:09.466Z
+ * generatedAt: 2024-02-06T08:37:12.144Z
  */
 
 import { operations } from './types.js';
@@ -409,6 +409,8 @@ export type NotesMentionsResponse = operations['notes/mentions']['responses']['2
 export type NotesPollsRecommendationRequest = operations['notes/polls/recommendation']['requestBody']['content']['application/json'];
 export type NotesPollsRecommendationResponse = operations['notes/polls/recommendation']['responses']['200']['content']['application/json'];
 export type NotesPollsVoteRequest = operations['notes/polls/vote']['requestBody']['content']['application/json'];
+export type NotesQuotesRequest = operations['notes/quotes']['requestBody']['content']['application/json'];
+export type NotesQuotesResponse = operations['notes/quotes']['responses']['200']['content']['application/json'];
 export type NotesReactionsRequest = operations['notes/reactions']['requestBody']['content']['application/json'];
 export type NotesReactionsResponse = operations['notes/reactions']['responses']['200']['content']['application/json'];
 export type NotesReactionsCreateRequest = operations['notes/reactions/create']['requestBody']['content']['application/json'];

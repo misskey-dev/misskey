@@ -139,11 +139,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</footer>
 	</article>
-	<div :class="$style.tabs">
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
+	<div :class="$style.tabsWrapper">
+		<div :class="$style.tabs">
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		</div>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'">
@@ -164,6 +166,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
+		<div v-else-if="tab === 'quotes'">
+			<MkPagination :pagination="quotesPagination" :disableAutoLoad="true">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
+		</div>
 		<div v-else-if="tab === 'reactions'" :class="$style.tab_reactions">
 			<div :class="$style.reactionTabs">
 				<button v-for="reaction in Object.keys(appearNote.reactions)" :key="reaction" :class="[$style.reactionTab, { [$style.reactionTabActive]: reactionTabType === reaction }]" class="_button" @click="reactionTabType = reaction">
@@ -178,13 +187,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserCardMini :user="item.user" :withChart="false"/>
 						</MkA>
 					</div>
-				</template>
-			</MkPagination>
-		</div>
-		<div v-if="tab === 'quotes'" :class="$style.tab_quotes" :disableAutoLoad="true">
-			<MkPagination :pagination="quotesPagination">
-				<template #default="{ items }">
-					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
 				</template>
 			</MkPagination>
 		</div>
@@ -289,7 +291,6 @@ const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
-const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
 
 const keymap = {
@@ -313,7 +314,7 @@ const reactionTabType = ref<string | null>(null);
 
 const repliesPagination = computed<Paging>(() => ({
 	endpoint: 'notes/replies',
-	limit: 10,
+	limit: 5,
 	params: {
 		noteId: appearNote.value.id,
 	},
@@ -327,20 +328,20 @@ const renotesPagination = computed<Paging>(() => ({
 	},
 }));
 
+const quotesPagination = computed<Paging>(() => ({
+	endpoint: 'notes/quotes',
+	limit: 5,
+	params: {
+		noteId: appearNote.value.id,
+	},
+}));
+
 const reactionsPagination = computed<Paging>(() => ({
 	endpoint: 'notes/reactions',
 	limit: 10,
 	params: {
 		noteId: appearNote.value.id,
 		type: reactionTabType.value,
-	},
-}));
-
-const quotesPagination = computed(() => ({
-	endpoint: 'notes/quotes',
-	limit: 10,
-	params: {
-		noteId: appearNote.value.id,
 	},
 }));
 
@@ -703,21 +704,34 @@ function loadConversation() {
 	}
 }
 
-.reply:not(:first-child) {
-	border-top: solid 0.5px var(--divider);
+.reply:not(:last-child) {
+	border-bottom: solid 0.5px var(--divider);
+}
+
+.tabsWrapper {
+	overflow-x: auto;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
 }
 
 .tabs {
 	border-top: solid 0.5px var(--divider);
 	border-bottom: solid 0.5px var(--divider);
-	display: flex;
+	min-width: max-content;
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: repeat(4, 1fr);
 }
 
 .tab {
-	flex: 1;
+	display: block;
 	padding: 12px 8px;
 	border-top: solid 2px transparent;
 	border-bottom: solid 2px transparent;
+	white-space: nowrap;
 }
 
 .tabActive {
@@ -729,10 +743,6 @@ function loadConversation() {
 }
 
 .tab_reactions {
-	padding: 16px;
-}
-
-.tab_quotes {
 	padding: 16px;
 }
 
