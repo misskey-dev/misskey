@@ -512,8 +512,6 @@ export class ColdDeviceStorage {
 	public static default = {
 		lightTheme,
 		darkTheme,
-		codeLightTheme: '_inheritFromTheme_' as ShikiBuiltinTheme | '_inheritFromTheme_',
-		codeDarkTheme: '_inheritFromTheme_' as ShikiBuiltinTheme | '_inheritFromTheme_',
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
 	};

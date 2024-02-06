@@ -1245,10 +1245,6 @@ export interface Locale extends ILocale {
      */
     "syncDeviceDarkMode": string;
     /**
-     * UIテーマの設定を使う
-     */
-    "inheritFromTheme": string;
-    /**
      * ドライブ
      */
     "drive": string;

@@ -14,39 +14,32 @@ let _highlighter: Highlighter | null = null;
 export async function getTheme(mode: 'light' | 'dark', getName: true): Promise<string>;
 export async function getTheme(mode: 'light' | 'dark', getName?: false): Promise<ThemeRegistration | ThemeRegistrationRaw>;
 export async function getTheme(mode: 'light' | 'dark', getName = false): Promise<ThemeRegistration | ThemeRegistrationRaw | string | null> {
-	const def = ColdDeviceStorage.get(mode === 'light' ? 'codeLightTheme' : 'codeDarkTheme');
-	if (def === '_inheritFromTheme_') {
-		const theme = deepClone(ColdDeviceStorage.get(mode === 'light' ? 'lightTheme' : 'darkTheme'));
+	const theme = deepClone(ColdDeviceStorage.get(mode === 'light' ? 'lightTheme' : 'darkTheme'));
 
-		if (theme.base) {
-			const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
-			if (base && base.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
-		}
-		
-		if (theme.codeHighlighter) {
-			let _res: ThemeRegistration = {};
-			if (theme.codeHighlighter.base === '_none_') {
-				_res = deepClone(theme.codeHighlighter.overrides);
-			} else {
-				const base = await bundledThemesInfo.find(t => t.id === theme.codeHighlighter!.base)?.import() ?? darkPlus;
-				_res = deepMerge(theme.codeHighlighter.overrides ?? {}, 'default' in base ? base.default : base);
-			}
-			if (_res.name == null) {
-				_res.name = theme.id;
-			}
-			_res.type = mode;
-
-			if (getName) {
-				return _res.name;
-			}
-			return _res;
-		}
-	} else {
-		if (getName) {
-			return def;
-		}
-		return (await bundledThemesInfo.find(t => t.id === def)?.import())?.default ?? darkPlus;
+	if (theme.base) {
+		const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
+		if (base && base.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
 	}
+	
+	if (theme.codeHighlighter) {
+		let _res: ThemeRegistration = {};
+		if (theme.codeHighlighter.base === '_none_') {
+			_res = deepClone(theme.codeHighlighter.overrides);
+		} else {
+			const base = await bundledThemesInfo.find(t => t.id === theme.codeHighlighter!.base)?.import() ?? darkPlus;
+			_res = deepMerge(theme.codeHighlighter.overrides ?? {}, 'default' in base ? base.default : base);
+		}
+		if (_res.name == null) {
+			_res.name = theme.id;
+		}
+		_res.type = mode;
+
+		if (getName) {
+			return _res.name;
+		}
+		return _res;
+	}
+
 	if (getName) {
 		return 'dark-plus';
 	}
