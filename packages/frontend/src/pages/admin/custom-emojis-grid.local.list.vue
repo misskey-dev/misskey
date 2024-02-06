@@ -5,7 +5,7 @@
 	</div>
 	<div v-else class="_gaps">
 		<div :class="$style.searchArea">
-			<MkInput v-model="query" :debounce="true" type="search" autocapitalize="off" style="flex: 1">
+			<MkInput v-model="queryName" :debounce="true" type="search" autocapitalize="off" style="flex: 1">
 				<template #prefix><i class="ti ti-search"></i></template>
 			</MkInput>
 			<MkButton primary style="margin-left: auto;" @click="onSearchButtonClicked">
@@ -55,6 +55,9 @@ import { GridSetting } from '@/components/grid/grid.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 
+const emptyStrToNull = (value: string) => value === '' ? null : value;
+const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
+
 const gridSetting: GridSetting = {
 	rowNumberVisible: true,
 	rowSelectable: false,
@@ -75,7 +78,7 @@ const columnSettings: ColumnSetting[] = [
 ];
 
 const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
-const query = ref('');
+const queryName = ref('');
 const allPages = ref<number>(0);
 const currentPage = ref<number>(0);
 const previousQuery = ref<string | undefined>(undefined);
@@ -110,9 +113,6 @@ async function onUpdateClicked() {
 	}
 
 	const action = () => {
-		const emptyStrToNull = (value: string) => value === '' ? null : value;
-		const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
-
 		return updatedItems.map(item =>
 			misskeyApi('admin/emoji/update', {
 				id: item.id!,
@@ -171,7 +171,8 @@ function onResetClicked() {
 	refreshGridItems();
 }
 
-function onSearchButtonClicked() {
+async function onSearchButtonClicked() {
+	await refreshCustomEmojis();
 }
 
 async function onPageChanged(pageNumber: number) {
@@ -266,6 +267,7 @@ async function refreshCustomEmojis() {
 	const limit = 100;
 
 	const query: Misskey.entities.AdminEmojiV2ListRequest['query'] = {
+		name: emptyStrToNull(queryName.value) ?? undefined,
 		hostType: 'local',
 	};
 
