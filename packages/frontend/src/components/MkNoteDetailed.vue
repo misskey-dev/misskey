@@ -710,6 +710,7 @@ function loadConversation() {
 
 .tabsWrapper {
 	overflow-x: auto;
+	scrollbar-width: none;
 
 	&::-webkit-scrollbar {
 		display: none;
