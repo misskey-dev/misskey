@@ -61,7 +61,7 @@ const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'host', title: 'host', type: 'text', editable: false, width: 'auto' },
 ];
 
-const customEmojis = ref<Misskey.entities.EmojiDetailed[]>([]);
+const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const gridItems = ref<GridItem[]>([]);
 const query = ref<string>('');
 const host = ref<string>('');
@@ -144,15 +144,13 @@ function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) 
 }
 
 async function importEmojis(targets: GridItem[]) {
-	async function action() {
-		for (const target of targets) {
-			await misskeyApi('admin/emoji/copy', {
+	const action = () => {
+		return targets.map(target =>
+			misskeyApi('admin/emoji/copy', {
 				emojiId: target.id!,
-			});
-		}
-
-		await refreshCustomEmojis(query.value, host.value);
-	}
+			}),
+		);
+	};
 
 	const confirm = await os.confirm({
 		type: 'info',
@@ -161,32 +159,24 @@ async function importEmojis(targets: GridItem[]) {
 	});
 
 	if (!confirm.canceled) {
-		await os.promiseDialog(
-			action(),
-			() => {
-			},
-			() => {
-			},
-		);
+		await os.promiseDialog(Promise.all(action()));
+		await refreshCustomEmojis();
 	}
 }
 
 async function refreshCustomEmojis(query?: string, host?: string, sinceId?: string, untilId?: string) {
-	const emojis = await misskeyApi('admin/emoji/list-remote', {
+	const emojis = await misskeyApi('admin/emoji/v2/list', {
 		limit: 100,
-		query: query?.length ? query : undefined,
-		host: host?.length ? host : undefined,
-		sinceId,
-		untilId,
+		query: {
+			name: query,
+			host: host,
+			sinceId: sinceId,
+			untilId: untilId,
+			hostType: 'remote',
+		},
 	});
 
-	if (sinceId) {
-		// 通常はID降順だが、sinceIdを設定すると昇順での並び替えとなるので、逆順にする必要がある
-		emojis.reverse();
-	}
-
-	customEmojis.value = emojis;
-	console.log(customEmojis.value);
+	customEmojis.value = emojis.emojis;
 	gridItems.value = customEmojis.value.map(it => fromEmojiDetailedAdmin(it));
 }
 

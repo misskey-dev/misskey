@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setImmediate } from 'node:timers/promises';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import * as Redis from 'ioredis';
@@ -77,8 +76,10 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
+
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
@@ -528,173 +529,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			allCount: count,
 			allPages: Math.ceil(count / limit),
 		};
-	}
-
-	@bindThis
-	public async addBulk(
-		params: {
-			driveFile: MiDriveFile;
-			name: string;
-			category: string | null;
-			aliases: string[];
-			host: string | null;
-			license: string | null;
-			isSensitive: boolean;
-			localOnly: boolean;
-			roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
-		}[],
-		moderator?: MiUser,
-	): Promise<MiEmoji[]> {
-		const emojis = await this.emojisRepository
-			.insert(
-				params.map(it => ({
-					id: this.idService.gen(),
-					updatedAt: new Date(),
-					name: it.name,
-					category: it.category,
-					host: it.host,
-					aliases: it.aliases,
-					originalUrl: it.driveFile.url,
-					publicUrl: it.driveFile.webpublicUrl ?? it.driveFile.url,
-					type: it.driveFile.webpublicType ?? it.driveFile.type,
-					license: it.license,
-					isSensitive: it.isSensitive,
-					localOnly: it.localOnly,
-					roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction,
-				})),
-			)
-			.then(x => this.emojisRepository.createQueryBuilder('emoji')
-				.where({ id: In(x.identifiers) })
-				.getMany(),
-			);
-
-		// 以降は絵文字登録による副作用なのでリクエストから切り離して実行
-
-		// noinspection ES6MissingAwait
-		setImmediate(async () => {
-			const localEmojis = emojis.filter(it => it.host == null);
-			if (localEmojis.length > 0) {
-				await this.localEmojisCache.refresh();
-
-				const packedEmojis = await this.emojiEntityService.packDetailedMany(localEmojis);
-				for (const emoji of packedEmojis) {
-					this.globalEventService.publishBroadcastStream('emojiAdded', { emoji });
-				}
-
-				if (moderator) {
-					for (const emoji of localEmojis) {
-						await this.moderationLogService.log(moderator, 'addCustomEmoji', {
-							emojiId: emoji.id,
-							emoji: emoji,
-						});
-					}
-				}
-			}
-		});
-
-		return emojis;
-	}
-
-	@bindThis
-	public async updateBulk(
-		params: {
-			id: MiEmoji['id'];
-			driveFile?: MiDriveFile;
-			name?: string;
-			category?: string | null;
-			aliases?: string[];
-			license?: string | null;
-			isSensitive?: boolean;
-			localOnly?: boolean;
-			roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
-		}[],
-		moderator?: MiUser,
-	): Promise<void> {
-		const ids = params.map(it => it.id);
-
-		// IDに対応するものと、新しく設定しようとしている名前と同じ名前を持つレコードをそれぞれ取得する
-		const [storedEmojis, sameNameEmojis] = await Promise.all([
-			this.emojisRepository.createQueryBuilder('emoji')
-				.whereInIds(ids)
-				.getMany()
-				.then(emojis => new Map(emojis.map(it => [it.id, it]))),
-			this.emojisRepository.createQueryBuilder('emoji')
-				.where('emoji.name IN (:...names) AND emoji.host IS NULL', { names: params.map(it => it.name) })
-				.getMany(),
-		]);
-
-		// 新しく設定しようとしている名前と同じ名前を持つ別レコードがある場合、重複とみなしてエラーとする
-		const alreadyExists = Array.of<string>();
-		for (const sameNameEmoji of sameNameEmojis) {
-			const emoji = storedEmojis.get(sameNameEmoji.id);
-			if (emoji != null && emoji.id !== sameNameEmoji.id) {
-				alreadyExists.push(sameNameEmoji.name);
-			}
-		}
-		if (alreadyExists.length > 0) {
-			throw new Error(`name already exists: ${alreadyExists.join(', ')}`);
-		}
-
-		for (const emoji of params) {
-			await this.emojisRepository.update(emoji.id, {
-				updatedAt: new Date(),
-				name: emoji.name,
-				category: emoji.category,
-				aliases: emoji.aliases,
-				license: emoji.license,
-				isSensitive: emoji.isSensitive,
-				localOnly: emoji.localOnly,
-				originalUrl: emoji.driveFile != null ? emoji.driveFile.url : undefined,
-				publicUrl: emoji.driveFile != null ? (emoji.driveFile.webpublicUrl ?? emoji.driveFile.url) : undefined,
-				type: emoji.driveFile != null ? (emoji.driveFile.webpublicType ?? emoji.driveFile.type) : undefined,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
-			});
-		}
-
-		// 以降は絵文字更新による副作用なのでリクエストから切り離して実行
-
-		// noinspection ES6MissingAwait
-		setImmediate(async () => {
-			await this.localEmojisCache.refresh();
-
-			// 名前が変わっていないものはそのまま更新としてイベント発信
-			const updateEmojis = params.filter(it => storedEmojis.get(it.id)?.name === it.name);
-			if (updateEmojis.length > 0) {
-				const packedList = await this.emojiEntityService.packDetailedMany(updateEmojis);
-				this.globalEventService.publishBroadcastStream('emojiUpdated', {
-					emojis: packedList,
-				});
-			}
-
-			// 名前が変わったものは削除・追加としてイベント発信
-			const nameChangeEmojis = params.filter(it => storedEmojis.get(it.id)?.name !== it.name);
-			if (nameChangeEmojis.length > 0) {
-				const packedList = await this.emojiEntityService.packDetailedMany(nameChangeEmojis);
-				this.globalEventService.publishBroadcastStream('emojiDeleted', {
-					emojis: packedList,
-				});
-
-				for (const packed of packedList) {
-					this.globalEventService.publishBroadcastStream('emojiAdded', {
-						emoji: packed,
-					});
-				}
-			}
-
-			if (moderator) {
-				const updatedEmojis = await this.emojisRepository.createQueryBuilder('emoji')
-					.whereInIds(storedEmojis.keys())
-					.getMany()
-					.then(it => new Map(it.map(it => [it.id, it])));
-				for (const emoji of storedEmojis.values()) {
-					await this.moderationLogService.log(moderator, 'updateCustomEmoji', {
-						emojiId: emoji.id,
-						before: emoji,
-						after: updatedEmojis.get(emoji.id),
-					});
-				}
-			}
-		});
 	}
 
 	@bindThis

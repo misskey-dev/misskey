@@ -109,12 +109,12 @@ async function onUpdateClicked() {
 		return;
 	}
 
-	async function action() {
+	const action = () => {
 		const emptyStrToNull = (value: string) => value === '' ? null : value;
 		const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
 
-		for (const item of updatedItems) {
-			await misskeyApi('admin/emoji/update', {
+		return updatedItems.map(item =>
+			misskeyApi('admin/emoji/update', {
 				id: item.id!,
 				name: item.name,
 				category: emptyStrToNull(item.category),
@@ -123,15 +123,11 @@ async function onUpdateClicked() {
 				isSensitive: item.isSensitive,
 				localOnly: item.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: emptyStrToEmptyArray(item.roleIdsThatCanBeUsedThisEmojiAsReaction),
-			});
-		}
-	}
+			}),
+		);
+	};
 
-	await os.promiseDialog(
-		action(),
-		() => {},
-		() => {},
-	);
+	await os.promiseDialog(Promise.all(action()));
 }
 
 async function onDeleteClicked() {
