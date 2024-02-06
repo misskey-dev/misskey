@@ -75,6 +75,20 @@ export async function initHighlighter() {
 		],
 	});
 
+	ColdDeviceStorage.watch('lightTheme', async () => {
+		const newTheme = await getTheme('light');
+		if (newTheme.name && !highlighter.getLoadedThemes().includes(newTheme.name)) {
+			highlighter.loadTheme(newTheme);
+		}
+	});
+
+	ColdDeviceStorage.watch('darkTheme', async () => {
+		const newTheme = await getTheme('dark');
+		if (newTheme.name && !highlighter.getLoadedThemes().includes(newTheme.name)) {
+			highlighter.loadTheme(newTheme);
+		}
+	});
+
 	_highlighter = highlighter;
 
 	return highlighter;
