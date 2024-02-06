@@ -151,7 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="tab === 'replies'">
 			<MkPagination :pagination="repliesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
-					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+					<MkNoteSub v-for="item, index in items" :key="item.id" :note="item" :class="{ [$style.replyBorder]: (index > 0) }" :detail="true"/>
 				</template>
 			</MkPagination>
 		</div>
@@ -169,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'quotes'">
 			<MkPagination :pagination="quotesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
-					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+					<MkNoteSub v-for="item, index in items" :key="item.id" :note="item" :class="{ [$style.replyBorder]: (index > 0) }" :detail="true"/>
 				</template>
 			</MkPagination>
 		</div>
@@ -704,8 +704,8 @@ function loadConversation() {
 	}
 }
 
-.reply:not(:last-child) {
-	border-bottom: solid 0.5px var(--divider);
+.replyBorder {
+	border-top: solid 0.5px var(--divider);
 }
 
 .tabsWrapper {
@@ -714,7 +714,6 @@ function loadConversation() {
 	&::-webkit-scrollbar {
 		display: none;
 	}
-
 }
 
 .tabs {
