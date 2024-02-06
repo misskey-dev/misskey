@@ -148,9 +148,9 @@ function save() {
 		themeColor: themeColor.value === '' ? null : themeColor.value,
 		defaultLightTheme: defaultLightTheme.value === '' ? null : defaultLightTheme.value,
 		defaultDarkTheme: defaultDarkTheme.value === '' ? null : defaultDarkTheme.value,
-		infoImageUrl: infoImageUrl.value,
-		notFoundImageUrl: notFoundImageUrl.value,
-		serverErrorImageUrl: serverErrorImageUrl.value,
+		infoImageUrl: infoImageUrl.value === '' ? null : infoImageUrl.value,
+		notFoundImageUrl: notFoundImageUrl.value === '' ? null : notFoundImageUrl.value,
+		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
 		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
 	}).then(() => {
 		fetchInstance();
