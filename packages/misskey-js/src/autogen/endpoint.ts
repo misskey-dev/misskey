@@ -1,7 +1,3 @@
-/*
- * version: 2024.2.0-io
- */
-
 import type {
 	EmptyRequest,
 	EmptyResponse,

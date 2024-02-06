@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:showPinned="showPinned"
 		:pinnedEmojis="pinnedEmojis"
 		:asReactionPicker="asReactionPicker"
+		:targetNote="targetNote"
 		:asDrawer="type === 'drawer'"
 		:max-height="maxHeight"
 		@chosen="chosen"
@@ -32,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
@@ -41,9 +43,10 @@ const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
-  pinnedEmojis?: string[],
+	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
-  choseAndClose?: boolean;
+	targetNote?: Misskey.entities.Note;
+	choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,

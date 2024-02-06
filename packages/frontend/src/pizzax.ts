@@ -13,6 +13,7 @@ import { get, set } from '@/scripts/idb-proxy.js';
 import { defaultStore } from '@/store.js';
 import { useStream } from '@/stream.js';
 import { deepClone } from '@/scripts/clone.js';
+import { deepMerge } from '@/scripts/merge.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -84,29 +85,9 @@ export class Storage<T extends StateDef> {
 		return typeof value === 'object' && value !== null && !Array.isArray(value);
 	}
 
-	/**
-	 * valueにないキーをdefからもらう（再帰的）\
-	 * nullはそのまま、undefinedはdefの値
-	 **/
-	private mergeObject<X>(value: X, def: X): X {
-		if (this.isPureObject(value) && this.isPureObject(def)) {
-			const result = structuredClone(value) as X;
-			for (const [k, v] of Object.entries(def) as [keyof X, X[keyof X]][]) {
-				if (!Object.prototype.hasOwnProperty.call(value, k) || value[k] === undefined) {
-					result[k] = v;
-				} else if (this.isPureObject(v) && this.isPureObject(result[k])) {
-					const child = structuredClone(result[k]) as X[keyof X] & Record<string | number | symbol, unknown>;
-					result[k] = this.mergeObject<typeof v>(child, v);
-				}
-			}
-			return result;
-		}
-		return value;
-	}
-
 	private mergeState<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			const merged = this.mergeObject(value, def);
+			const merged = deepMerge(value, def);
 
 			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
 
@@ -258,7 +239,7 @@ export class Storage<T extends StateDef> {
 
 	/**
 	 * 特定のキーの、簡易的なgetter/setterを作ります
-	 * 主にvue場で設定コントロールのmodelとして使う用
+	 * 主にvue上で設定コントロールのmodelとして使う用
 	 */
 	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]): {
 		get: () => T[K]['default'];
