@@ -1518,6 +1518,9 @@ _achievements:
       title: "Nocturn"
       description: "Publica una nota a altes hores de la nit "
       flavor: "És hora d'anar a dormir."
+    _postedAt0min0sec:
+      title: "Rellotge xerraire"
+      description: "Publica una nota a les 0:00"
     _open3windows:
       title: "Multi finestres"
       description: "I va obrir més de tres finestres"
