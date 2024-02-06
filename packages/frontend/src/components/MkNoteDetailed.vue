@@ -314,7 +314,7 @@ const reactionTabType = ref<string | null>(null);
 
 const repliesPagination = computed<Paging>(() => ({
 	endpoint: 'notes/replies',
-	limit: 5,
+	limit: 3,
 	params: {
 		noteId: appearNote.value.id,
 	},
@@ -330,7 +330,7 @@ const renotesPagination = computed<Paging>(() => ({
 
 const quotesPagination = computed<Paging>(() => ({
 	endpoint: 'notes/quotes',
-	limit: 5,
+	limit: 3,
 	params: {
 		noteId: appearNote.value.id,
 	},
