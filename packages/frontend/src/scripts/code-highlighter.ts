@@ -3,6 +3,7 @@ import { getHighlighterCore, loadWasm } from 'shiki/core';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import { unique } from './array.js';
 import { deepClone } from './clone.js';
+import { deepMerge } from './merge.js';
 import type { Highlighter, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki';
 import { ColdDeviceStorage } from '@/store.js';
 import lightTheme from '@/themes/_light.json5';
@@ -28,10 +29,7 @@ export async function getTheme(mode: 'light' | 'dark', getName = false): Promise
 				_res = deepClone(theme.codeHighlighter.overrides);
 			} else {
 				const base = await bundledThemesInfo.find(t => t.id === theme.codeHighlighter!.base)?.import() ?? darkPlus;
-				_res = {
-					...('default' in base ? base.default : base),
-					...deepClone(theme.codeHighlighter.overrides ?? {}),
-				};
+				_res = deepMerge(theme.codeHighlighter.overrides ?? {}, 'default' in base ? base.default : base);
 			}
 			if (_res.name == null) {
 				_res.name = theme.id;
