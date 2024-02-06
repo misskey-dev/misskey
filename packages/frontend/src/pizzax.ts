@@ -7,13 +7,13 @@
 
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
-import { defu } from 'defu';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { get, set } from '@/scripts/idb-proxy.js';
 import { defaultStore } from '@/store.js';
 import { useStream } from '@/stream.js';
 import { deepClone } from '@/scripts/clone.js';
+import { deepMerge } from '@/scripts/merge.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -81,14 +81,17 @@ export class Storage<T extends StateDef> {
 		this.loaded = this.ready.then(() => this.load());
 	}
 
-	private isPureObject(value: unknown): value is Record<string, unknown> {
+	private isPureObject(value: unknown): value is Record<string | number | symbol, unknown> {
 		return typeof value === 'object' && value !== null && !Array.isArray(value);
 	}
 
-	private mergeState<T>(value: T, def: T): T {
+	private mergeState<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def);
-			return defu(value, def) as T;
+			const merged = deepMerge(value, def);
+
+			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
+
+			return merged as X;
 		}
 		return value;
 	}

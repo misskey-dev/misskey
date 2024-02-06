@@ -396,7 +396,8 @@ onDeactivated(() => {
 
 .hidden {
 	width: 100%;
-	background: none;
+	height: 100%;
+	background: #000;
 	border: none;
 	outline: none;
 	font: inherit;
@@ -406,7 +407,6 @@ onDeactivated(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #000;
 }
 
 .hiddenTextWrapper {
@@ -466,7 +466,6 @@ onDeactivated(() => {
 	grid-template-columns: auto auto 1fr auto auto;
 	align-items: center;
 	gap: 4px 8px;
-	pointer-events: none;
 
 	padding: 35px 10px 10px 10px;
 	background: linear-gradient(rgba(0, 0, 0, 0),rgba(0, 0, 0, .75));
