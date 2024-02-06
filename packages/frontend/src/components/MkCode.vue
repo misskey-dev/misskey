@@ -53,7 +53,6 @@ function copy() {
 }
 
 .codeBlockCopyButton {
-	color: #D4D4D4;
 	position: absolute;
 	top: 8px;
 	right: 8px;
@@ -67,8 +66,7 @@ function copy() {
 .codeBlockFallbackRoot {
 	display: block;
 	overflow-wrap: anywhere;
-	color: #D4D4D4;
-	background: #1E1E1E;
+	background: var(--bg);
 	padding: 1em;
 	margin: .5em 0;
 	overflow: auto;
@@ -93,8 +91,8 @@ function copy() {
 	border-radius: 8px;
 	padding: 24px;
 	margin-top: 4px;
-	color: #D4D4D4;
-	background: #1E1E1E;
+	color: var(--fg);
+	background: var(--bg);
 }
 
 .codePlaceholderContainer {
