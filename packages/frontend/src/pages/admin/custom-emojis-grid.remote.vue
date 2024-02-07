@@ -14,6 +14,16 @@
 		</MkButton>
 	</div>
 
+	<MkFolder>
+		<template #icon><i class="ti ti-notes"></i></template>
+		<template #label>登録ログ</template>
+		<template #caption>
+			絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページをリロードすると消えます。
+		</template>
+
+		<XRegisterLogs :logs="requestLogs"/>
+	</MkFolder>
+
 	<div v-if="gridItems.length > 0">
 		<div :class="$style.gridArea">
 			<MkGrid :data="gridItems" :columnSettings="columnSettings" @event="onGridEvent"/>
@@ -36,14 +46,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { ColumnSetting } from '@/components/grid/column.js';
-import { fromEmojiDetailedAdmin, GridItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { fromEmojiDetailedAdmin, GridItem, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
 	GridCellContextMenuEvent,
 	GridCellValueChangeEvent,
@@ -53,6 +62,9 @@ import {
 	GridRowContextMenuEvent,
 } from '@/components/grid/grid-event.js';
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
+import MkFolder from '@/components/MkFolder.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
+import * as os from '@/os.js';
 
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'checked', icon: 'ti-download', type: 'boolean', editable: true, width: 34 },
@@ -60,6 +72,8 @@ const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 'auto' },
 	{ bindTo: 'host', title: 'host', type: 'text', editable: false, width: 'auto' },
 ];
+
+const requestLogs = ref<RequestLogItem[]>([]);
 
 const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const gridItems = ref<GridItem[]>([]);
@@ -145,10 +159,14 @@ function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) 
 
 async function importEmojis(targets: GridItem[]) {
 	const action = () => {
-		return targets.map(target =>
-			misskeyApi('admin/emoji/copy', {
-				emojiId: target.id!,
-			}),
+		return targets.map(item =>
+			misskeyApi(
+				'admin/emoji/copy',
+				{
+					emojiId: item.id!,
+				})
+				.then(() => ({ item, success: true, err: undefined }))
+				.catch(err => ({ item, success: false, err })),
 		);
 	};
 
@@ -158,10 +176,29 @@ async function importEmojis(targets: GridItem[]) {
 		text: `リモートから受信した${targets.length}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。インポートを行いますか？`,
 	});
 
-	if (!confirm.canceled) {
-		await os.promiseDialog(Promise.all(action()));
-		await refreshCustomEmojis();
+	if (confirm.canceled) {
+		return;
 	}
+
+	const result = await os.promiseDialog(Promise.all(action()));
+	const failedItems = result.filter(it => !it.success);
+
+	if (failedItems.length > 0) {
+		await os.alert({
+			type: 'error',
+			title: 'エラー',
+			text: '絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。',
+		});
+	}
+
+	requestLogs.value = result.map(it => ({
+		failed: !it.success,
+		url: it.item.url,
+		name: it.item.name,
+		error: it.err ? JSON.stringify(it.err) : undefined,
+	}));
+
+	await refreshCustomEmojis();
 }
 
 async function refreshCustomEmojis(query?: string, host?: string, sinceId?: string, untilId?: string) {
