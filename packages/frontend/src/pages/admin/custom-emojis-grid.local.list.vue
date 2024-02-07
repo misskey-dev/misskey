@@ -272,10 +272,6 @@ async function onDeleteButtonClicked() {
 
 	await os.promiseDialog(
 		action(),
-		() => {
-		},
-		() => {
-		},
 	);
 }
 
