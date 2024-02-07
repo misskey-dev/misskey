@@ -239,8 +239,17 @@ async function onDrop(ev: DragEvent) {
 				},
 			),
 		);
-	} catch (err: any) {
+	} catch (err) {
 		// ダイアログは共通部品側で出ているはずなので何もしない
+		return;
+	}
+
+	const confirm = await os.confirm({
+		type: 'info',
+		title: '確認',
+		text: `ドラッグ＆ドロップされた${uploadedItems.length}個のファイルをドライブにアップロードします。実行しますか？`,
+	});
+	if (confirm.canceled) {
 		return;
 	}
 
