@@ -9,5 +9,5 @@ import * as Misskey from 'misskey-js';
 export const globalEvents = new EventEmitter<{
 	themeChanged: () => void;
 	clientNotification: (notification: Misskey.entities.Notification) => void;
-	requestClearPageCache: () => void;
+	requestClearPageCache: (component?: string) => void;
 }>();

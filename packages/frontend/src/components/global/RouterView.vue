@@ -64,8 +64,8 @@ function onChange({ resolved, key: newKey }) {
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化
-		if (clearCacheRequested.value) {
-			clearCacheRequested.value = false;
+		if (clearCacheRequest.value) {
+			clearCacheRequest.value = false;
 		}
 	});
 }
@@ -80,13 +80,23 @@ router.addListener('change', onChange);
  * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
  * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
  */
-const pageCacheController = computed(() => clearCacheRequested.value ? /.*/ : undefined);
-const clearCacheRequested = ref(false);
+const pageCacheController = computed(() => {
+	debugger;
+	switch (clearCacheRequest.value) {
+		case true:
+			return /.*/;
+		case false:
+			return undefined;
+		default:
+			return [clearCacheRequest.value];
+	}
+});
+const clearCacheRequest = ref<string | boolean>(false);
 
-globalEvents.on('requestClearPageCache', () => {
+globalEvents.on('requestClearPageCache', (component?: string) => {
 	if (_DEV_) console.log('clear page cache requested');
-	if (!clearCacheRequested.value) {
-		clearCacheRequested.value = true;
+	if (clearCacheRequest.value === false) {
+		clearCacheRequest.value = component ?? true;
 	}
 });
 

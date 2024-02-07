@@ -196,12 +196,12 @@ async function run() {
 
 onDeactivated(() => {
 	if (aiscript.value) aiscript.value.abort();
-	globalEvents.emit('requestClearPageCache');
+	globalEvents.emit('requestClearPageCache', 'Flash');
 });
 
 onUnmounted(() => {
 	if (aiscript.value) aiscript.value.abort();
-	globalEvents.emit('requestClearPageCache');
+	globalEvents.emit('requestClearPageCache', 'Flash');
 });
 
 const headerActions = computed(() => []);
