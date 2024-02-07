@@ -1736,7 +1736,9 @@ _theme:
     mention: "Menció"
     mentionMe: "Mencions (jo)"
     renote: "Renotar"
+    modalBg: "Fons del modal"
     divider: "Divisor"
+    scrollbarHandle: "Gestor de la barra de desplaçament"
 _sfx:
   note: "Notes"
   notification: "Notificacions"
