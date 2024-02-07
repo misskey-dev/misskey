@@ -5,7 +5,19 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - packages/backend/**
+      - packages/frontend/**
+      - packages/sw/**
+      - packages/misskey-js/**
+      - packages/shared/.eslintrc.js
   pull_request:
+    paths:
+      - packages/backend/**
+      - packages/frontend/**
+      - packages/sw/**
+      - packages/misskey-js/**
+      - packages/shared/.eslintrc.js
 
 jobs:
   pnpm_install:
@@ -79,5 +91,7 @@ jobs:
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter misskey-js run build
+      if: ${{ matrix.workspace == 'backend' }}
+    - run: pnpm --filter misskey-reversi run build:tsc
       if: ${{ matrix.workspace == 'backend' }}
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck

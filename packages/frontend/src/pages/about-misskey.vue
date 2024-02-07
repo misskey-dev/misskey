@@ -219,6 +219,12 @@ const patronsWithIcon = [{
 }, {
 	name: 'taichan',
 	icon: 'https://assets.misskey-hub.net/patrons/f981ab0159fb4e2c998e05f7263e1cd9.png',
+}, {
+	name: '猫吉よりお',
+	icon: 'https://assets.misskey-hub.net/patrons/a11518b3b34b4536a4bdd7178ba76a7b.png',
+}, {
+	name: '有栖かずみ',
+	icon: 'https://assets.misskey-hub.net/patrons/9240e8e0ba294a8884143e99ac7ed6a0.png',
 }];
 
 const patrons = [

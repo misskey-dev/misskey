@@ -54,15 +54,18 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
 
-const emailAddress = ref($i!.email);
+const $i = signinRequired();
+
+const emailAddress = ref($i.email);
 
 const onChangeReceiveAnnouncementEmail = (v) => {
-	os.api('i/update', {
+	misskeyApi('i/update', {
 		receiveAnnouncementEmail: v,
 	});
 };
@@ -78,14 +81,14 @@ async function saveEmailAddress() {
 	});
 }
 
-const emailNotification_mention = ref($i!.emailNotificationTypes.includes('mention'));
-const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply'));
-const emailNotification_quote = ref($i!.emailNotificationTypes.includes('quote'));
-const emailNotification_follow = ref($i!.emailNotificationTypes.includes('follow'));
-const emailNotification_receiveFollowRequest = ref($i!.emailNotificationTypes.includes('receiveFollowRequest'));
+const emailNotification_mention = ref($i.emailNotificationTypes.includes('mention'));
+const emailNotification_reply = ref($i.emailNotificationTypes.includes('reply'));
+const emailNotification_quote = ref($i.emailNotificationTypes.includes('quote'));
+const emailNotification_follow = ref($i.emailNotificationTypes.includes('follow'));
+const emailNotification_receiveFollowRequest = ref($i.emailNotificationTypes.includes('receiveFollowRequest'));
 
 const saveNotificationSettings = () => {
-	os.api('i/update', {
+	misskeyApi('i/update', {
 		emailNotificationTypes: [
 			...[emailNotification_mention.value ? 'mention' : null],
 			...[emailNotification_reply.value ? 'reply' : null],

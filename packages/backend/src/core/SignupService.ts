@@ -16,6 +16,7 @@ import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -37,6 +38,7 @@ export class SignupService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
+		private instanceActorService: InstanceActorService,
 		private usersChart: UsersChart,
 	) {
 	}
@@ -81,7 +83,7 @@ export class SignupService {
 			throw new Error('USED_USERNAME');
 		}
 
-		const isTheFirstUser = (await this.usersRepository.countBy({ host: IsNull() })) === 0;
+		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
 
 		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
 			const instance = await this.metaService.fetch(true);

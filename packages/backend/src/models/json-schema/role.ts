@@ -1,24 +1,101 @@
-const rolePolicyValue = {
+export const packedRolePoliciesSchema = {
 	type: 'object',
+	optional: false, nullable: false,
 	properties: {
-		value: {
-			oneOf: [
-				{
-					type: 'integer',
-					optional: false, nullable: false,
-				},
-				{
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-			],
+		gtlAvailable: {
+			type: 'boolean',
+			optional: false, nullable: false,
 		},
-		priority: {
+		ltlAvailable: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canPublicNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canInvite: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		inviteLimit: {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
-		useDefault: {
+		inviteLimitCycle: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		inviteExpirationTime: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		canManageCustomEmojis: {
 			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canManageAvatarDecorations: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canSearchNotes: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUseTranslator: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canHideAds: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		driveCapacityMb: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		alwaysMarkNsfw: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		pinLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		antennaLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		wordMuteLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		webhookLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		clipLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		noteEachClipsLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		userListLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		userEachUserListsLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		rateLimitFactor: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		avatarDecorationLimit: {
+			type: 'integer',
 			optional: false, nullable: false,
 		},
 	},
@@ -121,31 +198,28 @@ export const packedRoleSchema = {
 				policies: {
 					type: 'object',
 					optional: false, nullable: false,
-					properties: {
-						pinLimit: rolePolicyValue,
-						canInvite: rolePolicyValue,
-						clipLimit: rolePolicyValue,
-						canHideAds: rolePolicyValue,
-						inviteLimit: rolePolicyValue,
-						antennaLimit: rolePolicyValue,
-						gtlAvailable: rolePolicyValue,
-						ltlAvailable: rolePolicyValue,
-						webhookLimit: rolePolicyValue,
-						canPublicNote: rolePolicyValue,
-						userListLimit: rolePolicyValue,
-						wordMuteLimit: rolePolicyValue,
-						alwaysMarkNsfw: rolePolicyValue,
-						canSearchNotes: rolePolicyValue,
-						driveCapacityMb: rolePolicyValue,
-						rateLimitFactor: rolePolicyValue,
-						inviteLimitCycle: rolePolicyValue,
-						noteEachClipsLimit: rolePolicyValue,
-						inviteExpirationTime: rolePolicyValue,
-						canManageCustomEmojis: rolePolicyValue,
-						userEachUserListsLimit: rolePolicyValue,
-						canManageAvatarDecorations: rolePolicyValue,
-						canUseTranslator: rolePolicyValue,
-						avatarDecorationLimit: rolePolicyValue,
+					additionalProperties: {
+						anyOf: [{
+							type: 'object',
+							properties: {
+								value: {
+									oneOf: [
+										{
+											type: 'integer',
+										},
+										{
+											type: 'boolean',
+										},
+									],
+								},
+								priority: {
+									type: 'integer',
+								},
+								useDefault: {
+									type: 'boolean',
+								},
+							},
+						}],
 					},
 				},
 				usersCount: {

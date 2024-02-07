@@ -1,8 +1,3 @@
-/*
- * version: 2023.12.2-nade1.4.6
- * generatedAt: 2024-01-27T05:12:20.107Z
- */
-
 import { operations } from './types.js';
 
 export type EmptyRequest = Record<string, unknown> | undefined;
@@ -546,3 +541,19 @@ export type FetchRssResponse = operations['fetch-rss']['responses']['200']['cont
 export type FetchExternalResourcesRequest = operations['fetch-external-resources']['requestBody']['content']['application/json'];
 export type FetchExternalResourcesResponse = operations['fetch-external-resources']['responses']['200']['content']['application/json'];
 export type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+export type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
+export type BubbleGameRegisterResponse = operations['bubble-game/register']['responses']['200']['content']['application/json'];
+export type BubbleGameRankingRequest = operations['bubble-game/ranking']['requestBody']['content']['application/json'];
+export type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses']['200']['content']['application/json'];
+export type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
+export type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
+export type ReversiGamesRequest = operations['reversi/games']['requestBody']['content']['application/json'];
+export type ReversiGamesResponse = operations['reversi/games']['responses']['200']['content']['application/json'];
+export type ReversiMatchRequest = operations['reversi/match']['requestBody']['content']['application/json'];
+export type ReversiMatchResponse = operations['reversi/match']['responses']['200']['content']['application/json'];
+export type ReversiInvitationsResponse = operations['reversi/invitations']['responses']['200']['content']['application/json'];
+export type ReversiShowGameRequest = operations['reversi/show-game']['requestBody']['content']['application/json'];
+export type ReversiShowGameResponse = operations['reversi/show-game']['responses']['200']['content']['application/json'];
+export type ReversiSurrenderRequest = operations['reversi/surrender']['requestBody']['content']['application/json'];
+export type ReversiVerifyRequest = operations['reversi/verify']['requestBody']['content']['application/json'];
+export type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['content']['application/json'];

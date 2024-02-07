@@ -38,7 +38,7 @@ export class RenoteMutingEntityService {
 			createdAt: this.idService.parse(muting.id).date.toISOString(),
 			muteeId: muting.muteeId,
 			mutee: this.userEntityService.pack(muting.muteeId, me, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}

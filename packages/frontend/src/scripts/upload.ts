@@ -6,7 +6,7 @@
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
-import { readAndCompressImage } from 'browser-image-resizer';
+import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { getCompressionConfig } from './upload/compress-config.js';
 import { defaultStore } from '@/store.js';
 import { apiUrl } from '@/config.js';

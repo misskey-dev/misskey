@@ -59,6 +59,7 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -326,6 +327,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
 			}
 			data.text = data.text.trim();
+			if (data.text === '') {
+				data.text = null;
+			}
 		} else {
 			data.text = null;
 		}
@@ -679,7 +683,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						this.relayService.deliverToRelays(user, noteActivity);
 					}
 
-					dm.execute();
+					trackPromise(dm.execute());
 				})();
 			}
 			//#endregion
