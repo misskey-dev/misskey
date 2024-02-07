@@ -9680,15 +9680,15 @@ export interface Locale extends ILocale {
              * 通報内容のパターン
              */
             "reportContentPattern": string;
-            /**
-             * 一覧
-             */
-            "list": string;
-            /**
-             * リソルバー
-             */
-            "resolver": string;
         };
+        /**
+         * 一覧
+         */
+        "list": string;
+        /**
+         * リソルバー
+         */
+        "resolver": string;
     };
 }
 declare const locales: {

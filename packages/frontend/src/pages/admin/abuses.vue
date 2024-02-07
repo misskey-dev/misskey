@@ -88,9 +88,9 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkAbuseReportResolver from '@/components/MkAbuseReportResolver.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let reports = shallowRef<InstanceType<typeof MkPagination>>();
 let resolverPagingComponent = ref<InstanceType<typeof MkPagination>>();
@@ -158,13 +158,13 @@ function edit(id: string) {
 
 function save(): void {
 	os.apiWithDialog('admin/abuse-report-resolver/update', {
-		resolverId: editableResolver,
+		resolverId: editableResolver.value!,
 		name: editingResolver.value.name,
 		targetUserPattern: editingResolver.value.targetUserPattern || null,
 		reporterPattern: editingResolver.value.reporterPattern || null,
 		reportContentPattern: editingResolver.value.reportContentPattern || null,
 		...(editingResolver.value.previousExpiresAt && editingResolver.value.previousExpiresAt === editingResolver.value.expiresAt ? {} : {
-			expiresAt: editingResolver.value.expiresAt,
+			expiresAt: <any>editingResolver.value.expiresAt,
 		}),
 		forward: editingResolver.value.forward,
 	}).then(() => {
@@ -186,7 +186,7 @@ function create(): void {
 		targetUserPattern: newResolver.value.targetUserPattern || null,
 		reporterPattern: newResolver.value.reporterPattern || null,
 		reportContentPattern: newResolver.value.reportContentPattern || null,
-		expiresAt: newResolver.value.expiresAt,
+		expiresAt: <any>newResolver.value.expiresAt,
 		forward: newResolver.value.forward,
 	}).then(() => {
 		folderComponent.value?.toggle();
