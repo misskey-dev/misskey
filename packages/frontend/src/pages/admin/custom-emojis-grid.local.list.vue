@@ -383,8 +383,24 @@ function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: Gr
 	}
 }
 
-function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
-	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
+async function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
+	const { ctrlKey, code } = event.event;
+
+	switch (true) {
+		case ctrlKey: {
+			switch (code) {
+				case 'KeyC': {
+					optInGridUtils.copyToClipboard(gridItems, currentState);
+					break;
+				}
+				case 'KeyV': {
+					await optInGridUtils.pasteFromClipboard(gridItems, currentState);
+					break;
+				}
+			}
+			break;
+		}
+	}
 }
 
 async function refreshCustomEmojis() {
