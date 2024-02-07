@@ -1089,6 +1089,8 @@ function patchData(newItems: DataSource[]) {
 		cells.value.push(...newCells);
 	}
 
+	// 行数の上限が欲しい場合はここに設けてもいいかもしれない
+
 	if (rows.value.length > newItems.length) {
 		// 行数が減っているので古い行をクリアする（再マウント・再レンダリングが重いので要素そのものは消さない）
 		for (let rowIdx = newItems.length; rowIdx < rows.value.length; rowIdx++) {
