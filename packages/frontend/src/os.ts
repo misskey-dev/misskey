@@ -8,6 +8,7 @@
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
+import { Form, GetFormResultType } from './scripts/form.js';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -435,9 +436,9 @@ export function waiting(): Promise<void> {
 	});
 }
 
-export function form(title: string, form: any): Promise<{ canceled?: boolean, result?: unknown }> {
+export function form<F extends Form>(title: string, f: F): Promise<{ canceled?: boolean, result?: GetFormResultType<F> }> {
 	return new Promise(resolve => {
-		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form }, {
+		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form: f }, {
 			done: result => {
 				resolve(result);
 			},
