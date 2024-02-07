@@ -1650,19 +1650,91 @@ _role:
     canHideAds: "Pot amagar els anuncis"
     canSearchNotes: "Pot cercar notes"
     canUseTranslator: "Pot fer servir el traductor"
+    avatarDecorationLimit: "Nombre màxim de decoracions que es poden aplicar els avatars"
+  _condition:
+    isLocal: "Usuari local"
+    isRemote: "Usuari remot"
+    createdLessThan: "Han passat menys de X a passat des de la creació del compte"
+    createdMoreThan: "Han passat més de X des de la creació del compte"
+    followersLessThanOrEq: "Té menys de X seguidors"
 _ffVisibility:
   public: "Publicar"
 _ad:
   back: "Tornar"
+  hide: "No mostrar mai"
 _email:
   _follow:
     title: "t'ha seguit"
+_plugin:
+  viewSource: "Veure l'origen "
+_preferencesBackups:
+  list: "Llista de còpies de seguretat"
+  saveNew: "Fer una còpia de seguretat nova"
+  loadFile: "Carregar des d'un fitxer"
+  apply: "Aplicar en aquest dispositiu"
+  save: "Desar els canvis"
+  inputName: "Escriu un nom per aquesta còpia de seguretat"
+  cannotSave: "No s'ha pogut desar"
+  nameAlreadyExists: "Ja existeix una còpia de seguretat anomenada \"{name}\". Escriu un nom diferent."
+  applyConfirm: "Vols aplicar la còpia de seguretat \"{name}\" a aquest dispositiu? La configuració actual del dispositiu serà esborrada."
+  saveConfirm: "Desar còpia de seguretat com {name}?"
+  deleteConfirm: "Esborrar la còpia de seguretat {name}?"
+  renameConfirm: "Vols canvia el nom de la còpia de seguretat de \"{old}\" a \"{new}\"?"
+  noBackups: "No hi ha còpies de seguretat. Pots fer una còpia de seguretat de la configuració d'aquest dispositiu al servidor fent servir \"Crear nova còpia de seguretat\""
+  createdAt: "Creat el: {date} {time}"
+  updatedAt: "Actualitzat el: {date} {time}"
+  cannotLoad: "Hi ha hagut un error al carregar"
+  invalidFile: "Format del fitxer no vàlid "
+_registry:
+  scope: "Àmbit "
+  key: "Clau"
+  keys: "Claus"
+  domain: "Domini"
+  createKey: "Crear una clau"
+_aboutMisskey:
+  about: "Misskey és un programa de codi obert desenvolupar per syuilo des de 2014"
+  contributors: "Col·laboradors principals"
+  allContributors: "Tots els col·laboradors "
+  source: "Codi font"
+  translation: "Tradueix Misskey"
+  donate: "Fes un donatiu a Misskey"
+  morePatrons: "També agraïm el suport d'altres col·laboradors que no surten en aquesta llista. Gràcies! 🥰"
+  patrons: "Patrocinadors"
+  projectMembers: "Membres del projecte"
+_displayOfSensitiveMedia:
+  respect: "Ocultar imatges o vídeos marcats com a sensibles"
+  ignore: "Mostrar imatges o vídeos marcats com a sensibles"
+  force: "Ocultar totes les imatges o vídeos "
+_instanceTicker:
+  none: "No mostrar mai"
+  remote: "Mostrar per usuaris remots"
+  always: "Mostrar sempre"
+_serverDisconnectedBehavior:
+  reload: "Recarregar automàticament "
+  dialog: "Mostrar finestres de confirmació "
+  quiet: "Mostrar un avís que no molesti"
+_channel:
+  create: "Crear un canal"
+  edit: "Editar canal"
+  setBanner: "Estableix el bàner "
+  removeBanner: "Eliminar el.bàner"
+  featured: "Popular"
+  owned: "Propietat"
+  following: "Seguin"
+  usersCount: "{n} Participants"
+  notesCount: "{n} Notes"
 _instanceMute:
   instanceMuteDescription: "Silencia tots els impulsos dels servidors seleccionats, també els usuaris que responen a altres d'un servidor silenciat."
 _theme:
   description: "Descripció"
   keys:
+    navHoverFg: "Text barra lateral (en passar per sobre)"
+    navActive: "Text barra lateral (actiu)"
+    navIndicator: "Indicador barra lateral"
+    link: "Enllaç"
+    hashtag: "Etiqueta"
     mention: "Menció"
+    mentionMe: "Mencions (jo)"
     renote: "Renotar"
     divider: "Divisor"
 _sfx:
@@ -1670,6 +1742,7 @@ _sfx:
   notification: "Notificacions"
   antenna: "Antenes"
 _2fa:
+  removeKeyConfirm: "Esborrar la còpia de seguretat {name}?"
   renewTOTPCancel: "No, gràcies"
 _antennaSources:
   all: "Totes les publicacions"
