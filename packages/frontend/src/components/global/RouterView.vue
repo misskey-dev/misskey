@@ -81,7 +81,6 @@ router.addListener('change', onChange);
  * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
  */
 const pageCacheController = computed(() => {
-	debugger;
 	switch (clearCacheRequest.value) {
 		case true:
 			return /.*/;
