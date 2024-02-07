@@ -1146,8 +1146,6 @@ onMounted(() => {
 		throw new Error(`Duplicate bindTo setting : [${bindToList.join(',')}]}]`);
 	}
 
-	refreshData();
-
 	if (rootEl.value) {
 		resizeObserver.observe(rootEl.value);
 
@@ -1158,6 +1156,8 @@ onMounted(() => {
 			state.value = 'hidden';
 		}
 	}
+
+	refreshData();
 });
 </script>
 
