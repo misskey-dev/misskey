@@ -104,6 +104,9 @@ export function findTileById(tid: TileId): TileInstance | null {
 
 export type House = 'e' | 's' | 'w' | 'n';
 
+/**
+ * 暗槓を含む
+ */
 export type Huro = {
 	type: 'pon';
 	tiles: [TileId, TileId, TileId];
@@ -120,6 +123,8 @@ export type Huro = {
 	tiles: [TileId, TileId, TileId, TileId];
 	from: House | null; // null で加槓
 };
+
+export const CALL_HURO_TYPES = ['pon', 'cii', 'minkan'] as const;
 
 export const NEXT_TILE_FOR_DORA_MAP: Record<TileType, TileType> = {
 	m1: 'm2',
@@ -460,7 +465,7 @@ export const YAKU_DEFINITIONS = [{
 	isYakuman: false,
 	calc: (state: EnvForCalcYaku) => {
 		// 面前じゃないとダメ
-		if (state.huros.length !== 0) return false;
+		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
 		// 三元牌はダメ
 		if (state.handTiles.some(t => ['haku', 'hatsu', 'chun'].includes(t))) return false;
 
@@ -474,6 +479,36 @@ export const YAKU_DEFINITIONS = [{
 
 			// 全て順子か？
 			if (horaSet.mentsus.some((mentsu) => mentsu[0] === mentsu[1])) return false;
+		});
+	},
+}, {
+	name: 'iipeko',
+	fan: 1,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku) => {
+		// 面前じゃないとダメ
+		if (state.huros.some(huro => CALL_HURO_TYPES.includes(huro.type))) return false;
+
+		const horaSets = getHoraSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+		return horaSets.some(horaSet => {
+			// 同じ順子が2つあるか？
+			return horaSet.mentsus.some((mentsu) =>
+				horaSet.mentsus.filter((mentsu2) =>
+					mentsu2[0] === mentsu[0] && mentsu2[1] === mentsu[1] && mentsu2[2] === mentsu[2]).length >= 2);
+		});
+	},
+}, {
+	name: 'toitoi',
+	fan: 2,
+	isYakuman: false,
+	calc: (state: EnvForCalcYaku) => {
+		if (state.huros.length > 0) {
+			if (state.huros.some(huro => huro.type === 'cii')) return false;
+		}
+		const horaSets = getHoraSets(state.handTiles.concat(state.tsumoTile ?? state.ronTile));
+		return horaSets.some(horaSet => {
+			// 全て刻子か？
+			if (!horaSet.mentsus.every((mentsu) => mentsu[0] === mentsu[1])) return false;
 		});
 	},
 }];
