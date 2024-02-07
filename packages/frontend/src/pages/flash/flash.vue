@@ -147,6 +147,7 @@ const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 
 function start() {
+	globalEvents.emit('requestClearPageCache', 'Flash');
 	started.value = true;
 	run();
 }
@@ -196,12 +197,10 @@ async function run() {
 
 onDeactivated(() => {
 	if (aiscript.value) aiscript.value.abort();
-	globalEvents.emit('requestClearPageCache', 'Flash');
 });
 
 onUnmounted(() => {
 	if (aiscript.value) aiscript.value.abort();
-	globalEvents.emit('requestClearPageCache', 'Flash');
 });
 
 const headerActions = computed(() => []);
