@@ -435,7 +435,7 @@ export function waiting(): Promise<void> {
 	});
 }
 
-export function form(title: string, form: any): Promise<unknown> {
+export function form(title: string, form: any): Promise<{ canceled?: boolean, result?: unknown }> {
 	return new Promise(resolve => {
 		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form }, {
 			done: result => {
@@ -488,7 +488,7 @@ export async function selectDriveFolder(multiple: boolean): Promise<Misskey.enti
 	});
 }
 
-export async function pickEmoji(src: HTMLElement | null, opts): Promise<unknown> {
+export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog>): Promise<string> {
 	return new Promise(resolve => {
 		popup(MkEmojiPickerDialog, {
 			src,
