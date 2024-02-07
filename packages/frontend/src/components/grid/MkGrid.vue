@@ -482,29 +482,88 @@ function onLeftMouseDown(ev: MouseEvent) {
 				registerMouseMove();
 				state.value = 'cellSelecting';
 			} else if (isColumnHeaderCellAddress(cellAddress)) {
-				unSelectionRangeAll();
+				if (ev.shiftKey) {
+					const rangedColumnIndexes = rangedCells.value.map(it => it.address.col);
+					const targetColumnIndexes = [cellAddress.col, ...rangedColumnIndexes];
+					unSelectionRangeAll();
 
-				const colCells = cells.value.map(row => row.cells[cellAddress.col]);
-				selectionRange(...colCells.map(cell => cell.address));
+					const leftTop = {
+						col: Math.min(...targetColumnIndexes),
+						row: 0,
+					};
+
+					const rightBottom = {
+						col: Math.max(...targetColumnIndexes),
+						row: cells.value.length - 1,
+					};
+
+					expandCellRange(leftTop, rightBottom);
+
+					if (rangedColumnIndexes.length === 0) {
+						firstSelectionColumnIdx.value = cellAddress.col;
+					} else {
+						if (cellAddress.col > Math.min(...rangedColumnIndexes)) {
+							firstSelectionColumnIdx.value = Math.min(...rangedColumnIndexes);
+						} else {
+							firstSelectionColumnIdx.value = Math.max(...rangedColumnIndexes);
+						}
+					}
+				} else {
+					unSelectionRangeAll();
+
+					const colCells = cells.value.map(row => row.cells[cellAddress.col]);
+					selectionRange(...colCells.map(cell => cell.address));
+
+					firstSelectionColumnIdx.value = cellAddress.col;
+				}
 
 				registerMouseUp();
 				registerMouseMove();
-				firstSelectionColumnIdx.value = cellAddress.col;
+				previousCellAddress.value = cellAddress;
 				state.value = 'colSelecting';
 
 				// フォーカスを当てないとキーイベントが拾えないので
 				getCellElement(ev.target as HTMLElement)?.focus();
 			} else if (isRowNumberCellAddress(cellAddress)) {
-				unSelectionRangeAll();
+				if (ev.shiftKey) {
+					const rangedRowIndexes = rangedRows.value.map(it => it.index);
+					const targetRowIndexes = [cellAddress.row, ...rangedRowIndexes];
+					unSelectionRangeAll();
 
-				const rowCells = cells.value[cellAddress.row].cells;
-				selectionRange(...rowCells.map(cell => cell.address));
+					const leftTop = {
+						col: 0,
+						row: Math.min(...targetRowIndexes),
+					};
 
-				expandRowRange(cellAddress.row, cellAddress.row);
+					const rightBottom = {
+						col: Math.min(...cells.value.map(it => it.cells.length - 1)),
+						row: Math.max(...targetRowIndexes),
+					};
+
+					expandCellRange(leftTop, rightBottom);
+					expandRowRange(Math.min(...targetRowIndexes), Math.max(...targetRowIndexes));
+
+					if (rangedRowIndexes.length === 0) {
+						firstSelectionRowIdx.value = cellAddress.row;
+					} else {
+						if (cellAddress.col > Math.min(...rangedRowIndexes)) {
+							firstSelectionRowIdx.value = Math.min(...rangedRowIndexes);
+						} else {
+							firstSelectionRowIdx.value = Math.max(...rangedRowIndexes);
+						}
+					}
+				} else {
+					unSelectionRangeAll();
+					const rowCells = cells.value[cellAddress.row].cells;
+					selectionRange(...rowCells.map(cell => cell.address));
+					expandRowRange(cellAddress.row, cellAddress.row);
+
+					firstSelectionRowIdx.value = cellAddress.row;
+				}
 
 				registerMouseUp();
 				registerMouseMove();
-				firstSelectionRowIdx.value = cellAddress.row;
+				previousCellAddress.value = cellAddress;
 				state.value = 'rowSelecting';
 
 				// フォーカスを当てないとキーイベントが拾えないので
