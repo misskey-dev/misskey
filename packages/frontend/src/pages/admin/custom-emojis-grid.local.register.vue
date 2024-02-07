@@ -76,9 +76,8 @@ import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import {
-	EmojiOperationResult,
-	fromDriveFile,
-	GridItem,
+	emptyStrToEmptyArray,
+	emptyStrToNull,
 	RequestLogItem,
 } from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
@@ -113,6 +112,19 @@ type FolderItem = {
 	name: string;
 };
 
+type GridItem = {
+	fileId: string;
+	url: string;
+	name: string;
+	host: string;
+	category: string;
+	aliases: string;
+	license: string;
+	isSensitive: boolean;
+	localOnly: boolean;
+	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
+}
+
 const required = validators.required();
 const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
 const columnSettings: ColumnSetting[] = [
@@ -125,10 +137,6 @@ const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'localOnly', title: 'localOnly', type: 'boolean', editable: true, width: 90 },
 	{ bindTo: 'roleIdsThatCanBeUsedThisEmojiAsReaction', title: 'role', type: 'text', editable: true, width: 100 },
 ];
-
-const emit = defineEmits<{
-	(ev: 'operation:registered'): void;
-}>();
 
 const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
@@ -150,12 +158,9 @@ async function onRegistryClicked() {
 		return;
 	}
 
-	const items = new Map<string, GridItem>(gridItems.value.map(it => [`${it.fileId}|${it.name}`, it]));
-	const upload = (): Promise<EmojiOperationResult>[] => {
-		const emptyStrToNull = (value: string) => value === '' ? null : value;
-		const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
-
-		return [...items.values()].slice(0, MAXIMUM_EMOJI_COUNT)
+	const items = gridItems.value;
+	const upload = () => {
+		return items.slice(0, MAXIMUM_EMOJI_COUNT)
 			.map(item =>
 				misskeyApi(
 					'admin/emoji/add', {
@@ -194,8 +199,6 @@ async function onRegistryClicked() {
 	// 登録に成功したものは一覧から除く
 	const successItems = result.filter(it => it.success).map(it => it.item);
 	gridItems.value = gridItems.value.filter(it => !successItems.includes(it));
-
-	emit('operation:registered');
 }
 
 async function onClearClicked() {
@@ -255,7 +258,7 @@ async function onDrop(ev: DragEvent) {
 	gridItems.value.push(...items);
 }
 
-async function onFileSelectClicked(ev: MouseEvent) {
+async function onFileSelectClicked() {
 	const driveFiles = await os.promiseDialog(
 		chooseFileFromPc(
 			true,
@@ -271,7 +274,7 @@ async function onFileSelectClicked(ev: MouseEvent) {
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
-async function onDriveSelectClicked(ev: MouseEvent) {
+async function onDriveSelectClicked() {
 	const driveFiles = await os.promiseDialog(chooseFileFromDrive(true));
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
@@ -288,7 +291,7 @@ function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 			onGridCellContextMenu(event, currentState);
 			break;
 		case 'cell-value-change':
-			onGridCellValueChange(event, currentState);
+			onGridCellValueChange(event);
 			break;
 		case 'keydown':
 			onGridKeyDown(event, currentState);
@@ -334,7 +337,7 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 	);
 }
 
-function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
+function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		gridItems.value[row.index][column.setting.bindTo] = newValue;
@@ -343,6 +346,21 @@ function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: Gr
 
 function onGridKeyDown(event: GridKeyDownEvent, currentState: GridCurrentState) {
 	optInGridUtils.defaultKeyDownHandler(gridItems, event, currentState);
+}
+
+function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
+	return {
+		fileId: it.id,
+		url: it.url,
+		name: it.name.replace(/(\.[a-zA-Z0-9]+)+$/, ''),
+		host: '',
+		category: '',
+		aliases: '',
+		license: '',
+		isSensitive: it.isSensitive,
+		localOnly: false,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: '',
+	};
 }
 
 async function refreshUploadFolders() {

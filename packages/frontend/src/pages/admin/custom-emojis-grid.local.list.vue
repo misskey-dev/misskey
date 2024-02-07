@@ -103,7 +103,12 @@
 import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { fromEmojiDetailedAdmin, GridItem, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import {
+	emptyStrToEmptyArray,
+	emptyStrToNull,
+	emptyStrToUndefined,
+	RequestLogItem,
+} from '@/pages/admin/custom-emojis-grid.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
@@ -128,9 +133,19 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { deviceKind } from '@/scripts/device-kind.js';
 
-const emptyStrToUndefined = (value: string | null) => value ? value : undefined;
-const emptyStrToNull = (value: string) => value === '' ? null : value;
-const emptyStrToEmptyArray = (value: string) => value === '' ? [] : value.split(',').map(it => it.trim());
+type GridItem = {
+	checked: boolean;
+	id: string;
+	url: string;
+	name: string;
+	host: string;
+	category: string;
+	aliases: string;
+	license: string;
+	isSensitive: boolean;
+	localOnly: boolean;
+	roleIdsThatCanBeUsedThisEmojiAsReaction: string;
+}
 
 const gridSetting: GridSetting = {
 	rowNumberVisible: true,
@@ -312,7 +327,7 @@ function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 			onGridCellContextMenu(event, currentState);
 			break;
 		case 'cell-value-change':
-			onGridCellValueChange(event, currentState);
+			onGridCellValueChange(event);
 			break;
 		case 'keydown':
 			onGridKeyDown(event, currentState);
@@ -372,7 +387,7 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 	);
 }
 
-function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
+function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		gridItems.value[row.index][column.setting.bindTo] = newValue;
@@ -442,7 +457,20 @@ async function refreshCustomEmojis() {
 }
 
 function refreshGridItems() {
-	gridItems.value = customEmojis.value.map(it => fromEmojiDetailedAdmin(it));
+	gridItems.value = customEmojis.value.map(it => ({
+		checked: false,
+		id: it.id,
+		fileId: undefined,
+		url: it.publicUrl,
+		name: it.name,
+		host: it.host ?? '',
+		category: it.category ?? '',
+		aliases: it.aliases.join(', '),
+		license: it.license ?? '',
+		isSensitive: it.isSensitive,
+		localOnly: it.localOnly,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: it.roleIdsThatCanBeUsedThisEmojiAsReaction.join(', '),
+	}));
 	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
 }
 

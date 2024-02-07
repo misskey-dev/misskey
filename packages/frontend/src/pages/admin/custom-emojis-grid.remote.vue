@@ -52,7 +52,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { ColumnSetting } from '@/components/grid/column.js';
-import { fromEmojiDetailedAdmin, GridItem, RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
+import { RequestLogItem } from '@/pages/admin/custom-emojis-grid.impl.js';
 import {
 	GridCellContextMenuEvent,
 	GridCellValueChangeEvent,
@@ -65,6 +65,14 @@ import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 import * as os from '@/os.js';
+
+type GridItem = {
+	checked: boolean;
+	id: string;
+	url: string;
+	name: string;
+	host: string;
+}
 
 const columnSettings: ColumnSetting[] = [
 	{ bindTo: 'checked', icon: 'ti-download', type: 'boolean', editable: true, width: 34 },
@@ -109,7 +117,7 @@ function onGridEvent(event: GridEvent, currentState: GridCurrentState) {
 			onGridCellContextMenu(event, currentState);
 			break;
 		case 'cell-value-change':
-			onGridCellValueChange(event, currentState);
+			onGridCellValueChange(event);
 			break;
 		case 'keydown':
 			onGridKeyDown(event, currentState);
@@ -146,7 +154,7 @@ function onGridCellContextMenu(event: GridCellContextMenuEvent, currentState: Gr
 	);
 }
 
-function onGridCellValueChange(event: GridCellValueChangeEvent, currentState: GridCurrentState) {
+function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		gridItems.value[row.index][column.setting.bindTo] = newValue;
@@ -173,7 +181,7 @@ async function importEmojis(targets: GridItem[]) {
 	const confirm = await os.confirm({
 		type: 'info',
 		title: '絵文字のインポート',
-		text: `リモートから受信した${targets.length}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。インポートを行いますか？`,
+		text: `リモートから受信した${targets.length}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？`,
 	});
 
 	if (confirm.canceled) {
@@ -214,7 +222,13 @@ async function refreshCustomEmojis(query?: string, host?: string, sinceId?: stri
 	});
 
 	customEmojis.value = emojis.emojis;
-	gridItems.value = customEmojis.value.map(it => fromEmojiDetailedAdmin(it));
+	gridItems.value = customEmojis.value.map(it => ({
+		checked: false,
+		id: it.id,
+		url: it.uri!,
+		name: it.name,
+		host: it.host!,
+	}));
 }
 
 onMounted(async () => {
