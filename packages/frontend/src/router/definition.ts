@@ -535,19 +535,31 @@ const routes: RouteDef[] = [{
 	loginRequired: true,
 }, {
 	path: '/games',
-	component: page(() => import('@/pages/games.vue')),
+	component: page(() => import('@/pages/games/index.vue')),
+	loginRequired: false,
+}, {
+	path: '/games/bubble-game',
+	component: page(() => import('@/pages/games/drop-and-fusion/index.vue')),
+	loginRequired: true,
+}, {
+	path: '/games/reversi',
+	component: page(() => import('@/pages/games/reversi/index.vue')),
+	loginRequired: false,
+}, {
+	path: '/games/reversi/g/:gameId',
+	component: page(() => import('@/pages/games/reversi/game.vue')),
 	loginRequired: false,
 }, {
 	path: '/bubble-game',
-	component: page(() => import('@/pages/drop-and-fusion.vue')),
+	redirect: '/games/bubble-game',
 	loginRequired: true,
 }, {
 	path: '/reversi',
-	component: page(() => import('@/pages/reversi/index.vue')),
+	redirect: '/games/reversi',
 	loginRequired: false,
 }, {
 	path: '/reversi/g/:gameId',
-	component: page(() => import('@/pages/reversi/game.vue')),
+	redirect: (props) => `/games/reversi/g/${props.get('gameId')}`,
 	loginRequired: false,
 }, {
 	path: '/timeline',
