@@ -381,7 +381,7 @@ describe('Micropub', () => {
 		assert.strictEqual(createdFileUrl?.origin, origin);
 		assert.ok(createdFileUrl.pathname.startsWith('/files/'));
 
-		const driveFile = await driveFiles.findOneBy({ webpublicAccessKey: createdFileUrl.pathname.slice(7) });
+		const driveFile = await driveFiles.findOneBy({ accessKey: createdFileUrl.pathname.slice(7) });
 		assert.ok(driveFile);
 	});
 
@@ -463,7 +463,7 @@ describe('Micropub', () => {
 			configUrl.search = new URLSearchParams({
 				q: 'source',
 				url: noteUrl.toString(),
-				properties: 'category'
+				properties: 'category',
 			}).toString();
 
 			const response3 = await fetch(configUrl, {
@@ -472,7 +472,7 @@ describe('Micropub', () => {
 			}).then(async res => ({ status: res.status, body: await res.json() }));
 
 			assert.strictEqual(response3.status, 200 /* OK */);
-			assert.deepEqual(response3.body, { properties: { category: ['foo', 'bar'] }});
+			assert.deepEqual(response3.body, { properties: { category: ['foo', 'bar'] } });
 		});
 	});
 

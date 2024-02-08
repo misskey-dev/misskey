@@ -305,7 +305,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 			const source = typeof medium === 'string' ? medium : medium.source;
 			const mediaUrl = new URL(source);
 			if (mediaUrl.origin === this.config.url && mediaUrl.pathname.startsWith('/files/')) {
-				const accessKey = mediaUrl.pathname.slice(7);
+				const accessKey = decodeURIComponent(mediaUrl.pathname.slice(7));
 				const driveFile = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.accessKey = :accessKey', { accessKey })
 					.orWhere('file.thumbnailAccessKey = :thumbnailAccessKey', { thumbnailAccessKey: accessKey })
@@ -348,7 +348,7 @@ export class MicropubServerService implements OnApplicationShutdown {
 
 		if (renote !== null) {
 			if (renote.userId !== user.id) {
-				const blockExists = await this.blockingsRepository.exists({ where: { blockerId: renote.userId, blockeeId: user.id } });
+				const blockExists = await this.blockingsRepository.existsBy({ blockerId: renote.userId, blockeeId: user.id });
 				if (blockExists) throw new MicropubError(errorSymbols.BAD_REQUEST, 'You have been blocked by this user');
 			}
 			if (isPureRenote(renote)) throw new MicropubError(errorSymbols.BAD_REQUEST, 'Cannot renote a pure renote');
@@ -682,8 +682,9 @@ export class MicropubServerService implements OnApplicationShutdown {
 				await stream.pipeline(multipartData.file, fs.createWriteStream(destPath));
 				if (multipartData.fieldname !== 'file') throw new MicropubError(errorSymbols.BAD_REQUEST);
 				const driveFile = await this.driveService.addFile({ user, path: destPath, name: path.parse(multipartData.filename).name, force: true });
+				if (driveFile.accessKey === null) throw new MicropubError(errorSymbols.BAD_REQUEST, 'Internal server error: Accesskey is null');
 				reply.code(201 /* Created */);
-				reply.header('Location', new URL('/files/' + driveFile.webpublicAccessKey, this.config.url));
+				reply.header('Location', new URL('/files/' + encodeURIComponent(driveFile.accessKey), this.config.url));
 				return await reply.send();
 			} catch (err) {
 				return await this.sendMicropubApiError(err, reply);
