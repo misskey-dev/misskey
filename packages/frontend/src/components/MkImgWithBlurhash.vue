@@ -73,7 +73,7 @@ const props = withDefaults(defineProps<{
 		leaveFromClass?: string;
 	} | null;
 	src?: string | null;
-	hash?: string;
+	hash?: string | null;
 	alt?: string | null;
 	title?: string | null;
 	height?: number;

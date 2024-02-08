@@ -71,9 +71,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				});
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
+
 			await this.noteScheduleService.notifyExpiredItems(user.id);
-			return await this.userEntityService.pack<true, true>(userProfile.user!, userProfile.user!, {
-				detail: true,
+
+			return await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
+				schema: 'MeDetailed',
 				includeSecrets: isSecure,
 				userProfile,
 			});

@@ -50,7 +50,7 @@ export const meta = {
 				user: {
 					type: 'object',
 					optional: false, nullable: false,
-					ref: 'UserDetailed',
+					ref: 'UserDetailedNotMe',
 				},
 			},
 		},

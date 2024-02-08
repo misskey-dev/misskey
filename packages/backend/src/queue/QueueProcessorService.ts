@@ -17,6 +17,7 @@ import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
 import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
+import { ExportClipsProcessorService } from './processors/ExportClipsProcessorService.js';
 import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
 import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
@@ -94,6 +95,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
 		private exportCustomEmojisProcessorService: ExportCustomEmojisProcessorService,
 		private exportNotesProcessorService: ExportNotesProcessorService,
+		private exportClipsProcessorService: ExportClipsProcessorService,
 		private exportFavoritesProcessorService: ExportFavoritesProcessorService,
 		private exportFollowingProcessorService: ExportFollowingProcessorService,
 		private exportMutingProcessorService: ExportMutingProcessorService,
@@ -167,6 +169,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				case 'deleteDriveFiles': return this.deleteDriveFilesProcessorService.process(job);
 				case 'exportCustomEmojis': return this.exportCustomEmojisProcessorService.process(job);
 				case 'exportNotes': return this.exportNotesProcessorService.process(job);
+				case 'exportClips': return this.exportClipsProcessorService.process(job);
 				case 'exportFavorites': return this.exportFavoritesProcessorService.process(job);
 				case 'exportFollowing': return this.exportFollowingProcessorService.process(job);
 				case 'exportMuting': return this.exportMutingProcessorService.process(job);
@@ -283,9 +286,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		}, {
 			...baseQueueOptions(this.config, QUEUE.RELATIONSHIP),
 			autorun: false,
-			concurrency: this.config.relashionshipJobConcurrency ?? 16,
+			concurrency: this.config.relationshipJobConcurrency ?? 16,
 			limiter: {
-				max: this.config.relashionshipJobPerSec ?? 64,
+				max: this.config.relationshipJobPerSec ?? 64,
 				duration: 1000,
 			},
 		});

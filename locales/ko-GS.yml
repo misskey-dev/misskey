@@ -40,7 +40,7 @@ favorites: "질겨찾기"
 unfavorite: "질겨찾기서 어ᇝ애기"
 favorited: "질겨찾기에 담앗십니다."
 alreadyFavorited: "벌시로 질겨찾기에 담기 잇십니다."
-cantFavorite: "질겨찾기에 몬 담았십니다."
+cantFavorite: "질겨찾기에 몬 담앗십니다."
 pin: "프로필에 붙이기"
 unpin: "프로필서 띠기"
 copyContent: "내용 복사하기"
@@ -124,6 +124,7 @@ reactions: "반엉"
 reactionSettingDescription2: "꺼시서 두고, 누질라서 뭉캐고,  ‘+’럴 누질라서 옇십니다."
 rememberNoteVisibility: "공개 범위럴 기억하기"
 attachCancel: "붙임 빼기"
+deleteFile: "파일 뭉캐기"
 markAsSensitive: "수ᇚ힘 설정"
 unmarkAsSensitive: "수ᇚ힘 무루기"
 enterFileName: "파일 이럼 서기"
@@ -373,6 +374,8 @@ hcaptcha: "에이치캡차"
 enableHcaptcha: "에이치캡차 키기"
 hcaptchaSiteKey: "사이트키"
 hcaptchaSecretKey: "시크릿키"
+mcaptchaSiteKey: "사이트키"
+mcaptchaSecretKey: "시크릿키"
 recaptcha: "리캡차"
 enableRecaptcha: "리캡차 키기"
 recaptchaSiteKey: "사이트키"
@@ -461,6 +464,8 @@ onlyOneFileCanBeAttached: "메시지엔 파일 하나까제밖에 몬 넣십니�
 invitations: "초대하기"
 invitationCode: "초대장"
 checking: "학인하고 잇십니다"
+tooShort: "억수로 짜립니다"
+tooLong: "억수로 집니다"
 passwordMatched: "맞십니다"
 passwordNotMatched: "안 맞십니다"
 signinFailed: "로그인 몬 했십니다. 고 이름이랑 비밀번호 제대로 썼는가 확인해 주이소."
@@ -513,7 +518,7 @@ objectStoragePrefixDesc: "요 Prefix 디렉토리 안에다가 파일이 들어�
 objectStorageEndpoint: "Endpoint"
 objectStorageEndpointDesc: "AWS S3을 쓸라멘 요는 비워두고, 아이멘은 그 서비스 가이드에 맞게 endpoint를 넣어 주이소. '<host>' 내지 '<host>:<port>'처럼 넣십니다."
 objectStorageRegion: "Region"
-objectStorageRegionDesc: "'xx-east-1' 같은 region 이름을 옇어 주이소. 써먹을 서비스에 region 개념 같은 게 읎다! 카면은 대신에 'us-east-1'을 옇어 놓으이소. AWS 설정 파일이나 환경 변수를 갖다 끌어다 쓸 거면은 요는 비워 두이소."
+objectStorageRegionDesc: "'xx-east-1' 같은 region 이름을 옇어 주이소. 만약에 내 서비스엔 region 같은 개념이 읎다, 카면은 대신에 'us-east-1'라고 해 두이소. AWS 설정 파일이나 환경 변수를 끌어다 쓰겠다믄 요는 비워 두이소."
 objectStorageUseSSL: "SSL 쓰기"
 objectStorageUseSSLDesc: "API 호출할 때 HTTPS 안 쓸거면은 꺼 두이소"
 objectStorageUseProxy: "연결에 프락시 사용"
@@ -536,7 +541,7 @@ volume: "음량"
 masterVolume: "대빵 음량"
 notUseSound: "음소거하기"
 useSoundOnlyWhenActive: "Misskey가 활성화되어 있을 때만 소리 내기"
-details: "좀 더"
+details: "자세히"
 chooseEmoji: "이모지 선택"
 unableToProcess: "작업 다 몬 했십니다"
 recentUsed: "최근 쓴 놈"
@@ -569,7 +574,11 @@ userSilenced: "요 게정은... 수ᇚ혀 있십니다."
 relays: "릴레이"
 addRelay: "릴레이 옇기"
 addedRelays: "옇은 릴레이"
+deletedNote: "뭉캔 걸"
 enableInfiniteScroll: "알아서 더 보기"
+useCw: "내용 수ᇚ후기"
+description: "설멩"
+describeFile: "캡션 옇기"
 author: "맨던 사람"
 manage: "간리"
 emailServer: "전자우펜 서버"
@@ -598,6 +607,7 @@ renotesCount: "리노트한 수"
 renotedCount: "리노트덴 수"
 followingCount: "팔로우 수"
 followersCount: "팔로워 수"
+noteFavoritesCount: "질겨찾기한 노트 수"
 clips: "클립 맨걸기"
 clearCache: "캐시 비우기"
 unlikeConfirm: "좋네예럴 무룹니꺼?"
@@ -606,6 +616,7 @@ user: "사용자"
 administration: "간리"
 on: "킴"
 off: "껌"
+hide: "수ᇚ후기"
 clickToFinishEmailVerification: "[{ok}]럴 누질라서 전자우펜 정멩얼 껕내이소."
 searchByGoogle: "찾기"
 tenMinutes: "십 분"
@@ -624,9 +635,11 @@ role: "옉할"
 noRole: "옉할이 없십니다"
 thisPostMayBeAnnoyingCancel: "아이예"
 likeOnly: "좋네예마"
+myClips: "내 클립"
 icon: "아바타"
 replies: "답하기"
 renotes: "리노트"
+attach: "옇기"
 _initialAccountSetting:
   startTutorial: "길라잡이 하기"
 _initialTutorial:
@@ -639,9 +652,52 @@ _initialTutorial:
     title: "길라잡이가 껕낫십니다!🎉"
 _achievements:
   _types:
+    _notes1:
+      description: "첫 노트럴 섯어예"
+    _notes10:
+      description: "노트럴 10번 섰어예"
+    _notes100:
+      description: "노트럴 100번 섰어예"
+    _notes500:
+      description: "노트럴 500번 섰어예"
+    _notes1000:
+      description: "노트럴 1,000번 섰어예"
+    _notes5000:
+      description: "노트럴 5,000번 섰어예"
+    _notes10000:
+      description: "노트럴 10,000번 섰어예"
+    _notes20000:
+      description: "노트럴 20,000번 섰어예"
+    _notes30000:
+      description: "노트럴 30,000번 섰어예"
+    _notes40000:
+      description: "노트럴 40,000번 섰어예"
+    _notes50000:
+      description: "노트럴 50,000번 섰어예"
+    _notes60000:
+      description: "노트럴 60,000번 섰어예"
+    _notes70000:
+      description: "노트럴 70,000번 섰어예"
+    _notes80000:
+      description: "노트럴 80,000번 섰어예"
+    _notes90000:
+      description: "노트럴 90,000번 섰어예"
+    _notes100000:
+      description: "노트럴 100,000번 섰어예"
+    _noteClipped1:
+      description: "첫 노트럴 클립햇어예"
+    _noteFavorited1:
+      description: "첫 노트럴 질겨찾기에 담앗어예"
+    _myNoteFavorited1:
+      description: "다런 사람이 내 노트럴 질겨찾기에 담앗십니다"
+    _iLoveMisskey:
+      description: "“I ❤ #Misskey”럴 섰어예"
+    _postedAt0min0sec:
+      description: "0분 0초에 노트를 섰어예"
     _tutorialCompleted:
       description: "길라잡이럴 껕냇십니다"
 _gallery:
+  my: "내 걸"
   liked: "좋네예한 걸"
   like: "좋네예!"
   unlike: "좋네예 무루기"
@@ -652,7 +708,12 @@ _serverDisconnectedBehavior:
   reload: "알아서 새로곤침"
 _channel:
   removeBanner: "배너 뭉캐기"
+  usersCount: "{n}명 참여"
+  notesCount: "노트 {n}개"
+_menuDisplay:
+  hide: "수ᇚ후기"
 _theme:
+  description: "설멩"
   keys:
     mention: "멘션"
 _sfx:
@@ -661,6 +722,9 @@ _sfx:
 _2fa:
   step3Title: "학인 기호럴 서기"
   renewTOTPCancel: "뎃어예"
+_permissions:
+  "read:favorites": "질겨찾기 보기"
+  "write:favorites": "질겨찾기 곤치기"
 _widgets:
   profile: "프로필"
   instanceInfo: "서버 정보"
@@ -672,7 +736,10 @@ _widgets:
   _userList:
     chooseList: "리스트 개리기"
 _cw:
+  hide: "수ᇚ후기"
   show: "더 볼래예"
+  chars: "걸자 {count}개"
+  files: "파일 {count}개"
 _visibility:
   home: "덜머리"
   followers: "팔로워"
@@ -680,6 +747,8 @@ _profile:
   name: "이럼"
   username: "사용자 이럼"
 _exportOrImport:
+  favoritedNotes: "질겨찾기한 노트"
+  clips: "클립 맨걸기"
   followingList: "팔로잉"
   muteList: "수ᇚ후기"
   blockingList: "차단하기"
@@ -689,16 +758,20 @@ _charts:
 _timelines:
   home: "덜머리"
 _play:
+  my: "내 플레이"
   script: "스크립트"
+  summary: "설멩"
 _pages:
   like: "좋네예"
   unlike: "좋네예 무루기"
+  my: "내 페이지"
   blocks:
     image: "이미지"
     _note:
       id: "노트 아이디"
 _notification:
   youWereFollowed: "새 팔로워가 잇십니다"
+  newNote: "새 걸"
   _types:
     follow: "팔로잉"
     mention: "멘션"
@@ -721,3 +794,6 @@ _moderationLogTypes:
   deleteUserAnnouncement: "사용자 공지 걸 뭉캐기"
   resetPassword: "비밀번호 재설정"
   resolveAbuseReport: "신고 해겔하기"
+_reversi:
+  total: "합계"
+

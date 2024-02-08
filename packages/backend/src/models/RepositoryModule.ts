@@ -72,6 +72,8 @@ import {
 	MiUserSecurityKey,
 	MiWebhook,
 	MiScheduledNote,
+	MiBubbleGameRecord,
+	MiReversiGame,
 } from './_.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
@@ -472,6 +474,18 @@ const $userMemosRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $bubbleGameRecordsRepository: Provider = {
+	provide: DI.bubbleGameRecordsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiBubbleGameRecord),
+	inject: [DI.db],
+};
+
+const $reversiGamesRepository: Provider = {
+	provide: DI.reversiGamesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiReversiGame),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [
 	],
@@ -542,6 +556,8 @@ const $userMemosRepository: Provider = {
 		$flashsRepository,
 		$flashLikesRepository,
 		$userMemosRepository,
+		$bubbleGameRecordsRepository,
+		$reversiGamesRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -610,6 +626,8 @@ const $userMemosRepository: Provider = {
 		$flashsRepository,
 		$flashLikesRepository,
 		$userMemosRepository,
+		$bubbleGameRecordsRepository,
+		$reversiGamesRepository,
 	],
 })
 export class RepositoryModule {}

@@ -25,7 +25,7 @@ export const packedRenoteMutingSchema = {
 		mutee: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'UserDetailed',
+			ref: 'UserDetailedNotMe',
 		},
 	},
 } as const;
