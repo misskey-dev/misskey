@@ -236,13 +236,7 @@ export function createPostgresDataSource(config: Config) {
 		} : {}),
 		synchronize: process.env.NODE_ENV === 'test',
 		dropSchema: process.env.NODE_ENV === 'test',
-		cache: !config.db.disableCache && process.env.NODE_ENV !== 'test' ? { // dbをcloseしても何故かredisのコネクションが内部的に残り続けるようで、テストの際に支障が出るため無効にする(キャッシュも含めてテストしたいため本当は有効にしたいが...)
-			type: 'ioredis',
-			options: {
-				...config.redisForDatabaseCache,
-				keyPrefix: `${config.redisForDatabaseCache.prefix}:query:`,
-			},
-		} : false,
+		cache: !config.db.disableCache && process.env.NODE_ENV !== 'test',
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
 		maxQueryExecutionTime: 10000, // 10s
