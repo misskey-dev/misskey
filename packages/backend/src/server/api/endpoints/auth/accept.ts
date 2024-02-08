@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const accessToken = secureRndstr(32);
 
 			// Fetch exist access token
-			const exist = await this.accessTokensRepository.exist({
+			const exist = await this.accessTokensRepository.exists({
 				where: {
 					appId: session.appId,
 					userId: me.id,
