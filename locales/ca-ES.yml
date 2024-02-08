@@ -1672,15 +1672,56 @@ _sensitiveMediaDetection:
   setSensitiveFlagAutomatically: "Marcar com a sensible"
   setSensitiveFlagAutomaticallyDescription: "Els resultats de la detecció interna seran desats, inclòs si aquesta opció es troba desactivada."
   analyzeVideos: "Activar anàlisis de vídeos "
+  analyzeVideosDescription: "Analitzar els vídeos a més de les imatges. Això incrementarà lleugerament la càrrega del servidor."
+_emailUnavailable:
+  used: "Aquest correu electrònic ja s'està fent servir"
+  format: "El format del correu electrònic és invàlid "
+  disposable: "No es poden fer servir adreces de correu electrònic d'un sol ús "
+  mx: "Aquest servidor de correu electrònic no és vàlid "
+  smtp: "Aquest servidor de correu electrònic no respon"
+  banned: "No pots registrar-te amb aquesta adreça de correu electrònic "
 _ffVisibility:
   public: "Publicar"
+  followers: "Visible només per a seguidors "
+  private: "Privat"
+_signup:
+  almostThere: "Ja quasi estem"
+  emailAddressInfo: "Si us plau, escriu la teva adreça de correu electrònic. No es farà pública."
+  emailSent: "S'ha enviat un correu de confirmació a ({email}). Si us plau, fes clic a l'enllaç per completar el registre."
+_accountDelete:
+  accountDelete: "Eliminar el compte"
+  mayTakeTime: "Com l'eliminació d'un compte consumeix bastants recursos, pot trigar un temps perquè es completi l'esborrat, depenent si tens molt contingut i la quantitat de fitxer que hagis pujat."
+  sendEmail: "Una vegada hagi finalitzat l'esborrat del compte rebràs un correu electrònic a l'adreça que tinguis registrada en aquest compte."
+  requestAccountDelete: "Demanar l'eliminació del compte"
+  started: "Ha començat l'esborrat del compte."
+  inProgress: "L'esborrat es troba en procés "
 _ad:
   back: "Tornar"
+  reduceFrequencyOfThisAd: "Mostrar menys aquest anunci"
   hide: "No mostrar mai"
+  timezoneinfo: "El dia de la setmana ve determinat del fus horari del servidor."
+  adsSettings: "Configuració d'anuncis "
+  notesPerOneAd: "Interval d'emplaçament d'anuncis en temps real (Notes per anuncis)"
+  setZeroToDisable: "Ajusta aquest valor a 0 per deshabilitar l'actualització d'anuncis en temps real"
+  adsTooClose: "L'interval actual pot fer que l'experiència de l'usuari sigui dolenta perquè l'interval és molt baix."
+_forgotPassword:
+  enterEmail: "Escriu l'adreça de correu electrònic amb la que et vas registrar. S'enviarà un correu electrònic amb un enllaç perquè puguis canviar-la."
+  ifNoEmail: "Si no vas fer servir una adreça de correu electrònic per registrar-te, si us plau posa't en contacte amb l'administrador."
+  contactAdmin: "Aquesta instància no suporta registrar-se amb correu electrònic. Si us plau, contacta amb l'administrador del servidor."
+_gallery:
+  my: "La meva Galeria "
+  liked: "Publicacions que t'han agradat"
+  like: "M'agrada "
+  unlike: "Ja no m'agrada"
 _email:
   _follow:
     title: "t'ha seguit"
+  _receiveFollowRequest:
+    title: "Has rebut una sol·licitud  de seguiment"
 _plugin:
+  install: "Instal·lar un afegit "
+  installWarn: "Si us plau, no instal·lis afegits que no siguin de confiança."
+  manage: "Gestionar els afegits"
   viewSource: "Veure l'origen "
 _preferencesBackups:
   list: "Llista de còpies de seguretat"
@@ -1738,6 +1779,7 @@ _channel:
   following: "Seguin"
   usersCount: "{n} Participants"
   notesCount: "{n} Notes"
+  nameAndDescription: "Nom i descripció "
 _instanceMute:
   instanceMuteDescription: "Silencia tots els impulsos dels servidors seleccionats, també els usuaris que responen a altres d'un servidor silenciat."
 _theme:
@@ -1769,11 +1811,60 @@ _theme:
     driveFolderBg: "Fons de la carpeta Disc"
     wallpaperOverlay: "Superposició del fons de pantalla "
     badge: "Insígnia "
+    messageBg: "Fons del xat"
+    accentDarken: "Accent (fosc)"
+    accentLighten: "Accent (clar)"
+    fgHighlighted: "Text ressaltat"
 _sfx:
   note: "Notes"
+  noteMy: "Nota (per mi)"
   notification: "Notificacions"
   antenna: "Antenes"
+  channel: "Notificacions dels canals"
+  reaction: "Quan se selecciona una reacció "
+_soundSettings:
+  driveFile: "Fer servir un fitxer d'àudio del disc"
+  driveFileWarn: "Seleccionar un fitxer d'àudio del disc"
+  driveFileTypeWarn: "Fitxer no suportat "
+  driveFileTypeWarnDescription: "Seleccionar un fitxer d'àudio "
+  driveFileDurationWarn: "L'àudio és massa llarg"
+  driveFileDurationWarnDescription: "Els àudios molt llargs pot interrompre l'ús de Misskey. Vols continuar?"
+_ago:
+  future: "Futur "
+  justNow: "Ara mateix"
+  secondsAgo: "Fa {n} segons"
+  minutesAgo: "Fa {n} minuts"
+  hoursAgo: "Fa {n} hores"
+  daysAgo: "Fa {n} dies"
+  weeksAgo: "Fa {n} setmanes"
+  monthsAgo: "Fa {n} mesos"
+  yearsAgo: "Fa {n} anys"
+  invalid: "Res"
+_timeIn:
+  seconds: "En {n} segons"
+  minutes: "En {n} minuts"
+  hours: "En {n} hores"
+  days: "En {n} dies"
+  weeks: "En {n} setmanes"
+  months: "En {n} mesos"
+  years: "En {n} anys"
+_time:
+  second: "Segon(s)"
+  minute: "Minut(s)"
+  hour: "Hor(a)(es)"
+  day: "Di(a)(es)"
 _2fa:
+  alreadyRegistered: "J has registrat un dispositiu d'autenticació de doble factor."
+  registerTOTP: "Registrar una aplicació autenticadora"
+  step1: "Primer instal·la una aplicació autenticadora (com {a} o {b}) al teu dispositiu."
+  step2: "Després escaneja el codi QR que es mostra en aquesta pantalla."
+  step2Click: "Fent clic en aquest codi QR et permetrà registrar l'autenticació de doble factor a la teva clau de seguretat o en l'aplicació d'autenticació del teu dispositiu."
+  step2Uri: "Escriu la següent URI si estàs fent servir una aplicació d'escriptori "
+  step3Title: "Escriu un codi d'autenticació"
+  step3: "Escriu el codi d'autenticació (token) que es mostra a la teva aplicació per finalitzar la configuració."
+  setupCompleted: "Configuració terminada"
+  step4: "D'ara endavant quan accedeixis se't demanarà el token que has introduït."
+  securityKeyNotSupported: "El teu navegador no suporta claus de seguretat"
   removeKeyConfirm: "Esborrar la còpia de seguretat {name}?"
   renewTOTPCancel: "No, gràcies"
 _antennaSources:
@@ -1793,6 +1884,8 @@ _widgets:
     chooseList: "Tria una llista"
 _cw:
   show: "Carregar més"
+_poll:
+  deadlineTime: "Hor(a)(es)"
 _visibility:
   home: "Inici"
   followers: "Seguidors"
