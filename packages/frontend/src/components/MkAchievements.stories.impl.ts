@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { userDetailed } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAchievements from './MkAchievements.vue';
@@ -39,8 +39,8 @@ export const Empty = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.post('/api/users/achievements', (req, res, ctx) => {
-					return res(ctx.json([]));
+				http.post('/api/users/achievements', () => {
+					return HttpResponse.json([]);
 				}),
 			],
 		},
@@ -52,8 +52,8 @@ export const All = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.post('/api/users/achievements', (req, res, ctx) => {
-					return res(ctx.json(ACHIEVEMENT_TYPES.map((name) => ({ name, unlockedAt: 0 }))));
+				http.post('/api/users/achievements', () => {
+					return HttpResponse.json(ACHIEVEMENT_TYPES.map((name) => ({ name, unlockedAt: 0 })));
 				}),
 			],
 		},
