@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					});
 				}
 			} else if (ps.token) {
-				const tokenExist = await this.accessTokensRepository.exists(({ where: { token: ps.token } });
+				const tokenExist = await this.accessTokensRepository.exists({ where: { token: ps.token } });
 
 				if (tokenExist) {
 					await this.accessTokensRepository.delete({
