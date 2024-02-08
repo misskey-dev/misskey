@@ -105,7 +105,7 @@ import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts
 import { optInGridUtils } from '@/components/grid/optin-utils.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-grid.local.logs.vue';
 
-const MAXIMUM_EMOJI_COUNT = 100;
+const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
 type FolderItem = {
 	id?: string;
@@ -151,7 +151,7 @@ async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
 		type: 'info',
 		title: '確認',
-		text: `リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は${MAXIMUM_EMOJI_COUNT}件までです）`,
+		text: `リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は${MAXIMUM_EMOJI_REGISTER_COUNT}件までです）`,
 	});
 
 	if (dialogSelection.canceled) {
@@ -160,7 +160,7 @@ async function onRegistryClicked() {
 
 	const items = gridItems.value;
 	const upload = () => {
-		return items.slice(0, MAXIMUM_EMOJI_COUNT)
+		return items.slice(0, MAXIMUM_EMOJI_REGISTER_COUNT)
 			.map(item =>
 				misskeyApi(
 					'admin/emoji/add', {
