@@ -516,6 +516,7 @@ onBeforeUnmount(() => {
 
 .radio {
 	display: inline-block;
+	position: relative;
 	width: 1em;
 	height: 1em;
 	vertical-align: -.125em;
@@ -524,8 +525,20 @@ onBeforeUnmount(() => {
 	background-color: var(--panel);
 
 	&.radioChecked {
-		background-color: var(--accent);
-		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+		border-color: var(--accent);
+
+		&::after {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 50%;
+			height: 50%;
+			border-radius: 50%;
+			background-color: var(--accent);
+		}
 	}
 }
 </style>
