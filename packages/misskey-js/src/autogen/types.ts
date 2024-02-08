@@ -4530,6 +4530,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      canScheduleNote: boolean;
       canInvite: boolean;
       inviteLimit: number;
       inviteLimitCycle: number;
