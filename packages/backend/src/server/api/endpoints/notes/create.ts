@@ -17,6 +17,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -110,6 +112,12 @@ export const meta = {
 			message: 'Cannot renote outside of channel.',
 			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
 			id: '33510210-8452-094c-6227-4a6c05d99f00',
+		},
+
+		containsProhibitedWords: {
+			message: 'Cannot post because it contains prohibited words.',
+			code: 'CONTAINS_PROHIBITED_WORDS',
+			id: 'aa6e01d3-a85c-669d-758a-76aab43af334',
 		},
 	},
 } as const;
@@ -221,8 +229,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
+		private metaService: MetaService,
+		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.text) {
+				// Check prohibited words
+				const miMeta = await this.metaService.fetch();
+				if (this.utilityService.isKeyWordIncluded(ps.text, miMeta.prohibitedWords)) {
+					throw new ApiError(meta.errors.containsProhibitedWords);
+				}
+			}
+
 			let visibleUsers: MiUser[] = [];
 			if (ps.visibleUserIds) {
 				visibleUsers = await this.usersRepository.findBy({
