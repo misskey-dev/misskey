@@ -1657,6 +1657,21 @@ _role:
     createdLessThan: "Han passat menys de X a passat des de la creació del compte"
     createdMoreThan: "Han passat més de X des de la creació del compte"
     followersLessThanOrEq: "Té menys de X seguidors"
+    followersMoreThanOrEq: "Té X o més seguidors"
+    followingLessThanOrEq: "Segueix X o menys comptes"
+    followingMoreThanOrEq: "Segueix a X o més comptes"
+    notesLessThanOrEq: "Les publicacions són menys o igual a "
+    notesMoreThanOrEq: "Les publicacions són més o igual a "
+    and: "AND condicional "
+    or: "OR condicional"
+    not: "NOT condicional"
+_sensitiveMediaDetection:
+  description: "Redueix els esforços de moderació gràcies al reconeixement automàtic dels fitxers amb contingut sensible mitjançant Machine Learing. Això augmentarà la càrrega del servidor."
+  sensitivity: "Sensibilitat de la detecció "
+  sensitivityDescription: "Reduint la sensibilitat provocarà menys falsos positius. D'altra banda incrementant-ho generarà més falsos negatius."
+  setSensitiveFlagAutomatically: "Marcar com a sensible"
+  setSensitiveFlagAutomaticallyDescription: "Els resultats de la detecció interna seran desats, inclòs si aquesta opció es troba desactivada."
+  analyzeVideos: "Activar anàlisis de vídeos "
 _ffVisibility:
   public: "Publicar"
 _ad:
