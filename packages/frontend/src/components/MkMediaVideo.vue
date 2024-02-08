@@ -22,7 +22,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
-	<div v-else :class="$style.videoRoot" @click.self="togglePlayPause">
+
+	<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.videoRoot">
+		<video
+			ref="videoEl"
+			:class="$style.video"
+			:poster="video.thumbnailUrl ?? undefined"
+			:title="video.comment ?? undefined"
+			:alt="video.comment"
+			preload="metadata"
+			controls
+		>
+			<source :src="video.url">
+		</video>
+		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
+		<div :class="$style.indicators">
+			<div v-if="video.comment" :class="$style.indicator">ALT</div>
+			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+		</div>
+	</div>
+
+	<div v-else :class="$style.videoRoot">
 		<video
 			ref="videoEl"
 			:class="$style.video"
@@ -31,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:alt="video.comment"
 			preload="metadata"
 			playsinline
+			@click.self="togglePlayPause"
 		>
 			<source :src="video.url">
 		</video>
@@ -112,6 +133,29 @@ function showMenu(ev: MouseEvent) {
 	menu = [
 		// TODO: 再生キューに追加
 		{
+			type: 'radio',
+			text: i18n.ts._mediaControls.playbackRate,
+			icon: 'ti ti-clock-play',
+			ref: speed,
+			options: {
+				'0.25x': 0.25,
+				'0.5x': 0.5,
+				'0.75x': 0.75,
+				'1.0x': 1,
+				'1.25x': 1.25,
+				'1.5x': 1.5,
+				'2.0x': 2,
+			},
+		},
+		...(document.pictureInPictureEnabled ? [{
+			text: i18n.ts._mediaControls.pip,
+			icon: 'ti ti-picture-in-picture',
+			action: togglePictureInPicture,
+		}] : []),
+		{
+			type: 'divider',
+		},
+		{
 			text: i18n.ts.hide,
 			icon: 'ti ti-eye-off',
 			action: () => {
@@ -177,6 +221,7 @@ const rangePercent = computed({
 	},
 });
 const volume = ref(.25);
+const speed = ref(1);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!videoEl.value) return 0;
@@ -230,6 +275,16 @@ function toggleFullscreen() {
 		} else {
 			playerEl.value.requestFullscreen({ navigationUI: 'hide' });
 			isFullscreen.value = true;
+		}
+	}
+}
+
+function togglePictureInPicture() {
+	if (videoEl.value) {
+		if (document.pictureInPictureElement) {
+			document.exitPictureInPicture();
+		} else {
+			videoEl.value.requestPictureInPicture();
 		}
 	}
 }
@@ -305,6 +360,10 @@ function init() {
 
 watch(volume, (to) => {
 	if (videoEl.value) videoEl.value.volume = to;
+});
+
+watch(speed, (to) => {
+	if (videoEl.value) videoEl.value.playbackRate = to;
 });
 
 watch(hide, (to) => {
@@ -403,7 +462,7 @@ onDeactivated(() => {
 	font: inherit;
 	color: inherit;
 	cursor: pointer;
-	padding: 120px 0;
+	padding: 60px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -427,7 +486,6 @@ onDeactivated(() => {
 	display: block;
 	height: 100%;
 	width: 100%;
-	pointer-events: none;
 }
 
 .videoOverlayPlayButton {

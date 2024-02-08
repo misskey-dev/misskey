@@ -1206,6 +1206,7 @@ hemisphere: "お住まいの地域"
 withSensitive: "センシティブなファイルを含むノートを表示"
 userSaysSomethingSensitive: "{name}のセンシティブなファイルを含む投稿"
 enableHorizontalSwipe: "スワイプしてタブを切り替える"
+useNativeUIForVideoAudioPlayer: "動画・音声の再生にブラウザのUIを使用する"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2563,3 +2564,6 @@ _offlineScreen:
   title: "オフライン - サーバーに接続できません"
   header: "サーバーに接続できません"
 
+_mediaControls:
+  pip: "ピクチャインピクチャ"
+  playbackRate: "再生速度"

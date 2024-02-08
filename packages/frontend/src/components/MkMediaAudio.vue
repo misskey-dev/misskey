@@ -18,6 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
+
+	<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.nativeAudioContainer">
+		<audio
+			ref="audioEl"
+			preload="metadata"
+			controls
+			:class="$style.nativeAudio"
+		>
+			<source :src="audio.url">
+		</audio>
+	</div>
+
 	<div v-else :class="$style.audioControls">
 		<audio
 			ref="audioEl"
@@ -86,6 +98,24 @@ function showMenu(ev: MouseEvent) {
 	menu = [
 		// TODO: 再生キューに追加
 		{
+			type: 'radio',
+			text: i18n.ts._mediaControls.playbackRate,
+			icon: 'ti ti-clock-play',
+			ref: speed,
+			options: {
+				'0.25x': 0.25,
+				'0.5x': 0.5,
+				'0.75x': 0.75,
+				'1.0x': 1,
+				'1.25x': 1.25,
+				'1.5x': 1.5,
+				'2.0x': 2,
+			},
+		},
+		{
+			type: 'divider',
+		},
+		{
 			text: i18n.ts.hide,
 			icon: 'ti ti-eye-off',
 			action: () => {
@@ -138,6 +168,7 @@ const rangePercent = computed({
 	},
 });
 const volume = ref(.25);
+const speed = ref(1);
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
 	if (!audioEl.value) return 0;
@@ -223,6 +254,10 @@ function init() {
 
 watch(volume, (to) => {
 	if (audioEl.value) audioEl.value.volume = to;
+});
+
+watch(speed, (to) => {
+	if (audioEl.value) audioEl.value.playbackRate = to;
 });
 
 onMounted(() => {
@@ -357,5 +392,16 @@ onDeactivated(() => {
 			flex-grow: 1;
 		}
 	}
+}
+
+.nativeAudioContainer {
+	display: flex;
+	align-items: center;
+	padding: 6px;
+}
+
+.nativeAudio {
+	display: block;
+	width: 100%;
 }
 </style>

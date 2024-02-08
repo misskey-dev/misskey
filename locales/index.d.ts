@@ -4840,6 +4840,10 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     "enableHorizontalSwipe": string;
+    /**
+     * 動画・音声の再生にブラウザのUIを使用する
+     */
+    "useNativeUIForVideoAudioPlayer": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -9613,6 +9617,16 @@ export interface Locale extends ILocale {
          * サーバーに接続できません
          */
         "header": string;
+    };
+    "_mediaControls": {
+        /**
+         * ピクチャインピクチャ
+         */
+        "pip": string;
+        /**
+         * 再生速度
+         */
+        "playbackRate": string;
     };
 }
 declare const locales: {
