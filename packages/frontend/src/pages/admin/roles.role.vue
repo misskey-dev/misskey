@@ -116,9 +116,7 @@ async function del() {
 }
 
 async function assign() {
-	const user = await os.selectUser({
-		includeSelf: true,
-	});
+	const user = await os.selectUser({ includeSelf: true });
 
 	const { canceled: canceled2, result: period } = await os.select({
 		title: i18n.ts.period,

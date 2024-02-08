@@ -385,7 +385,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public checkDuplicate(name: string): Promise<boolean> {
-		return this.emojisRepository.exist({ where: { name, host: IsNull() } });
+		return this.emojisRepository.exists({ where: { name, host: IsNull() } });
 	}
 
 	@bindThis

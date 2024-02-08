@@ -2239,7 +2239,7 @@ type ModerationLog = {
     id: ID;
     createdAt: DateString;
     userId: User['id'];
-    user: UserDetailed | null;
+    user: UserDetailedNotMe | null;
 } & ({
     type: 'updateServerSettings';
     info: ModerationLogPayloads['updateServerSettings'];

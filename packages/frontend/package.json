@@ -60,7 +60,7 @@
 		"rollup": "4.9.6",
 		"sanitize-html": "2.11.0",
 		"sass": "1.70.0",
-		"shiki": "0.14.7",
+		"shiki": "1.0.0-beta.3",
 		"strict-event-emitter-types": "2.0.0",
 		"textarea-caret": "3.1.0",
 		"three": "0.160.1",
@@ -122,8 +122,8 @@
 		"happy-dom": "10.0.3",
 		"intersection-observer": "0.12.2",
 		"micromatch": "4.0.5",
-		"msw": "2.1.2",
-		"msw-storybook-addon": "1.10.0",
+		"msw": "2.1.7",
+		"msw-storybook-addon": "2.0.0-beta.1",
 		"nodemon": "3.0.3",
 		"prettier": "3.2.4",
 		"react": "18.2.0",
@@ -134,6 +134,7 @@
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "0.34.6",
 		"vitest-fetch-mock": "0.2.2",
+		"vue-component-type-helpers": "^1.8.27",
 		"vue-eslint-parser": "9.4.2",
 		"vue-tsc": "1.8.27"
 	}
