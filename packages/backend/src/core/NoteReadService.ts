@@ -49,7 +49,7 @@ export class NoteReadService implements OnApplicationShutdown {
 		//#endregion
 
 		// スレッドミュート
-		const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+		const isThreadMuted = await this.noteThreadMutingsRepository.exists({
 			where: {
 				userId: userId,
 				threadId: note.threadId ?? note.id,
@@ -70,7 +70,7 @@ export class NoteReadService implements OnApplicationShutdown {
 
 		// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 		setTimeout(2000, 'unread note', { signal: this.#shutdownController.signal }).then(async () => {
-			const exist = await this.noteUnreadsRepository.exist({ where: { id: unread.id } });
+			const exist = await this.noteUnreadsRepository.exists({ where: { id: unread.id } });
 
 			if (!exist) return;
 

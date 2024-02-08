@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw e;
 			});
 
-			const exist = await this.promoNotesRepository.exist({ where: { noteId: note.id } });
+			const exist = await this.promoNotesRepository.exists({ where: { noteId: note.id } });
 
 			if (exist) {
 				throw new ApiError(meta.errors.alreadyPromoted);
