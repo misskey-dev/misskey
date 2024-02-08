@@ -68,10 +68,7 @@ export async function initHighlighter() {
 		themes,
 		langs: [
 			import('shiki/langs/javascript.mjs'),
-			{
-				aliases: ['is', 'ais'],
-				...aiScriptGrammar.default,
-			} as unknown as LanguageRegistration,
+			aiScriptGrammar.default as unknown as LanguageRegistration,
 		],
 	});
 

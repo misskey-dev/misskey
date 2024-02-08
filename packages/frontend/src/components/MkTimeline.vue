@@ -17,9 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import Misskey from 'misskey-js';
 import { computed, watch, onUnmounted, provide, shallowRef } from 'vue';
-import { Connection } from 'misskey-js/streaming.js';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
@@ -87,8 +86,8 @@ function prepend(note) {
 	}
 }
 
-let connection: Connection;
-let connection2: Connection;
+let connection: Misskey.ChannelConnection | null = null;
+let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: Paging | null = null;
 
 const stream = useStream();
@@ -157,7 +156,7 @@ function connectChannel() {
 			roleId: props.role,
 		});
 	}
-	if (props.src !== 'directs' && props.src !== 'mentions') connection.on('note', prepend);
+	if (props.src !== 'directs' && props.src !== 'mentions') connection?.on('note', prepend);
 }
 
 function disconnectChannel() {

@@ -73,6 +73,8 @@
 - Fix: キャプションが空の画像をクロップするとキャプションにnullという文字列が入ってしまう問題の修正
 - Fix: プロフィールを編集してもリロードするまで反映されない問題を修正
 - Fix: エラー画像URLを設定した後解除すると，デフォルトの画像が表示されない問題の修正
+- Fix: MkCodeEditorで行がずれていってしまう問題の修正
+- Fix: Summaly proxy利用時にプレイヤーが動作しないことがあるのを修正 #13196
 
 ### Server
 - Enhance: 連合先のレートリミットに引っかかった際にリトライするようになりました
@@ -87,6 +89,7 @@
 - Fix: properly handle cc followers
 - Fix: ジョブに関する設定の名前を修正 relashionshipJobPerSec -> relationshipJobPerSec
 - Fix: コントロールパネル->モデレーション->「誰でも新規登録できるようにする」の初期値をONからOFFに変更 #13122
+- Enhance: 連合向けのノート配信を軽量化 #13192
 
 ### Service Worker
 - Enhance: オフライン表示のデザインを改善・多言語対応

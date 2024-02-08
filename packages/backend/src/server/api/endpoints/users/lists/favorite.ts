@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userListExist = await this.userListsRepository.exist({
+			const userListExist = await this.userListsRepository.exists({
 				where: {
 					id: ps.listId,
 					isPublic: true,
@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			const exist = await this.userListFavoritesRepository.exist({
+			const exist = await this.userListFavoritesRepository.exists({
 				where: {
 					userId: me.id,
 					userListId: ps.listId,
