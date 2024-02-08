@@ -29,7 +29,7 @@
 		"@tabler/icons-webfont": "2.46.0",
 		"@twemoji/parser": "15.0.0",
 		"@vitejs/plugin-vue": "5.0.3",
-		"@vue/compiler-sfc": "3.4.16",
+		"@vue/compiler-sfc": "3.4.15",
 		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.2",
 		"astring": "1.8.6",
 		"broadcast-channel": "7.0.0",
@@ -73,7 +73,7 @@
 		"uuid": "9.0.1",
 		"v-code-diff": "1.7.2",
 		"vite": "5.1.0",
-		"vue": "3.4.16",
+		"vue": "3.4.15",
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
@@ -112,7 +112,7 @@
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
 		"@vitest/coverage-v8": "0.34.6",
-		"@vue/runtime-core": "3.4.16",
+		"@vue/runtime-core": "3.4.15",
 		"acorn": "8.11.3",
 		"cross-env": "7.0.3",
 		"cypress": "13.6.4",
