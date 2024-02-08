@@ -608,6 +608,7 @@ invisibleNote: "非公開の投稿"
 enableInfiniteScroll: "自動でもっと見る"
 visibility: "公開範囲"
 poll: "アンケート"
+schedulePost: "予約投稿"
 useCw: "内容を隠す"
 enablePlayer: "プレイヤーを開く"
 disablePlayer: "プレイヤーを閉じる"
@@ -1639,6 +1640,7 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
+    canScheduleNote: "予約投稿の許可"
     canInvite: "サーバー招待コードの発行"
     inviteLimit: "招待コードの作成可能数"
     inviteLimitCycle: "招待コードの発行間隔"
@@ -2320,6 +2322,7 @@ _notification:
   roleAssigned: "ロールが付与されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
+  noteSchedulingFailed: "予約投稿に失敗しました"
   testNotification: "通知テスト"
   checkNotificationBehavior: "通知の表示を確かめる"
   sendTestNotification: "テスト通知を送信する"
@@ -2342,6 +2345,7 @@ _notification:
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
+    noteSchedulingFailed: "予約投稿に失敗した"
     app: "連携アプリからの通知"
 
   _actions:
@@ -2496,6 +2500,17 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "テーマのインストールに失敗しました"
       description: "テーマのインストール中に問題が発生しました。もう一度お試しください。エラーの詳細はJavascriptコンソールをご覧ください。"
+
+_schedulePost:
+  list: "予約投稿一覧"
+  postDate: "日付"
+  postTime: "時刻"
+  localTime: "端末に設定されているタイムゾーンの時刻で投稿されます。"
+  addSchedule: "予約設定"
+  willBePostedAtX: "{date}に投稿予約しました。"
+  deleteAreYouSure: "予約投稿を削除しますか？"
+  deleteAndEditConfirm: "予約投稿を削除して編集しますか？"
+  somethingHappened: "何らかの問題が発生し、正常に投稿されませんでした。"
 
 _dataSaver:
   _media:

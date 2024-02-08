@@ -450,10 +450,13 @@ onBeforeUnmount(() => {
 }
 
 .indicator {
+	position: absolute;
+	top: 5px;
+	right: 18px;
 	display: flex;
 	align-items: center;
 	color: var(--indicator);
-	font-size: 12px;
+	font-size: 8px;
 	animation: global-blink 1s infinite;
 }
 

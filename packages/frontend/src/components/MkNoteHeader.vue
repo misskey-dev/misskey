@@ -17,9 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
 	<div :class="$style.info">
+		<i v-if="note.isScheduled" style="margin-right: 0.5em;" class="ti ti-clock"></i>
 		<div v-if="mock">
 			<MkTime :time="note.createdAt" colored/>
 		</div>
+		<MkTime v-else-if="note.isSchedule" mode="absolute" :time="note.createdAt" colored/>
 		<MkA v-else :to="notePage(note)">
 			<MkTime :time="note.createdAt" colored/>
 		</MkA>
@@ -42,7 +44,8 @@ import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 
 defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {isSchedule? : boolean, isScheduled? : boolean};
+  scheduled?: boolean;
 }>();
 
 const mock = inject<boolean>('mock', false);

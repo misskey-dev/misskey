@@ -190,6 +190,12 @@ export class MiNote {
 	})
 	public channelId: MiChannel['id'] | null;
 
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public isScheduled: boolean;
+
 	@ManyToOne(type => MiChannel, {
 		onDelete: 'CASCADE',
 	})
