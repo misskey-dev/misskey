@@ -72,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// if already liked
-			const exist = await this.galleryLikesRepository.exist({
+			const exist = await this.galleryLikesRepository.exists({
 				where: {
 					postId: post.id,
 					userId: me.id,

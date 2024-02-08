@@ -43,7 +43,7 @@ class UserListChannel extends Channel {
 		this.withRenotes = params.withRenotes ?? true;
 
 		// Check existence and owner
-		const listExist = await this.userListsRepository.exist({
+		const listExist = await this.userListsRepository.exists({
 			where: {
 				id: this.listId,
 				userId: this.user!.id,

@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// if already liked
-			const exist = await this.flashLikesRepository.exist({
+			const exist = await this.flashLikesRepository.exists({
 				where: {
 					flashId: flash.id,
 					userId: me.id,
