@@ -38,6 +38,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
 	user: Misskey.entities.User;
@@ -47,7 +48,7 @@ const reason = ref('');
 const email = ref('');
 
 function getReason() {
-	return os.api('admin/show-user', {
+	return misskeyApi('admin/show-user', {
 		userId: props.user.id,
 	}).then(info => {
 		reason.value = info.signupReason;
@@ -93,7 +94,7 @@ async function approveAccount() {
 		text: i18n.ts.registerApproveConfirmDescription,
 	});
 	if (confirm.canceled) return;
-	await os.api('admin/approve-user', { userId: props.user.id });
+	await misskeyApi('admin/approve-user', { userId: props.user.id });
 	emits('deleted', props.user.id);
 }
 </script>
