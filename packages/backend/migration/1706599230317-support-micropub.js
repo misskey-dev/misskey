@@ -9,13 +9,11 @@ export class SupportMicropub1706599230317 {
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "drive_file" ADD "downloadedFrom" character varying(512)`);
         await queryRunner.query(`ALTER TABLE "drive_file" ADD "createdByMicropub" boolean NOT NULL DEFAULT false`);
-        await queryRunner.query(`CREATE INDEX "IDX_209c886ff6705aa121d29f13c1" ON "drive_file" ("downloadedFrom") `);
         await queryRunner.query(`CREATE INDEX "IDX_aa00d9f0d9c8c99c5dd17ecca8" ON "drive_file" ("createdByMicropub") `);
     }
 
     async down(queryRunner) {
         await queryRunner.query(`DROP INDEX "public"."IDX_aa00d9f0d9c8c99c5dd17ecca8"`);
-        await queryRunner.query(`DROP INDEX "public"."IDX_209c886ff6705aa121d29f13c1"`);
         await queryRunner.query(`ALTER TABLE "drive_file" DROP COLUMN "createdByMicropub"`);
         await queryRunner.query(`ALTER TABLE "drive_file" DROP COLUMN "downloadedFrom"`);
     }

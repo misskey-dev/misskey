@@ -189,7 +189,6 @@ export class MiDriveFile {
 	})
 	public requestIp: string | null;
 
-	@Index()
 	@Column('varchar', {
 		length: 512, nullable: true,
 	})
